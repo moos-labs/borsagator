@@ -7,6 +7,11 @@ on:
         description: "Job, e.g. 'sweep POUL.CA' or 'run tradingagents POUL.CA' (empty = use the JOB variable)"
         required: false
         default: ""
+  schedule:
+    # Sun–Thu 06:15 UTC = 08:15 Cairo (winter) / 09:15 (summer DST) — always
+    # before the EGX 10:00 open. Scheduled runs use the JOB_SCHEDULED
+    # variable (default 'sweep-lite POUL.CA').
+    - cron: "15 6 * * 0,1,2,3,4"
 
 permissions:
   contents: read
@@ -42,7 +47,7 @@ jobs:
       - name: Run the gator
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          JOB: ${{ inputs.job || vars.JOB }}
+          JOB: ${{ github.event_name == 'schedule' && (vars.JOB_SCHEDULED || 'sweep-lite POUL.CA') || inputs.job || vars.JOB }}
         run: python3 scripts/orchestrate.py
 
       - name: Upload the digest
