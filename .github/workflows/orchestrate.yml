@@ -23,12 +23,21 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Compute the fleet repository list
+        id: fleet
+        run: |
+          repos=$(python3 -c "import json; rs=[t['repo'] for t in json.load(open('registry/tools.json'))['tools']]; print(','.join(['borsagator'] + rs))")
+          echo "repos=$repos" >> "$GITHUB_OUTPUT"
+          echo "Token scope: $repos"
+
       - name: Mint the Borsagator app token
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.BORSAGATOR_APP_ID }}
           private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
+          owner: moos-labs
+          repositories: ${{ steps.fleet.outputs.repos }}
 
       - name: Run the gator
         env:
