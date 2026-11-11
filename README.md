@@ -41,17 +41,23 @@ API keys stay in org secrets, a plane this app never touches.
 
 | Job | Meaning |
 |---|---|
-| `sweep <ticker>` | All active tools |
-| `sweep-lite <ticker>` | All except the `agent` category (the expensive LLM run) |
+| `sweep <ticker>` | All active tools (the whole fleet — long) |
+| `sweep-lite <ticker>` | All active tools except the `agent` category (the expensive LLM runs) |
+| `sweep[-lite] <ticker> market=EGX` | Sweep with an extra market filter (also accepts `no-agent`) |
 | `category <name> <ticker>` | One category: `data`, `technicals`, `stats`, `backtest`, `fundamentals`, `sentiment`, `forecast`, `agent` |
 | `market <EGX\|US> <ticker>` | Tools whose registry `markets` include that market |
-| `run <tool> <ticker>` | A single tool |
+| `run <tool> <ticker>` | A single tool — the only way to run a `manual`-status tool |
+
+The registry covers all 36 fleet tools. Tools with status `manual`
+(backtesting-py, superalgos, fingpt, egx-mcp) are excluded from sweeps for
+documented upstream reasons (see their registry notes) and run only when
+named explicitly.
 
 ## Scheduled sweep
 
 The workflow also runs on a schedule — **Sun–Thu 06:15 UTC** (08:15 Cairo in
 winter, 09:15 in summer; always before the EGX 10:00 open) — using the
-`JOB_SCHEDULED` repository variable, which defaults to `sweep-lite POUL.CA`.
+`JOB_SCHEDULED` repository variable, set to `sweep-lite POUL.CA market=EGX`.
 Manual dispatches use the job input, falling back to the `JOB` variable.
 
 ## Scope
