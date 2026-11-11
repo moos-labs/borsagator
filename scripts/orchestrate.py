@@ -49,7 +49,7 @@ except Exception:
     summary["exit_code"] = None
 summary["status"] = "ok" if summary["exit_code"] == 0 else "failed"
 metrics = {}
-for path in sorted(glob.glob(os.path.join(res, "*.json"))):
+for path in sorted(glob.glob(os.path.join(res, "*.json")) + glob.glob(os.path.join(res, "*", "*.json"))):
     if os.path.basename(path) in ("summary.json",):
         continue
     try:
@@ -60,6 +60,22 @@ for path in sorted(glob.glob(os.path.join(res, "*.json"))):
         for k, v in data.items():
             if isinstance(v, (int, float, str, bool)) and len(str(v)) <= 120 and len(metrics) < 30:
                 metrics[str(k)] = v
+import csv as _csv
+for path in sorted(glob.glob(os.path.join(res, "*.csv")) + glob.glob(os.path.join(res, "*", "*.csv"))):
+    try:
+        with open(path, newline="") as f:
+            rows = list(_csv.reader(f))
+    except Exception:
+        continue
+    if len(rows) < 2:
+        continue
+    name = os.path.basename(path)
+    metrics["rows_" + name] = len(rows) - 1
+    header = [h.strip().lower() for h in rows[0]]
+    last = rows[-1]
+    for want in ("date", "close"):
+        if want in header and len(metrics) < 30:
+            metrics[name + "_last_" + want] = last[header.index(want)]
 summary["metrics"] = metrics
 summary["files"] = sorted(os.path.basename(p) for p in glob.glob(os.path.join(res, "*")) if os.path.isfile(p))
 with open(os.path.join(res, "summary.json"), "w") as f:
@@ -110,10 +126,14 @@ def download(url):
 
 
 def get_variable(repo, name):
+    """Returns (state, value): state is 'ok' (value known), 'missing' (404),
+    or 'error' (anything else — caller must not touch the variable)."""
     status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/variables/{name}")
     if status == 200:
-        return data.get("value")
-    return None
+        return "ok", data.get("value")
+    if status == 404:
+        return "missing", None
+    return "error", None
 
 
 def set_variable(repo, name, value):
@@ -190,14 +210,19 @@ def run_tool(tool, ticker, date_str):
     repo = tool["repo"]
     tool_id = tool["id"]
     print(f"== {tool_id} ({repo})", flush=True)
-    original = get_variable(repo, "COMMANDS")
+    state, original = get_variable(repo, "COMMANDS")
     command = tool["command"].replace("{ticker}", ticker).replace("{date}", date_str)
     composed = command.rstrip() + "\n" + (EMITTER % (tool_id, ticker))
     result = {"tool": tool_id, "repo": repo, "category": tool["category"]}
+    if state == "error":
+        result.update(status="error", detail="could not read COMMANDS variable — left untouched")
+        return result
+    changed = False
     try:
         if not set_variable(repo, "COMMANDS", composed):
             result.update(status="error", detail="could not set COMMANDS variable")
             return result
+        changed = True
         since = time.time()
         ok, data = dispatch(repo)
         if not ok:
@@ -226,10 +251,11 @@ def run_tool(tool, ticker, date_str):
             result["status"] = "no-summary"
         return result
     finally:
-        if original is None:
-            delete_variable(repo, "COMMANDS")
-        else:
-            set_variable(repo, "COMMANDS", original)
+        if changed:
+            if state == "missing":
+                delete_variable(repo, "COMMANDS")
+            else:
+                set_variable(repo, "COMMANDS", original)
 
 
 def main():
