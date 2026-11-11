@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Borsagator orchestrator.
 
-Reads a JOB ("sweep <ticker>" or "run <tool> <ticker>"), then for every
+Reads a JOB — "sweep <ticker>" (all tools), "sweep-lite <ticker>" (all but
+the expensive agent category), "category <name> <ticker>",
+"market <EGX|US> <ticker>", or "run <tool> <ticker>" — then for every
 selected tool in registry/tools.json:
   1. reads the child repo's current COMMANDS variable (kept for restore),
   2. sets COMMANDS to the registry template ({ticker}/{date} substituted)
@@ -272,6 +274,21 @@ def main():
     if mode == "sweep" and len(parts) >= 2:
         ticker = parts[1]
         selected = tools
+    elif mode == "sweep-lite" and len(parts) >= 2:
+        ticker = parts[1]
+        selected = [t for t in tools if t["category"] != "agent"]
+    elif mode == "category" and len(parts) >= 3:
+        cat, ticker = parts[1].lower(), parts[2]
+        selected = [t for t in tools if t["category"] == cat]
+        if not selected:
+            print(f"No active tools in category: {cat}", file=sys.stderr)
+            return 2
+    elif mode == "market" and len(parts) >= 3:
+        mkt, ticker = parts[1].upper(), parts[2]
+        selected = [t for t in tools if mkt in [m.upper() for m in t.get("markets", [])]]
+        if not selected:
+            print(f"No active tools for market: {mkt}", file=sys.stderr)
+            return 2
     elif mode == "run" and len(parts) >= 3:
         wanted, ticker = parts[1], parts[2]
         selected = [t for t in tools if t["id"] == wanted]
@@ -279,7 +296,9 @@ def main():
             print(f"Unknown tool: {wanted}", file=sys.stderr)
             return 2
     else:
-        print(f"Unparseable JOB: {job!r} (want 'sweep <ticker>' or 'run <tool> <ticker>')", file=sys.stderr)
+        print(f"Unparseable JOB: {job!r} (want 'sweep|sweep-lite <ticker>', "
+              f"'category <name> <ticker>', 'market <EGX|US> <ticker>' or 'run <tool> <ticker>')",
+              file=sys.stderr)
         return 2
 
     print(f"Borsagator job: {job} | tools: {[t['id'] for t in selected]} | date {date_str}", flush=True)
