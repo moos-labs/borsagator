@@ -37,8 +37,26 @@ No contents, no secrets, no administration. Each workflow run mints a fresh
 one-hour installation token from the app credentials; the child repos' own
 API keys stay in org secrets, a plane this app never touches.
 
-## Phase 1 scope
+## Jobs
 
-The 13 proven core tools (data, technicals, stats, fundamentals, sentiment,
-forecast, agent) and the `sweep` / `run` job types. Market-routing presets,
-scheduled sweeps and email pings are phase 2.
+| Job | Meaning |
+|---|---|
+| `sweep <ticker>` | All active tools |
+| `sweep-lite <ticker>` | All except the `agent` category (the expensive LLM run) |
+| `category <name> <ticker>` | One category: `data`, `technicals`, `stats`, `backtest`, `fundamentals`, `sentiment`, `forecast`, `agent` |
+| `market <EGX\|US> <ticker>` | Tools whose registry `markets` include that market |
+| `run <tool> <ticker>` | A single tool |
+
+## Scheduled sweep
+
+The workflow also runs on a schedule — **Sun–Thu 06:15 UTC** (08:15 Cairo in
+winter, 09:15 in summer; always before the EGX 10:00 open) — using the
+`JOB_SCHEDULED` repository variable, which defaults to `sweep-lite POUL.CA`.
+Manual dispatches use the job input, falling back to the `JOB` variable.
+
+## Scope
+
+Phase 1 (built): the 13 proven core tools, the summary contract, digest
+issues. Phase 2 (built): job routing (`sweep-lite` / `category` / `market`),
+the scheduled pre-market sweep, and a digest watch that reports each new
+scheduled digest and sends an email ping.
