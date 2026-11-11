@@ -269,14 +269,27 @@ def main():
     mode = parts[0].lower()
     with open(REGISTRY) as f:
         registry = json.load(f)
-    tools = [t for t in registry["tools"] if t.get("status") == "active"]
+    all_tools = registry["tools"]
+    tools = [t for t in all_tools if t.get("status") == "active"]
     date_str = datetime.now(ZoneInfo("Africa/Cairo")).strftime("%Y-%m-%d")
-    if mode == "sweep" and len(parts) >= 2:
+    if mode in ("sweep", "sweep-lite") and len(parts) >= 2:
         ticker = parts[1]
-        selected = tools
-    elif mode == "sweep-lite" and len(parts) >= 2:
-        ticker = parts[1]
-        selected = [t for t in tools if t["category"] != "agent"]
+        selected = list(tools)
+        if mode == "sweep-lite":
+            selected = [t for t in selected if t["category"] != "agent"]
+        # Optional trailing filters: market=EGX / market=US / no-agent
+        for tok in parts[2:]:
+            if tok.startswith("market="):
+                mkt = tok.split("=", 1)[1].upper()
+                selected = [t for t in selected if mkt in [m.upper() for m in t.get("markets", [])]]
+            elif tok == "no-agent":
+                selected = [t for t in selected if t["category"] != "agent"]
+            else:
+                print(f"Unknown sweep filter: {tok}", file=sys.stderr)
+                return 2
+        if not selected:
+            print("Filters left no tools to run.", file=sys.stderr)
+            return 2
     elif mode == "category" and len(parts) >= 3:
         cat, ticker = parts[1].lower(), parts[2]
         selected = [t for t in tools if t["category"] == cat]
@@ -291,7 +304,8 @@ def main():
             return 2
     elif mode == "run" and len(parts) >= 3:
         wanted, ticker = parts[1], parts[2]
-        selected = [t for t in tools if t["id"] == wanted]
+        selected = [t for t in all_tools
+                    if t["id"] == wanted and t.get("status") in ("active", "manual")]
         if not selected:
             print(f"Unknown tool: {wanted}", file=sys.stderr)
             return 2
