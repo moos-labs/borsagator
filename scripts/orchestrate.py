@@ -304,7 +304,11 @@ def main():
     for r in results:
         summary = r.get("summary") or {}
         metrics = summary.get("metrics") or {}
-        keys = "; ".join(f"{k}={v}" for k, v in list(metrics.items())[:5]) or r.get("detail", "") or "—"
+        verdict_keys = [k for k in metrics if any(w in k.lower() for w in
+                        ("rating", "decision", "verdict", "signal", "recommendation"))]
+        ordered = [(k, metrics[k]) for k in verdict_keys] + \
+                  [(k, v) for k, v in metrics.items() if k not in verdict_keys]
+        keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
         status = r.get("status", "?")
         if r.get("conclusion") and r["conclusion"] != "success":
             status += f" ({r['conclusion']})"
