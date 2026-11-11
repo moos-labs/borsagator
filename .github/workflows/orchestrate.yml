@@ -1,0 +1,56 @@
+name: Borsagator
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Job, e.g. 'sweep POUL.CA' or 'run tradingagents POUL.CA' (empty = use the JOB variable)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Mint the Borsagator app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.BORSAGATOR_APP_ID }}
+          private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
+
+      - name: Run the gator
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          JOB: ${{ inputs.job || vars.JOB }}
+        run: python3 scripts/orchestrate.py
+
+      - name: Upload the digest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest
+          path: digest/
+          if-no-files-found: ignore
+
+      - name: Open the digest issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f digest/digest.md ]; then
+            title=$(head -n 1 digest/digest.md | sed 's/^# //')
+            gh issue create --title "$title" --body-file digest/digest.md --label borsagator \
+              || gh issue create --title "$title" --body-file digest/digest.md
+          fi
