@@ -11,7 +11,9 @@
    "markets": [
     "EGX",
     "US"
-   ]
+   ],
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "category": "data",
@@ -23,7 +25,9 @@
    "markets": [
     "EGX",
     "US"
-   ]
+   ],
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "category": "data",
@@ -34,7 +38,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "category": "technicals",
@@ -45,7 +51,9 @@
    "markets": [
     "EGX",
     "US"
-   ]
+   ],
+   "family": "technicals",
+   "role": "voter"
   },
   {
    "category": "technicals",
@@ -56,7 +64,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "technicals",
+   "role": "cross-check"
   },
   {
    "category": "stats",
@@ -67,7 +77,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "stats",
+   "role": "validation"
   },
   {
    "category": "backtest",
@@ -78,7 +90,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "category": "fundamentals",
@@ -89,7 +103,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "fundamentals",
+   "role": "voter"
   },
   {
    "category": "sentiment",
@@ -100,7 +116,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "sentiment",
+   "role": "family-vote"
   },
   {
    "category": "sentiment",
@@ -111,7 +129,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "sentiment",
+   "role": "family-vote"
   },
   {
    "category": "sentiment",
@@ -122,7 +142,9 @@
    "status": "active",
    "markets": [
     "EGX"
-   ]
+   ],
+   "family": "sentiment",
+   "role": "family-vote"
   },
   {
    "category": "agent",
@@ -133,18 +155,22 @@
    "markets": [
     "EGX",
     "US"
-   ]
+   ],
+   "family": "agent",
+   "role": "family-vote"
   },
   {
    "category": "forecast",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 10 2>&1 | tee results/run.log",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
    "id": "kronos",
    "repo": "kronos-runner",
    "status": "active",
    "markets": [
     "EGX",
     "US"
-   ]
+   ],
+   "family": "price-forecast",
+   "role": "voter"
   },
   {
    "id": "pandas-datareader",
@@ -155,7 +181,9 @@
    ],
    "status": "active",
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
-   "note": "FRED works; Stooq leg broken upstream (needs API key)"
+   "note": "FRED works; Stooq leg broken upstream (needs API key)",
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "id": "backtrader",
@@ -165,7 +193,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "akshare",
@@ -176,7 +206,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "id": "financedatabase",
@@ -187,7 +219,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/query.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/query.py 2>&1 | tee results/run.log",
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "id": "pybroker",
@@ -197,7 +231,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "finvizfinance",
@@ -208,7 +244,9 @@
    ],
    "status": "active",
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
-   "note": "fundamentals work; screener broken upstream (JS UI)"
+   "note": "fundamentals work; screener broken upstream (JS UI)",
+   "family": "data",
+   "role": "plumbing"
   },
   {
    "id": "backtesting-py",
@@ -219,7 +257,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/backtest.py 2>&1 | tee results/run.log",
-   "note": "script proven locally; GitHub runs hit Yahoo 429s — manual runs only"
+   "note": "script proven locally; GitHub runs hit Yahoo 429s — manual runs only",
+   "family": "backtest",
+   "role": "reserve"
   },
   {
    "id": "edgartools",
@@ -229,7 +269,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "family": "fundamentals",
+   "role": "plumbing"
   },
   {
    "id": "bt",
@@ -239,7 +281,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "superalgos",
@@ -250,7 +294,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; bash scripts/superalgos_attempt.sh 2>&1 | tee results/run.log",
-   "note": "platform boots headless; no headless backtest exists — manual only"
+   "note": "platform boots headless; no headless backtest exists — manual only",
+   "family": "agent",
+   "role": "reserve"
   },
   {
    "id": "simfin",
@@ -261,7 +307,9 @@
    ],
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/simfin_pilot.py 2>&1 | tee results/run.log",
-   "note": "uses the SIMFIN_API_KEY org secret"
+   "note": "uses the SIMFIN_API_KEY org secret",
+   "family": "fundamentals",
+   "role": "plumbing"
   },
   {
    "id": "qlib",
@@ -271,7 +319,9 @@
     "CN"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/qlib_pilot.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; python scripts/qlib_pilot.py 2>&1 | tee results/run.log",
+   "family": "forecast",
+   "role": "validation"
   },
   {
    "id": "zipline",
@@ -281,7 +331,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/zipline_pilot.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; python scripts/zipline_pilot.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "fingpt",
@@ -292,7 +344,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/fingpt_sentiment.py 2>&1 | tee results/run.log",
-   "note": "cannot run on CPU runners (LoRA adapters need CUDA) — kept for the record, manual only"
+   "note": "cannot run on CPU runners (LoRA adapters need CUDA) — kept for the record, manual only",
+   "family": "agent",
+   "role": "reserve"
   },
   {
    "id": "vnpy",
@@ -302,7 +356,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/vnpy_backtest.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; python scripts/vnpy_backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "nautilus",
@@ -312,7 +368,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/nautilus_example.py 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; python scripts/nautilus_example.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "finrl",
@@ -323,7 +381,9 @@
    ],
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/finrl_a2c.py --ticker {ticker} 2>&1 | tee results/run.log",
-   "note": "fetch is yahooquery-first (Yahoo 429 workaround)"
+   "note": "fetch is yahooquery-first (Yahoo 429 workaround)",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "lean",
@@ -333,7 +393,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; bash scripts/lean_pilot.sh 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; bash scripts/lean_pilot.sh 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "stocksharp",
@@ -343,7 +405,9 @@
     "US"
    ],
    "status": "active",
-   "command": "mkdir -p results\nset -o pipefail; bash scripts/stocksharp_pilot.sh 2>&1 | tee results/run.log"
+   "command": "mkdir -p results\nset -o pipefail; bash scripts/stocksharp_pilot.sh 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
   },
   {
    "id": "egx-mcp",
@@ -354,7 +418,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/mcp_probe.py 2>&1 | tee results/run.log",
-   "note": "9 MCP tools exposed, but get_last_price errors server-side upstream — manual only"
+   "note": "9 MCP tools exposed, but get_last_price errors server-side upstream — manual only",
+   "family": "data",
+   "role": "reserve"
   },
   {
    "id": "ai-hedge-fund",
@@ -365,7 +431,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/run_backtest.py --ticker {ticker} 2>&1 | tee results/run.log",
-   "note": "Wiring complete: Cohere serves its 'OpenAI' provider via OPENAI_API_BASE + an api_models.json registry patch (scripts/run_backtest.py); workflow injects COHERE_API_KEY + FINANCIAL_DATASETS_API_KEY. BLOCKED on data: Financial Datasets has NO free requests (account + keys exist under moos.sherbo@gmail.com; smallest pack $20/1,000 requests, needs Muhammad's go-ahead) and the key value itself is dashboard-clipboard-only. Flip to active once the org secret exists."
+   "note": "Wiring complete: Cohere serves its 'OpenAI' provider via OPENAI_API_BASE + an api_models.json registry patch (scripts/run_backtest.py); workflow injects COHERE_API_KEY + FINANCIAL_DATASETS_API_KEY. BLOCKED on data: Financial Datasets has NO free requests (account + keys exist under moos.sherbo@gmail.com; smallest pack $20/1,000 requests, needs Muhammad's go-ahead) and the key value itself is dashboard-clipboard-only. Flip to active once the org secret exists.",
+   "family": "agent",
+   "role": "reserve"
   },
   {
    "id": "vibe-trading",
@@ -377,7 +445,9 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/smoke.py 2>&1 | tee results/run.log",
-   "note": "Smoke only. Upstream restructured into an agent/ server+swarm layout (no root cli package); a LangChain OpenAI-compatible route exists (OPENAI_BASE_URL is honoured) but a headless one-shot run needs a dedicated integration pass, not a variable swap."
+   "note": "Smoke only. Upstream restructured into an agent/ server+swarm layout (no root cli package); a LangChain OpenAI-compatible route exists (OPENAI_BASE_URL is honoured) but a headless one-shot run needs a dedicated integration pass, not a variable swap.",
+   "family": "agent",
+   "role": "reserve"
   },
   {
    "id": "finrobot",
@@ -388,7 +458,9 @@
    ],
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/run_analysis.py --ticker {ticker} 2>&1 | tee results/run.log",
-   "note": "Real run proven 2026-11-11: Market Analyst agent on Cohere command-r via its OpenAI-compatible endpoint (autogen config_list base_url), YFinance toolkits only through plainly-typed wrappers (Cohere schema validator), prompt date-stamped. US only: its data layer is yfinance, which cannot fetch .CA tickers (Egypt DST bug)."
+   "note": "Real run proven 2026-11-11: Market Analyst agent on Cohere command-r via its OpenAI-compatible endpoint (autogen config_list base_url), YFinance toolkits only through plainly-typed wrappers (Cohere schema validator), prompt date-stamped. US only: its data layer is yfinance, which cannot fetch .CA tickers (Egypt DST bug).",
+   "family": "agent",
+   "role": "family-vote"
   },
   {
    "id": "news-disclosure",
@@ -400,7 +472,9 @@
     "US"
    ],
    "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_feed.py --ticker {ticker} 2>&1 | tee results/run.log",
-   "note": "Free disclosures + news layer (added 2026-11-12): Google News RSS AR+EN (Mubasher EGX disclosure republications classified as disclosures) + SEC EDGAR for US. FinBERT sentiment on English headlines - no LLM. Brief: one short Cohere call with a deterministic extractive fallback. Cost $0 per run."
+   "note": "Free disclosures + news layer (added 2026-11-12): Google News RSS AR+EN (Mubasher EGX disclosure republications classified as disclosures) + SEC EDGAR for US. FinBERT sentiment on English headlines - no LLM. Brief: one short Cohere call with a deterministic extractive fallback. Cost $0 per run.",
+   "family": "news",
+   "role": "risk-overlay"
   }
  ],
  "version": 1
