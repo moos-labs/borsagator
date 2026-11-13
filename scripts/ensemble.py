@@ -392,12 +392,19 @@ def main():
         if pos is not None and neg is not None:
             subs.append(pos - neg)
     nd = metrics("news-disclosure")
-    if ok("news-disclosure") and fnum(nd.get("finbert_positive")) is not None:
-        subs.append(fnum(nd["finbert_positive"]) - fnum(nd.get("finbert_negative") or 0))
-    # Arabic leg: the multilingual model scores the Arabic headlines in
-    # the same runner (for EGX names they are most of the coverage).
-    if ok("news-disclosure") and fnum(nd.get("multilingual_positive")) is not None:
-        subs.append(fnum(nd["multilingual_positive"]) - fnum(nd.get("multilingual_negative") or 0))
+    # The news tool contributes ONE sentiment slot: the average of its
+    # own legs (FinBERT on English titles, FinBERT on translated
+    # Arabic, the multilingual model on Arabic) — three legs from one
+    # tool must not outvote the rest of the family.
+    news_legs = []
+    if ok("news-disclosure"):
+        for pos_k, neg_k in (("finbert_positive", "finbert_negative"),
+                             ("translated_positive", "translated_negative"),
+                             ("multilingual_positive", "multilingual_negative")):
+            if fnum(nd.get(pos_k)) is not None:
+                news_legs.append(fnum(nd[pos_k]) - fnum(nd.get(neg_k) or 0))
+    if news_legs:
+        subs.append(sum(news_legs) / len(news_legs))
     sentiment = (sum(subs) / len(subs)) if subs else None
 
     # ---------- agents ----------
@@ -529,7 +536,11 @@ def main():
                 fresh_disc += 1
             window = 3 if it.get("kind") == "disclosure" else 2
             if age <= window:
-                low = title.lower()
+                # Classify on the article BODY when the runner fetched
+                # it — a headline can be clickbait or boilerplate while
+                # the text carries the actual event.
+                text = title + " " + str(it.get("body") or "")[:600]
+                low = text.lower()
                 for etype, sev, words in EVENT_TYPES:
                     if any(w in low for w in words):
                         events.append((sev, etype, title[:90]))
