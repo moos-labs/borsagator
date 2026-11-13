@@ -118,7 +118,7 @@ def realized_sigma(ticker, base=None):
     among candidates whose last close sits within 25% of base, take the
     longest (a stray foreign series must not set the volatility); with
     no anchor available, fall back to the longest candidate."""
-    code = ticker.split(".")[0].lower()
+    code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     best = None
     anchored = None
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
@@ -188,7 +188,7 @@ def price_series(ticker):
     REFERENCE workloads (their CSVs are not this ticker's series —
     vectorbt's poul_ohlc.csv ends at 3.13, quantstats' at 2.83, while
     every price-bearing tool agrees on ~10.2)."""
-    code = ticker.split(".")[0].lower()
+    code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     registry = load_json(REGISTRY) or {}
     cats = {t.get("id"): t.get("category")
             for t in registry.get("tools", [])}
@@ -370,7 +370,12 @@ def detect_corporate_actions(items, base, default_year):
         if dps is None or base <= 0 or not (0 < dps < base):
             continue
         ex_date, basis = None, None
-        dates = _find_dates(text, default_year)
+        item_year = None
+        try:
+            item_year = int(str(it.get("date") or "")[:4]) or None
+        except Exception:
+            item_year = None
+        dates = _find_dates(text, item_year or default_year)
         for d, ctx in dates:
             if any(w in ctx for w in ("نهاية الحق", "استحقاق", "entitlement")):
                 ex_date, basis = d + timedelta(days=1), "entitlement+1"
