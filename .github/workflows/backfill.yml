@@ -1,0 +1,54 @@
+name: Borsagator archive backfill
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compute the fleet repository list
+        id: fleet
+        run: |
+          repos=$(python3 -c "import json; rs=[t['repo'] for t in json.load(open('registry/tools.json'))['tools']]; print(','.join(['borsagator'] + rs))")
+          echo "repos=$repos" >> "$GITHUB_OUTPUT"
+
+      - name: Mint the Borsagator app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.BORSAGATOR_APP_ID }}
+          private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
+          owner: moos-labs
+          repositories: ${{ steps.fleet.outputs.repos }}
+
+      - name: Stage the backfill
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: python3 scripts/backfill.py
+
+      - name: Commit the backfill
+        run: |
+          git config user.name "borsagator-archive"
+          git config user.email "moos@sherbeeny.com"
+          git fetch origin archive
+          git worktree add /tmp/arch origin/archive
+          while IFS= read -r TARGET; do
+            [ -z "$TARGET" ] && continue
+            mkdir -p "/tmp/arch/$TARGET"
+            cp -r "archive_stage/data/$TARGET/." "/tmp/arch/$TARGET/"
+          done < archive_stage/TARGETS.txt
+          cd /tmp/arch
+          git add -A
+          git commit -m "Backfill sweep archive from past digest issues" || echo "nothing to commit"
+          git push origin archive
