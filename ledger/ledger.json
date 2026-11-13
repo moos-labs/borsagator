@@ -1,0 +1,526 @@
+{
+ "tool": "calibration-ledger",
+ "version": 1,
+ "source": {
+  "repo": "moos-labs/borsagator",
+  "branch": "archive",
+  "tree_sha": "4475c5448e1ea61c1ce3e64ad7ab9d65361d506b",
+  "tree_via": "api-anonymous"
+ },
+ "counts": {
+  "sweeps": 14,
+  "sweeps_with_ensemble": 6,
+  "forecasts": 18,
+  "matured": 0,
+  "pending": 18,
+  "dividend_adjusted": 0
+ },
+ "by_ticker": {
+  "NVDA": {
+   "found": 6,
+   "matured": 0,
+   "pending": 6
+  },
+  "POUL.CA": {
+   "found": 12,
+   "matured": 0,
+   "pending": 12
+  }
+ },
+ "by_horizon": {
+  "day": {
+   "n": 0,
+   "hit_rate": null,
+   "mean_abs_error_pp": null,
+   "range_coverage": null
+  },
+  "week": {
+   "n": 0,
+   "hit_rate": null,
+   "mean_abs_error_pp": null,
+   "range_coverage": null
+  },
+  "month": {
+   "n": 0,
+   "hit_rate": null,
+   "mean_abs_error_pp": null,
+   "range_coverage": null
+  }
+ },
+ "family_skill": {},
+ "series": {
+  "NVDA": {
+   "points": 250,
+   "first_date": "2025-11-14",
+   "last_date": "2026-11-12",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-12/170500__backfill-issue-15__sweep-lite-nvda-market-us",
+     "file": "sweeps/2026-11-12/170500__backfill-issue-15__sweep-lite-nvda-market-us/collected/pandas-ta/indicators.csv",
+     "points": 250,
+     "last_date": "2026-11-12"
+    },
+    {
+     "sweep": "sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us",
+     "file": "sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us/collected/pandas-ta/indicators.csv",
+     "points": 250,
+     "last_date": "2026-11-12"
+    }
+   ]
+  },
+  "POUL.CA": {
+   "points": 3001,
+   "first_date": "2014-06-03",
+   "last_date": "2026-11-12",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca",
+     "file": "sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-11"
+    },
+    {
+     "sweep": "sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx",
+     "file": "sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-12"
+    },
+    {
+     "sweep": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx",
+     "file": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-12"
+    },
+    {
+     "sweep": "sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx",
+     "file": "sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-12"
+    },
+    {
+     "sweep": "sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186",
+     "file": "sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-12"
+    },
+    {
+     "sweep": "sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619",
+     "file": "sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-12"
+    }
+   ]
+  }
+ },
+ "forecasts_detail": [
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.53,
+   "range_low_pct": -5.0,
+   "range_high_pct": 6.07,
+   "confidence": 0.3,
+   "net_score": 0.287,
+   "base_price": 10.2,
+   "families": {
+    "price-forecast": -0.04,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.4,
+   "range_low_pct": -5.97,
+   "range_high_pct": 5.17,
+   "confidence": 0.3,
+   "net_score": 0.26,
+   "base_price": 10.2,
+   "families": {
+    "price-forecast": -0.151,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -5.98,
+   "range_low_pct": -10.85,
+   "range_high_pct": -1.11,
+   "confidence": 0.3,
+   "net_score": -0.151,
+   "base_price": 10.2,
+   "families": {
+    "price-forecast": -0.753,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/170500__backfill-issue-15__sweep-lite-nvda-market-us",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.54,
+   "range_low_pct": -8.32,
+   "range_high_pct": 7.25,
+   "confidence": 0.3,
+   "net_score": -0.041,
+   "base_price": 164.1995,
+   "families": {
+    "price-forecast": -0.048,
+    "technicals": 0.1,
+    "sentiment": -0.313
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/170500__backfill-issue-15__sweep-lite-nvda-market-us",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 8.07,
+   "range_low_pct": -1.39,
+   "range_high_pct": 17.53,
+   "confidence": 0.3,
+   "net_score": 0.28,
+   "base_price": 164.1995,
+   "families": {
+    "price-forecast": 0.906,
+    "technicals": 0.1,
+    "sentiment": -0.313
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-12",
+   "sweep": "sweeps/2026-11-12/170500__backfill-issue-15__sweep-lite-nvda-market-us",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 17.76,
+   "range_low_pct": 10.79,
+   "range_high_pct": 24.72,
+   "confidence": 0.3,
+   "net_score": 0.481,
+   "base_price": 164.1995,
+   "families": {
+    "price-forecast": 1.0,
+    "technicals": 0.1,
+    "sentiment": -0.313
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.23,
+   "range_low_pct": -5.01,
+   "range_high_pct": 4.55,
+   "confidence": 0.3,
+   "net_score": 0.061,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.154,
+    "price-forecast": -0.11
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.14,
+   "range_low_pct": -11.9,
+   "range_high_pct": 9.63,
+   "confidence": 0.3,
+   "net_score": -0.002,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.154,
+    "price-forecast": -0.187
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -6.46,
+   "range_low_pct": -29.61,
+   "range_high_pct": 16.69,
+   "confidence": 0.3,
+   "net_score": -0.154,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.154,
+    "price-forecast": -0.456
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.71,
+   "range_low_pct": -8.77,
+   "range_high_pct": 7.34,
+   "confidence": 0.3,
+   "net_score": -0.054,
+   "base_price": 166.19,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": -0.129
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 6.93,
+   "range_low_pct": -12.67,
+   "range_high_pct": 26.53,
+   "confidence": 0.3,
+   "net_score": 0.18,
+   "base_price": 166.19,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": 0.583
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "NVDA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 18.61,
+   "range_low_pct": -22.41,
+   "range_high_pct": 59.64,
+   "confidence": 0.3,
+   "net_score": 0.35,
+   "base_price": 166.19,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": 0.716
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.38,
+   "range_low_pct": -3.69,
+   "range_high_pct": 2.94,
+   "confidence": 0.59,
+   "net_score": -0.067,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "price-forecast": -0.11
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.67,
+   "range_low_pct": -9.21,
+   "range_high_pct": 5.88,
+   "confidence": 0.58,
+   "net_score": -0.207,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "price-forecast": -0.187
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -6.93,
+   "range_low_pct": -23.26,
+   "range_high_pct": 9.41,
+   "confidence": 0.54,
+   "net_score": -0.243,
+   "base_price": 10.2,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "fundamentals": 0.4,
+    "price-forecast": -0.456
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.16,
+   "range_low_pct": -3.63,
+   "range_high_pct": 5.95,
+   "confidence": 0.3,
+   "net_score": 0.203,
+   "base_price": 10.15,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.199,
+    "price-forecast": 0.344
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.01,
+   "range_low_pct": -11.79,
+   "range_high_pct": 9.77,
+   "confidence": 0.3,
+   "net_score": -0.006,
+   "base_price": 10.15,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.199,
+    "price-forecast": -0.165
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-13",
+   "sweep": "sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.76,
+   "range_low_pct": -24.36,
+   "range_high_pct": 20.84,
+   "confidence": 0.3,
+   "net_score": 0.16,
+   "base_price": 10.15,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.199,
+    "fundamentals": 0.4,
+    "price-forecast": -0.211
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  }
+ ],
+ "gaps": [
+  "8 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667",
+  "NVDA: actuals series has 250 sessions, 2025-11-14 → 2026-11-12 (last source: sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us/collected/pandas-ta/indicators.csv)",
+  "POUL.CA: actuals series has 3001 sessions, 2014-06-03 → 2026-11-12 (last source: sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619/collected/egx-data/egxpy_poul.csv)",
+  "no archived ensemble carries a corporate_actions block yet (the first post-#26 sweep has not run) — the dividend-adjustment path is implemented and covered by a synthetic check, with zero real adjusted rows so far",
+  "no forecast has matured yet: every archived price series ends 2026-11-12, so even the earliest forecasts (as of 2026-11-12) have zero sessions after their date in the archive; later sweeps will extend the series and mature them"
+ ],
+ "warnings": []
+}
