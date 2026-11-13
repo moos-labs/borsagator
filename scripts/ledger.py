@@ -504,11 +504,13 @@ def main():
           "|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         if r["status"] == "matured":
+            f2 = lambda v: "—" if v is None else f"{v:+.2f}"
+            f0 = lambda v: "—" if v is None else f"{v:.2f}"
             L.append(f"| {r['ticker']} | {r['as_of']} | {r['horizon']} | {r['direction']} | "
-                     f"{r['expected_move_pct']:+.2f} | {r['realized_move_pct']:+.2f} | "
-                     f"{'✅' if r['direction_hit'] else '❌'} | {r['move_error_pp']:.2f} | "
-                     f"{'✅' if r['in_range'] else '❌'} | "
-                     f"{'💰' if r.get('dividend_adjusted') else ''} | matured {r['maturity_date']} |")
+                     f"{f2(r.get('expected_move_pct'))} | {f2(r.get('realized_move_pct'))} | "
+                     f"{'✅' if r.get('direction_hit') else '❌'} | {f0(r.get('move_error_pp'))} | "
+                     f"{'✅' if r.get('in_range') else '❌'} | "
+                     f"{'💰' if r.get('dividend_adjusted') else ''} | matured {r.get('maturity_date', '')} |")
         else:
             L.append(f"| {r['ticker']} | {r['as_of']} | {r['horizon']} | {r['direction']} | "
                      f"{r['expected_move_pct']:+.2f} | — | — | — | — | | "
