@@ -1,0 +1,25 @@
+{
+  "tool": "pybroker",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "tool": "pybroker",
+    "ticker": "AAPL",
+    "strategy": "long when close crosses above 20-day SMA, exit all when close crosses below it",
+    "initial_cash": 100000,
+    "sma_period": 20,
+    "requested_start": "2024-11-12",
+    "requested_end": "2026-11-12",
+    "status": "ok",
+    "total_return_pct": 6.087399999999987,
+    "end_market_value": 107739.34,
+    "initial_market_value": 100000.0,
+    "orders_count": 45
+  },
+  "files": [
+    "metrics.json",
+    "run.log"
+  ]
+}

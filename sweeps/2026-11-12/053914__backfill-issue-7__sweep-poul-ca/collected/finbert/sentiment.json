@@ -1,0 +1,134 @@
+{
+  "label": "poul-pilot",
+  "model": "ProsusAI/finbert",
+  "count": 13,
+  "label_counts": {
+    "positive": 3,
+    "negative": 5,
+    "neutral": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.25251410321260875,
+    "negative": 0.346797690834277,
+    "neutral": 0.4006882162334827
+  },
+  "items": [
+    {
+      "text": "The company reported a strong increase in profits and raised its dividend.",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.9567931294441223,
+        "negative": 0.017156260088086128,
+        "neutral": 0.026050619781017303
+      }
+    },
+    {
+      "text": "The company posted a massive loss and cut its dividend amid rising costs.",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.010859559290111065,
+        "negative": 0.9689738154411316,
+        "neutral": 0.02016664482653141
+      }
+    },
+    {
+      "text": "The company will hold its annual general meeting on Tuesday.",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.018079204484820366,
+        "negative": 0.05851960554718971,
+        "neutral": 0.9234012365341187
+      }
+    },
+    {
+      "text": "Cairo Poultry approves cash dividend of EGP 1.90 per share",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.2869722247123718,
+        "negative": 0.01424991711974144,
+        "neutral": 0.6987779140472412
+      }
+    },
+    {
+      "text": "Cairo Poultry first-half net profit falls 23.3% year on year despite higher revenue",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.010604217648506165,
+        "negative": 0.9741047024726868,
+        "neutral": 0.015291139483451843
+      }
+    },
+    {
+      "text": "Cairo Poultry board approves sale of Aman guarding stake and liquidation of Cairo Financial Leasing",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.030509423464536667,
+        "negative": 0.04499087110161781,
+        "neutral": 0.9244996905326843
+      }
+    },
+    {
+      "text": "FRA approves publishing Cairo Poultry disclosure to raise authorized capital to EGP 2 billion",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.7818389534950256,
+        "negative": 0.007423496339470148,
+        "neutral": 0.21073755621910095
+      }
+    },
+    {
+      "text": "Soybean meal prices fall to EGP 25,700 per ton as feed costs ease from October peak",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.010869180783629417,
+        "negative": 0.9714486598968506,
+        "neutral": 0.017682159319519997
+      }
+    },
+    {
+      "text": "Egyptian pound strengthens to 54.2 per dollar on returning hot money inflows",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.9323333501815796,
+        "negative": 0.04823676496744156,
+        "neutral": 0.019429882988333702
+      }
+    },
+    {
+      "text": "Farm-gate chicken prices steady at 73 to 74 EGP per kilogram, below production cost of 75 to 80",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.11500542610883713,
+        "negative": 0.7408840656280518,
+        "neutral": 0.1441105455160141
+      }
+    },
+    {
+      "text": "State outlets sell imported frozen poultry at 140 EGP per kilogram ahead of Ramadan",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.053834497928619385,
+        "negative": 0.025326022878289223,
+        "neutral": 0.9208394289016724
+      }
+    },
+    {
+      "text": "Cairo Poultry invites shareholders to extraordinary general assembly on November 30",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.04502011835575104,
+        "negative": 0.018206164240837097,
+        "neutral": 0.9367737174034119
+      }
+    },
+    {
+      "text": "No avian influenza outbreak reported in Egypt during autumn 2026",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.029964055866003036,
+        "negative": 0.6188496351242065,
+        "neutral": 0.35118627548217773
+      }
+    }
+  ]
+}

@@ -1,0 +1,348 @@
+{
+ "job": "sweep-lite POUL.CA market=EGX",
+ "backfill": true,
+ "source_issue": 14,
+ "issue_url": "https://github.com/moos-labs/borsagator/issues/14",
+ "archived_at": "2026-11-13T07:21:31.645371+00:00",
+ "target": "sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx",
+ "gaps": [],
+ "registry_snapshot": "current registry (backfill; not the run-time one)",
+ "files": [
+  {
+   "path": "digest.md",
+   "bytes": 4332,
+   "sha256": "a091d95f48a5a7a140c6fdffa90594c5eee720179720ad0db19efdb78b270d6e"
+  },
+  {
+   "path": "digest.json",
+   "bytes": 11680,
+   "sha256": "dc306237b668b1d3bfe2abbf54d7a3087a1646c9c7ad70c906e246e9a669033e"
+  },
+  {
+   "path": "ensemble.json",
+   "bytes": 1873,
+   "sha256": "e729af91d50832f54e75719fb43d032bef2f66a8d3e2542506489ee1f920cd16"
+  },
+  {
+   "path": "collected/yahooquery/AAPL.csv",
+   "bytes": 148994,
+   "sha256": "e3c6bbd103d7dbd59690def7ab847cefb032c9b37007a39db87d6a011f8ab394"
+  },
+  {
+   "path": "collected/yahooquery/POUL.CA.csv",
+   "bytes": 144000,
+   "sha256": "b939de4c4bc1dd525aadec9762851085f7a8640b640c7730c577a1a64a5731e1"
+  },
+  {
+   "path": "collected/yahooquery/run.log",
+   "bytes": 4353,
+   "sha256": "2b650f9d327fecfed75121a46255676af3a58bb1db8b318e2d7b82210769c5ad"
+  },
+  {
+   "path": "collected/yahooquery/summary.json",
+   "bytes": 453,
+   "sha256": "745960ca220080987adc35952ce002a7e6fdd8af94e63f90665daae863183070"
+  },
+  {
+   "path": "collected/openbb/AAPL.csv",
+   "bytes": 47356,
+   "sha256": "4f2c4430b059737d2fd6ca5c74a3cc211b6232c32f2b68d7c5db87d69deaa487"
+  },
+  {
+   "path": "collected/openbb/POUL_CA.csv",
+   "bytes": 43522,
+   "sha256": "66fec7a99d5922a72d034b6185ac3f5d6596f68efdb8848e0cc2d61679c18a02"
+  },
+  {
+   "path": "collected/openbb/run.log",
+   "bytes": 3471,
+   "sha256": "f89b714a02e7acc670662bbea5cc7a1afa9a5b809e34cf99c6d1cd971f56f6ea"
+  },
+  {
+   "path": "collected/openbb/summary.json",
+   "bytes": 447,
+   "sha256": "62db505958e6aeb945f3b63d595975d67416bf9f21a80ed25895aaa54129cf04"
+  },
+  {
+   "path": "collected/egx-data/report.md",
+   "bytes": 1299,
+   "sha256": "b82ae66908adcbb8ac35d3351ea70ea0578f2346fa63edff2e62a34e9ad3f23e"
+  },
+  {
+   "path": "collected/egx-data/run.log",
+   "bytes": 1397,
+   "sha256": "4ea8a147be5e045c348907ef380929041fb579ce6561971a78ab9b103997b97e"
+  },
+  {
+   "path": "collected/egx-data/egxpy_poul.csv",
+   "bytes": 211260,
+   "sha256": "a0217f144de238e6284a2c75c46bf5e450b697788f5eddc9d61c3cd6db4e00ad"
+  },
+  {
+   "path": "collected/egx-data/summary.json",
+   "bytes": 336,
+   "sha256": "c8c7bc1258370d171dde4f4902f742d9b951162aa5547d4b0f68a40164c70c8a"
+  },
+  {
+   "path": "collected/egx-data/verdict.json",
+   "bytes": 6727,
+   "sha256": "bf0956c927a53ca318bfccc6b69a12cd0060efdc8dfed95424b0abe2c7a502fc"
+  },
+  {
+   "path": "collected/pandas-ta/indicators.csv",
+   "bytes": 91729,
+   "sha256": "3cd8d61c0b7ac6a87f05a053f4a9b818a72c9051641fb2cdf41ed568a9068d81"
+  },
+  {
+   "path": "collected/pandas-ta/report.md",
+   "bytes": 1442,
+   "sha256": "488c4231c30842700c31b5d2d07ed4f3ae4740dc698eab4f86c789a47d264da1"
+  },
+  {
+   "path": "collected/pandas-ta/run.log",
+   "bytes": 229,
+   "sha256": "37522576290e9eba0bbad897ecd0514282f2d549f371640281605c1b8e482a83"
+  },
+  {
+   "path": "collected/pandas-ta/summary.json",
+   "bytes": 978,
+   "sha256": "fa2caa2b68863e76fd509962429d50da0e9cea624770775867762438a5ccc6f5"
+  },
+  {
+   "path": "collected/pandas-ta/ta_snapshot.json",
+   "bytes": 575,
+   "sha256": "b564f6fd4dfb49e5f75a471a812449816eb5d29d408647bb14d6dc0d53d696f2"
+  },
+  {
+   "path": "collected/talib/indicators.csv",
+   "bytes": 57412,
+   "sha256": "68eb67682d938949d307ba38f2c22729044730b01f27195e054020fac6513bdc"
+  },
+  {
+   "path": "collected/talib/run.log",
+   "bytes": 708,
+   "sha256": "380d42d93dd601638a27b2b00424bed9fb528999d7d5bdf0d8dfca97fa00107c"
+  },
+  {
+   "path": "collected/talib/summary.json",
+   "bytes": 473,
+   "sha256": "aa6c916ba9e4ba3ea029142af6b3a5bc1966bae3afcf3f0feb98c7637bff5d77"
+  },
+  {
+   "path": "collected/talib/ta_latest.json",
+   "bytes": 707,
+   "sha256": "a17e49503652f19c037b1bf9334a396ed23006848382156d1642b16fcf4bf90b"
+  },
+  {
+   "path": "collected/quantstats/ohlc.csv",
+   "bytes": 227130,
+   "sha256": "a18f3ef71d361a631f516dfaffbdf659727609984ca6652b8773b69c08ba7d0a"
+  },
+  {
+   "path": "collected/quantstats/run.log",
+   "bytes": 5872,
+   "sha256": "69d8149e392374cafc73048fcf735f3b9ae4a304c9bae3e38104842f987a2dbd"
+  },
+  {
+   "path": "collected/quantstats/report.md",
+   "bytes": 1626,
+   "sha256": "aa60096ed3de2d1134eb96a93d5bf93b57c1db4dd7310888fc9ad4c431c5776b"
+  },
+  {
+   "path": "collected/quantstats/stats.json",
+   "bytes": 2760,
+   "sha256": "f85d06b81062e5373198cad6eadd2ea6596e914ad869fa25c5a5a99f9969ef72"
+  },
+  {
+   "path": "collected/quantstats/summary.json",
+   "bytes": 441,
+   "sha256": "044f7a19c7fa36e58171917409d64b5991d44415b986788fb9a439501d49da90"
+  },
+  {
+   "path": "collected/quantstats/tearsheet.html",
+   "bytes": 328514,
+   "sha256": "144160bf3a2d5f8c569dd210498e848dae563de3cb422b9359e08183600962c0"
+  },
+  {
+   "path": "collected/vectorbt/poul_ohlc.csv",
+   "bytes": 217120,
+   "sha256": "3ccc3db7abc7b37a17eec71f8af508233f7dc506d26c7c9de93fe6f119504986"
+  },
+  {
+   "path": "collected/vectorbt/report.md",
+   "bytes": 2387,
+   "sha256": "8ce35334a3b490991dfa1375b1349df4a5146d9c003852e9d577f77b226b82e2"
+  },
+  {
+   "path": "collected/vectorbt/run.log",
+   "bytes": 402,
+   "sha256": "e3103b156da3238039a23e3e022100795c79856bce030f99836d175f6039fb5c"
+  },
+  {
+   "path": "collected/vectorbt/summary.json",
+   "bytes": 300,
+   "sha256": "ddb4aee3326ebfe4db86ace3d56ffe19f3cab5a84f0538249abb4c69830ef209"
+  },
+  {
+   "path": "collected/financetoolkit/report.md",
+   "bytes": 6851,
+   "sha256": "1e84f12f2beadfe6cc89a8f0f88936a27cad6f38a3ec7558a2705460611ff0bb"
+  },
+  {
+   "path": "collected/financetoolkit/run.log",
+   "bytes": 62773,
+   "sha256": "c658bb1473ce5dc9cdaacbb71a4cdbf896e4fe93341f7efd5ad98ade580ec063"
+  },
+  {
+   "path": "collected/financetoolkit/ratios.json",
+   "bytes": 31315,
+   "sha256": "4ebc00ba799d7ebc27012913ce0cf87c35ebef8ce3d446d7aa35413a8d8d1dee"
+  },
+  {
+   "path": "collected/financetoolkit/summary.json",
+   "bytes": 295,
+   "sha256": "a5c7cfd0a18a11ae2589227131a10c2fe157523fe10d98a6236647ac18755483"
+  },
+  {
+   "path": "collected/finbert/report.md",
+   "bytes": 1949,
+   "sha256": "4cffd3a941c31fe4f99f20320ff48aac7b66f18e1b9549d10bba463cbd249dcc"
+  },
+  {
+   "path": "collected/finbert/run.log",
+   "bytes": 274,
+   "sha256": "dfaa1555f19bea95720113e1e3857e7c9e760f2d3b28a9d6b8fa92eaf55fc7a0"
+  },
+  {
+   "path": "collected/finbert/sentiment.json",
+   "bytes": 4137,
+   "sha256": "998600325cb02fd25f2dfe79642910abb2f67d53669415d711ae0d4dc157f499"
+  },
+  {
+   "path": "collected/finbert/summary.json",
+   "bytes": 271,
+   "sha256": "49167acfcf595e12e1fd1d1a79a195dd9e76c098353248e1a038b8b17be30158"
+  },
+  {
+   "path": "collected/finbert-tone/report.md",
+   "bytes": 2164,
+   "sha256": "7e2033d637c8b0ea37135aefe73210f48a7be87da36296a7289ccb6451d76d4c"
+  },
+  {
+   "path": "collected/finbert-tone/sentiment.json",
+   "bytes": 9191,
+   "sha256": "b2f484edabeb65b0e59cdfc815450b5d7d40fe2f0ecc679b9d32efeb03fdecf8"
+  },
+  {
+   "path": "collected/finbert-tone/run.log",
+   "bytes": 500,
+   "sha256": "57d275b6df40e568ce0c13520716870545d206c65f84d7643f73bb96bb1103ce"
+  },
+  {
+   "path": "collected/finbert-tone/summary.json",
+   "bytes": 277,
+   "sha256": "f1830ecd71df3f76c9c2026454a3f77f58c94168533fe18efd590b4e80b828d3"
+  },
+  {
+   "path": "collected/financial-roberta/report.md",
+   "bytes": 2204,
+   "sha256": "ac50105faecff997b0fb3873732c840920188c27033a0d9d0df05a9458e36f09"
+  },
+  {
+   "path": "collected/financial-roberta/run.log",
+   "bytes": 521,
+   "sha256": "bd806f9204460c344317b9e4bbd53baa06681e836aa6c6b1e72537cbe5ab9e88"
+  },
+  {
+   "path": "collected/financial-roberta/sentiment.json",
+   "bytes": 6906,
+   "sha256": "1996dbac34c209a3cce6217f21dc5f5ff9b0c36b71ea9de54094be7c0a98cbbd"
+  },
+  {
+   "path": "collected/financial-roberta/summary.json",
+   "bytes": 303,
+   "sha256": "e11542621fcd17925e43f8e1c3fa3ec915b21ef143607cc45760abb212b9df49"
+  },
+  {
+   "path": "collected/kronos/forecast.csv",
+   "bytes": 1331,
+   "sha256": "e23ee0f98237d9b2cb8574d61f74f51fd77748a0e32b255869eee93d3ba91025"
+  },
+  {
+   "path": "collected/kronos/run.log",
+   "bytes": 900,
+   "sha256": "81e0ba90fc2b17343a7fba53da9c7aa1da6a21745c33e1d1ac717337fc0e754d"
+  },
+  {
+   "path": "collected/kronos/report.md",
+   "bytes": 1398,
+   "sha256": "71895fa4021f4814dcc77e63fc70820b9284f1ed961f321090ffdbbe821535b0"
+  },
+  {
+   "path": "collected/kronos/summary.json",
+   "bytes": 305,
+   "sha256": "3730346583ec071016fafecc1610e2fc9945af04b578c40f82b63bf2b7d8fd0b"
+  },
+  {
+   "path": "collected/financedatabase/egypt_equities.csv",
+   "bytes": 15534,
+   "sha256": "f708872509576ec8f44194eac4d991768d74f3043410309c0167c241bb38cdff"
+  },
+  {
+   "path": "collected/financedatabase/run.log",
+   "bytes": 7041,
+   "sha256": "05d9adf7c057e68b9def9e072a47fa123a6920a6c6b23e18f8f7854238dfdc6a"
+  },
+  {
+   "path": "collected/financedatabase/country_options.json",
+   "bytes": 1904,
+   "sha256": "c60f2483f619e9e924d51306c547573322129875d841a4190e53d1655ee2acb8"
+  },
+  {
+   "path": "collected/financedatabase/sector_options.json",
+   "bytes": 331,
+   "sha256": "1d5498815f3dc08b9c66884a77a1ca5255c3b874c44c79d7932e8acd7dc8083e"
+  },
+  {
+   "path": "collected/financedatabase/summary.json",
+   "bytes": 430,
+   "sha256": "6449413059599804bd0f55431de3b87f83103e99edcfe405d3cf274fad00c9d6"
+  },
+  {
+   "path": "collected/financedatabase/us_sector_equities.csv",
+   "bytes": 65516,
+   "sha256": "371236669c1becf6c7bd7e07ac3b81f47a3b7a75bc39581510b9da125c6ff836"
+  },
+  {
+   "path": "collected/news-disclosure/headlines.txt",
+   "bytes": 10620,
+   "sha256": "6f20f9be994602a50a81245d987b4d83fe20f25cfc815f499d62d3b20d6afc12"
+  },
+  {
+   "path": "collected/news-disclosure/disclosures.json",
+   "bytes": 11567,
+   "sha256": "e692cd02df87c6b502c73e161bb495e2ea1d29690db3c951c0a856a8a9c47916"
+  },
+  {
+   "path": "collected/news-disclosure/feed_summary.json",
+   "bytes": 1784,
+   "sha256": "d8a8c6db60ae362132ea6c00577ddb0cd7ccb71bc2b8526edf88b691d1de4586"
+  },
+  {
+   "path": "collected/news-disclosure/news.json",
+   "bytes": 30503,
+   "sha256": "fa34787e44acf91a5c202e379189263afdd2c64c607c9bd6d1b35f2a6fa157c4"
+  },
+  {
+   "path": "collected/news-disclosure/run.log",
+   "bytes": 2036,
+   "sha256": "5cd85663fb7b8667a3869ee88386ff8e4f4f0143c517c10b968c6f2d8131fa86"
+  },
+  {
+   "path": "collected/news-disclosure/summary.json",
+   "bytes": 692,
+   "sha256": "5c7a76b6796ede84d8c473b94d470b284de9910a1ff6fc2f5a676a09dc5e7748"
+  }
+ ],
+ "skipped": []
+}

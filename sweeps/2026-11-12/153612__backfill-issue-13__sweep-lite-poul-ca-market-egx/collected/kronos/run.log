@@ -1,0 +1,8 @@
+[data] source=yahooquery raw_rows=6520
+[data] cleaned_rows=1920 range=2019-01-01..2026-11-10
+[context] preferred_sessions=31 using=31 fallback=False
+  0%|          | 0/10 [00:00<?, ?it/s] 40%|████      | 4/10 [00:00<00:00, 33.20it/s] 80%|████████  | 8/10 [00:00<00:00, 31.08it/s]100%|██████████| 10/10 [00:00<00:00, 30.87it/s]
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=10.289999961853027 date=2026-11-10 pct_change=-7.27%
+[result] forecasted_closes=[10.1493, 10.1198, 10.1349, 10.0744, 10.0076, 10.0331, 10.0117, 9.9279, 9.9529, 9.5423]

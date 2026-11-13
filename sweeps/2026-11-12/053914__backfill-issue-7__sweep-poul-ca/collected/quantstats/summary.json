@@ -1,0 +1,22 @@
+{
+  "tool": "quantstats",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "POUL.CA",
+    "source": "Yahoo chart API (direct, via requests)",
+    "exchange_tz": "Africa/Cairo",
+    "rows": 2178,
+    "rows_ohlc.csv": 2178,
+    "ohlc.csv_last_close": "10.289999961853027"
+  },
+  "files": [
+    "ohlc.csv",
+    "report.md",
+    "run.log",
+    "stats.json",
+    "tearsheet.html"
+  ]
+}

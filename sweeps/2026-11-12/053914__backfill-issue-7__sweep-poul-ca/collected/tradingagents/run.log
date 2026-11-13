@@ -1,0 +1,316 @@
+Vendor 'yfinance' unavailable for get_news: Yahoo Finance returned no news response for POUL.CA; trying next vendor.
+StockTwits fetch failed for POUL.CA: HTTP Error 404: Not Found
+Reddit RSS fetch failed for r/wallstreetbets+stocks+investing · POUL.CA: HTTP Error 403: Forbidden
+Sentiment Analyst: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'yfinance' unavailable for get_news: Yahoo Finance returned no news response for POUL.CA; trying next vendor.
+Provider model probe: listed=True count=37 error=None
+Cohere schema patch: rebuilt args_schema for 0 tools (12 TradingAgents tools found)
+Cohere schema patch: wrapped converters ['langchain_core.convert_to_openai_tool', 'langchain_core.convert_to_openai_function', 'langchain_openai.convert_to_openai_tool', 'langchain_openai.convert_to_openai_function']
+================================ Human Message =================================
+
+POUL.CA
+================================== Ai Message ==================================
+Tool Calls:
+  get_stock_data (get_stock_data_0js5x11mq3q6)
+ Call ID: get_stock_data_0js5x11mq3q6
+  Args:
+    start_date: 2026-11-12
+    end_date: 2026-11-12
+================================= Tool Message =================================
+Name: get_stock_data
+
+NO_DATA_AVAILABLE: No usable market data for 'POUL.CA' from any configured vendor (no rows between 2026-11-12 and 2026-11-12). The symbol may be invalid, delisted, not covered, or the vendor returned stale data. Do not estimate or fabricate values — report that data is unavailable for this symbol.
+================================== Ai Message ==================================
+
+I'm sorry, I couldn't find any usable market data for POUL.CA from any of the configured vendors. It's possible that the symbol is invalid, delisted, or not covered by the vendors.
+================================== Ai Message ==================================
+Tool Calls:
+  get_fundamentals (get_fundamentals_cv1792skgvnb)
+ Call ID: get_fundamentals_cv1792skgvnb
+  Args:
+    curr_date: 2026-11-12
+================================= Tool Message =================================
+Name: get_fundamentals
+
+# Company Fundamentals for POUL.CA
+
+Name: Cairo Poultry Company S.A.E.
+Market Cap: 15674719232 EGP
+PE Ratio (TTM): 1.8559324
+Price to Book: 0.5194497
+52 Week High: 41.96 EGP
+52 Week Low: 8.81 EGP
+50 Day Average: 20.8856 EGP
+200 Day Average: 31.34855 EGP
+Book Value: 16.864 EGP
+================================== Ai Message ==================================
+
+# Sentiment Report for POUL.CA (Cairo Poultry Company S.A.E.)
+
+## Overall Band: Neutral
+## Overall Score: 5
+## Confidence: Low
+
+## Narrative:
+
+The sentiment analysis for POUL.CA is challenging due to limited data availability across sources. The lack of news headlines, StockTwits messages, and Reddit posts makes it difficult to gauge the market's sentiment towards the company accurately. 
+
+### News Headlines:
+No news articles were found for POUL.CA during the specified period. This could indicate a lack of significant news events or a limited media presence for the company. 
+
+### StockTwits Messages:
+Unfortunately, there was an error retrieving StockTwits messages for POUL.CA. This could be due to a temporary issue or a lack of recent activity on the platform. 
+
+### Reddit Posts:
+Reddit posts from r/wallstreetbets, r/stocks, and r/investing were also unavailable, suggesting either a lack of discussion or a technical issue with the data retrieval process. 
+
+Given the limited data, it is difficult to draw any meaningful conclusions about the market sentiment for POUL.CA. The absence of news, social media chatter, and Reddit discussions indicates a potential lack of interest or attention towards the company, which could be a cause for concern. 
+
+However, it is important to note that this analysis is based on a very small dataset, and the overall sentiment could change with the availability of more data points. The low confidence level reflects the uncertainty surrounding the current market sentiment for POUL.CA. 
+
+## Summary Table:
+| Direction | Source | Supporting Evidence |
+| --- | --- | --- |
+| Neutral | News Headlines | No data available |
+| N/A | StockTwits | Error retrieving data |
+| N/A | Reddit Posts | No data available |
+
+Please note that this report is based on the data provided and any missing information may impact the accuracy and reliability of the analysis.
+================================== Ai Message ==================================
+Tool Calls:
+  get_news (get_news_z6t5n1z0kref)
+ Call ID: get_news_z6t5n1z0kref
+  Args:
+    start_date: 2026-11-05
+    end_date: 2026-11-12
+  get_global_news (get_global_news_esh4nd3nbzxe)
+ Call ID: get_global_news_esh4nd3nbzxe
+  Args:
+    curr_date: 2026-11-12
+    look_back_days: 7
+    limit: 5
+  get_macro_indicators (get_macro_indicators_arv7j63ks9sd)
+ Call ID: get_macro_indicators_arv7j63ks9sd
+  Args:
+    indicator: cpi
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_macro_indicators (get_macro_indicators_n7d1q3m5y3fh)
+ Call ID: get_macro_indicators_n7d1q3m5y3fh
+  Args:
+    indicator: core_pce
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_macro_indicators (get_macro_indicators_fgvzerbc3rn2)
+ Call ID: get_macro_indicators_fgvzerbc3rn2
+  Args:
+    indicator: unemployment
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_macro_indicators (get_macro_indicators_q9vgcmtn3ja0)
+ Call ID: get_macro_indicators_q9vgcmtn3ja0
+  Args:
+    indicator: fed_funds_rate
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_macro_indicators (get_macro_indicators_r6nx23jc8tdv)
+ Call ID: get_macro_indicators_r6nx23jc8tdv
+  Args:
+    indicator: 10y_treasury
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_macro_indicators (get_macro_indicators_5hhrw1mqgy6m)
+ Call ID: get_macro_indicators_5hhrw1mqgy6m
+  Args:
+    indicator: yield_curve
+    curr_date: 2026-11-12
+    look_back_days: 7
+  get_prediction_markets (get_prediction_markets_arbctk4fgs5j)
+ Call ID: get_prediction_markets_arbctk4fgs5j
+  Args:
+    topic: recession 2026
+    limit: 3
+  get_prediction_markets (get_prediction_markets_t29zska9dxyg)
+ Call ID: get_prediction_markets_t29zska9dxyg
+  Args:
+    topic: Fed rate cut
+    limit: 3
+================================= Tool Message =================================
+Name: get_news
+
+DATA_UNAVAILABLE: no configured vendor could serve get_news right now (Yahoo Finance returned no news response for POUL.CA). This says nothing about the instrument; report the data as unavailable and do not estimate or fabricate values.
+================================= Tool Message =================================
+Name: get_global_news
+
+## Global Market News, from 2026-11-05 to 2026-11-12:
+
+### Take Two Interactive Software (TTWO) Rallies On GTA VI Buzz, Is The Upside Already Priced In? (source: Simply Wall St.)
+Link: https://finance.yahoo.com/markets/stocks/articles/two-interactive-software-ttwo-rallies-001950321.html
+
+### GTA VI Is Days Away: Don't Expect GTA V-Style Returns From Take-Two Stock at 5.7 Times Sales (source: Motley Fool)
+Link: https://finance.yahoo.com/markets/stocks/articles/gta-vi-days-away-dont-223102638.html
+
+### JPMorgan names top Mid & Small Cap stock pick (source: Investing.com)
+Link: https://finance.yahoo.com/markets/stocks/articles/jpmorgan-names-top-mid-small-201832036.html
+
+### Take-Two CEO sends strong message to investors ahead of GTA 6 (source: TheStreet)
+Link: https://finance.yahoo.com/markets/stocks/articles/two-ceo-sends-strong-message-183300576.html
+
+### Gold clings below $4,000 as inflation fears fuel bets on bigger Fed hikes (source: Investing.com)
+Link: https://finance.yahoo.com/markets/commodities/articles/gold-clings-below-4-000-014114232.html
+
+
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.Research Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Trader: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Portfolio Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "recession 2026"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **US recession by end of 2026?** — Yes 2% ($2,457,284 volume, resolves 2027-01-31, 1-week -2.4pp)
+- **UK Recession in 2026?** — Yes 3% ($15,917 volume, resolves 2027-05-01, 1-week -1.7pp)
+- **Japan recession in 2026?** — Yes 10% ($4,336 volume, resolves 2027-05-01, 1-week -2.5pp)
+
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "Fed rate cut"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **Will no Fed rate cuts happen in 2026?** — Yes 98% ($9,570,866 volume, resolves 2027-01-01, 1-week +0.6pp)
+- **Will 11 Fed rate cuts happen in 2026?** — Yes 0.05% ($5,331,594 volume, resolves 2027-01-01)
+- **Will 10 Fed rate cuts happen in 2026?** — Yes 0.05% ($4,991,769 volume, resolves 2027-01-01)
+
+================================== Ai Message ==================================
+
+# Weekly Market and Macroeconomic Update
+
+## Global Market News
+
+- Take-Two Interactive Software (TTWO) stock has rallied due to the upcoming release of GTA VI, but some analysts question whether the upside is already priced in.
+- JPMorgan has named its top Mid & Small Cap stock pick.
+- Gold is trading below $4,000, with inflation fears prompting bets on larger Fed hikes.
+
+## Macroeconomic Indicators
+
+No data was available for macroeconomic indicators due to the absence of a FRED API key.
+
+## Prediction Markets
+
+- The probability of a US recession by the end of 2026 is currently at 2%, with a traded volume of $2,457,284.
+- The likelihood of a UK recession in 2026 stands at 3%, with a traded volume of $15,917.
+- Japan's recession probability for 2026 is at 10%, with a traded volume of $4,336.
+- The market implies a 98% chance that no Fed rate cuts will occur in 2026, with a traded volume of $9,570,866.
+- The probability of 11 Fed rate cuts in 2026 is extremely low, at 0.05%, with a traded volume of $5,331,594.
+- Similarly, the likelihood of 10 Fed rate cuts in 2026 is also 0.05%, with a traded volume of $4,991,769.
+
+## Company News
+
+No news was available for POUL.CA.
+
+| Indicator | Probability | Traded Volume | Resolution Date | Recent Move |
+| --- | --- | --- | --- | --- |
+| US Recession by End of 2026 | 2% | $2,457,284 | 2027-01-31 | 1-week -2.4pp |
+| UK Recession in 2026 | 3% | $15,917 | 2027-05-01 | 1-week -1.7pp |
+| Japan Recession in 2026 | 10% | $4,336 | 2027-05-01 | 1-week -2.5pp |
+| No Fed Rate Cuts in 2026 | 98% | $9,570,866 | 2027-01-01 | 1-week +0.6pp |
+| 11 Fed Rate Cuts in 2026 | 0.05% | $5,331,594 | 2027-01-01 | N/A |
+| 10 Fed Rate Cuts in 2026 | 0.05% | $4,991,769 | 2027-01-01 | N/A |
+================================== Ai Message ==================================
+
+# Company Fundamentals for POUL.CA
+
+## Company Profile
+
+**Name:** Cairo Poultry Company S.A.E.
+
+## Financials
+
+**Market Cap:** 15,674,719,232 EGP
+**PE Ratio (TTM):** 1.8559324
+**Price to Book:** 0.5194497
+**52 Week High:** 41.96 EGP
+**52 Week Low:** 8.81 EGP
+**50 Day Average:** 20.8856 EGP
+**200 Day Average:** 31.34855 EGP
+**Book Value:** 16.864 EGP
+
+## Financial History
+
+I was unable to retrieve further financial history information for this company.
+
+## Insider Transactions
+
+I was also unable to retrieve any insider transaction information for this company.
+
+## Key Takeaways
+
+- POUL.CA has a market cap of over 15 billion EGP.
+- Its PE Ratio (TTM) is relatively low at 1.8559324.
+- The 52-week high and low prices indicate a significant range in the stock's price over the past year.
+- The 50-day and 200-day averages provide a snapshot of the stock's recent and longer-term performance.
+
+| Metric | Value |
+| --- | --- |
+| Market Cap | 15,674,719,232 EGP |
+| PE Ratio (TTM) | 1.8559324 |
+| Price to Book | 0.5194497 |
+| 52 Week High | 41.96 EGP |
+| 52 Week Low | 8.81 EGP |
+| 50 Day Average | 20.8856 EGP |
+| 200 Day Average | 31.34855 EGP |
+| Book Value | 16.864 EGP |
+================================== Ai Message ==================================
+
+- **Action**: Hold
+
+- **Reasoning**: The current debate presents a nuanced view of POUL.CA, with valid arguments from both sides. While the bull case highlights growth potential and competitive advantages, the bear case raises legitimate concerns about the lack of recent news, social media presence, and insider transactions. These concerns are significant and could impact the company's performance and investor confidence. 
+
+However, the bull analyst's counterarguments provide a balanced perspective. The focus on core business operations and the need for more data to make definitive judgments are reasonable points. This suggests that the current state of affairs may not be as concerning as initially presented. 
+
+On the other hand, the bear analyst's emphasis on the risks associated with the lack of information and the company's ability to adapt is also valid. The wide price range and volatility indicate underlying issues that require further investigation. 
+
+Given this context, a Hold recommendation is prudent. This allows for a cautious approach, maintaining the current position while gathering more data and monitoring key areas of concern. 
+
+- **Entry Price**: N/A
+- **Stop Loss**: N/A
+- **Position Sizing**: N/A
+Done. Decision: Hold

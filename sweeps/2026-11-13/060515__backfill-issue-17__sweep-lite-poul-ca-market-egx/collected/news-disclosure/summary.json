@@ -1,0 +1,29 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "POUL.CA",
+    "fetched_at": "2026-11-13T06:04:58Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 4,
+    "arabic_headlines": 43,
+    "latest_news_date": "Thu, 12 Nov 2026 14:26:41 GMT",
+    "latest_disclosure_date": "Thu, 12 Nov 2026 06:44:06 GMT",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.046,
+    "finbert_negative": 0.029,
+    "finbert_neutral": 0.926,
+    "finbert_scored": 1
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

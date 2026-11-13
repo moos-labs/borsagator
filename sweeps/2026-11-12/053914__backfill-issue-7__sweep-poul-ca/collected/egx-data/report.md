@@ -1,0 +1,19 @@
+# EGX data sources for POUL — verdict
+
+Reference (Yahoo chart API): latest close 2026-11-09 = **9.99**. Reference ex-day opens (Investing, real opens): 2019-07-15 → 5.05, 2021-05-18 → 2.85, 2024-10-22 → 12.3, 2026-04-27 → 34.8.
+
+## egxpy — ok
+- Rows: 3000 · Range: 2014-06-03 → 2026-11-11
+- Latest: 2026-11-11 close 10.2 (matches Yahoo 9.99: False)
+
+| Ex-date | Investing open | Source open | Prior close (source) | Verdict |
+|---|---|---|---|---|
+| 2019-07-15 | 5.05 | 1.347526 | 1.347526 | matches prior close (Yahoo-style, not a real open) |
+| 2021-05-18 | 2.85 | 0.79441674 | 0.79441674 | matches prior close (Yahoo-style, not a real open) |
+| 2024-10-22 | 12.3 | 3.3213669 | 3.3213669 | matches prior close (Yahoo-style, not a real open) |
+| 2026-04-27 | 34.8 | 9.46521784 | 9.46521784 | matches prior close (Yahoo-style, not a real open) |
+
+
+## borsa — no_history
+- API surface: REST API exposes quotes only (/v1/quote/{symbol}, /v1/quotes, /v1/stocks, /v1/health); Fetcher protocol = fetch_quote. No history/OHLC endpoint exists in the published API.
+- Failure/finding: Borsa is a quote service by design: no historical OHLC endpoint or library function exists, so it cannot provide ex-day opens or any price history. Demo-service probe results above show its live surface.

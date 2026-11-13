@@ -1,0 +1,151 @@
+{
+  "reference": {
+    "latest_close": {
+      "date": "2026-11-09",
+      "close": 9.99
+    },
+    "ex_day_opens_investing": [
+      {
+        "ex_date": "2019-07-15",
+        "investing_open": 5.05
+      },
+      {
+        "ex_date": "2021-05-18",
+        "investing_open": 2.85
+      },
+      {
+        "ex_date": "2024-10-22",
+        "investing_open": 12.3
+      },
+      {
+        "ex_date": "2026-04-27",
+        "investing_open": 34.8
+      }
+    ],
+    "merger_factor": 3.7355854281071297
+  },
+  "sources": {
+    "egxpy": {
+      "install_attempts": [
+        {
+          "spec": "egxpy",
+          "ok": false,
+          "output_tail": "ERROR: Could not find a version that satisfies the requirement egxpy (from versions: none)\n\n[notice] A new release of pip is available: 26.2.2 -> 26.3\n[notice] To update, run: pip install --upgrade pip\nERROR: No matching distribution found for egxpy"
+        },
+        {
+          "spec": "git+https://github.com/mmabas77/egxpy",
+          "ok": true,
+          "output_tail": "[notice] A new release of pip is available: 26.2.2 -> 26.3\n[notice] To update, run: pip install --upgrade pip"
+        },
+        {
+          "spec": "dep:streamlit",
+          "ok": true,
+          "output_tail": "[notice] A new release of pip is available: 26.2.2 -> 26.3\n[notice] To update, run: pip install --upgrade pip"
+        }
+      ],
+      "fetch_attempts": [
+        {
+          "call": "get_OHLCV_data(POUL, EGX, Daily, 3000)",
+          "ok": true,
+          "rows": 3000
+        }
+      ],
+      "import_error": null,
+      "available_functions": [
+        "get_OHLCV_data",
+        "get_EGXdata"
+      ],
+      "rows": 3000,
+      "date_range": [
+        "2014-06-03",
+        "2026-11-11"
+      ],
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume"
+      ],
+      "latest": {
+        "date": "2026-11-11",
+        "close": 10.2,
+        "matches_reference_9_99": false
+      },
+      "ex_day_opens": [
+        {
+          "ex_date": "2019-07-15",
+          "investing_open": 5.05,
+          "source_open": 1.347526,
+          "source_close": 1.29601092,
+          "prior_close_in_source": 1.347526,
+          "verdict": "matches prior close (Yahoo-style, not a real open)"
+        },
+        {
+          "ex_date": "2021-05-18",
+          "investing_open": 2.85,
+          "source_open": 0.79441674,
+          "source_close": 0.77001486,
+          "prior_close_in_source": 0.79441674,
+          "verdict": "matches prior close (Yahoo-style, not a real open)"
+        },
+        {
+          "ex_date": "2024-10-22",
+          "investing_open": 12.3,
+          "source_open": 3.3213669,
+          "source_close": 3.25629522,
+          "prior_close_in_source": 3.3213669,
+          "verdict": "matches prior close (Yahoo-style, not a real open)"
+        },
+        {
+          "ex_date": "2026-04-27",
+          "investing_open": 34.8,
+          "source_open": 9.46521784,
+          "source_close": 9.58451592,
+          "prior_close_in_source": 9.46521784,
+          "verdict": "matches prior close (Yahoo-style, not a real open)"
+        }
+      ],
+      "status": "ok"
+    },
+    "borsa": {
+      "install_attempts": [
+        {
+          "spec": "git+https://github.com/7ashraf/borsa",
+          "ok": false,
+          "output_tail": "[notice] A new release of pip is available: 26.2.2 -> 26.3\n[notice] To update, run: pip install --upgrade pip\nERROR: Package 'borsa' requires a different Python: 3.11.18 not in '>=3.12'"
+        }
+      ],
+      "api_surface": "REST API exposes quotes only (/v1/quote/{symbol}, /v1/quotes, /v1/stocks, /v1/health); Fetcher protocol = fetch_quote. No history/OHLC endpoint exists in the published API.",
+      "demo_service": {
+        "/v1/health": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/quote/POUL": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/demo/quote/POUL": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/history/POUL": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/ohlc/POUL": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/candles/POUL": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        }
+      },
+      "status": "no_history",
+      "failure": "Borsa is a quote service by design: no historical OHLC endpoint or library function exists, so it cannot provide ex-day opens or any price history. Demo-service probe results above show its live surface."
+    }
+  }
+}

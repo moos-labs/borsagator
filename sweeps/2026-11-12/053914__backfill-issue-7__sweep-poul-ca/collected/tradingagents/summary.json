@@ -1,0 +1,26 @@
+{
+  "tool": "tradingagents",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "company_of_interest": "POUL.CA",
+    "asset_type": "stock",
+    "trade_date": "2026-11-12",
+    "past_context": "",
+    "memory_note": "",
+    "portfolio_context": "",
+    "final_rating": "Hold",
+    "backend_url": "https://api.cohere.ai/compatibility/v1",
+    "requested_model": "command-r-08-2024",
+    "model_listed": true
+  },
+  "files": [
+    "decision.txt",
+    "final_state.json",
+    "provider_models.json",
+    "report.md",
+    "run.log"
+  ]
+}

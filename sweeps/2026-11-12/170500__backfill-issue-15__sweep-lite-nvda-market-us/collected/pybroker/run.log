@@ -1,0 +1,82 @@
+Loading bar data...
+[*********************100%***********************]  1 of 1 completed
+Loaded bar data: 0:00:01 
+
+Downloaded 501 bars for AAPL: {'rows': 501, 'first_date': '2024-11-12', 'last_date': '2026-11-11'}
+Backtesting: 2024-11-12 00:00:00 to 2026-11-12 00:00:00
+
+Loading bar data...
+[*********************100%***********************]  1 of 1 completed
+Loaded bar data: 0:00:00 
+
+Computing indicators...
+  0% (0 of 1) |                          | Elapsed Time: 0:00:00 ETA:  --:--:--
+100% (1 of 1) |##########################| Elapsed Time: 0:00:00 Time:  0:00:00
+
+Test split: 2024-11-12 00:00:00 to 2026-11-11 00:00:00
+  0% (0 of 501) |                        | Elapsed Time: 0:00:00 ETA:  --:--:--
+100% (501 of 501) |######################| Elapsed Time: 0:00:00 Time:  0:00:00
+
+Finished backtest: 0:00:03
+{
+  "tool": "pybroker",
+  "ticker": "AAPL",
+  "strategy": "long when close crosses above 20-day SMA, exit all when close crosses below it",
+  "initial_cash": 100000,
+  "sma_period": 20,
+  "requested_start": "2024-11-12",
+  "requested_end": "2026-11-12",
+  "status": "ok",
+  "data_range": {
+    "rows": 501,
+    "first_date": "2024-11-12",
+    "last_date": "2026-11-11"
+  },
+  "metrics": {
+    "trade_count": 22,
+    "initial_market_value": 100000.0,
+    "end_market_value": 107739.34,
+    "total_pnl": 6087.399999999998,
+    "unrealized_pnl": 1651.9399999999987,
+    "total_return_pct": 6.087399999999987,
+    "total_profit": 36690.090000000004,
+    "total_loss": -30602.68999999999,
+    "total_fees": 0.0,
+    "max_drawdown": -23405.819999999992,
+    "max_drawdown_pct": -22.995470429283504,
+    "max_drawdown_date": "2025-06-24T00:00:00",
+    "win_rate": 40.909090909090914,
+    "loss_rate": 59.09090909090909,
+    "winning_trades": 9,
+    "losing_trades": 13,
+    "avg_pnl": 276.6999999999999,
+    "avg_return_pct": 0.40545454545454523,
+    "avg_trade_bars": 12.227272727272727,
+    "avg_profit": 4076.676666666667,
+    "avg_profit_pct": 4.62,
+    "avg_winning_trade_bars": 20.11111111111111,
+    "avg_loss": -2354.0530769230763,
+    "avg_loss_pct": -2.512307692307692,
+    "avg_losing_trade_bars": 6.769230769230769,
+    "largest_win": 14059.28,
+    "largest_win_pct": 16.13,
+    "largest_win_bars": 46,
+    "largest_loss": -11985.44,
+    "largest_loss_pct": -12.51,
+    "largest_loss_bars": 3,
+    "max_wins": 4,
+    "max_losses": 4,
+    "sharpe": 0.01861618075906572,
+    "sortino": 0.024861868968513483,
+    "profit_factor": 1.0533803212183004,
+    "ulcer_index": 11.16414706350067,
+    "upi": 0.001963798618370905,
+    "equity_r2": 0.21755776241096658,
+    "std_error": 8641.39879845274
+  },
+  "total_return_pct": 6.087399999999987,
+  "end_market_value": 107739.34,
+  "initial_market_value": 100000.0,
+  "orders_count": 45
+}
+Wrote results/metrics.json

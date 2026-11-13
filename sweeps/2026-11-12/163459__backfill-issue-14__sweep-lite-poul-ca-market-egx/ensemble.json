@@ -1,0 +1,70 @@
+{
+ "tool": "forecast-ensemble",
+ "ticker": "POUL.CA",
+ "base_price": 10.2,
+ "base_source": "pandas-ta",
+ "date": "2026-11-12",
+ "risk": {
+  "level": "shock",
+  "range_mult": 2.0,
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "shock headline(s): «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل",
+   "shock headline(s): رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.yo",
+   "shock headline(s): القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال"
+  ]
+ },
+ "family_scores": {
+  "price-forecast": -0.7526274509803921,
+  "technicals": 0.2975,
+  "sentiment": 0.75725,
+  "agent": null,
+  "fundamentals": null
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.53,
+   "range_low_pct": -5.0,
+   "range_high_pct": 6.07,
+   "confidence": 0.3,
+   "net_score": 0.287,
+   "families": {
+    "price-forecast": -0.04,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "horizon_short": false
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": -0.4,
+   "range_low_pct": -5.97,
+   "range_high_pct": 5.17,
+   "confidence": 0.3,
+   "net_score": 0.26,
+   "families": {
+    "price-forecast": -0.151,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "horizon_short": false
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -5.98,
+   "range_low_pct": -10.85,
+   "range_high_pct": -1.11,
+   "confidence": 0.3,
+   "net_score": -0.151,
+   "families": {
+    "price-forecast": -0.753,
+    "technicals": 0.297,
+    "sentiment": 0.757
+   },
+   "horizon_short": false
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}

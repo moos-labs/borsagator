@@ -1,0 +1,953 @@
+{
+  "company": "Cairo Poultry Company (EGX: POUL)",
+  "input_csv": "data/poul_statements.csv",
+  "computation_path": "pandas_direct (headline ratios computed in this script from the verified CSV); FinanceToolkit manual-statements attempt status: ok",
+  "financetoolkit_attempt": {
+    "status": "ok",
+    "toolkit_kwargs_used": [
+      "balance",
+      "income"
+    ],
+    "discovered_methods": {
+      "ratios": [
+        "get_EBIT_to_revenue",
+        "get_EBT_to_EBIT",
+        "get_accounts_payables_turnover_ratio",
+        "get_asset_coverage_ratio",
+        "get_asset_growth",
+        "get_asset_turnover_ratio",
+        "get_book_value_per_share",
+        "get_buyback_yield",
+        "get_capex_coverage_ratio",
+        "get_capex_dividend_coverage_ratio",
+        "get_capex_intensity",
+        "get_capex_per_share",
+        "get_capex_to_depreciation_ratio",
+        "get_cash_based_operating_profitability",
+        "get_cash_conversion_cycle",
+        "get_cash_conversion_efficiency",
+        "get_cash_flow_coverage_ratio",
+        "get_cash_interest_coverage_ratio",
+        "get_cash_ratio",
+        "get_cash_return_on_assets",
+        "get_cash_return_on_invested_capital",
+        "get_cash_tax_rate",
+        "get_composite_equity_issuance",
+        "get_current_ratio",
+        "get_days_of_accounts_payable_outstanding",
+        "get_days_of_inventory_outstanding",
+        "get_days_of_sales_outstanding",
+        "get_debt_service_coverage_ratio",
+        "get_debt_to_assets_ratio",
+        "get_debt_to_capital_ratio",
+        "get_debt_to_equity_ratio",
+        "get_defensive_interval_ratio",
+        "get_deferred_revenue_ratio",
+        "get_degree_of_financial_leverage",
+        "get_degree_of_operating_leverage",
+        "get_degree_of_total_leverage",
+        "get_discretionary_cash_flow_to_debt_ratio",
+        "get_dividend_payout_ratio",
+        "get_dividend_yield",
+        "get_earnings_per_share",
+        "get_earnings_yield",
+        "get_ebitda_interest_coverage_ratio",
+        "get_ebitda_margin",
+        "get_ebitda_minus_capex_interest_coverage_ratio",
+        "get_effective_tax_rate",
+        "get_enterprise_value",
+        "get_equity_multiplier",
+        "get_ev_to_ebit",
+        "get_ev_to_ebitda_ratio",
+        "get_ev_to_free_cash_flow_ratio",
+        "get_ev_to_invested_capital_ratio",
+        "get_ev_to_operating_cashflow_ratio",
+        "get_ev_to_sales_ratio",
+        "get_factor_analysis",
+        "get_fixed_asset_turnover",
+        "get_forward_price_earnings_growth_ratio",
+        "get_forward_price_earnings_ratio",
+        "get_free_cash_flow_conversion",
+        "get_free_cash_flow_margin",
+        "get_free_cash_flow_operating_cash_flow_ratio",
+        "get_free_cash_flow_payout_ratio",
+        "get_free_cash_flow_to_ebitda_ratio",
+        "get_free_cash_flow_yield",
+        "get_funds_from_operations_to_debt_ratio",
+        "get_general_and_administrative_ratio",
+        "get_gross_debt_to_ebitda_ratio",
+        "get_gross_margin",
+        "get_gross_profitability",
+        "get_income_before_tax_profit_margin",
+        "get_income_quality_ratio",
+        "get_interest_burden_ratio",
+        "get_interest_coverage_ratio",
+        "get_interest_debt_per_share",
+        "get_interest_paid_to_expense_ratio",
+        "get_inventory_turnover_ratio",
+        "get_market_cap",
+        "get_net_current_asset_value",
+        "get_net_debt_to_ebitda_ratio",
+        "get_net_external_financing",
+        "get_net_income_per_ebt",
+        "get_net_operating_assets",
+        "get_net_profit_margin",
+        "get_net_share_issuance",
+        "get_operating_cash_flow_ratio",
+        "get_operating_cash_flow_sales_ratio",
+        "get_operating_cycle",
+        "get_operating_margin",
+        "get_operating_profitability",
+        "get_operating_ratio",
+        "get_percent_accruals",
+        "get_preferred_dividend_coverage_ratio",
+        "get_price_to_book_ratio",
+        "get_price_to_cash_flow_ratio",
+        "get_price_to_earnings_growth_ratio",
+        "get_price_to_earnings_ratio",
+        "get_price_to_free_cash_flow_ratio",
+        "get_price_to_sales_ratio",
+        "get_price_to_tangible_book_ratio",
+        "get_quick_ratio",
+        "get_receivables_turnover",
+        "get_reinvestment_rate",
+        "get_research_and_development_ratio",
+        "get_return_on_assets",
+        "get_return_on_capital_employed",
+        "get_return_on_equity",
+        "get_return_on_invested_capital",
+        "get_return_on_tangible_assets",
+        "get_revenue_per_share",
+        "get_sbc_adjusted_free_cash_flow",
+        "get_selling_and_marketing_ratio",
+        "get_sga_to_revenue_ratio",
+        "get_shareholder_yield",
+        "get_short_term_coverage_ratio",
+        "get_stock_based_compensation_ratio",
+        "get_tangible_asset_value",
+        "get_tax_burden_ratio",
+        "get_tax_rate_divergence",
+        "get_weighted_dividend_yield",
+        "get_working_capital",
+        "get_working_capital_turnover_ratio"
+      ],
+      "models": [
+        "get_accruals_ratio",
+        "get_altman_z_score",
+        "get_beneish_m_score",
+        "get_campbell_hilscher_szilagyi_score",
+        "get_dechow_f_score",
+        "get_dupont_analysis",
+        "get_earnings_power_value",
+        "get_economic_value_added",
+        "get_enterprise_value_breakdown",
+        "get_extended_dupont_analysis",
+        "get_factor_analysis",
+        "get_free_cash_flow_to_equity",
+        "get_free_cash_flow_to_firm",
+        "get_fulmer_h_score",
+        "get_gordon_growth_model",
+        "get_graham_number",
+        "get_grover_score",
+        "get_h_model",
+        "get_internal_growth_rate",
+        "get_intrinsic_valuation",
+        "get_justified_multiples",
+        "get_magic_formula",
+        "get_market_value_added",
+        "get_merton_distance_to_default",
+        "get_mohanram_g_score",
+        "get_monte_carlo_intrinsic_valuation",
+        "get_montier_c_score",
+        "get_ohlson_o_score",
+        "get_peer_comparison",
+        "get_piotroski_score",
+        "get_present_value_of_growth_opportunities",
+        "get_quality_score",
+        "get_residual_income",
+        "get_return_decomposition",
+        "get_reverse_discounted_cash_flow",
+        "get_springate_score",
+        "get_sustainable_growth_rate",
+        "get_synthetic_credit_rating",
+        "get_taffler_z_score",
+        "get_tobins_q_ratio",
+        "get_two_stage_dividend_discount_model",
+        "get_weighted_average_cost_of_capital",
+        "get_zmijewski_score"
+      ]
+    },
+    "collected": {
+      "ratios.get_EBIT_to_revenue": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_EBT_to_EBIT": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_accounts_payables_turnover_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_asset_coverage_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_asset_growth": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_asset_turnover_ratio": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_book_value_per_share": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_buyback_yield": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_capex_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_capex_dividend_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_capex_intensity": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_capex_per_share": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_capex_to_depreciation_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_based_operating_profitability": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_cash_conversion_cycle": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_cash_conversion_efficiency": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_flow_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_interest_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_cash_return_on_assets": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_return_on_invested_capital": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_cash_tax_rate": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_composite_equity_issuance": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_current_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_days_of_accounts_payable_outstanding": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_days_of_inventory_outstanding": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_days_of_sales_outstanding": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_debt_service_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_debt_to_assets_ratio": {
+        "2025": {
+          "POUL": 0.022
+        }
+      },
+      "ratios.get_debt_to_capital_ratio": {
+        "2025": {
+          "POUL": 0.0311
+        }
+      },
+      "ratios.get_debt_to_equity_ratio": {
+        "2025": {
+          "POUL": 0.0321
+        }
+      },
+      "ratios.get_defensive_interval_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_deferred_revenue_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_degree_of_financial_leverage": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_degree_of_operating_leverage": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_degree_of_total_leverage": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_discretionary_cash_flow_to_debt_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_dividend_payout_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_dividend_yield": {
+        "2021": {
+          "POUL": NaN
+        },
+        "2022": {
+          "POUL": NaN
+        },
+        "2023": {
+          "POUL": NaN
+        },
+        "2024": {
+          "POUL": NaN
+        },
+        "2025": {
+          "POUL": NaN
+        },
+        "2026": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_earnings_per_share": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_earnings_yield": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_ebitda_interest_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_ebitda_margin": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_ebitda_minus_capex_interest_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_effective_tax_rate": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_enterprise_value": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_equity_multiplier": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_ev_to_ebit": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_ev_to_ebitda_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_ev_to_free_cash_flow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_ev_to_invested_capital_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_ev_to_operating_cashflow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_ev_to_sales_ratio": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_factor_analysis": {
+        "_error": "AttributeError: 'Series' object has no attribute 'columns'"
+      },
+      "ratios.get_fixed_asset_turnover": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_free_cash_flow_conversion": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_free_cash_flow_margin": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_free_cash_flow_operating_cash_flow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_free_cash_flow_payout_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_free_cash_flow_to_ebitda_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_free_cash_flow_yield": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_funds_from_operations_to_debt_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_general_and_administrative_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_gross_debt_to_ebitda_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_gross_margin": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_gross_profitability": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_income_before_tax_profit_margin": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_income_quality_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_interest_burden_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_interest_coverage_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_interest_debt_per_share": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_interest_paid_to_expense_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_inventory_turnover_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_market_cap": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_net_current_asset_value": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_net_debt_to_ebitda_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_net_external_financing": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_net_income_per_ebt": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_net_operating_assets": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_net_profit_margin": {
+        "2025": {
+          "POUL": 0.1826
+        }
+      },
+      "ratios.get_net_share_issuance": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_operating_cash_flow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_operating_cash_flow_sales_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_operating_cycle": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_operating_margin": {
+        "2025": {
+          "POUL": 0.1686
+        }
+      },
+      "ratios.get_operating_profitability": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_operating_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_percent_accruals": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_preferred_dividend_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_price_to_book_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_price_to_cash_flow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_price_to_earnings_growth_ratio": {
+        "_error": "AttributeError: 'Series' object has no attribute 'columns'"
+      },
+      "ratios.get_price_to_earnings_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_price_to_free_cash_flow_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_price_to_sales_ratio": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_price_to_tangible_book_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_quick_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_receivables_turnover": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_reinvestment_rate": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_research_and_development_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_return_on_assets": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_return_on_capital_employed": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_return_on_equity": {
+        "2025": {
+          "POUL": NaN
+        }
+      },
+      "ratios.get_return_on_invested_capital": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_return_on_tangible_assets": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_revenue_per_share": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_sbc_adjusted_free_cash_flow": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_selling_and_marketing_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_sga_to_revenue_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_shareholder_yield": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_short_term_coverage_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_stock_based_compensation_ratio": {
+        "_error": "IndexingError: Too many indexers"
+      },
+      "ratios.get_tangible_asset_value": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_tax_burden_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_tax_rate_divergence": {
+        "_error": "AttributeError: 'Series' object has no attribute 'columns'"
+      },
+      "ratios.get_weighted_dividend_yield": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_working_capital": {
+        "_value": "Series([], dtype: object)"
+      },
+      "ratios.get_working_capital_turnover_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_accruals_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_altman_z_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_beneish_m_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_dechow_f_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_dupont_analysis": {
+        "2025": {
+          "Net Profit Margin": 0.1826,
+          "Asset Turnover": NaN,
+          "Equity Multiplier": NaN,
+          "Return on Equity": NaN
+        }
+      },
+      "models.get_earnings_power_value": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_economic_value_added": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_enterprise_value_breakdown": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_extended_dupont_analysis": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_factor_analysis": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_free_cash_flow_to_equity": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_free_cash_flow_to_firm": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_fulmer_h_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_gordon_growth_model": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_graham_number": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_grover_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_h_model": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_internal_growth_rate": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_intrinsic_valuation": {
+        "_error": "TypeError: Index must be a MultiIndex"
+      },
+      "models.get_justified_multiples": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_magic_formula": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_market_value_added": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_merton_distance_to_default": {
+        "2025": {
+          "('POUL', 'Equity Value')": NaN,
+          "('POUL', 'Equity Volatility')": NaN,
+          "('POUL', 'Default Point')": 0.0,
+          "('POUL', 'Asset Value')": NaN,
+          "('POUL', 'Asset Volatility')": NaN,
+          "('POUL', 'Distance to Default')": NaN,
+          "('POUL', 'Probability of Default')": NaN
+        }
+      },
+      "models.get_mohanram_g_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_monte_carlo_intrinsic_valuation": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_montier_c_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_ohlson_o_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_peer_comparison": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_piotroski_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_present_value_of_growth_opportunities": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_residual_income": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_reverse_discounted_cash_flow": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_springate_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_sustainable_growth_rate": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_synthetic_credit_rating": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_taffler_z_score": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_tobins_q_ratio": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_two_stage_dividend_discount_model": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_weighted_average_cost_of_capital": {
+        "_value": "Series([], dtype: object)"
+      },
+      "models.get_zmijewski_score": {
+        "_value": "Series([], dtype: object)"
+      }
+    }
+  },
+  "ratios": {
+    "FY2025": {
+      "gross_margin_pct": {
+        "value": 29.12,
+        "basis": "gross profit (release definition) / revenue"
+      },
+      "ebitda_margin_pct": {
+        "value": 19.58,
+        "basis": "adjusted EBITDA / revenue"
+      },
+      "operating_margin_vendor_pct": {
+        "value": 16.86,
+        "basis": "vendor operating income / revenue"
+      },
+      "net_margin_total_pct": {
+        "value": 18.26,
+        "basis": "total NPAT / revenue"
+      },
+      "net_margin_special_purpose_pct": {
+        "value": 18.53,
+        "basis": "special-purpose NPAT / consolidated revenue"
+      },
+      "roe_pct": {
+        "value": 39.37,
+        "basis": "total NPAT / total equity at 31-Dec-2025 (period-end, no average available)"
+      },
+      "roe_special_purpose_pct": {
+        "value": 39.25,
+        "basis": "special-purpose NPAT / special-purpose equity at end-2025"
+      },
+      "roa_pct": {
+        "value": 27.0,
+        "basis": "total NPAT / total assets at 31-Dec-2025 (period-end)"
+      },
+      "asset_turnover_x": {
+        "value": 1.478,
+        "basis": "revenue / total assets (period-end)"
+      },
+      "equity_multiplier_x": {
+        "value": 1.458,
+        "basis": "total assets / total equity (period-end)"
+      },
+      "debt_to_equity_x": {
+        "value": 0.032,
+        "basis": "total debt / total equity at 31-Dec-2025"
+      },
+      "net_cash_EGPm": {
+        "value": 4299.0,
+        "basis": "cash & investments - total debt at 31-Dec-2025"
+      },
+      "ocf_margin_pct": {
+        "value": 17.94,
+        "basis": "operating cash flow / revenue"
+      },
+      "capex_to_revenue_pct": {
+        "value": 9.81,
+        "basis": "capex / revenue"
+      },
+      "fcf_margin_pct": {
+        "value": 8.13,
+        "basis": "free cash flow / revenue"
+      },
+      "fcf_conversion_pct": {
+        "value": 44.5,
+        "basis": "free cash flow / total NPAT"
+      },
+      "net_interest_income_pct_of_npat": {
+        "value": 23.39,
+        "basis": "net interest income / total NPAT"
+      },
+      "asset_sale_gains_pct_of_npat": {
+        "value": 5.48,
+        "basis": "gains on sale of assets / total NPAT"
+      },
+      "eps_post_merger_shares_consol_EGP": {
+        "value": 1.6151,
+        "basis": "total NPAT / 1,789,351,397 post-merger shares"
+      },
+      "eps_post_merger_shares_special_EGP": {
+        "value": 1.6386,
+        "basis": "special-purpose NPAT / post-merger shares"
+      },
+      "bvps_post_merger_consol_EGP": {
+        "value": 4.1025,
+        "basis": "consolidated equity end-2025 / post-merger shares"
+      },
+      "bvps_post_merger_special_EGP": {
+        "value": 4.1747,
+        "basis": "special-purpose equity end-2025 / post-merger shares"
+      },
+      "net_cash_per_share_end2025_EGP": {
+        "value": 2.4025,
+        "basis": "net cash end-2025 / post-merger shares"
+      },
+      "dupont_roe_check_pct": {
+        "value": 39.35,
+        "basis": "net margin x asset turnover x equity multiplier (should equal roe_pct)"
+      }
+    },
+    "PAYOUT_FY2025": {
+      "payout_vs_consolidated_npat_pct": {
+        "value": 117.64,
+        "basis": "EGP 3,399.77m dividend / FY2025 consolidated NPAT 2,890"
+      },
+      "payout_vs_special_purpose_npat_pct": {
+        "value": 115.95,
+        "basis": "dividend / FY2025 special-purpose NPAT 2,932"
+      },
+      "dividend_pct_of_distributable_pool": {
+        "value": 67.7,
+        "basis": "dividend / special-purpose distributable pool 5,022"
+      },
+      "dividend_yield_at_reference_price_pct": {
+        "value": 19.0,
+        "basis": "1.90 / 10.00 reference price (one-off, non-recurring)"
+      }
+    },
+    "VALUATION_AT_10.00": {
+      "market_cap_EGPm": {
+        "value": 17893.5,
+        "basis": "10.00 x 1,789,351,397 shares"
+      },
+      "pe_consolidated_npat_x": {
+        "value": 6.19,
+        "basis": "price / EPS on post-merger shares (consolidated NPAT)"
+      },
+      "pe_special_purpose_npat_x": {
+        "value": 6.1,
+        "basis": "price / EPS on post-merger shares (special-purpose NPAT)"
+      },
+      "pb_special_purpose_x": {
+        "value": 2.4,
+        "basis": "price / special-purpose BVPS end-2025"
+      },
+      "pb_consolidated_x": {
+        "value": 2.44,
+        "basis": "price / consolidated BVPS end-2025"
+      },
+      "ev_ebitda_fy2025_x": {
+        "value": 4.51,
+        "basis": "(market cap - net cash Jun-2026) / FY2025 adjusted EBITDA"
+      }
+    },
+    "FY2024": {
+      "operating_margin_vendor_pct": {
+        "value": 17.09,
+        "basis": "vendor operating income / revenue"
+      },
+      "net_margin_eps_basis_pct": {
+        "value": 14.81,
+        "basis": "EPS-basis net income (after appropriations) / revenue"
+      },
+      "fcf_margin_pct": {
+        "value": 15.09,
+        "basis": "free cash flow / revenue"
+      }
+    },
+    "H1_2026": {
+      "gross_margin_pct": {
+        "value": 23.83,
+        "basis": "release gross profit / revenue (6 months)"
+      },
+      "ebitda_margin_pct": {
+        "value": 13.76,
+        "basis": "adjusted EBITDA / revenue (6 months)"
+      },
+      "operating_margin_pct": {
+        "value": 11.77,
+        "basis": "release operating profit / revenue (6 months)"
+      },
+      "net_margin_pct": {
+        "value": 16.08,
+        "basis": "total NPAT / revenue (6 months)"
+      },
+      "debt_to_equity_x": {
+        "value": 0.037,
+        "basis": "total debt / total equity at 30-Jun-2026"
+      },
+      "net_cash_EGPm": {
+        "value": 3921.0,
+        "basis": "cash & investments - total debt at 30-Jun-2026 (research rounds this to 3,922 from unrounded inputs)"
+      },
+      "net_cash_per_share_EGP": {
+        "value": 2.1913,
+        "basis": "net cash 30-Jun-2026 / post-merger shares"
+      },
+      "net_interest_income_pct_of_npat": {
+        "value": 32.04,
+        "basis": "net interest income / total NPAT (6 months)"
+      }
+    }
+  },
+  "coverage_gaps": [
+    {
+      "ratio": "current_ratio / quick_ratio / cash_ratio",
+      "blocker": "Current assets and current liabilities are not split out in any verified source figure."
+    },
+    {
+      "ratio": "interest_coverage_ratio",
+      "blocker": "Only NET interest income (+676 FY25) is disclosed in the sources; gross interest expense is not verified."
+    },
+    {
+      "ratio": "inventory_turnover / receivables_turnover / payables_turnover / cash_conversion_cycle",
+      "blocker": "Inventory, receivables and payables balances do not appear in the verified sources."
+    },
+    {
+      "ratio": "return_on_invested_capital (ROIC)",
+      "blocker": "NOPAT cannot be derived: the effective tax charge is not verified (pre-tax profit is given only approximately, ~EGP 3,667m)."
+    },
+    {
+      "ratio": "effective_tax_rate",
+      "blocker": "Pre-tax profit is stated only approximately in the sources."
+    },
+    {
+      "ratio": "altman_z_score / piotroski_f_score",
+      "blocker": "Require full balance-sheet detail (working capital, current items) and, for Piotroski, two full years of balance sheets; not available in verified form."
+    },
+    {
+      "ratio": "roe / roa FY2024",
+      "blocker": "FY2024 total equity and total assets are not verified (special-purpose FY2024 equity was not disclosed in the source)."
+    },
+    {
+      "ratio": "roa H1_2026",
+      "blocker": "Total assets at 30-Jun-2026 are not stated in the sources (only total liabilities and equity)."
+    },
+    {
+      "ratio": "dividend_payout_ratio FY2024",
+      "blocker": "No FY2024 dividend per share appears in the extracted verified sources."
+    },
+    {
+      "ratio": "dupont FY2024 / H1_2026",
+      "blocker": "Needs total assets and equity for the same period-end; missing for FY2024 and (assets) for Jun-2026."
+    }
+  ]
+}

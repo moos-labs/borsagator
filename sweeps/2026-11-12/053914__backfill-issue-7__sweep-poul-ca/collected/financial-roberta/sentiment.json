@@ -1,0 +1,217 @@
+{
+  "label": "run",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 13,
+  "label_counts": {
+    "positive": 7,
+    "negative": 2,
+    "neutral": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.5356250348324045,
+    "negative": 0.1543280455886046,
+    "neutral": 0.31004693536893824
+  },
+  "items": [
+    {
+      "text": "The company reported a strong increase in profits and raised its dividend.",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982638955116272,
+        "negative": 0.0009038209682330489,
+        "neutral": 0.0008323435904458165
+      },
+      "raw_probabilities": {
+        "positive": 0.9982638955116272,
+        "negative": 0.0009038209682330489,
+        "neutral": 0.0008323435904458165
+      }
+    },
+    {
+      "text": "The company posted a massive loss and cut its dividend amid rising costs.",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002919355465564877,
+        "negative": 0.9990377426147461,
+        "neutral": 0.0006704148254357278
+      },
+      "raw_probabilities": {
+        "negative": 0.9990377426147461,
+        "neutral": 0.0006704148254357278,
+        "positive": 0.0002919355465564877
+      }
+    },
+    {
+      "text": "The company will hold its annual general meeting on Tuesday.",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00015474519750569016,
+        "negative": 0.00036324551911093295,
+        "neutral": 0.9994819760322571
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994819760322571,
+        "negative": 0.00036324551911093295,
+        "positive": 0.00015474519750569016
+      }
+    },
+    {
+      "text": "Cairo Poultry approves cash dividend of EGP 1.90 per share",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9877666234970093,
+        "negative": 0.0002188260550610721,
+        "neutral": 0.012014607898890972
+      },
+      "raw_probabilities": {
+        "positive": 0.9877666234970093,
+        "neutral": 0.012014607898890972,
+        "negative": 0.0002188260550610721
+      }
+    },
+    {
+      "text": "Cairo Poultry first-half net profit falls 23.3% year on year despite higher revenue",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00027671773568727076,
+        "negative": 0.9988686442375183,
+        "neutral": 0.0008546403842046857
+      },
+      "raw_probabilities": {
+        "negative": 0.9988686442375183,
+        "neutral": 0.0008546403842046857,
+        "positive": 0.00027671773568727076
+      }
+    },
+    {
+      "text": "Cairo Poultry board approves sale of Aman guarding stake and liquidation of Cairo Financial Leasing",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.007508906070142984,
+        "negative": 0.0005995840765535831,
+        "neutral": 0.9918915033340454
+      },
+      "raw_probabilities": {
+        "neutral": 0.9918915033340454,
+        "positive": 0.007508906070142984,
+        "negative": 0.0005995840765535831
+      }
+    },
+    {
+      "text": "FRA approves publishing Cairo Poultry disclosure to raise authorized capital to EGP 2 billion",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978959560394287,
+        "negative": 0.0006446658517234027,
+        "neutral": 0.0014593402156606317
+      },
+      "raw_probabilities": {
+        "positive": 0.9978959560394287,
+        "neutral": 0.0014593402156606317,
+        "negative": 0.0006446658517234027
+      }
+    },
+    {
+      "text": "Soybean meal prices fall to EGP 25,700 per ton as feed costs ease from October peak",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9938222169876099,
+        "negative": 0.0024030173663049936,
+        "neutral": 0.003774802666157484
+      },
+      "raw_probabilities": {
+        "positive": 0.9938222169876099,
+        "neutral": 0.003774802666157484,
+        "negative": 0.0024030173663049936
+      }
+    },
+    {
+      "text": "Egyptian pound strengthens to 54.2 per dollar on returning hot money inflows",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9968793392181396,
+        "negative": 0.001258490257896483,
+        "neutral": 0.0018621589988470078
+      },
+      "raw_probabilities": {
+        "positive": 0.9968793392181396,
+        "neutral": 0.0018621589988470078,
+        "negative": 0.001258490257896483
+      }
+    },
+    {
+      "text": "Farm-gate chicken prices steady at 73 to 74 EGP per kilogram, below production cost of 75 to 80",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9825214743614197,
+        "negative": 0.0008316008024848998,
+        "neutral": 0.01664692722260952
+      },
+      "raw_probabilities": {
+        "positive": 0.9825214743614197,
+        "neutral": 0.01664692722260952,
+        "negative": 0.0008316008024848998
+      }
+    },
+    {
+      "text": "State outlets sell imported frozen poultry at 140 EGP per kilogram ahead of Ramadan",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000653332332149148,
+        "negative": 0.0001832116540754214,
+        "neutral": 0.9991635084152222
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991635084152222,
+        "positive": 0.000653332332149148,
+        "negative": 0.0001832116540754214
+      }
+    },
+    {
+      "text": "Cairo Poultry invites shareholders to extraordinary general assembly on November 30",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00029531167820096016,
+        "negative": 0.00015632694703526795,
+        "neutral": 0.9995483756065369
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995483756065369,
+        "positive": 0.00029531167820096016,
+        "negative": 0.00015632694703526795
+      }
+    },
+    {
+      "text": "No avian influenza outbreak reported in Egypt during autumn 2026",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9967949986457825,
+        "negative": 0.0007954163011163473,
+        "neutral": 0.0024095606058835983
+      },
+      "raw_probabilities": {
+        "positive": 0.9967949986457825,
+        "neutral": 0.0024095606058835983,
+        "negative": 0.0007954163011163473
+      }
+    }
+  ]
+}

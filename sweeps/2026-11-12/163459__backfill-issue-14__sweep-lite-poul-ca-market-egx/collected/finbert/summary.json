@@ -1,0 +1,17 @@
+{
+  "tool": "finbert",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "label": "poul-pilot",
+    "model": "ProsusAI/finbert",
+    "count": 13
+  },
+  "files": [
+    "report.md",
+    "run.log",
+    "sentiment.json"
+  ]
+}
