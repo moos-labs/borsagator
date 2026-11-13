@@ -146,6 +146,124 @@ def realized_sigma(ticker):
     return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})", density
 
 
+def price_series(ticker):
+    """Collected price series for the ticker as {source: {date: close}}
+    (date '' when the CSV has no usable date column). Validation and
+    backtest tools are excluded by registry category: they run
+    REFERENCE workloads (their CSVs are not this ticker's series —
+    vectorbt's poul_ohlc.csv ends at 3.13, quantstats' at 2.83, while
+    every price-bearing tool agrees on ~10.2)."""
+    code = ticker.split(".")[0].lower()
+    registry = load_json(REGISTRY) or {}
+    cats = {t.get("id"): t.get("category")
+            for t in registry.get("tools", [])}
+    series = {}
+    for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
+        tool = os.path.basename(os.path.dirname(path))
+        if cats.get(tool) in ("backtest", "stats"):
+            continue
+        name = os.path.basename(path).lower()
+        if not any(s in name for s in ("ohlc", "indicators", code)):
+            continue
+        try:
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+        except Exception:
+            continue
+        if len(rows) < 5:
+            continue
+        col = next((c for c in rows[0] if c and c.strip().lower() in
+                    ("close", "adj close", "adjclose")), None)
+        if not col:
+            continue
+        dcol = next((c for c in rows[0] if c and ("date" in c.strip().lower()
+                     or c.strip().lower() in ("datetime", "index"))), None)
+        out = {}
+        for r in rows:
+            c = fnum(r.get(col))
+            if not c:
+                continue
+            d = ""
+            if dcol:
+                s = str(r.get(dcol) or "")[:10]
+                try:
+                    datetime.strptime(s, "%Y-%m-%d")
+                    d = s
+                except Exception:
+                    d = ""
+            out[d or f"row{len(out)}"] = c
+        if out:
+            src = os.path.basename(os.path.dirname(path)) + "/" + name
+            series[src] = out
+    return series
+
+
+def price_crosscheck(ticker, base, base_src, series):
+    """Two-source verification of the price the forecast stands on
+    (audit item: Yahoo was the single artery, with corrupted segments).
+    Witnesses: the base from the digest metrics + the last close of
+    every collected price series, aligned on the latest date at least
+    two dated series share. A spread above 2% means the sources
+    disagree: the ensemble then stands on the EGX-native series
+    (egx-data) when present, else the median witness, and the digest
+    says so out loud."""
+    witnesses = {}
+    if base:
+        witnesses[f"metrics:{base_src}"] = base
+    dated = {s: m for s, m in series.items()
+             if any(len(k) == 10 and k[4] == "-" for k in m)}
+    common = None
+    if len(dated) >= 2:
+        sets = [set(m.keys()) for m in dated.values()]
+        inter = set.intersection(*sets) if sets else set()
+        real = sorted(d for d in inter if len(d) == 10 and d[4] == "-")
+        common = real[-1] if real else None
+    for src, m in series.items():
+        if common and common in m:
+            witnesses[src] = m[common]
+        else:
+            witnesses[src] = m[sorted(m.keys())[-1]]
+    vals = sorted(witnesses.values())
+    if len(vals) < 2:
+        return {"status": "single-source", "witnesses": witnesses,
+                "spread_pct": None, "common_date": common,
+                "base_used": base, "base_source_used": base_src}
+    # Cluster the witnesses (2% chaining): the largest cluster is the
+    # consensus. A lone outlier series must not veto four agreeing
+    # sources — and the base standing OUTSIDE the consensus is exactly
+    # the failure this check exists to catch.
+    ordered = sorted(witnesses.items(), key=lambda kv: kv[1])
+    clusters = [[ordered[0]]]
+    for item in ordered[1:]:
+        if item[1] <= clusters[-1][-1][1] * 1.02:
+            clusters[-1].append(item)
+        else:
+            clusters.append([item])
+    consensus = max(clusters, key=len)
+    cons = dict(consensus)
+    outliers = {s: v for s, v in witnesses.items() if s not in cons}
+    cvals = sorted(cons.values())
+    spread = (cvals[-1] - cvals[0]) / cvals[len(cvals) // 2] \
+        if cvals[len(cvals) // 2] else 0.0
+    base_key = f"metrics:{base_src}"
+    if base_key in cons and len(consensus) >= 2:
+        return {"status": "agree", "witnesses": witnesses,
+                "outliers": outliers,
+                "spread_pct": round(spread * 100, 2), "common_date": common,
+                "base_used": base, "base_source_used": base_src}
+    egx = next((s for s in cons if s.startswith("egx-data/")), None)
+    if egx:
+        chosen, chosen_src = cons[egx], egx
+    else:
+        chosen = cvals[len(cvals) // 2]
+        chosen_src = "consensus median"
+    gap = abs(base - chosen) / chosen if chosen else 0.0
+    return {"status": "disagree", "witnesses": witnesses,
+            "outliers": outliers,
+            "spread_pct": round(gap * 100, 2), "common_date": common,
+            "base_used": chosen, "base_source_used": chosen_src}
+
+
 def main():
     digest = load_json(DIGEST)
     if not digest:
@@ -181,6 +299,14 @@ def main():
     if not base:
         print("ensemble: no base price found — skipping")
         return
+
+    # ---------- two-source price verification ----------
+    check = price_crosscheck(ticker, base, base_src, price_series(ticker))
+    if check["status"] == "disagree":
+        print(f"ensemble: PRICE SOURCES DISAGREE (spread "
+              f"{check['spread_pct']}%): {check['witnesses']} — "
+              f"standing on {check['base_source_used']}")
+        base, base_src = check["base_used"], check["base_source_used"]
 
     sigma, sigma_src, density = realized_sigma(ticker)
 
@@ -388,6 +514,7 @@ def main():
                  "agent": agent, "fundamentals": fund}
     out = {"tool": "forecast-ensemble", "version": 2, "ticker": ticker,
            "base_price": base, "base_source": base_src,
+           "price_crosscheck": check,
            "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
@@ -447,7 +574,13 @@ def main():
              f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",
              "Ranges are anchored in realized volatility. Confidence is provisional "
-             "(uncalibrated) until the scoring ledger has history.", "",
+             "(uncalibrated) until the scoring ledger has history.", ""]
+    if check["status"] == "disagree":
+        wit = ", ".join(f"{s} {v:g}" for s, v in check["witnesses"].items())
+        lines += [f"⚠️ **Price sources disagree** (spread {check['spread_pct']}%: "
+                  f"{wit}) — this forecast stands on {check['base_source_used']} "
+                  f"= {check['base_used']:g}.", ""]
+    lines += [
              "| Horizon | Direction | Expected | Range | Confidence |",
              "|---|---|---|---|---|"]
     for hname in ("day", "week", "month"):
