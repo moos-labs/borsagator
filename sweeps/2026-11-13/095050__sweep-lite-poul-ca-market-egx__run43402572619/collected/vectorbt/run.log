@@ -1,0 +1,7 @@
+
+1 Failed download:
+['POUL.CA']: NonExistentTimeError('2023-04-28 00:00:00')
+[data] POUL.CA via yf_download_ignore_tz: no rows
+[data] POUL.CA via yf_ticker_history: ERROR 2023-04-28 00:00:00
+[data] POUL.CA via yahoo_chart_api: 2429 rows, 2017-01-02 -> 2026-11-12, first close 3.6559998989105225, last close 10.149999618530273
+[done] results written to results/ (poul_ohlc.csv, summary.json, report.md)

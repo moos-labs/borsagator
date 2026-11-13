@@ -1,0 +1,420 @@
+{
+  "job": "sweep-lite POUL.CA market=EGX",
+  "ticker": "POUL.CA",
+  "date": "2026-11-13",
+  "started": "2026-11-13T09:35:31.563860+00:00",
+  "finished": "2026-11-13T09:50:50.636187+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/yahooquery-runner/actions/runs/43402603095",
+      "conclusion": "success",
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_AAPL.csv": 1254,
+          "AAPL.csv_last_date": "2026-11-12",
+          "AAPL.csv_last_close": "354.8800048828125",
+          "rows_POUL.CA.csv": 1210,
+          "POUL.CA.csv_last_date": "2026-11-11",
+          "POUL.CA.csv_last_close": "10.199999809265137"
+        },
+        "files": [
+          "AAPL.csv",
+          "POUL.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/openbb-runner/actions/runs/43402672540",
+      "conclusion": "success",
+      "summary": {
+        "tool": "openbb",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_AAPL.csv": 501,
+          "AAPL.csv_last_date": "2026-11-12",
+          "AAPL.csv_last_close": "354.8800048828125",
+          "rows_POUL_CA.csv": 485,
+          "POUL_CA.csv_last_date": "2026-11-12",
+          "POUL_CA.csv_last_close": "10.149999618530273"
+        },
+        "files": [
+          "AAPL.csv",
+          "POUL_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/egx-data-runner/actions/runs/43402787166",
+      "conclusion": "success",
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_egxpy_poul.csv": 3000,
+          "egxpy_poul.csv_last_date": "2026-11-12",
+          "egxpy_poul.csv_last_close": "10.15"
+        },
+        "files": [
+          "egxpy_poul.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "run_url": "https://github.com/moos-labs/pandas-ta-runner/actions/runs/43402898844",
+      "conclusion": "success",
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "date": "2026-11-12",
+          "open": 10.2,
+          "high": 10.4,
+          "low": 10.15,
+          "close": 10.15,
+          "rsi_14": 26.6369,
+          "macd": -2.0545,
+          "macd_signal": -2.9153,
+          "macd_hist": 0.8608,
+          "ema_20": 10.9809,
+          "ema_50": 17.4897,
+          "ema_200": 27.0247,
+          "adx_14": 52.6746,
+          "bb_upper": 10.5145,
+          "bb_mid": 9.8375,
+          "bb_lower": 9.1605,
+          "bb_pctb": 0.7308,
+          "atr_14": 0.6014,
+          "stoch_k": 88.8566,
+          "stoch_d": 86.5545,
+          "rows_fetched": 6522,
+          "rows_used": 1922,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-12",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-12",
+          "indicators.csv_last_close": "10.149999618530273"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "run_url": "https://github.com/moos-labs/talib-runner/actions/runs/43402964464",
+      "conclusion": "success",
+      "summary": {
+        "tool": "talib",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "rows_fetched": 6522,
+          "rows_used": 1922,
+          "last_date": "2026-11-12",
+          "last_close": 10.149999618530273,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-12",
+          "indicators.csv_last_close": "10.149999618530273"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "run_url": "https://github.com/moos-labs/quantstats-runner/actions/runs/43403029748",
+      "conclusion": "success",
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2180,
+          "rows_ohlc.csv": 2180,
+          "ohlc.csv_last_close": "10.149999618530273"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "run_url": "https://github.com/moos-labs/vectorbt-runner/actions/runs/43403139780",
+      "conclusion": "success",
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2429,
+          "poul_ohlc.csv_last_close": "10.149999618530273"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "run_url": "https://github.com/moos-labs/financetoolkit-runner/actions/runs/43403303014",
+      "conclusion": "success",
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "company": "Cairo Poultry Company (EGX: POUL)",
+          "input_csv": "data/poul_statements.csv"
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "run_url": "https://github.com/moos-labs/finbert-runner/actions/runs/43403418070",
+      "conclusion": "success",
+      "summary": {
+        "tool": "finbert",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 9
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "run_url": "https://github.com/moos-labs/finbert-tone-runner/actions/runs/43403625420",
+      "conclusion": "success",
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 9
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "run_url": "https://github.com/moos-labs/roberta-sentiment-runner/actions/runs/43403835172",
+      "conclusion": "success",
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 9
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "run_url": "https://github.com/moos-labs/kronos-runner/actions/runs/43404046243",
+      "conclusion": "success",
+      "summary": {
+        "tool": "kronos",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-10",
+          "forecast.csv_last_close": "9.7086"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/financedatabase-runner/actions/runs/43404204728",
+      "conclusion": "success",
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "run_url": "https://github.com/moos-labs/news-disclosure-runner/actions/runs/43404294121",
+      "conclusion": "success",
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "fetched_at": "2026-11-13T09:50:33Z",
+          "tool": "news-disclosure",
+          "news_count": 25,
+          "disclosure_count": 6,
+          "arabic_headlines": 28,
+          "latest_news_date": "Thu, 12 Nov 2026 11:20:08 GMT",
+          "latest_disclosure_date": "Thu, 12 Nov 2026 06:44:06 GMT",
+          "llm_provider": "cohere",
+          "finbert_positive": 0.044,
+          "finbert_negative": 0.258,
+          "finbert_neutral": 0.698,
+          "finbert_scored": 3
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
