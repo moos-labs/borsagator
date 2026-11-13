@@ -24,6 +24,7 @@ static GH_TOKEN env.
 import io
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -188,10 +189,13 @@ def gh(method, path, body=None, raw=False, auth=True, _retried=False):
             return e.code, {}, {"raw": payload[:300]}
 
 
-def download(url):
+def download(url, max_bytes=200_000_000):
     req = urllib.request.Request(url, method="GET")
     with urllib.request.urlopen(req, timeout=120) as r:
-        return r.read()
+        blob = r.read(max_bytes + 1)
+    if len(blob) > max_bytes:
+        raise ValueError(f"download exceeds the {max_bytes}-byte cap")
+    return blob
 
 
 def get_variable(repo, name):
@@ -274,12 +278,20 @@ def fetch_summary(repo, run_id, tool_id):
     location = headers.get("Location") or headers.get("location")
     if not location:
         return None, f"artifact zip HTTP {status} with no Location"
-    blob = download(location)
+    try:
+        blob = download(location)
+    except Exception as e:
+        return None, f"artifact download failed: {e}"
     dest = os.path.join(OUT, tool_id)
     os.makedirs(dest, exist_ok=True)
     dest_abs = os.path.abspath(dest)
     try:
         with zipfile.ZipFile(io.BytesIO(blob)) as z:
+            infos = z.infolist()
+            if len(infos) > 5000:
+                return None, f"refused artifact: {len(infos)} members"
+            if sum(i.file_size for i in infos) > 500_000_000:
+                return None, "refused artifact: expanded size over the cap"
             for member in z.namelist():
                 target = os.path.abspath(os.path.join(dest_abs, member))
                 if target != dest_abs and not target.startswith(dest_abs + os.sep):
@@ -355,6 +367,17 @@ def run_tool(tool, ticker, date_str):
                 set_variable(repo, "COMMANDS", original)
 
 
+def run_tool_safe(tool, ticker, date_str):
+    """One tool's failure — including an orchestrator-side exception —
+    becomes its own error row; it must never abort the whole sweep
+    before the digest is written (Ins review, issue #49)."""
+    try:
+        return run_tool(tool, ticker, date_str)
+    except Exception as e:
+        return {"tool": tool.get("id", "?"), "status": "error",
+                "detail": f"orchestrator exception: {type(e).__name__}: {e}"}
+
+
 def main():
     job = (os.environ.get("JOB") or (sys.argv[1] if len(sys.argv) > 1 else "")).strip()
     if not job:
@@ -410,9 +433,15 @@ def main():
               file=sys.stderr)
         return 2
 
+    # The ticker is substituted into child shell command templates —
+    # it must be a plain symbol, never shell text (panel ⭐, issue #49).
+    if not re.fullmatch(r"[A-Za-z0-9.\-]{1,12}", ticker or ""):
+        print(f"Refusing unsafe ticker: {ticker!r}", file=sys.stderr)
+        return 2
+
     print(f"Borsagator job: {job} | tools: {[t['id'] for t in selected]} | date {date_str}", flush=True)
     started = datetime.now(timezone.utc)
-    results = [run_tool(t, ticker, date_str) for t in selected]
+    results = [run_tool_safe(t, ticker, date_str) for t in selected]
     finished = datetime.now(timezone.utc)
 
     os.makedirs(DIGEST_DIR, exist_ok=True)
