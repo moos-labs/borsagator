@@ -251,32 +251,80 @@ def main():
         comp = str(metrics("financetoolkit").get("company") or "")
         code = ticker.split(".")[0]
         if code in comp or ticker in comp or not comp:
-            pe = None
+            pe, ref = None, None
+
+            def scan_pe(obj, ref_ctx=None, depth=0):
+                """Find a P/E leaf: keys like pe_consolidated_npat_x or
+                price_to_earnings, values numeric or {'value': n}.
+                Sections named VALUATION_AT_<price> set the ref price."""
+                nonlocal pe, ref
+                if pe is not None or depth > 6:
+                    return
+                if isinstance(obj, dict):
+                    for k, v in obj.items():
+                        m = re.search(r"valuation_at_([\d.]+)", k.lower())
+                        r2 = float(m.group(1)) if m else ref_ctx
+                        kl = k.lower()
+                        if re.search(r"(^|_)pe(_|$)", kl) or "price_to_earnings" in kl \
+                                or "price_earnings" in kl:
+                            val = fnum(v) if not isinstance(v, dict) else fnum(v.get("value"))
+                            if val:
+                                pe, ref = val, r2
+                                return
+                        scan_pe(v, r2, depth + 1)
+                        if pe is not None:
+                            return
+                elif isinstance(obj, list):
+                    for v in obj:
+                        scan_pe(v, ref_ctx, depth + 1)
+                        if pe is not None:
+                            return
+
+            def scan_quality(obj):
+                """Fallback: latest-period ROE + net margin from blocks
+                like {'FY2025': {'roe_pct': {'value': 39.4}, ...}}."""
+                best = {}
+
+                def walk(o, section=""):
+                    if isinstance(o, dict):
+                        for k, v in o.items():
+                            kl = k.lower()
+                            if kl in ("roe_pct",) or "net_margin" in kl:
+                                val = fnum(v) if not isinstance(v, dict) else fnum(v.get("value"))
+                                if val is not None:
+                                    yr = max([int(y) for y in re.findall(r"(20\d\d)", section)] or [0])
+                                    cur = best.get(kl if kl == "roe_pct" else "net_margin")
+                                    if cur is None or yr >= cur[0]:
+                                        best[kl if kl == "roe_pct" else "net_margin"] = (yr, val)
+                            walk(v, k)
+                walk(obj)
+                roe = best.get("roe_pct", (0, None))[1]
+                nm = best.get("net_margin", (0, None))[1]
+                if roe is None and nm is None:
+                    return None
+                s = 0.0
+                if roe is not None:
+                    s += .30 if roe >= 25 else .15 if roe >= 15 else 0 if roe >= 5 else -.25
+                if nm is not None:
+                    s += .10 if nm >= 15 else 0 if nm >= 5 else -.10
+                return max(-.5, min(.5, s))
+
+            quality = None
             for path in glob.glob(os.path.join(COLLECTED, "financetoolkit", "*.json")):
                 d = load_json(path)
-                if d:
-                    pe = find_key(d, ["price_earnings", "pe_ratio", "p_e"])
-                    if pe:
-                        break
-            if pe is None:
-                for path in glob.glob(os.path.join(COLLECTED, "financetoolkit", "*.csv")):
-                    try:
-                        with open(path, newline="", encoding="utf-8") as f:
-                            for row in csv.DictReader(f):
-                                for k, v in row.items():
-                                    if k and any(n in k.lower() for n in
-                                                 ("price_earnings", "pe_ratio", "p_e")):
-                                        pe = fnum(v)
-                                        if pe:
-                                            break
-                                if pe:
-                                    break
-                    except Exception:
-                        continue
-                    if pe:
-                        break
+                if not d:
+                    continue
+                scan_pe(d)
+                if pe:
+                    break
+                if quality is None:
+                    quality = scan_quality(d)
             if pe:
+                if ref:
+                    pe = pe * base / ref  # rescale the file's reference price to today's base
                 fund = .4 if pe < 8 else .15 if pe < 15 else -.1 if pe < 25 else -.35
+            elif quality is not None:
+                fund = quality
 
     # ---------- news risk overlay ----------
     risk = {"level": "none", "conf_cap": .60, "price_mult": 1.0, "flags": []}
