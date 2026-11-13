@@ -1,0 +1,25 @@
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4262.76it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 23601.77it/s]
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701166/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701162/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+WARN body http 403: https://tradersunion.com/ar/news/companies/show/4208219-cairo-poultry-profits-fall-2026/
+bodies: 6/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 4}
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+WARN cohere translate attempt 2: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 25330.67it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 11348.78it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 26, "disclosure_count": 4, "arabic_headlines": 27, "latest_news_date": "Thu, 12 Nov 2026 11:20:08 GMT", "latest_disclosure_date": "Thu, 12 Nov 2026 06:44:06 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) مرفق القوائم المالية المجمعة عن الفترة المالية المنتهية فى 30/09/2026اسم الشركة : القاهرة للدواجنكود الت - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.673, "multilingual_negative": 0.01, "multilingual_neutral": 0.317, "multilingual_scored": 27, "bodies_fetched": 6, "translation_provider": "nllb+cohere", "translated_positive": 0.293, "translated_negative": 0.296, "translated_neutral": 0.411, "translated_scored": 27}
+BRIEF:
+- Cairo Poultry, also known as "القاهرة للدواجن," has reported a 39.1% decline in profits for the first nine months of 2026, despite a slight increase in revenues.
+- The company's net profit for this period was 1.43 billion Egyptian pounds, down from 2.36 billion Egyptian pounds in the same period of 2025.
+- Revenue for the first nine months of 2026 reached approximately 12.1 billion Egyptian pounds, a modest growth of around 1.1% compared to the previous year.
+- This profit decrease is significant as it indicates a substantial drop in earnings, which may impact the company's overall financial performance and investor confidence.
+- The decline in profits is notable, especially considering the company's revenue growth, suggesting that cost management or other factors may have impacted the bottom line.
+- The company's consolidated profit for the third quarter (Q3) of 2026 was reported as 152 million Egyptian pounds.
+- This news is relevant for investors and stakeholders as it provides an update on the company's financial health and performance, which can influence stock prices and investment decisions.
+- Further analysis of the company's financial statements and market trends will be crucial to understanding the reasons behind this profit decline and its potential impact on future performance.
