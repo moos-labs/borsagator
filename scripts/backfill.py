@@ -153,7 +153,7 @@ def main():
         print(f"issue #{num}: {len(files)} files, gaps={gaps}")
 
     with open(os.path.join(STAGE, "TARGETS.txt"), "w", encoding="utf-8") as f:
-        f.write("\n".join(targets))
+        f.write("\n".join(targets) + "\n")
     print("backfill staged:", len(targets), "sweeps")
 
 
