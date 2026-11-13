@@ -1,0 +1,161 @@
+
+=== Environment ===
+Python 3.11.18
+Docker version 28.0.4, build b8034c0
+Docker server: 28.0.4
+/dev/root       145G   59G   86G  41% /
+
+=== Install LEAN CLI (pip install lean) ===
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: pip install --upgrade pip
+lean 1.0.233
+
+=== Show that lean init requires QuantConnect credentials (bounded attempt) ===
+lean init exit code: 1 (expected non-zero: it prompts for a user id / API token)
+Your user id and API token are needed to make authenticated requests to the 
+QuantConnect API
+You can request these credentials on https://www.quantconnect.com/account
+Both will be saved in /home/runner/.lean/credentials
+User id: Aborted!
+
+=== Replicate lean init file scaffolding from the public QuantConnect/Lean repo ===
+-rw-r--r-- 1 runner runner 217M Nov 13 08:20 master.zip
+extracted 1420 data files; lean.json written
+227M	data
+  "data-folder": "data",
+
+=== Scaffold the project with LEAN's own scaffolding ===
+Successfully created Python project 'BuyAndHold'
+total 28
+drwxr-xr-x 4 runner runner 4096 Nov 13 08:20 .
+drwxr-xr-x 4 runner runner 4096 Nov 13 08:20 ..
+drwxr-xr-x 2 runner runner 4096 Nov 13 08:20 .idea
+drwxr-xr-x 2 runner runner 4096 Nov 13 08:20 .vscode
+-rw-r--r-- 1 runner runner   84 Nov 13 08:20 config.json
+-rw-r--r-- 1 runner runner  879 Nov 13 08:20 main.py
+-rw-r--r-- 1 runner runner 1448 Nov 13 08:20 research.ipynb
+
+=== Write the BuyAndHold algorithm (SPY daily, 2020-01-01 -> 2021-01-01) ===
+# region imports
+from AlgorithmImports import *
+# endregion
+
+class BuyAndHold(QCAlgorithm):
+
+    def initialize(self):
+        # Window is inside the free sample-data range for SPY daily
+        # (1998-01-02 .. 2021-03-31 in the QuantConnect/Lean repo Data/).
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+        self.add_equity("SPY", Resolution.DAILY)
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            self.set_holdings("SPY", 1)
+            self.debug("Purchased Stock")
+
+=== Run the backtest: lean backtest "BuyAndHold" (pulls the quantconnect/lean Docker image on first run) ===
+STATISTICS:: Profit-Loss Ratio 0
+STATISTICS:: Alpha 0.001
+STATISTICS:: Beta 0.98
+STATISTICS:: Annual Standard Deviation 0.273
+STATISTICS:: Annual Variance 0.074
+STATISTICS:: Information Ratio -0.161
+STATISTICS:: Tracking Error 0.013
+STATISTICS:: Treynor Ratio 0.163
+STATISTICS:: Total Fees $1.57
+STATISTICS:: Estimated Strategy Capacity $960000000.00
+STATISTICS:: Lowest Capacity Asset SPY R735QTJ8XC9X
+STATISTICS:: Portfolio Turnover 0.27%
+STATISTICS:: Drawdown Recovery 172
+STATISTICS:: OrderListHash e01da43217ed0e277aaa8a5618712f99
+20261113 08:26:09.340 TRACE:: BacktestingResultHandler.SendAnalysisResult(): 
+Processed final packet
+20261113 08:26:09.341 TRACE:: Engine.Run(): Disconnecting from brokerage...
+20261113 08:26:09.341 TRACE:: Engine.Run(): Disposing of setup handler...
+20261113 08:26:09.341 TRACE:: Engine.Main(): Analysis Completed and Results 
+Posted.
+Engine.Main(): Analysis Complete.
+20261113 08:26:09.343 TRACE:: Engine.Main(): Packet removed from queue: 
+1420547723
+20261113 08:26:09.343 TRACE:: LeanEngineSystemHandlers.Dispose(): start...
+20261113 08:26:09.344 TRACE:: LeanEngineSystemHandlers.Dispose(): Disposed of 
+system handlers.
+20261113 08:26:09.344 TRACE:: LeanEngineAlgorithmHandlers.Dispose(): start...
+20261113 08:26:09.344 TRACE:: LocalObjectStore.Dispose(): start...
+20261113 08:26:09.344 TRACE:: LocalObjectStore.Dispose(): end
+20261113 08:26:09.345 TRACE:: LeanEngineAlgorithmHandlers.Dispose(): Disposed of
+algorithm handlers.
+20261113 08:26:09.345 TRACE:: StopSafely(): Waiting for 'CpuPerformance' thread 
+to stop...
+20261113 08:26:09.345 TRACE:: PythonInitializer.Shutdown(): start
+20261113 08:26:09.345 TRACE:: PythonInitializer.Shutdown(): calling engine 
+shutdown...
+20261113 08:26:11.915 TRACE:: PythonInitializer.Shutdown(): ended
+20261113 08:26:11.915 TRACE:: Program.Main(): Exiting Lean...
+Successfully ran 'BuyAndHold' in the 'backtesting' environment and stored the 
+output in 'BuyAndHold/backtests/2026-11-13_08-20-33'
+
+=== Collect result files and extract statistics exactly as reported ===
+BuyAndHold/backtests/2026-11-13_08-20-33/1420547723-log.txt
+BuyAndHold/backtests/2026-11-13_08-20-33/1420547723-order-events.json
+BuyAndHold/backtests/2026-11-13_08-20-33/1420547723-summary.json
+BuyAndHold/backtests/2026-11-13_08-20-33/1420547723.json
+BuyAndHold/backtests/2026-11-13_08-20-33/code/main.py
+BuyAndHold/backtests/2026-11-13_08-20-33/code/research.ipynb
+BuyAndHold/backtests/2026-11-13_08-20-33/config
+BuyAndHold/backtests/2026-11-13_08-20-33/data-monitor-report-20261113082609191.json
+BuyAndHold/backtests/2026-11-13_08-20-33/failed-data-requests-20261113082605952.txt
+BuyAndHold/backtests/2026-11-13_08-20-33/log.txt
+# LEAN pilot result
+
+**Backtest ran successfully** with the QuantConnect LEAN CLI (local Docker engine, free sample data).
+
+- Project: BuyAndHold (SPY, daily, buy & hold)
+- Window: 2020-01-01 to 2021-01-01 (inside the free sample-data range; see README)
+- Starting cash: 100000
+- Statistics source file: `1420547723-summary.json` (copied into this artifact)
+
+## Headline statistics (verbatim from LEAN)
+
+- Net Profit: 18.274%
+- Sharpe Ratio: 0.584
+- Drawdown: 33.200%
+- Total Fees: $1.57
+
+## Full statistics as reported
+
+| Statistic | Value |
+|---|---|
+| Total Orders | 1 |
+| Average Win | 0% |
+| Average Loss | 0% |
+| Compounding Annual Return | 18.237% |
+| Drawdown | 33.200% |
+| Expectancy | 0 |
+| Start Equity | 100000 |
+| End Equity | 118273.52 |
+| Net Profit | 18.274% |
+| Sharpe Ratio | 0.584 |
+| Sortino Ratio | 0.545 |
+| Probabilistic Sharpe Ratio | 29.230% |
+| Loss Rate | 0% |
+| Win Rate | 0% |
+| Profit-Loss Ratio | 0 |
+| Alpha | 0.001 |
+| Beta | 0.98 |
+| Annual Standard Deviation | 0.273 |
+| Annual Variance | 0.074 |
+| Information Ratio | -0.161 |
+| Tracking Error | 0.013 |
+| Treynor Ratio | 0.163 |
+| Total Fees | $1.57 |
+| Estimated Strategy Capacity | $960000000.00 |
+| Lowest Capacity Asset | SPY R735QTJ8XC9X |
+| Portfolio Turnover | 0.27% |
+| Drawdown Recovery | 172 |
+
+Result files copied into this artifact: ['1420547723-order-events.json', '1420547723-summary.json', '1420547723.json', 'data-monitor-report-20261113082609191.json']
+Pilot complete: statistics extracted.

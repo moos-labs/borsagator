@@ -1,0 +1,72 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 10.2,
+ "base_source": "pandas-ta",
+ "sigma_daily": 0.0225,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0183)",
+ "date": "2026-11-13",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": []
+ },
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": -0.21,
+  "agent": -0.75,
+  "fundamentals": 0.4,
+  "price-forecast": -0.456
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": -0.38,
+   "range_low_pct": -3.69,
+   "range_high_pct": 2.94,
+   "confidence": 0.59,
+   "net_score": -0.067,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "price-forecast": -0.11
+   },
+   "horizon_short": false
+  },
+  "week": {
+   "direction": "down",
+   "expected_move_pct": -1.67,
+   "range_low_pct": -9.21,
+   "range_high_pct": 5.88,
+   "confidence": 0.58,
+   "net_score": -0.207,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "price-forecast": -0.187
+   },
+   "horizon_short": false
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -6.93,
+   "range_low_pct": -23.26,
+   "range_high_pct": 9.41,
+   "confidence": 0.54,
+   "net_score": -0.243,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.21,
+    "agent": -0.75,
+    "fundamentals": 0.4,
+    "price-forecast": -0.456
+   },
+   "horizon_short": false
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}

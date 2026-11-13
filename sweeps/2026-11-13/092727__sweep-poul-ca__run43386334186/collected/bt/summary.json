@@ -1,0 +1,27 @@
+{
+  "tool": "bt",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "tool": "bt",
+    "tool_description": "bt - Flexible Backtesting for Python (by pmorissette)",
+    "initial_capital_requested": 100000.0,
+    "start_value": 100000.0,
+    "final_value": 117659.31024932888,
+    "raw_result_prices_start": 100.0,
+    "raw_result_prices_final": 117.65931024932888,
+    "final_value_source": "result.prices (first/last value of first column), scaled to initial_capital",
+    "total_return_pct": 17.659310249328875,
+    "total_return_stat_key": "total_return",
+    "cagr_pct": 3.3100766753458633,
+    "cagr_stat_key": "cagr",
+    "max_drawdown_pct": -20.88484071766622,
+    "max_drawdown_stat_key": "max_drawdown"
+  },
+  "files": [
+    "run.log",
+    "stats.json"
+  ]
+}
