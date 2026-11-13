@@ -1,0 +1,49 @@
+{
+ "job": "run financetoolkit POUL.CA",
+ "ticker": "POUL.CA",
+ "digest_date": "2026-11-13",
+ "archived_at": "2026-11-13T18:17:20.394675+00:00",
+ "github_run_id": "43481004601",
+ "target": "sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601",
+ "tools": {
+  "financetoolkit": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 876,
+   "sha256": "4d0ac1523408a4f8168ced5af0d61d9b66a21d1352a1d2ee9ba7d01fe3b0fe9b"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 501,
+   "sha256": "9cbf87cca0a445f3d33e9ace2351e27342cb2f1f77898e3d44a819588830540f"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 14498,
+   "sha256": "eadd7c385caa4a301549107554a86efdc2bf05a6f629ca79bfd0b4f5985db64b"
+  },
+  {
+   "path": "collected/financetoolkit/ratios.json",
+   "bytes": 31315,
+   "sha256": "4ebc00ba799d7ebc27012913ce0cf87c35ebef8ce3d446d7aa35413a8d8d1dee"
+  },
+  {
+   "path": "collected/financetoolkit/report.md",
+   "bytes": 6851,
+   "sha256": "1e84f12f2beadfe6cc89a8f0f88936a27cad6f38a3ec7558a2705460611ff0bb"
+  },
+  {
+   "path": "collected/financetoolkit/run.log",
+   "bytes": 62773,
+   "sha256": "62b3428df00e1b54e8e715fd6a747ad299803eb02a117aa85230fa48fdcbc663"
+  },
+  {
+   "path": "collected/financetoolkit/summary.json",
+   "bytes": 295,
+   "sha256": "a5c7cfd0a18a11ae2589227131a10c2fe157523fe10d98a6236647ac18755483"
+  }
+ ],
+ "skipped": []
+}
