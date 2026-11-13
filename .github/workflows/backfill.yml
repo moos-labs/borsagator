@@ -43,7 +43,7 @@ jobs:
           git config user.email "moos@sherbeeny.com"
           git fetch origin "+refs/heads/archive:refs/remotes/origin/archive"
           git worktree add -b archive /tmp/arch origin/archive
-          while IFS= read -r TARGET; do
+          while IFS= read -r TARGET || [ -n "$TARGET" ]; do
             [ -z "$TARGET" ] && continue
             mkdir -p "/tmp/arch/$TARGET"
             cp -r "archive_stage/data/$TARGET/." "/tmp/arch/$TARGET/"
