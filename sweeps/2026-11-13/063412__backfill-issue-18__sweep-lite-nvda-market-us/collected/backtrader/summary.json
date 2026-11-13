@@ -1,0 +1,22 @@
+{
+  "tool": "backtrader",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "AAPL",
+    "strategy": "SMA20 cross (buy on cross above, close on cross below, 95% cash stake)",
+    "start_value": 100000.0,
+    "final_value": 112977.36,
+    "total_return_pct": 12.9774,
+    "completed_trades": 33,
+    "data_rows": 753,
+    "starting_cash": 100000.0,
+    "sma_period": 20
+  },
+  "files": [
+    "run.log",
+    "stats.json"
+  ]
+}

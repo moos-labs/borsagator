@@ -1,0 +1,10 @@
+ERROR fetching stooq:^SPX: RemoteDataError: Unable to read URL: https://stooq.com/q/d/l/?s=%5ESPX&i=d&d1=20251113&d2=20261113
+Response Text:
+b'<meta charset=utf-8><title>Stooq</title><center style=font-family:arial;margin-top:50px><p><a href=/><img src=//static.stooq.com/stooq.svg height=68></a><p style=font-size:x-large>The page you requested does not exist<br>or has been moved<p><small><a href=/>Main Page</a>'
+Fetching fred:DGS10 from 2025-11-13 to 2026-11-13 ...
+  OK: 259 rows, 2025-11-13 -> 2026-11-10, DGS10 4.11 -> 4.98
+Fetching stooq:^SPX from 2025-11-13 to 2026-11-13 ...
+  FAILED: RemoteDataError: Unable to read URL: https://stooq.com/q/d/l/?s=%5ESPX&i=d&d1=20251113&d2=20261113
+Response Text:
+b'<meta charset=utf-8><title>Stooq</title><center style=font-family:arial;margin-top:50px><p><a href=/><img src=//static.stooq.com/stooq.svg height=68></a><p style=font-size:x-large>The page you requested does not exist<br>or has been moved<p><small><a href=/>Main Page</a>'
+Wrote results/summary.json

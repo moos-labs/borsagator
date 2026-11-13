@@ -1,0 +1,30 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "NVDA",
+    "fetched_at": "2026-11-13T06:33:55Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 25,
+    "arabic_headlines": 0,
+    "latest_news_date": "Fri, 13 Nov 2026 05:51:34 GMT",
+    "latest_disclosure_date": "2026-11-12",
+    "top_headline": "8-K \u2014 NVIDIA CORP",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.05,
+    "finbert_negative": 0.3,
+    "finbert_neutral": 0.65,
+    "finbert_scored": 65
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

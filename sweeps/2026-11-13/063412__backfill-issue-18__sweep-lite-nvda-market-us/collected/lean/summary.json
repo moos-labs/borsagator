@@ -1,0 +1,28 @@
+{
+  "tool": "lean",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "succeeded-data-requests-count": 2,
+    "failed-data-requests-count": 0,
+    "succeeded-universe-data-requests-count": 0,
+    "failed-universe-data-requests-count": 0,
+    "total-data-requests-count": 2,
+    "failed-data-requests-percentage": 0.0,
+    "total-universe-data-requests-count": 0,
+    "failed-universe-data-requests-percentage": 0.0,
+    "failed-data-requests-file": "failed-data-requests-20261113063054006.txt"
+  },
+  "files": [
+    "1310301998-order-events.json",
+    "1310301998-summary.json",
+    "1310301998.json",
+    "backtest_output.log",
+    "data-monitor-report-20261113063058882.json",
+    "lean_init_attempt.log",
+    "lean_result.md",
+    "run.log"
+  ]
+}

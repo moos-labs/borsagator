@@ -1,0 +1,72 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "NVDA",
+ "base_price": 166.19,
+ "base_source": "pandas-ta",
+ "sigma_daily": 0.0391,
+ "sigma_source": "pandas-ta/indicators.csv (σ60=0.0273, σ10=0.0391)",
+ "date": "2026-11-13",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "shock headline(s): Nvidia stock plunges as CEO Jensen Huang resigns: How low it might go - Mashable",
+   "shock headline(s): Nvidia market cap plunges $490 billion following former CEO Huang's affair scandals - Yaho",
+   "shock headline(s): Nvidia CEO Jensen Huang Resigns—and the Stock Is Falling - Barron's"
+  ]
+ },
+ "family_scores": {
+  "technicals": 0.1,
+  "sentiment": -0.25,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": 0.716
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": -0.71,
+   "range_low_pct": -8.77,
+   "range_high_pct": 7.34,
+   "confidence": 0.3,
+   "net_score": -0.054,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": -0.129
+   },
+   "horizon_short": false
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 6.93,
+   "range_low_pct": -12.67,
+   "range_high_pct": 26.53,
+   "confidence": 0.3,
+   "net_score": 0.18,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": 0.583
+   },
+   "horizon_short": false
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 18.61,
+   "range_low_pct": -22.41,
+   "range_high_pct": 59.64,
+   "confidence": 0.3,
+   "net_score": 0.35,
+   "families": {
+    "technicals": 0.1,
+    "sentiment": -0.25,
+    "price-forecast": 0.716
+   },
+   "horizon_short": false
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
