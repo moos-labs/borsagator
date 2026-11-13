@@ -44,7 +44,7 @@ W = {
     "agent":          {"day": .10, "week": .20, "month": .30},
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
-RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5}
+RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5, "unknown": 1.3}
 SHOCK_WORDS = [
     "resign", "oust", "ceo", "earnings", "guidance", "investigat", "fraud",
     "halt", "merger", "acquisition", "dividend", "profit warning",
@@ -88,7 +88,9 @@ def find_key(obj, needles, depth=0):
 
 def realized_sigma(ticker):
     """Daily-return stdev from collected price CSVs.
-    Returns (sigma, source) with sigma = max(sigma_60, sigma_10)."""
+    Returns (sigma, source, density): sigma = max(sigma_60, sigma_10);
+    density = trading sessions per calendar day in that series — Kronos
+    emits calendar-day bars, so horizon maths must convert."""
     code = ticker.split(".")[0].lower()
     best = None
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
@@ -107,14 +109,30 @@ def realized_sigma(ticker):
         if not col:
             continue
         closes = [fnum(r.get(col)) for r in rows]
-        closes = [c for c in closes if c]
+        dates = []
+        dcol = next((c for c in rows[0] if c and ("date" in c.strip().lower()
+                     or c.strip().lower() in ("datetime", "index"))), None)
+        if dcol:
+            for r in rows:
+                s = str(r.get(dcol) or "")[:10]
+                try:
+                    dates.append(datetime.strptime(s, "%Y-%m-%d"))
+                except Exception:
+                    dates.append(None)
+        pairs = [(c, d) for c, d in zip(closes, dates or [None] * len(closes)) if c]
+        closes = [c for c, _ in pairs]
         if len(closes) < 30:
             continue
         if best is None or len(closes) > len(best[0]):
-            best = (closes, os.path.basename(os.path.dirname(path)) + "/" + name)
+            best = (closes, [d for _, d in pairs],
+                    os.path.basename(os.path.dirname(path)) + "/" + name)
     if not best:
-        return 0.02, "default (no history found)"
-    closes, src = best
+        return 0.02, "default (no history found)", 5 / 7
+    closes, dates, src = best
+    density = 5 / 7
+    ds = [d for d in dates if d]
+    if len(ds) >= 30 and (ds[-1] - ds[0]).days > 0:
+        density = min(1.0, max(0.4, (len(ds) - 1) / (ds[-1] - ds[0]).days))
 
     def sd(vals):
         rets = [math.log(vals[i] / vals[i - 1]) for i in range(1, len(vals))]
@@ -125,7 +143,7 @@ def realized_sigma(ticker):
 
     s60 = sd(closes[-61:])
     s10 = sd(closes[-11:])
-    return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})"
+    return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})", density
 
 
 def main():
@@ -164,7 +182,7 @@ def main():
         print("ensemble: no base price found — skipping")
         return
 
-    sigma, sigma_src = realized_sigma(ticker)
+    sigma, sigma_src, density = realized_sigma(ticker)
 
     # ---------- Kronos path ----------
     kronos_path = []
@@ -327,8 +345,17 @@ def main():
                 fund = quality
 
     # ---------- news risk overlay ----------
+    # "none" is a MEASURED state (the news tool ran and found nothing
+    # alarming). If the tool is missing or failed, the risk is UNKNOWN —
+    # never silently "none": cap confidence and widen ranges instead
+    # (sweep #20 printed uncapped 0.54 confidence with no overlay at all
+    # after the news tool errored).
     risk = {"level": "none", "conf_cap": .60, "price_mult": 1.0, "flags": []}
-    if ok("news-disclosure"):
+    if not ok("news-disclosure"):
+        risk.update(level="unknown", conf_cap=.35, price_mult=.8,
+                    flags=["news overlay unavailable — risk unassessed, "
+                           "confidence capped"])
+    else:
         news = load_json(os.path.join(COLLECTED, "news-disclosure", "news.json")) or {}
         disc = load_json(os.path.join(COLLECTED, "news-disclosure", "disclosures.json")) or {}
         items = (disc.get("items") or []) + (news.get("items") or [])
@@ -362,13 +389,18 @@ def main():
     out = {"tool": "forecast-ensemble", "version": 2, "ticker": ticker,
            "base_price": base, "base_source": base_src,
            "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
+           "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
            "family_scores": {}, "horizons": {},
            "confidence_basis": "provisional (uncalibrated — no scoring history yet)"}
     fam_display = dict(fam_fixed)
     for hname, bar in HORIZONS.items():
         ka = kronos_at(bar)
-        vol_h = sigma * math.sqrt(bar)          # 1-sigma move over the horizon
+        # Kronos bars are CALENDAR days; sigma is per TRADING session.
+        # A horizon of `bar` calendar days contains ~bar*density sessions,
+        # and it is the sessions that carry the volatility.
+        h_eff = max(1, round(bar * density))
+        vol_h = sigma * math.sqrt(h_eff)        # 1-sigma move over the horizon
         price_score = None
         if ka:
             price_score = max(-1.0, min(1.0, ka["move"] / (2.0 * vol_h))) if vol_h > 0 else 0.0
@@ -400,6 +432,7 @@ def main():
             "net_score": round(net, 3),
             "families": {f: round(scores[f], 3) for f in scores},
             "horizon_short": bool(ka and ka["short"]),
+            "trading_sessions": h_eff,
         }
     out["family_scores"] = {k: (round(v, 3) if v is not None else None)
                             for k, v in fam_display.items()}
@@ -409,6 +442,8 @@ def main():
 
     lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
              f"Base price {base} ({base_src}). Daily volatility σ {sigma:.2%} ({sigma_src}). "
+             f"Kronos bars are calendar days — horizons are scaled to trading sessions "
+             f"(density {density:.2f}/day). "
              f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",
              "Ranges are anchored in realized volatility. Confidence is provisional "
@@ -421,6 +456,8 @@ def main():
             continue
         arrow = {"up": "⬆ up", "down": "⬇ down", "flat": "➡ flat"}[h["direction"]]
         note = " (fleet horizon)" if h["horizon_short"] else ""
+        if h.get("trading_sessions") and h["trading_sessions"] != HORIZONS[hname]:
+            note += f" (≈{h['trading_sessions']} sessions)"
         lines.append(f"| {hname}{note} | {arrow} | {h['expected_move_pct']:+.2f}% | "
                      f"{h['range_low_pct']:+.2f}% … {h['range_high_pct']:+.2f}% | {h['confidence']:.2f} |")
     lines += ["", "Family scores (−1…+1): " + ", ".join(
