@@ -121,8 +121,15 @@ def realized_sigma(ticker, base=None):
     code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     best = None
     anchored = None
+    _reg = load_json(REGISTRY) or {}
+    _cats = {t.get("id"): t.get("category") for t in _reg.get("tools", [])}
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
         name = os.path.basename(path).lower()
+        # Same exclusion as price_series: validation/backtest tools run
+        # reference workloads — their CSVs never enter the sigma pool.
+        if _cats.get(os.path.basename(os.path.dirname(path))) in (
+                "validation", "backtest"):
+            continue
         if not any(s in name for s in ("ohlc", "indicators", code)):
             continue
         try:
@@ -258,6 +265,13 @@ def price_crosscheck(ticker, base, base_src, series):
             witnesses[src] = m[common]
         else:
             witnesses[src] = m[sorted(m.keys())[-1]]
+    # Deduplicate by TOOL: a tool's own collected series supersedes its
+    # digest metric — the same underlying data must not vote twice
+    # (Ins review, issue #49).
+    series_tools = {src.split("/")[0] for src in witnesses if "/" in src}
+    witnesses = {k: v for k, v in witnesses.items()
+                 if not (k.startswith("metrics:")
+                         and k.split(":", 1)[1] in series_tools)}
     vals = sorted(witnesses.values())
     if len(vals) < 2:
         return {"status": "single-source", "witnesses": witnesses,
@@ -281,7 +295,9 @@ def price_crosscheck(ticker, base, base_src, series):
     spread = (cvals[-1] - cvals[0]) / cvals[len(cvals) // 2] \
         if cvals[len(cvals) // 2] else 0.0
     base_key = f"metrics:{base_src}"
-    if base_key in cons and len(consensus) >= 2:
+    base_in_cons = (base_key in cons
+                    or any(s.split("/")[0] == base_src for s in cons))
+    if base_in_cons and len(consensus) >= 2:
         return {"status": "agree", "witnesses": witnesses,
                 "outliers": outliers,
                 "spread_pct": round(spread * 100, 2), "common_date": common,
