@@ -109,13 +109,18 @@ def find_key(obj, needles, depth=0):
     return None
 
 
-def realized_sigma(ticker):
+def realized_sigma(ticker, base=None):
     """Daily-return stdev from collected price CSVs.
     Returns (sigma, source, density): sigma = max(sigma_60, sigma_10);
     density = trading sessions per calendar day in that series — Kronos
-    emits calendar-day bars, so horizon maths must convert."""
+    emits calendar-day bars, so horizon maths must convert.
+    Series choice is ANCHORED on the verified base close when known:
+    among candidates whose last close sits within 25% of base, take the
+    longest (a stray foreign series must not set the volatility); with
+    no anchor available, fall back to the longest candidate."""
     code = ticker.split(".")[0].lower()
     best = None
+    anchored = None
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
         name = os.path.basename(path).lower()
         if not any(s in name for s in ("ohlc", "indicators", code)):
@@ -142,13 +147,20 @@ def realized_sigma(ticker):
                     dates.append(datetime.strptime(s, "%Y-%m-%d"))
                 except Exception:
                     dates.append(None)
-        pairs = [(c, d) for c, d in zip(closes, dates or [None] * len(closes)) if c]
+        pairs = [(c, d) for c, d in zip(closes, dates or [None] * len(closes))
+                 if c and c > 0]
         closes = [c for c, _ in pairs]
         if len(closes) < 30:
             continue
+        cand = (closes, [d for _, d in pairs],
+                os.path.basename(os.path.dirname(path)) + "/" + name)
         if best is None or len(closes) > len(best[0]):
-            best = (closes, [d for _, d in pairs],
-                    os.path.basename(os.path.dirname(path)) + "/" + name)
+            best = cand
+        if base and abs(closes[-1] - base) / base <= 0.25:
+            if anchored is None or len(closes) > len(anchored[0]):
+                anchored = cand
+    if anchored is not None:
+        best = anchored
     if not best:
         return 0.02, "default (no history found)", 5 / 7
     closes, dates, src = best
@@ -399,7 +411,8 @@ def main():
         print("ensemble: no digest.json — skipping")
         return
     ticker = (digest.get("ticker") or "").upper()
-    results = {r["tool"]: r for r in digest.get("results", [])}
+    results = {r["tool"]: r for r in digest.get("results", [])
+               if isinstance(r, dict) and r.get("tool")}
 
     def metrics(tool):
         r = results.get(tool) or {}
@@ -437,7 +450,7 @@ def main():
               f"standing on {check['base_source_used']}")
         base, base_src = check["base_used"], check["base_source_used"]
 
-    sigma, sigma_src, density = realized_sigma(ticker)
+    sigma, sigma_src, density = realized_sigma(ticker, base)
 
     # ---------- Kronos path ----------
     kronos_path = []
@@ -603,7 +616,7 @@ def main():
                     break
                 if quality is None:
                     quality = scan_quality(d)
-            if pe:
+            if pe and pe > 0:
                 if ref:
                     pe = pe * base / ref  # rescale the file's reference price to today's base
                 fund = .4 if pe < 8 else .15 if pe < 15 else -.1 if pe < 25 else -.35
@@ -664,6 +677,7 @@ def main():
                 m = series[pick]
                 closes = [m[d] for d in sorted(m)
                           if len(d) == 10 and d[4] == "-"]
+                closes = [c for c in closes if c and c > 0]
                 if len(closes) >= 4 and sigma > 0:
                     rets = [math.log(closes[i] / closes[i - 1])
                             for i in range(1, len(closes))]
@@ -838,4 +852,17 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print("ensemble failed (non-fatal):", e)
+        # Never fail SILENTLY: leave a sentinel next to the digest and a
+        # visible warning in it, so a missing ensemble is noticed.
+        try:
+            ddir = os.path.dirname(OUT_JSON)
+            os.makedirs(ddir, exist_ok=True)
+            with open(os.path.join(ddir, "ensemble_error.txt"), "w") as f:
+                f.write(f"ensemble failed: {type(e).__name__}: {e}\n")
+            if os.path.exists(OUT_MD):
+                with open(OUT_MD, "a") as f:
+                    f.write("\n## ⚠️ Ensemble failed — see ensemble_error.txt; "
+                            "this digest has NO ensemble forecast.\n")
+        except Exception:
+            pass
     sys.exit(0)
