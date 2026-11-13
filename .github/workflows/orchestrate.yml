@@ -44,9 +44,16 @@ jobs:
           owner: moos-labs
           repositories: ${{ steps.fleet.outputs.repos }}
 
+      - name: Install the token-minting dependency
+        run: pip install pyjwt cryptography
+
       - name: Run the gator
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          # The orchestrator mints/refreshes its own installation tokens
+          # from these (App tokens live 1h; full sweeps run longer).
+          BORSAGATOR_APP_ID: ${{ secrets.BORSAGATOR_APP_ID }}
+          BORSAGATOR_APP_PRIVATE_KEY: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
           JOB: ${{ github.event_name == 'schedule' && (vars.JOB_SCHEDULED || 'sweep-lite POUL.CA') || inputs.job || vars.JOB }}
         run: python3 scripts/orchestrate.py
 
