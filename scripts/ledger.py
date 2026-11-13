@@ -40,6 +40,7 @@ BLOCKLIST = ("forecast.csv", "account_value", "port_analysis",
              "report_normal", "screener", "companies", "fred_")
 
 WARNINGS = []
+STATS = {"skipped_rows": 0}   # malformed CSV rows dropped while parsing
 
 
 def warn(msg):
@@ -116,18 +117,23 @@ def parse_price_csv(text):
     out, symbols = {}, set()
     for r in rows[1:]:
         if len(r) <= max(di, ci):
+            STATS["skipped_rows"] += 1
             continue
         d = parse_date(r[di])
         if not d:
+            STATS["skipped_rows"] += 1
             continue
         try:
             c = float(str(r[ci]).replace(",", ""))
         except Exception:
+            STATS["skipped_rows"] += 1
             continue
         if c > 0:
             out[d] = c
             if si is not None and len(r) > si:
                 symbols.add(r[si].strip())
+        else:
+            STATS["skipped_rows"] += 1
     if len(out) < 20:
         return None, None
     return out, (symbols or None)
@@ -351,6 +357,9 @@ def main():
         gaps.append(f"{t}: actuals series has {summ['points']} sessions, "
                     f"{summ['first_date']} → {summ['last_date']} "
                     f"(last source: {summ['sources'][-1]['file'] if summ['sources'] else '—'})")
+    if STATS["skipped_rows"]:
+        gaps.append(f"price-CSV parsing skipped {STATS['skipped_rows']} "
+                    "malformed/non-positive row(s) across all candidate files")
 
     # ---- extract forecasts --------------------------------------------------
     forecasts = []
