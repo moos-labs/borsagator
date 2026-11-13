@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
-"""Borsagator ensemble synthesizer (v1).
+"""Borsagator ensemble synthesizer (v2).
 
 Runs inside the Borsagator workflow right after orchestrate.py. Reads
 digest/digest.json + the harvested per-tool results in collected/ and
-produces ONE forecast per horizon (day / week / month):
+produces ONE forecast per horizon (day / week / month).
 
-- Tools vote by FAMILY (registry family+role fields), never per tool:
-  price-forecast (Kronos path), technicals (pandas-ta; TA-Lib is a
-  cross-check with identical math, not a second vote), sentiment
-  (FinBERT trio + the news layer's FinBERT, averaged inside the family),
-  agent (TradingAgents + FinRobot, averaged; both currently ride the
-  same LLM, so their agreement is weak evidence), fundamentals
-  (FinanceToolkit, month horizon only, abstains on ticker mismatch).
-- The news layer does NOT vote direction. It is a risk overlay:
-  fresh disclosures / shock headlines widen ranges, cap confidence and
-  discount the price family's weight.
-- Output is a distribution (expected move + range), a direction, and a
-  PROVISIONAL confidence. Confidence becomes calibrated only once the
-  scoring ledger (phase 2) has measured this ensemble's own history;
-  until then it is capped and labelled.
+Design (v2 — root fixes over v1):
+- Tools vote by FAMILY (registry family+role), never per tool.
+- Sentiment inputs are LIVE per-ticker headlines: the FinBERT trio
+  fetches the day's coverage itself (fetch_headlines.py in each
+  sentiment repo) — no stored samples anywhere in the chain.
+- Ranges are anchored in the stock's OWN realized volatility
+  (sigma = max of 60-session and 10-session daily-return stdev, from
+  the price history the fleet already collects), not in the forecast
+  model's self-reported bands — so intervals widen by themselves on
+  shock days, because the shock is inside the recent returns.
+- The price family's score is the Kronos move measured in units of
+  that volatility (z-score), not an arbitrary multiplier — a +5% path
+  means something different on a calm stock than on a crashing one.
+- The news layer never votes direction; it is a risk overlay that
+  caps confidence, discounts the price weight and stretches ranges.
+- Confidence is PROVISIONAL (uncalibrated) until the scoring ledger
+  (phase 2) has measured this ensemble's own history.
 
-Deterministic, stdlib only, no LLM. Never raises: on any failure it
-writes what it has and exits 0 — a sweep must never break over the
-synthesizer.
+Deterministic, stdlib only, no LLM. Never raises.
 """
 import csv, glob, json, math, os, re, sys
 from datetime import datetime, timezone
@@ -36,13 +37,14 @@ OUT_JSON = os.path.join(os.getcwd(), "digest", "ensemble.json")
 OUT_MD = os.path.join(os.getcwd(), "digest", "digest.md")
 
 HORIZONS = {"day": 1, "week": 5, "month": 21}
-W = {  # family weights per horizon
+W = {
     "price-forecast": {"day": .45, "week": .40, "month": .30},
     "technicals":     {"day": .30, "week": .20, "month": .10},
     "sentiment":      {"day": .15, "week": .15, "month": .05},
     "agent":          {"day": .10, "week": .20, "month": .30},
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
+RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5}
 SHOCK_WORDS = [
     "resign", "oust", "ceo", "earnings", "guidance", "investigat", "fraud",
     "halt", "merger", "acquisition", "dividend", "profit warning",
@@ -69,7 +71,6 @@ def load_json(path):
 
 
 def find_key(obj, needles, depth=0):
-    """First numeric value whose key contains any needle (recursive)."""
     if depth > 4 or not isinstance(obj, dict):
         return None
     for k, v in obj.items():
@@ -85,6 +86,48 @@ def find_key(obj, needles, depth=0):
     return None
 
 
+def realized_sigma(ticker):
+    """Daily-return stdev from collected price CSVs.
+    Returns (sigma, source) with sigma = max(sigma_60, sigma_10)."""
+    code = ticker.split(".")[0].lower()
+    best = None
+    for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
+        name = os.path.basename(path).lower()
+        if not any(s in name for s in ("ohlc", "indicators", code)):
+            continue
+        try:
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+        except Exception:
+            continue
+        if len(rows) < 30:
+            continue
+        col = next((c for c in rows[0] if c and c.strip().lower() in
+                    ("close", "adj close", "adjclose")), None)
+        if not col:
+            continue
+        closes = [fnum(r.get(col)) for r in rows]
+        closes = [c for c in closes if c]
+        if len(closes) < 30:
+            continue
+        if best is None or len(closes) > len(best[0]):
+            best = (closes, os.path.basename(os.path.dirname(path)) + "/" + name)
+    if not best:
+        return 0.02, "default (no history found)"
+    closes, src = best
+
+    def sd(vals):
+        rets = [math.log(vals[i] / vals[i - 1]) for i in range(1, len(vals))]
+        if len(rets) < 5:
+            return 0.0
+        mu = sum(rets) / len(rets)
+        return math.sqrt(sum((r - mu) ** 2 for r in rets) / len(rets))
+
+    s60 = sd(closes[-61:])
+    s10 = sd(closes[-11:])
+    return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})"
+
+
 def main():
     digest = load_json(DIGEST)
     if not digest:
@@ -92,8 +135,6 @@ def main():
         return
     ticker = (digest.get("ticker") or "").upper()
     results = {r["tool"]: r for r in digest.get("results", [])}
-    reg = load_json(REGISTRY) or {"tools": []}
-    role = {t["id"]: (t.get("family"), t.get("role")) for t in reg["tools"]}
 
     def metrics(tool):
         r = results.get(tool) or {}
@@ -110,10 +151,10 @@ def main():
             base, base_src = fnum(m["close"]), tool
             break
     if base is None:
-        for tool, m in ((t, metrics(t)) for t in results):
+        for tool in results:
             if not ok(tool):
                 continue
-            for k, v in m.items():
+            for k, v in metrics(tool).items():
                 if k.endswith("_last_close") and ticker.replace(".", "_") in k.upper().replace(".", "_"):
                     base, base_src = fnum(v), tool
                     break
@@ -123,7 +164,9 @@ def main():
         print("ensemble: no base price found — skipping")
         return
 
-    # ---------- price family: Kronos path ----------
+    sigma, sigma_src = realized_sigma(ticker)
+
+    # ---------- Kronos path ----------
     kronos_path = []
     kcsv = os.path.join(COLLECTED, "kronos", "forecast.csv")
     if os.path.exists(kcsv):
@@ -149,7 +192,7 @@ def main():
                 "band": max((h - l) / 2.0 / base, 0.004),
                 "short": len(kronos_path) < bar}
 
-    # ---------- technicals family (pandas-ta voter) ----------
+    # ---------- technicals (pandas-ta voter) ----------
     tech = None
     if ok("pandas-ta"):
         m = metrics("pandas-ta")
@@ -160,7 +203,7 @@ def main():
             s = 0.0
             s += .45 if rsi < 30 else .15 if rsi < 45 else 0 if rsi <= 55 else -.15 if rsi <= 70 else -.45
             if adx and adx > 40:
-                s *= .55  # strong trend: mean-reversion reads weaken
+                s *= .55
             if hist is not None:
                 s += .30 if hist > 0 else -.30
             if close and ema20:
@@ -169,26 +212,24 @@ def main():
                 s += -.10 if stoch > 80 else .10 if stoch < 20 else 0
             tech = max(-1.0, min(1.0, s))
 
-    # ---------- sentiment family (trio files + news FinBERT) ----------
+    # ---------- sentiment (live-headline trio + news FinBERT) ----------
     subs = []
     for tool in ("finbert", "finbert-tone", "financial-roberta"):
         if not ok(tool):
             continue
-        for path in glob.glob(os.path.join(COLLECTED, tool, "*.json")):
-            d = load_json(path)
-            if not d:
-                continue
-            pos = find_key(d, ["positive", "_pos"])
-            neg = find_key(d, ["negative", "_neg"])
-            if pos is not None and neg is not None:
-                subs.append(pos - neg)
-                break
+        d = load_json(os.path.join(COLLECTED, tool, "sentiment.json"))
+        mp = (d or {}).get("mean_probabilities") or {}
+        pos, neg = fnum(mp.get("positive")), fnum(mp.get("negative"))
+        if pos is None and d:
+            pos, neg = find_key(d, ["positive"]), find_key(d, ["negative"])
+        if pos is not None and neg is not None:
+            subs.append(pos - neg)
     nd = metrics("news-disclosure")
     if ok("news-disclosure") and fnum(nd.get("finbert_positive")) is not None:
         subs.append(fnum(nd["finbert_positive"]) - fnum(nd.get("finbert_negative") or 0))
     sentiment = (sum(subs) / len(subs)) if subs else None
 
-    # ---------- agent family ----------
+    # ---------- agents ----------
     avotes = []
     if ok("tradingagents"):
         rating = str(metrics("tradingagents").get("final_rating") or "").strip().lower()
@@ -204,24 +245,41 @@ def main():
             avotes.append(0.0)
     agent = (sum(avotes) / len(avotes)) if avotes else None
 
-    # ---------- fundamentals family (month only, ticker-checked) ----------
+    # ---------- fundamentals (month only, ticker-checked) ----------
     fund = None
     if ok("financetoolkit"):
         comp = str(metrics("financetoolkit").get("company") or "")
         code = ticker.split(".")[0]
         if code in comp or ticker in comp or not comp:
+            pe = None
             for path in glob.glob(os.path.join(COLLECTED, "financetoolkit", "*.json")):
                 d = load_json(path)
-                if not d:
-                    continue
-                pe = find_key(d, ["price_earnings", "pe_ratio", "p_e"])
-                if pe:
-                    fund = .4 if pe < 8 else .15 if pe < 15 else -.1 if pe < 25 else -.35
-                    break
+                if d:
+                    pe = find_key(d, ["price_earnings", "pe_ratio", "p_e"])
+                    if pe:
+                        break
+            if pe is None:
+                for path in glob.glob(os.path.join(COLLECTED, "financetoolkit", "*.csv")):
+                    try:
+                        with open(path, newline="", encoding="utf-8") as f:
+                            for row in csv.DictReader(f):
+                                for k, v in row.items():
+                                    if k and any(n in k.lower() for n in
+                                                 ("price_earnings", "pe_ratio", "p_e")):
+                                        pe = fnum(v)
+                                        if pe:
+                                            break
+                                if pe:
+                                    break
+                    except Exception:
+                        continue
+                    if pe:
+                        break
+            if pe:
+                fund = .4 if pe < 8 else .15 if pe < 15 else -.1 if pe < 25 else -.35
 
     # ---------- news risk overlay ----------
-    risk = {"level": "none", "range_mult": 1.0, "conf_cap": .60,
-            "price_mult": 1.0, "flags": []}
+    risk = {"level": "none", "conf_cap": .60, "price_mult": 1.0, "flags": []}
     if ok("news-disclosure"):
         news = load_json(os.path.join(COLLECTED, "news-disclosure", "news.json")) or {}
         disc = load_json(os.path.join(COLLECTED, "news-disclosure", "disclosures.json")) or {}
@@ -243,26 +301,32 @@ def main():
             if age <= 2 and any(w in title.lower() for w in SHOCK_WORDS):
                 shock.append(title[:90])
         if shock:
-            risk.update(level="shock", range_mult=2.0, conf_cap=.30, price_mult=.5)
+            risk.update(level="shock", conf_cap=.30, price_mult=.5)
             risk["flags"] = ["shock headline(s): " + s for s in shock[:3]]
         elif fresh_disc or len(items) >= 10:
-            risk.update(level="elevated", range_mult=1.4, conf_cap=.45, price_mult=.8)
+            risk.update(level="elevated", conf_cap=.45, price_mult=.8)
             if fresh_disc:
                 risk["flags"].append(f"{fresh_disc} disclosure(s) in the last 3 days")
 
     # ---------- combine per horizon ----------
-    fam_scores = {"price-forecast": None, "technicals": tech,
-                  "sentiment": sentiment, "agent": agent, "fundamentals": fund}
-    out = {"tool": "forecast-ensemble", "ticker": ticker, "base_price": base,
-           "base_source": base_src, "date": digest.get("date"),
-           "risk": risk, "family_scores": fam_scores, "horizons": {},
+    fam_fixed = {"technicals": tech, "sentiment": sentiment,
+                 "agent": agent, "fundamentals": fund}
+    out = {"tool": "forecast-ensemble", "version": 2, "ticker": ticker,
+           "base_price": base, "base_source": base_src,
+           "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
+           "date": digest.get("date"), "risk": risk,
+           "family_scores": {}, "horizons": {},
            "confidence_basis": "provisional (uncalibrated — no scoring history yet)"}
+    fam_display = dict(fam_fixed)
     for hname, bar in HORIZONS.items():
         ka = kronos_at(bar)
+        vol_h = sigma * math.sqrt(bar)          # 1-sigma move over the horizon
+        price_score = None
         if ka:
-            fam_scores["price-forecast"] = max(-1.0, min(1.0, ka["move"] * 8))
+            price_score = max(-1.0, min(1.0, ka["move"] / (2.0 * vol_h))) if vol_h > 0 else 0.0
+        fam_display["price-forecast"] = price_score
         scores, weights = {}, {}
-        for fam, s in fam_scores.items():
+        for fam, s in list(fam_fixed.items()) + [("price-forecast", price_score)]:
             if s is None or W[fam][hname] == 0:
                 continue
             w = W[fam][hname] * (risk["price_mult"] if fam == "price-forecast" else 1.0)
@@ -273,10 +337,10 @@ def main():
         net = sum(scores[f] * weights[f] for f in scores) / wsum
         var = sum(weights[f] * (scores[f] - net) ** 2 for f in scores) / wsum
         disagree = math.sqrt(var)
-        band = (ka["band"] if ka else .02)
-        kmove = (ka["move"] if ka else 0.0)
-        expected = .6 * kmove + .4 * net * band * 3
-        half = band * risk["range_mult"] * (1 + .5 * disagree)
+        kmove = ka["move"] if ka else 0.0
+        expected = .6 * kmove + .4 * net * (1.28 * vol_h)
+        half = max(1.28 * vol_h, ka["band"] if ka else 0.0) \
+            * RISK_MULT[risk["level"]] * (1 + .5 * disagree)
         agree = max(0.0, 1.0 - disagree)
         conf = min(risk["conf_cap"], .20 + .45 * agree + .10 * (len(scores) / 5))
         out["horizons"][hname] = {
@@ -289,15 +353,18 @@ def main():
             "families": {f: round(scores[f], 3) for f in scores},
             "horizon_short": bool(ka and ka["short"]),
         }
+    out["family_scores"] = {k: (round(v, 3) if v is not None else None)
+                            for k, v in fam_display.items()}
 
     with open(OUT_JSON, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
 
-    # ---------- markdown section ----------
-    lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v1)", "",
-             f"Base price {base} ({base_src}). News risk: **{risk['level']}**"
+    lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
+             f"Base price {base} ({base_src}). Daily volatility σ {sigma:.2%} ({sigma_src}). "
+             f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",
-             "Confidence is provisional (uncalibrated) until the scoring ledger has history.", "",
+             "Ranges are anchored in realized volatility. Confidence is provisional "
+             "(uncalibrated) until the scoring ledger has history.", "",
              "| Horizon | Direction | Expected | Range | Confidence |",
              "|---|---|---|---|---|"]
     for hname in ("day", "week", "month"):
@@ -309,16 +376,18 @@ def main():
         lines.append(f"| {hname}{note} | {arrow} | {h['expected_move_pct']:+.2f}% | "
                      f"{h['range_low_pct']:+.2f}% … {h['range_high_pct']:+.2f}% | {h['confidence']:.2f} |")
     lines += ["", "Family scores (−1…+1): " + ", ".join(
-        f"{k} {v:+.2f}" if v is not None else f"{k} —" for k, v in fam_scores.items()) + ".",
-        "Verdicts are combined by family, weighted by horizon; disagreement widens the range instead of being averaged away."]
+        f"{k} {v:+.2f}" if v is not None else f"{k} —" for k, v in fam_display.items()) + ".",
+        "Verdicts are combined by family, weighted by horizon; disagreement widens "
+        "the range instead of being averaged away."]
     with open(OUT_MD, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
-    print("ensemble: written for", ticker, "| horizons:", list(out["horizons"]))
+    print("ensemble v2: written for", ticker, "| sigma", round(sigma, 4),
+          "| horizons:", list(out["horizons"]))
 
 
 if __name__ == "__main__":
     try:
         main()
-    except Exception as e:  # never break a sweep
+    except Exception as e:
         print("ensemble failed (non-fatal):", e)
     sys.exit(0)
