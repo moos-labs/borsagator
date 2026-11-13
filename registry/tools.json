@@ -109,7 +109,7 @@
   },
   {
    "category": "sentiment",
-   "command": "mkdir -p results\npython scripts/finbert_sentiment.py --input samples/poul_headlines.txt --label poul-pilot 2>&1 | tee results/run.log",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/finbert_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
    "fixed_target": "samples/poul_headlines.txt",
    "id": "finbert",
    "repo": "finbert-runner",
@@ -118,11 +118,12 @@
     "EGX"
    ],
    "family": "sentiment",
-   "role": "family-vote"
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
   },
   {
    "category": "sentiment",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/tone_sentiment.py --input samples/poul_headlines.txt 2>&1 | tee results/run.log",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/tone_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
    "fixed_target": "samples/poul_headlines.txt",
    "id": "finbert-tone",
    "repo": "finbert-tone-runner",
@@ -131,11 +132,12 @@
     "EGX"
    ],
    "family": "sentiment",
-   "role": "family-vote"
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
   },
   {
    "category": "sentiment",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/roberta_sentiment.py --input samples/poul_headlines.txt 2>&1 | tee results/run.log",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/roberta_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
    "fixed_target": "samples/poul_headlines.txt",
    "id": "financial-roberta",
    "repo": "roberta-sentiment-runner",
@@ -144,7 +146,8 @@
     "EGX"
    ],
    "family": "sentiment",
-   "role": "family-vote"
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
   },
   {
    "category": "agent",
