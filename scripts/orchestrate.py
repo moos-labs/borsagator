@@ -100,6 +100,7 @@ def ensure_token(force=False):
     return TOKEN
 
 EMITTER = '''
+mkdir -p results
 echo $? > results/.exit
 python3 - <<'BORSA_EOF'
 import json, os, glob
@@ -240,38 +241,60 @@ def find_new_run(repo, since_epoch):
 
 def wait_run(repo, run_id):
     deadline = time.time() + TOOL_TIMEOUT
+    bad_polls = 0
     while time.time() < deadline:
         status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/runs/{run_id}")
-        if status == 200 and data.get("status") == "completed":
-            return data
+        if status == 200:
+            bad_polls = 0
+            if data.get("status") == "completed":
+                return data
+        else:
+            # A dead API (5xx, unrecoverable 401) must not burn the whole
+            # tool timeout masquerading as a slow run.
+            bad_polls += 1
+            if bad_polls >= 6:
+                return {"status": "api-error", "conclusion": None,
+                        "_api_error": status}
         time.sleep(POLL_SECONDS)
     return None
 
 
 def fetch_summary(repo, run_id, tool_id):
+    """Returns (summary_or_None, detail). The detail explains a failure
+    so a 'no-summary' row in the digest is diagnosable instead of mute.
+    Artifact members are validated before extraction: a member whose
+    resolved path escapes the destination is refused (zip-slip)."""
     status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/runs/{run_id}/artifacts")
     if status != 200:
-        return None
+        return None, f"artifacts list HTTP {status}"
     artifact = next((a for a in data.get("artifacts", []) if a.get("name") == "results"), None)
     if not artifact:
-        return None
+        return None, "no 'results' artifact on the run"
     status, headers, _ = gh("GET", f"/repos/{ORG}/{repo}/actions/artifacts/{artifact['id']}/zip", raw=True)
     location = headers.get("Location") or headers.get("location")
     if not location:
-        return None
+        return None, f"artifact zip HTTP {status} with no Location"
     blob = download(location)
     dest = os.path.join(OUT, tool_id)
     os.makedirs(dest, exist_ok=True)
-    with zipfile.ZipFile(io.BytesIO(blob)) as z:
-        z.extractall(dest)
+    dest_abs = os.path.abspath(dest)
+    try:
+        with zipfile.ZipFile(io.BytesIO(blob)) as z:
+            for member in z.namelist():
+                target = os.path.abspath(os.path.join(dest_abs, member))
+                if target != dest_abs and not target.startswith(dest_abs + os.sep):
+                    return None, f"refused unsafe artifact member: {member}"
+            z.extractall(dest)
+    except Exception as e:
+        return None, f"artifact extract failed: {e}"
     summary_path = os.path.join(dest, "summary.json")
     if os.path.exists(summary_path):
         try:
             with open(summary_path) as f:
-                return json.load(f)
-        except Exception:
-            return None
-    return None
+                return json.load(f), ""
+        except Exception as e:
+            return None, f"summary.json unreadable: {e}"
+    return None, "artifact carried no summary.json"
 
 
 def run_tool(tool, ticker, date_str):
@@ -310,13 +333,19 @@ def run_tool(tool, ticker, date_str):
         if not finished:
             result.update(status="timeout", detail=f"no completion within {TOOL_TIMEOUT//60} min")
             return result
+        if finished.get("_api_error"):
+            result.update(status="api-error",
+                          detail=f"run polling failed (HTTP {finished['_api_error']})")
+            return result
         result["conclusion"] = finished.get("conclusion")
-        summary = fetch_summary(repo, run["id"], tool_id)
+        summary, fs_detail = fetch_summary(repo, run["id"], tool_id)
         if summary:
             result["summary"] = summary
             result["status"] = summary.get("status", "unknown")
         else:
             result["status"] = "no-summary"
+            if fs_detail:
+                result["detail"] = fs_detail
         return result
     finally:
         if changed:
