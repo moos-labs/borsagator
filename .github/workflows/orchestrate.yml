@@ -14,7 +14,7 @@ on:
     - cron: "15 6 * * 0,1,2,3,4"
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -53,6 +53,31 @@ jobs:
       - name: Run the ensemble synthesizer
         if: always()
         run: python3 scripts/ensemble.py || true
+
+      - name: Stage the sweep archive
+        if: always()
+        run: python3 scripts/archive.py || true
+
+      - name: Commit the archive
+        if: always()
+        run: |
+          if [ -f archive_stage/TARGET.txt ]; then
+            TARGET=$(cat archive_stage/TARGET.txt)
+            git config user.name "borsagator-archive"
+            git config user.email "moos@sherbeeny.com"
+            if git ls-remote --exit-code origin archive >/dev/null 2>&1; then
+              git fetch origin archive
+              git worktree add /tmp/arch origin/archive
+            else
+              git worktree add --orphan -b archive /tmp/arch
+            fi
+            mkdir -p "/tmp/arch/$TARGET"
+            cp -r archive_stage/data/. "/tmp/arch/$TARGET/"
+            cd /tmp/arch
+            git add -A
+            git commit -m "Archive sweep: $TARGET" || echo "nothing to commit"
+            git push origin archive || echo "ARCHIVE PUSH FAILED (non-fatal)"
+          fi
 
       - name: Upload the digest
         if: always()
