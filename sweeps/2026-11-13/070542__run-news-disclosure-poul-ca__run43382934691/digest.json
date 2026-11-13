@@ -1,0 +1,46 @@
+{
+  "job": "run news-disclosure POUL.CA",
+  "ticker": "POUL.CA",
+  "date": "2026-11-13",
+  "started": "2026-11-13T07:03:11.947348+00:00",
+  "finished": "2026-11-13T07:05:42.380617+00:00",
+  "results": [
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "run_url": "https://github.com/moos-labs/news-disclosure-runner/actions/runs/43382954748",
+      "conclusion": "success",
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "fetched_at": "2026-11-13T07:05:21Z",
+          "tool": "news-disclosure",
+          "news_count": 40,
+          "disclosure_count": 6,
+          "arabic_headlines": 45,
+          "latest_news_date": "Thu, 12 Nov 2026 14:26:41 GMT",
+          "latest_disclosure_date": "Thu, 12 Nov 2026 06:44:06 GMT",
+          "llm_provider": "cohere",
+          "finbert_positive": 0.046,
+          "finbert_negative": 0.029,
+          "finbert_neutral": 0.926,
+          "finbert_scored": 1
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}

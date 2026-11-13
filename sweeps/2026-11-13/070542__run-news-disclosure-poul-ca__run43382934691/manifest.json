@@ -1,0 +1,59 @@
+{
+ "job": "run news-disclosure POUL.CA",
+ "ticker": "POUL.CA",
+ "digest_date": "2026-11-13",
+ "archived_at": "2026-11-13T07:05:42.477940+00:00",
+ "github_run_id": "43382934691",
+ "target": "sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691",
+ "tools": {
+  "news-disclosure": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 1347,
+   "sha256": "67b674fd6908e160673e4decd638468bdc69cf1648d764a50053c2ebf8062d1a"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 523,
+   "sha256": "6b9b0877bcba7dc9d979ea37ca3c015af4f5313a3f54fb4729b386e30e1dcc3d"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 14467,
+   "sha256": "08babfcd292f92276d4977e5bbdf37d23e139131bd77003a676a3348920eaa5e"
+  },
+  {
+   "path": "collected/news-disclosure/disclosures.json",
+   "bytes": 9888,
+   "sha256": "027cb2fb79e5bb00057e7fd2290f3177d18bc67025ef59d10aef85d0391cba49"
+  },
+  {
+   "path": "collected/news-disclosure/feed_summary.json",
+   "bytes": 1879,
+   "sha256": "31be4ebf6ea09bb3c30b1b0f665a7dfddc25b5fb6757f13583404ccbacc7cc25"
+  },
+  {
+   "path": "collected/news-disclosure/headlines.txt",
+   "bytes": 10316,
+   "sha256": "046719d111e88791e136ee9fc7ad678c91ac25e682ef9f2d8a02eb46a6db956f"
+  },
+  {
+   "path": "collected/news-disclosure/news.json",
+   "bytes": 32233,
+   "sha256": "cb7139a5a3c28844ad63b3231097caeeb1e58cbea6de4b1f82c1bd5a72cbda9e"
+  },
+  {
+   "path": "collected/news-disclosure/run.log",
+   "bytes": 2129,
+   "sha256": "0f8da724aa05265994587534278291385403c6bfdc1a0702c14ffd68c9424995"
+  },
+  {
+   "path": "collected/news-disclosure/summary.json",
+   "bytes": 692,
+   "sha256": "eb08b5631e8e784893f47759c5980237bbd1b5e237c32a4392c89aa7773d6ac9"
+  }
+ ],
+ "skipped": []
+}

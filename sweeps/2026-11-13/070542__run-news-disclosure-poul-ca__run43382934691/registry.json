@@ -1,0 +1,484 @@
+{
+ "notes": "status: 'active' tools join sweep/category/market selections; 'manual' tools run ONLY via 'run <tool> <ticker>'. Tools whose pilot command has no {ticker} run their proven pilot target.",
+ "tools": [
+  {
+   "category": "data",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL.CA (script default)",
+   "id": "yahooquery",
+   "repo": "yahooquery-runner",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "category": "data",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL.CA (script default)",
+   "id": "openbb",
+   "repo": "openbb-runner",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "category": "data",
+   "command": "mkdir -p results\npython scripts/egx_fetch.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL (script default)",
+   "id": "egx-data",
+   "repo": "egx-data-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "category": "technicals",
+   "command": "mkdir -p results\npython scripts/ta_snapshot.py --ticker {ticker} 2>&1 | tee results/run.log",
+   "id": "pandas-ta",
+   "repo": "pandas-ta-runner",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "family": "technicals",
+   "role": "voter"
+  },
+  {
+   "category": "technicals",
+   "command": "mkdir -p results\npython scripts/ta.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL.CA (script default)",
+   "id": "talib",
+   "repo": "talib-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "technicals",
+   "role": "cross-check"
+  },
+  {
+   "category": "stats",
+   "command": "mkdir -p results\npython scripts/qs_report.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL.CA (script default)",
+   "id": "quantstats",
+   "repo": "quantstats-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "stats",
+   "role": "validation"
+  },
+  {
+   "category": "backtest",
+   "command": "mkdir -p results\npython scripts/poul_dividend_capture.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL dividend-capture study",
+   "id": "vectorbt",
+   "repo": "vectorbt-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "category": "fundamentals",
+   "command": "mkdir -p results\npython scripts/ft_ratios.py 2>&1 | tee results/run.log",
+   "fixed_target": "POUL verified statements",
+   "id": "financetoolkit",
+   "repo": "financetoolkit-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "fundamentals",
+   "role": "voter"
+  },
+  {
+   "category": "sentiment",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/finbert_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
+   "fixed_target": "samples/poul_headlines.txt",
+   "id": "finbert",
+   "repo": "finbert-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "sentiment",
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+  },
+  {
+   "category": "sentiment",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/tone_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
+   "fixed_target": "samples/poul_headlines.txt",
+   "id": "finbert-tone",
+   "repo": "finbert-tone-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "sentiment",
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+  },
+  {
+   "category": "sentiment",
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_headlines.py --ticker {ticker} --out headlines.json\npython scripts/roberta_sentiment.py --input headlines.json --label live 2>&1 | tee results/run.log",
+   "fixed_target": "samples/poul_headlines.txt",
+   "id": "financial-roberta",
+   "repo": "roberta-sentiment-runner",
+   "status": "active",
+   "markets": [
+    "EGX"
+   ],
+   "family": "sentiment",
+   "role": "family-vote",
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+  },
+  {
+   "category": "agent",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/ta_run.py --ticker {ticker} --date {date} --provider cohere --model command-r-08-2024 2>&1 | tee results/run.log",
+   "id": "tradingagents",
+   "repo": "tradingagents-runner",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "family": "agent",
+   "role": "family-vote"
+  },
+  {
+   "category": "forecast",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
+   "id": "kronos",
+   "repo": "kronos-runner",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "family": "price-forecast",
+   "role": "voter"
+  },
+  {
+   "id": "pandas-datareader",
+   "repo": "pandas-datareader-runner",
+   "category": "data",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "note": "FRED works; Stooq leg broken upstream (needs API key)",
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "id": "backtrader",
+   "repo": "backtrader-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "akshare",
+   "repo": "akshare-runner",
+   "category": "data",
+   "markets": [
+    "CN",
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "id": "financedatabase",
+   "repo": "financedatabase-runner",
+   "category": "data",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/query.py 2>&1 | tee results/run.log",
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "id": "pybroker",
+   "repo": "pybroker-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "finvizfinance",
+   "repo": "finvizfinance-runner",
+   "category": "data",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "note": "fundamentals work; screener broken upstream (JS UI)",
+   "family": "data",
+   "role": "plumbing"
+  },
+  {
+   "id": "backtesting-py",
+   "repo": "backtesting-py-runner",
+   "category": "backtest",
+   "markets": [
+    "EGX"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/backtest.py 2>&1 | tee results/run.log",
+   "note": "script proven locally; GitHub runs hit Yahoo 429s — manual runs only",
+   "family": "backtest",
+   "role": "reserve"
+  },
+  {
+   "id": "edgartools",
+   "repo": "edgartools-runner",
+   "category": "fundamentals",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
+   "family": "fundamentals",
+   "role": "plumbing"
+  },
+  {
+   "id": "bt",
+   "repo": "bt-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "superalgos",
+   "repo": "superalgos-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; bash scripts/superalgos_attempt.sh 2>&1 | tee results/run.log",
+   "note": "platform boots headless; no headless backtest exists — manual only",
+   "family": "agent",
+   "role": "reserve"
+  },
+  {
+   "id": "simfin",
+   "repo": "simfin-runner",
+   "category": "fundamentals",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/simfin_pilot.py 2>&1 | tee results/run.log",
+   "note": "uses the SIMFIN_API_KEY org secret",
+   "family": "fundamentals",
+   "role": "plumbing"
+  },
+  {
+   "id": "qlib",
+   "repo": "qlib-runner",
+   "category": "forecast",
+   "markets": [
+    "CN"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/qlib_pilot.py 2>&1 | tee results/run.log",
+   "family": "forecast",
+   "role": "validation"
+  },
+  {
+   "id": "zipline",
+   "repo": "zipline-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/zipline_pilot.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "fingpt",
+   "repo": "fingpt-runner",
+   "category": "sentiment",
+   "markets": [
+    "US"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/fingpt_sentiment.py 2>&1 | tee results/run.log",
+   "note": "cannot run on CPU runners (LoRA adapters need CUDA) — kept for the record, manual only",
+   "family": "agent",
+   "role": "reserve"
+  },
+  {
+   "id": "vnpy",
+   "repo": "vnpy-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/vnpy_backtest.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "nautilus",
+   "repo": "nautilus-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/nautilus_example.py 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "finrl",
+   "repo": "finrl-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/finrl_a2c.py --ticker {ticker} 2>&1 | tee results/run.log",
+   "note": "fetch is yahooquery-first (Yahoo 429 workaround)",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "lean",
+   "repo": "lean-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; bash scripts/lean_pilot.sh 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "stocksharp",
+   "repo": "stocksharp-runner",
+   "category": "backtest",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; bash scripts/stocksharp_pilot.sh 2>&1 | tee results/run.log",
+   "family": "backtest",
+   "role": "validation"
+  },
+  {
+   "id": "egx-mcp",
+   "repo": "egx-mcp-runner",
+   "category": "data",
+   "markets": [
+    "EGX"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/mcp_probe.py 2>&1 | tee results/run.log",
+   "note": "9 MCP tools exposed, but get_last_price errors server-side upstream — manual only",
+   "family": "data",
+   "role": "reserve"
+  },
+  {
+   "id": "ai-hedge-fund",
+   "repo": "ai-hedge-fund-runner",
+   "category": "agent",
+   "markets": [
+    "US"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/run_backtest.py --ticker {ticker} 2>&1 | tee results/run.log",
+   "note": "Wiring complete: Cohere serves its 'OpenAI' provider via OPENAI_API_BASE + an api_models.json registry patch (scripts/run_backtest.py); workflow injects COHERE_API_KEY + FINANCIAL_DATASETS_API_KEY. BLOCKED on data: Financial Datasets has NO free requests (account + keys exist under moos.sherbo@gmail.com; smallest pack $20/1,000 requests, needs Muhammad's go-ahead) and the key value itself is dashboard-clipboard-only. Flip to active once the org secret exists.",
+   "family": "agent",
+   "role": "reserve"
+  },
+  {
+   "id": "vibe-trading",
+   "repo": "vibe-trading-runner",
+   "category": "agent",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "status": "manual",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/smoke.py 2>&1 | tee results/run.log",
+   "note": "Smoke only. Upstream restructured into an agent/ server+swarm layout (no root cli package); a LangChain OpenAI-compatible route exists (OPENAI_BASE_URL is honoured) but a headless one-shot run needs a dedicated integration pass, not a variable swap.",
+   "family": "agent",
+   "role": "reserve"
+  },
+  {
+   "id": "finrobot",
+   "repo": "finrobot-runner",
+   "category": "agent",
+   "markets": [
+    "US"
+   ],
+   "status": "active",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/run_analysis.py --ticker {ticker} 2>&1 | tee results/run.log",
+   "note": "Real run proven 2026-11-11: Market Analyst agent on Cohere command-r via its OpenAI-compatible endpoint (autogen config_list base_url), YFinance toolkits only through plainly-typed wrappers (Cohere schema validator), prompt date-stamped. US only: its data layer is yfinance, which cannot fetch .CA tickers (Egypt DST bug).",
+   "family": "agent",
+   "role": "family-vote"
+  },
+  {
+   "id": "news-disclosure",
+   "repo": "news-disclosure-runner",
+   "category": "news",
+   "status": "active",
+   "markets": [
+    "EGX",
+    "US"
+   ],
+   "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_feed.py --ticker {ticker} 2>&1 | tee results/run.log",
+   "note": "Free disclosures + news layer (added 2026-11-12): Google News RSS AR+EN (Mubasher EGX disclosure republications classified as disclosures) + SEC EDGAR for US. FinBERT sentiment on English headlines - no LLM. Brief: one short Cohere call with a deterministic extractive fallback. Cost $0 per run.",
+   "family": "news",
+   "role": "risk-overlay"
+  }
+ ],
+ "version": 1
+}
