@@ -14,9 +14,12 @@ selected tool in registry/tools.json:
   6. collects results/<tool>/summary.json.
 Finally writes digest/digest.json and digest/digest.md.
 
-Auth: GH_TOKEN env must be a Borsagator GitHub App installation token
-(Actions + Variables permissions on the target repos only).
-Stdlib only.
+Auth: a Borsagator GitHub App installation token (Actions + Variables
+permissions on the target repos only). Installation tokens live ONE
+hour but full sweeps run longer, so when BORSAGATOR_APP_ID and
+BORSAGATOR_APP_PRIVATE_KEY are in the environment the orchestrator
+mints and refreshes its own tokens (PyJWT); otherwise it uses the
+static GH_TOKEN env.
 """
 import io
 import json
@@ -38,6 +41,63 @@ POLL_SECONDS = 20
 TOOL_TIMEOUT = 60 * 60  # per tool, seconds (tradingagents took ~37 min)
 
 TOKEN = os.environ.get("GH_TOKEN", "")
+
+# --- App-token lifecycle ---------------------------------------------------
+# A GitHub App installation token lives ONE hour, but a full sweep runs
+# longer — the orchestrator used to go blind mid-sweep: every API call
+# returned 401, a still-running child was recorded as "timeout" after
+# the full wait, and later tools were never dispatched (first seen in
+# the 2026-11-13 full POUL sweep, run 43386334186). With the App
+# credentials in the environment the orchestrator mints its own
+# installation tokens and refreshes them proactively (~45 min) and on
+# any 401. Without them it falls back to the static GH_TOKEN.
+APP_ID = os.environ.get("BORSAGATOR_APP_ID", "")
+APP_KEY = os.environ.get("BORSAGATOR_APP_PRIVATE_KEY", "")
+_token_born = 0.0 if (APP_ID and APP_KEY) else time.time()
+_installation_id = None
+
+
+def _app_jwt():
+    import jwt  # PyJWT — installed by the workflow for this purpose
+    now = int(time.time())
+    return jwt.encode({"iss": APP_ID, "iat": now - 60, "exp": now + 540},
+                      APP_KEY, algorithm="RS256")
+
+
+def _mint_token():
+    global TOKEN, _token_born, _installation_id
+    jwt_token = _app_jwt()
+
+    def call(method, path):
+        req = urllib.request.Request("https://api.github.com" + path,
+                                     method=method)
+        req.add_header("Authorization", "Bearer " + jwt_token)
+        req.add_header("Accept", "application/vnd.github+json")
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read() or b"{}")
+
+    if _installation_id is None:
+        data = call("GET", f"/repos/{ORG}/borsagator/installation")
+        _installation_id = data["id"]
+    data = call("POST",
+                f"/app/installations/{_installation_id}/access_tokens")
+    TOKEN = data["token"]
+    _token_born = time.time()
+    print(f"borsagator: minted a fresh App installation token "
+          f"(installation {_installation_id})", flush=True)
+    return TOKEN
+
+
+def ensure_token(force=False):
+    if not (APP_ID and APP_KEY):
+        return TOKEN
+    if force or not TOKEN or time.time() - _token_born > 45 * 60:
+        try:
+            return _mint_token()
+        except Exception as e:  # noqa: BLE001 - keep the old token and try on
+            print(f"borsagator: token mint failed ({e}); "
+                  f"continuing with the current token", flush=True)
+    return TOKEN
 
 EMITTER = '''
 echo $? > results/.exit
@@ -87,12 +147,14 @@ BORSA_EOF
 '''
 
 
-def gh(method, path, body=None, raw=False, auth=True):
+def gh(method, path, body=None, raw=False, auth=True, _retried=False):
     url = "https://api.github.com" + path
     data = json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(url, data=data, method=method)
-    if auth and TOKEN:
-        req.add_header("Authorization", "Bearer " + TOKEN)
+    if auth:
+        tok = ensure_token()
+        if tok:
+            req.add_header("Authorization", "Bearer " + tok)
     req.add_header("Accept", "application/vnd.github+json")
     req.add_header("X-GitHub-Api-Version", "2022-11-28")
     if data is not None:
@@ -110,6 +172,10 @@ def gh(method, path, body=None, raw=False, auth=True):
                 return r.status, dict(r.headers), payload
             return r.status, {}, (json.loads(payload) if payload else {})
     except urllib.error.HTTPError as e:
+        if e.code == 401 and auth and APP_ID and APP_KEY and not _retried:
+            e.read()
+            if ensure_token(force=True):
+                return gh(method, path, body, raw, auth, _retried=True)
         if e.code in (301, 302, 303, 307, 308):
             return e.code, dict(e.headers), b""
         payload = e.read()
