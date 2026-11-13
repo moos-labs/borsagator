@@ -1,0 +1,1042 @@
+StockTwits fetch failed for POUL.CA: HTTP Error 404: Not Found
+Reddit RSS fetch failed for r/wallstreetbets+stocks+investing · POUL.CA: HTTP Error 403: Forbidden
+Sentiment Analyst: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Provider model probe: listed=True count=37 error=None
+Cohere schema patch: rebuilt args_schema for 0 tools (12 TradingAgents tools found)
+Cohere schema patch: wrapped converters ['langchain_core.convert_to_openai_tool', 'langchain_core.convert_to_openai_function', 'langchain_openai.convert_to_openai_tool', 'langchain_openai.convert_to_openai_function']
+Fleet vendor: news_items=30 fundamentals=yes ohlc=yes
+================================ Human Message =================================
+
+POUL.CA
+================================== Ai Message ==================================
+Tool Calls:
+  get_fundamentals (get_fundamentals_6d1x8gtpbt4s)
+ Call ID: get_fundamentals_6d1x8gtpbt4s
+  Args:
+    curr_date: 2026-11-13
+================================= Tool Message =================================
+Name: get_fundamentals
+
+Fleet-verified financial statements for POUL.CA (curated CSV, EGP millions unless stated; CURRENT_NOV2026 column is a memo snapshot):
+item,unit,FY2024,FY2025,H1_2026,CURRENT_NOV2026,basis_notes
+revenue,EGP m,14778,15825,8007.7,,Consolidated as reported (earnings releases; FY24/FY25 vendor figures agree; H1 from 12-Aug-2026 release)
+cogs,EGP m,,11216,6099.1,,Earnings-release definition (FY25: revenue - gross profit 4609). FY24 not stated on this basis -> blank
+gross_profit,EGP m,,4609,1908.5,,Earnings-release definition. FY24 ambiguous in sources (release-basis range ~4475-4609 vs vendor 3527 incl. depreciation) -> blank
+ebitda_adjusted,EGP m,,3098,1102.1,,Company adjusted EBITDA. FY24 only given as ~3100-3230 range (release comparatives internally inconsistent) -> blank
+operating_income_vendor,EGP m,2525,2668,,,StockAnalysis vendor definition (cost of revenues incl. depreciation). H1 release reports operating profit on its own basis (separate row)
+operating_profit,EGP m,,,942.8,,H1 2026 earnings-release definition
+net_interest_income,EGP m,,676,412.6,,FY24 not disclosed in the extracted sources -> blank
+net_profit_total,EGP m,,2890,1287.7,,Total NPAT incl. minorities. FY24 given as conflicting range 2387 (cash-flow statement) to 2420 (press) -> blank
+net_income_eps_basis,EGP m,2189,2579,,,After employees'/board appropriations (StockAnalysis/Finbox); basis of reported EPS
+net_profit_special_purpose,EGP m,2480,2932,,,Post-merger special-purpose statements (Al Mal 9 Sep 2026)
+eps_reported,EGP/share,4.57,5.38,,,On 479001600 pre-merger shares; EPS-basis profit
+gains_on_sale_of_assets,EGP m,206.8,158.3,,,Cash-flow statement adjustments
+operating_cash_flow,EGP m,,2839,,,
+capex,EGP m,,1553,,,
+free_cash_flow,EGP m,2230,1286,,,
+cash_and_investments,EGP m,,4535,4227,,Point in time: FY columns = fiscal year-end (31 Dec); H1_2026 = 30 Jun 2026
+total_debt,EGP m,,236,306,,Point in time (same convention as cash)
+total_equity,EGP m,,7340.8,8191.8,,Point in time (same convention as cash)
+total_equity_special_purpose,EGP m,,7470,,,Post-merger special-purpose equity end-2025. FY24 not disclosed -> blank
+total_assets,EGP m,,10704.8,,,Consolidated end-2025. Jun-2026 total assets not stated in sources -> blank for H1_2026
+total_liabilities,EGP m,,,2836.6,,30 Jun 2026 only
+shares_outstanding,shares,479001600,479001600,479001600,,Pre-merger count (merger completed Sep 2026; after H1 2026)
+shares_post_merger,shares,,,,1789351397,Post-merger issued shares (EGP 1 par); effective Sep 2026
+retained_earnings_bf_special_purpose,EGP m,,2090,,,Special-purpose retained earnings brought forward into the FY2025 distribution project (Al Mal 19 Oct 2026)
+distributable_pool_special_purpose,EGP m,,5022,,,Special-purpose FY2025 NPAT 2932 + retained earnings b/f 2090 = distributable pool per the EGX distribution table
+dividend_per_share,EGP/share,,,,1.90,Coupon #42; FY2025 distribution; entitlement to end of 15 Nov 2026 session; paid from 18 Nov 2026 via MCDR
+dividend_total,EGP m,,,,3399.77,Approved total EGP 3399767655 = 1.90 x 1789351397 shares (AGM 18 Oct 2026)
+
+fleet: OHLC window 2026-11-13..2026-11-13 empty; serving latest 60 sessions instead
+================================== Ai Message ==================================
+Tool Calls:
+  get_stock_data (get_stock_data_j0spfrdj8s3a)
+ Call ID: get_stock_data_j0spfrdj8s3a
+  Args:
+    start_date: 2026-11-13
+    end_date: 2026-11-13
+================================= Tool Message =================================
+Name: get_stock_data
+
+Date,Open,High,Low,Close,Adj Close,Volume
+2026-08-19,9.5549,9.7608,9.3973,9.405,9.405,2379395
+2026-08-20,9.405,9.6439,9.4177,9.4889,9.4889,1079395
+2026-08-23,9.4889,9.6337,9.4228,9.5829,9.5829,2299832
+2026-08-24,9.5829,9.6541,9.4126,9.5473,9.5473,1141747
+2026-08-25,9.5473,9.7863,9.5321,9.5321,9.5321,1725817
+2026-08-26,9.5321,9.771,9.5448,9.771,9.771,1382155
+2026-08-30,9.771,9.8371,9.7583,9.7685,9.7685,574660
+2026-08-31,9.7685,10.0404,9.6337,10.0404,10.0404,2567165
+2026-09-01,10.0404,10.2133,9.8752,10.1548,10.1548,2994718
+2026-09-02,10.1548,10.3429,9.9159,9.9311,9.9311,1696556
+2026-09-03,9.9311,10.2972,9.7863,10.2362,10.2362,2230285
+2026-09-06,10.2362,10.3429,10.015,10.0481,10.0481,1779478
+2026-09-07,10.0481,10.0659,9.7837,10.0379,10.0379,2189497
+2026-09-08,10.0379,10.137,9.799,9.9134,9.9134,1211907
+2026-09-09,9.9134,10.0201,9.8523,9.9286,9.9286,1194534
+2026-09-10,9.9286,10.4192,9.9134,10.1396,10.1396,7768286
+2026-09-13,10.1396,10.6657,10.1167,10.1167,10.1167,8211733
+2026-09-14,10.1167,10.1777,9.799,9.8447,9.8447,1712182
+2026-09-15,9.8447,9.9769,9.4431,9.6566,9.6566,2546484
+2026-09-16,9.6566,9.7786,9.6566,9.6566,9.6566,1127057
+2026-09-17,9.6566,9.9083,9.5346,9.9083,9.9083,2352396
+2026-09-20,9.9083,10.0252,9.8371,9.8422,9.8422,1571408
+2026-09-21,9.8422,10.3709,9.71,9.71,9.71,5855170
+2026-09-22,9.71,9.71,9.71,9.71,9.71,0
+2026-09-23,9.71,9.71,9.71,9.71,9.71,0
+2026-09-24,9.71,9.71,9.71,9.71,9.71,0
+2026-09-27,9.71,9.71,9.71,9.71,9.71,0
+2026-09-28,9.53,10.5,9.12,9.71,9.71,5590713
+2026-09-29,9.71,10.44,9.71,9.8,9.8,4324412
+2026-09-30,9.8,10.08,9.71,9.9,9.9,4745490
+2026-10-01,9.9,10.32,9.95,10.28,10.28,4228304
+2026-10-04,10.28,10.6,10.04,10.19,10.19,4244680
+2026-10-05,10.19,10.29,10.05,10.09,10.09,2521108
+2026-10-06,10.09,10.2,9.9,10.02,10.02,2085950
+2026-10-07,10.02,10.03,9.82,9.99,9.99,1615949
+2026-10-11,9.99,10.11,9.66,9.7,9.7,1518615
+2026-10-12,9.7,9.9,9.51,9.59,9.59,2086207
+2026-10-13,9.59,9.77,9.42,9.52,9.52,2456652
+2026-10-14,9.52,9.89,9.52,9.68,9.68,1796661
+2026-10-15,9.68,10,9.7,9.94,9.94,2850683
+2026-10-18,9.94,10,9.75,9.8,9.8,1949781
+2026-10-19,9.8,10.81,9.9,10.3,10.3,24894300
+2026-10-20,10.3,10.38,9.96,10.05,10.05,16458233
+2026-10-21,10.05,10.24,9.73,9.81,9.81,10069662
+2026-10-22,9.81,9.86,9.57,9.66,9.66,6449744
+2026-10-25,9.66,9.69,8.85,9.45,9.45,9005106
+2026-10-26,9.45,9.4,8.81,9.03,9.03,6952245
+2026-10-27,9.03,9.5,9.2,9.43,9.43,6734569
+2026-10-28,9.43,9.6,9.3,9.48,9.48,3942299
+2026-10-29,9.48,9.64,9.41,9.55,9.55,3955950
+2026-11-01,9.55,9.62,9.31,9.44,9.44,3232606
+2026-11-02,9.44,10.2,9.66,9.9,9.9,19612202
+2026-11-03,9.9,10.06,9.76,10,10,7534295
+2026-11-04,10,10.18,9.99,10.1,10.1,11628560
+2026-11-05,10.1,10.29,10.05,10.12,10.12,13933305
+2026-11-08,10.12,10.16,9.95,10,10,13815593
+2026-11-09,10,10.06,9.96,9.99,9.99,12149692
+2026-11-10,9.99,10.37,9.98,10.29,10.29,23963195
+2026-11-11,10.29,10.4,10.14,10.2,10.2,14446436
+2026-11-12,10.2,10.4,10.15,10.15,10.15,18277604
+================================== Ai Message ==================================
+Tool Calls:
+  get_news (get_news_htj3nfr6jycc)
+ Call ID: get_news_htj3nfr6jycc
+  Args:
+    start_date: 2026-11-06
+    end_date: 2026-11-13
+  get_global_news (get_global_news_jhccjbszf5f4)
+ Call ID: get_global_news_jhccjbszf5f4
+  Args:
+    curr_date: 2026-11-13
+    look_back_days: 7
+    limit: 5
+  get_macro_indicators (get_macro_indicators_2sf7t1tq4569)
+ Call ID: get_macro_indicators_2sf7t1tq4569
+  Args:
+    indicator: cpi
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_bjwks0ekjd5p)
+ Call ID: get_macro_indicators_bjwks0ekjd5p
+  Args:
+    indicator: core_pce
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_bkyqt95m544h)
+ Call ID: get_macro_indicators_bkyqt95m544h
+  Args:
+    indicator: unemployment
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_gy0xgg9tswcz)
+ Call ID: get_macro_indicators_gy0xgg9tswcz
+  Args:
+    indicator: fed_funds_rate
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_s6rs51283ewe)
+ Call ID: get_macro_indicators_s6rs51283ewe
+  Args:
+    indicator: 10y_treasury
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_1wjm1ez1zrf0)
+ Call ID: get_macro_indicators_1wjm1ez1zrf0
+  Args:
+    indicator: yield_curve
+    curr_date: 2026-11-13
+    look_back_days: 365
+  get_prediction_markets (get_prediction_markets_mn76jwdfm6gr)
+ Call ID: get_prediction_markets_mn76jwdfm6gr
+  Args:
+    topic: recession 2026
+    limit: 3
+  get_prediction_markets (get_prediction_markets_n5a7srf11sda)
+ Call ID: get_prediction_markets_n5a7srf11sda
+  Args:
+    topic: Fed rate cut
+    limit: 3Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+
+================================= Tool Message =================================
+Name: get_news
+
+Fleet-verified news & disclosures for POUL.CA (fetched live by the Borsagator fleet from Google News RSS; nothing after 2026-11-13):
+
+OFFICIAL DISCLOSURES / FILINGS:
+- [Thu, 12 Nov 2026 06:44:06 GMT] (معلومات مباشر) العنوان : القاهرة للدواجن (POUL.CA) مرفق القوائم المالية المجمعة عن الفترة المالية المنتهية فى 30/09/2026اسم الشركة : القاهرة للدواجنكود الت - معلومات مباشر
+- [Thu, 12 Nov 2026 06:37:47 GMT] (معلومات مباشر) العنوان: القاهرة للدواجن (POUL.CA) قرارات مجلس ادارة الشركةاسم الشركة: القاهرة للدواجنكود الترقيم الدولي: EGS02051C018كود رويترز: POUL - معلومات مباشر
+- [Wed, 28 Oct 2026 07:00:00 GMT] (معلومات مباشر) العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر
+- [Mon, 19 Oct 2026 06:28:13 GMT] (معلومات مباشر) العنوان: القاهرة للدواجن (POUL.CA) - ملخص قرارات الجمعية العامة العادية المنعقدة في 18/10/2026اسم الشركة: القاهرة للدواجنكود الترقيم الدولي - معلومات مباشر
+
+NEWS COVERAGE:
+- [Thu, 12 Nov 2026 11:20:08 GMT] (شبكة تواصل الإخبارية) «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية
+- [Thu, 12 Nov 2026 10:12:35 GMT] (https://www.youlyou.com/) رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/
+- [Thu, 12 Nov 2026 09:07:35 GMT] (عالم المال) القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال
+- [Thu, 12 Nov 2026 08:55:38 GMT] (مجلة البوصلة الاقتصادية) أرباح القاهرة للدواجن تنخفض إلى 1.4 مليار جنيه في 9 أشهر - مجلة البوصلة الاقتصادية
+- [Thu, 12 Nov 2026 08:53:23 GMT] (جريدة المال) أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال
+- [Thu, 12 Nov 2026 08:22:00 GMT] (آراب فاينانس) القاهرة للدواجن تخفض أرباحها في تسعة أشهر - آراب فاينانس
+- [Thu, 12 Nov 2026 08:08:08 GMT] (TradingView) Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView
+- [Thu, 12 Nov 2026 07:45:30 GMT] (Traders Union) القاهرة للدواجن تسجل هبوطاً في الأرباح خلال الأشهر التسعة الأولى من 2026 رغم ارتفاع الإيرادات - Traders Union
+- [Thu, 12 Nov 2026 07:39:22 GMT] (معلومات مباشر) أرباح القاهرة للدواجن تتراجع 39% خلال 9 أشهر رغم نمو الإيرادات - معلومات مباشر
+- [Tue, 10 Nov 2026 14:28:33 GMT] (جريدة المال) المنصورة للدواجن تقفز 7.28% وتتصدر ارتفاعات قطاع الأغذية بالبورصة - جريدة المال
+- [Mon, 09 Nov 2026 13:40:05 GMT] (جريدة المال) سهم المنصورة للدواجن يتصدر قائمة الأسهم المرتفعة بقطاع الأغذية والمشروبات والتبغ بالبورصة - جريدة المال
+- [Thu, 05 Nov 2026 08:02:16 GMT] (القاهرة 24) الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة رأسمالها إلى ملياري جنيه وإضافة أنشطة جديدة - القاهرة 24
+- [Thu, 05 Nov 2026 07:55:00 GMT] (اليوم السابع) لعبة المليارات في البورصة.. "القاهرة للدواجن" تقفز برأس المال إلى 2 مليار جنيه - اليوم السابع
+- [Thu, 05 Nov 2026 07:43:12 GMT] (إقرأ نيوز) الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة رأسمالها إلى ملياري جنيه - إقرأ نيوز
+- [Thu, 05 Nov 2026 07:29:05 GMT] (https://www.youlyou.com/) الرقابة المالية تسمح بمضاعفة رأس مال القاهرة للدواجن المرخص به - https://www.youlyou.com/
+- [Thu, 05 Nov 2026 07:25:17 GMT] (Mubasher.info) الرقابة المالية تقر إجراءات زيادة رأسمال "القاهرة للدواجن" وإضافة أنشطة - Mubasher.info
+- [Sun, 01 Nov 2026 07:00:00 GMT] (جريدة المال) البورصة تعلن نهاية حق وموعد توزيع كوبون "القاهرة للدواجن" - جريدة المال
+- [Sat, 31 Oct 2026 00:02:07 GMT] (ad-hoc-news.de) Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de
+- [Tue, 27 Oct 2026 07:00:00 GMT] (https://www.youlyou.com/) القاهرة للدواجن تقرر توزيع 3.4 مليار جنيه للمساهمين عن أرباح 2025 - https://www.youlyou.com/
+- [Sat, 24 Oct 2026 07:00:00 GMT] (Yahoo Finance) Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance
+- [Mon, 19 Oct 2026 07:00:00 GMT] (معلومات مباشر) عمومية ​"القاهرة للدواجن" تقرر توزيع كوبون.. ومجلس الإدارة يقترح زيادة رأس المال - معلومات مباشر
+- [Mon, 19 Oct 2026 07:00:00 GMT] (جريدة البورصة) عمومية "القاهرة للدواجن" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة
+- [Mon, 19 Oct 2026 07:00:00 GMT] (مجلة البوصلة الاقتصادية) عمومية القاهرة للدواجن تقرر توزيع أرباح بـ 1.9 جنيه للسهم - مجلة البوصلة الاقتصادية
+- [Mon, 19 Oct 2026 07:00:00 GMT] (معلومات مباشر) سهم القاهرة للدواجن يقفز 4% بعد اعتماد مقترح التوزيعات - معلومات مباشر
+- [Mon, 19 Oct 2026 07:00:00 GMT] (جريدة المال) القاهرة للدواجن تقترح توزيع 1.9 جنيه للسهم وتدعو لجمعية غير عادية - جريدة المال
+- [Mon, 19 Oct 2026 07:00:00 GMT] (أموال الغد) «القاهرة للدواجن» تقر توزيع أرباح بقيمة 1.9 جنيه للسهم وتدرس زيادة رأس المال المرخص - أموال الغد
+================================= Tool Message =================================
+Name: get_global_news
+
+## Global Market News, from 2026-11-06 to 2026-11-13:
+
+### Is Citi Wrong to Give Up on Roblox? It Trades at 4.9x Sales, Below Its 5-Year Average (source: TIKR)
+Link: https://finance.yahoo.com/markets/stocks/articles/citi-wrong-roblox-trades-4-172125542.html
+
+### GTA 6 Nears Launch With $1 Billion in Estimated Preorders: Bettors See 97% Chance of Record First-Day Sales (source: Benzinga Prediction Markets)
+Link: https://finance.yahoo.com/media-advertising/articles/gta-6-nears-launch-1-160556076.html
+
+### This Video Game Publisher Has a Huge Catalyst Looming (source: Zacks)
+Link: https://finance.yahoo.com/markets/stocks/articles/video-game-publisher-huge-catalyst-151500741.html
+
+### 10-Year Treasury yield spikes on hot inflation read, Nvidia leads chip stocks lower: AlphaCheck (source: Yahoo Finance)
+Link: https://finance.yahoo.com/markets/article/copy-tech-rises-coreweave-results-reignite-ai-trade-alphacheck-150655549.html
+
+### Kalshi is hiring a 'GTA VI Researcher' to livestream the game and study its economy (source: Yahoo Finance)
+Link: https://finance.yahoo.com/technology/article/kalshi-is-hiring-a-gta-vi-researcher-to-livestream-the-game-and-study-its-economy-110000519.html
+
+
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "recession 2026"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **US recession by end of 2026?** — Yes 2% ($2,475,413 volume, resolves 2027-01-31, 1-week -2.2pp)
+- **UK Recession in 2026?** — Yes 3% ($15,917 volume, resolves 2027-05-01, 1-week -1.8pp)
+- **Japan recession in 2026?** — Yes 10% ($4,336 volume, resolves 2027-05-01, 1-week +1.5pp)
+
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "Fed rate cut"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **Will no Fed rate cuts happen in 2026?** — Yes 98% ($9,613,871 volume, resolves 2027-01-01, 1-week +0.7pp)
+- **Will 11 Fed rate cuts happen in 2026?** — Yes 0.05% ($5,331,597 volume, resolves 2027-01-01)
+- **Will 10 Fed rate cuts happen in 2026?** — Yes 0.05% ($4,991,780 volume, resolves 2027-01-01)
+
+================================== Ai Message ==================================
+
+**overall_band**: Mildly Bearish
+**overall_score**: 4.5
+**confidence**: low
+**narrative**:
+
+The sentiment for POUL.CA is mildly bearish, with a score of 4.5 out of 10. This assessment is based on the available data, which is limited in some areas, leading to a lower confidence level.
+
+News headlines from Yahoo Finance over the past week primarily focus on the company's financial performance and recent disclosures. The tone is generally bearish, with multiple articles reporting on the decline in profits and earnings for Cairo Poultry Company. Headlines such as "Despite Revenue Growth, Cairo Poultry's Profits Plunge 39% in First Nine Months of 2026" and "Cairo Poultry's Earnings Drop 39.1% Despite Rising Revenues" highlight the negative financial trends.
+
+The StockTwits messages are unfortunately unavailable, which significantly limits our ability to gauge retail sentiment. Without this data, we cannot accurately assess the sentiment of individual investors and traders.
+
+Reddit posts, which can provide valuable insights into community sentiment, are also unavailable for the specified subreddits (r/wallstreetbets, r/stocks, and r/investing). This absence of discussion further complicates the sentiment analysis.
+
+The overall narrative emerging from the available data is one of caution and bearishness. The decline in profits and earnings, as reported by news sources, is a significant concern. The lack of positive news or bullish sentiment from other sources suggests a general lack of enthusiasm or optimism for POUL.CA.
+
+| Direction | Source | Supporting Evidence |
+| --- | --- | --- |
+| Bearish | Yahoo Finance News | Multiple articles reporting on profit decline and negative financial trends. |
+| Data Unavailable | StockTwits | No messages available for analysis. |
+| Data Unavailable | Reddit | No posts available for the specified subreddits. |
+
+The limited data and the absence of key sentiment indicators from StockTwits and Reddit posts make it challenging to draw definitive conclusions. As such, the overall sentiment for POUL.CA is assessed as mildly bearish, with a low confidence level due to the data limitations.
+================================== Ai Message ==================================
+Tool Calls:
+  get_indicators (get_indicators_ysjcq59jtt9b)
+ Call ID: get_indicators_ysjcq59jtt9b
+  Args:
+    indicator: close_50_sma
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_x4v99829hv49)
+ Call ID: get_indicators_x4v99829hv49
+  Args:
+    indicator: close_200_sma
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_h28g79nmtbk4)
+ Call ID: get_indicators_h28g79nmtbk4
+  Args:
+    indicator: close_10_ema
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_4s91xnx1ca0g)
+ Call ID: get_indicators_4s91xnx1ca0g
+  Args:
+    indicator: macd
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_440rjycq4qsv)
+ Call ID: get_indicators_440rjycq4qsv
+  Args:
+    indicator: macds
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_nmhrrdr9cesg)
+ Call ID: get_indicators_nmhrrdr9cesg
+  Args:
+    indicator: macdh
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_0fdamcxzazef)
+ Call ID: get_indicators_0fdamcxzazef
+  Args:
+    indicator: rsi
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_tsk857se7nf9)
+ Call ID: get_indicators_tsk857se7nf9
+  Args:
+    indicator: boll
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_nhn3vm1e1e76)
+ Call ID: get_indicators_nhn3vm1e1e76
+  Args:
+    indicator: boll_ub
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_1014waday4hk)
+ Call ID: get_indicators_1014waday4hk
+  Args:
+    indicator: boll_lb
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_hbt3hdkxvar2)
+ Call ID: get_indicators_hbt3hdkxvar2
+  Args:
+    indicator: atr
+    curr_date: 2026-11-13
+    look_back_days: 30
+  get_indicators (get_indicators_vcxwg4meqgbx)
+ Call ID: get_indicators_vcxwg4meqgbx
+  Args:
+    indicator: vwma
+    curr_date: 2026-11-13
+    look_back_days: 30
+================================= Tool Message =================================
+Name: get_indicators
+
+close_50_sma for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 9.8059
+2026-10-04: 9.8135
+2026-10-05: 9.8200
+2026-10-06: 9.8267
+2026-10-07: 9.8314
+2026-10-11: 9.8332
+2026-10-12: 9.8332
+2026-10-13: 9.8308
+2026-10-14: 9.8363
+2026-10-15: 9.8420
+2026-10-18: 9.8441
+2026-10-19: 9.8536
+2026-10-20: 9.8582
+2026-10-21: 9.8580
+2026-10-22: 9.8483
+2026-10-25: 9.8360
+2026-10-26: 9.8168
+2026-10-27: 9.8056
+2026-10-28: 9.8015
+2026-10-29: 9.8014
+2026-11-01: 9.8021
+2026-11-02: 9.8103
+2026-11-03: 9.8187
+2026-11-04: 9.8297
+2026-11-05: 9.8415
+2026-11-08: 9.8461
+2026-11-09: 9.8505
+2026-11-10: 9.8555
+2026-11-11: 9.8564
+2026-11-12: 9.8608
+================================= Tool Message =================================
+Name: get_indicators
+
+close_200_sma for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 8.5383
+2026-10-04: 8.5579
+2026-10-05: 8.5778
+2026-10-06: 8.5974
+2026-10-07: 8.6164
+2026-10-11: 8.6340
+2026-10-12: 8.6502
+2026-10-13: 8.6661
+2026-10-14: 8.6821
+2026-10-15: 8.6988
+2026-10-18: 8.7143
+2026-10-19: 8.7326
+2026-10-20: 8.7501
+2026-10-21: 8.7658
+2026-10-22: 8.7800
+2026-10-25: 8.7923
+2026-10-26: 8.8032
+2026-10-27: 8.8166
+2026-10-28: 8.8305
+2026-10-29: 8.8450
+2026-11-01: 8.8594
+2026-11-02: 8.8762
+2026-11-03: 8.8936
+2026-11-04: 8.9128
+2026-11-05: 8.9314
+2026-11-08: 8.9488
+2026-11-09: 8.9662
+2026-11-10: 8.9849
+2026-11-11: 9.0041
+2026-11-12: 9.0231
+================================= Tool Message =================================
+Name: get_indicators
+
+close_10_ema for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 9.8792
+2026-10-04: 9.9357
+2026-10-05: 9.9638
+2026-10-06: 9.9740
+2026-10-07: 9.9769
+2026-10-11: 9.9266
+2026-10-12: 9.8654
+2026-10-13: 9.8026
+2026-10-14: 9.7803
+2026-10-15: 9.8093
+2026-10-18: 9.8076
+2026-10-19: 9.8972
+2026-10-20: 9.9249
+2026-10-21: 9.9040
+2026-10-22: 9.8597
+2026-10-25: 9.7852
+2026-10-26: 9.6479
+2026-10-27: 9.6083
+2026-10-28: 9.5849
+2026-10-29: 9.5786
+2026-11-01: 9.5534
+2026-11-02: 9.6164
+2026-11-03: 9.6862
+2026-11-04: 9.7614
+2026-11-05: 9.8266
+2026-11-08: 9.8581
+2026-11-09: 9.8821
+2026-11-10: 9.9563
+2026-11-11: 10.0006
+2026-11-12: 10.0277
+================================= Tool Message =================================
+Name: get_indicators
+
+macd for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 0.0233
+2026-10-04: 0.0472
+2026-10-05: 0.0574
+2026-10-06: 0.0591
+2026-10-07: 0.0574
+2026-10-11: 0.0323
+2026-10-12: 0.0035
+2026-10-13: -0.0247
+2026-10-14: -0.0338
+2026-10-15: -0.0197
+2026-10-18: -0.0197
+2026-10-19: 0.0205
+2026-10-20: 0.0317
+2026-10-21: 0.0211
+2026-10-22: 0.0005
+2026-10-25: -0.0324
+2026-10-26: -0.0912
+2026-10-27: -0.1044
+2026-10-28: -0.1096
+2026-10-29: -0.1068
+2026-11-01: -0.1122
+2026-11-02: -0.0784
+2026-11-03: -0.0431
+2026-11-04: -0.0069
+2026-11-05: 0.0231
+2026-11-08: 0.0367
+2026-11-09: 0.0462
+2026-11-10: 0.0771
+2026-11-11: 0.0932
+2026-11-12: 0.1007
+================================= Tool Message =================================
+Name: get_indicators
+
+macds for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: -0.0052
+2026-10-04: 0.0053
+2026-10-05: 0.0157
+2026-10-06: 0.0244
+2026-10-07: 0.0310
+2026-10-11: 0.0312
+2026-10-12: 0.0257
+2026-10-13: 0.0156
+2026-10-14: 0.0057
+2026-10-15: 0.0006
+2026-10-18: -0.0034
+2026-10-19: 0.0014
+2026-10-20: 0.0074
+2026-10-21: 0.0102
+2026-10-22: 0.0082
+2026-10-25: 0.0001
+2026-10-26: -0.0182
+2026-10-27: -0.0354
+2026-10-28: -0.0502
+2026-10-29: -0.0616
+2026-11-01: -0.0717
+2026-11-02: -0.0730
+2026-11-03: -0.0670
+2026-11-04: -0.0550
+2026-11-05: -0.0394
+2026-11-08: -0.0242
+2026-11-09: -0.0101
+2026-11-10: 0.0073
+2026-11-11: 0.0245
+2026-11-12: 0.0398
+================================= Tool Message =================================
+Name: get_indicators
+
+macdh for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 0.0285
+2026-10-04: 0.0419
+2026-10-05: 0.0417
+2026-10-06: 0.0347
+2026-10-07: 0.0264
+2026-10-11: 0.0011
+2026-10-12: -0.0222
+2026-10-13: -0.0403
+2026-10-14: -0.0395
+2026-10-15: -0.0204
+2026-10-18: -0.0163
+2026-10-19: 0.0191
+2026-10-20: 0.0243
+2026-10-21: 0.0109
+2026-10-22: -0.0077
+2026-10-25: -0.0325
+2026-10-26: -0.0731
+2026-10-27: -0.0690
+2026-10-28: -0.0593
+2026-10-29: -0.0452
+2026-11-01: -0.0405
+2026-11-02: -0.0054
+2026-11-03: 0.0240
+2026-11-04: 0.0481
+2026-11-05: 0.0625
+2026-11-08: 0.0609
+2026-11-09: 0.0563
+2026-11-10: 0.0697
+2026-11-11: 0.0687
+2026-11-12: 0.0610
+================================= Tool Message =================================
+Name: get_indicators
+
+rsi for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 64.9535
+2026-10-04: 61.1739
+2026-10-05: 57.1917
+2026-10-06: 54.5165
+2026-10-07: 53.3643
+2026-10-11: 43.7412
+2026-10-12: 40.7402
+2026-10-13: 38.9107
+2026-10-14: 44.9914
+2026-10-15: 53.1518
+2026-10-18: 48.9416
+2026-10-19: 60.8645
+2026-10-20: 54.0663
+2026-10-21: 48.4693
+2026-10-22: 45.3121
+2026-10-25: 41.2599
+2026-10-26: 34.5963
+2026-10-27: 43.8906
+2026-10-28: 44.9438
+2026-10-29: 46.4590
+2026-11-01: 44.3915
+2026-11-02: 53.6756
+2026-11-03: 55.4181
+2026-11-04: 57.1538
+2026-11-05: 57.5101
+2026-11-08: 54.5775
+2026-11-09: 54.3289
+2026-11-10: 60.1882
+2026-11-11: 57.7927
+2026-11-12: 56.4486
+================================= Tool Message =================================
+Name: get_indicators
+
+boll for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 9.8666
+2026-10-04: 9.8737
+2026-10-05: 9.8763
+2026-10-06: 9.8817
+2026-10-07: 9.8847
+2026-10-11: 9.8628
+2026-10-12: 9.8364
+2026-10-13: 9.8202
+2026-10-14: 9.8214
+2026-10-15: 9.8355
+2026-10-18: 9.8301
+2026-10-19: 9.8530
+2026-10-20: 9.8700
+2026-10-21: 9.8750
+2026-10-22: 9.8725
+2026-10-25: 9.8595
+2026-10-26: 9.8255
+2026-10-27: 9.8115
+2026-10-28: 9.7955
+2026-10-29: 9.7780
+2026-11-01: 9.7360
+2026-11-02: 9.7215
+2026-11-03: 9.7170
+2026-11-04: 9.7210
+2026-11-05: 9.7275
+2026-11-08: 9.7425
+2026-11-09: 9.7625
+2026-11-10: 9.8010
+2026-11-11: 9.8270
+2026-11-12: 9.8375
+================================= Tool Message =================================
+Name: get_indicators
+
+boll_ub for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 10.2279
+2026-10-04: 10.2550
+2026-10-05: 10.2630
+2026-10-06: 10.2734
+2026-10-07: 10.2790
+2026-10-11: 10.2461
+2026-10-12: 10.2186
+2026-10-13: 10.2277
+2026-10-14: 10.2270
+2026-10-15: 10.2367
+2026-10-18: 10.2301
+2026-10-19: 10.3049
+2026-10-20: 10.3248
+2026-10-21: 10.3246
+2026-10-22: 10.3265
+2026-10-25: 10.3467
+2026-10-26: 10.4360
+2026-10-27: 10.4455
+2026-10-28: 10.4467
+2026-10-29: 10.4361
+2026-11-01: 10.3658
+2026-11-02: 10.3199
+2026-11-03: 10.3050
+2026-11-04: 10.3187
+2026-11-05: 10.3401
+2026-11-08: 10.3669
+2026-11-09: 10.3919
+2026-11-10: 10.4614
+2026-11-11: 10.5080
+2026-11-12: 10.5321
+================================= Tool Message =================================
+Name: get_indicators
+
+boll_lb for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 9.5054
+2026-10-04: 9.4924
+2026-10-05: 9.4896
+2026-10-06: 9.4899
+2026-10-07: 9.4905
+2026-10-11: 9.4795
+2026-10-12: 9.4542
+2026-10-13: 9.4127
+2026-10-14: 9.4157
+2026-10-15: 9.4343
+2026-10-18: 9.4301
+2026-10-19: 9.4011
+2026-10-20: 9.4152
+2026-10-21: 9.4254
+2026-10-22: 9.4185
+2026-10-25: 9.3723
+2026-10-26: 9.2150
+2026-10-27: 9.1775
+2026-10-28: 9.1443
+2026-10-29: 9.1199
+2026-11-01: 9.1062
+2026-11-02: 9.1231
+2026-11-03: 9.1290
+2026-11-04: 9.1233
+2026-11-05: 9.1149
+2026-11-08: 9.1181
+2026-11-09: 9.1331
+2026-11-10: 9.1406
+2026-11-11: 9.1460
+2026-11-12: 9.1429
+================================= Tool Message =================================
+Name: get_indicators
+
+atr for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 0.3673
+2026-10-04: 0.3811
+2026-10-05: 0.3710
+2026-10-06: 0.3659
+2026-10-07: 0.3548
+2026-10-11: 0.3616
+2026-10-12: 0.3636
+2026-10-13: 0.3626
+2026-10-14: 0.3632
+2026-10-15: 0.3601
+2026-10-18: 0.3522
+2026-10-19: 0.3992
+2026-10-20: 0.4007
+2026-10-21: 0.4085
+2026-10-22: 0.4000
+2026-10-25: 0.4315
+2026-10-26: 0.4464
+2026-10-27: 0.4480
+2026-10-28: 0.4375
+2026-10-29: 0.4227
+2026-11-01: 0.4146
+2026-11-02: 0.4393
+2026-11-03: 0.4293
+2026-11-04: 0.4122
+2026-11-05: 0.3999
+2026-11-08: 0.3864
+2026-11-09: 0.3659
+2026-11-10: 0.3676
+2026-11-11: 0.3599
+2026-11-12: 0.3521
+================================= Tool Message =================================
+Name: get_indicators
+
+vwma for POUL.CA up to 2026-11-13 (fleet-adjusted price series):
+2026-10-01: 9.9021
+2026-10-04: 9.9437
+2026-10-05: 9.9750
+2026-10-06: 9.9870
+2026-10-07: 9.9982
+2026-10-11: 9.9951
+2026-10-12: 9.9858
+2026-10-13: 9.9570
+2026-10-14: 9.9444
+2026-10-15: 9.9398
+2026-10-18: 9.9357
+2026-10-19: 10.1130
+2026-10-20: 10.1244
+2026-10-21: 10.1129
+2026-10-22: 10.0760
+2026-10-25: 9.9878
+2026-10-26: 9.9134
+2026-10-27: 9.8725
+2026-10-28: 9.8546
+2026-10-29: 9.8423
+2026-11-01: 9.8336
+2026-11-02: 9.8534
+2026-11-03: 9.8610
+2026-11-04: 9.8807
+2026-11-05: 9.9074
+2026-11-08: 9.8406
+2026-11-09: 9.8191
+2026-11-10: 9.8776
+2026-11-11: 9.9207
+2026-11-12: 9.9895
+================================== Ai Message ==================================
+
+# Cairo Poultry Company S.A.E.
+
+## News
+- Cairo Poultry Company S.A.E. (POUL.CA) has released its financial results for the first nine months of 2026. Despite a 39% decline in profits, the company's revenue grew to 12.6 billion Egyptian pounds.
+- The company's board has approved a dividend proposal of 1.9 Egyptian pounds per share.
+- The company's stock price has increased by 4% following the announcement of the dividend proposal.
+- The company has also received approval from the Financial Regulatory Authority to increase its capital to 2 billion Egyptian pounds and add new activities.
+
+## Global Market News
+- Citi's decision to give up on Roblox has sparked debate, with the stock trading below its 5-year average.
+- GTA 6 is expected to generate $1 billion in preorders, with a 97% chance of record first-day sales.
+- A video game publisher is set to release a new game with a huge catalyst looming.
+- The 10-year Treasury yield has spiked due to hot inflation, leading Nvidia to lead chip stocks lower.
+- Kalshi is hiring a 'GTA VI Researcher' to livestream the game and study its economy.
+
+## Prediction Markets
+- The market implies a low probability of a recession in the US, UK, and Japan in 2026, with the US recession market at 2%, the UK at 3%, and Japan at 10%.
+- The market also implies a low probability of Fed rate cuts in 2026, with the 'Will no Fed rate cuts happen in 2026?' market at 98%.
+
+| Topic | Probability | Volume | Resolution Date | Recent Move |
+|---|---|---|---|---|
+| US Recession by End of 2026 | 2% | $2,475,413 | 2027-01-31 | 1-week -2.2pp |
+| UK Recession in 2026 | 3% | $15,917 | 2027-05-01 | 1-week -1.8pp |
+| Japan Recession in 2026 | 10% | $4,336 | 2027-05-01 | 1-week +1.5pp |
+| Will no Fed rate cuts happen in 2026? | 98% | $9,613,871 | 2027-01-01 | 1-week +0.7pp |
+| Will 11 Fed rate cuts happen in 2026? | 0.05% | $5,331,597 | 2027-01-01 | N/A |
+| Will 10 Fed rate cuts happen in 2026? | 0.05% | $4,991,780 | 2027-01-01 | N/A |
+================================== Ai Message ==================================
+
+# Technical Analysis Report for POUL.CA
+
+## Overview
+This report provides an analysis of the technical indicators for POUL.CA, offering insights into the current market trends and potential trading opportunities. The indicators selected cover various aspects of market analysis, including moving averages, MACD-related indicators, momentum, volatility, and volume-based indicators.
+
+## Moving Averages
+The 50 SMA and 200 SMA provide a medium-term and long-term perspective on the trend, respectively. The 50 SMA, currently at 9.8555, has been rising steadily, indicating a potential uptrend. Meanwhile, the 200 SMA, at 9.0231, has also been on an upward trajectory, confirming the overall positive market sentiment.
+
+## MACD Analysis
+The MACD indicator, which measures momentum, has been fluctuating around the zero line. On 2026-11-12, it crossed above the zero line, suggesting a potential shift in momentum. The MACD Signal, which smooths the MACD line, has been below the MACD line for most of the period, indicating a potential buying opportunity. The MACD Histogram, which shows the gap between the MACD line and its signal, has been positive in recent days, confirming the upward momentum.
+
+## Momentum and Volatility
+The RSI, a momentum indicator, has been in the neutral zone for most of the period, with occasional dips into the oversold territory. On 2026-11-12, it reached 56.4486, indicating a potential shift in momentum. The Bollinger Bands, a volatility indicator, have been relatively tight, with the price currently trading near the middle band. The upper band, at 10.5321, and the lower band, at 9.1429, suggest that the price is in a relatively stable range.
+
+## Volume-Based Indicator
+The VWMA, a volume-weighted moving average, has been slightly above the price, indicating that volume has been supportive of the upward trend.
+
+## Conclusion
+The technical indicators suggest a positive outlook for POUL.CA, with the moving averages, MACD, and volume-based indicators all pointing to an upward trend. However, it is important to note that the RSI and Bollinger Bands indicate a relatively stable market, with limited volatility. Traders should consider these indicators in conjunction with other analysis and market factors to make informed decisions.
+
+## Key Takeaways
+| Indicator | Value |
+| --- | --- |
+| 50 SMA | 9.8555 |
+| 200 SMA | 9.0231 |
+| 10 EMA | 10.0277 |
+| MACD | 0.1007 |
+| MACD Signal | 0.0398 |
+| MACD Histogram | 0.0610 |
+| RSI | 56.4486 |
+| Bollinger Middle | 9.8375 |
+| Bollinger Upper Band | 10.5321 |
+| Bollinger Lower Band | 9.1429 |
+| ATR | 0.3521 |
+| VWMA | 9.9895 |
+================================== Ai Message ==================================
+Tool Calls:
+  get_balance_sheet (get_balance_sheet_7gm65tfmefz3)
+ Call ID: get_balance_sheet_7gm65tfmefz3
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-13
+  get_cashflow (get_cashflow_d7chqj01qnvk)
+ Call ID: get_cashflow_d7chqj01qnvk
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-13
+  get_income_statement (get_income_statement_1anz2wbhe2b9)
+ Call ID: get_income_statement_1anz2wbhe2b9
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-13
+================================= Tool Message =================================
+Name: get_balance_sheet
+
+# Balance Sheet data for POUL.CA (quarterly)
+,2026-03-31,2025-12-31,2025-09-30,2025-06-30,2025-03-31
+Ordinary Shares Number,479001600.0,479001600.0,479001600.0,,479001600.0
+Share Issued,479001600.0,479001600.0,479001600.0,,479001600.0
+Total Debt,,210917250.0,,,92470205.0
+Tangible Book Value,7597453005.0,7240039126.0,6719653776.0,6041549056.0,5378257610.0
+Invested Capital,7597453005.0,7354573991.0,6719653776.0,6041549056.0,5429650571.0
+Working Capital,5887809578.0,5475840670.0,4971160883.0,4292061674.0,3806352980.0
+Net Tangible Assets,7597453005.0,7240039126.0,6719653776.0,6041549056.0,5378257610.0
+Capital Lease Obligations,,96382385.0,,,41077244.0
+Common Stock Equity,7597453005.0,7240039126.0,6719653776.0,6041549056.0,5378257610.0
+Total Capitalization,7597453005.0,7259868808.0,6719653776.0,6041549056.0,5378257610.0
+Total Equity Gross Minority Interest,,7340826297.0,,,5458007998.0
+Minority Interest,170702285.0,100787171.0,96513840.0,89147154.0,79750388.0
+Stockholders Equity,7597453005.0,7240039126.0,6719653776.0,6041549056.0,5378257610.0
+Retained Earnings,,6276454839.0,,,4414673324.0
+Capital Stock,,479001600.0,,,479001600.0
+Common Stock,,479001600.0,,,479001600.0
+Total Liabilities Net Minority Interest,11485079715.0,3363964425.0,10139149628.0,9262024821.0,3760563199.0
+Total Non Current Liabilities Net Minority Interest,304917777.0,300521443.0,297306782.0,252441673.0,235815554.0
+Tradeand Other Payables Non Current,,,,,17732109.0
+Non Current Deferred Taxes Liabilities,,214754941.0,,,191563737.0
+Long Term Debt And Capital Lease Obligation,,85766502.0,,,26519708.0
+Long Term Capital Lease Obligation,,65936820.0,,,26519708.0
+Long Term Debt,,19829682.0,,,
+Current Liabilities,3475007759.0,3063442982.0,3025675230.0,2978896948.0,3524747645.0
+Other Current Liabilities,,,,,-1.0
+Current Debt And Capital Lease Obligation,,125150748.0,,,65950497.0
+Current Capital Lease Obligation,,30445565.0,,,14557536.0
+Current Debt,,94705183.0,,,51392961.0
+Current Provisions,,697320470.0,,,849871656.0
+Payables,,1618180094.0,,,1903760881.0
+Other Payable,,50891181.0,,,54408889.0
+Dividends Payable,,44754812.0,,,214594379.0
+Total Tax Payable,,784057860.0,,,1126805274.0
+Accounts Payable,,738476241.0,,,507952339.0
+Total Assets,11485079715.0,10704790722.0,10139149628.0,9262024821.0,9218571197.0
+Total Non Current Assets,2133732278.0,2165507070.0,2142313515.0,1991576209.0,1887470572.0
+Other Non Current Assets,1418952476.0,,1343376466.0,1191677926.0,
+Net PPE,,2079432490.0,,,1122576762.0
+Accumulated Depreciation,,-1647045309.0,,,-1542410921.0
+Gross PPE,,3726477799.0,,,2664987683.0
+Construction In Progress,66178032.0,768642603.0,165710204.0,87202047.0,89190218.0
+Other Properties,,134777164.0,,,116660590.0
+Machinery Furniture Equipment,,1639484297.0,,,1411015309.0
+Buildings And Improvements,,1050969966.0,,,941630266.0
+Land And Improvements,,132603769.0,,,106491300.0
+Properties,,0.0,,,0.0
+Current Assets,9362817337.0,8539283652.0,7996836113.0,7270958622.0,7331100625.0
+Prepaid Assets,,31326879.0,,,
+Inventory,,2490189848.0,,,2177397376.0
+Inventories Adjustments Allowances,,-37888168.0,,,-36765707.0
+Other Inventories,,501008910.0,,,521529203.0
+Finished Goods,,694876955.0,,,283640521.0
+Raw Materials,,1332192151.0,,,1408993359.0
+Other Receivables,,555473514.0,,,41646485.0
+Taxes Receivable,,139592084.0,,,
+Accounts Receivable,,787832984.0,,,1395539782.0
+Allowance For Doubtful Accounts Receivable,,-48049592.0,,,
+Gross Accounts Receivable,,835882576.0,,,
+Cash Cash Equivalents And Short Term Investments,5782033755.0,4534868343.0,3922585632.0,2331996509.0,3716516982.0
+Cash And Cash Equivalents,5782033755.0,4534868343.0,3922585632.0,2331996509.0,3716516982.0
+Cash Equivalents,,3304954640.0,,,
+Cash Financial,,1229913703.0,,,
+Research Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Trader: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Portfolio Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+
+================================= Tool Message =================================
+Name: get_cashflow
+
+# Cash Flow data for POUL.CA (quarterly)
+,2026-03-31,2025-12-31,2025-09-30,2025-06-30,2025-03-31
+Free Cash Flow,1235319753.0,-742539571.0,778811241.0,-245913065.0,1325894958.0
+End Cash Position,5684533955.0,4536868343.0,3922585632.0,3331996509.0,3716516982.0
+Other Cash Adjustment Outside Changein Cash,,-47450316.0,-2491397811.0,2540848128.0,-1.0
+Beginning Cash Position,4534868343.0,3922585632.0,3331996509.0,3716516982.0,2540848128.0
+Changes In Cash,1149665612.0,661733027.0,573739145.0,-417120812.0,1175668855.0
+Financing Cash Flow,-14446853.0,3458610.0,-21350234.0,28018025.0,3369649.0
+Investing Cash Flow,-71207288.0,-152308200.0,-183721862.0,-199225772.0,-153595752.0
+Operating Cash Flow,1235319753.0,810582617.0,778811241.0,-245913065.0,1325894958.0
+
+================================= Tool Message =================================
+Name: get_income_statement
+
+# Income Statement data for POUL.CA (quarterly)
+,2026-03-31,2025-12-31,2025-09-30,2025-06-30,2025-03-31
+Tax Effect Of Unusual Items,0.0,0.0,0.0,0.0,0.0
+Tax Rate For Calcs,0.204085,0.177124,0.162494,0.236002,0.242387
+Normalized EBITDA,793832634.0,646406012.0,826239945.0,885774656.0,1333311585.0
+Net Income From Continuing Operation Net Minority Interest,614303293.0,520385346.0,678104723.0,663291437.0,991707605.0
+Reconciled Cost Of Revenue,3270316301.0,,,,2867170488.0
+EBITDA,793832634.0,646406012.0,826239945.0,885774656.0,1333311585.0
+EBIT,793832634.0,646406012.0,826239945.0,885774656.0,1333311585.0
+Net Interest Income,212265360.0,,,,150802202.0
+Interest Expense,8675162.0,8814458.0,7772603.0,5290845.0,3807068.0
+Interest Income,220940522.0,199935111.0,171159420.0,175440501.0,154609270.0
+Normalized Income,614303293.0,520385346.0,678104723.0,663291437.0,991707605.0
+Net Income From Continuing And Discontinued Operation,614303293.0,520385346.0,678104723.0,663291437.0,991707605.0
+Total Expenses,3454669052.0,,,,3025007069.0
+Total Operating Income As Reported,541172819.0,447622468.0,664602777.0,710132941.0,1180411905.0
+Diluted Average Shares,479001600.0,,479001600.0,479001600.0,479001600.0
+Basic Average Shares,479001600.0,,479001600.0,479001600.0,479001600.0
+Diluted EPS,1.28,,1.42,1.38,2.07
+Basic EPS,1.28,,1.42,1.38,2.07
+Diluted NI Availto Com Stockholders,614303293.0,245421792.0,678104723.0,663291437.0,991707605.0
+Net Income Common Stockholders,614303293.0,245421792.0,678104723.0,663291437.0,991707605.0
+Otherunder Preferred Stock Dividend,0.0,274963554.0,0.0,0.0,0.0
+Net Income,614303293.0,520385346.0,678104723.0,663291437.0,991707605.0
+Minority Interests,-10615675.0,-4273334.0,-7366683.0,-9396774.0,-15542848.0
+Net Income Including Noncontrolling Interests,624918968.0,524658680.0,685471406.0,672688211.0,1007250453.0
+Net Income Continuous Operations,624918968.0,524658680.0,685471406.0,672688211.0,1007250453.0
+Tax Provision,160238504.0,112932874.0,132995936.0,207795600.0,322254064.0
+Pretax Income,785157472.0,637591554.0,818467342.0,880483811.0,1329504517.0
+Net Non Operating Interest Income Expense,212265360.0,,,,150802202.0
+Interest Expense Non Operating,8675162.0,8814458.0,7772603.0,5290845.0,3807068.0
+Interest Income Non Operating,220940522.0,199935111.0,171159420.0,175440501.0,154609270.0
+Operating Income,541172819.0,289278512.0,664602777.0,710132941.0,1180411905.0
+Operating Expense,184352751.0,,,,157836581.0
+Other Operating Expenses,28842067.0,,,,60107892.0
+Selling General And Administration,226580938.0,,,,180262632.0
+Selling And Marketing Expense,131570620.0,,,,105711453.0
+General And Administrative Expense,95010318.0,,,,74551179.0
+Gross Profit,725525570.0,537670282.0,650746764.0,826408859.0,1338248486.0
+Cost Of Revenue,3270316301.0,,,,2867170488.0
+Total Revenue,3995841871.0,3847076932.0,4094975027.0,2543677324.0,4205418974.0
+Operating Revenue,3995841871.0,3847076932.0,4094975027.0,2543677324.0,4205418974.0
+
+================================== Ai Message ==================================
+
+# POUL.CA Fundamental Analysis
+
+## Company Profile
+POUL.CA, also known as Cairo Poultry Company S.A.E., is a publicly traded company on the Egyptian Exchange (EGX). The company's primary business is in the poultry industry, focusing on the production and sale of poultry products.
+
+## Financial Documents
+
+### Revenue and Profitability
+- Revenue: EGP 14,778 million in FY2024, EGP 15,825 million in FY2025, and EGP 8,007.7 million in H1 2026.
+- Cost of goods sold (COGS): Not available for FY2024, EGP 11,216 million in FY2025, and EGP 6,099.1 million in H1 2026.
+- Gross profit: Not available for FY2024, EGP 4,609 million in FY2025, and EGP 1,908.5 million in H1 2026.
+- Adjusted EBITDA: Not available for FY2024, EGP 3,098 million in FY2025, and EGP 1,102.1 million in H1 2026.
+- Operating income: EGP 2,525 million in FY2024, EGP 2,668 million in FY2025, and not available for H1 2026.
+- Operating profit: <co: 0>Not available for FY2024 and FY202
+================================== Ai Message ==================================
+
+- **Action**: Hold
+
+- **Reasoning**: The technical analysis report indicates a positive outlook for POUL.CA, with moving averages and volume-based indicators supporting an upward trend. However, the RSI and Bollinger Bands suggest a stable market with limited volatility. This mixed signal aligns with the investment plan's recommendation to hold, as it reflects a balanced view of the company's potential. While the bull case highlights growth prospects, the bear case raises valid concerns about market saturation and financial stability. Given the current market indicators and the need for further confirmation of the company's performance, maintaining a hold position is prudent. 
+
+- **Entry Price**: N/A
+- **Stop Loss**: N/A
+- **Position Sizing**: Standard position, as recommended in the strategic actions, ensuring it does not disproportionately impact the portfolio.
+Prose audit: 6/117 figures unverified
+Done. Decision: Hold
