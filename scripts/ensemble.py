@@ -51,6 +51,29 @@ SHOCK_WORDS = [
     "bankrupt", "lawsuit", "استقال", "إقال", "نتائج", "أرباح", "توزيع",
     "اندماج", "تحقيق", "إيقاف", "مجلس الإدارة", "جمعية عامة",
 ]
+# Event taxonomy for the risk overlay (v2.1): a shock is an EVENT of a
+# severe type, or a price move the event stream cannot explain — not a
+# bag of keywords. Severity: high = shock-capable on its own; medium =
+# elevated, or shock when the price confirms it.
+EVENT_TYPES = [
+    ("earnings", "high",
+     ["earnings", "profit", "loss", "revenue", "results", "quarterly",
+      "أرباح", "خسائر", "نتائج", "إيرادات", "صافي الربح", "نتائج الأعمال"]),
+    ("management", "high",
+     ["resign", "oust", "appoint", "ceo", "chief executive",
+      "استقال", "إقال", "تعيين", "رئيس تنفيذي", "عضو منتدب"]),
+    ("legal", "high",
+     ["investigat", "lawsuit", "fine", "fraud", "bankrupt", "halt",
+      "تحقيق", "غرامة", "احتيال", "قضية", "إفلاس", "إيقاف التداول"]),
+    ("capital", "high",
+     ["merger", "acquisition", "capital increase", "share split",
+      "اندماج", "استحواذ", "زيادة رأس المال", "تجزئة"]),
+    ("dividend", "medium",
+     ["dividend", "distribution", "coupon", "توزيع", "كوبون"]),
+    ("governance", "medium",
+     ["board of directors", "general assembly", "agm", "egm",
+      "مجلس الإدارة", "جمعية عامة", "جمعية عمومية"]),
+]
 RATING_MAP = {"strong buy": 1.0, "buy": .75, "overweight": .5, "hold": 0.0,
               "underweight": -.5, "sell": -.75, "strong sell": -1.0}
 
@@ -371,6 +394,10 @@ def main():
     nd = metrics("news-disclosure")
     if ok("news-disclosure") and fnum(nd.get("finbert_positive")) is not None:
         subs.append(fnum(nd["finbert_positive"]) - fnum(nd.get("finbert_negative") or 0))
+    # Arabic leg: the multilingual model scores the Arabic headlines in
+    # the same runner (for EGX names they are most of the coverage).
+    if ok("news-disclosure") and fnum(nd.get("multilingual_positive")) is not None:
+        subs.append(fnum(nd["multilingual_positive"]) - fnum(nd.get("multilingual_negative") or 0))
     sentiment = (sum(subs) / len(subs)) if subs else None
 
     # ---------- agents ----------
@@ -486,7 +513,8 @@ def main():
         disc = load_json(os.path.join(COLLECTED, "news-disclosure", "disclosures.json")) or {}
         items = (disc.get("items") or []) + (news.get("items") or [])
         now = datetime.now(timezone.utc)
-        fresh_disc, shock = 0, []
+        fresh_disc = 0
+        events = []  # (severity, type, title)
         for it in items:
             title = str(it.get("title") or "")
             dt = None
@@ -499,15 +527,55 @@ def main():
             age = (now - dt).days if dt else 99
             if it.get("kind") == "disclosure" and age <= 3:
                 fresh_disc += 1
-            if age <= 2 and any(w in title.lower() for w in SHOCK_WORDS):
-                shock.append(title[:90])
-        if shock:
+            window = 3 if it.get("kind") == "disclosure" else 2
+            if age <= window:
+                low = title.lower()
+                for etype, sev, words in EVENT_TYPES:
+                    if any(w in low for w in words):
+                        events.append((sev, etype, title[:90]))
+                        break
+        # Abnormal-move confirmation from the verified price series:
+        # a severe event the price ignores is weaker than one it
+        # confirms, and a >=2.5-sigma session is a shock on its own.
+        z_last = z_max3 = 0.0
+        try:
+            series = price_series(ticker)
+            pick = next((s for s in series if s.startswith("egx-data/")), None)
+            if pick is None and series:
+                pick = max(series, key=lambda s: len(series[s]))
+            if pick:
+                m = series[pick]
+                closes = [m[d] for d in sorted(m)
+                          if len(d) == 10 and d[4] == "-"]
+                if len(closes) >= 4 and sigma > 0:
+                    rets = [math.log(closes[i] / closes[i - 1])
+                            for i in range(1, len(closes))]
+                    z_last = abs(rets[-1]) / sigma
+                    z_max3 = max(abs(r) for r in rets[-3:]) / sigma
+        except Exception:
+            pass
+        high = [e for e in events if e[0] == "high"]
+        med = [e for e in events if e[0] == "medium"]
+        risk["events"] = [{"type": t, "severity": s, "title": ti}
+                          for s, t, ti in events[:6]]
+        risk["move_z"] = {"last": round(z_last, 2),
+                          "max3": round(z_max3, 2)}
+        if high or z_last >= 2.5 or (med and z_max3 >= 1.5):
             risk.update(level="shock", conf_cap=.30, price_mult=.5)
-            risk["flags"] = ["shock headline(s): " + s for s in shock[:3]]
-        elif fresh_disc or len(items) >= 10:
+            risk["flags"] = [f"{t} event: {ti}" for _, t, ti in high[:3]]
+            if not risk["flags"]:
+                risk["flags"] = [f"abnormal move: last session "
+                                 f"{z_last:.1f}σ"]
+            if high and z_last >= 1.5:
+                risk["flags"].append(f"price confirms: last session "
+                                     f"{z_last:.1f}σ")
+        elif med or z_max3 >= 1.5 or fresh_disc or len(items) >= 10:
             risk.update(level="elevated", conf_cap=.45, price_mult=.8)
+            risk["flags"] = [f"{t} event: {ti}" for _, t, ti in med[:2]]
             if fresh_disc:
                 risk["flags"].append(f"{fresh_disc} disclosure(s) in the last 3 days")
+            if z_max3 >= 1.5:
+                risk["flags"].append(f"abnormal move: {z_max3:.1f}σ in the last 3 sessions")
 
     # ---------- combine per horizon ----------
     fam_fixed = {"technicals": tech, "sentiment": sentiment,
