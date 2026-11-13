@@ -43,6 +43,9 @@ def main():
     run_id = os.environ.get("GITHUB_RUN_ID", "local")
     target = f"sweeps/{now:%Y-%m-%d}/{now:%H%M%S}__{slug}__run{run_id}"
     dest = os.path.join(STAGE, "data")
+    # Fresh stage every run: a file removed or newly skipped since the
+    # last run must not linger into this run's payload (Ins, issue #49).
+    shutil.rmtree(dest, ignore_errors=True)
     os.makedirs(dest, exist_ok=True)
 
     files, skipped = [], []
