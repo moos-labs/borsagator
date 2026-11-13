@@ -1,0 +1,54 @@
+{
+ "job": "run financetoolkit COMI.CA",
+ "ticker": "COMI.CA",
+ "digest_date": "2026-11-13",
+ "archived_at": "2026-11-13T18:13:09.747987+00:00",
+ "github_run_id": "43480301234",
+ "target": "sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234",
+ "tools": {
+  "financetoolkit": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 832,
+   "sha256": "5740be96f08c6384eec0c18cc4a436802fdbf57fb966486d15cb446246b2af89"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 446,
+   "sha256": "4d6af2ff129c5473d96ac83fa663948e7c832227c07e2208f4301c5525d55f46"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 14498,
+   "sha256": "eadd7c385caa4a301549107554a86efdc2bf05a6f629ca79bfd0b4f5985db64b"
+  },
+  {
+   "path": "collected/financetoolkit/ratios.json",
+   "bytes": 4914,
+   "sha256": "210ad0c9976635de724edc76a449989f678f9010afec4e2782e1c676b7d255c4"
+  },
+  {
+   "path": "collected/financetoolkit/report.md",
+   "bytes": 960,
+   "sha256": "a9999c9e9f9453121c3c9eea4f6a68db097d7aea650957f11f48d293de475560"
+  },
+  {
+   "path": "collected/financetoolkit/run.log",
+   "bytes": 129,
+   "sha256": "1364b5a5b84a89e54e8f024b0bea135831a0ebe03b837106d576d30e313287c2"
+  },
+  {
+   "path": "collected/financetoolkit/statements.csv",
+   "bytes": 1284,
+   "sha256": "69dac8cf17828397c1bf8633b0505036a5145a0459f06e7ba5b5b8cb778ff181"
+  },
+  {
+   "path": "collected/financetoolkit/summary.json",
+   "bytes": 251,
+   "sha256": "c0d9bb61eeb56dd11671b2b7e13a83454ed75ae876f70e1f3eb2086f040bdab8"
+  }
+ ],
+ "skipped": []
+}

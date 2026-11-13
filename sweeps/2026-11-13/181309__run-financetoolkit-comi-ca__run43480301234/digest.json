@@ -1,0 +1,33 @@
+{
+  "job": "run financetoolkit COMI.CA",
+  "ticker": "COMI.CA",
+  "date": "2026-11-13",
+  "started": "2026-11-13T18:12:20.658418+00:00",
+  "finished": "2026-11-13T18:13:09.644581+00:00",
+  "results": [
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "run_url": "https://github.com/moos-labs/financetoolkit-runner/actions/runs/43480335457",
+      "conclusion": "success",
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "COMI.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 13
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
