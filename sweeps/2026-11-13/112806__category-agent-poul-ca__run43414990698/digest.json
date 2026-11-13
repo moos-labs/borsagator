@@ -1,0 +1,78 @@
+{
+  "job": "category agent POUL.CA",
+  "ticker": "POUL.CA",
+  "date": "2026-11-13",
+  "started": "2026-11-13T11:11:13.551828+00:00",
+  "finished": "2026-11-13T11:28:06.772072+00:00",
+  "results": [
+    {
+      "tool": "tradingagents",
+      "repo": "tradingagents-runner",
+      "category": "agent",
+      "run_url": "https://github.com/moos-labs/tradingagents-runner/actions/runs/43415021443",
+      "conclusion": "success",
+      "summary": {
+        "tool": "tradingagents",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "company_of_interest": "POUL.CA",
+          "asset_type": "stock",
+          "trade_date": "2026-11-13",
+          "past_context": "",
+          "memory_note": "",
+          "portfolio_context": "",
+          "final_rating": "Buy",
+          "ticker": "POUL.CA",
+          "as_of": "2026-11-13",
+          "backend_url": "https://api.cohere.ai/compatibility/v1",
+          "requested_model": "command-r-08-2024",
+          "model_listed": true
+        },
+        "files": [
+          "decision.txt",
+          "final_state.json",
+          "fleet_context.json",
+          "fleet_context.md",
+          "provider_models.json",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    },
+    {
+      "tool": "finrobot",
+      "repo": "finrobot-runner",
+      "category": "agent",
+      "run_url": "https://github.com/moos-labs/finrobot-runner/actions/runs/43416561177",
+      "conclusion": "success",
+      "summary": {
+        "tool": "finrobot",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "tool": "finrobot",
+          "ticker": "POUL.CA",
+          "model": "command-r-08-2024",
+          "messages": 4,
+          "analysis_chars": 1108,
+          "verdict": "## VERDICT: bearish - the stock has experienced a downward trend and negative momentum for most of the period.",
+          "as_of": "2026-11-13"
+        },
+        "files": [
+          "analysis.md",
+          "finrobot_result.json",
+          "fleet_context.json",
+          "fleet_context.md",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
