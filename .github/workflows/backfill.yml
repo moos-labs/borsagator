@@ -41,8 +41,8 @@ jobs:
         run: |
           git config user.name "borsagator-archive"
           git config user.email "moos@sherbeeny.com"
-          git fetch origin archive
-          git worktree add /tmp/arch origin/archive
+          git fetch origin "+refs/heads/archive:refs/remotes/origin/archive"
+          git worktree add -b archive /tmp/arch origin/archive
           while IFS= read -r TARGET; do
             [ -z "$TARGET" ] && continue
             mkdir -p "/tmp/arch/$TARGET"
