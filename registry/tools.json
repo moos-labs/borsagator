@@ -96,7 +96,7 @@
   },
   {
    "category": "fundamentals",
-   "command": "mkdir -p results\npython scripts/ft_ratios.py 2>&1 | tee results/run.log",
+   "command": "mkdir -p results\npython scripts/ft_dispatch.py {ticker} 2>&1 | tee results/run.log",
    "fixed_target": "POUL verified statements",
    "id": "financetoolkit",
    "repo": "financetoolkit-runner",
@@ -119,7 +119,7 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
   },
   {
    "category": "sentiment",
@@ -133,7 +133,7 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
   },
   {
    "category": "sentiment",
@@ -147,7 +147,7 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time — the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
   },
   {
    "category": "agent",
@@ -260,7 +260,7 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/backtest.py 2>&1 | tee results/run.log",
-   "note": "script proven locally; GitHub runs hit Yahoo 429s — manual runs only",
+   "note": "script proven locally; GitHub runs hit Yahoo 429s \u2014 manual runs only",
    "family": "backtest",
    "role": "reserve"
   },
@@ -297,7 +297,7 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; bash scripts/superalgos_attempt.sh 2>&1 | tee results/run.log",
-   "note": "platform boots headless; no headless backtest exists — manual only",
+   "note": "platform boots headless; no headless backtest exists \u2014 manual only",
    "family": "agent",
    "role": "reserve"
   },
@@ -347,7 +347,7 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/fingpt_sentiment.py 2>&1 | tee results/run.log",
-   "note": "cannot run on CPU runners (LoRA adapters need CUDA) — kept for the record, manual only",
+   "note": "cannot run on CPU runners (LoRA adapters need CUDA) \u2014 kept for the record, manual only",
    "family": "agent",
    "role": "reserve"
   },
@@ -421,7 +421,7 @@
    ],
    "status": "manual",
    "command": "mkdir -p results\nset -o pipefail; python scripts/mcp_probe.py 2>&1 | tee results/run.log",
-   "note": "9 MCP tools exposed, but get_last_price errors server-side upstream — manual only",
+   "note": "9 MCP tools exposed, but get_last_price errors server-side upstream \u2014 manual only",
    "family": "data",
    "role": "reserve"
   },
