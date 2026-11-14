@@ -44,6 +44,33 @@ W = {
     "agent":          {"day": .10, "week": .20, "month": .30},
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
+
+
+def _apply_measured_weights(base):
+    """Issue #28: measured-weights feedback. If the calibration
+    ledger has published family skill factors (ledger/weights.json
+    in the repo checkout, or $BORSAGATOR_WEIGHTS), scale the
+    hand-set base weights by them. The ledger bounds the factors to
+    [0.5, 1.5] and enforces a minimum sample, so this side only
+    multiplies. Absent or unreadable file = base weights, exactly
+    the pre-#28 behaviour."""
+    path = os.environ.get("BORSAGATOR_WEIGHTS", "ledger/weights.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            doc = json.load(f)
+        factors = {k: float(v["factor"])
+                   for k, v in (doc.get("factors") or {}).items()}
+        if not factors:
+            return base, "builtin"
+    except Exception:
+        return base, "builtin"
+    out = {fam: {h: round(w * factors.get(fam, 1.0), 4)
+                 for h, w in hs.items()}
+           for fam, hs in base.items()}
+    return out, "ledger"
+
+
+W, WEIGHTS_SOURCE = _apply_measured_weights(W)
 RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5, "unknown": 1.3}
 SHOCK_WORDS = [
     "resign", "oust", "ceo", "earnings", "guidance", "investigat", "fraud",
@@ -759,8 +786,11 @@ def main():
            "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
+           "weights_source": WEIGHTS_SOURCE,
            "family_scores": {}, "horizons": {},
-           "confidence_basis": "provisional (uncalibrated — no scoring history yet)"}
+           "confidence_basis": ("calibrated (ledger skill factors applied)"
+                                if WEIGHTS_SOURCE == "ledger" else
+                                "provisional (uncalibrated — no scoring history yet)")}
     fam_display = dict(fam_fixed)
     for hname, bar in HORIZONS.items():
         ka = kronos_at(bar)
