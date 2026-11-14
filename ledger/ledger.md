@@ -1,6 +1,6 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree c205e830). Sweeps archived: 18 (6 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree 1ad2720c). Sweeps archived: 19 (6 with an ensemble).
 
 **Forecasts found: 18 · matured: 0 · pending: 18 · dividend-adjusted: 0**
 
@@ -50,9 +50,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree c205e830). Sweeps archived
 
 ## Data gaps & notes
 
-- 12 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667; sweeps/2026-11-13/175202__category-news-poul-ca__run43475305450; sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234; sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601; sweeps/2026-11-13/184846__category-agent-poul-ca__run43482153785
+- 13 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667; sweeps/2026-11-13/175202__category-news-poul-ca__run43475305450; sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234; sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601; sweeps/2026-11-13/184846__category-agent-poul-ca__run43482153785; sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341
 - NVDA: actuals series has 250 sessions, 2025-11-14 → 2026-11-12 (last source: sweeps/2026-11-13/063412__backfill-issue-18__sweep-lite-nvda-market-us/collected/pandas-ta/indicators.csv)
-- POUL.CA: actuals series has 3001 sessions, 2014-06-03 → 2026-11-12 (last source: sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619/collected/egx-data/egxpy_poul.csv)
+- POUL.CA: actuals series has 3001 sessions, 2014-06-03 → 2026-11-12 (last source: sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341/collected/egx-data/egxpy_poul.csv)
 - no archived ensemble carries a corporate_actions block yet (the first post-#26 sweep has not run) — the dividend-adjustment path is implemented and covered by a synthetic check, with zero real adjusted rows so far
 - no forecast has matured yet: every archived price series ends 2026-11-12, so even the earliest forecasts (as of 2026-11-12) have zero sessions after their date in the archive; later sweeps will extend the series and mature them
 
