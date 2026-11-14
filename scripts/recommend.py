@@ -16,8 +16,9 @@ Rules are transparent arithmetic, no LLM:
   fair shifted by half the week's 1-sigma move (from the range the
   ensemble published): buy at or below the band's low edge,
   sell/trim at or above its high edge, hold between.
-- A fresh event of a fitted type (<= 2 sessions old in the profile)
-  nudges the expected move by the type's SHRUNK reaction, decayed.
+- A fresh event of a fitted type (within 5 calendar days before the
+  ensemble's as-of date, newest wins) nudges the expected move by
+  the type's SHRUNK reaction, decayed.
 - A dividend ex-date inside the horizon is stated mechanically:
   the price is expected to drop by the DPS on the ex-date, and the
   buy band is quoted on the post-drop reference so the call does
@@ -34,18 +35,13 @@ Usage: python3 scripts/recommend.py POUL.CA
 import json
 import os
 import statistics
-import subprocess
 import sys
 import urllib.request
-from datetime import date
+from datetime import date, timedelta
 
 REPO = "moos-labs/borsagator"
 RAW_ARCHIVE = f"https://raw.githubusercontent.com/{REPO}/archive/"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
-API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
-            "archive?recursive=1")
-HELPER = os.path.expanduser(
-    "~/workspace/custom-connectors/custom.github/bin/github_api.py")
 
 
 def fetch_text(url, timeout=60):
@@ -54,29 +50,21 @@ def fetch_text(url, timeout=60):
         return r.read().decode("utf-8", "replace")
 
 
-def fetch_tree():
-    """Archive tree via the public API; fall back to the connector
-    helper (authenticated) if the anonymous rate limit bites.
-    Mirrors ledger.py — no VM-only import, so this runs in Actions
-    and anywhere else too (issue #59)."""
-    try:
-        return json.loads(fetch_text(API_TREE)), "api-anonymous"
-    except Exception as e:
-        print(f"recommend: anonymous tree fetch failed ({e}); "
-              "trying API helper", file=sys.stderr)
-    out = subprocess.run(
-        [sys.executable, HELPER, "get",
-         f"/repos/{REPO}/git/trees/archive?recursive=1"],
-        capture_output=True, text=True, timeout=120)
-    if out.returncode != 0:
-        raise RuntimeError(f"tree fetch failed: {out.stderr[:200]}")
-    return json.loads(out.stdout), "api-helper"
-
-
 def list_sweep_dirs():
     """Newest-first sweep directories on the archive branch, via the
     git trees API (one call, like ledger.py)."""
-    tree, _src = fetch_tree()
+    import subprocess
+    sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
+    from dynamic_credentials import (add_surrogate_to_request,
+                                     read_response_body)
+    req = urllib.request.Request(
+        f"https://api.github.com/repos/{REPO}/git/trees/archive"
+        "?recursive=1", method="GET")
+    add_surrogate_to_request(req, "custom.github",
+                             allowed_hosts=["api.github.com"])
+    req.add_header("Accept", "application/vnd.github+json")
+    with urllib.request.build_opener().open(req, timeout=60) as r:
+        tree = json.loads(read_response_body(r))
     dirs = sorted({p.rsplit("/", 1)[0] for p in
                    (t["path"] for t in tree.get("tree", []))
                    if p.startswith("sweeps/") and p.endswith("ensemble.json")},
@@ -117,6 +105,11 @@ def main():
              f"weights source: {ens.get('weights_source', 'builtin')}"]
 
     # --- reaction-fit nudge -------------------------------------------
+    # Freshness is anchored on the ENSEMBLE's as-of date, not the
+    # profile's own series end: an event counts only if it happened
+    # within 5 calendar days before the ensemble (about 3 trading
+    # sessions) — never in the future, never from a stale profile.
+    # The NEWEST eligible event wins (INS-R5-03).
     profile = {}
     try:
         profile = json.loads(fetch_text(
@@ -127,20 +120,25 @@ def main():
     fitted = fit.get("by_type") or {}
     nudge = 0.0
     events = profile.get("events") or []
-    series_to = (profile.get("series") or {}).get("to")
-    if events and series_to:
-        end = date.fromisoformat(series_to)
-        for e in events:
+    asof = None
+    try:
+        asof = date.fromisoformat((ens.get("date") or "")[:10])
+    except Exception:
+        asof = None
+    if events and asof:
+        for e in sorted(events, key=lambda x: x.get("date", ""),
+                        reverse=True):
             try:
-                age = (end - date.fromisoformat(e["date"])).days
+                age = (asof - date.fromisoformat(e["date"][:10])).days
             except Exception:
                 continue
             fv = fitted.get(e.get("type") or "")
-            if fv and age <= 3:  # fresh event of a fitted type
+            if fv and 0 <= age <= 5:
                 nudge = round(fv["shrunk_r5"] * 0.5, 2)
                 notes.append(
-                    f"fresh {e['type']} event ({e['date']}): shrunk "
-                    f"reaction {fv['shrunk_r5']:+}% x 0.5 decay = "
+                    f"fresh {e['type']} event ({e['date']}, {age}d "
+                    f"before the ensemble): shrunk reaction "
+                    f"{fv['shrunk_r5']:+}% x 0.5 decay = "
                     f"{nudge:+}% nudge")
                 break
     wf = profile.get("walk_forward") or {}
@@ -151,16 +149,41 @@ def main():
             "baseline yet — nudge kept at half weight, treat as context")
 
     # --- dividend mechanics -------------------------------------------
+    # A dividend subtracts from the reference ONLY when its ex-date
+    # falls inside this recommendation's week horizon (as-of < ex <=
+    # as-of + 7 calendar days, the week horizon's calendar span).
+    # A past, undated, or far-future dividend is already in the
+    # price or out of scope and must NOT be subtracted again
+    # (INS-R5-02). The nearest eligible ex-date wins; others are
+    # noted, not summed.
     ref_base = base
+    divs = []
     for a in ens.get("corporate_actions") or []:
-        if a.get("type") == "dividend" and a.get("dps"):
-            ref_base = round(base - a["dps"], 2)
-            notes.append(
-                f"dividend: DPS {a['dps']} ex {a.get('ex_date')} — "
-                f"mechanical drop {a.get('mechanical_pct')}% takes the "
-                f"reference from {base} to {ref_base}; bands are quoted "
-                f"on the post-drop reference")
-            break
+        if a.get("type") != "dividend" or not a.get("dps"):
+            continue
+        ex = None
+        try:
+            ex = date.fromisoformat((a.get("ex_date") or "")[:10])
+        except Exception:
+            ex = None
+        divs.append((ex, a))
+    eligible = [(ex, a) for ex, a in divs if ex and asof
+                and asof < ex <= (asof + timedelta(days=7))]
+    if eligible:
+        ex, a = sorted(eligible, key=lambda t: t[0])[0]
+        ref_base = round(base - a["dps"], 2)
+        notes.append(
+            f"dividend: DPS {a['dps']} ex {a.get('ex_date')} — "
+            f"mechanical drop {a.get('mechanical_pct')}% takes the "
+            f"reference from {base} to {ref_base}; bands are quoted "
+            f"on the post-drop reference")
+        if len(eligible) > 1:
+            notes.append(f"{len(eligible) - 1} further dividend(s) "
+                         f"inside the horizon noted, not summed")
+    elif divs:
+        notes.append(
+            "dividend action(s) present but no ex-date falls inside "
+            "this week horizon — reference left at the base price")
 
     expected_adj = round(expected + nudge, 2)
     fair = ref_base * (1 + expected_adj / 100)
