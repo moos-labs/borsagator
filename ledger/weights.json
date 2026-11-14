@@ -1,0 +1,37 @@
+{
+ "tool": "ensemble-weights",
+ "version": 1,
+ "built_from": "calibration-ledger",
+ "min_n": 3,
+ "clamp": [
+  0.5,
+  1.5
+ ],
+ "factors": {
+  "price-forecast": {
+   "factor": 1.0,
+   "skill": null,
+   "n": 0
+  },
+  "technicals": {
+   "factor": 1.0,
+   "skill": null,
+   "n": 0
+  },
+  "sentiment": {
+   "factor": 1.0,
+   "skill": null,
+   "n": 0
+  },
+  "agent": {
+   "factor": 1.0,
+   "skill": null,
+   "n": 0
+  },
+  "fundamentals": {
+   "factor": 1.0,
+   "skill": null,
+   "n": 0
+  }
+ }
+}
