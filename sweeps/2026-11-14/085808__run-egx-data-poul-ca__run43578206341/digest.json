@@ -1,0 +1,35 @@
+{
+  "job": "run egx-data POUL.CA",
+  "ticker": "POUL.CA",
+  "date": "2026-11-14",
+  "started": "2026-11-14T08:57:20.265635+00:00",
+  "finished": "2026-11-14T08:58:08.739025+00:00",
+  "results": [
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/egx-data-runner/actions/runs/43578220197",
+      "conclusion": "success",
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_egxpy_poul.csv": 3000,
+          "egxpy_poul.csv_last_date": "2026-11-12",
+          "egxpy_poul.csv_last_close": "10.15"
+        },
+        "files": [
+          "egxpy_poul.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}

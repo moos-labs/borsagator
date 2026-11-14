@@ -1,0 +1,54 @@
+{
+ "job": "run egx-data POUL.CA",
+ "ticker": "POUL.CA",
+ "digest_date": "2026-11-14",
+ "archived_at": "2026-11-14T08:58:08.857992+00:00",
+ "github_run_id": "43578206341",
+ "target": "sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341",
+ "tools": {
+  "egx-data": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 897,
+   "sha256": "09cfa763ca689aea819a6776d64aa67e4e36f1d3b1aa38be221a176a55be21ea"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 492,
+   "sha256": "332b2d9807cd8973b9008a7fa6a95ce7ca1fc96edf228d251d095328dc0302bc"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 14498,
+   "sha256": "eadd7c385caa4a301549107554a86efdc2bf05a6f629ca79bfd0b4f5985db64b"
+  },
+  {
+   "path": "collected/egx-data/egxpy_poul.csv",
+   "bytes": 211260,
+   "sha256": "a0217f144de238e6284a2c75c46bf5e450b697788f5eddc9d61c3cd6db4e00ad"
+  },
+  {
+   "path": "collected/egx-data/report.md",
+   "bytes": 1299,
+   "sha256": "b82ae66908adcbb8ac35d3351ea70ea0578f2346fa63edff2e62a34e9ad3f23e"
+  },
+  {
+   "path": "collected/egx-data/run.log",
+   "bytes": 1397,
+   "sha256": "4ea8a147be5e045c348907ef380929041fb579ce6561971a78ab9b103997b97e"
+  },
+  {
+   "path": "collected/egx-data/summary.json",
+   "bytes": 336,
+   "sha256": "c8c7bc1258370d171dde4f4902f742d9b951162aa5547d4b0f68a40164c70c8a"
+  },
+  {
+   "path": "collected/egx-data/verdict.json",
+   "bytes": 6727,
+   "sha256": "bf0956c927a53ca318bfccc6b69a12cd0060efdc8dfed95424b0abe2c7a502fc"
+  }
+ ],
+ "skipped": []
+}
