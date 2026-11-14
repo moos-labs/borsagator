@@ -226,9 +226,12 @@ def delete_variable(repo, name):
     return status in (204, 404)
 
 
-def dispatch(repo):
+def dispatch(repo, inputs=None):
+    body = {"ref": "main"}
+    if inputs:
+        body["inputs"] = inputs
     status, _, data = gh("POST", f"/repos/{ORG}/{repo}/actions/workflows/run.yml/dispatches",
-                         {"ref": "main"})
+                         body)
     return status in (201, 204), data
 
 
@@ -318,27 +321,37 @@ def run_tool(tool, ticker, date_str):
     tool_id = tool["id"]
     print(f"== {tool_id} ({repo})", flush=True)
     state, original = get_variable(repo, "COMMANDS")
-    if original and "echo $? > results/.exit" in original:
+    if original and "results/.exit" in original:
         # A previous run killed mid-flight never reached the finally
         # restore, so the stored value already carries our emitter.
-        # Strip it (its signature two-line head) or every kill
+        # Strip it at its earliest signature line or every kill
         # permanently appends another copy (panel round 4, G4-03).
-        original = original.split(
-            "\nmkdir -p results\necho $? > results/.exit")[0]
+        cuts = [original.find(m) for m in
+                ("\n__borsa_ec=$?", "\nmkdir -p results\necho $?")]
+        cuts = [c for c in cuts if c >= 0]
+        if cuts:
+            original = original[:min(cuts)]
     command = tool["command"].replace("{ticker}", ticker).replace("{date}", date_str)
     composed = command.rstrip() + "\n" + (EMITTER % (tool_id, ticker))
     result = {"tool": tool_id, "repo": repo, "category": tool["category"]}
-    if state == "error":
+    use_inputs = bool(tool.get("inputs"))
+    if state == "error" and not use_inputs:
         result.update(status="error", detail="could not read COMMANDS variable — left untouched")
         return result
     changed = False
     try:
-        if not set_variable(repo, "COMMANDS", composed):
-            result.update(status="error", detail="could not set COMMANDS variable")
-            return result
-        changed = True
         since = time.time()
-        ok, data = dispatch(repo)
+        if use_inputs:
+            # INS-R4-02: parameters travel as dispatch inputs; the
+            # shared COMMANDS variable is never read as a channel
+            # nor patched, so overlapping sweeps cannot cross-wire.
+            ok, data = dispatch(repo, {"commands": composed})
+        else:
+            if not set_variable(repo, "COMMANDS", composed):
+                result.update(status="error", detail="could not set COMMANDS variable")
+                return result
+            changed = True
+            ok, data = dispatch(repo)
         if not ok:
             result.update(status="error", detail=f"dispatch failed: {data}")
             return result
