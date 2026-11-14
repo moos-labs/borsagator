@@ -1,12 +1,12 @@
 {
  "ticker": "POUL.CA",
- "built_at": "2026-11-14T07:48:42Z",
+ "built_at": "2026-11-14T09:00:51Z",
  "series": {
   "sessions": 3000,
   "from": "2014-06-04",
   "to": "2026-11-12"
  },
- "events_measured": 19,
+ "events_measured": 21,
  "by_type": {
   "dividend": {
    "events": 4,
@@ -24,13 +24,21 @@
    "median_r5_adj": null,
    "big_move_share_r5": null
   },
+  "management": {
+   "events": 1,
+   "median_r1": null,
+   "median_r3": null,
+   "median_r5": null,
+   "median_r5_adj": null,
+   "big_move_share_r5": null
+  },
   "other": {
-   "events": 14,
-   "median_r1": -0.1,
-   "median_r3": 1.6,
-   "median_r5": 0.91,
-   "median_r5_adj": 0.91,
-   "big_move_share_r5": 0.44
+   "events": 15,
+   "median_r1": -0.29,
+   "median_r3": 1.64,
+   "median_r5": 0.95,
+   "median_r5_adj": 0.95,
+   "big_move_share_r5": 0.5
   }
  },
  "events": [
@@ -84,10 +92,10 @@
   },
   {
    "date": "2026-10-27",
-   "title": "\"عليه مغادرة أوروبا\".. بول سكولز يهاجم برونو فرنانديز بشدة - إرم نيوز",
+   "title": "القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (غير موثق)",
    "type": "other",
    "kind": "news",
-   "coverage": 2,
+   "coverage": 3,
    "base_date": "2026-10-27",
    "base": 9.43,
    "dividend_window": false,
@@ -129,6 +137,22 @@
    "r3_adj": 4.43,
    "r5": 6.54,
    "r5_adj": 6.54
+  },
+  {
+   "date": "2026-10-29",
+   "title": "القاهرة للدواجن (POUL.CA) - قرار لجنة القيد",
+   "type": "other",
+   "kind": "disclosure",
+   "coverage": 1,
+   "base_date": "2026-10-29",
+   "base": 9.55,
+   "dividend_window": false,
+   "r1": -1.15,
+   "r1_adj": -1.15,
+   "r3": 4.71,
+   "r3_adj": 4.71,
+   "r5": 5.97,
+   "r5_adj": 5.97
   },
   {
    "date": "2026-10-31",
@@ -199,7 +223,7 @@
    "title": "العنوان: القاهرة للدواجن (POUL.CA) - محضر إجتماع الجمعية العامة العادية المنعقدة في 18/10/2026 (موثق)اسم الشركة: القاهرة للدواجنكود الترقيم - معلومات مباشر",
    "type": "other",
    "kind": "disclosure",
-   "coverage": 1,
+   "coverage": 2,
    "base_date": "2026-11-04",
    "base": 10.1,
    "dividend_window": false,
@@ -215,7 +239,7 @@
    "title": "الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة رأسمالها إلى ملياري جنيه وإضافة أنشطة جديدة - القاهرة 24",
    "type": "other",
    "kind": "news",
-   "coverage": 5,
+   "coverage": 6,
    "base_date": "2026-11-05",
    "base": 10.12,
    "dividend_window": false,
@@ -247,7 +271,7 @@
    "title": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر",
    "type": "other",
    "kind": "disclosure",
-   "coverage": 1,
+   "coverage": 2,
    "base_date": "2026-11-08",
    "base": 10.0,
    "dividend_window": false,
@@ -311,7 +335,7 @@
    "title": "العنوان : القاهرة للدواجن (POUL.CA) مرفق القوائم المالية المجمعة عن الفترة المالية المنتهية فى 30/09/2026اسم الشركة : القاهرة للدواجنكود الت - معلومات مباشر",
    "type": "earnings",
    "kind": "disclosure",
-   "coverage": 2,
+   "coverage": 4,
    "base_date": "2026-11-12",
    "base": 10.15,
    "dividend_window": false,
@@ -337,6 +361,174 @@
    "r3_adj": null,
    "r5": null,
    "r5_adj": null
+  },
+  {
+   "date": "2026-11-12",
+   "title": "القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة",
+   "type": "management",
+   "kind": "disclosure",
+   "coverage": 1,
+   "base_date": "2026-11-12",
+   "base": 10.15,
+   "dividend_window": false,
+   "r1": null,
+   "r1_adj": null,
+   "r3": null,
+   "r3_adj": null,
+   "r5": null,
+   "r5_adj": null
   }
- ]
+ ],
+ "top_moves": [
+  {
+   "date": "2024-10-16",
+   "move": 19.77,
+   "close": 3.63045737,
+   "r1": -6.57,
+   "r3": -8.51,
+   "r5": -11.5,
+   "event_types_near": []
+  },
+  {
+   "date": "2022-12-13",
+   "move": 16.9,
+   "close": 0.90015821,
+   "r1": -4.22,
+   "r3": -6.93,
+   "r5": -6.33,
+   "event_types_near": []
+  },
+  {
+   "date": "2023-05-31",
+   "move": 16.2,
+   "close": 1.47766936,
+   "r1": -1.83,
+   "r3": -2.75,
+   "r5": -2.39,
+   "event_types_near": []
+  },
+  {
+   "date": "2023-11-15",
+   "move": 14.53,
+   "close": 2.52152753,
+   "r1": 0.22,
+   "r3": -4.73,
+   "r5": -2.8,
+   "event_types_near": []
+  },
+  {
+   "date": "2024-02-20",
+   "move": 13.37,
+   "close": 3.17224431,
+   "r1": -0.85,
+   "r3": -10.26,
+   "r5": -8.21,
+   "event_types_near": []
+  },
+  {
+   "date": "2024-01-31",
+   "move": -11.63,
+   "close": 2.47272377,
+   "r1": 9.54,
+   "r3": 12.94,
+   "r5": 8.88,
+   "event_types_near": []
+  },
+  {
+   "date": "2023-03-08",
+   "move": 11.6,
+   "close": 1.09537325,
+   "r1": 1.98,
+   "r3": -10.4,
+   "r5": -6.93,
+   "event_types_near": []
+  },
+  {
+   "date": "2024-10-24",
+   "move": 11.22,
+   "close": 3.57351965,
+   "r1": 1.29,
+   "r3": 7.36,
+   "r5": 5.01,
+   "event_types_near": []
+  },
+  {
+   "date": "2021-02-11",
+   "move": 11.18,
+   "close": 1.02487893,
+   "r1": -3.7,
+   "r3": -2.38,
+   "r5": -6.61,
+   "event_types_near": []
+  },
+  {
+   "date": "2023-04-27",
+   "move": 11.16,
+   "close": 1.26889772,
+   "r1": -2.99,
+   "r3": -6.62,
+   "r5": -3.85,
+   "event_types_near": []
+  },
+  {
+   "date": "2025-11-23",
+   "move": 10.9,
+   "close": 7.58627314,
+   "r1": -2.43,
+   "r3": -2.0,
+   "r5": -2.18,
+   "event_types_near": []
+  },
+  {
+   "date": "2025-05-29",
+   "move": 10.3,
+   "close": 6.47463197,
+   "r1": -8.5,
+   "r3": -10.59,
+   "r5": -14.53,
+   "event_types_near": []
+  },
+  {
+   "date": "2023-03-26",
+   "move": 10.26,
+   "close": 1.28245432,
+   "r1": -2.33,
+   "r3": -6.77,
+   "r5": -10.78,
+   "event_types_near": []
+  },
+  {
+   "date": "2026-02-19",
+   "move": -10.25,
+   "close": 7.54560334,
+   "r1": 4.64,
+   "r3": 9.23,
+   "r5": 8.91,
+   "event_types_near": []
+  },
+  {
+   "date": "2024-03-11",
+   "move": -10.1,
+   "close": 2.33986909,
+   "r1": 0.93,
+   "r3": -2.67,
+   "r5": -13.79,
+   "event_types_near": []
+  }
+ ],
+ "shock_followthrough": {
+  "up_5pct": {
+   "days": 127,
+   "median_next1": 0.0,
+   "median_next3": -0.87,
+   "revert_share_next1": 0.48
+  },
+  "down_5pct": {
+   "days": 78,
+   "median_next1": -0.3,
+   "median_next3": -0.32,
+   "revert_share_next1": 0.51
+  }
+ },
+ "series_artifacts_excluded": 0
 }
