@@ -13,8 +13,7 @@
     "US"
    ],
    "family": "data",
-   "role": "plumbing",
-   "inputs": true
+   "role": "plumbing"
   },
   {
    "category": "data",
@@ -28,7 +27,8 @@
     "US"
    ],
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "category": "data",
@@ -41,7 +41,8 @@
     "EGX"
    ],
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "category": "technicals",
@@ -54,7 +55,8 @@
     "US"
    ],
    "family": "technicals",
-   "role": "voter"
+   "role": "voter",
+   "inputs": true
   },
   {
    "category": "technicals",
@@ -67,7 +69,8 @@
     "EGX"
    ],
    "family": "technicals",
-   "role": "cross-check"
+   "role": "cross-check",
+   "inputs": true
   },
   {
    "category": "stats",
@@ -80,7 +83,8 @@
     "EGX"
    ],
    "family": "stats",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "category": "backtest",
@@ -93,7 +97,8 @@
     "EGX"
    ],
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "category": "fundamentals",
@@ -106,7 +111,8 @@
     "EGX"
    ],
    "family": "fundamentals",
-   "role": "voter"
+   "role": "voter",
+   "inputs": true
   },
   {
    "category": "sentiment",
@@ -120,7 +126,8 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]",
+   "inputs": true
   },
   {
    "category": "sentiment",
@@ -134,7 +141,8 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]",
+   "inputs": true
   },
   {
    "category": "sentiment",
@@ -148,7 +156,8 @@
    ],
    "family": "sentiment",
    "role": "family-vote",
-   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]"
+   "note": " [2026-11-13: scores LIVE per-ticker headlines fetched at run time \u2014 the old fixed POUL sample input is gone.]",
+   "inputs": true
   },
   {
    "category": "agent",
@@ -161,7 +170,8 @@
     "US"
    ],
    "family": "agent",
-   "role": "family-vote"
+   "role": "family-vote",
+   "inputs": true
   },
   {
    "category": "forecast",
@@ -174,7 +184,8 @@
     "US"
    ],
    "family": "price-forecast",
-   "role": "voter"
+   "role": "voter",
+   "inputs": true
   },
   {
    "id": "pandas-datareader",
@@ -187,7 +198,8 @@
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
    "note": "FRED works; Stooq leg broken upstream (needs API key)",
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "backtrader",
@@ -199,7 +211,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "akshare",
@@ -212,7 +225,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "financedatabase",
@@ -225,7 +239,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/query.py 2>&1 | tee results/run.log",
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "pybroker",
@@ -237,7 +252,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "finvizfinance",
@@ -250,7 +266,8 @@
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
    "note": "fundamentals work; screener broken upstream (JS UI)",
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "backtesting-py",
@@ -263,7 +280,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/backtest.py 2>&1 | tee results/run.log",
    "note": "script proven locally; GitHub runs hit Yahoo 429s \u2014 manual runs only",
    "family": "backtest",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "edgartools",
@@ -275,7 +293,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
    "family": "fundamentals",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "bt",
@@ -287,7 +306,8 @@
    "status": "active",
    "command": "mkdir -p results\npython scripts/backtest.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "superalgos",
@@ -300,7 +320,8 @@
    "command": "mkdir -p results\nset -o pipefail; bash scripts/superalgos_attempt.sh 2>&1 | tee results/run.log",
    "note": "platform boots headless; no headless backtest exists \u2014 manual only",
    "family": "agent",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "simfin",
@@ -313,7 +334,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/simfin_pilot.py 2>&1 | tee results/run.log",
    "note": "uses the SIMFIN_API_KEY org secret",
    "family": "fundamentals",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "id": "qlib",
@@ -325,7 +347,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/qlib_pilot.py 2>&1 | tee results/run.log",
    "family": "forecast",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "zipline",
@@ -337,7 +360,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/zipline_pilot.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "fingpt",
@@ -350,7 +374,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/fingpt_sentiment.py 2>&1 | tee results/run.log",
    "note": "cannot run on CPU runners (LoRA adapters need CUDA) \u2014 kept for the record, manual only",
    "family": "agent",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "vnpy",
@@ -362,7 +387,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/vnpy_backtest.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "nautilus",
@@ -374,7 +400,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; python scripts/nautilus_example.py 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "finrl",
@@ -387,7 +414,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/finrl_a2c.py --ticker {ticker} 2>&1 | tee results/run.log",
    "note": "fetch is yahooquery-first (Yahoo 429 workaround)",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "lean",
@@ -399,7 +427,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; bash scripts/lean_pilot.sh 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "stocksharp",
@@ -411,7 +440,8 @@
    "status": "active",
    "command": "mkdir -p results\nset -o pipefail; bash scripts/stocksharp_pilot.sh 2>&1 | tee results/run.log",
    "family": "backtest",
-   "role": "validation"
+   "role": "validation",
+   "inputs": true
   },
   {
    "id": "egx-mcp",
@@ -424,7 +454,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/mcp_probe.py 2>&1 | tee results/run.log",
    "note": "9 MCP tools exposed, but get_last_price errors server-side upstream \u2014 manual only",
    "family": "data",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "ai-hedge-fund",
@@ -437,7 +468,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/run_backtest.py --ticker {ticker} 2>&1 | tee results/run.log",
    "note": "Wiring complete: Cohere serves its 'OpenAI' provider via OPENAI_API_BASE + an api_models.json registry patch (scripts/run_backtest.py); workflow injects COHERE_API_KEY + FINANCIAL_DATASETS_API_KEY. BLOCKED on data: Financial Datasets has NO free requests (account + keys exist under moos.sherbo@gmail.com; smallest pack $20/1,000 requests, needs Muhammad's go-ahead) and the key value itself is dashboard-clipboard-only. Flip to active once the org secret exists.",
    "family": "agent",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "vibe-trading",
@@ -451,7 +483,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/smoke.py 2>&1 | tee results/run.log",
    "note": "Smoke only. Upstream restructured into an agent/ server+swarm layout (no root cli package); a LangChain OpenAI-compatible route exists (OPENAI_BASE_URL is honoured) but a headless one-shot run needs a dedicated integration pass, not a variable swap.",
    "family": "agent",
-   "role": "reserve"
+   "role": "reserve",
+   "inputs": true
   },
   {
    "id": "finrobot",
@@ -464,7 +497,8 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/run_analysis.py --ticker {ticker} 2>&1 | tee results/run.log",
    "note": "Real run proven 2026-11-11: Market Analyst agent on Cohere command-r via its OpenAI-compatible endpoint (autogen config_list base_url), YFinance toolkits only through plainly-typed wrappers (Cohere schema validator), prompt date-stamped. US only: its data layer is yfinance, which cannot fetch .CA tickers (Egypt DST bug).",
    "family": "agent",
-   "role": "family-vote"
+   "role": "family-vote",
+   "inputs": true
   },
   {
    "id": "news-disclosure",
@@ -478,7 +512,8 @@
    "command": "set -o pipefail\nmkdir -p results\npython scripts/fetch_feed.py --ticker {ticker} 2>&1 | tee results/run.log",
    "note": "Free disclosures + news layer (added 2026-11-12): Google News RSS AR+EN (Mubasher EGX disclosure republications classified as disclosures) + SEC EDGAR for US. FinBERT sentiment on English headlines - no LLM. Brief: one short Cohere call with a deterministic extractive fallback. Cost $0 per run.",
    "family": "news",
-   "role": "risk-overlay"
+   "role": "risk-overlay",
+   "inputs": true
   }
  ],
  "version": 1
