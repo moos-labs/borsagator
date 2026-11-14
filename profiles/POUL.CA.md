@@ -1,10 +1,10 @@
 # Reaction profile — POUL.CA
 
-Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 21.
+Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 22.
 
 | Type | Events | Median +1 | Median +3 | Median +5 | Median +5 (div-adj) | |Move|≥2% share |
 |---|---|---|---|---|---|---|
-| dividend | 4 | -0.31 | 2.41 | 5.95 | 5.95 | 1.0 |
+| dividend | 5 | 0.53 | 2.22 | 5.93 | 5.93 | 0.8 |
 | earnings | 1 | None | None | None | None | None |
 | management | 1 | None | None | None | None | None |
 | other | 15 | -0.29 | 1.64 | 0.95 | 0.95 | 0.5 |
@@ -23,6 +23,7 @@ Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 21.
 | 2026-10-31 | dividend | Cairo Poultry stock: board backs EGP 1.9 dividend proposal - | -1.15 | 4.71 | 5.97 |  |
 | 2026-11-01 | dividend | العنوان : القاهرة للدواجن (POUL.CA) توزيع نقدياسم الشركة : ا | 4.87 | 6.99 | 5.93 |  |
 | 2026-11-02 | other | دبي تستضيف نزالاً عالمياً بين جيك بول وسيدريك دومبيه 24 ديسم | 1.01 | 2.22 | 0.91 |  |
+| 2026-11-02 | dividend | القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي | 1.01 | 2.22 | 0.91 |  |
 | 2026-11-03 | other | أرباح بول كورب، والإيرادات تتغلب على التوقعات في Q3 - Invest | 1.0 | 0.0 | 2.9 |  |
 | 2026-11-04 | other | العنوان: القاهرة للدواجن (POUL.CA) - محضر إجتماع الجمعية الع | 0.2 | -1.09 | 0.99 |  |
 | 2026-11-05 | other | الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة | -1.19 | 1.68 | 0.3 |  |
@@ -73,14 +74,14 @@ Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 21.
 - **2026-02-19** (-10.25%): drivers unclassified — سعر الكتاكيت في بورصة الدواجن اليوم الخميس 19 - 2 - 2026 (elwatannews.com); تحديثات أسعار الكتاكيت في بورصة الدواجن اليوم السبت 21 - 2 - (elwatannews.com); الكيلو وصل كام ؟.. أسعار الفراخ البيضاء اليوم والكتاكيت في ب (ghorbanews.com)
 - **2024-03-11** (-10.1%): drivers unclassified — أخبار البورصة اليوم الإثنين 11 - 3 - 2024 (youm7.com)
 
-## Reaction fit (median +5 shrunk toward the global median 1.94%, k=5)
+## Reaction fit (median +5 shrunk toward the global median 0.99%, k=5)
 
 | Type | n | Raw median +5 | Shrunk +5 |
 |---|---|---|---|
-| dividend | 4 | 5.95 | 3.72 |
-| other | 10 | 0.95 | 1.28 |
+| dividend | 5 | 5.93 | 3.46 |
+| other | 10 | 0.95 | 0.96 |
 
-Walk-forward: fit on 7 events, sign hits 5/5 on the later half (baseline always-global: 5/5) — indicative only at this sample size.
+Walk-forward (purged: 4 training events dropped for overlapping labels): fit on 3 events, sign hits 0/6 on the later half (baseline always-global: 0/6) — indicative only at this sample size.
 
 ## Shock follow-through (|move| ≥ 5%)
 
