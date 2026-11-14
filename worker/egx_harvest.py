@@ -16,7 +16,7 @@ import os
 import re
 import sys
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 PROFILE = os.environ.get("GATOR_ROOT", "/opt/gator") + "/egx-profile"
 RESULTS = "results"
@@ -107,6 +107,22 @@ def main():
 
     from playwright.sync_api import sync_playwright
     items = []
+    # INS-R3-04: a previous run killed mid-flight can orphan a
+    # Chromium that holds the persistent profile's lock, failing
+    # every later launch. If no process is using this profile,
+    # clear the stale singleton locks before launching.
+    try:
+        import subprocess
+        alive = subprocess.run(["pgrep", "-f", "egx-profile"],
+                               capture_output=True).returncode == 0
+        if not alive:
+            for lock in ("SingletonLock", "SingletonCookie",
+                         "SingletonSocket"):
+                p = os.path.join(PROFILE, lock)
+                if os.path.lexists(p):
+                    os.unlink(p)
+    except Exception:
+        pass
     with sync_playwright() as pw:
         headful = bool(os.environ.get("DISPLAY"))
         ctx = pw.chromium.launch_persistent_context(
@@ -186,8 +202,38 @@ def main():
                         log("select failed:", str(e)[:200])
         log("result links:", len(links))
         debug["links"] = len(links)
+
+        def iso_date(body, row_text):
+            # INS-R3-06: the publish date sits at the head of the
+            # EGX text (under the title) — search there first, then
+            # the search-row text; validate it is a real date.
+            for hay in ((body or "")[:400], row_text or ""):
+                dm = re.search(r"(\d{2})/(\d{2})/(\d{4})", hay)
+                if dm:
+                    try:
+                        dt = datetime(int(dm.group(3)), int(dm.group(2)),
+                                      int(dm.group(1)))
+                        return dt.strftime("%Y-%m-%d")
+                    except ValueError:
+                        continue
+            return ""
+
+        def write_out():
+            out = {"ticker": f"{code}.CA", "company_ar": ar_name,
+                   "isin": isin,
+                   "harvested_at": time.strftime(
+                       "%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                   "count": len(items), "items": items}
+            with open(os.path.join(RESULTS, "disclosures.json"),
+                      "w") as f:
+                json.dump(out, f, indent=1, ensure_ascii=False)
+
         seen = set()
+        deadline = time.time() + 1500  # INS-R3-04: bounded loop
         for lk in links:
+            if len(items) >= 25 or time.time() > deadline:
+                log("harvest cap/deadline reached at", len(items))
+                break
             m = re.search(r"NewsID=(\d+)", lk["href"])
             if not m or m.group(1) in seen:
                 continue
@@ -203,15 +249,13 @@ def main():
                 body = ""
             finally:
                 dpage.close()
-            dm = re.search(r"(\d{2})/(\d{2})/(\d{4})", body)
-            iso = (f"{dm.group(3)}-{dm.group(2)}-{dm.group(1)}"
-                   if dm else "")
             items.append({
                 "id": m.group(1), "kind": "disclosure", "source": "egx.com.eg",
-                "date": iso,
+                "date": iso_date(body, lk["row"]),
                 "title": lk["text"][:200], "url": lk["href"],
                 "row_text": lk["row"][:300], "body": body[:8000],
                 "body_chars": len(body)})
+            write_out()  # incremental: a timeout keeps what exists
             log("item", m.group(1), "body_chars", len(body))
             time.sleep(1)
         ctx.close()
