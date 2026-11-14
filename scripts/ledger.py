@@ -27,9 +27,14 @@ REPO = "moos-labs/borsagator"
 BRANCH = "archive"
 API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
             f"{BRANCH}?recursive=1")
+API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                   f"{BRANCH}:sweeps?recursive=1")
 RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
-HELPER = os.path.expanduser(
-    "~/workspace/custom-connectors/custom.github/bin/github_api.py")
+# INS-R7-02: anchored to the checkout like the other two scripts
+# (INS-R6-04 pattern) — the old $HOME path was dead weight off-VM.
+HELPER = os.path.normpath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "..", "custom-connectors", "custom.github", "bin", "github_api.py"))
 
 HORIZONS = ("day", "week", "month")
 DEFAULT_SESSIONS = {"day": 1, "week": 5, "month": 14}
@@ -73,8 +78,33 @@ def fetch_tree():
         raise RuntimeError(f"tree fetch failed: {out.stderr[:200]}")
     data = json.loads(out.stdout)
     if data.get("truncated"):
-        warn("helper tree truncated too — paths may be incomplete")
+        # INS-R7-03: auth does not raise GitHub's truncation cap,
+        # so the helper truncates identically — recover via the
+        # sweeps subtree (the only part the ledger reads) instead of
+        # consuming a known-incomplete tree.
+        return fetch_tree_sweeps_subtree()
     return data, "api-helper"
+
+
+def fetch_tree_sweeps_subtree():
+    """Fallback when the recursive tree truncates: fetch the
+    recursive tree rooted at sweeps/ only. If even that truncates,
+    fail closed — a silently truncated tree would corrupt the
+    calibration instrument (INS-R7-03)."""
+    try:
+        data = json.loads(fetch_text(API_TREE_SWEEPS))
+        if not data.get("truncated"):
+            prefixed = []
+            for entry in data.get("tree", []):
+                e = dict(entry)
+                e["path"] = "sweeps/" + e["path"]
+                prefixed.append(e)
+            data["tree"] = prefixed
+            return data, "api-sweeps-subtree"
+    except Exception as e:
+        warn(f"sweeps-subtree fetch failed ({e})")
+    raise RuntimeError("tree truncated and sweeps-subtree unavailable "
+                       "— failing closed")
 
 
 def parse_date(s):

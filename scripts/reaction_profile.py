@@ -33,6 +33,8 @@ BRANCH = "archive"
 RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
 API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
             f"{BRANCH}?recursive=1")
+API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                   f"{BRANCH}:sweeps?recursive=1")
 # INS-R6-04: anchored to the checkout, not the caller's cwd (the
 # old relative path only worked when run from $HOME).
 HELPER = [sys.executable, os.path.normpath(os.path.join(
@@ -75,13 +77,42 @@ def fetch_tree():
             HELPER + ["get",
                       f"/repos/{REPO}/git/trees/{BRANCH}?recursive=1"],
             capture_output=True, text=True, timeout=120)
+        # INS-R7-04: mirror ledger.py — a hard helper failure must
+        # not degrade to a JSON error mislabeled as missing data.
+        if out.returncode != 0:
+            raise RuntimeError(
+                f"helper tree fetch failed: {out.stderr[:200]}")
         data = json.loads(out.stdout)
         if data.get("truncated"):
-            warn("helper tree truncated too — paths may be incomplete")
+            # INS-R7-03: auth does not raise GitHub's truncation cap,
+            # so the helper truncates identically — recover via the
+            # sweeps subtree instead of consuming a known-incomplete
+            # tree.
+            return fetch_tree_sweeps_subtree()
         return [t["path"] for t in data.get("tree", [])]
     except Exception as e:
         warn(f"tree fetch failed: {e}")
         return []
+
+
+def fetch_tree_sweeps_subtree():
+    """Fallback when the recursive tree truncates: fetch the
+    recursive tree rooted at sweeps/ only. Every path this script
+    reads lives under sweeps/, and the subtree is far under the
+    truncation cap. If even that truncates, fail closed — never
+    consume a known-incomplete tree (INS-R7-03)."""
+    try:
+        txt = fetch_text(API_TREE_SWEEPS)
+        if txt:
+            data = json.loads(txt)
+            if not data.get("truncated"):
+                return ["sweeps/" + t["path"]
+                        for t in data.get("tree", [])]
+    except Exception as e:
+        warn(f"sweeps-subtree fetch failed ({e})")
+    warn("tree truncated and sweeps-subtree unavailable — failing "
+         "closed, no profile written")
+    return []
 
 
 def parse_date(s):

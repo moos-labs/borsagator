@@ -45,6 +45,8 @@ RAW_ARCHIVE = f"https://raw.githubusercontent.com/{REPO}/archive/"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
 API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
             f"archive?recursive=1")
+API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                   f"archive:sweeps?recursive=1")
 # Connector helper, anchored to the checkout (not a machine path,
 # not cwd-dependent — INS-R6-04 pattern). Only used if the
 # anonymous API fetch fails or truncates.
@@ -81,14 +83,46 @@ def fetch_tree():
             [sys.executable, HELPER, "get",
              f"/repos/{REPO}/git/trees/archive?recursive=1"],
             capture_output=True, text=True, timeout=120)
+        # INS-R7-04: a hard helper failure (nonzero exit, empty
+        # stdout) must not degrade to a JSON error mislabeled as
+        # missing data — same check ledger.py already has.
+        if out.returncode != 0:
+            raise RuntimeError(
+                f"helper tree fetch failed: {out.stderr[:200]}")
         data = json.loads(out.stdout)
         if data.get("truncated"):
-            print("recommend: helper tree truncated too — paths may "
-                  "be incomplete", file=sys.stderr)
+            # INS-R7-03: auth does not raise GitHub's truncation cap,
+            # so the helper truncates identically — recover by
+            # fetching the sweeps subtree (the only part these
+            # scripts read) instead of consuming a known-incomplete
+            # tree.
+            return fetch_tree_sweeps_subtree()
         return [t["path"] for t in data.get("tree", [])]
     except Exception as e:
         print(f"recommend: tree fetch failed: {e}", file=sys.stderr)
         return []
+
+
+def fetch_tree_sweeps_subtree():
+    """Fallback when the recursive tree truncates: fetch the
+    recursive tree rooted at sweeps/ only. Every path these scripts
+    read lives under sweeps/, and the subtree is far under the
+    truncation cap. If even that truncates, fail closed — never
+    consume a known-incomplete tree (INS-R7-03)."""
+    try:
+        txt = fetch_text(API_TREE_SWEEPS)
+        if txt:
+            data = json.loads(txt)
+            if not data.get("truncated"):
+                return ["sweeps/" + t["path"]
+                        for t in data.get("tree", [])]
+    except Exception as e:
+        print(f"recommend: sweeps-subtree fetch failed ({e})",
+              file=sys.stderr)
+    print("recommend: tree truncated and sweeps-subtree unavailable "
+          "— failing closed, no recommendation written",
+          file=sys.stderr)
+    return []
 
 
 def list_sweep_dirs():
@@ -157,6 +191,12 @@ def main():
     if events and asof:
         for e in sorted(events, key=lambda x: x.get("date", ""),
                         reverse=True):
+            # INS-R7-01: never nudge on an unclassified event, whatever
+            # the committed profile contains — the build side excludes
+            # "other" from fitted types, but a stale pre-fix profile
+            # carried forward after a soft-fail would re-open it.
+            if (e.get("type") or "") == "other":
+                continue
             try:
                 age = (asof - date.fromisoformat(e["date"][:10])).days
             except Exception:
