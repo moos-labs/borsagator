@@ -4,18 +4,17 @@
  "base_price": 10.15,
  "reference_price": 10.15,
  "action": "hold",
- "buy_below": 9.55,
- "sell_above": 10.64,
+ "buy_below": 9.5,
+ "sell_above": 10.59,
  "expected_week_pct": -1.01,
- "nudge_pct": 0.48,
- "expected_week_adj_pct": -0.53,
+ "nudge_pct": 0.0,
+ "expected_week_adj_pct": -1.01,
  "confidence": 0.3,
  "risk": "shock",
  "weights_source": "builtin",
  "notes": [
   "ensemble as of 2026-11-13 (sweep sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619)",
   "weights source: builtin",
-  "fresh other event (2026-11-12, 1d before the ensemble): shrunk reaction +0.96% x 0.5 decay = +0.48% nudge",
   "reaction fit walk-forward showed no edge over the naive baseline yet — nudge kept at half weight, treat as context",
   "risk overlay = shock: action forced to HOLD"
  ]

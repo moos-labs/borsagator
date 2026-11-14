@@ -57,7 +57,12 @@ def fetch_tree():
     """Archive tree via the public API; fall back to the connector
     helper (authenticated) if the anonymous rate limit bites."""
     try:
-        return json.loads(fetch_text(API_TREE)), "api-anonymous"
+        data = json.loads(fetch_text(API_TREE))
+        if not data.get("truncated"):
+            return data, "api-anonymous"
+        # INS-R6-05 (extension): a truncated recursive tree must
+        # never be silently consumed — fall through to the helper.
+        warn("anonymous tree truncated; trying API helper")
     except Exception as e:
         warn(f"anonymous tree fetch failed ({e}); trying API helper")
     out = subprocess.run(
@@ -66,7 +71,10 @@ def fetch_tree():
         capture_output=True, text=True, timeout=120)
     if out.returncode != 0:
         raise RuntimeError(f"tree fetch failed: {out.stderr[:200]}")
-    return json.loads(out.stdout), "api-helper"
+    data = json.loads(out.stdout)
+    if data.get("truncated"):
+        warn("helper tree truncated too — paths may be incomplete")
+    return data, "api-helper"
 
 
 def parse_date(s):

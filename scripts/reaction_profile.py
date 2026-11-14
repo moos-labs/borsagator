@@ -20,6 +20,7 @@ Usage: python3 scripts/reaction_profile.py POUL.CA
 import csv
 import io
 import json
+import os
 import re
 import statistics
 import subprocess
@@ -32,8 +33,11 @@ BRANCH = "archive"
 RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
 API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
             f"{BRANCH}?recursive=1")
-HELPER = [sys.executable, "workspace/custom-connectors/custom.github/bin/"
-          "github_api.py"]
+# INS-R6-04: anchored to the checkout, not the caller's cwd (the
+# old relative path only worked when run from $HOME).
+HELPER = [sys.executable, os.path.normpath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "..", "custom-connectors", "custom.github", "bin", "github_api.py"))]
 
 
 def warn(msg):
@@ -52,13 +56,18 @@ def fetch_text(url, timeout=60):
 def fetch_tree():
     """Archive tree via the public API first; the connector helper
     (authenticated) only if the anonymous fetch fails. The helper
-    resolves relative to the repo checkout — no machine-specific
-    cwd or absolute path (INS-R5-01)."""
+    is anchored to the repo checkout — no machine-specific cwd or
+    absolute path (INS-R5-01, INS-R6-04). A truncated recursive
+    tree is never silently consumed (INS-R6-05)."""
     try:
         txt = fetch_text(API_TREE)
         if txt:
-            return [t["path"] for t in json.loads(txt)["tree"]]
-        raise RuntimeError("empty response")
+            data = json.loads(txt)
+            if not data.get("truncated"):
+                return [t["path"] for t in data.get("tree", [])]
+            warn("anonymous tree truncated; trying API helper")
+        else:
+            raise RuntimeError("empty response")
     except Exception as e:
         warn(f"anonymous tree fetch failed ({e}); trying API helper")
     try:
@@ -66,7 +75,10 @@ def fetch_tree():
             HELPER + ["get",
                       f"/repos/{REPO}/git/trees/{BRANCH}?recursive=1"],
             capture_output=True, text=True, timeout=120)
-        return [t["path"] for t in json.loads(out.stdout)["tree"]]
+        data = json.loads(out.stdout)
+        if data.get("truncated"):
+            warn("helper tree truncated too — paths may be incomplete")
+        return [t["path"] for t in data.get("tree", [])]
     except Exception as e:
         warn(f"tree fetch failed: {e}")
         return []
@@ -421,6 +433,12 @@ def main():
     global_r5 = med(all_r5)
     fitted = {}
     for kind in sorted({e["type"] for e in measured}):
+        if kind == "other":
+            # INS-R6-03: the catch-all bucket is not a predictive
+            # class — its events still feed the global median and
+            # stay in the events table, but no per-type median is
+            # published for it, so no nudge ever fires on it.
+            continue
         vals = [e["r5_adj"] for e in measured
                 if e["type"] == kind and e["r5_adj"] is not None]
         if vals and global_r5 is not None:
@@ -457,6 +475,10 @@ def main():
         tg = med([e["r5_adj"] for e in train]) if train else global_r5
         tmed = {}
         for kind in {e["type"] for e in train}:
+            if kind == "other":
+                # INS-R6-03: same exclusion as the fit — an
+                # unclassified event predicts with the global median.
+                continue
             vals = [e["r5_adj"] for e in train if e["type"] == kind]
             tmed[kind] = (len(vals) * med(vals) + K * tg) / (len(vals) + K)
         hits = base = n = 0

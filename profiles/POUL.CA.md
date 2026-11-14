@@ -79,7 +79,6 @@ Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 22.
 | Type | n | Median +5 (div-adj) | Shrunk +5 (div-adj) |
 |---|---|---|---|
 | dividend | 5 | 5.93 | 3.46 |
-| other | 10 | 0.95 | 0.96 |
 
 Walk-forward (purged: 4 training events dropped for overlapping labels): fit on 3 events, sign hits 0/6 on the later half (baseline always-global: 0/6) — indicative only at this sample size.
 

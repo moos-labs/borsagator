@@ -35,6 +35,7 @@ Usage: python3 scripts/recommend.py POUL.CA
 import json
 import os
 import statistics
+import subprocess
 import sys
 import urllib.request
 from datetime import date, timedelta
@@ -42,6 +43,14 @@ from datetime import date, timedelta
 REPO = "moos-labs/borsagator"
 RAW_ARCHIVE = f"https://raw.githubusercontent.com/{REPO}/archive/"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
+API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
+            f"archive?recursive=1")
+# Connector helper, anchored to the checkout (not a machine path,
+# not cwd-dependent — INS-R6-04 pattern). Only used if the
+# anonymous API fetch fails or truncates.
+HELPER = os.path.normpath(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "..", "custom-connectors", "custom.github", "bin", "github_api.py"))
 
 
 def fetch_text(url, timeout=60):
@@ -50,26 +59,46 @@ def fetch_text(url, timeout=60):
         return r.read().decode("utf-8", "replace")
 
 
+def fetch_tree():
+    """Archive tree via the public API first; the connector helper
+    (authenticated) only if the anonymous fetch fails or the API
+    truncates the recursive tree (INS-R6-01, INS-R6-05). Re-applies
+    the #59 fix that #60's rewrite dropped: no /opt/muse import,
+    runnable off the VM."""
+    try:
+        txt = fetch_text(API_TREE)
+        if txt:
+            data = json.loads(txt)
+            if not data.get("truncated"):
+                return [t["path"] for t in data.get("tree", [])]
+            print("recommend: anonymous tree truncated; "
+                  "trying API helper", file=sys.stderr)
+    except Exception as e:
+        print(f"recommend: anonymous tree fetch failed ({e}); "
+              "trying API helper", file=sys.stderr)
+    try:
+        out = subprocess.run(
+            [sys.executable, HELPER, "get",
+             f"/repos/{REPO}/git/trees/archive?recursive=1"],
+            capture_output=True, text=True, timeout=120)
+        data = json.loads(out.stdout)
+        if data.get("truncated"):
+            print("recommend: helper tree truncated too — paths may "
+                  "be incomplete", file=sys.stderr)
+        return [t["path"] for t in data.get("tree", [])]
+    except Exception as e:
+        print(f"recommend: tree fetch failed: {e}", file=sys.stderr)
+        return []
+
+
 def list_sweep_dirs():
     """Newest-first sweep directories on the archive branch, via the
     git trees API (one call, like ledger.py)."""
-    import subprocess
-    sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
-    from dynamic_credentials import (add_surrogate_to_request,
-                                     read_response_body)
-    req = urllib.request.Request(
-        f"https://api.github.com/repos/{REPO}/git/trees/archive"
-        "?recursive=1", method="GET")
-    add_surrogate_to_request(req, "custom.github",
-                             allowed_hosts=["api.github.com"])
-    req.add_header("Accept", "application/vnd.github+json")
-    with urllib.request.build_opener().open(req, timeout=60) as r:
-        tree = json.loads(read_response_body(r))
-    dirs = sorted({p.rsplit("/", 1)[0] for p in
-                   (t["path"] for t in tree.get("tree", []))
+    paths = fetch_tree()
+    dirs = sorted({p.rsplit("/", 1)[0] for p in paths
                    if p.startswith("sweeps/") and p.endswith("ensemble.json")},
                   reverse=True)
-    return dirs, {t["path"] for t in tree.get("tree", [])}
+    return dirs, set(paths)
 
 
 def newest_ensemble(ticker):
@@ -133,12 +162,16 @@ def main():
             except Exception:
                 continue
             fv = fitted.get(e.get("type") or "")
-            if fv and 0 <= age <= 5:
-                nudge = round(fv["shrunk_r5_adj"] * 0.5, 2)
+            # INS-R6-02: old-format profiles predate the R5-05 key
+            # rename (shrunk_r5, not shrunk_r5_adj) — a bare key
+            # access would kill the whole recommendation.
+            shrunk = (fv or {}).get("shrunk_r5_adj")
+            if shrunk is not None and 0 <= age <= 5:
+                nudge = round(shrunk * 0.5, 2)
                 notes.append(
                     f"fresh {e['type']} event ({e['date']}, {age}d "
                     f"before the ensemble): shrunk reaction "
-                    f"{fv['shrunk_r5_adj']:+}% x 0.5 decay = "
+                    f"{shrunk:+}% x 0.5 decay = "
                     f"{nudge:+}% nudge")
                 break
     wf = profile.get("walk_forward") or {}
