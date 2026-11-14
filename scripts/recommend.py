@@ -134,11 +134,11 @@ def main():
                 continue
             fv = fitted.get(e.get("type") or "")
             if fv and 0 <= age <= 5:
-                nudge = round(fv["shrunk_r5"] * 0.5, 2)
+                nudge = round(fv["shrunk_r5_adj"] * 0.5, 2)
                 notes.append(
                     f"fresh {e['type']} event ({e['date']}, {age}d "
                     f"before the ensemble): shrunk reaction "
-                    f"{fv['shrunk_r5']:+}% x 0.5 decay = "
+                    f"{fv['shrunk_r5_adj']:+}% x 0.5 decay = "
                     f"{nudge:+}% nudge")
                 break
     wf = profile.get("walk_forward") or {}
