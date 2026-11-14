@@ -101,8 +101,9 @@ def ensure_token(force=False):
     return TOKEN
 
 EMITTER = '''
+__borsa_ec=$?
 mkdir -p results
-echo $? > results/.exit
+echo $__borsa_ec > results/.exit
 python3 - <<'BORSA_EOF'
 import json, os, glob
 res = "results"
@@ -139,7 +140,9 @@ for path in sorted(glob.glob(os.path.join(res, "*.csv")) + glob.glob(os.path.joi
     last = rows[-1]
     for want in ("date", "close"):
         if want in header and len(metrics) < 30:
-            metrics[name + "_last_" + want] = last[header.index(want)]
+            idx = header.index(want)
+            if idx < len(last):
+                metrics[name + "_last_" + want] = last[idx]
 summary["metrics"] = metrics
 summary["files"] = sorted(os.path.basename(p) for p in glob.glob(os.path.join(res, "*")) if os.path.isfile(p))
 with open(os.path.join(res, "summary.json"), "w") as f:
@@ -219,7 +222,8 @@ def set_variable(repo, name, value):
 
 
 def delete_variable(repo, name):
-    gh("DELETE", f"/repos/{ORG}/{repo}/actions/variables/{name}")
+    status, _, _ = gh("DELETE", f"/repos/{ORG}/{repo}/actions/variables/{name}")
+    return status in (204, 404)
 
 
 def dispatch(repo):
@@ -368,10 +372,15 @@ def run_tool(tool, ticker, date_str):
         return result
     finally:
         if changed:
-            if state == "missing":
-                delete_variable(repo, "COMMANDS")
-            else:
-                set_variable(repo, "COMMANDS", original)
+            ok = (delete_variable(repo, "COMMANDS") if state == "missing"
+                  else set_variable(repo, "COMMANDS", original))
+            if not ok:
+                # A silent restore failure leaves the child repo
+                # patched with our composed command (INS-R4-03).
+                print(f"WARNING: COMMANDS restore FAILED for {repo}",
+                      flush=True)
+                result["detail"] = ((result.get("detail") or "")
+                                     + " [COMMANDS restore failed]")
 
 
 def run_tool_safe(tool, ticker, date_str):
@@ -473,6 +482,8 @@ def main():
         ordered = [(k, metrics[k]) for k in verdict_keys] + \
                   [(k, v) for k, v in metrics.items() if k not in verdict_keys]
         keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
+        # Tool-controlled values must not break the table (INS-R4-06).
+        keys = keys.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
         status = r.get("status", "?")
         if r.get("conclusion") and r["conclusion"] != "success":
             status += f" ({r['conclusion']})"
