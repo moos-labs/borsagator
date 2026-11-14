@@ -119,4 +119,14 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print("archive failed (non-fatal):", e)
+        # Never fail silently (INS-R4-05): the digest issue is what
+        # gets read every morning — put the failure in it.
+        try:
+            p = os.path.join(ROOT, "digest", "digest.md")
+            if os.path.exists(p):
+                with open(p, "a", encoding="utf-8") as f:
+                    f.write(f"\n⚠️ **Archive failed:** {e} — this sweep "
+                            f"is NOT in the point-in-time archive.\n")
+        except Exception:
+            pass
     sys.exit(0)
