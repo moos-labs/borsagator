@@ -470,6 +470,34 @@ def main():
     with open(os.path.join(out_dir, "ledger.json"), "w", encoding="utf-8") as f:
         json.dump(ledger, f, indent=1, ensure_ascii=False)
 
+    # Measured-weights feedback (issue #28): family skill becomes a
+    # bounded multiplicative factor on the ensemble's base weights.
+    # The ensemble multiplies its own table by these factors, so the
+    # base table lives in exactly one place (ensemble.py). A family
+    # needs >= MIN_N matured forecasts before it may move at all,
+    # and the clamp keeps any single family within [0.5x, 1.5x].
+    MIN_N, CLAMP = 3, (0.5, 1.5)
+    FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
+                "fundamentals")
+    factors = {}
+    for fam in FAMILIES:
+        v = family_skill.get(fam)
+        if v and v["n"] >= MIN_N:
+            factors[fam] = {"factor": round(max(CLAMP[0], min(
+                CLAMP[1], 1.0 + v["mean_skill"])), 3),
+                "skill": v["mean_skill"], "n": v["n"]}
+        else:
+            factors[fam] = {"factor": 1.0,
+                            "skill": v["mean_skill"] if v else None,
+                            "n": v["n"] if v else 0}
+    weights_doc = {"tool": "ensemble-weights", "version": 1,
+                   "built_from": "calibration-ledger",
+                   "min_n": MIN_N, "clamp": list(CLAMP),
+                   "factors": factors}
+    with open(os.path.join(out_dir, "weights.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(weights_doc, f, indent=1, ensure_ascii=False)
+
     # ---- markdown -------------------------------------------------------------
     L = ["# 🐊 Borsagator — calibration ledger (v1)", "",
          f"Source: `{REPO}` branch `{BRANCH}` (tree {str(tree.get('sha'))[:8]}). "
