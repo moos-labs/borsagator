@@ -203,14 +203,55 @@ def publish(job, results_dir, manifest):
               timeout=300).returncode == 0
 
 
+def run_harvest(job, workdir):
+    """Issue #47: EGX disclosure harvest — a borsagator-side script
+    (kept current by self_update's main checkout) driven in its own
+    playwright venv, with a persistent Chromium profile on the box."""
+    parts = job["job"].split()
+    code = parts[1] if len(parts) > 1 else ""
+    if not TICKER_RE.match(code.replace(".CA", "")):
+        return {"egx-harvest": "bad-code"}
+    venv = VENVS / "egx-harvest"
+    py = venv / "bin" / "python"
+    if not py.exists():
+        sh(f"python3 -m venv {venv}", timeout=300)
+        sh(f"{venv}/bin/pip install -q playwright", timeout=1200)
+    marker = venv / ".browser-installed"
+    if not marker.exists():
+        sh(f"{py} -m playwright install chromium", timeout=1800)
+        marker.write_text(now())
+    script = ROOT / "main" / "worker" / "egx_harvest.py"
+    run_dir = workdir / "egx-harvest"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    r = sh(f"{py} {script} {code}", cwd=run_dir, env=env, timeout=3600)
+    (workdir / "egx-harvest.log").write_text((r.stdout + r.stderr)[-4000:])
+    return {"egx-harvest": "ok" if r.returncode == 0
+            else f"exit-{r.returncode}"}
+
+
 def execute(job):
     reg = registry()
-    plan = parse_job(job["job"], reg)
-    templates = {t["id"]: t["command"] for t in reg["tools"]}
     workdir = OUT / job["id"]
     workdir.mkdir(parents=True, exist_ok=True)
     manifest = {"job": job, "worker": os.uname().nodename,
                 "started": now(), "tools": {}}
+    if job["job"].startswith("harvest-egx"):
+        manifest["tools"] = run_harvest(job, workdir)
+        manifest["finished"] = now()
+        if not publish(job, workdir, manifest):
+            try:
+                err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
+                err.write_text(json.dumps(
+                    {"worker": os.uname().nodename, "at": now(),
+                     "error": "publish failed"}))
+                push_bus(f"publish failed {job['id']}")
+            except Exception:
+                pass
+        return
+    plan = parse_job(job["job"], reg)
+    templates = {t["id"]: t["command"] for t in reg["tools"]}
     for tool, ticker in plan:
         status, log = run_tool(tool, ticker, templates.get(tool, ""))
         dest = workdir / tool
