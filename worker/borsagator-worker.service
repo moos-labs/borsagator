@@ -1,0 +1,19 @@
+[Unit]
+Description=Borsagator worker agent (issue #33)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gator
+Group=gator
+EnvironmentFile=/etc/gator.env
+WorkingDirectory=/opt/gator
+ExecStart=/usr/bin/python3 /opt/gator/worker.py
+Restart=always
+RestartSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
