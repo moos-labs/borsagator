@@ -19,6 +19,7 @@ honestly and the rest of the job continues.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -32,6 +33,14 @@ VENVS = ROOT / "venvs"
 OUT = ROOT / "out"
 POLL_SECONDS = int(os.environ.get("GATOR_POLL", "300"))
 ORG = "moos-labs"
+# Panel round 2 (Gemini review, 2026-11-14): the bus credential must
+# never reach a tool's process environment — tools have dumped env in
+# debug logs before, and results are pushed to a public archive.
+ENV_DENY_FOR_TOOLS = {"GATOR_BUS_URL"}
+TICKER_RE = re.compile(r"^[A-Za-z0-9.\-]{1,12}$")   # same as issue #49
+JOB_ID_RE = re.compile(r"^[A-Za-z0-9\-]{1,40}$")
+STALE_CLAIM_HOURS = 6
+OUT_RETENTION_DAYS = 7
 
 
 def sh(cmd, cwd=None, env=None, timeout=3600):
@@ -122,15 +131,19 @@ def parse_job(job, reg):
         return []
     kind = parts[0]
     if kind == "run" and len(parts) >= 3:
-        return [(parts[1], parts[2])]
-    if kind == "category" and len(parts) >= 3:
-        return [(t, parts[2]) for t, v in tools.items()
-                if v.get("category") == parts[1]]
-    if kind in ("sweep", "sweep-lite") and len(parts) >= 2:
+        sel = [(parts[1], parts[2])]
+    elif kind == "category" and len(parts) >= 3:
+        sel = [(t, parts[2]) for t, v in tools.items()
+               if v.get("category") == parts[1]]
+    elif kind in ("sweep", "sweep-lite") and len(parts) >= 2:
         sel = [(t, parts[1]) for t, v in tools.items()
                if kind == "sweep" or v.get("category") != "agent"]
-        return sel
-    return []
+    else:
+        return []
+    # Panel round 2: a job string reaches shell command templates via
+    # {ticker}; only registry tool ids and allowlisted tickers pass.
+    return [(t, tk) for t, tk in sel
+            if t in tools and TICKER_RE.match(tk)]
 
 
 def run_tool(tool, ticker, template):
@@ -156,8 +169,10 @@ def run_tool(tool, ticker, template):
     sh(f"rm -rf {results}", timeout=60)
     cmd = template.replace("{ticker}", ticker).replace(
         "{date}", datetime.now(timezone.utc).date().isoformat())
-    env = {"PATH": f"{venv}/bin:" + os.environ["PATH"],
-           "VIRTUAL_ENV": str(venv)}
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    env.update({"PATH": f"{venv}/bin:" + os.environ["PATH"],
+                "VIRTUAL_ENV": str(venv)})
     r = sh(cmd, cwd=repo, env=env, timeout=3600)
     status = "ok" if r.returncode == 0 else f"exit-{r.returncode}"
     return status, (r.stdout + r.stderr)[-4000:]
@@ -202,6 +217,34 @@ def execute(job):
     publish(job, workdir, manifest)
 
 
+def prune_out():
+    cutoff = time.time() - OUT_RETENTION_DAYS * 86400
+    for d in OUT.iterdir() if OUT.exists() else []:
+        if d.is_dir() and d.stat().st_mtime < cutoff:
+            sh(f"rm -rf {d}", timeout=120)
+
+
+def reclaim_stale_claims():
+    """A claim whose push succeeded but whose result never published
+    (worker died mid-job) must not block the job forever."""
+    claims = BUS / "queue" / "claims"
+    if not claims.exists():
+        return
+    cutoff = datetime.now(timezone.utc).timestamp() - STALE_CLAIM_HOURS * 3600
+    changed = False
+    for f in claims.glob("*.json"):
+        try:
+            at = json.loads(f.read_text()).get("at", "")
+            claimed_ts = datetime.fromisoformat(at).timestamp()
+        except Exception:
+            continue  # unparseable claim: leave it, a human looks
+        if claimed_ts < cutoff:
+            f.unlink()
+            changed = True
+    if changed:
+        push_bus("reclaim stale claims")
+
+
 def main():
     RUNNERS.mkdir(parents=True, exist_ok=True)
     VENVS.mkdir(parents=True, exist_ok=True)
@@ -209,8 +252,12 @@ def main():
     while True:
         try:
             sync_bus()
+            reclaim_stale_claims()
+            prune_out()
             heartbeat()
             for job in read_queue():
+                if not JOB_ID_RE.match(str(job.get("id", ""))):
+                    continue  # panel round 2: ids reach file paths
                 if not claimed(job["id"]):
                     if claim(job):
                         execute(job)
