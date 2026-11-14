@@ -108,8 +108,12 @@ def main():
     from playwright.sync_api import sync_playwright
     items = []
     with sync_playwright() as pw:
+        headful = bool(os.environ.get("DISPLAY"))
         ctx = pw.chromium.launch_persistent_context(
-            PROFILE, headless=True,
+            PROFILE, headless=not headful,
+            viewport={"width": 1366, "height": 768},
+            timezone_id="Africa/Cairo",
+            args=["--disable-blink-features=AutomationControlled"],
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/124.0.0.0 Safari/537.36",
