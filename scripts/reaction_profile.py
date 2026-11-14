@@ -289,13 +289,60 @@ def main():
                       / len(full), 2) if full else None),
         }
 
+    # --- slice 2 (issue #32): top move days + shock follow-through --
+    rets = []
+    for i in range(1, len(series)):
+        r = (series[i][1] / series[i - 1][1] - 1) * 100
+        rets.append((series[i][0], r, i))
+    # |move| beyond the EGX ±20% daily limit is a data artifact
+    # (reference-price resets like the Sep 2026 merger seam), not a
+    # tradable move — excluded from discovery and labelled.
+    tradable = [x for x in rets if abs(x[1]) <= 21]
+    artifacts = [x for x in rets if abs(x[1]) > 21]
+    ev_by_date = {}
+    for e in measured:
+        ev_by_date.setdefault(e["date"], []).append(e["type"])
+    top_moves = []
+    for d, r, i in sorted(tradable, key=lambda x: -abs(x[1]))[:15]:
+        fwd = {}
+        for h in (1, 3, 5):
+            j = i + h
+            fwd[f"r{h}"] = (round((series[j][1] / series[i][1] - 1)
+                                  * 100, 2) if j < len(series)
+                            else None)
+        near = [t for dd, ts in ev_by_date.items()
+                if abs((parse_date(dd) - d).days) <= 1 for t in ts]
+        top_moves.append({"date": d.isoformat(), "move": round(r, 2),
+                          "close": series[i][1], **fwd,
+                          "event_types_near": sorted(set(near))})
+    shocks_up = [x for x in tradable if x[1] >= 5]
+    shocks_dn = [x for x in tradable if x[1] <= -5]
+
+    def follow_through(shocks):
+        nxt, n3 = [], []
+        for d, r, i in shocks:
+            if i + 1 < len(series):
+                nxt.append((series[i + 1][1] / series[i][1] - 1) * 100)
+            if i + 3 < len(series):
+                n3.append((series[i + 3][1] / series[i][1] - 1) * 100)
+        return {"days": len(shocks),
+                "median_next1": med(nxt), "median_next3": med(n3),
+                "revert_share_next1": (
+                    round(sum(1 for v in nxt if v < 0) / len(nxt), 2)
+                    if nxt else None)}
+
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     profile = {"ticker": ticker, "built_at": stamp,
                "series": {"sessions": len(series),
                           "from": dates[0].isoformat(),
                           "to": dates[-1].isoformat()},
                "events_measured": len(measured),
-               "by_type": by_type, "events": measured}
+               "by_type": by_type, "events": measured,
+               "top_moves": top_moves,
+               "shock_followthrough": {
+                   "up_5pct": follow_through(shocks_up),
+                   "down_5pct": follow_through(shocks_dn)},
+               "series_artifacts_excluded": len(artifacts)}
     import os
     os.makedirs("profiles", exist_ok=True)
     with open(f"profiles/{ticker}.json", "w", encoding="utf-8") as f:
@@ -319,6 +366,25 @@ def main():
         lines.append(
             f"| {e['date']} | {e['type']} | {e['title'][:60]} | "
             f"{e['r1']} | {e['r3']} | {e['r5']} | {note} |")
+    lines += ["", "## Top move days (|move| ≤ 21%; beyond the EGX "
+              "limit = data artifact, excluded)", "",
+              "| Date | Move % | Close | +1 | +3 | +5 | Events near |",
+              "|---|---|---|---|---|---|---|"]
+    for m in top_moves:
+        lines.append(
+            f"| {m['date']} | {m['move']} | {m['close']} | {m['r1']} | "
+            f"{m['r3']} | {m['r5']} | "
+            f"{', '.join(m['event_types_near'])} |")
+    sf = profile["shock_followthrough"]
+    lines += ["", "## Shock follow-through (|move| ≥ 5%)", "",
+              f"Up days: {sf['up_5pct']['days']} — median next day "
+              f"{sf['up_5pct']['median_next1']}%, next 3 "
+              f"{sf['up_5pct']['median_next3']}%, revert share "
+              f"{sf['up_5pct']['revert_share_next1']}",
+              f"Down days: {sf['down_5pct']['days']} — median next day "
+              f"{sf['down_5pct']['median_next1']}%, next 3 "
+              f"{sf['down_5pct']['median_next3']}%, revert share "
+              f"{sf['down_5pct']['revert_share_next1']}"]
     with open(f"profiles/{ticker}.md", "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print(f"reaction_profile: {ticker} events={len(measured)} "
