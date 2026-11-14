@@ -30,7 +30,9 @@ from datetime import datetime, timezone
 REPO = "moos-labs/borsagator"
 BRANCH = "archive"
 RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
-HELPER = ["python3", "workspace/custom-connectors/custom.github/bin/"
+API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
+            f"{BRANCH}?recursive=1")
+HELPER = [sys.executable, "workspace/custom-connectors/custom.github/bin/"
           "github_api.py"]
 
 
@@ -48,11 +50,22 @@ def fetch_text(url, timeout=60):
 
 
 def fetch_tree():
+    """Archive tree via the public API first; the connector helper
+    (authenticated) only if the anonymous fetch fails. The helper
+    resolves relative to the repo checkout — no machine-specific
+    cwd or absolute path (INS-R5-01)."""
+    try:
+        txt = fetch_text(API_TREE)
+        if txt:
+            return [t["path"] for t in json.loads(txt)["tree"]]
+        raise RuntimeError("empty response")
+    except Exception as e:
+        warn(f"anonymous tree fetch failed ({e}); trying API helper")
     try:
         out = subprocess.run(
             HELPER + ["get",
                       f"/repos/{REPO}/git/trees/{BRANCH}?recursive=1"],
-            capture_output=True, text=True, timeout=120, cwd="/home/hatch")
+            capture_output=True, text=True, timeout=120)
         return [t["path"] for t in json.loads(out.stdout)["tree"]]
     except Exception as e:
         warn(f"tree fetch failed: {e}")
@@ -131,6 +144,20 @@ def classify(title):
     return "other"
 
 
+def dedupe_actions(raw):
+    """Consolidate corporate actions by (ex-date, DPS): the same
+    action is re-published by every sweep whose feed mentions it
+    (INS-R5-06)."""
+    seen, out = set(), []
+    for a in raw:
+        key = (a["ex_date"], a["dps"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(a)
+    return out
+
+
 def norm_title(t):
     return re.sub(r"\s+", " ", re.sub(r"[^\w ]", "", (t or "").lower())
                   ).strip()
@@ -158,6 +185,14 @@ def main():
         return 0
     dates = [d for d, _ in series]
     closes = {d: c for d, c in series}
+    # Price-reset seams (reference-price resets like the Sep 2026
+    # merger: an overnight move beyond the EGX ±20% daily limit).
+    # Any event window crossing a seam is a data artifact, not a
+    # market reaction — its outcomes are invalid for aggregates,
+    # fitting and walk-forward scoring (INS-R5-04). The seam set is
+    # the same rule slice 2 uses for top-move discovery.
+    seams = {dates[i] for i in range(1, len(dates))
+             if abs(closes[dates[i]] / closes[dates[i - 1]] - 1) > 0.21}
 
     def idx_on_or_before(d):
         lo = None
@@ -169,7 +204,7 @@ def main():
         return lo
 
     # --- corporate actions from archived ensembles ------------------
-    actions = []
+    raw_actions = []
     for p in sorted(x for x in paths
                     if x.startswith("sweeps/")
                     and x.endswith("ensemble.json")):
@@ -185,7 +220,9 @@ def main():
         for a in ens.get("corporate_actions") or []:
             ex = parse_date(a.get("ex_date"))
             if ex and a.get("dps"):
-                actions.append({"ex_date": ex, "dps": float(a["dps"])})
+                raw_actions.append({"ex_date": ex,
+                                    "dps": float(a["dps"])})
+    actions = dedupe_actions(raw_actions)
 
     # --- events from archived news/disclosure outputs ---------------
     seen, events = set(), []
@@ -247,6 +284,17 @@ def main():
                    if dates[i] < a["ex_date"] <=
                    (dates[i + 5] if i + 5 < len(dates) else dates[-1])]
         out["dividend_window"] = bool(crossed)
+        # A window crossing a price-reset seam is invalid: the raw
+        # close jump is an exchange reference-price reset, not a
+        # reaction (INS-R5-04).
+        end_i = min(i + 5, len(dates) - 1)
+        out["seam_crossed"] = any(
+            dates[k] in seams for k in range(i + 1, end_i + 1))
+        if out["seam_crossed"]:
+            for h in (1, 3, 5):
+                out[f"r{h}"] = None
+                out[f"r{h}_adj"] = None
+            return out
         for h in (1, 3, 5):
             j = i + h
             if j >= len(dates):
@@ -378,11 +426,30 @@ def main():
                                    / (len(vals) + K), 2)}
     evs = sorted((e for e in measured if e["r5"] is not None),
                  key=lambda e: e["date"])
-    wf = {"train": 0, "test": 0, "hits": None, "baseline_hits": None}
+    wf = {"train": 0, "test": 0, "hits": None, "baseline_hits": None,
+          "purged": 0}
     if len(evs) >= 8 and global_r5 is not None:
+        # Purged chronological holdout (INS-R5-07): the split is a
+        # DATE boundary, and training keeps only events whose +5
+        # outcome had fully matured before the first test event —
+        # otherwise a training label leaks past the boundary.
+        # Same-day events stay together on the test side.
         half = len(evs) // 2
-        train, test = evs[:half], evs[half:]
-        tg = med([e["r5"] for e in train])
+        boundary = parse_date(evs[half]["date"])
+        test = [e for e in evs if parse_date(e["date"]) >= boundary]
+        train = []
+        for e in evs:
+            d = parse_date(e["date"])
+            if d >= boundary:
+                continue
+            i = idx_on_or_before(d)
+            maturity = (dates[i + 5] if i is not None
+                        and i + 5 < len(dates) else None)
+            if maturity is not None and maturity < boundary:
+                train.append(e)
+            else:
+                wf["purged"] += 1
+        tg = med([e["r5"] for e in train]) if train else global_r5
         tmed = {}
         for kind in {e["type"] for e in train}:
             vals = [e["r5"] for e in train if e["type"] == kind]
@@ -396,7 +463,7 @@ def main():
             hits += (pred > 0) == (e["r5"] > 0)
             base += (tg > 0) == (e["r5"] > 0)
         wf = {"train": len(train), "test": n, "hits": hits,
-              "baseline_hits": base}
+              "baseline_hits": base, "purged": wf["purged"]}
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     profile = {"ticker": ticker, "built_at": stamp,
@@ -404,6 +471,8 @@ def main():
                           "from": dates[0].isoformat(),
                           "to": dates[-1].isoformat()},
                "events_measured": len(measured),
+               "seam_crossed_events": sum(
+                   1 for e in measured if e.get("seam_crossed")),
                "by_type": by_type, "events": measured,
                "top_moves": top_moves,
                "reaction_fit": {"global_median_r5": global_r5,
@@ -432,7 +501,8 @@ def main():
               "| Date | Type | Title | +1 | +3 | +5 | Notes |",
               "|---|---|---|---|---|---|---|"]
     for e in measured:
-        note = "dividend window" if e["dividend_window"] else ""
+        note = ("seam-crossed (excluded)" if e.get("seam_crossed")
+                else "dividend window" if e["dividend_window"] else "")
         lines.append(
             f"| {e['date']} | {e['type']} | {e['title'][:60]} | "
             f"{e['r1']} | {e['r3']} | {e['r5']} | {note} |")
@@ -472,10 +542,12 @@ def main():
     wfv = profile["walk_forward"]
     if wfv["hits"] is not None and wfv["test"]:
         lines += ["",
-                  f"Walk-forward: fit on {wfv['train']} events, sign "
-                  f"hits {wfv['hits']}/{wfv['test']} on the later half "
-                  f"(baseline always-global: {wfv['baseline_hits']}/"
-                  f"{wfv['test']}) — indicative only at this sample size."]
+                  f"Walk-forward (purged: {wfv.get('purged', 0)} training "
+                  f"events dropped for overlapping labels): fit on "
+                  f"{wfv['train']} events, sign hits {wfv['hits']}/"
+                  f"{wfv['test']} on the later half (baseline "
+                  f"always-global: {wfv['baseline_hits']}/{wfv['test']}) "
+                  f"— indicative only at this sample size."]
     sf = profile["shock_followthrough"]
     lines += ["", "## Shock follow-through (|move| ≥ 5%)", "",
               f"Up days: {sf['up_5pct']['days']} — median next day "
