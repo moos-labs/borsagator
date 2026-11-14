@@ -74,9 +74,9 @@ Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 22.
 - **2026-02-19** (-10.25%): drivers unclassified — سعر الكتاكيت في بورصة الدواجن اليوم الخميس 19 - 2 - 2026 (elwatannews.com); تحديثات أسعار الكتاكيت في بورصة الدواجن اليوم السبت 21 - 2 - (elwatannews.com); الكيلو وصل كام ؟.. أسعار الفراخ البيضاء اليوم والكتاكيت في ب (ghorbanews.com)
 - **2024-03-11** (-10.1%): drivers unclassified — أخبار البورصة اليوم الإثنين 11 - 3 - 2024 (youm7.com)
 
-## Reaction fit (median +5 shrunk toward the global median 0.99%, k=5)
+## Reaction fit (median +5 div-adj shrunk toward the global median 0.99%, k=5)
 
-| Type | n | Raw median +5 | Shrunk +5 |
+| Type | n | Median +5 (div-adj) | Shrunk +5 (div-adj) |
 |---|---|---|---|
 | dividend | 5 | 5.93 | 3.46 |
 | other | 10 | 0.95 | 0.96 |
