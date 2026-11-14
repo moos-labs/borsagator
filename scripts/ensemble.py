@@ -53,13 +53,33 @@ def _apply_measured_weights(base):
     hand-set base weights by them. The ledger bounds the factors to
     [0.5, 1.5] and enforces a minimum sample, so this side only
     multiplies. Absent or unreadable file = base weights, exactly
-    the pre-#28 behaviour."""
+    the pre-#28 behaviour.
+    Defense in depth (INS-R5-08): a factor is used only when it is
+    a finite number in [0.5, 1.5] for a known family with n >= 3
+    measured samples — a malformed or externally supplied file can
+    never smuggle a NaN, negative, or out-of-range factor in.
+    A document with no eligible factor at all reports 'builtin'
+    (INS-R5-09): the committed weights.json at first publication
+    carries n=0 everywhere, and that must not be labelled
+    calibrated."""
     path = os.environ.get("BORSAGATOR_WEIGHTS", "ledger/weights.json")
     try:
         with open(path, encoding="utf-8") as f:
             doc = json.load(f)
-        factors = {k: float(v["factor"])
-                   for k, v in (doc.get("factors") or {}).items()}
+        factors = {}
+        for k, v in (doc.get("factors") or {}).items():
+            if k not in base:
+                continue
+            try:
+                fv = float(v["factor"])
+                n = int(v.get("n", 0))
+            except Exception:
+                continue
+            if not math.isfinite(fv) or not (0.5 <= fv <= 1.5) or n < 3:
+                print(f"weights: ignoring ineligible factor for {k}: "
+                      f"factor={v.get('factor')} n={v.get('n')}")
+                continue
+            factors[k] = fv
         if not factors:
             return base, "builtin"
     except Exception:
