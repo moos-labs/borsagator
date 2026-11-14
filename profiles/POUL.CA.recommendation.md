@@ -6,7 +6,7 @@ Why:
 
 - ensemble as of 2026-11-13 (sweep sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619)
 - weights source: builtin
-- fresh other event (2026-11-09): shrunk reaction +1.28% x 0.5 decay = +0.64% nudge
+- fresh other event (2026-11-12, 1d before the ensemble): shrunk reaction +1.28% x 0.5 decay = +0.64% nudge
 - reaction fit walk-forward showed no edge over the naive baseline yet — nudge kept at half weight, treat as context
 - risk overlay = shock: action forced to HOLD
 
