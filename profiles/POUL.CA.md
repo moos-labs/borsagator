@@ -55,6 +55,33 @@ Sessions: 3000 (2014-06-04 → 2026-11-12). Events measured: 21.
 | 2026-02-19 | -10.25 | 7.54560334 | 4.64 | 9.23 | 8.91 |  |
 | 2024-03-11 | -10.1 | 2.33986909 | 0.93 | -2.67 | -13.79 |  |
 
+### What the contemporaneous press said (GDELT)
+
+- **2024-10-16** (+19.77%): drivers unclassified — أخبار البورصة اليوم الأربعاء 16 - 10 - 2024 (youm7.com); بعد صفقة دومتي المحتملة .. قفزة في أسهم قطاع الأغذية والمشرو (ae.mansheet.net); أخبار البورصة اليوم الأربعاء 16 - 10 - 2024 (ae.mansheet.net)
+- **2022-12-13** (+16.9%): no contemporaneous coverage found in GDELT
+- **2023-05-31** (+16.2%): no contemporaneous coverage found in GDELT
+- **2023-11-15** (+14.53%): no contemporaneous coverage found in GDELT
+- **2024-02-20** (+13.37%): no contemporaneous coverage found in GDELT
+- **2024-01-31** (-11.63%): drivers unclassified — موارد أساسية تتصدر قطاعات الأسهم المقيدة الرئيسية بقيم التدا (vetogate.com); تباين أداء مؤشرات البورصة بمنتصف تعاملات اليوم (vetogate.com); البورصة توقف التداول على أكثر من 60 سهما بعد تراجعات كبيرة (vetogate.com)
+- **2023-03-08** (+11.6%): drivers unclassified — أخبار البورصة اليوم الأربعاء 8 - 3 - 2023 (youm7.com); نشرة « المصري اليوم » الصباحية .. سعر الدولار في مصر اليوم ا (almasryalyoum.com)
+- **2024-10-24** (+11.22%): no contemporaneous coverage found in GDELT
+- **2021-02-11** (+11.18%): drivers unclassified — أخبار البورصة اليوم الأربعاء 10 - 2 - 2021 (youm7.com)
+- **2023-04-27** (+11.16%): drivers unclassified — أسعار الكتاكيت اليوم الأربعاء 26 أبريل 2023 (dostor.org)
+- **2025-11-23** (+10.9%): drivers unclassified — أسعار الكتاكيت في بورصة الدواجن اليوم السبت 22 - 11 - 2025 (elwatannews.com); أسعار الكتاكيت والفراخ البيضاء اليوم الإثنين 24 / 11 / 2025  (ghorbanews.com); أخبار البورصة اليوم الأحد 23 - 11 - 2025 (youm7.com)
+- **2025-05-29** (+10.3%): no contemporaneous coverage found in GDELT
+- **2023-03-26** (+10.26%): drivers unclassified — تراجع كبير بأسعار الكتاكيت| سعر الكتكوت الأبيض اليوم الإثنين (misr5.com); تراجع كبير في سعر الكتكوت الابيض الجمعة 24 مارس 2023 (misr5.com); انخفاض كبير في سعر الفراخ اليوم الجمعة 24 مارس 2023 على عكس  (misr5.com)
+- **2026-02-19** (-10.25%): drivers unclassified — سعر الكتاكيت في بورصة الدواجن اليوم الخميس 19 - 2 - 2026 (elwatannews.com); تحديثات أسعار الكتاكيت في بورصة الدواجن اليوم السبت 21 - 2 - (elwatannews.com); الكيلو وصل كام ؟.. أسعار الفراخ البيضاء اليوم والكتاكيت في ب (ghorbanews.com)
+- **2024-03-11** (-10.1%): no contemporaneous coverage found in GDELT
+
+## Reaction fit (median +5 shrunk toward the global median 1.94%, k=5)
+
+| Type | n | Raw median +5 | Shrunk +5 |
+|---|---|---|---|
+| dividend | 4 | 5.95 | 3.72 |
+| other | 10 | 0.95 | 1.28 |
+
+Walk-forward: fit on 7 events, sign hits 5/5 on the later half (baseline always-global: 5/5) — indicative only at this sample size.
+
 ## Shock follow-through (|move| ≥ 5%)
 
 Up days: 127 — median next day 0.0%, next 3 -0.87%, revert share 0.48
