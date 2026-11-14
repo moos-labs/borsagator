@@ -7,17 +7,9 @@ profile passes. The worker keeps one profile (egx-profile/) and
 reuses it for every harvest, so the TSPD trust the profile earns is
 kept between runs.
 
-Job: harvest the official disclosure texts («إفصاح الشركات», section
-20) for one EGX company from the exchange's own search + details
-pages, and write them as feed-style items (id, date, title, url,
-body) to results/disclosures.json — the stage-B consumer is
-news-disclosure's fetch_feed, which today only gets Mubasher titles
-for these same items because Mubasher's pages are JS shells.
-
-Search strategy: try the parameterized search URL first (ISIN is a
-form field); if it yields no result rows, drive the company dropdown
-by its Arabic name instead. Details pages are server-rendered HTML;
-the body is the page's main text block.
+v2 diagnostics: every run writes results/debug.json describing what
+the browser actually saw (title, body sample, TSPD markers, form
+inventory) so a zero-item harvest is explainable from the bus alone.
 """
 import json
 import os
@@ -29,7 +21,6 @@ from datetime import date, timedelta
 PROFILE = os.environ.get("GATOR_ROOT", "/opt/gator") + "/egx-profile"
 RESULTS = "results"
 BASE = "https://www.egx.com.eg"
-# code -> (Arabic name as listed on EGX, ISIN)
 EGX_COMPANIES = {
     "POUL": ("القاهرة للدواجن", "EGS02051C018"),
     "COMI": ("البنك التجاري الدولي", "EGS60121C018"),
@@ -48,8 +39,29 @@ def log(*a):
     print("[egx-harvest]", *a, flush=True)
 
 
+def page_state(page):
+    return page.evaluate("""() => {
+      const body = document.body ? document.body.innerText : '';
+      const selects = [...document.querySelectorAll('select')].map(s => ({
+        id: s.id, name: s.name, options: s.options.length,
+        sample: [...s.options].slice(0, 3).map(o => o.text)}));
+      return {
+        title: document.title,
+        url: location.href,
+        body_chars: body.length,
+        body_sample: body.slice(0, 1200),
+        tspd: /tspd|bot detection|are you human|captcha/i.test(
+          document.documentElement.innerHTML),
+        selects: selects,
+        inputs: [...document.querySelectorAll('input')].slice(0, 12)
+          .map(i => ({id: i.id, name: i.name, type: i.type})),
+        detail_links: document.querySelectorAll(
+          'a[href*="NewsDetails.aspx"]').length,
+      };
+    }""")
+
+
 def extract_main_text(page):
-    """Largest readable text block on a NewsDetails page."""
     return page.evaluate("""() => {
       const bad = /^(script|style|nav|header|footer)$/i;
       let best = '', bestLen = 0;
@@ -89,6 +101,7 @@ def main():
     to_d = date.today()
     from_d = to_d - timedelta(days=days)
     fmt = "%d/%m/%Y"
+    debug = {"ticker": code, "stages": []}
 
     from playwright.sync_api import sync_playwright
     items = []
@@ -100,22 +113,39 @@ def main():
                        "Chrome/124.0.0.0 Safari/537.36",
             locale="ar-EG")
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        # Warm-up: land on the site root first, like a human would.
+        try:
+            page.goto(BASE + "/ar/", wait_until="domcontentloaded",
+                      timeout=90000)
+            page.wait_for_timeout(10000)
+            debug["stages"].append({"warmup": page_state(page)})
+        except Exception as e:
+            debug["stages"].append({"warmup_error": str(e)[:200]})
         url = (f"{BASE}/ar/NewsSearch.aspx?com=&word="
                f"&from={from_d.strftime(fmt)}&to={to_d.strftime(fmt)}"
                f"&isin={isin}&sec_id=20")
         log("search:", url)
         page.goto(url, wait_until="domcontentloaded", timeout=90000)
-        page.wait_for_timeout(12000)  # TSPD resolves + grid renders
+        page.wait_for_timeout(15000)
+        debug["stages"].append({"param_search": page_state(page)})
         links = collect_result_links(page)
         if not links:
             log("parameterized search empty — driving the form")
-            try:
-                page.select_option("select", label=ar_name, timeout=15000)
-            except Exception as e:
-                log("dropdown select failed:", e)
-            page.wait_for_timeout(8000)
-            links = collect_result_links(page)
+            st = debug["stages"][-1]["param_search"]
+            for sel in st.get("selects", []):
+                if sel["options"] > 20:  # the company dropdown
+                    try:
+                        page.select_option(f"#{sel['id']}", label=ar_name,
+                                           timeout=15000)
+                        page.wait_for_timeout(10000)
+                        debug["stages"].append(
+                            {"after_select": page_state(page)})
+                        links = collect_result_links(page)
+                        break
+                    except Exception as e:
+                        log("select failed:", str(e)[:200])
         log("result links:", len(links))
+        debug["links"] = len(links)
         seen = set()
         for lk in links:
             m = re.search(r"NewsID=(\d+)", lk["href"])
@@ -129,7 +159,7 @@ def main():
                 dpage.wait_for_timeout(6000)
                 body = extract_main_text(dpage)
             except Exception as e:
-                log("details failed", lk["href"], e)
+                log("details failed", lk["href"], str(e)[:150])
                 body = ""
             finally:
                 dpage.close()
@@ -141,6 +171,8 @@ def main():
             log("item", m.group(1), "body_chars", len(body))
             time.sleep(1)
         ctx.close()
+    with open(os.path.join(RESULTS, "debug.json"), "w") as f:
+        json.dump(debug, f, indent=1, ensure_ascii=False)
     out = {"ticker": f"{code}.CA", "company_ar": ar_name, "isin": isin,
            "harvested_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
            "count": len(items), "items": items}
