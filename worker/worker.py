@@ -51,6 +51,17 @@ def sh(cmd, cwd=None, env=None, timeout=3600):
                           capture_output=True, text=True, timeout=timeout)
 
 
+def sh_bash(cmd, cwd=None, env=None, timeout=3600):
+    """Tool templates are written for GitHub Actions, whose shell
+    is bash: they use pipefail, source and friends. The worker's
+    /bin/sh is dash and rejects those (news-disclosure died with
+    'set: Illegal option -o pipefail', exit 2, on 2026-11-14).
+    Run tool commands under bash to match Actions semantics."""
+    import shlex
+    return sh(f"bash -c {shlex.quote(cmd)}", cwd=cwd, env=env,
+              timeout=timeout)
+
+
 def now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -177,7 +188,7 @@ def run_tool(tool, ticker, template):
         hp = ensure_harvest(ticker.upper().split(".")[0])
         if hp is not None:
             env["EGX_HARVEST_FILE"] = str(hp)
-    r = sh(cmd, cwd=repo, env=env, timeout=3600)
+    r = sh_bash(cmd, cwd=repo, env=env, timeout=3600)
     status = "ok" if r.returncode == 0 else f"exit-{r.returncode}"
     return status, (r.stdout + r.stderr)[-4000:]
 
