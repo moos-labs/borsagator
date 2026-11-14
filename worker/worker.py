@@ -173,6 +173,10 @@ def run_tool(tool, ticker, template):
            if k not in ENV_DENY_FOR_TOOLS}
     env.update({"PATH": f"{venv}/bin:" + os.environ["PATH"],
                 "VIRTUAL_ENV": str(venv)})
+    if tool == "news-disclosure" and ticker.upper().endswith(".CA"):
+        hp = ensure_harvest(ticker.upper().split(".")[0])
+        if hp is not None:
+            env["EGX_HARVEST_FILE"] = str(hp)
     r = sh(cmd, cwd=repo, env=env, timeout=3600)
     status = "ok" if r.returncode == 0 else f"exit-{r.returncode}"
     return status, (r.stdout + r.stderr)[-4000:]
@@ -232,6 +236,36 @@ def run_harvest(job, workdir):
     (workdir / "egx-harvest.log").write_text((r.stdout + r.stderr)[-4000:])
     return {"egx-harvest": "ok" if r.returncode == 0
             else f"exit-{r.returncode}"}
+
+
+HARVEST_TTL_HOURS = 12
+
+
+def ensure_harvest(code):
+    """Issue #53: keep a fresh EGX harvest on the box and return its
+    disclosures.json path (or None). A harvest failure never blocks
+    the news run — the feed just stays title-only, as before."""
+    cache_dir = ROOT / "harvest"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache = cache_dir / f"{code}.json"
+    if cache.exists():
+        age = time.time() - cache.stat().st_mtime
+        if age < HARVEST_TTL_HOURS * 3600:
+            return cache
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    fake_job = {"id": f"auto-harvest-{code}-{stamp}",
+                "job": f"harvest-egx {code}", "added": now()}
+    wd = OUT / fake_job["id"]
+    wd.mkdir(parents=True, exist_ok=True)
+    try:
+        res = run_harvest(fake_job, wd)
+        src = wd / "egx-harvest" / "results" / "disclosures.json"
+        if res.get("egx-harvest") == "ok" and src.exists():
+            cache.write_bytes(src.read_bytes())
+            return cache
+    except Exception:
+        pass
+    return cache if cache.exists() else None
 
 
 def execute(job):
