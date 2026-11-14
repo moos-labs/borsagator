@@ -183,7 +183,13 @@ def publish(job, results_dir, manifest):
     if not arch.exists():
         url = os.environ["GATOR_BUS_URL"]
         sh(f"git clone --branch archive --single-branch {url} {arch}",
-           timeout=600)
+           timeout=900)
+        # The bus clone gets its identity in sync_bus; this clone needs
+        # its own — without it every commit fails silently (found by
+        # the w2 self-test, 2026-11-14: claimed, ran, never published).
+        sh(f"git -C {arch} config user.email worker@borsagator.local",
+           timeout=30)
+        sh(f"git -C {arch} config user.name borsagator-worker", timeout=30)
     else:
         sh(f"git -C {arch} pull --ff-only", timeout=180)
     slug = job["job"].lower().replace(" ", "-").replace(".", "-")
@@ -214,7 +220,16 @@ def execute(job):
         (workdir / f"{tool}.log").write_text(log)
         manifest["tools"][tool] = status
     manifest["finished"] = now()
-    publish(job, workdir, manifest)
+    if not publish(job, workdir, manifest):
+        # Failures must be observable on the bus, not just local.
+        try:
+            err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
+            err.write_text(json.dumps(
+                {"worker": os.uname().nodename, "at": now(),
+                 "error": "publish failed"}))
+            push_bus(f"publish failed {job['id']}")
+        except Exception:
+            pass
 
 
 def prune_out():
@@ -245,12 +260,33 @@ def reclaim_stale_claims():
         push_bus("reclaim stale claims")
 
 
+def self_update():
+    """Pull the main checkout; if worker/worker.py changed, adopt it
+    and restart — fixes reach the worker over the bus, no relaunch.
+    (Added after the w2 self-test forced a full replacement cycle.)"""
+    main = ROOT / "main"
+    if not main.exists():
+        sh(f"git clone --depth 1 https://github.com/{ORG}/borsagator {main}",
+           timeout=300)
+        return
+    sh(f"git -C {main} pull --ff-only", timeout=120)
+    src = main / "worker" / "worker.py"
+    me = Path(__file__).resolve()
+    try:
+        if src.exists() and src.read_bytes() != me.read_bytes():
+            me.write_bytes(src.read_bytes())
+            os.execv(sys.executable, [sys.executable, str(me)])
+    except Exception:
+        pass
+
+
 def main():
     RUNNERS.mkdir(parents=True, exist_ok=True)
     VENVS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     while True:
         try:
+            self_update()
             sync_bus()
             reclaim_stale_claims()
             prune_out()
