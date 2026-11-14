@@ -203,8 +203,12 @@ def main():
                 body = ""
             finally:
                 dpage.close()
+            dm = re.search(r"(\d{2})/(\d{2})/(\d{4})", body)
+            iso = (f"{dm.group(3)}-{dm.group(2)}-{dm.group(1)}"
+                   if dm else "")
             items.append({
                 "id": m.group(1), "kind": "disclosure", "source": "egx.com.eg",
+                "date": iso,
                 "title": lk["text"][:200], "url": lk["href"],
                 "row_text": lk["row"][:300], "body": body[:8000],
                 "body_chars": len(body)})
