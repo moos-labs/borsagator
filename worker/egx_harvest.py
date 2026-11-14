@@ -101,7 +101,9 @@ def main():
     to_d = date.today()
     from_d = to_d - timedelta(days=days)
     fmt = "%d/%m/%Y"
-    debug = {"ticker": code, "stages": []}
+    import shutil
+    debug = {"ticker": code, "stages": [],
+             "xvfb": shutil.which("Xvfb") or shutil.which("xvfb-run")}
 
     from playwright.sync_api import sync_playwright
     items = []
@@ -152,8 +154,16 @@ def main():
                f"&isin={isin}&sec_id=20")
         log("search:", url)
         page.goto(url, wait_until="domcontentloaded", timeout=90000)
-        page.wait_for_timeout(15000)
-        debug["stages"].append({"param_search": page_state(page)})
+        # TSPD serves a 200 with an EMPTY body while its challenge JS
+        # runs; wait until real content appears (up to ~90 s).
+        waited = 0
+        while waited < 90000:
+            page.wait_for_timeout(5000)
+            waited += 5000
+            if page_state(page)["body_chars"] > 200:
+                break
+        debug["stages"].append({"param_search": page_state(page),
+                                "tspd_wait_ms": waited})
         links = collect_result_links(page)
         if not links:
             log("parameterized search empty — driving the form")
