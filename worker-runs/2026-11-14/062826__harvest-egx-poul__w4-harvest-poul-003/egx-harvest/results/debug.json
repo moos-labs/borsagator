@@ -1,0 +1,198 @@
+{
+ "ticker": "POUL",
+ "stages": [
+  {
+   "probe": "https://www.egx.com.eg/ar/",
+   "status": 200,
+   "state": {
+    "title": "",
+    "url": "https://www.egx.com.eg/ar/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": true,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "probe": "https://www.egx.com.eg/",
+   "status": 200,
+   "state": {
+    "title": "",
+    "url": "https://www.egx.com.eg/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": true,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "probe": "http://www.egx.com.eg/ar/",
+   "error": "Page.goto: net::ERR_CONNECTION_RESET at http://www.egx.com.eg/ar/\nCall log:\n  - navigating to \"http://www.egx.com.eg/ar/\", waiting until \"domcontentloaded\"\n"
+  },
+  {
+   "probe": "https://egx.com.eg/ar/",
+   "status": 200,
+   "state": {
+    "title": "",
+    "url": "https://egx.com.eg/ar/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": true,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "warmup": {
+    "title": "",
+    "url": "chrome-error://chromewebdata/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": false,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "param_search": {
+    "title": "",
+    "url": "chrome-error://chromewebdata/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": false,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  }
+ ],
+ "netlog": [
+  {
+   "url": "chrome://rumola/content/rumola48.png",
+   "error": "other"
+  },
+  {
+   "url": "chrome-extension://neodgnejhhhlcdoglifbmioajmagpeci/img/anticaptcha-logo/32.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nconiknmmhhhffhmbknbplalknajiaef/icon-128.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nconiknmmhhhffhmbknbplalknajiaef/icon-16.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://bjjgbdlbgjeoankjijbmheneoekbghcg/images/rumola128.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://bjjgbdlbgjeoankjijbmheneoekbghcg/images/on.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://bjjgbdlbgjeoankjijbmheneoekbghcg/images/rumola48.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://jnhgnonknehpejjnehehllkliplmbmhn/assets/images/icon16.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://jnhgnonknehpejjnehehllkliplmbmhn/images/icon16.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://jnhgnonknehpejjnehehllkliplmbmhn/images/icon48.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nndknepjnldbdbepjfgmncbggmopgden/options.html",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nndknepjnldbdbepjfgmncbggmopgden/img/mining128.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nndknepjnldbdbepjfgmncbggmopgden/img/mining16.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nndknepjnldbdbepjfgmncbggmopgden/client/dist/index.html",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://gpolcofcjjiooogejfbaamdgmgfehgff/pixel.gif",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://gpolcofcjjiooogejfbaamdgmgfehgff/icons/agenty-100.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://gpolcofcjjiooogejfbaamdgmgfehgff/icons/agenty-16.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://gpolcofcjjiooogejfbaamdgmgfehgff/core/sgplus.css",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://cplklnmnlbnpmjogncfgfijoopmnlemp/skin/logo24.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://djflhoibgkdhkhhcedjiklpkjnoahfmg/spoofer_cs.js",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://djflhoibgkdhkhhcedjiklpkjnoahfmg/jquery.js",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://iebpjdmgckacbodjpijphcplhebcmeop/images/icon.addressbar.gif",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://iebpjdmgckacbodjpijphcplhebcmeop/manifest.json",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://iebpjdmgckacbodjpijphcplhebcmeop/background.html",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://iebpjdmgckacbodjpijphcplhebcmeop/popup.html",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "https://www.egx.com.eg/ar/",
+   "error": "net::ERR_CONNECTION_RESET"
+  },
+  {
+   "url": "chrome://rumola/content/rumola48.png",
+   "error": "other"
+  },
+  {
+   "url": "chrome-extension://neodgnejhhhlcdoglifbmioajmagpeci/img/anticaptcha-logo/32.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nconiknmmhhhffhmbknbplalknajiaef/icon-128.png",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://nconiknmmhhhffhmbknbplalknajiaef/icon-16.png",
+   "error": "net::ERR_FAILED"
+  }
+ ],
+ "links": 0
+}
