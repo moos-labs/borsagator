@@ -1,6 +1,6 @@
 {
  "ticker": "POUL.CA",
- "built_at": "2026-11-14T18:52:55Z",
+ "built_at": "2026-11-14T20:14:42Z",
  "series": {
   "sessions": 3000,
   "from": "2014-06-04",
@@ -775,18 +775,18 @@
   }
  ],
  "reaction_fit": {
-  "global_median_r5": 0.99,
+  "global_median_r5_adj": 0.99,
   "shrinkage_k": 5,
   "by_type": {
    "dividend": {
     "n": 5,
-    "raw_median_r5": 5.93,
-    "shrunk_r5": 3.46
+    "median_r5_adj": 5.93,
+    "shrunk_r5_adj": 3.46
    },
    "other": {
     "n": 10,
-    "raw_median_r5": 0.95,
-    "shrunk_r5": 0.96
+    "median_r5_adj": 0.95,
+    "shrunk_r5_adj": 0.96
    }
   }
  },
