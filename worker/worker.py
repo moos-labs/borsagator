@@ -88,21 +88,34 @@ def push_bus(message):
     return git_bus("push origin queue", timeout=120).returncode == 0
 
 
+QUEUE_ERROR = None  # last queue.json parse error (panel round 3, R3-09)
+
+
 def heartbeat():
     (BUS / "queue").mkdir(exist_ok=True)
-    (BUS / "queue" / "heartbeat.json").write_text(json.dumps(
-        {"worker": os.uname().nodename, "at": now(),
-         "version": "worker-v1"}))
+    payload = {"worker": os.uname().nodename, "at": now(),
+               "version": "worker-v1"}
+    if QUEUE_ERROR:
+        # A malformed queue.json must not idle the fleet behind a
+        # green heartbeat (INS-R3-09).
+        payload["queue_error"] = QUEUE_ERROR
+    (BUS / "queue" / "heartbeat.json").write_text(json.dumps(payload))
     push_bus("heartbeat")
 
 
 def read_queue():
+    global QUEUE_ERROR
     q = BUS / "queue" / "queue.json"
     if not q.exists():
+        QUEUE_ERROR = None
         return []
     try:
-        return json.loads(q.read_text())
-    except Exception:
+        data = json.loads(q.read_text())
+        QUEUE_ERROR = None
+        return data
+    except Exception as e:
+        QUEUE_ERROR = f"{type(e).__name__}: {e}"[:200]
+        print(f"read_queue: {QUEUE_ERROR}", file=sys.stderr, flush=True)
         return []
 
 
@@ -119,17 +132,19 @@ def claim(job):
 
 
 def registry():
-    reg_file = BUS / "registry" / "tools.json"
-    if not BUS.joinpath("registry").exists():
-        # registry lives on main; keep a main checkout alongside
-        main = ROOT / "main"
-        if not main.exists():
-            sh(f"git clone --depth 1 https://github.com/{ORG}/borsagator {main}",
-               timeout=300)
-        else:
-            sh(f"git -C {main} pull --ff-only", timeout=120)
-        reg_file = main / "registry" / "tools.json"
-    return json.loads(reg_file.read_text())
+    # ALWAYS the pinned main checkout (INS-R3-02): the bus clone also
+    # carries a registry/ copy (the queue branch was branched from
+    # main), and reading templates from the low-trust job channel
+    # would let a bus push redefine them — while main-side registry
+    # updates would silently never arrive. self_update keeps the
+    # main checkout fresh each cycle.
+    main = ROOT / "main"
+    if not main.exists():
+        sh(f"git clone --depth 1 https://github.com/{ORG}/borsagator {main}",
+           timeout=300)
+    else:
+        sh(f"git -C {main} pull --ff-only", timeout=120)
+    return json.loads((main / "registry" / "tools.json").read_text())
 
 
 def parse_job(job, reg):
@@ -207,13 +222,21 @@ def publish(job, results_dir, manifest):
         sh(f"git -C {arch} config user.name borsagator-worker", timeout=30)
     else:
         sh(f"git -C {arch} pull --ff-only", timeout=180)
-    slug = job["job"].lower().replace(" ", "-").replace(".", "-")
+    # INS-R3-01: the slug reaches shell strings below — reduce it to
+    # a safe alphabet so a crafted job string cannot inject commands
+    # ($(…), backticks, ;) into the publish step, which runs even
+    # for jobs that failed parsing.
+    slug = re.sub(r"[^a-z0-9]+", "-", job["job"].lower()).strip("-")[:60]
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d/%H%M%S")
     dest = arch / "worker-runs" / f"{ts}__{slug}__{job['id']}"
     sh(f"mkdir -p {dest} && cp -r {results_dir}/. {dest}/", timeout=300)
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=1))
-    sh(f"git -C {arch} add -A && git -C {arch} commit -m "
-       + json.dumps(f"worker run {job['id']}: {job['job']}"), timeout=120)
+    # Commit message via a file: job text never enters a shell string.
+    msg_file = arch / ".commit-msg"
+    msg_file.write_text(f"worker run {job['id']}: {job['job']}\n")
+    sh(f"git -C {arch} add -A && git -C {arch} commit -F {msg_file}",
+       timeout=120)
+    msg_file.unlink(missing_ok=True)
     return sh(f"git -C {arch} push origin archive",
               timeout=300).returncode == 0
 
@@ -276,10 +299,52 @@ def ensure_harvest(code):
             return cache
     except Exception:
         pass
-    return cache if cache.exists() else None
+    # INS-R3-07 (partial): a stale cache may still serve after a
+    # failed refresh — matching is content-based, so old disclosures
+    # mostly match old items — but never past 72 h, and never
+    # silently.
+    if cache.exists():
+        age_h = (time.time() - cache.stat().st_mtime) / 3600
+        if age_h < 72:
+            print(f"ensure_harvest: refresh failed; serving stale "
+                  f"cache for {code} ({age_h:.1f} h old)", flush=True)
+            return cache
+        print(f"ensure_harvest: cache for {code} is {age_h:.1f} h "
+              f"old — refusing to serve it", flush=True)
+    return None
+
+
+CLAIM_REFRESH_SECONDS = 1200  # 20 min (INS-R3-03)
 
 
 def execute(job):
+    """Run a claimed job while a background thread keeps the claim's
+    timestamp fresh (INS-R3-03): reclaim_stale_claims is age-only
+    (6 h), but a full sweep can legitimately run far longer — without
+    refresh, a second worker could reclaim and duplicate it."""
+    import threading
+    stop = threading.Event()
+
+    def refresh():
+        c = BUS / "queue" / "claims" / f"{job['id']}.json"
+        while not stop.wait(CLAIM_REFRESH_SECONDS):
+            try:
+                c.write_text(json.dumps(
+                    {"worker": os.uname().nodename, "at": now(),
+                     "job": job["job"]}))
+                push_bus(f"claim refresh {job['id']}")
+            except Exception:
+                pass
+
+    t = threading.Thread(target=refresh, daemon=True)
+    t.start()
+    try:
+        _execute(job)
+    finally:
+        stop.set()
+
+
+def _execute(job):
     reg = registry()
     workdir = OUT / job["id"]
     workdir.mkdir(parents=True, exist_ok=True)
