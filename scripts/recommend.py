@@ -34,6 +34,7 @@ Usage: python3 scripts/recommend.py POUL.CA
 import json
 import os
 import statistics
+import subprocess
 import sys
 import urllib.request
 from datetime import date
@@ -41,6 +42,10 @@ from datetime import date
 REPO = "moos-labs/borsagator"
 RAW_ARCHIVE = f"https://raw.githubusercontent.com/{REPO}/archive/"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
+API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
+            "archive?recursive=1")
+HELPER = os.path.expanduser(
+    "~/workspace/custom-connectors/custom.github/bin/github_api.py")
 
 
 def fetch_text(url, timeout=60):
@@ -49,21 +54,29 @@ def fetch_text(url, timeout=60):
         return r.read().decode("utf-8", "replace")
 
 
+def fetch_tree():
+    """Archive tree via the public API; fall back to the connector
+    helper (authenticated) if the anonymous rate limit bites.
+    Mirrors ledger.py — no VM-only import, so this runs in Actions
+    and anywhere else too (issue #59)."""
+    try:
+        return json.loads(fetch_text(API_TREE)), "api-anonymous"
+    except Exception as e:
+        print(f"recommend: anonymous tree fetch failed ({e}); "
+              "trying API helper", file=sys.stderr)
+    out = subprocess.run(
+        [sys.executable, HELPER, "get",
+         f"/repos/{REPO}/git/trees/archive?recursive=1"],
+        capture_output=True, text=True, timeout=120)
+    if out.returncode != 0:
+        raise RuntimeError(f"tree fetch failed: {out.stderr[:200]}")
+    return json.loads(out.stdout), "api-helper"
+
+
 def list_sweep_dirs():
     """Newest-first sweep directories on the archive branch, via the
     git trees API (one call, like ledger.py)."""
-    import subprocess
-    sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
-    from dynamic_credentials import (add_surrogate_to_request,
-                                     read_response_body)
-    req = urllib.request.Request(
-        f"https://api.github.com/repos/{REPO}/git/trees/archive"
-        "?recursive=1", method="GET")
-    add_surrogate_to_request(req, "custom.github",
-                             allowed_hosts=["api.github.com"])
-    req.add_header("Accept", "application/vnd.github+json")
-    with urllib.request.build_opener().open(req, timeout=60) as r:
-        tree = json.loads(read_response_body(r))
+    tree, _src = fetch_tree()
     dirs = sorted({p.rsplit("/", 1)[0] for p in
                    (t["path"] for t in tree.get("tree", []))
                    if p.startswith("sweeps/") and p.endswith("ensemble.json")},
