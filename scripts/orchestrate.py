@@ -314,6 +314,13 @@ def run_tool(tool, ticker, date_str):
     tool_id = tool["id"]
     print(f"== {tool_id} ({repo})", flush=True)
     state, original = get_variable(repo, "COMMANDS")
+    if original and "echo $? > results/.exit" in original:
+        # A previous run killed mid-flight never reached the finally
+        # restore, so the stored value already carries our emitter.
+        # Strip it (its signature two-line head) or every kill
+        # permanently appends another copy (panel round 4, G4-03).
+        original = original.split(
+            "\nmkdir -p results\necho $? > results/.exit")[0]
     command = tool["command"].replace("{ticker}", ticker).replace("{date}", date_str)
     composed = command.rstrip() + "\n" + (EMITTER % (tool_id, ticker))
     result = {"tool": tool_id, "repo": repo, "category": tool["category"]}
