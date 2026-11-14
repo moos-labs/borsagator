@@ -220,178 +220,18 @@ def run_harvest(job, workdir):
     if not marker.exists():
         sh(f"{py} -m playwright install chromium", timeout=1800)
         marker.write_text(now())
-    libdir = ensure_chromium_deps()
     script = ROOT / "main" / "worker" / "egx_harvest.py"
     run_dir = workdir / "egx-harvest"
     run_dir.mkdir(parents=True, exist_ok=True)
     env = {k: v for k, v in os.environ.items()
            if k not in ENV_DENY_FOR_TOOLS}
-    if libdir:
-        env["LD_LIBRARY_PATH"] = (libdir + ":"
-                                  + env.get("LD_LIBRARY_PATH", ""))
-    r = sh(f"{py} {script} {code}", cwd=run_dir, env=env, timeout=3600)
+    cmd = f"{py} {script} {code}"
+    if Path("/usr/bin/xvfb-run").exists():
+        cmd = f"xvfb-run -a -s '-screen 0 1366x768x24' {cmd}"
+    r = sh(cmd, cwd=run_dir, env=env, timeout=3600)
     (workdir / "egx-harvest.log").write_text((r.stdout + r.stderr)[-4000:])
     return {"egx-harvest": "ok" if r.returncode == 0
             else f"exit-{r.returncode}"}
-
-
-# Issue #47: worker-3's image predates the cloud-init Chromium
-# libraries (added 2026-11-14 06:03 UTC, future launches only), and
-# the gator user has no sudo — so headless Chromium fails to load
-# (first seen: libatk-1.0.so.0). Fetch the missing .debs from the
-# official Ubuntu archive into user space and point the browser at
-# them via LD_LIBRARY_PATH. No root, no apt, no privilege change.
-PLAYWRIGHT_SONAME_PKGS = {
-    "libatk-1.0.so.0": "libatk1.0-0t64",
-    "libatk-bridge-2.0.so.0": "libatk-bridge2.0-0t64",
-    "libatspi.so.2": "at-spi2-core",
-    "libcups.so.2": "libcups2t64",
-    "libdrm.so.2": "libdrm2",
-    "libxkbcommon.so.0": "libxkbcommon0",
-    "libxcomposite.so.1": "libxcomposite1",
-    "libxdamage.so.1": "libxdamage1",
-    "libxfixes.so.3": "libxfixes3",
-    "libxrandr.so.2": "libxrandr2",
-    "libgbm.so.1": "libgbm1",
-    "libasound.so.2": "libasound2t64",
-    "libpango-1.0.so.0": "libpango-1.0-0",
-    "libpangoft2-1.0.so.0": "libpangoft2-1.0-0",
-    "libpangocairo-1.0.so.0": "libpangocairo-1.0-0",
-    "libcairo.so.2": "libcairo2",
-    "libnss3.so": "libnss3",
-    "libnspr4.so": "libnspr4",
-    "libsmime3.so": "libnss3",
-    "libnssutil.so": "libnss3",
-    "libplc4.so": "libnspr4",
-    "libplds4.so": "libnspr4",
-    "libgio-2.0.so.0": "libglib2.0-0",
-    "libgobject-2.0.so.0": "libglib2.0-0",
-    "libglib-2.0.so.0": "libglib2.0-0",
-    "libdbus-1.so.3": "libdbus-1-3",
-    "libexpat.so.1": "libexpat1",
-    "libx11.so.6": "libx11-6",
-    "libxcb.so.1": "libxcb1",
-    "libxext.so.6": "libxext6",
-    "libxi.so.6": "libxi6",
-    "libxtst.so.6": "libxtst6",
-    "libxss.so.1": "libxss1",
-    "libxcursor.so.1": "libxcursor1",
-    "libxinerama.so.1": "libxinerama1",
-}
-
-
-def _os_codename():
-    try:
-        for line in Path("/etc/os-release").read_text().splitlines():
-            if line.startswith("VERSION_CODENAME="):
-                return line.split("=", 1)[1].strip().strip('"')
-    except Exception:
-        pass
-    return "noble"
-
-
-def _packages_index(codename):
-    """Map package name -> archive path for one Ubuntu release/arch."""
-    import gzip
-    import urllib.request
-    url = (f"http://archive.ubuntu.com/ubuntu/dists/{codename}/main/"
-           "binary-arm64/Packages.gz")
-    try:
-        with urllib.request.urlopen(url, timeout=120) as resp:
-            raw = gzip.decompress(resp.read()).decode("utf-8", "replace")
-    except Exception as e:
-        print(f"[deps] packages index fetch failed: {e}", flush=True)
-        return {}
-    pkgs, cur = {}, {}
-    for line in raw.splitlines():
-        if not line.strip():
-            if cur.get("Package") and cur.get("Filename"):
-                pkgs[cur["Package"]] = cur["Filename"]
-            cur = {}
-        elif ": " in line:
-            k, v = line.split(": ", 1)
-            cur[k] = v
-    if cur.get("Package") and cur.get("Filename"):
-        pkgs[cur["Package"]] = cur["Filename"]
-    return pkgs
-
-
-def _missing_libs(binary, libdir=""):
-    env = dict(os.environ)
-    if libdir:
-        env["LD_LIBRARY_PATH"] = libdir + ":" + env.get("LD_LIBRARY_PATH",
-                                                        "")
-    r = sh(f"ldd {binary}", env=env, timeout=120)
-    out = set()
-    for line in (r.stdout + r.stderr).splitlines():
-        if "not found" in line:
-            out.add(line.split()[0])
-    return sorted(out)
-
-
-def ensure_chromium_deps():
-    """Make Playwright's headless Chromium loadable without root.
-
-    Returns the extracted lib dir (for LD_LIBRARY_PATH), or '' when
-    nothing was needed / nothing could be done."""
-    import urllib.request
-    cache = ROOT / "chromium-deps"
-    libdir = cache / "usr" / "lib" / "aarch64-linux-gnu"
-    cache.mkdir(parents=True, exist_ok=True)
-    shells = sorted(Path.home().glob(
-        ".cache/ms-playwright/chromium_headless_shell-*/"
-        "chrome-headless-shell-linux-arm64/chrome-headless-shell"))
-    if not shells:
-        print("[deps] no chromium headless shell found yet", flush=True)
-        return ""
-    binary = str(shells[-1])
-    pkgs = None
-    for _round in range(4):
-        missing = _missing_libs(binary, str(libdir))
-        if not missing:
-            print("[deps] chromium libs complete", flush=True)
-            return str(libdir) if (libdir.exists()
-                                   and any(libdir.iterdir())) else ""
-        print(f"[deps] missing: {missing}", flush=True)
-        if pkgs is None:
-            pkgs = _packages_index(_os_codename())
-            if not pkgs:
-                return ""
-        progressed = False
-        for soname in missing:
-            pkg = PLAYWRIGHT_SONAME_PKGS.get(soname)
-            if not pkg:
-                print(f"[deps] no package known for {soname}", flush=True)
-                continue
-            filename = None
-            for cand in (pkg, re.sub(r"t64$", "", pkg)):
-                if cand in pkgs:
-                    filename = pkgs[cand]
-                    break
-            if not filename:
-                print(f"[deps] {pkg} not in index", flush=True)
-                continue
-            deb = cache / Path(filename).name
-            if not deb.exists():
-                url = f"http://archive.ubuntu.com/ubuntu/{filename}"
-                print(f"[deps] fetching {url}", flush=True)
-                try:
-                    with urllib.request.urlopen(url, timeout=300) as resp:
-                        deb.write_bytes(resp.read())
-                except Exception as e:
-                    print(f"[deps] fetch failed {url}: {e}", flush=True)
-                    continue
-            r = sh(f"dpkg-deb -x {deb} {cache}", timeout=120)
-            if r.returncode == 0:
-                progressed = True
-            else:
-                print(f"[deps] dpkg-deb failed for {deb}: "
-                      f"{r.stderr[-300:]}", flush=True)
-        if not progressed:
-            print("[deps] no progress this round — stopping", flush=True)
-            return str(libdir) if libdir.exists() else ""
-    print("[deps] still missing after 4 rounds", flush=True)
-    return str(libdir) if libdir.exists() else ""
 
 
 def execute(job):
@@ -510,4 +350,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
