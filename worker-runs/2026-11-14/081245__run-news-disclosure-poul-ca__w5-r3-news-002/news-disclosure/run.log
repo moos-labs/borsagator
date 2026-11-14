@@ -1,0 +1,23 @@
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5698.20it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15329.95it/s]
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701166/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701162/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://tradersunion.com/ar/news/companies/show/4208219-cairo-poultry-profits-fall-2026/
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 4}
+egx-harvest: attached 2 official bodies
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16114.02it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6361.14it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 24, "disclosure_count": 4, "arabic_headlines": 25, "latest_news_date": "Thu, 12 Nov 2026 11:20:08 GMT", "latest_disclosure_date": "Thu, 12 Nov 2026 06:44:06 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) مرفق القوائم المالية المجمعة عن الفترة المالية المنتهية فى 30/09/2026اسم الشركة : القاهرة للدواجنكود الت - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.654, "multilingual_negative": 0.011, "multilingual_neutral": 0.335, "multilingual_scored": 25, "bodies_fetched": 7, "egx_bodies_attached": 2, "translation_provider": "nllb", "translated_positive": 0.313, "translated_negative": 0.282, "translated_neutral": 0.404, "translated_scored": 25}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Thu, 12 Nov 2026 11:20:08 GMT] (شبكة تواصل الإخبارية) «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية
+- [Thu, 12 Nov 2026 10:12:35 GMT] (https://www.youlyou.com/) رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/
+- [Thu, 12 Nov 2026 09:07:35 GMT] (عالم المال) القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال
+- [Thu, 12 Nov 2026 08:55:38 GMT] (مجلة البوصلة الاقتصادية) أرباح القاهرة للدواجن تنخفض إلى 1.4 مليار جنيه في 9 أشهر - مجلة البوصلة الاقتصادية
+- [Thu, 12 Nov 2026 08:53:23 GMT] (جريدة المال) أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال
+- [Thu, 12 Nov 2026 08:22:00 GMT] (آراب فاينانس) القاهرة للدواجن تخفض أرباحها في تسعة أشهر - آراب فاينانس
+- [Thu, 12 Nov 2026 08:08:08 GMT] (TradingView) Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView
+- [Thu, 12 Nov 2026 07:45:30 GMT] (Traders Union) القاهرة للدواجن تسجل هبوطاً في الأرباح خلال الأشهر التسعة الأولى من 2026 رغم ارتفاع الإيرادات - Traders Union
