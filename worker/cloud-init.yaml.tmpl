@@ -28,6 +28,10 @@ packages:
   - libasound2t64
   - libpango-1.0-0
   - libcairo2
+  # Virtual display so the harvester can run a HEADFUL Chromium —
+  # the TSPD wall never resolves for the headless shell (proven:
+  # 90 s wait, body stayed empty).
+  - xvfb
 users:
   - name: gator
     system: true
