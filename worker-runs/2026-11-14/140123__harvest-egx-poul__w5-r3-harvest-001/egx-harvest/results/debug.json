@@ -1,0 +1,277 @@
+{
+ "ticker": "POUL",
+ "stages": [
+  {
+   "probe": "https://www.egx.com.eg/ar/",
+   "status": 200,
+   "state": {
+    "title": "",
+    "url": "https://www.egx.com.eg/ar/",
+    "body_chars": 0,
+    "body_sample": "",
+    "tspd": true,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "probe": "https://www.egx.com.eg/",
+   "status": 200,
+   "state": {
+    "title": "البورصة المصرية - الصفحة الرئيسية",
+    "url": "https://www.egx.com.eg/ar/homepage.aspx",
+    "body_chars": 2817,
+    "body_sample": "\t\nEnglish  |  عربي\n\n\nعن البورصة\nالمنتجات\nو الخدمات\nالقيد\nالتداول\nبيانات السوق\nالعضوية\nأكاديمية البورصة\nالإستدامة\n دوريات البورصة\n انفوجراف\n منصة\nحوار البورصة\n\n\n\t\nاتصل بنا  أسئلة متكررة  قائمتي  مركز خدمات البورصة       \n\n\n\nجديد\n\nتجربة رقمية\nجديدة\nتجريبية\n\n\n\n\nملخص المؤشرات\n\t\nملخص السوق\n\t\n\nEGX30\nSHARIAH\nEGX35\nLV\nEGX100\nEWI\nEGX70\nEWI\nEGX30\nCapped\nEGX30\nTR\nالمزيد...\nاليوم\nاسبوع\nشهر\nثلاثة أشهر\nستة أشهر\nسنة\nسنتان\nثلاث سنوات\n\n\nindex details\nالتاريخ\t12/11/2026\tالقيمه\t52,023.37\n\nالتغير\t-0.91%\tمنذ بداية العام\t24.37%\n09:58\n10:30\n11:05\n11:40\n12:15\n12:50\n13:25\n14:00\n14:35\n51,944\n52,144\n52,344\n52,544\n52,744\nEGX 30  - اليوم\n\t\t\n\tالشركات\tالكمية\n(000's)\n\tالقيمة\n(ج.م 000's)\n\tالعمليات\n مرتفع\n\t90\t1,131,072\t5,463,951\t132,653\n\n منخفض\n\t118\t786,871\t4,570,492\t132,024\n\n لم تتغير\n\t15\t170,522\t183,337\t6,241\nرأس المال السوقي (ج.م): 4,168,375,029,966\nداخل المقصورة\n\t259\t2,092,849\t71,191,955\t271,253\n\nخارج المقصورة\n\t17\t5,573\t142,233\t70\n\nالصغيرة والمتوسطة\n\t13\t97,389\t97,372\t4,648\n\n\nالسوق مغلق\n14/11/2026 04:00 م\n\n\nالأخبار\n\t\nإحصائيات\n\t\n\n\nجلسة التداول\nإفصاح الشركات\nالشركات الأعضاء\nالقوائم المالية\nالقيد\n\n\nلا يوجد أخبار حاليا\nالمزيد \n\t\t\nمصريون مقابل اجانب\nافراد مقابل مؤسسات\nالمزيد...\nمصريين\n71.45%\nعرب\n6.47%\nأجانب\n22.08%\n\t\n",
+    "tspd": true,
+    "selects": [
+     {
+      "id": "ddlScaleIndex",
+      "name": "",
+      "options": 8,
+      "sample": [
+       "اليوم",
+       "اسبوع",
+       "شهر"
+      ]
+     },
+     {
+      "id": "DDLItemIndex",
+      "name": "",
+      "options": 1,
+      "sample": [
+       "index details"
+      ]
+     }
+    ],
+    "inputs": [
+     {
+      "id": "__EVENTTARGET",
+      "name": "__EVENTTARGET",
+      "type": "hidden"
+     },
+     {
+      "id": "__EVENTARGUMENT",
+      "name": "__EVENTARGUMENT",
+      "type": "hidden"
+     },
+     {
+      "id": "__VIEWSTATE",
+      "name": "__VIEWSTATE",
+      "type": "hidden"
+     },
+     {
+      "id": "__VIEWSTATEGENERATOR",
+      "name": "__VIEWSTATEGENERATOR",
+      "type": "hidden"
+     },
+     {
+      "id": "ctl00_H_txtSearchAll",
+      "name": "ctl00$H$txtSearchAll",
+      "type": "text"
+     },
+     {
+      "id": "ctl00_H_rblSearchType_0",
+      "name": "ctl00$H$rblSearchType",
+      "type": "radio"
+     },
+     {
+      "id": "ctl00_H_rblSearchType_1",
+      "name": "ctl00$H$rblSearchType",
+      "type": "radio"
+     },
+     {
+      "id": "ctl00_H_imgBtnSearch",
+      "name": "ctl00$H$imgBtnSearch",
+      "type": "image"
+     },
+     {
+      "id": "searchInput",
+      "name": "",
+      "type": "text"
+     },
+     {
+      "id": "ctl00_C_HomeStatisticsCharts_hidData",
+      "name": "ctl00$C$HomeStatisticsCharts$hidData",
+      "type": "hidden"
+     }
+    ],
+    "detail_links": 22
+   }
+  },
+  {
+   "warmup": {
+    "title": "403 - Forbidden: Access is denied.",
+    "url": "https://www.egx.com.eg/ar/",
+    "body_chars": 146,
+    "body_sample": "Server Error\n403 - Forbidden: Access is denied.\nYou do not have permission to view this directory or page using the credentials that you supplied.",
+    "tspd": false,
+    "selects": [],
+    "inputs": [],
+    "detail_links": 0
+   }
+  },
+  {
+   "param_search": {
+    "title": "البورصة المصرية",
+    "url": "https://www.egx.com.eg/ar/EGX_Error.aspx?aspxerrorpath=/ar/NewsSearch.aspx",
+    "body_chars": 511,
+    "body_sample": "\t\nEnglish  |  عربي\n\n\nعن البورصة\nالمنتجات\nو الخدمات\nالقيد\nالتداول\nبيانات السوق\nالعضوية\nأكاديمية البورصة\nالإستدامة\n دوريات البورصة\n انفوجراف\n منصة\nحوار البورصة\n\n\nيوجد خطأ في هذه الصفحة، برجاء المحاولة بعد بضع دقائق\n\n\nالبورصة المصرية\nعن البورصة\nسوق الشركات الصغيرة والمتوسطة\nالشكاوى\nالتوظيف\nاتصل بنا\nمركز الابتكار CORBEH\n\t\nالأخبار\nإفصاح الشركات\nأخبار الشركات الأعضاء\nأخبار القيد\nالركن الاعلامي\n\t\nتصفح\nالصفحة الرئيسية\nتعريفات\nروابط هامه\nخريطة الموقع\nإخلاء مسئولية\n\t\nتتبع البورصة         \n   \n\n© 2026 البورصة المصرية",
+    "tspd": true,
+    "selects": [],
+    "inputs": [
+     {
+      "id": "__EVENTTARGET",
+      "name": "__EVENTTARGET",
+      "type": "hidden"
+     },
+     {
+      "id": "__EVENTARGUMENT",
+      "name": "__EVENTARGUMENT",
+      "type": "hidden"
+     },
+     {
+      "id": "__VIEWSTATE",
+      "name": "__VIEWSTATE",
+      "type": "hidden"
+     },
+     {
+      "id": "__VIEWSTATEGENERATOR",
+      "name": "__VIEWSTATEGENERATOR",
+      "type": "hidden"
+     },
+     {
+      "id": "ctl00_H_txtSearchAll",
+      "name": "ctl00$H$txtSearchAll",
+      "type": "text"
+     },
+     {
+      "id": "ctl00_H_rblSearchType_0",
+      "name": "ctl00$H$rblSearchType",
+      "type": "radio"
+     },
+     {
+      "id": "ctl00_H_rblSearchType_1",
+      "name": "ctl00$H$rblSearchType",
+      "type": "radio"
+     },
+     {
+      "id": "ctl00_H_imgBtnSearch",
+      "name": "ctl00$H$imgBtnSearch",
+      "type": "image"
+     }
+    ],
+    "detail_links": 0
+   },
+   "tspd_wait_ms": 5000
+  }
+ ],
+ "xvfb": "/usr/bin/Xvfb",
+ "netlog": [
+  {
+   "url": "chrome://rumola/content/rumola48.png",
+   "error": "other"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "chrome-extension://invalid/",
+   "error": "net::ERR_FAILED"
+  },
+  {
+   "url": "https://www.egx.com.eg/ar/",
+   "status": 403
+  }
+ ],
+ "links": 0
+}
