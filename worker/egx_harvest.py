@@ -224,6 +224,14 @@ def main():
         json.dump(out, f, indent=1, ensure_ascii=False)
     print(f"egx_harvest: {code} items={len(items)} "
           f"bodies={sum(1 for i in items if i['body_chars'] >= 200)}")
+    if not items:
+        # A zero-item harvest is a FAILURE (wall changed, layout
+        # changed, profile trust lost) — never a silent success:
+        # callers must not cache it or report the job ok. (Panel
+        # round 3, Gemini finding 3.)
+        print("egx_harvest: zero items — treating as failure",
+              file=sys.stderr)
+        return 3
     return 0
 
 
