@@ -46,6 +46,20 @@ def main():
     # Fresh stage every run: a file removed or newly skipped since the
     # last run must not linger into this run's payload (Ins, issue #49).
     shutil.rmtree(dest, ignore_errors=True)
+    if os.path.isdir(dest):
+        # rmtree is best-effort (G4-04): clear leftovers one by one,
+        # or stale files ride into this run's archive payload.
+        for root, dirs, names in os.walk(dest, topdown=False):
+            for n in names:
+                try:
+                    os.unlink(os.path.join(root, n))
+                except Exception:
+                    pass
+            for d in dirs:
+                try:
+                    os.rmdir(os.path.join(root, d))
+                except Exception:
+                    pass
     os.makedirs(dest, exist_ok=True)
 
     files, skipped = [], []
