@@ -411,20 +411,25 @@ def main():
     # events cannot shout over the stock's whole history. The
     # walk-forward fits on the first half of the events and scores
     # sign predictions on the second half — indicative at this n.
+    # The fit and the walk-forward run on DIVIDEND-ADJUSTED returns
+    # (INS-R5-05): a window crossing an ex-date drops mechanically
+    # in raw closes, and fitting that drop would teach
+    # "dividend -> down". Raw returns stay in the event records and
+    # the by-type table as separately labelled price-move context.
     K = 5
-    all_r5 = [e["r5"] for e in measured if e["r5"] is not None]
+    all_r5 = [e["r5_adj"] for e in measured if e["r5_adj"] is not None]
     global_r5 = med(all_r5)
     fitted = {}
     for kind in sorted({e["type"] for e in measured}):
-        vals = [e["r5"] for e in measured
-                if e["type"] == kind and e["r5"] is not None]
+        vals = [e["r5_adj"] for e in measured
+                if e["type"] == kind and e["r5_adj"] is not None]
         if vals and global_r5 is not None:
-            raw = med(vals)
+            adj = med(vals)
             fitted[kind] = {
-                "n": len(vals), "raw_median_r5": raw,
-                "shrunk_r5": round((len(vals) * raw + K * global_r5)
-                                   / (len(vals) + K), 2)}
-    evs = sorted((e for e in measured if e["r5"] is not None),
+                "n": len(vals), "median_r5_adj": adj,
+                "shrunk_r5_adj": round((len(vals) * adj + K * global_r5)
+                                       / (len(vals) + K), 2)}
+    evs = sorted((e for e in measured if e["r5_adj"] is not None),
                  key=lambda e: e["date"])
     wf = {"train": 0, "test": 0, "hits": None, "baseline_hits": None,
           "purged": 0}
@@ -449,19 +454,19 @@ def main():
                 train.append(e)
             else:
                 wf["purged"] += 1
-        tg = med([e["r5"] for e in train]) if train else global_r5
+        tg = med([e["r5_adj"] for e in train]) if train else global_r5
         tmed = {}
         for kind in {e["type"] for e in train}:
-            vals = [e["r5"] for e in train if e["type"] == kind]
+            vals = [e["r5_adj"] for e in train if e["type"] == kind]
             tmed[kind] = (len(vals) * med(vals) + K * tg) / (len(vals) + K)
         hits = base = n = 0
         for e in test:
-            if abs(e["r5"]) < 0.75:
+            if abs(e["r5_adj"]) < 0.75:
                 continue
             pred = tmed.get(e["type"], tg)
             n += 1
-            hits += (pred > 0) == (e["r5"] > 0)
-            base += (tg > 0) == (e["r5"] > 0)
+            hits += (pred > 0) == (e["r5_adj"] > 0)
+            base += (tg > 0) == (e["r5_adj"] > 0)
         wf = {"train": len(train), "test": n, "hits": hits,
               "baseline_hits": base, "purged": wf["purged"]}
 
@@ -475,7 +480,7 @@ def main():
                    1 for e in measured if e.get("seam_crossed")),
                "by_type": by_type, "events": measured,
                "top_moves": top_moves,
-               "reaction_fit": {"global_median_r5": global_r5,
+               "reaction_fit": {"global_median_r5_adj": global_r5,
                                 "shrinkage_k": K, "by_type": fitted},
                "walk_forward": wf,
                "shock_followthrough": {
@@ -531,14 +536,14 @@ def main():
                 f"- **{m['date']}** ({m['move']:+}%): no contemporaneous "
                 f"coverage found in GDELT")
     fit = profile["reaction_fit"]
-    lines += ["", "## Reaction fit (median +5 shrunk toward the "
-              f"global median {fit['global_median_r5']}%, k="
+    lines += ["", "## Reaction fit (median +5 div-adj shrunk toward "
+              f"the global median {fit['global_median_r5_adj']}%, k="
               f"{fit['shrinkage_k']})", "",
-              "| Type | n | Raw median +5 | Shrunk +5 |",
+              "| Type | n | Median +5 (div-adj) | Shrunk +5 (div-adj) |",
               "|---|---|---|---|"]
     for kind, fv in fit["by_type"].items():
-        lines.append(f"| {kind} | {fv['n']} | {fv['raw_median_r5']} | "
-                     f"{fv['shrunk_r5']} |")
+        lines.append(f"| {kind} | {fv['n']} | {fv['median_r5_adj']} | "
+                     f"{fv['shrunk_r5_adj']} |")
     wfv = profile["walk_forward"]
     if wfv["hits"] is not None and wfv["test"]:
         lines += ["",
