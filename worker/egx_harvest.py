@@ -113,6 +113,32 @@ def main():
                        "Chrome/124.0.0.0 Safari/537.36",
             locale="ar-EG")
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        netlog = []
+        page.on("requestfailed", lambda r: netlog.append(
+            {"url": r.url[:120],
+             "error": (r.failure or "")[:200]}))
+        page.on("response", lambda r: netlog.append(
+            {"url": r.url[:120], "status": r.status})
+            if r.status >= 400 else None)
+        # Reachability probes: which variant of the site answers?
+        for probe in ("https://www.egx.com.eg/ar/",
+                      "https://www.egx.com.eg/",
+                      "http://www.egx.com.eg/ar/",
+                      "https://egx.com.eg/ar/"):
+            try:
+                resp = page.goto(probe, wait_until="domcontentloaded",
+                                 timeout=45000)
+                debug["stages"].append(
+                    {"probe": probe,
+                     "status": resp.status if resp else None,
+                     "state": page_state(page)})
+                if page_state(page)["body_chars"] > 200:
+                    break
+            except Exception as e:
+                debug["stages"].append(
+                    {"probe": probe, "error": str(e)[:250]})
+            page.wait_for_timeout(3000)
+        debug["netlog"] = netlog[:30]
         # Warm-up: land on the site root first, like a human would.
         try:
             page.goto(BASE + "/ar/", wait_until="domcontentloaded",
