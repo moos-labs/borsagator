@@ -11,6 +11,23 @@ packages:
   - python3-venv
   - python3-pip
   - jq
+  # Chromium runtime libraries for the EGX harvester (issue #47) —
+  # playwright's browser needs these system libs; the gator user has
+  # no sudo to install them later.
+  - libnss3
+  - libatk1.0-0t64
+  - libatk-bridge2.0-0t64
+  - libcups2t64
+  - libdrm2
+  - libxkbcommon0
+  - libxcomposite1
+  - libxdamage1
+  - libxfixes3
+  - libxrandr2
+  - libgbm1
+  - libasound2t64
+  - libpango-1.0-0
+  - libcairo2
 users:
   - name: gator
     system: true
