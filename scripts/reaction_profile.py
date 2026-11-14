@@ -331,6 +331,73 @@ def main():
                     round(sum(1 for v in nxt if v < 0) / len(nxt), 2)
                     if nxt else None)}
 
+    # --- slice 3 (issue #32): contemporaneous drivers via GDELT ---
+    # The archive's own events only cover recent weeks, so the top
+    # move days (2021-2026) get their drivers from a GDELT DOC sweep
+    # fetched once from runner IPs (the API rate-limits this
+    # sandbox's egress) and committed as profiles/gdelt_<TICKER>.json.
+    gdelt_doc = {}
+    try:
+        gdelt_doc = json.loads(fetch_text(
+            f"https://raw.githubusercontent.com/{REPO}/main/"
+            f"profiles/gdelt_{ticker}.json"))
+    except Exception:
+        gdelt_doc = {}
+    for m in top_moves:
+        g = gdelt_doc.get(m["date"]) or {}
+        arts = []
+        for lang in ("ar", "en"):
+            arts += (g.get(lang) or {}).get("articles", [])
+        m["gdelt"] = {
+            "articles": len(arts),
+            "driver_types": sorted({classify(a.get("title", ""))
+                                    for a in arts} - {"other"}),
+            "headlines": [{"date": (a.get("seendate") or "")[:8],
+                           "title": a.get("title", ""),
+                           "domain": a.get("domain", "")}
+                          for a in arts[:3]]}
+
+    # --- slice 4 (issue #32): reaction fit with shrinkage + a
+    # walk-forward sign check. Per-type medians are shrunk toward
+    # the global median with a pseudo-count k=5, so a type with two
+    # events cannot shout over the stock's whole history. The
+    # walk-forward fits on the first half of the events and scores
+    # sign predictions on the second half — indicative at this n.
+    K = 5
+    all_r5 = [e["r5"] for e in measured if e["r5"] is not None]
+    global_r5 = med(all_r5)
+    fitted = {}
+    for kind in sorted({e["type"] for e in measured}):
+        vals = [e["r5"] for e in measured
+                if e["type"] == kind and e["r5"] is not None]
+        if vals and global_r5 is not None:
+            raw = med(vals)
+            fitted[kind] = {
+                "n": len(vals), "raw_median_r5": raw,
+                "shrunk_r5": round((len(vals) * raw + K * global_r5)
+                                   / (len(vals) + K), 2)}
+    evs = sorted((e for e in measured if e["r5"] is not None),
+                 key=lambda e: e["date"])
+    wf = {"train": 0, "test": 0, "hits": None, "baseline_hits": None}
+    if len(evs) >= 8 and global_r5 is not None:
+        half = len(evs) // 2
+        train, test = evs[:half], evs[half:]
+        tg = med([e["r5"] for e in train])
+        tmed = {}
+        for kind in {e["type"] for e in train}:
+            vals = [e["r5"] for e in train if e["type"] == kind]
+            tmed[kind] = (len(vals) * med(vals) + K * tg) / (len(vals) + K)
+        hits = base = n = 0
+        for e in test:
+            if abs(e["r5"]) < 0.75:
+                continue
+            pred = tmed.get(e["type"], tg)
+            n += 1
+            hits += (pred > 0) == (e["r5"] > 0)
+            base += (tg > 0) == (e["r5"] > 0)
+        wf = {"train": len(train), "test": n, "hits": hits,
+              "baseline_hits": base}
+
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     profile = {"ticker": ticker, "built_at": stamp,
                "series": {"sessions": len(series),
@@ -339,6 +406,9 @@ def main():
                "events_measured": len(measured),
                "by_type": by_type, "events": measured,
                "top_moves": top_moves,
+               "reaction_fit": {"global_median_r5": global_r5,
+                                "shrinkage_k": K, "by_type": fitted},
+               "walk_forward": wf,
                "shock_followthrough": {
                    "up_5pct": follow_through(shocks_up),
                    "down_5pct": follow_through(shocks_dn)},
@@ -375,6 +445,37 @@ def main():
             f"| {m['date']} | {m['move']} | {m['close']} | {m['r1']} | "
             f"{m['r3']} | {m['r5']} | "
             f"{', '.join(m['event_types_near'])} |")
+    lines += ["", "### What the contemporaneous press said (GDELT)", ""]
+    for m in top_moves:
+        g = m.get("gdelt") or {}
+        if g.get("articles"):
+            heads = "; ".join(
+                f"{h['title'][:60]} ({h['domain']})"
+                for h in g["headlines"])
+            lines.append(
+                f"- **{m['date']}** ({m['move']:+}%): drivers "
+                f"{', '.join(g['driver_types']) or 'unclassified'} — "
+                f"{heads}")
+        else:
+            lines.append(
+                f"- **{m['date']}** ({m['move']:+}%): no contemporaneous "
+                f"coverage found in GDELT")
+    fit = profile["reaction_fit"]
+    lines += ["", "## Reaction fit (median +5 shrunk toward the "
+              f"global median {fit['global_median_r5']}%, k="
+              f"{fit['shrinkage_k']})", "",
+              "| Type | n | Raw median +5 | Shrunk +5 |",
+              "|---|---|---|---|"]
+    for kind, fv in fit["by_type"].items():
+        lines.append(f"| {kind} | {fv['n']} | {fv['raw_median_r5']} | "
+                     f"{fv['shrunk_r5']} |")
+    wfv = profile["walk_forward"]
+    if wfv["hits"] is not None and wfv["test"]:
+        lines += ["",
+                  f"Walk-forward: fit on {wfv['train']} events, sign "
+                  f"hits {wfv['hits']}/{wfv['test']} on the later half "
+                  f"(baseline always-global: {wfv['baseline_hits']}/"
+                  f"{wfv['test']}) — indicative only at this sample size."]
     sf = profile["shock_followthrough"]
     lines += ["", "## Shock follow-through (|move| ≥ 5%)", "",
               f"Up days: {sf['up_5pct']['days']} — median next day "
