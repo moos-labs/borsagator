@@ -1,0 +1,268 @@
+Fetching ~5 years of daily closes for ['SPY', 'AGG'] via Yahoo chart API...
+Data: 1254 rows, 2021-11-16 to 2026-11-13
+                   SPY         AGG
+Date                              
+2021-11-16  469.279999  113.860001
+2021-11-17  468.140015  114.129997
+2021-11-18  469.730011  114.230003
+2021-11-19  468.890015  114.449997
+2021-11-22  467.570007  113.900002
+                   SPY        AGG
+Date                             
+2026-11-09  752.690002  96.580002
+2026-11-10  749.919983  95.879997
+2026-11-11  759.809998  95.839996
+2026-11-12  757.119995  95.220001
+2026-11-13  754.369995  95.089996
+Stat                 portfolio_monthly
+-------------------  -------------------
+Start                2021-11-15
+End                  2026-11-13
+Risk-free rate       0.00%
+
+Total Return         17.08%
+Daily Sharpe         0.37
+Daily Sortino        0.54
+CAGR                 3.21%
+Max Drawdown         -20.92%
+Calmar Ratio         0.15
+
+MTD                  -0.74%
+3m                   -2.81%
+6m                   -0.98%
+YTD                  2.79%
+1Y                   3.41%
+3Y (ann.)            9.77%
+5Y (ann.)            -
+10Y (ann.)           -
+Since Incep. (ann.)  3.21%
+
+Daily Sharpe         0.37
+Daily Sortino        0.54
+Daily Mean (ann.)    3.64%
+Daily Vol (ann.)     9.74%
+Daily Skew           0.21
+Daily Kurt           5.85
+Best Day             5.05%
+Worst Day            -2.79%
+
+Monthly Sharpe       0.38
+Monthly Sortino      0.56
+Monthly Mean (ann.)  3.87%
+Monthly Vol (ann.)   10.09%
+Monthly Skew         -0.33
+Monthly Kurt         -0.06
+Best Month           6.69%
+Worst Month          -6.96%
+
+Yearly Sharpe        0.30
+Yearly Sortino       0.48
+Yearly Mean          3.66%
+Yearly Vol           12.09%
+Yearly Skew          -1.76
+Yearly Kurt          3.10
+Best Year            12.91%
+Worst Year           -16.93%
+
+Avg. Drawdown        -1.45%
+Avg. Drawdown Days   31.87
+Avg. Up Month        2.18%
+Avg. Down Month      -2.67%
+Win Year %           80.00%
+Win 12m %            85.71%
+Stat sources used: ['result.stats']
+Stat keys read: ['avg_down_month', 'avg_drawdown', 'avg_drawdown_days', 'avg_up_month', 'best_day', 'best_month', 'best_year', 'cagr', 'calmar', 'daily_kurt', 'daily_mean', 'daily_sharpe', 'daily_skew', 'daily_sortino', 'daily_vol', 'end', 'five_year', 'incep', 'max_drawdown', 'monthly_kurt', 'monthly_mean', 'monthly_sharpe', 'monthly_skew', 'monthly_sortino', 'monthly_vol', 'mtd', 'one_year', 'rf', 'six_month', 'start', 'ten_year', 'three_month', 'three_year', 'total_return', 'twelve_month_win_perc', 'win_year_perc', 'worst_day', 'worst_month', 'worst_year', 'yearly_kurt', 'yearly_mean', 'yearly_sharpe', 'yearly_skew', 'yearly_sortino', 'yearly_vol', 'ytd']
+  stat['avg_down_month'] = -0.026650392694207943
+  stat['avg_drawdown'] = -0.014518841170359441
+  stat['avg_drawdown_days'] = 31.867924528301888
+  stat['avg_up_month'] = 0.021800265252659764
+  stat['best_day'] = 0.05048001591820683
+  stat['best_month'] = 0.0669201234686505
+  stat['best_year'] = 0.12913769480603543
+  stat['cagr'] = 0.0320779688947177
+  stat['calmar'] = 0.15331491571733832
+  stat['daily_kurt'] = 5.849642921219092
+  stat['daily_mean'] = 0.03642396445870735
+  stat['daily_sharpe'] = 0.37395815737498256
+  stat['daily_skew'] = 0.205964986689907
+  stat['daily_sortino'] = 0.5350526348180465
+  stat['daily_vol'] = 0.09740117641606522
+  stat['end'] = '2026-11-13T00:00:00'
+  stat['five_year'] = None
+  stat['incep'] = 0.0320779688947177
+  stat['max_drawdown'] = -0.2092292765164402
+  stat['monthly_kurt'] = -0.056473114212439855
+  stat['monthly_mean'] = 0.03873015647632572
+  stat['monthly_sharpe'] = 0.38378334402634845
+  stat['monthly_skew'] = -0.328280293606012
+  stat['monthly_sortino'] = 0.5618804548711388
+  stat['monthly_vol'] = 0.1009167205382074
+  stat['mtd'] = -0.00742683511025144
+  stat['one_year'] = 0.034149173263811505
+  stat['rf'] = 0.0
+  stat['six_month'] = -0.009758912619751037
+  stat['start'] = '2021-11-15T00:00:00'
+  stat['ten_year'] = None
+  stat['three_month'] = -0.02811002157201059
+  stat['three_year'] = 0.09766426429374486
+  stat['total_return'] = 0.1707874714660671
+  stat['twelve_month_win_perc'] = 0.8571428571428571
+  stat['win_year_perc'] = 0.8
+  stat['worst_day'] = -0.027905721922773186
+  stat['worst_month'] = -0.06957875959041537
+  stat['worst_year'] = -0.16926051906307182
+  stat['yearly_kurt'] = 3.100901809495859
+  stat['yearly_mean'] = 0.036626071950642825
+  stat['yearly_sharpe'] = 0.302923254975808
+  stat['yearly_skew'] = -1.7635089625613065
+  stat['yearly_sortino'] = 0.48385995200639637
+  stat['yearly_vol'] = 0.1209087494902557
+  stat['ytd'] = 0.027942281456232898
+Wrote results/stats.json
+{
+  "tool": "bt",
+  "tool_description": "bt - Flexible Backtesting for Python (by pmorissette)",
+  "strategy": {
+    "name": "portfolio_monthly",
+    "algos": [
+      "SelectAll",
+      "WeighEqually",
+      "RunMonthly",
+      "Rebalance"
+    ],
+    "weighting": "equal (WeighEqually)",
+    "weights": {
+      "SPY": 0.5,
+      "AGG": 0.5
+    },
+    "tickers": [
+      "SPY",
+      "AGG"
+    ]
+  },
+  "data": {
+    "source": "Yahoo chart API direct (query1.finance.yahoo.com/v8/finance/chart/<ticker>), daily closes, no yfinance",
+    "tickers": [
+      "SPY",
+      "AGG"
+    ],
+    "years_requested": 5,
+    "data_range": {
+      "start": "2021-11-16",
+      "end": "2026-11-13"
+    },
+    "rows": 1254
+  },
+  "initial_capital_requested": 100000.0,
+  "start_value": 100000.0,
+  "final_value": 117078.7471466067,
+  "final_value_note": "result.prices is normalised to 100 at start in bt 1.4.1; final_value = raw_final_price / raw_start_price * initial_capital (100000 in the pilot)",
+  "raw_result_prices_start": 100.0,
+  "raw_result_prices_final": 117.0787471466067,
+  "final_value_source": "result.prices (first/last value of first column), scaled to initial_capital",
+  "total_return_pct": 17.07874714660671,
+  "total_return_stat_key": "total_return",
+  "cagr_pct": 3.20779688947177,
+  "cagr_stat_key": "cagr",
+  "max_drawdown_pct": -20.92292765164402,
+  "max_drawdown_stat_key": "max_drawdown",
+  "stat_sources_used": [
+    "result.stats"
+  ],
+  "stat_keys_read": [
+    "avg_down_month",
+    "avg_drawdown",
+    "avg_drawdown_days",
+    "avg_up_month",
+    "best_day",
+    "best_month",
+    "best_year",
+    "cagr",
+    "calmar",
+    "daily_kurt",
+    "daily_mean",
+    "daily_sharpe",
+    "daily_skew",
+    "daily_sortino",
+    "daily_vol",
+    "end",
+    "five_year",
+    "incep",
+    "max_drawdown",
+    "monthly_kurt",
+    "monthly_mean",
+    "monthly_sharpe",
+    "monthly_skew",
+    "monthly_sortino",
+    "monthly_vol",
+    "mtd",
+    "one_year",
+    "rf",
+    "six_month",
+    "start",
+    "ten_year",
+    "three_month",
+    "three_year",
+    "total_return",
+    "twelve_month_win_perc",
+    "win_year_perc",
+    "worst_day",
+    "worst_month",
+    "worst_year",
+    "yearly_kurt",
+    "yearly_mean",
+    "yearly_sharpe",
+    "yearly_skew",
+    "yearly_sortino",
+    "yearly_vol",
+    "ytd"
+  ],
+  "raw_result_stats": {
+    "start": "2021-11-15T00:00:00",
+    "end": "2026-11-13T00:00:00",
+    "rf": 0.0,
+    "total_return": 0.1707874714660671,
+    "cagr": 0.0320779688947177,
+    "max_drawdown": -0.2092292765164402,
+    "calmar": 0.15331491571733832,
+    "mtd": -0.00742683511025144,
+    "three_month": -0.02811002157201059,
+    "six_month": -0.009758912619751037,
+    "ytd": 0.027942281456232898,
+    "one_year": 0.034149173263811505,
+    "three_year": 0.09766426429374486,
+    "five_year": null,
+    "ten_year": null,
+    "incep": 0.0320779688947177,
+    "daily_sharpe": 0.37395815737498256,
+    "daily_sortino": 0.5350526348180465,
+    "daily_mean": 0.03642396445870735,
+    "daily_vol": 0.09740117641606522,
+    "daily_skew": 0.205964986689907,
+    "daily_kurt": 5.849642921219092,
+    "best_day": 0.05048001591820683,
+    "worst_day": -0.027905721922773186,
+    "monthly_sharpe": 0.38378334402634845,
+    "monthly_sortino": 0.5618804548711388,
+    "monthly_mean": 0.03873015647632572,
+    "monthly_vol": 0.1009167205382074,
+    "monthly_skew": -0.328280293606012,
+    "monthly_kurt": -0.056473114212439855,
+    "best_month": 0.0669201234686505,
+    "worst_month": -0.06957875959041537,
+    "yearly_sharpe": 0.302923254975808,
+    "yearly_sortino": 0.48385995200639637,
+    "yearly_mean": 0.036626071950642825,
+    "yearly_vol": 0.1209087494902557,
+    "yearly_skew": -1.7635089625613065,
+    "yearly_kurt": 3.100901809495859,
+    "best_year": 0.12913769480603543,
+    "worst_year": -0.16926051906307182,
+    "avg_drawdown": -0.014518841170359441,
+    "avg_drawdown_days": 31.867924528301888,
+    "avg_up_month": 0.021800265252659764,
+    "avg_down_month": -0.026650392694207943,
+    "win_year_perc": 0.8,
+    "twelve_month_win_perc": 0.8571428571428571
+  }
+}

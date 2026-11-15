@@ -1,0 +1,139 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 10.15,
+ "base_source": "pandas-ta",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "yahooquery/poul.ca.csv": 10.199999809265137,
+   "pandas-ta/indicators.csv": 10.199999809265137,
+   "egx-data/egxpy_poul.csv": 10.2,
+   "talib/indicators.csv": 10.199999809265137,
+   "openbb/poul_ca.csv": 10.199999809265137
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-11",
+  "base_used": 10.15,
+  "base_source_used": "pandas-ta"
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.9,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.72,
+   "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة"
+  }
+ ],
+ "sigma_daily": 0.0225,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0183)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-15",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل",
+   "earnings event: رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.yo",
+   "earnings event: القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "«القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.yo"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "أرباح القاهرة للدواجن تنخفض إلى 1.4 مليار جنيه في 9 أشهر - مجلة البوصلة الاقتصادية"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تخفض أرباحها في تسعة أشهر - آراب فاينانس"
+   }
+  ],
+  "move_z": {
+   "last": 0.22,
+   "max3": 1.31
+  }
+ },
+ "weights_source": "builtin",
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": 0.026,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.258
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.22,
+   "range_low_pct": -3.37,
+   "range_high_pct": 5.81,
+   "confidence": 0.3,
+   "net_score": 0.253,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.026,
+    "price-forecast": 0.344
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "down",
+   "expected_move_pct": -0.92,
+   "range_low_pct": -9.23,
+   "range_high_pct": 7.38,
+   "confidence": 0.3,
+   "net_score": 0.038,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.026,
+    "price-forecast": -0.213
+   },
+   "horizon_short": false,
+   "trading_sessions": 3
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -1.88,
+   "range_low_pct": -20.34,
+   "range_high_pct": 16.57,
+   "confidence": 0.3,
+   "net_score": 0.168,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.026,
+    "fundamentals": 0.4,
+    "price-forecast": -0.258
+   },
+   "horizon_short": false,
+   "trading_sessions": 14
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
