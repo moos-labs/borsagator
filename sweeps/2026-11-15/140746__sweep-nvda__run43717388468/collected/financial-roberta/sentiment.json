@@ -1,0 +1,622 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 40,
+  "label_counts": {
+    "positive": 6,
+    "negative": 8,
+    "neutral": 26
+  },
+  "mean_probabilities": {
+    "positive": 0.15495144598135085,
+    "negative": 0.20486563710328481,
+    "neutral": 0.6401828994727111
+  },
+  "items": [
+    {
+      "text": "Earnings Week Ahead: NVDA, WMT, TGT, DIS, BABA, BIDU, HD, and more - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004685643070843071,
+        "negative": 0.00014816608745604753,
+        "neutral": 0.9993832111358643
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993832111358643,
+        "positive": 0.0004685643070843071,
+        "negative": 0.00014816608745604753
+      }
+    },
+    {
+      "text": "Nvidia Earnings Preview: NVDA’s First Test of the Post Jenson Huang Era - FOREX.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000785576063208282,
+        "negative": 0.00022430974058806896,
+        "neutral": 0.998989999294281
+      },
+      "raw_probabilities": {
+        "neutral": 0.998989999294281,
+        "positive": 0.000785576063208282,
+        "negative": 0.00022430974058806896
+      }
+    },
+    {
+      "text": "Will Nvidia earnings steady the AI sell-off? - Financial Times",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.7276012301445007,
+        "negative": 0.004968059249222279,
+        "neutral": 0.2674306631088257
+      },
+      "raw_probabilities": {
+        "positive": 0.7276012301445007,
+        "neutral": 0.2674306631088257,
+        "negative": 0.004968059249222279
+      }
+    },
+    {
+      "text": "Should you buy Nvidia stock right now? - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007963692769408226,
+        "negative": 0.0004923429223708808,
+        "neutral": 0.998711347579956
+      },
+      "raw_probabilities": {
+        "neutral": 0.998711347579956,
+        "positive": 0.0007963692769408226,
+        "negative": 0.0004923429223708808
+      }
+    },
+    {
+      "text": "Nvidia's first post-Jensen earnings and Anthropic's IPO: What to watch this week - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010186245199292898,
+        "negative": 0.00014589529018849134,
+        "neutral": 0.9988355040550232
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988355040550232,
+        "positive": 0.0010186245199292898,
+        "negative": 0.00014589529018849134
+      }
+    },
+    {
+      "text": "Nvidia Stock Could Have Its First Losing Year Since 2022. Here's What It Did After Its Last 7. - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002725179656408727,
+        "negative": 0.9988692402839661,
+        "neutral": 0.0008581191650591791
+      },
+      "raw_probabilities": {
+        "negative": 0.9988692402839661,
+        "neutral": 0.0008581191650591791,
+        "positive": 0.0002725179656408727
+      }
+    },
+    {
+      "text": "After the Nvidia stock crash, here’s what I’m doing in my ISA and SIPP - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0002894416102208197,
+        "negative": 0.0016519308555871248,
+        "neutral": 0.9980586171150208
+      },
+      "raw_probabilities": {
+        "neutral": 0.9980586171150208,
+        "negative": 0.0016519308555871248,
+        "positive": 0.0002894416102208197
+      }
+    },
+    {
+      "text": "With Nvidia’s earnings coming up, could a strong report give the broader tech sector a much-needed boost? - Moomoo",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982388019561768,
+        "negative": 0.0006944037158973515,
+        "neutral": 0.001066802884452045
+      },
+      "raw_probabilities": {
+        "positive": 0.9982388019561768,
+        "neutral": 0.001066802884452045,
+        "negative": 0.0006944037158973515
+      }
+    },
+    {
+      "text": "The Week Ahead: Blockbuster Nvidia Q3 Earnings Arrive as US October Retail Sales, FOMC Minutes and Walmart Earnings Follow - TradingKey",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9971497654914856,
+        "negative": 0.0003784592554438859,
+        "neutral": 0.0024718025233596563
+      },
+      "raw_probabilities": {
+        "positive": 0.9971497654914856,
+        "neutral": 0.0024718025233596563,
+        "negative": 0.0003784592554438859
+      }
+    },
+    {
+      "text": "Nvidia earnings — along with the baggage — top next week's markets - Yahoo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9972314238548279,
+        "negative": 0.0004860670887865126,
+        "neutral": 0.0022825601045042276
+      },
+      "raw_probabilities": {
+        "positive": 0.9972314238548279,
+        "neutral": 0.0022825601045042276,
+        "negative": 0.0004860670887865126
+      }
+    },
+    {
+      "text": "Futures Loom As Bitcoin Dives In Shaky Rally. What To Do Now. - Investor's Business Daily",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022893628920428455,
+        "negative": 0.9985322952270508,
+        "neutral": 0.0012387916212901473
+      },
+      "raw_probabilities": {
+        "negative": 0.9985322952270508,
+        "neutral": 0.0012387916212901473,
+        "positive": 0.00022893628920428455
+      }
+    },
+    {
+      "text": "Post 6 | My Pre-Earnings Options Game Plan for NVIDIA (NVDA) 📊💡 - Moomoo",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006389112095348537,
+        "negative": 0.00013300307909958065,
+        "neutral": 0.9992280006408691
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992280006408691,
+        "positive": 0.0006389112095348537,
+        "negative": 0.00013300307909958065
+      }
+    },
+    {
+      "text": "Nvidia Earnings and Anthropic IPO Land in Same Week, Testing Both Ends of the AI Supply Chain - BigGo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.19878263771533966,
+        "negative": 0.0003828000044450164,
+        "neutral": 0.8008345365524292
+      },
+      "raw_probabilities": {
+        "neutral": 0.8008345365524292,
+        "positive": 0.19878263771533966,
+        "negative": 0.0003828000044450164
+      }
+    },
+    {
+      "text": "How to Read Nvidia Earnings: Hyperscalers at 51% - shattered.io",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006680844235233963,
+        "negative": 0.0001644112344365567,
+        "neutral": 0.9991675615310669
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991675615310669,
+        "positive": 0.0006680844235233963,
+        "negative": 0.0001644112344365567
+      }
+    },
+    {
+      "text": "AMD Just Had Its Biggest Run Against Nvidia Since 1999. Can It Survive Earnings? - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00028980098431929946,
+        "negative": 0.998742401599884,
+        "neutral": 0.000967846717685461
+      },
+      "raw_probabilities": {
+        "negative": 0.998742401599884,
+        "neutral": 0.000967846717685461,
+        "positive": 0.00028980098431929946
+      }
+    },
+    {
+      "text": "NVIDIA (NVDA): Can AI Demand Sustain Growth Through Leadership Uncertainty? - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.013083665631711483,
+        "negative": 0.00047031667781993747,
+        "neutral": 0.986445963382721
+      },
+      "raw_probabilities": {
+        "neutral": 0.986445963382721,
+        "positive": 0.013083665631711483,
+        "negative": 0.00047031667781993747
+      }
+    },
+    {
+      "text": "Nvidia Reports After the Bell Today — Five Things That Will Move NVDA After the Close - TradingKey",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00042596861021593213,
+        "negative": 0.00018833864305634052,
+        "neutral": 0.9993857145309448
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993857145309448,
+        "positive": 0.00042596861021593213,
+        "negative": 0.00018833864305634052
+      }
+    },
+    {
+      "text": "HSBC Just Downgraded Nvidia and Cut Its Target to $170 - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003620543866418302,
+        "negative": 0.9987252354621887,
+        "neutral": 0.0009126758668571711
+      },
+      "raw_probabilities": {
+        "negative": 0.9987252354621887,
+        "neutral": 0.0009126758668571711,
+        "positive": 0.0003620543866418302
+      }
+    },
+    {
+      "text": "After Jensen Huang’s Departure, Nvidia Just Did Something It Hasn’t Done Since 2019 - Yahoo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9853722453117371,
+        "negative": 0.0005704609793610871,
+        "neutral": 0.014057343825697899
+      },
+      "raw_probabilities": {
+        "positive": 0.9853722453117371,
+        "neutral": 0.014057343825697899,
+        "negative": 0.0005704609793610871
+      }
+    },
+    {
+      "text": "​$NVDA Earnings Preview - Moomoo",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0021514634136110544,
+        "negative": 0.00024395843502134085,
+        "neutral": 0.9976046085357666
+      },
+      "raw_probabilities": {
+        "neutral": 0.9976046085357666,
+        "positive": 0.0021514634136110544,
+        "negative": 0.00024395843502134085
+      }
+    },
+    {
+      "text": "Big Shareholders and 3,000 Nvidia Employees Want Jensen Huang Back - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.06184661015868187,
+        "negative": 0.000375572097254917,
+        "neutral": 0.9377778172492981
+      },
+      "raw_probabilities": {
+        "neutral": 0.9377778172492981,
+        "positive": 0.06184661015868187,
+        "negative": 0.000375572097254917
+      }
+    },
+    {
+      "text": "Nvidia lost $1.6 trillion after Jensen Huang's exit, but Apple's and Uber's CEO transitions offer a blueprint - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00035587235470302403,
+        "negative": 0.8300967216491699,
+        "neutral": 0.1695474535226822
+      },
+      "raw_probabilities": {
+        "negative": 0.8300967216491699,
+        "neutral": 0.1695474535226822,
+        "positive": 0.00035587235470302403
+      }
+    },
+    {
+      "text": "AMD Just Crushed Nvidia by 32 Points After Scandal. Here’s How NVDA Can Come Back - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.17991745471954346,
+        "negative": 0.276506245136261,
+        "neutral": 0.5435763597488403
+      },
+      "raw_probabilities": {
+        "neutral": 0.5435763597488403,
+        "negative": 0.276506245136261,
+        "positive": 0.17991745471954346
+      }
+    },
+    {
+      "text": "Nvidia Stock Falls Below $165 After Its CEO Resigns: Is It a Bargain Buy? - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022215231729205698,
+        "negative": 0.9983117580413818,
+        "neutral": 0.001466022222302854
+      },
+      "raw_probabilities": {
+        "negative": 0.9983117580413818,
+        "neutral": 0.001466022222302854,
+        "positive": 0.00022215231729205698
+      }
+    },
+    {
+      "text": "NVDA, AMD, CRWV and More: 5 Stocks Investors Couldn’t Stop Buzzing About This Week - Benzinga",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0016923287184908986,
+        "negative": 0.0002433842164464295,
+        "neutral": 0.9980642199516296
+      },
+      "raw_probabilities": {
+        "neutral": 0.9980642199516296,
+        "positive": 0.0016923287184908986,
+        "negative": 0.0002433842164464295
+      }
+    },
+    {
+      "text": "Smart Investor: What’s Next for Nvidia, Undervalued Earnings Crushers, and is Anthropic a Buy? - Morningstar",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0009639844647608697,
+        "negative": 0.00018475274555385113,
+        "neutral": 0.9988511800765991
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988511800765991,
+        "positive": 0.0009639844647608697,
+        "negative": 0.00018475274555385113
+      }
+    },
+    {
+      "text": "Should You Buy Nvidia Stock Before Nov. 17? - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004903166554868221,
+        "negative": 0.00040433439426124096,
+        "neutral": 0.9991052746772766
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991052746772766,
+        "positive": 0.0004903166554868221,
+        "negative": 0.00040433439426124096
+      }
+    },
+    {
+      "text": "Nvidia and Jensen Huang fallout: Here’s everything we know after a momentous week - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004767709760926664,
+        "negative": 0.0021086526103317738,
+        "neutral": 0.9974144697189331
+      },
+      "raw_probabilities": {
+        "neutral": 0.9974144697189331,
+        "negative": 0.0021086526103317738,
+        "positive": 0.0004767709760926664
+      }
+    },
+    {
+      "text": "Nvidia Earnings and Anthropic's Debut Set Up a Pivotal Nov. 18 for AI Stocks - BigGo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9979409575462341,
+        "negative": 0.0004652655334211886,
+        "neutral": 0.0015937364660203457
+      },
+      "raw_probabilities": {
+        "positive": 0.9979409575462341,
+        "neutral": 0.0015937364660203457,
+        "negative": 0.0004652655334211886
+      }
+    },
+    {
+      "text": "Is Nvidia Worth This Much Less Without Jensen Huang? - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000565453665331006,
+        "negative": 0.07628094404935837,
+        "neutral": 0.9231535792350769
+      },
+      "raw_probabilities": {
+        "neutral": 0.9231535792350769,
+        "negative": 0.07628094404935837,
+        "positive": 0.000565453665331006
+      }
+    },
+    {
+      "text": "Stock Market Today, November 13, 2026: Tech Stocks Fall as Nvidia Earnings and Anthropic IPO Loom - Eurasia Business News",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00025175584596581757,
+        "negative": 0.9987214207649231,
+        "neutral": 0.0010267148027196527
+      },
+      "raw_probabilities": {
+        "negative": 0.9987214207649231,
+        "neutral": 0.0010267148027196527,
+        "positive": 0.00025175584596581757
+      }
+    },
+    {
+      "text": "Jensen Huang will forfeit $108 million in Nvidia stock awards — a minuscule 0.08% of his $138.4 billion fortune - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0009233664022758603,
+        "negative": 0.0022814939729869366,
+        "neutral": 0.996795117855072
+      },
+      "raw_probabilities": {
+        "neutral": 0.996795117855072,
+        "negative": 0.0022814939729869366,
+        "positive": 0.0009233664022758603
+      }
+    },
+    {
+      "text": "Walmart, Target, and Nvidia Headline a Pivotal Week for Q3 Earnings - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.016019893810153008,
+        "negative": 0.0003413656959310174,
+        "neutral": 0.9836387634277344
+      },
+      "raw_probabilities": {
+        "neutral": 0.9836387634277344,
+        "positive": 0.016019893810153008,
+        "negative": 0.0003413656959310174
+      }
+    },
+    {
+      "text": "Stock Market Falls But Nasdaq Holds Key Level; Anthropic IPO, Nvidia Earnings Loom - Investor's Business Daily",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0031427335925400257,
+        "negative": 0.0004255892999935895,
+        "neutral": 0.9964315891265869
+      },
+      "raw_probabilities": {
+        "neutral": 0.9964315891265869,
+        "positive": 0.0031427335925400257,
+        "negative": 0.0004255892999935895
+      }
+    },
+    {
+      "text": "What will happen at Nvidia's impending earnings call? - Marketplace.org",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00031145650427788496,
+        "negative": 0.00023168159532360733,
+        "neutral": 0.9994568228721619
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994568228721619,
+        "positive": 0.00031145650427788496,
+        "negative": 0.00023168159532360733
+      }
+    },
+    {
+      "text": "With Nvidia Floundering, AI Bulls Need More Than Spending. Watch Revenue. - Barron's",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003573264111764729,
+        "negative": 0.0006831942591816187,
+        "neutral": 0.9989594221115112
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989594221115112,
+        "negative": 0.0006831942591816187,
+        "positive": 0.0003573264111764729
+      }
+    },
+    {
+      "text": "Boardroom Drama Ahead of NVIDIA's Q3 Earnings: Buy or Sell the Stock? - TradingView",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0008370584691874683,
+        "negative": 0.0013141196686774492,
+        "neutral": 0.9978488683700562
+      },
+      "raw_probabilities": {
+        "neutral": 0.9978488683700562,
+        "negative": 0.0013141196686774492,
+        "positive": 0.0008370584691874683
+      }
+    },
+    {
+      "text": "Nvidia lost $600B in value as the Jensen Huang scandal exploded — but insiders had already sold $1B+. Lucky or illegal? - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00026529302704147995,
+        "negative": 0.998775064945221,
+        "neutral": 0.0009596440941095352
+      },
+      "raw_probabilities": {
+        "negative": 0.998775064945221,
+        "neutral": 0.0009596440941095352,
+        "positive": 0.00026529302704147995
+      }
+    },
+    {
+      "text": "Nvidia Q3 Earnings Preview: What Options Traders Expect After Jensen Huang’s Sudden Exit - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003029141225852072,
+        "negative": 0.0003558460157364607,
+        "neutral": 0.9993411898612976
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993411898612976,
+        "negative": 0.0003558460157364607,
+        "positive": 0.0003029141225852072
+      }
+    },
+    {
+      "text": "'Nothing has changed': Why some Nvidia stock bulls aren't wavering after Jensen Huang ouster - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00531805632635951,
+        "negative": 0.00030598160810768604,
+        "neutral": 0.9943760633468628
+      },
+      "raw_probabilities": {
+        "neutral": 0.9943760633468628,
+        "positive": 0.00531805632635951,
+        "negative": 0.00030598160810768604
+      }
+    }
+  ]
+}

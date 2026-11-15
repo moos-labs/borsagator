@@ -1,0 +1,23 @@
+{
+  "tool": "finrobot",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "tool": "finrobot",
+    "ticker": "NVDA",
+    "model": "command-r-08-2024",
+    "messages": 5,
+    "analysis_chars": 785,
+    "verdict": "## VERDICT: bearish - the recent CEO scandal and departure have caused a significant drop in stock price.",
+    "as_of": "2026-11-15"
+  },
+  "files": [
+    "analysis.md",
+    "finrobot_result.json",
+    "fleet_context.json",
+    "fleet_context.md",
+    "run.log"
+  ]
+}

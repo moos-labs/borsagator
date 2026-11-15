@@ -1,0 +1,17 @@
+{
+  "tool": "finbert-tone",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "label": "live",
+    "model": "yiyanghkust/finbert-tone",
+    "count": 40
+  },
+  "files": [
+    "report.md",
+    "run.log",
+    "sentiment.json"
+  ]
+}

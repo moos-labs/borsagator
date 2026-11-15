@@ -1,0 +1,1027 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 40,
+  "label_counts": {
+    "positive": 4,
+    "negative": 4,
+    "neutral": 32
+  },
+  "label_counts_raw": {
+    "neutral": 32,
+    "positive": 4,
+    "negative": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.10951121045460752,
+    "negative": 0.1028742748555728,
+    "neutral": 0.7876145049941499
+  },
+  "items": [
+    {
+      "text": "Earnings Week Ahead: NVDA, WMT, TGT, DIS, BABA, BIDU, HD, and more - Seeking Alpha",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.7376014259061776e-05,
+        "negative": 2.305273028468946e-06,
+        "neutral": 0.9999703168869019
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999703168869019
+        },
+        {
+          "label": "Positive",
+          "score": 2.7376014259061776e-05
+        },
+        {
+          "label": "Negative",
+          "score": 2.305273028468946e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Earnings Preview: NVDA’s First Test of the Post Jenson Huang Era - FOREX.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.359112062957138e-05,
+        "negative": 5.961243459751131e-06,
+        "neutral": 0.9999504089355469
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999504089355469
+        },
+        {
+          "label": "Positive",
+          "score": 4.359112062957138e-05
+        },
+        {
+          "label": "Negative",
+          "score": 5.961243459751131e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Will Nvidia earnings steady the AI sell-off? - Financial Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.11366519331932068,
+        "negative": 0.406659871339798,
+        "neutral": 0.4796749949455261
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.4796749949455261
+        },
+        {
+          "label": "Negative",
+          "score": 0.406659871339798
+        },
+        {
+          "label": "Positive",
+          "score": 0.11366519331932068
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Should you buy Nvidia stock right now? - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0007255967357195914,
+        "negative": 0.0016220194520428777,
+        "neutral": 0.9976523518562317
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9976523518562317
+        },
+        {
+          "label": "Negative",
+          "score": 0.0016220194520428777
+        },
+        {
+          "label": "Positive",
+          "score": 0.0007255967357195914
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia's first post-Jensen earnings and Anthropic's IPO: What to watch this week - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0019027210073545575,
+        "negative": 0.0001328749058302492,
+        "neutral": 0.9979643821716309
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9979643821716309
+        },
+        {
+          "label": "Positive",
+          "score": 0.0019027210073545575
+        },
+        {
+          "label": "Negative",
+          "score": 0.0001328749058302492
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Stock Could Have Its First Losing Year Since 2022. Here's What It Did After Its Last 7. - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.020607978105545044,
+        "negative": 0.22737707197666168,
+        "neutral": 0.7520149350166321
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.7520149350166321
+        },
+        {
+          "label": "Negative",
+          "score": 0.22737707197666168
+        },
+        {
+          "label": "Positive",
+          "score": 0.020607978105545044
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "After the Nvidia stock crash, here’s what I’m doing in my ISA and SIPP - Yahoo Finance UK",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.8537772323034005e-07,
+        "negative": 2.6300489480490796e-05,
+        "neutral": 0.9999734163284302
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999734163284302
+        },
+        {
+          "label": "Negative",
+          "score": 2.6300489480490796e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.8537772323034005e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "With Nvidia’s earnings coming up, could a strong report give the broader tech sector a much-needed boost? - Moomoo",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999998807907104,
+        "negative": 1.794810700062044e-08,
+        "neutral": 1.2445332231436623e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999998807907104
+        },
+        {
+          "label": "Neutral",
+          "score": 1.2445332231436623e-07
+        },
+        {
+          "label": "Negative",
+          "score": 1.794810700062044e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The Week Ahead: Blockbuster Nvidia Q3 Earnings Arrive as US October Retail Sales, FOMC Minutes and Walmart Earnings Follow - TradingKey",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4598507505070302e-06,
+        "negative": 1.7109991290453763e-07,
+        "neutral": 0.9999984502792358
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999984502792358
+        },
+        {
+          "label": "Positive",
+          "score": 1.4598507505070302e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.7109991290453763e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia earnings — along with the baggage — top next week's markets - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0737086086010095e-05,
+        "negative": 1.5925175830489025e-05,
+        "neutral": 0.9999732971191406
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999732971191406
+        },
+        {
+          "label": "Negative",
+          "score": 1.5925175830489025e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.0737086086010095e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Futures Loom As Bitcoin Dives In Shaky Rally. What To Do Now. - Investor's Business Daily",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00019267380412202328,
+        "negative": 0.0035007367841899395,
+        "neutral": 0.9963066577911377
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9963066577911377
+        },
+        {
+          "label": "Negative",
+          "score": 0.0035007367841899395
+        },
+        {
+          "label": "Positive",
+          "score": 0.00019267380412202328
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Michael Burry sees 2 chip winners in Nvidia’s shake-up - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.006178870331496,
+        "negative": 0.0007979811634868383,
+        "neutral": 0.993023157119751
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.993023157119751
+        },
+        {
+          "label": "Positive",
+          "score": 0.006178870331496
+        },
+        {
+          "label": "Negative",
+          "score": 0.0007979811634868383
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Post 6 | My Pre-Earnings Options Game Plan for NVIDIA (NVDA) 📊💡 - Moomoo",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.901977834175341e-06,
+        "negative": 1.1090330190199893e-05,
+        "neutral": 0.9999849796295166
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999849796295166
+        },
+        {
+          "label": "Negative",
+          "score": 1.1090330190199893e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.901977834175341e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Earnings and Anthropic IPO Land in Same Week, Testing Both Ends of the AI Supply Chain - BigGo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.5285731933545321e-06,
+        "negative": 3.718340849445667e-06,
+        "neutral": 0.9999947547912598
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999947547912598
+        },
+        {
+          "label": "Negative",
+          "score": 3.718340849445667e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.5285731933545321e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "How to Read Nvidia Earnings: Hyperscalers at 51% - shattered.io",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.08038339763879776,
+        "negative": 0.011935420334339142,
+        "neutral": 0.9076811671257019
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9076811671257019
+        },
+        {
+          "label": "Positive",
+          "score": 0.08038339763879776
+        },
+        {
+          "label": "Negative",
+          "score": 0.011935420334339142
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "AMD Just Had Its Biggest Run Against Nvidia Since 1999. Can It Survive Earnings? - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.006148200482130051,
+        "negative": 0.025852881371974945,
+        "neutral": 0.9679989218711853
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9679989218711853
+        },
+        {
+          "label": "Negative",
+          "score": 0.025852881371974945
+        },
+        {
+          "label": "Positive",
+          "score": 0.006148200482130051
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "NVIDIA (NVDA): Can AI Demand Sustain Growth Through Leadership Uncertainty? - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.026704607531428337,
+        "negative": 0.6563560962677002,
+        "neutral": 0.3169393241405487
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.6563560962677002
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3169393241405487
+        },
+        {
+          "label": "Positive",
+          "score": 0.026704607531428337
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Reports After the Bell Today — Five Things That Will Move NVDA After the Close - TradingKey",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.051843683962943e-07,
+        "negative": 3.0435444386966992e-06,
+        "neutral": 0.9999963045120239
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999963045120239
+        },
+        {
+          "label": "Negative",
+          "score": 3.0435444386966992e-06
+        },
+        {
+          "label": "Positive",
+          "score": 6.051843683962943e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "HSBC Just Downgraded Nvidia and Cut Its Target to $170 - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 2.9186560368543724e-06,
+        "negative": 0.9999955892562866,
+        "neutral": 1.4394071286005783e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999955892562866
+        },
+        {
+          "label": "Positive",
+          "score": 2.9186560368543724e-06
+        },
+        {
+          "label": "Neutral",
+          "score": 1.4394071286005783e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "After Jensen Huang’s Departure, Nvidia Just Did Something It Hasn’t Done Since 2019 - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.740254447213374e-05,
+        "negative": 0.011706859804689884,
+        "neutral": 0.9882757663726807
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9882757663726807
+        },
+        {
+          "label": "Negative",
+          "score": 0.011706859804689884
+        },
+        {
+          "label": "Positive",
+          "score": 1.740254447213374e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "​$NVDA Earnings Preview - Moomoo",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0002691419795155525,
+        "negative": 2.2079037080402486e-05,
+        "neutral": 0.9997088313102722
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997088313102722
+        },
+        {
+          "label": "Positive",
+          "score": 0.0002691419795155525
+        },
+        {
+          "label": "Negative",
+          "score": 2.2079037080402486e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Big Shareholders and 3,000 Nvidia Employees Want Jensen Huang Back - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2582309864228591e-05,
+        "negative": 5.542079816223122e-05,
+        "neutral": 0.9999319314956665
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999319314956665
+        },
+        {
+          "label": "Negative",
+          "score": 5.542079816223122e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.2582309864228591e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia lost $1.6 trillion after Jensen Huang's exit, but Apple's and Uber's CEO transitions offer a blueprint - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.346289203269407e-05,
+        "negative": 0.010865096934139729,
+        "neutral": 0.9890614748001099
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9890614748001099
+        },
+        {
+          "label": "Negative",
+          "score": 0.010865096934139729
+        },
+        {
+          "label": "Positive",
+          "score": 7.346289203269407e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "AMD Just Crushed Nvidia by 32 Points After Scandal. Here’s How NVDA Can Come Back - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.022219689562916756,
+        "negative": 0.013818365521728992,
+        "neutral": 0.9639619588851929
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9639619588851929
+        },
+        {
+          "label": "Positive",
+          "score": 0.022219689562916756
+        },
+        {
+          "label": "Negative",
+          "score": 0.013818365521728992
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Stock Falls Below $165 After Its CEO Resigns: Is It a Bargain Buy? - Yahoo Finance",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9981572031974792,
+        "negative": 0.0011043183039873838,
+        "neutral": 0.0007384024793282151
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9981572031974792
+        },
+        {
+          "label": "Negative",
+          "score": 0.0011043183039873838
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0007384024793282151
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "NVDA, AMD, CRWV and More: 5 Stocks Investors Couldn’t Stop Buzzing About This Week - Benzinga",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.3611330511339474e-06,
+        "negative": 0.012565935030579567,
+        "neutral": 0.987429678440094
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.987429678440094
+        },
+        {
+          "label": "Negative",
+          "score": 0.012565935030579567
+        },
+        {
+          "label": "Positive",
+          "score": 4.3611330511339474e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Smart Investor: What’s Next for Nvidia, Undervalued Earnings Crushers, and is Anthropic a Buy? - Morningstar",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999748468399048,
+        "negative": 4.725048711406998e-06,
+        "neutral": 2.0385430616443045e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999748468399048
+        },
+        {
+          "label": "Neutral",
+          "score": 2.0385430616443045e-05
+        },
+        {
+          "label": "Negative",
+          "score": 4.725048711406998e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Should You Buy Nvidia Stock Before Nov. 17? - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0006294184713624418,
+        "negative": 0.0012038206914439797,
+        "neutral": 0.9981666803359985
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9981666803359985
+        },
+        {
+          "label": "Negative",
+          "score": 0.0012038206914439797
+        },
+        {
+          "label": "Positive",
+          "score": 0.0006294184713624418
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia and Jensen Huang fallout: Here’s everything we know after a momentous week - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.423580488335574e-05,
+        "negative": 0.00017597262922208756,
+        "neutral": 0.9998099207878113
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998099207878113
+        },
+        {
+          "label": "Negative",
+          "score": 0.00017597262922208756
+        },
+        {
+          "label": "Positive",
+          "score": 1.423580488335574e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia Earnings and Anthropic's Debut Set Up a Pivotal Nov. 18 for AI Stocks - BigGo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.013035564683377743,
+        "negative": 1.2810104635718744e-05,
+        "neutral": 0.9869515895843506
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9869515895843506
+        },
+        {
+          "label": "Positive",
+          "score": 0.013035564683377743
+        },
+        {
+          "label": "Negative",
+          "score": 1.2810104635718744e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Is Nvidia Worth This Much Less Without Jensen Huang? - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0004242835275363177,
+        "negative": 0.0020512696355581284,
+        "neutral": 0.9975244402885437
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9975244402885437
+        },
+        {
+          "label": "Negative",
+          "score": 0.0020512696355581284
+        },
+        {
+          "label": "Positive",
+          "score": 0.0004242835275363177
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Stock Market Today, November 13, 2026: Tech Stocks Fall as Nvidia Earnings and Anthropic IPO Loom - Eurasia Business News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6321567954946659e-06,
+        "negative": 0.00011940956028411165,
+        "neutral": 0.9998788833618164
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998788833618164
+        },
+        {
+          "label": "Negative",
+          "score": 0.00011940956028411165
+        },
+        {
+          "label": "Positive",
+          "score": 1.6321567954946659e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Exclusive-Ex-Nvidia CEO misled top lawyer on affair with Chinese businesswoman, sources say - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 4.468357928999467e-06,
+        "negative": 0.8450170755386353,
+        "neutral": 0.1549784243106842
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8450170755386353
+        },
+        {
+          "label": "Neutral",
+          "score": 0.1549784243106842
+        },
+        {
+          "label": "Positive",
+          "score": 4.468357928999467e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Jensen Huang will forfeit $108 million in Nvidia stock awards — a minuscule 0.08% of his $138.4 billion fortune - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.8004227968049236e-05,
+        "negative": 0.0003672965685836971,
+        "neutral": 0.9996147155761719
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9996147155761719
+        },
+        {
+          "label": "Negative",
+          "score": 0.0003672965685836971
+        },
+        {
+          "label": "Positive",
+          "score": 1.8004227968049236e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Walmart, Target, and Nvidia Headline a Pivotal Week for Q3 Earnings - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.08810761570930481,
+        "negative": 0.0012830081395804882,
+        "neutral": 0.9106094241142273
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9106094241142273
+        },
+        {
+          "label": "Positive",
+          "score": 0.08810761570930481
+        },
+        {
+          "label": "Negative",
+          "score": 0.0012830081395804882
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Stock Market Falls But Nasdaq Holds Key Level; Anthropic IPO, Nvidia Earnings Loom - Investor's Business Daily",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6292058262479259e-06,
+        "negative": 0.0004537438799161464,
+        "neutral": 0.9995445609092712
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9995445609092712
+        },
+        {
+          "label": "Negative",
+          "score": 0.0004537438799161464
+        },
+        {
+          "label": "Positive",
+          "score": 1.6292058262479259e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What will happen at Nvidia's impending earnings call? - Marketplace.org",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0002182995667681098,
+        "negative": 0.00029316789004951715,
+        "neutral": 0.9994884729385376
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994884729385376
+        },
+        {
+          "label": "Negative",
+          "score": 0.00029316789004951715
+        },
+        {
+          "label": "Positive",
+          "score": 0.0002182995667681098
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "With Nvidia Floundering, AI Bulls Need More Than Spending. Watch Revenue. - Barron's",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.441926987259649e-05,
+        "negative": 0.00710379658266902,
+        "neutral": 0.9928417205810547
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9928417205810547
+        },
+        {
+          "label": "Negative",
+          "score": 0.00710379658266902
+        },
+        {
+          "label": "Positive",
+          "score": 5.441926987259649e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Boardroom Drama Ahead of NVIDIA's Q3 Earnings: Buy or Sell the Stock? - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999926090240479,
+        "negative": 2.555335072429443e-07,
+        "neutral": 7.102782092260895e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999926090240479
+        },
+        {
+          "label": "Neutral",
+          "score": 7.102782092260895e-06
+        },
+        {
+          "label": "Negative",
+          "score": 2.555335072429443e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia lost $600B in value as the Jensen Huang scandal exploded — but insiders had already sold $1B+. Lucky or illegal? - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.000616024131886661,
+        "negative": 0.8724474906921387,
+        "neutral": 0.12693645060062408
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8724474906921387
+        },
+        {
+          "label": "Neutral",
+          "score": 0.12693645060062408
+        },
+        {
+          "label": "Positive",
+          "score": 0.000616024131886661
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

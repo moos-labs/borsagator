@@ -1,0 +1,1114 @@
+{
+  "ticker": "AAPL",
+  "company_name": "Apple Inc.",
+  "cik": 320193,
+  "identity": "Moos Labs research moos@sherbeeny.com",
+  "filings": [
+    {
+      "form": "10-K",
+      "filing_date": "2026-11-03",
+      "period_end": "2026-09-26",
+      "accession_number": "0000320193-26-000026",
+      "company_name": "Apple Inc.",
+      "financials_source": "filing.obj().financials",
+      "figures": [
+        {
+          "label": "Revenue",
+          "value": 478834000000.0,
+          "source": "financials.get_revenue()"
+        },
+        {
+          "label": "Net income",
+          "value": 132175000000.0,
+          "source": "financials.get_net_income()"
+        },
+        {
+          "label": "Operating income",
+          "value": 158063000000.0,
+          "source": "financials.get_operating_income()"
+        },
+        {
+          "label": "Total assets",
+          "value": 404548000000.0,
+          "source": "financials.get_total_assets()"
+        },
+        {
+          "label": "Total liabilities",
+          "value": 292455000000.0,
+          "source": "financials.get_total_liabilities()"
+        },
+        {
+          "label": "Stockholders' equity",
+          "value": 112093000000.0,
+          "source": "financials.get_stockholders_equity()"
+        },
+        {
+          "label": "Current assets",
+          "value": 173857000000.0,
+          "source": "financials.get_current_assets()"
+        },
+        {
+          "label": "Current liabilities",
+          "value": 169915000000.0,
+          "source": "financials.get_current_liabilities()"
+        },
+        {
+          "label": "Gross margin",
+          "value": 233602000000.0,
+          "period": "2026-09-26 (FY)",
+          "source": "income_statement row (standard_concept=GrossProfit)"
+        }
+      ],
+      "financial_metrics": {
+        "revenue": 478834000000.0,
+        "operating_income": 158063000000.0,
+        "net_income": 132175000000.0,
+        "total_assets": 404548000000.0,
+        "total_liabilities": 292455000000.0,
+        "stockholders_equity": 112093000000.0,
+        "current_assets": 173857000000.0,
+        "current_liabilities": 169915000000.0,
+        "operating_cash_flow": 145097000000.0,
+        "capital_expenditures": 9041000000.0,
+        "free_cash_flow": 136056000000.0,
+        "shares_outstanding_basic": 14661935000.0,
+        "shares_outstanding_diluted": 14720306000.0,
+        "current_ratio": 1.0231998352117235,
+        "debt_to_assets": 0.7229179232130675
+      },
+      "income_statement_rows": [
+        {
+          "label": "Net sales",
+          "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+          "standard_concept": "Revenue",
+          "values": {
+            "2026-09-26 (FY)": 478834000000.0,
+            "2025-09-27 (FY)": 416161000000.0,
+            "2024-09-28 (FY)": 391035000000.0
+          }
+        },
+        {
+          "label": "Cost of sales",
+          "concept": "us-gaap_CostOfGoodsAndServicesSold",
+          "standard_concept": "CostOfGoodsAndServicesSold",
+          "values": {
+            "2026-09-26 (FY)": 245232000000.0,
+            "2025-09-27 (FY)": 220960000000.0,
+            "2024-09-28 (FY)": 210352000000.0
+          }
+        },
+        {
+          "label": "Gross margin",
+          "concept": "us-gaap_GrossProfit",
+          "standard_concept": "GrossProfit",
+          "values": {
+            "2026-09-26 (FY)": 233602000000.0,
+            "2025-09-27 (FY)": 195201000000.0,
+            "2024-09-28 (FY)": 180683000000.0
+          }
+        },
+        {
+          "label": "Operating expenses:",
+          "concept": "us-gaap_OperatingExpensesAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Research and development",
+          "concept": "us-gaap_ResearchAndDevelopmentExpense",
+          "standard_concept": "ResearchAndDevelopmentExpenses",
+          "values": {
+            "2026-09-26 (FY)": 45765000000.0,
+            "2025-09-27 (FY)": 34550000000.0,
+            "2024-09-28 (FY)": 31370000000.0
+          }
+        },
+        {
+          "label": "Selling, general and administrative",
+          "concept": "us-gaap_SellingGeneralAndAdministrativeExpense",
+          "standard_concept": "SellingGeneralAndAdminExpenses",
+          "values": {
+            "2026-09-26 (FY)": 29774000000.0,
+            "2025-09-27 (FY)": 27601000000.0,
+            "2024-09-28 (FY)": 26097000000.0
+          }
+        },
+        {
+          "label": "Total operating expenses",
+          "concept": "us-gaap_OperatingExpenses",
+          "standard_concept": "TotalOperatingExpenses",
+          "values": {
+            "2026-09-26 (FY)": 75539000000.0,
+            "2025-09-27 (FY)": 62151000000.0,
+            "2024-09-28 (FY)": 57467000000.0
+          }
+        },
+        {
+          "label": "Operating income",
+          "concept": "us-gaap_OperatingIncomeLoss",
+          "standard_concept": "OperatingIncomeLoss",
+          "values": {
+            "2026-09-26 (FY)": 158063000000.0,
+            "2025-09-27 (FY)": 133050000000.0,
+            "2024-09-28 (FY)": 123216000000.0
+          }
+        },
+        {
+          "label": "Other income/(expense), net",
+          "concept": "us-gaap_NonoperatingIncomeExpense",
+          "standard_concept": "NonoperatingIncomeExpense",
+          "values": {
+            "2026-09-26 (FY)": 1174000000.0,
+            "2025-09-27 (FY)": -321000000.0,
+            "2024-09-28 (FY)": 269000000.0
+          }
+        },
+        {
+          "label": "Income before provision for income taxes",
+          "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+          "standard_concept": "PretaxIncomeLoss",
+          "values": {
+            "2026-09-26 (FY)": 159237000000.0,
+            "2025-09-27 (FY)": 132729000000.0,
+            "2024-09-28 (FY)": 123485000000.0
+          }
+        },
+        {
+          "label": "Provision for income taxes",
+          "concept": "us-gaap_IncomeTaxExpenseBenefit",
+          "standard_concept": "IncomeTaxes",
+          "values": {
+            "2026-09-26 (FY)": 27062000000.0,
+            "2025-09-27 (FY)": 20719000000.0,
+            "2024-09-28 (FY)": 29749000000.0
+          }
+        },
+        {
+          "label": "Net income",
+          "concept": "us-gaap_NetIncomeLoss",
+          "standard_concept": "NetIncome",
+          "values": {
+            "2026-09-26 (FY)": 132175000000.0,
+            "2025-09-27 (FY)": 112010000000.0,
+            "2024-09-28 (FY)": 93736000000.0
+          }
+        },
+        {
+          "label": "Earnings per share:",
+          "concept": "us-gaap_EarningsPerShareAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Basic (in dollars per share)",
+          "concept": "us-gaap_EarningsPerShareBasic",
+          "standard_concept": "EarningsPerShareBasic",
+          "values": {
+            "2026-09-26 (FY)": 9.01,
+            "2025-09-27 (FY)": 7.49,
+            "2024-09-28 (FY)": 6.11
+          }
+        },
+        {
+          "label": "Diluted (in dollars per share)",
+          "concept": "us-gaap_EarningsPerShareDiluted",
+          "standard_concept": "EarningsPerShareDiluted",
+          "values": {
+            "2026-09-26 (FY)": 8.98,
+            "2025-09-27 (FY)": 7.46,
+            "2024-09-28 (FY)": 6.08
+          }
+        },
+        {
+          "label": "Shares used in computing earnings per share:",
+          "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Basic (in shares)",
+          "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+          "standard_concept": "SharesAverage",
+          "values": {
+            "2026-09-26 (FY)": 14661935000.0,
+            "2025-09-27 (FY)": 14948500000.0,
+            "2024-09-28 (FY)": 15343783000.0
+          }
+        },
+        {
+          "label": "Diluted (in shares)",
+          "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+          "standard_concept": "SharesFullyDilutedAverage",
+          "values": {
+            "2026-09-26 (FY)": 14720306000.0,
+            "2025-09-27 (FY)": 15004697000.0,
+            "2024-09-28 (FY)": 15408095000.0
+          }
+        }
+      ],
+      "balance_sheet_rows": [
+        {
+          "label": "ASSETS:",
+          "concept": "us-gaap_AssetsAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Current assets:",
+          "concept": "us-gaap_AssetsCurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Cash and cash equivalents",
+          "concept": "us-gaap_CashAndCashEquivalentsAtCarryingValue",
+          "standard_concept": "CashAndMarketableSecurities",
+          "values": {
+            "2026-09-26": 36305000000.0,
+            "2025-09-27": 35934000000.0
+          }
+        },
+        {
+          "label": "Marketable securities",
+          "concept": "us-gaap_MarketableSecuritiesCurrent",
+          "standard_concept": "ShortTermInvestments",
+          "values": {
+            "2026-09-26": 20417000000.0,
+            "2025-09-27": 18763000000.0
+          }
+        },
+        {
+          "label": "Accounts receivable, net",
+          "concept": "us-gaap_AccountsReceivableNetCurrent",
+          "standard_concept": "TradeReceivables",
+          "values": {
+            "2026-09-26": 43817000000.0,
+            "2025-09-27": 39777000000.0
+          }
+        },
+        {
+          "label": "Vendor non-trade receivables",
+          "concept": "us-gaap_NontradeReceivablesCurrent",
+          "standard_concept": "OtherNonOperatingCurrentAssets",
+          "values": {
+            "2026-09-26": 39896000000.0,
+            "2025-09-27": 33180000000.0
+          }
+        },
+        {
+          "label": "Inventories",
+          "concept": "us-gaap_InventoryNet",
+          "standard_concept": "Inventories",
+          "values": {
+            "2026-09-26": 14541000000.0,
+            "2025-09-27": 5718000000.0
+          }
+        },
+        {
+          "label": "Other current assets",
+          "concept": "us-gaap_OtherAssetsCurrent",
+          "standard_concept": "OtherNonOperatingCurrentAssets",
+          "values": {
+            "2026-09-26": 18881000000.0,
+            "2025-09-27": 14585000000.0
+          }
+        },
+        {
+          "label": "Total current assets",
+          "concept": "us-gaap_AssetsCurrent",
+          "standard_concept": "CurrentAssetsTotal",
+          "values": {
+            "2026-09-26": 173857000000.0,
+            "2025-09-27": 147957000000.0
+          }
+        },
+        {
+          "label": "Non-current assets:",
+          "concept": "us-gaap_AssetsNoncurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Marketable securities",
+          "concept": "us-gaap_MarketableSecuritiesNoncurrent",
+          "standard_concept": "LongtermInvestments",
+          "values": {
+            "2026-09-26": 80213000000.0,
+            "2025-09-27": 77723000000.0
+          }
+        },
+        {
+          "label": "Property, plant and equipment, net",
+          "concept": "us-gaap_PropertyPlantAndEquipmentNet",
+          "standard_concept": "PlantPropertyEquipmentNet",
+          "values": {
+            "2026-09-26": 52084000000.0,
+            "2025-09-27": 49834000000.0
+          }
+        },
+        {
+          "label": "Non-current portion of intangible assets",
+          "concept": "aapl_IntangibleAssetExcludingGoodwillAfterAccumulatedAmortizationNoncurrent",
+          "standard_concept": null,
+          "values": {
+            "2026-09-26": 20278000000.0,
+            "2025-09-27": 11093000000.0
+          }
+        },
+        {
+          "label": "Other non-current assets",
+          "concept": "us-gaap_OtherAssetsNoncurrent",
+          "standard_concept": "OtherNonOperatingNonCurrentAssets",
+          "values": {
+            "2026-09-26": 78116000000.0,
+            "2025-09-27": 72634000000.0
+          }
+        },
+        {
+          "label": "Total non-current assets",
+          "concept": "us-gaap_AssetsNoncurrent",
+          "standard_concept": "NonCurrentAssetsTotal",
+          "values": {
+            "2026-09-26": 230691000000.0,
+            "2025-09-27": 211284000000.0
+          }
+        },
+        {
+          "label": "Total assets",
+          "concept": "us-gaap_Assets",
+          "standard_concept": "Assets",
+          "values": {
+            "2026-09-26": 404548000000.0,
+            "2025-09-27": 359241000000.0
+          }
+        },
+        {
+          "label": "LIABILITIES AND SHAREHOLDERS\u2019 EQUITY:",
+          "concept": "us-gaap_LiabilitiesAndStockholdersEquityAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Current liabilities:",
+          "concept": "us-gaap_LiabilitiesCurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Accounts payable",
+          "concept": "us-gaap_AccountsPayableCurrent",
+          "standard_concept": "TradePayables",
+          "values": {
+            "2026-09-26": 82252000000.0,
+            "2025-09-27": 69860000000.0
+          }
+        },
+        {
+          "label": "Other current liabilities",
+          "concept": "us-gaap_OtherLiabilitiesCurrent",
+          "standard_concept": "OtherNonOperatingCurrentLiabilities",
+          "values": {
+            "2026-09-26": 66124000000.0,
+            "2025-09-27": 66387000000.0
+          }
+        },
+        {
+          "label": "Deferred revenue",
+          "concept": "us-gaap_ContractWithCustomerLiabilityCurrent",
+          "standard_concept": "DeferredRevenueCurrent",
+          "values": {
+            "2026-09-26": 9636000000.0,
+            "2025-09-27": 9055000000.0
+          }
+        },
+        {
+          "label": "Commercial paper",
+          "concept": "us-gaap_CommercialPaper",
+          "standard_concept": "ShortTermDebt",
+          "values": {
+            "2026-09-26": 1997000000.0,
+            "2025-09-27": 7979000000.0
+          }
+        },
+        {
+          "label": "Term debt",
+          "concept": "us-gaap_LongTermDebtCurrent",
+          "standard_concept": "CurrentPortionOfLongTermDebt",
+          "values": {
+            "2026-09-26": 9906000000.0,
+            "2025-09-27": 12350000000.0
+          }
+        },
+        {
+          "label": "Total current liabilities",
+          "concept": "us-gaap_LiabilitiesCurrent",
+          "standard_concept": "CurrentLiabilitiesTotal",
+          "values": {
+            "2026-09-26": 169915000000.0,
+            "2025-09-27": 165631000000.0
+          }
+        },
+        {
+          "label": "Non-current liabilities:",
+          "concept": "us-gaap_LiabilitiesNoncurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Term debt",
+          "concept": "us-gaap_LongTermDebtNoncurrent",
+          "standard_concept": "LongTermDebt",
+          "values": {
+            "2026-09-26": 68208000000.0,
+            "2025-09-27": 78328000000.0
+          }
+        },
+        {
+          "label": "Other non-current liabilities",
+          "concept": "us-gaap_OtherLiabilitiesNoncurrent",
+          "standard_concept": "OtherNonOperatingNonCurrentLiabilities",
+          "values": {
+            "2026-09-26": 54332000000.0,
+            "2025-09-27": 41549000000.0
+          }
+        },
+        {
+          "label": "Total non-current liabilities",
+          "concept": "us-gaap_LiabilitiesNoncurrent",
+          "standard_concept": "NonCurrentLiabilitiesTotal",
+          "values": {
+            "2026-09-26": 122540000000.0,
+            "2025-09-27": 119877000000.0
+          }
+        },
+        {
+          "label": "Total liabilities",
+          "concept": "us-gaap_Liabilities",
+          "standard_concept": "Liabilities",
+          "values": {
+            "2026-09-26": 292455000000.0,
+            "2025-09-27": 285508000000.0
+          }
+        },
+        {
+          "label": "Commitments and contingencies",
+          "concept": "us-gaap_CommitmentsAndContingencies",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Shareholders\u2019 equity:",
+          "concept": "us-gaap_StockholdersEquityAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Common stock and additional paid-in capital, $0.00001 par value: 50,400,000 shares authorized; 14,532,259 and 14,773,260 shares issued and outstanding, respectively",
+          "concept": "us-gaap_CommonStocksIncludingAdditionalPaidInCapital",
+          "standard_concept": null,
+          "values": {
+            "2026-09-26": 104815000000.0,
+            "2025-09-27": 93568000000.0
+          }
+        },
+        {
+          "label": "Retained earnings/(Accumulated deficit)",
+          "concept": "us-gaap_RetainedEarningsAccumulatedDeficit",
+          "standard_concept": "RetainedEarnings",
+          "values": {
+            "2026-09-26": 13700000000.0,
+            "2025-09-27": -14264000000.0
+          }
+        },
+        {
+          "label": "Accumulated other comprehensive loss",
+          "concept": "us-gaap_AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+          "standard_concept": "AccumulatedOtherComprehensiveIncome",
+          "values": {
+            "2026-09-26": -6422000000.0,
+            "2025-09-27": -5571000000.0
+          }
+        },
+        {
+          "label": "Total shareholders\u2019 equity",
+          "concept": "us-gaap_StockholdersEquity",
+          "standard_concept": "AllEquityBalance",
+          "values": {
+            "2026-09-26": 112093000000.0,
+            "2025-09-27": 73733000000.0
+          }
+        },
+        {
+          "label": "Total liabilities and shareholders\u2019 equity",
+          "concept": "us-gaap_LiabilitiesAndStockholdersEquity",
+          "standard_concept": "LiabilitiesAndEquity",
+          "values": {
+            "2026-09-26": 404548000000.0,
+            "2025-09-27": 359241000000.0
+          }
+        }
+      ]
+    },
+    {
+      "form": "10-Q",
+      "filing_date": "2026-07-31",
+      "period_end": "2026-06-27",
+      "accession_number": "0000320193-26-000020",
+      "company_name": "Apple Inc.",
+      "financials_source": "filing.obj().financials",
+      "figures": [
+        {
+          "label": "Revenue",
+          "value": 109417000000.0,
+          "source": "financials.get_revenue()"
+        },
+        {
+          "label": "Net income",
+          "value": 29789000000.0,
+          "source": "financials.get_net_income()"
+        },
+        {
+          "label": "Operating income",
+          "value": 35695000000.0,
+          "source": "financials.get_operating_income()"
+        },
+        {
+          "label": "Total assets",
+          "value": 383266000000.0,
+          "source": "financials.get_total_assets()"
+        },
+        {
+          "label": "Total liabilities",
+          "value": 275746000000.0,
+          "source": "financials.get_total_liabilities()"
+        },
+        {
+          "label": "Stockholders' equity",
+          "value": 107520000000.0,
+          "source": "financials.get_stockholders_equity()"
+        },
+        {
+          "label": "Current assets",
+          "value": 149818000000.0,
+          "source": "financials.get_current_assets()"
+        },
+        {
+          "label": "Current liabilities",
+          "value": 149326000000.0,
+          "source": "financials.get_current_liabilities()"
+        },
+        {
+          "label": "Gross margin",
+          "value": 54770000000.0,
+          "period": "2026-06-27 (Q3)",
+          "source": "income_statement row (standard_concept=GrossProfit)"
+        }
+      ],
+      "financial_metrics": {
+        "revenue": 109417000000.0,
+        "operating_income": 35695000000.0,
+        "net_income": 29789000000.0,
+        "total_assets": 383266000000.0,
+        "total_liabilities": 275746000000.0,
+        "stockholders_equity": 107520000000.0,
+        "current_assets": 149818000000.0,
+        "current_liabilities": 149326000000.0,
+        "operating_cash_flow": 116996000000.0,
+        "capital_expenditures": 6799000000.0,
+        "free_cash_flow": 110197000000.0,
+        "shares_outstanding_basic": 14656110000.0,
+        "shares_outstanding_diluted": 14714676000.0,
+        "current_ratio": 1.0032948046555858,
+        "debt_to_assets": 0.7194637666790167
+      },
+      "income_statement_rows": [
+        {
+          "label": "Net sales",
+          "concept": "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax",
+          "standard_concept": "Revenue",
+          "values": {
+            "2026-06-27 (Q3)": 109417000000.0,
+            "2025-06-28 (Q3)": 94036000000.0,
+            "2026-06-27 (YTD)": 364357000000.0,
+            "2025-06-28 (YTD)": 313695000000.0
+          }
+        },
+        {
+          "label": "Cost of sales",
+          "concept": "us-gaap_CostOfGoodsAndServicesSold",
+          "standard_concept": "CostOfGoodsAndServicesSold",
+          "values": {
+            "2026-06-27 (Q3)": 54647000000.0,
+            "2025-06-28 (Q3)": 50318000000.0,
+            "2026-06-27 (YTD)": 185575000000.0,
+            "2025-06-28 (YTD)": 166835000000.0
+          }
+        },
+        {
+          "label": "Gross margin",
+          "concept": "us-gaap_GrossProfit",
+          "standard_concept": "GrossProfit",
+          "values": {
+            "2026-06-27 (Q3)": 54770000000.0,
+            "2025-06-28 (Q3)": 43718000000.0,
+            "2026-06-27 (YTD)": 178782000000.0,
+            "2025-06-28 (YTD)": 146860000000.0
+          }
+        },
+        {
+          "label": "Operating expenses:",
+          "concept": "us-gaap_OperatingExpensesAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Research and development",
+          "concept": "us-gaap_ResearchAndDevelopmentExpense",
+          "standard_concept": "ResearchAndDevelopmentExpenses",
+          "values": {
+            "2026-06-27 (Q3)": 11729000000.0,
+            "2025-06-28 (Q3)": 8866000000.0,
+            "2026-06-27 (YTD)": 34035000000.0,
+            "2025-06-28 (YTD)": 25684000000.0
+          }
+        },
+        {
+          "label": "Selling, general and administrative",
+          "concept": "us-gaap_SellingGeneralAndAdministrativeExpense",
+          "standard_concept": "SellingGeneralAndAdminExpenses",
+          "values": {
+            "2026-06-27 (Q3)": 7346000000.0,
+            "2025-06-28 (Q3)": 6650000000.0,
+            "2026-06-27 (YTD)": 22315000000.0,
+            "2025-06-28 (YTD)": 20553000000.0
+          }
+        },
+        {
+          "label": "Total operating expenses",
+          "concept": "us-gaap_OperatingExpenses",
+          "standard_concept": "TotalOperatingExpenses",
+          "values": {
+            "2026-06-27 (Q3)": 19075000000.0,
+            "2025-06-28 (Q3)": 15516000000.0,
+            "2026-06-27 (YTD)": 56350000000.0,
+            "2025-06-28 (YTD)": 46237000000.0
+          }
+        },
+        {
+          "label": "Operating income",
+          "concept": "us-gaap_OperatingIncomeLoss",
+          "standard_concept": "OperatingIncomeLoss",
+          "values": {
+            "2026-06-27 (Q3)": 35695000000.0,
+            "2025-06-28 (Q3)": 28202000000.0,
+            "2026-06-27 (YTD)": 122432000000.0,
+            "2025-06-28 (YTD)": 100623000000.0
+          }
+        },
+        {
+          "label": "Other income/(expense), net",
+          "concept": "us-gaap_NonoperatingIncomeExpense",
+          "standard_concept": "NonoperatingIncomeExpense",
+          "values": {
+            "2026-06-27 (Q3)": 572000000.0,
+            "2025-06-28 (Q3)": -171000000.0,
+            "2026-06-27 (YTD)": 670000000.0,
+            "2025-06-28 (YTD)": -698000000.0
+          }
+        },
+        {
+          "label": "Income before provision for income taxes",
+          "concept": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+          "standard_concept": "PretaxIncomeLoss",
+          "values": {
+            "2026-06-27 (Q3)": 36267000000.0,
+            "2025-06-28 (Q3)": 28031000000.0,
+            "2026-06-27 (YTD)": 123102000000.0,
+            "2025-06-28 (YTD)": 99925000000.0
+          }
+        },
+        {
+          "label": "Provision for income taxes",
+          "concept": "us-gaap_IncomeTaxExpenseBenefit",
+          "standard_concept": "IncomeTaxes",
+          "values": {
+            "2026-06-27 (Q3)": 6478000000.0,
+            "2025-06-28 (Q3)": 4597000000.0,
+            "2026-06-27 (YTD)": 21638000000.0,
+            "2025-06-28 (YTD)": 15381000000.0
+          }
+        },
+        {
+          "label": "Net income",
+          "concept": "us-gaap_NetIncomeLoss",
+          "standard_concept": "NetIncome",
+          "values": {
+            "2026-06-27 (Q3)": 29789000000.0,
+            "2025-06-28 (Q3)": 23434000000.0,
+            "2026-06-27 (YTD)": 101464000000.0,
+            "2025-06-28 (YTD)": 84544000000.0
+          }
+        },
+        {
+          "label": "Earnings per share:",
+          "concept": "us-gaap_EarningsPerShareAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Basic (in dollars per share)",
+          "concept": "us-gaap_EarningsPerShareBasic",
+          "standard_concept": "EarningsPerShareBasic",
+          "values": {
+            "2026-06-27 (Q3)": 2.03,
+            "2025-06-28 (Q3)": 1.57,
+            "2026-06-27 (YTD)": 6.91,
+            "2025-06-28 (YTD)": 5.64
+          }
+        },
+        {
+          "label": "Diluted (in dollars per share)",
+          "concept": "us-gaap_EarningsPerShareDiluted",
+          "standard_concept": "EarningsPerShareDiluted",
+          "values": {
+            "2026-06-27 (Q3)": 2.02,
+            "2025-06-28 (Q3)": 1.57,
+            "2026-06-27 (YTD)": 6.88,
+            "2025-06-28 (YTD)": 5.62
+          }
+        },
+        {
+          "label": "Shares used in computing earnings per share:",
+          "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Basic (in shares)",
+          "concept": "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic",
+          "standard_concept": "SharesAverage",
+          "values": {
+            "2026-06-27 (Q3)": 14656110000.0,
+            "2025-06-28 (Q3)": 14902886000.0,
+            "2026-06-27 (YTD)": 14692515000.0,
+            "2025-06-28 (YTD)": 14992898000.0
+          }
+        },
+        {
+          "label": "Diluted (in shares)",
+          "concept": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+          "standard_concept": "SharesFullyDilutedAverage",
+          "values": {
+            "2026-06-27 (Q3)": 14714676000.0,
+            "2025-06-28 (Q3)": 14948179000.0,
+            "2026-06-27 (YTD)": 14750302000.0,
+            "2025-06-28 (YTD)": 15051726000.0
+          }
+        }
+      ],
+      "balance_sheet_rows": [
+        {
+          "label": "ASSETS:",
+          "concept": "us-gaap_AssetsAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Current assets:",
+          "concept": "us-gaap_AssetsCurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Cash and cash equivalents",
+          "concept": "us-gaap_CashAndCashEquivalentsAtCarryingValue",
+          "standard_concept": "CashAndMarketableSecurities",
+          "values": {
+            "2026-06-27": 39544000000.0,
+            "2025-09-27": 35934000000.0
+          }
+        },
+        {
+          "label": "Marketable securities",
+          "concept": "us-gaap_MarketableSecuritiesCurrent",
+          "standard_concept": "ShortTermInvestments",
+          "values": {
+            "2026-06-27": 22855000000.0,
+            "2025-09-27": 18763000000.0
+          }
+        },
+        {
+          "label": "Accounts receivable, net",
+          "concept": "us-gaap_AccountsReceivableNetCurrent",
+          "standard_concept": "TradeReceivables",
+          "values": {
+            "2026-06-27": 31398000000.0,
+            "2025-09-27": 39777000000.0
+          }
+        },
+        {
+          "label": "Vendor non-trade receivables",
+          "concept": "us-gaap_NontradeReceivablesCurrent",
+          "standard_concept": "OtherNonOperatingCurrentAssets",
+          "values": {
+            "2026-06-27": 27509000000.0,
+            "2025-09-27": 33180000000.0
+          }
+        },
+        {
+          "label": "Inventories",
+          "concept": "us-gaap_InventoryNet",
+          "standard_concept": "Inventories",
+          "values": {
+            "2026-06-27": 11092000000.0,
+            "2025-09-27": 5718000000.0
+          }
+        },
+        {
+          "label": "Other current assets",
+          "concept": "us-gaap_OtherAssetsCurrent",
+          "standard_concept": "OtherNonOperatingCurrentAssets",
+          "values": {
+            "2026-06-27": 17420000000.0,
+            "2025-09-27": 14585000000.0
+          }
+        },
+        {
+          "label": "Total current assets",
+          "concept": "us-gaap_AssetsCurrent",
+          "standard_concept": "CurrentAssetsTotal",
+          "values": {
+            "2026-06-27": 149818000000.0,
+            "2025-09-27": 147957000000.0
+          }
+        },
+        {
+          "label": "Non-current assets:",
+          "concept": "us-gaap_AssetsNoncurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Marketable securities",
+          "concept": "us-gaap_MarketableSecuritiesNoncurrent",
+          "standard_concept": "LongtermInvestments",
+          "values": {
+            "2026-06-27": 84118000000.0,
+            "2025-09-27": 77723000000.0
+          }
+        },
+        {
+          "label": "Property, plant and equipment, net",
+          "concept": "us-gaap_PropertyPlantAndEquipmentNet",
+          "standard_concept": "PlantPropertyEquipmentNet",
+          "values": {
+            "2026-06-27": 51431000000.0,
+            "2025-09-27": 49834000000.0
+          }
+        },
+        {
+          "label": "Intangible assets, net",
+          "concept": "aapl_IntangibleAssetsNetExcludingGoodwillNoncurrent",
+          "standard_concept": null,
+          "values": {
+            "2026-06-27": 20342000000.0,
+            "2025-09-27": 11093000000.0
+          }
+        },
+        {
+          "label": "Other non-current assets",
+          "concept": "us-gaap_OtherAssetsNoncurrent",
+          "standard_concept": "OtherNonOperatingNonCurrentAssets",
+          "values": {
+            "2026-06-27": 77557000000.0,
+            "2025-09-27": 72634000000.0
+          }
+        },
+        {
+          "label": "Total non-current assets",
+          "concept": "us-gaap_AssetsNoncurrent",
+          "standard_concept": "NonCurrentAssetsTotal",
+          "values": {
+            "2026-06-27": 233448000000.0,
+            "2025-09-27": 211284000000.0
+          }
+        },
+        {
+          "label": "Total assets",
+          "concept": "us-gaap_Assets",
+          "standard_concept": "Assets",
+          "values": {
+            "2026-06-27": 383266000000.0,
+            "2025-09-27": 359241000000.0
+          }
+        },
+        {
+          "label": "LIABILITIES AND SHAREHOLDERS\u2019 EQUITY:",
+          "concept": "us-gaap_LiabilitiesAndStockholdersEquityAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Current liabilities:",
+          "concept": "us-gaap_LiabilitiesCurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Accounts payable",
+          "concept": "us-gaap_AccountsPayableCurrent",
+          "standard_concept": "TradePayables",
+          "values": {
+            "2026-06-27": 64525000000.0,
+            "2025-09-27": 69860000000.0
+          }
+        },
+        {
+          "label": "Other current liabilities",
+          "concept": "us-gaap_OtherLiabilitiesCurrent",
+          "standard_concept": "OtherNonOperatingCurrentLiabilities",
+          "values": {
+            "2026-06-27": 62259000000.0,
+            "2025-09-27": 66387000000.0
+          }
+        },
+        {
+          "label": "Deferred revenue",
+          "concept": "us-gaap_ContractWithCustomerLiabilityCurrent",
+          "standard_concept": "DeferredRevenueCurrent",
+          "values": {
+            "2026-06-27": 9538000000.0,
+            "2025-09-27": 9055000000.0
+          }
+        },
+        {
+          "label": "Commercial paper",
+          "concept": "us-gaap_CommercialPaper",
+          "standard_concept": "ShortTermDebt",
+          "values": {
+            "2026-06-27": 1997000000.0,
+            "2025-09-27": 7979000000.0
+          }
+        },
+        {
+          "label": "Term debt",
+          "concept": "us-gaap_LongTermDebtCurrent",
+          "standard_concept": "CurrentPortionOfLongTermDebt",
+          "values": {
+            "2026-06-27": 11007000000.0,
+            "2025-09-27": 12350000000.0
+          }
+        },
+        {
+          "label": "Total current liabilities",
+          "concept": "us-gaap_LiabilitiesCurrent",
+          "standard_concept": "CurrentLiabilitiesTotal",
+          "values": {
+            "2026-06-27": 149326000000.0,
+            "2025-09-27": 165631000000.0
+          }
+        },
+        {
+          "label": "Non-current liabilities:",
+          "concept": "us-gaap_LiabilitiesNoncurrentAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Term debt",
+          "concept": "us-gaap_LongTermDebtNoncurrent",
+          "standard_concept": "LongTermDebt",
+          "values": {
+            "2026-06-27": 71340000000.0,
+            "2025-09-27": 78328000000.0
+          }
+        },
+        {
+          "label": "Other non-current liabilities",
+          "concept": "us-gaap_OtherLiabilitiesNoncurrent",
+          "standard_concept": "OtherNonOperatingNonCurrentLiabilities",
+          "values": {
+            "2026-06-27": 55080000000.0,
+            "2025-09-27": 41549000000.0
+          }
+        },
+        {
+          "label": "Total non-current liabilities",
+          "concept": "us-gaap_LiabilitiesNoncurrent",
+          "standard_concept": "NonCurrentLiabilitiesTotal",
+          "values": {
+            "2026-06-27": 126420000000.0,
+            "2025-09-27": 119877000000.0
+          }
+        },
+        {
+          "label": "Total liabilities",
+          "concept": "us-gaap_Liabilities",
+          "standard_concept": "Liabilities",
+          "values": {
+            "2026-06-27": 275746000000.0,
+            "2025-09-27": 285508000000.0
+          }
+        },
+        {
+          "label": "Commitments and contingencies",
+          "concept": "us-gaap_CommitmentsAndContingencies",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Shareholders\u2019 equity:",
+          "concept": "us-gaap_StockholdersEquityAbstract",
+          "standard_concept": null,
+          "values": {}
+        },
+        {
+          "label": "Common stock and additional paid-in capital, $0.00001 par value: 50,400,000 shares authorized; 14,608,963 and 14,773,260 shares issued and outstanding, respectively",
+          "concept": "us-gaap_CommonStocksIncludingAdditionalPaidInCapital",
+          "standard_concept": null,
+          "values": {
+            "2026-06-27": 100702000000.0,
+            "2025-09-27": 93568000000.0
+          }
+        },
+        {
+          "label": "Retained earnings/(Accumulated deficit)",
+          "concept": "us-gaap_RetainedEarningsAccumulatedDeficit",
+          "standard_concept": "RetainedEarnings",
+          "values": {
+            "2026-06-27": 11326000000.0,
+            "2025-09-27": -14264000000.0
+          }
+        },
+        {
+          "label": "Accumulated other comprehensive loss",
+          "concept": "us-gaap_AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+          "standard_concept": "AccumulatedOtherComprehensiveIncome",
+          "values": {
+            "2026-06-27": -4508000000.0,
+            "2025-09-27": -5571000000.0
+          }
+        },
+        {
+          "label": "Total shareholders\u2019 equity",
+          "concept": "us-gaap_StockholdersEquity",
+          "standard_concept": "AllEquityBalance",
+          "values": {
+            "2026-06-27": 107520000000.0,
+            "2025-09-27": 73733000000.0
+          }
+        },
+        {
+          "label": "Total liabilities and shareholders\u2019 equity",
+          "concept": "us-gaap_LiabilitiesAndStockholdersEquity",
+          "standard_concept": "LiabilitiesAndEquity",
+          "values": {
+            "2026-06-27": 383266000000.0,
+            "2025-09-27": 359241000000.0
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

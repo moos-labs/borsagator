@@ -1,0 +1,21 @@
+{
+  "tool": "financedatabase",
+  "ticker": "NVDA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "count": 11,
+    "method": "show_options(selection=...)",
+    "rows_egypt_equities.csv": 50,
+    "rows_us_sector_equities.csv": 50
+  },
+  "files": [
+    "country_options.json",
+    "egypt_equities.csv",
+    "run.log",
+    "sector_options.json",
+    "summary.json",
+    "us_sector_equities.csv"
+  ]
+}

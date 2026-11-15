@@ -1,0 +1,325 @@
+Ticker: NVDA
+Train window: 2022-01-03 .. 2023-12-30
+Trade window: 2023-12-30 .. 2024-06-29
+Total timesteps: 8000
+Initial amount: 1000000
+data source: yahooquery (attempt 1)
+Downloaded shape: (625, 8)
+Successfully added technical indicators
+Processed shape: (625, 16)
+Train rows (days): 501
+Trade rows (days): 124
+{'n_steps': 5, 'ent_coef': 0.01, 'learning_rate': 0.0007}
+Using cpu device
+-----------------------------------------
+| time/                 |               |
+|    fps                | 1405          |
+|    iterations         | 100           |
+|    time_elapsed       | 0             |
+|    total_timesteps    | 500           |
+| train/                |               |
+|    entropy_loss       | -1.5          |
+|    explained_variance | 0             |
+|    learning_rate      | 0.0007        |
+|    n_updates          | 99            |
+|    policy_loss        | 0.0186        |
+|    reward             | -0.0004937888 |
+|    std                | 1.09          |
+|    value_loss         | 7.06e-05      |
+-----------------------------------------
+------------------------------------
+| time/                 |          |
+|    fps                | 1408     |
+|    iterations         | 200      |
+|    time_elapsed       | 0        |
+|    total_timesteps    | 1000     |
+| train/                |          |
+|    entropy_loss       | -1.55    |
+|    explained_variance | 0        |
+|    learning_rate      | 0.0007   |
+|    n_updates          | 199      |
+|    policy_loss        | -0.00119 |
+|    reward             | 0.0      |
+|    std                | 1.14     |
+|    value_loss         | 1.51e-06 |
+------------------------------------
+-----------------------------------------
+| time/                 |               |
+|    fps                | 1408          |
+|    iterations         | 300           |
+|    time_elapsed       | 1             |
+|    total_timesteps    | 1500          |
+| train/                |               |
+|    entropy_loss       | -1.58         |
+|    explained_variance | -1.19e-07     |
+|    learning_rate      | 0.0007        |
+|    n_updates          | 299           |
+|    policy_loss        | -0.00213      |
+|    reward             | -0.0002702512 |
+|    std                | 1.18          |
+|    value_loss         | 1.51e-05      |
+-----------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1410       |
+|    iterations         | 400        |
+|    time_elapsed       | 1          |
+|    total_timesteps    | 2000       |
+| train/                |            |
+|    entropy_loss       | -1.61      |
+|    explained_variance | -2.38e-07  |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 399        |
+|    policy_loss        | 0.686      |
+|    reward             | 0.07706238 |
+|    std                | 1.21       |
+|    value_loss         | 0.175      |
+--------------------------------------
+day: 500, episode: 5
+begin_total_asset: 1000000.00
+end_total_asset: 1010825.59
+total_reward: 10825.59
+total_cost: 849.16
+total_trades: 436
+Sharpe: 0.628
+=================================
+----------------------------------------
+| time/                 |              |
+|    fps                | 1406         |
+|    iterations         | 500          |
+|    time_elapsed       | 1            |
+|    total_timesteps    | 2500         |
+| train/                |              |
+|    entropy_loss       | -1.63        |
+|    explained_variance | 0            |
+|    learning_rate      | 0.0007       |
+|    n_updates          | 499          |
+|    policy_loss        | 0.0705       |
+|    reward             | -0.008009618 |
+|    std                | 1.24         |
+|    value_loss         | 0.00235      |
+----------------------------------------
+---------------------------------------
+| time/                 |             |
+|    fps                | 1406        |
+|    iterations         | 600         |
+|    time_elapsed       | 2           |
+|    total_timesteps    | 3000        |
+| train/                |             |
+|    entropy_loss       | -1.64       |
+|    explained_variance | 0           |
+|    learning_rate      | 0.0007      |
+|    n_updates          | 599         |
+|    policy_loss        | -0.0331     |
+|    reward             | 0.030809939 |
+|    std                | 1.25        |
+|    value_loss         | 0.000374    |
+---------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1405       |
+|    iterations         | 700        |
+|    time_elapsed       | 2          |
+|    total_timesteps    | 3500       |
+| train/                |            |
+|    entropy_loss       | -1.65      |
+|    explained_variance | 0          |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 699        |
+|    policy_loss        | 0.143      |
+|    reward             | -0.1350474 |
+|    std                | 1.26       |
+|    value_loss         | 0.0155     |
+--------------------------------------
+-----------------------------------------
+| time/                 |               |
+|    fps                | 1405          |
+|    iterations         | 800           |
+|    time_elapsed       | 2             |
+|    total_timesteps    | 4000          |
+| train/                |               |
+|    entropy_loss       | -1.68         |
+|    explained_variance | 0             |
+|    learning_rate      | 0.0007        |
+|    n_updates          | 799           |
+|    policy_loss        | -0.00183      |
+|    reward             | -0.0019330953 |
+|    std                | 1.29          |
+|    value_loss         | 2.46e-06      |
+-----------------------------------------
+---------------------------------------
+| time/                 |             |
+|    fps                | 1406        |
+|    iterations         | 900         |
+|    time_elapsed       | 3           |
+|    total_timesteps    | 4500        |
+| train/                |             |
+|    entropy_loss       | -1.71       |
+|    explained_variance | 0           |
+|    learning_rate      | 0.0007      |
+|    n_updates          | 899         |
+|    policy_loss        | -0.00763    |
+|    reward             | 0.057980914 |
+|    std                | 1.34        |
+|    value_loss         | 0.000216    |
+---------------------------------------
+day: 500, episode: 10
+begin_total_asset: 1000000.00
+end_total_asset: 1003730.40
+total_reward: 3730.40
+total_cost: 747.33
+total_trades: 392
+Sharpe: 0.673
+=================================
+----------------------------------------
+| time/                 |              |
+|    fps                | 1405         |
+|    iterations         | 1000         |
+|    time_elapsed       | 3            |
+|    total_timesteps    | 5000         |
+| train/                |              |
+|    entropy_loss       | -1.74        |
+|    explained_variance | 0            |
+|    learning_rate      | 0.0007       |
+|    n_updates          | 999          |
+|    policy_loss        | 0.0105       |
+|    reward             | 0.0032644218 |
+|    std                | 1.37         |
+|    value_loss         | 0.000165     |
+----------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1405       |
+|    iterations         | 1100       |
+|    time_elapsed       | 3          |
+|    total_timesteps    | 5500       |
+| train/                |            |
+|    entropy_loss       | -1.76      |
+|    explained_variance | -1.19e-07  |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 1099       |
+|    policy_loss        | 0.0115     |
+|    reward             | 0.01629762 |
+|    std                | 1.4        |
+|    value_loss         | 0.00136    |
+--------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1405       |
+|    iterations         | 1200       |
+|    time_elapsed       | 4          |
+|    total_timesteps    | 6000       |
+| train/                |            |
+|    entropy_loss       | -1.78      |
+|    explained_variance | 0          |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 1199       |
+|    policy_loss        | -0.61      |
+|    reward             | 0.14804986 |
+|    std                | 1.43       |
+|    value_loss         | 0.265      |
+--------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1404       |
+|    iterations         | 1300       |
+|    time_elapsed       | 4          |
+|    total_timesteps    | 6500       |
+| train/                |            |
+|    entropy_loss       | -1.78      |
+|    explained_variance | 0          |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 1299       |
+|    policy_loss        | -0.429     |
+|    reward             | 0.86469954 |
+|    std                | 1.44       |
+|    value_loss         | 0.678      |
+--------------------------------------
+--------------------------------------
+| time/                 |            |
+|    fps                | 1404       |
+|    iterations         | 1400       |
+|    time_elapsed       | 4          |
+|    total_timesteps    | 7000       |
+| train/                |            |
+|    entropy_loss       | -1.78      |
+|    explained_variance | -1.19e-07  |
+|    learning_rate      | 0.0007     |
+|    n_updates          | 1399       |
+|    policy_loss        | -6.5       |
+|    reward             | -1.9174776 |
+|    std                | 1.44       |
+|    value_loss         | 21.1       |
+--------------------------------------
+day: 500, episode: 15
+begin_total_asset: 1000000.00
+end_total_asset: 1483494.94
+total_reward: 483494.94
+total_cost: 1083.75
+total_trades: 497
+Sharpe: 1.317
+=================================
+------------------------------------
+| time/                 |          |
+|    fps                | 1405     |
+|    iterations         | 1500     |
+|    time_elapsed       | 5        |
+|    total_timesteps    | 7500     |
+| train/                |          |
+|    entropy_loss       | -1.78    |
+|    explained_variance | 0        |
+|    learning_rate      | 0.0007   |
+|    n_updates          | 1499     |
+|    policy_loss        | -4.8     |
+|    reward             | 2.302614 |
+|    std                | 1.44     |
+|    value_loss         | 7.89     |
+------------------------------------
+------------------------------------
+| time/                 |          |
+|    fps                | 1404     |
+|    iterations         | 1600     |
+|    time_elapsed       | 5        |
+|    total_timesteps    | 8000     |
+| train/                |          |
+|    entropy_loss       | -1.78    |
+|    explained_variance | 0        |
+|    learning_rate      | 0.0007   |
+|    n_updates          | 1599     |
+|    policy_loss        | -6.32    |
+|    reward             | 2.968836 |
+|    std                | 1.44     |
+|    value_loss         | 14.2     |
+------------------------------------
+Training finished.
+hit end!
+Backtest finished.
+         date  account_value
+0  2024-01-02   1.000000e+06
+1  2024-01-03   9.999355e+05
+2  2024-01-04   1.000016e+06
+3  2024-01-05   1.000340e+06
+4  2024-01-08   1.001594e+06
+# FinRL A2C pilot — result
+
+- **Tool:** FinRL 0.3.7 (`finrl`), A2C via FinRL's `DRLAgent` (stable-baselines3)
+- **Ticker:** NVDA
+- **Train window:** 2022-01-03 to 2023-12-30 (data_split end-exclusive: last train day before 2023-12-30)
+- **Trade (backtest) window:** 2023-12-30 to 2024-06-29 (data_split end-exclusive: last trade day before 2024-06-29)
+- **Total training timesteps:** 8000
+- **Technical indicators (finrl.config.INDICATORS):** macd, boll_ub, boll_lb, rsi_30, cci_30, dx_30, close_30_sma, close_60_sma
+- **hmax:** 100 shares per step; **buy/sell cost:** 0.1% each; **reward scaling:** 1e-4
+
+## Backtest outcome (FinRL's own account-value output)
+
+- **Initial portfolio value:** 1,000,000.00
+- **Final portfolio value:** 1,451,287.82
+- **Total return:** 45.13%
+
+Rows in `account_value.csv`: 124 (one per trade-window step, from
+FinRL `DRL_prediction`'s asset memory, paired with the trade env's dates).
+
+> This is a short smoke-test training run (a few thousand timesteps on a
+> single stock), not investment research: the agent is barely trained and
+> the result mostly shows the pipeline works end to end.
+

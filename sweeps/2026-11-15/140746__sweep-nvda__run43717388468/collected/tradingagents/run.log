@@ -1,0 +1,1318 @@
+Reddit RSS fetch failed for r/wallstreetbets+stocks+investing · NVDA: HTTP Error 403: Forbidden
+Sentiment Analyst: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Provider model probe: listed=True count=37 error=None
+Cohere schema patch: rebuilt args_schema for 0 tools (12 TradingAgents tools found)
+Cohere schema patch: wrapped converters ['langchain_core.convert_to_openai_tool', 'langchain_core.convert_to_openai_function', 'langchain_openai.convert_to_openai_tool', 'langchain_openai.convert_to_openai_function']
+Fleet vendor: news_items=159 fundamentals=yes ohlc=yes
+================================ Human Message =================================
+
+NVDA
+fleet: OHLC window 2026-11-15..2026-11-15 empty; serving latest 60 sessions instead
+================================== Ai Message ==================================
+Tool Calls:
+  get_stock_data (get_stock_data_2negk734ttnc)
+ Call ID: get_stock_data_2negk734ttnc
+  Args:
+    start_date: 2026-11-15
+    end_date: 2026-11-15
+================================= Tool Message =================================
+Name: get_stock_data
+
+Date,Open,High,Low,Close,Adj Close,Volume
+2026-08-21,218.42,218.74,214.5,214.72,214.72,98869300
+2026-08-24,215.53,215.59,207.25,208.48,208.48,135187300
+2026-08-25,211.03,214.73,210.11,213.05,213.05,122309000
+2026-08-26,212.64,213.6,209.23,209.66,209.66,179900000
+2026-08-27,222.86,230.47,220.9,227.98,227.98,298909800
+2026-08-28,227.36,229.26,216.81,217.55,217.55,195116400
+2026-08-31,218.87,221.3,216.21,220.78,220.78,124702700
+2026-09-01,216.75,220.41,215.1,217.44,217.44,109756200
+2026-09-02,218.79,227.95,218.48,224.41,224.41,157104700
+2026-09-03,226.02,230.4,224.75,228.45,228.45,134681600
+2026-09-04,231.09,234.76,229.63,230.36,230.36,135352400
+2026-09-08,233.11,233.71,224.85,225.73,225.73,122965600
+2026-09-09,225.28,226.18,223.46,223.67,223.67,82955500
+2026-09-10,220.53,220.99,217.2,218.36,218.36,105768000
+2026-09-11,221.24,222,218.15,218.29,218.29,89060100
+2026-09-14,211.24,212.77,208.93,210.96,210.96,132267200
+2026-09-15,213.38,213.94,211.16,212.17,212.17,88059700
+2026-09-16,214.14,216.76,212.5,213.9,213.9,96563600
+2026-09-17,218.38,219.91,217.15,219.34,219.34,94191300
+2026-09-18,219.35,222.73,218.03,222.27,222.27,190287400
+2026-09-21,222.94,228.5,221.56,227.38,227.38,109806100
+2026-09-22,226.85,229.98,226.5,228.87,228.87,95746700
+2026-09-23,228.03,228.95,224.02,225.51,225.51,89547300
+2026-09-24,222.08,224.94,221.09,224.58,224.58,77469900
+2026-09-25,225.13,226.94,223.13,225.07,225.07,89947700
+2026-09-28,229.75,233.21,228.04,228.86,228.86,142344300
+2026-09-29,230.97,232.82,227.03,227.21,227.21,101494900
+2026-09-30,229.27,232.37,228.17,228.38,228.38,121732200
+2026-10-01,229.98,232.29,228.16,230.86,230.86,98591400
+2026-10-02,236.06,237.88,233.6,233.95,233.95,135167800
+2026-10-05,236.09,240.1,235.15,238.9,238.9,127171500
+2026-10-06,242.1,243.37,238.93,239.24,239.24,101701900
+2026-10-07,237.69,239.08,236.38,237.47,237.47,81772400
+2026-10-08,234.92,237.07,229.85,230.48,230.48,118697400
+2026-10-09,233.84,233.92,229.11,229.28,229.28,84645600
+2026-10-12,228.73,228.86,224.9,226.32,226.32,70690300
+2026-10-13,224.34,228.64,223.06,228.52,228.52,84036900
+2026-10-14,225.53,226,219.64,221.3,221.3,118730100
+2026-10-15,215.3,218.47,212.85,217.23,217.23,127087900
+2026-10-16,216.56,218.68,213.32,214.13,214.13,121252500
+2026-10-19,218.1,219.62,214.7,217.09,217.09,98684700
+2026-10-20,215.98,218.46,212.77,216.47,216.47,79609100
+2026-10-21,220.96,222.19,217.66,221.97,221.97,87085700
+2026-10-22,217.13,218.88,211.26,212.21,212.21,125407600
+2026-10-23,210.99,213.85,210.18,210.96,210.96,80189800
+2026-10-26,213.11,217.75,212.61,216,216,90829300
+2026-10-27,218.31,219.19,215.53,217.94,217.94,84799700
+2026-10-28,219.92,219.99,214.47,215.38,215.38,93030200
+2026-10-29,214.36,215.33,212.08,213.66,213.66,77568100
+2026-10-30,208.94,209.06,200.92,204.64,204.64,168386400
+2026-11-02,207.53,209.98,201.66,202.06,202.06,119272200
+2026-11-03,207.96,209.14,205.93,206.69,206.69,91943400
+2026-11-04,203.5,206.79,199.68,200.13,200.13,149033300
+2026-11-05,196.07,196.25,181.46,181.6,181.6,306127800
+2026-11-06,191.1,194.9,185.22,186.64,186.64,180212300
+2026-11-09,173.07,179.92,170.24,178.67,178.67,462719300
+2026-11-10,173.97,174.69,165.89,168.89,168.89,429273200
+2026-11-11,172.8,177.54,170.77,173.73,173.73,339214800
+2026-11-12,151.01,167.14,148.8,166.19,166.19,747707600
+2026-11-13,169.91,170,158.39,162.85,162.85,363819700
+================================== Ai Message ==================================
+Tool Calls:
+  get_fundamentals (get_fundamentals_zg0h5bnykbvd)
+ Call ID: get_fundamentals_zg0h5bnykbvd
+  Args:
+    curr_date: 2026-11-15
+================================= Tool Message =================================
+Name: get_fundamentals
+
+SEC EDGAR company facts — NVIDIA CORP (NVDA)
+- Revenue (10-Q, period ended 2025-07-27, filed 2026-08-26): 90,805,000,000
+- Revenue (10-K, period ended 2024-01-28, filed 2026-02-25): 60,922,000,000
+- Revenue (10-K, period ended 2020-01-26, filed 2022-03-18): 10,918,000,000
+- Net income (10-Q, period ended 2025-07-27, filed 2026-08-26): 45,197,000,000
+- Net income (10-K, period ended 2024-01-28, filed 2026-02-25): 29,760,000,000
+- EPS (diluted) (10-Q, period ended 2025-07-27, filed 2026-08-26): 1.84
+- EPS (diluted) (10-K, period ended 2024-01-28, filed 2026-02-25): 1.19
+- Total assets (10-Q, period ended 2026-01-25, filed 2026-08-26): 206,803,000,000
+- Total assets (10-K, period ended 2025-01-26, filed 2026-02-25): 111,601,000,000
+- Total equity (10-Q, period ended 2025-01-26, filed 2026-08-26): 79,327,000,000
+- Total equity (10-K, period ended 2023-01-29, filed 2026-02-25): 22,101,000,000
+- Operating cash flow (10-Q, period ended 2025-07-27, filed 2026-08-26): 42,779,000,000
+- Operating cash flow (10-K, period ended 2024-01-28, filed 2026-02-25): 28,090,000,000
+================================== Ai Message ==================================
+Tool Calls:
+  get_balance_sheet (get_balance_sheet_58n4fnkzbf4q)
+ Call ID: get_balance_sheet_58n4fnkzbf4q
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-15
+  get_cashflow (get_cashflow_1cnpaxd8qk3d)
+ Call ID: get_cashflow_1cnpaxd8qk3d
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-15
+  get_income_statement (get_income_statement_n7gndj5ytfwy)
+ Call ID: get_income_statement_n7gndj5ytfwy
+  Args:
+    freq: quarterly
+    curr_date: 2026-11-15
+  get_insider_transactions (get_insider_transactions_mdb9knqn8hvp)
+ Call ID: get_insider_transactions_mdb9knqn8hvp
+  Args:
+================================= Tool Message =================================
+Name: get_balance_sheet
+
+# Balance Sheet for NVDA (quarterly), USD in millions unless the column says otherwise
+# SEC EDGAR facts filed on or before 2026-11-15, at the values filed then
+
+Period,Total Assets,Current Assets,Cash and Equivalents,Total Liabilities,Current Liabilities,Stockholders Equity
+2007-01-28,,,544,,,2007
+2008-01-25,,,727,,,
+2008-01-27,,,727,,,2618
+2008-07-27,,,719,,,
+2008-10-26,,,461,,,
+2009-01-25,3351,2168,418,,779,2395
+2009-01-26,,,418,,,
+2009-04-26,,,512,,,
+2009-07-26,3298,2168,524,,891,2247
+2009-10-25,3464,2358,614,,889,2424
+2010-01-31,3586,2481,447,,784,2665
+2010-05-02,3803,2727,447,,765,2861
+2010-08-01,3731,2656,377,,819,2761
+2010-10-31,3916,2808,451,,816,2898
+2011-01-30,4495,3227,665,,943,3181
+2011-05-01,4737,3497,684,,981,3448
+2011-07-31,4864,3318,533,,960,3689
+2011-10-30,5089,3500,567,,887,3973
+2012-01-29,5553,3905,668,,930,4146
+2012-04-29,5708,4032,369,,947,4287
+2012-07-29,5892,4214,500,,1022,4454
+2012-10-28,6075,4425,525,,991,4723
+2013-01-27,6412,4775,733,,976,4827
+2013-04-28,6280,4607,561,,926,4825
+2013-07-28,5570,3923,591,,936,4172
+2013-10-27,5711,4050,562,,986,4321
+2014-01-26,7251,5625,1152,,945,4455
+2014-04-27,6865,5274,509,,898,4167
+2014-07-27,6934,5378,515,,869,4305
+2014-10-26,6886,5341,395,,934,4205
+2015-01-25,7201,5713,497,2783,896,4418
+2015-04-26,7291,5832,464,,883,4556
+2015-07-26,6979,5608,435,,936,4185
+2015-10-25,7174,5834,471,,855,4465
+2016-01-31,7370,6053,596,2814,2351,4469
+2016-05-01,7108,5790,547,2833,2377,4196
+2016-07-31,7461,6156,426,2909,2407,4480
+2016-10-30,9612,8307,1940,4243,2041,5324
+2017-01-29,9841,8536,1766,4048,1788,5762
+2017-04-30,9410,8116,1989,3271,983,6132
+2017-07-30,9402,8070,1988,3427,1032,5973
+2017-10-29,9830,8479,2802,3477,1027,6352
+2018-01-28,11241,9255,4002,3770,1153,7471
+2018-04-29,11460,9448,765,3743,1106,7717
+2018-07-29,12882,10831,718,4087,1462,8795
+2018-10-28,13657,11386,721,4182,1608,9475
+2019-01-27,13292,10557,782,3950,1329,9342
+2019-04-28,14021,10629,2772,4317,1183,9704
+2019-07-28,14775,11391,7105,4439,1317,10336
+2019-10-27,15810,12420,9765,4596,1475,11214
+2020-01-26,17315,13690,10896,5111,1784,12204
+2020-04-26,23254,19584,15494,10155,1903,13099
+2020-07-26,25180,14681,3274,11266,2410,13914
+2020-10-25,26881,14393,2251,11547,3669,15334
+2021-01-31,28791,16055,847,11898,3925,16893
+2021-05-02,30796,18127,978,12022,4004,18774
+2021-08-01,38650,25806,5628,17503,4448,21147
+2021-10-31,40632,25806,1288,16834,3612,23798
+2022-01-30,44187,28829,1990,17575,4335,26612
+2022-05-01,45212,29575,3887,18892,5562,26320
+2022-07-31,43476,27418,3013,19625,7573,23851
+2022-10-30,40488,23223,2800,19139,6855,21349
+2023-01-29,41182,23073,3389,19081,6563,22101
+2023-04-30,44460,24883,5079,19940,7260,24520
+2023-07-30,49555,28797,5783,22054,10334,27501
+2023-10-29,54148,32658,5519,20883,9101,33265
+2024-01-28,65728,44345,7280,22750,10631,42978
+2024-04-28,77072,53729,7587,27930,15223,49142
+2024-07-28,85227,59633,8563,27070,13969,58157
+2024-10-27,96013,67640,9107,30114,16479,65899
+2025-01-26,111601,80126,8589,32274,18047,79327
+2025-04-27,125254,89935,15234,41411,26542,83843
+2025-07-27,140740,102219,11639,40609,24257,100131
+2025-10-26,161148,116492,11486,42251,26075,118897
+2026-01-25,206803,125605,10605,49510,32163,157293
+2026-04-26,259474,150995,13237,64000,43884,195474
+2026-07-26,320272,197412,22443,91288,43019,228984
+
+================================= Tool Message =================================
+Name: get_cashflow
+
+# Cash Flow Statement for NVDA (quarterly), USD in millions unless the column says otherwise
+# SEC EDGAR facts filed on or before 2026-11-15, at the values filed then
+
+Period,Operating Cash Flow,Investing Cash Flow,Financing Cash Flow,Capital Expenditure
+2008-07-27 (6 months),226,-150,-84,
+2008-10-26 (9 months),269,-178,-357,
+2009-04-26,142,-9,-39,
+2009-07-26 (6 months),277,-140,-31,
+2009-10-25 (9 months),419,-236,14,
+2010-05-02,-5,-57,63,
+2010-08-01 (6 months),29,-176,77,
+2010-10-31 (9 months),241,-340,103,
+2011-05-01,172,-253,99,31
+2011-07-31 (6 months),254,-526,139,55
+2011-10-30 (9 months),499,-815,218,94
+2012-04-29,-9,-335,46,29
+2012-07-29 (6 months),192,-420,60,91
+2012-10-28 (9 months),373,-603,87,136
+2013-04-28,176,-231,-116,66
+2013-07-28 (6 months),272,481,-895,151
+2013-10-27 (9 months),434,294,-899,189
+2014-04-27,151,-330,-464,29
+2014-07-27 (6 months),247,-394,-490,52
+2014-10-26 (9 months),463,-409,-811,91
+2015-04-26,246,-235,-44,30
+2015-07-26 (6 months),409,12,-483,54
+2015-10-25 (9 months),664,-187,-503,71
+2016-05-01,319,176,-544,55
+2016-07-31,201,,-52,
+2016-07-31 (6 months),,-93,,87
+2016-10-30 (9 months),951,-420,813,125
+2017-04-30,282,754,-813,54
+2017-07-30 (6 months),987,1016,-1781,108
+2017-10-29 (9 months),2144,1302,-2410,177
+2018-04-29,1445,-3551,-1131,118
+2018-07-29 (6 months),2358,-4356,-1286,247
+2018-10-28 (9 months),2845,-4137,-1989,397
+2019-04-28,720,1495,-225,128
+2019-07-28 (6 months),1656,5040,-373,241
+2019-10-27 (9 months),3296,6296,-609,344
+2020-04-26,909,-1055,4744,155
+2020-07-26 (6 months),2476,-14545,4447,372
+2020-10-25 (9 months),3755,-16546,4146,845
+2021-05-02,1874,-1272,-471,298
+2021-08-01 (6 months),4556,-3805,4030,481
+2021-10-31 (9 months),6075,-8244,2610,703
+2022-05-01,1731,2612,-2446,
+2022-07-31 (6 months),3001,4230,-6208,
+2022-10-30 (9 months),3393,7378,-9961,1324
+2023-04-30,2911,-841,-380,248
+2023-07-30 (6 months),9259,-1287,-5479,537
+2023-10-29 (9 months),16591,-4457,-10004,815
+2024-04-28,15345,-5693,-9345,369
+2024-07-28 (6 months),29833,-8877,-19665,1346
+2024-10-27 (9 months),47460,-13223,-32410,2159
+2025-04-27,27414,-5216,-15553,1227
+2025-07-27 (6 months),42779,-12343,-27386,3122
+2025-10-26 (9 months),66530,-21367,-42266,4758
+2026-04-26,50344,-26429,-21283,1757
+2026-07-26 (6 months),74421,-35124,-27459,4434
+
+================================= Tool Message =================================
+Name: get_income_statement
+
+# Income Statement for NVDA (quarterly), USD in millions unless the column says otherwise
+# SEC EDGAR facts filed on or before 2026-11-15, at the values filed then
+
+Period,Revenue,Cost of Revenue,Gross Profit,Operating Income,Net Income,Diluted EPS (USD/shares)
+2008-07-27,893,743,150,-155,-121,-0.22
+2008-10-26,898,530,368,57,62,0.11
+2009-04-26,664,475,190,-231,-201,-0.37
+2009-07-26,777,620,157,-110,-105,-0.19
+2009-10-25,903,511,392,108,108,0.19
+2010-01-31,982,544,439,,131,0.23
+2010-05-02,1002,545,456,147,138,0.23
+2010-07-31,811,677,134,,-141,-0.25
+2010-08-01,811,677,134,-175,-141,-0.25
+2010-10-31,844,452,392,104,85,0.15
+2011-01-30,886,460,426,,172,0.29
+2011-05-01,962,478,485,155,135,0.22
+2011-07-31,1017,491,525,174,152,0.25
+2011-10-30,1066,509,557,197,178,0.29
+2012-01-29,953,463,490,,116,0.19
+2012-04-29,925,462,463,73,60,0.10
+2012-07-29,1044,504,541,140,119,0.19
+2012-10-28,1204,567,637,252,209,0.33
+2013-01-27,1107,521,586,,174,0.28
+2013-04-28,955,436,519,83,78,0.13
+2013-07-28,977,432,546,106,96,0.16
+2013-10-27,1054,470,584,141,119,0.20
+2014-01-26,1144,525,619,,147,0.25
+2014-04-27,1103,499,604,151,137,0.24
+2014-07-27,1103,484,619,163,128,0.22
+2014-10-26,1225,548,677,213,173,0.31
+2015-01-25,1251,552,699,,193,0.35
+2015-04-26,1151,498,653,176,134,0.24
+2015-07-26,1153,519,634,76,26,0.05
+2015-10-25,1305,572,733,245,247,0.44
+2016-01-31,1401,610,791,,207,0.35
+2016-05-01,1305,554,751,245,208,0.35
+2016-07-31,1428,602,826,317,261,0.41
+2016-10-30,2004,821,1183,639,542,0.83
+2017-01-29,2173,870,1303,,655,0.99
+2017-04-30,1937,787,1150,554,507,0.79
+2017-07-30,2230,928,1302,688,583,0.92
+2017-10-29,2636,1067,1569,895,838,1.33
+2018-01-28,2911,1110,1801,,1118,1.78
+2018-04-29,3207,1139,2068,1295,1244,1.98
+2018-07-29,3123,1148,1975,1157,1101,1.76
+2018-10-28,3181,1260,1921,1058,1230,1.97
+2019-01-27,2205,998,1207,,567,0.92
+2019-04-28,2220,924,1296,358,394,0.64
+2019-07-28,2579,1038,1541,571,552,0.90
+2019-10-27,3014,1098,1916,927,899,1.45
+2020-01-26,3105,1090,2015,,950,1.53
+2020-04-26,3080,1076,2004,976,917,1.47
+2020-07-26,3866,1591,2275,651,622,0.25
+2020-10-25,4726,1766,2960,1398,1336,0.53
+2021-05-02,5661,2032,3629,1956,1912,0.76
+2021-08-01,6507,2292,4215,2444,2374,0.94
+2021-10-31,7103,2472,4631,2671,2464,0.97
+2022-05-01,8288,2857,5431,1868,1618,0.64
+2022-07-31,6704,3789,2915,499,656,0.26
+2022-10-30,5931,2754,3177,601,680,0.27
+2023-04-30,7192,2544,4648,2140,2043,0.82
+2023-07-30,13507,4045,9462,6800,6188,0.25
+2023-10-29,18120,4720,13400,10417,9243,0.37
+2024-04-28,26044,5638,20406,16909,14881,0.60
+2024-07-28,30040,7466,22574,18642,16599,0.67
+2024-10-27,35082,8926,26156,21869,19309,0.78
+2025-04-27,44062,17394,26668,21638,18775,0.76
+2025-07-27,46743,12890,33853,28440,26422,1.08
+2025-10-26,57006,15157,41849,36010,31910,1.30
+2026-04-26,81615,20458,61157,53536,58321,2.39
+2026-07-26,96221,24079,72142,63734,59688,2.46
+
+================================= Tool Message =================================
+Name: get_insider_transactions
+
+# Insider Transactions data for NVDA
+,Shares,Value,URL,Text,Insider,Position,Transaction,Start Date,Ownership
+0,30460,6786533,,Sale at price 222.19 - 223.75 per share.,TETER TIMOTHY S,General Counsel,,2026-09-21,I
+1,1366000,300147095,,Sale at price 219.72 - 220.42 per share.,STEVENS MARK A,Director,,2026-09-18,I
+2,172507,0,,Stock Award(Grant) at price 0.00 per share.,PARKER NICHOLAS P,Officer,,2026-09-09,D
+3,160418,0,,Stock Award(Grant) at price 0.00 per share.,PARKER NICHOLAS P,Officer,,2026-09-09,D
+4,1022239,235636867,,Sale at price 227.70 - 234.00 per share.,STEVENS MARK A,Director,,2026-09-04,I
+5,500000,0,,Stock Gift at price 0.00 per share.,COXE TENCH C,Director,,2026-09-02,I
+6,1848501,410843671,,Sale at price 220.06 - 226.27 per share.,STEVENS MARK A,Director,,2026-09-02,I
+7,30000,6536515,,Sale at price 216.84 - 218.53 per share.,TETER TIMOTHY S,General Counsel,,2026-08-31,I
+8,2410,0,,Stock Award(Grant) at price 0.00 per share.,NORA JOHNSON SUZANNE M,Director,,2026-08-10,D
+9,500000,0,,Stock Gift at price 0.00 per share.,COXE TENCH C,Director,,2026-08-05,I
+10,500000,0,,Stock Gift at price 0.00 per share.,COXE TENCH C,Director,,2026-07-01,I
+11,1211,0,,Stock Award(Grant) at price 0.00 per share.,SEAWELL A BROOKE,Director,,2026-06-25,D
+12,1211,0,,Stock Award(Grant) at price 0.00 per share.,COXE TENCH C,Director,,2026-06-25,D
+13,1211,0,,Stock Award(Grant) at price 0.00 per share.,LORA MELISSA,Director,,2026-06-25,D
+14,1211,0,,Stock Award(Grant) at price 0.00 per share.,STEVENS MARK A,Director,,2026-06-25,D
+15,1211,0,,Stock Award(Grant) at price 0.00 per share.,JONES HARVEY C JR.,Director,,2026-06-25,D
+16,1211,0,,Stock Award(Grant) at price 0.00 per share.,HUDSON BEACH DAWN E,Director,,2026-06-25,D
+17,1211,0,,Stock Award(Grant) at price 0.00 per share.,SHAH AARTI S,Director,,2026-06-25,D
+18,1211,0,,Stock Award(Grant) at price 0.00 per share.,NEAL STEPHEN C.,Director,,2026-06-25,D
+19,1211,0,,Stock Award(Grant) at price 0.00 per share.,DABIRI JOHN O,Director,,2026-06-25,D
+20,885000,185999938,,Sale at price 209.70 - 210.44 per share.,STEVENS MARK A,Director,,2026-06-18,I
+21,400000,0,,Stock Gift at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2026-06-16,I
+22,59509,0,,Stock Award(Grant) at price 0.00 per share.,GAWEL SCOTT,Officer,,2026-06-08,D
+23,307500,0,,Stock Gift at price 0.00 per share.,STEVENS MARK A,Director,,2026-06-04,I
+24,1000000,221102600,,Sale at price 217.66 - 222.38 per share.,STEVENS MARK A,Director,,2026-06-04,I
+25,15500,3343863,,Sale at price 215.73 per share.,NEAL STEPHEN C.,Director,,2026-06-03,I
+26,625,133750,,Sale at price 214.00 per share.,DABIRI JOHN O,Director,,2026-05-27,D
+27,221682,38502524,,Sale at price 172.61 - 174.57 per share.,STEVENS MARK A,Director,,2026-03-20,I
+28,62650,10956706,,Sale at price 171.97 - 177.51 per share.,KRESS COLETTE M.,Chief Financial Officer,,2026-03-20,D/I
+29,5396,942944,,Sale at price 172.58 - 177.31 per share.,ROBERTSON DONALD F JR,Officer,,2026-03-20,D
+30,19000,3357549,,Sale at price 176.27 - 177.73 per share.,SHAH AARTI S,Director,,2026-03-19,D
+31,58962602,0,,Stock Gift at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2026-03-18,I
+32,300000,54676140,,Sale at price 181.31 - 182.94 per share.,PURI AJAY K,Officer,,2026-03-18,I
+33,530,0,,Stock Gift at price 0.00 per share.,SEAWELL A BROOKE,Director,,2026-03-17,D
+34,3004,555440,,Sale at price 184.90 per share.,DABIRI JOHN O,Director,,2026-03-13,D
+35,300000,54756044,,Sale at price 182.47 - 183.11 per share.,PURI AJAY K,Officer,,2026-03-10,I
+36,47048,0,,Stock Award(Grant) at price 0.00 per share.,KRESS COLETTE M.,Chief Financial Officer,,2026-03-09,D
+37,47048,0,,Stock Award(Grant) at price 0.00 per share.,TETER TIMOTHY S,General Counsel,,2026-03-09,D
+38,47048,0,,Stock Award(Grant) at price 0.00 per share.,SHOQUIST DEBORA C,Officer,,2026-03-09,D
+39,47048,0,,Stock Award(Grant) at price 0.00 per share.,PURI AJAY K,Officer,,2026-03-09,D
+40,936771,0,,Stock Award(Grant) at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2026-03-02,D
+41,106660,0,,Stock Award(Grant) at price 0.00 per share.,KRESS COLETTE M.,Chief Financial Officer,,2026-03-02,D
+42,98328,0,,Stock Award(Grant) at price 0.00 per share.,TETER TIMOTHY S,General Counsel,,2026-03-02,D
+43,98328,0,,Stock Award(Grant) at price 0.00 per share.,SHOQUIST DEBORA C,Officer,,2026-03-02,D
+44,103278,0,,Stock Award(Grant) at price 0.00 per share.,PURI AJAY K,Officer,,2026-03-02,D
+45,47640,8371233,,Sale at price 172.40 - 179.16 per share.,KRESS COLETTE M.,Chief Financial Officer,,2026-02-04,D/I
+46,200000,36007160,,Sale at price 180.04 per share.,PURI AJAY K,Officer,,2026-01-21,I
+47,47640,8809582,,Sale at price 184.15 - 187.73 per share.,KRESS COLETTE M.,Chief Financial Officer,,2026-01-13,D/I
+48,200000,37563619,,Sale at price 187.25 - 188.58 per share.,PURI AJAY K,Officer,,2026-01-07,I
+49,80000,15187742,,Sale at price 188.85 - 192.49 per share.,ROBERTSON DONALD F JR,Officer,,2026-01-02,D
+50,222500,40087380,,Sale at price 180.17 per share.,STEVENS MARK A,Director,,2025-12-19,I
+51,24590,4425727,,Sale at price 176.91 - 180.88 per share.,ROBERTSON DONALD F JR,Officer,,2025-12-19,D
+52,258650,0,,Stock Gift at price 0.00 per share.,STEVENS MARK A,Director,,2025-12-18,I
+53,141488,0,,Stock Gift at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-12-17,I
+54,113182,0,,Stock Gift at price 0.00 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-12-17,D
+55,250000,44333450,,Sale at price 177.33 per share.,JONES HARVEY C JR.,Director,,2025-12-15,I
+56,50500,8994793,,Sale at price 175.26 - 182.06 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-12-12,D/I
+57,229840,41414515,,Sale at price 175.14 - 185.16 per share.,SHOQUIST DEBORA C,Officer,,2025-12-12,I
+58,80000,14771657,,Sale at price 184.25 - 185.55 per share.,SHOQUIST DEBORA C,Officer,,2025-12-09,I
+59,350000,63604065,,Sale at price 181.73 per share.,STEVENS MARK A,Director,,2025-12-05,I
+60,12728,2341117,,Sale at price 183.93 per share.,SEAWELL A BROOKE,Director,,2025-12-02,I
+61,520000,0,,Stock Gift at price 0.00 per share.,SEAWELL A BROOKE,Director,,2025-11-24,I
+62,626,112317,,Sale at price 179.42 per share.,DABIRI JOHN O,Director,,2025-11-24,D
+63,47640,9924869,,Sale at price 207.03 - 210.86 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-11-03,D/I
+64,25000,5197790,,Sale at price 205.65 - 211.76 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-29,D
+65,125000,23558262,,Sale at price 184.24 - 202.64 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-28,D
+66,225000,40734400,,Sale at price 177.57 - 183.27 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-23,D
+67,47640,8642640,,Sale at price 180.41 - 182.17 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-10-21,D/I
+68,225000,41058402,,Sale at price 180.54 - 184.92 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-20,D
+69,225000,41338563,,Sale at price 178.13 - 189.46 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-15,D
+70,225000,42885101,,Sale at price 183.39 - 195.32 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-10,D
+71,225000,42050639,,Sale at price 184.23 - 189.80 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-07,D
+72,225000,42093301,,Sale at price 182.19 - 190.52 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-10-02,D
+73,225000,40233721,,Sale at price 173.85 - 183.55 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-29,D
+74,225000,40206353,,Sale at price 175.48 - 184.33 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-24,D
+75,350000,61737305,,Sale at price 176.39 per share.,STEVENS MARK A,Director,,2025-09-19,I
+76,225000,39181549,,Sale at price 169.09 - 177.54 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-19,D
+77,50500,8908172,,Sale at price 175.99 - 177.56 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-09-19,D/I
+78,40000,7106120,,Sale at price 177.65 per share.,DRELL PERSIS S,Director,,2025-09-19,I
+79,3500,617298,,Sale at price 176.11 - 177.14 per share.,ROBERTSON DONALD F JR,Officer,,2025-09-19,D
+80,250000,44053700,,Sale at price 176.21 per share.,JONES HARVEY C JR.,Director,,2025-09-18,I
+81,225000,39748232,,Sale at price 174.98 - 178.53 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-16,D
+82,1125000,0,,Stock Gift at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-15,I
+83,497797,88558438,,Sale at price 177.47 - 178.19 per share.,STEVENS MARK A,Director,,2025-09-12,I
+84,28000,4972344,,Sale at price 177.58 per share.,NEAL STEPHEN C.,Director,,2025-09-12,I
+85,225000,39283743,,Sale at price 167.48 - 179.77 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-11,D
+86,1000000,0,,Stock Gift at price 0.00 per share.,COXE TENCH C,Director,,2025-09-08,I
+87,225000,38014347,,Sale at price 164.80 - 171.65 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-08,D
+88,225000,38609667,,Sale at price 167.86 - 177.67 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-09-03,D
+89,90000,15381065,,Sale at price 170.63 - 172.00 per share.,HUDSON BEACH DAWN E,Director,,2025-09-03,D
+90,1200000,0,,Stock Gift at price 0.00 per share.,SEAWELL A BROOKE,Director,,2025-08-29,I
+91,1700,0,,Stock Gift at price 0.00 per share.,NEAL STEPHEN C.,Director,,2025-08-29,I
+92,55172,0,,Stock Gift at price 0.00 per share.,SHOQUIST DEBORA C,Officer,,2025-08-29,I
+93,150000,27118544,,Sale at price 178.92 - 182.71 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-08-15,D
+94,225000,40959534,,Sale at price 180.03 - 183.64 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-08-13,D
+95,225000,40657554,,Sale at price 176.88 - 183.14 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-08-08,D
+96,225000,39779894,,Sale at price 171.59 - 180.10 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-08-05,D
+97,47640,8482566,,Sale at price 175.09 - 179.84 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-08-04,D/I
+98,225000,40180274,,Sale at price 175.91 - 182.70 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-31,D
+99,225000,39155010,,Sale at price 172.08 - 176.38 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-28,D
+100,225000,38220744,,Sale at price 165.36 - 173.19 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-23,D
+101,225000,38711762,,Sale at price 169.74 - 174.03 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-18,D
+102,225000,37594046,,Sale at price 162.71 - 171.49 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-15,D
+103,47650,8142671,,Sale at price 170.03 - 171.68 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-07-15,D/I
+104,96904,15999906,,Sale at price 162.67 - 167.79 per share.,SEAWELL A BROOKE,Director,,2025-07-14,I
+105,148402,23999797,,Sale at price 159.04 - 164.30 per share.,SEAWELL A BROOKE,Director,,2025-07-10,I
+106,225000,36430013,,Sale at price 159.07 - 164.29 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-10,D
+107,101925,15999789,,Sale at price 153.88 - 158.69 per share.,SEAWELL A BROOKE,Director,,2025-07-07,I
+108,225000,35553992,,Sale at price 153.67 - 160.84 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-07,D
+109,102652,15999848,,Sale at price 152.16 - 158.11 per share.,SEAWELL A BROOKE,Director,,2025-07-01,I
+110,225000,35161723,,Sale at price 152.23 - 158.46 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-07-01,D
+111,155209,23999683,,Sale at price 149.97 - 158.43 per share.,SEAWELL A BROOKE,Director,,2025-06-27,I
+112,1799,0,,Stock Award(Grant) at price 0.00 per share.,BURGESS ROBERT KENNETH,Director,,2025-06-26,D
+113,1799,0,,Stock Award(Grant) at price 0.00 per share.,SEAWELL A BROOKE,Director,,2025-06-26,D
+114,1799,0,,Stock Award(Grant) at price 0.00 per share.,COXE TENCH C,Director,,2025-06-26,D
+115,1799,0,,Stock Award(Grant) at price 0.00 per share.,LORA MELISSA,Director,,2025-06-26,D
+116,1799,0,,Stock Award(Grant) at price 0.00 per share.,STEVENS MARK A,Director,,2025-06-26,D
+117,1799,0,,Stock Award(Grant) at price 0.00 per share.,JONES HARVEY C JR.,Director,,2025-06-26,D
+118,200000,30465420,,Sale at price 146.14 - 156.29 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-06-26,D
+119,1799,0,,Stock Award(Grant) at price 0.00 per share.,HUDSON BEACH DAWN E,Director,,2025-06-26,D
+120,1799,0,,Stock Award(Grant) at price 0.00 per share.,DRELL PERSIS S,Director,,2025-06-26,D
+121,1799,0,,Stock Award(Grant) at price 0.00 per share.,OCHOA ELLEN,Director,,2025-06-26,D
+122,1799,0,,Stock Award(Grant) at price 0.00 per share.,SHAH AARTI S,Director,,2025-06-26,D
+123,1799,0,,Stock Award(Grant) at price 0.00 per share.,NEAL STEPHEN C.,Director,,2025-06-26,D
+124,1799,0,,Stock Award(Grant) at price 0.00 per share.,DABIRI JOHN O,Director,,2025-06-26,D
+125,168195,25673040,,Sale at price 150.51 - 154.32 per share.,PURI AJAY K,Officer,,2025-06-25,I
+126,165430,23999735,,Sale at price 142.95 - 147.77 per share.,SEAWELL A BROOKE,Director,,2025-06-24,I
+127,100000,14403585,,Sale at price 142.80 - 145.86 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-06-23,D
+128,50500,7282459,,Sale at price 143.54 - 145.91 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-06-20,D/I
+129,4500,646469,,Sale at price 143.66 per share.,ROBERTSON DONALD F JR,Officer,,2025-06-20,D
+130,608248,88356112,,Sale at price 145.26 per share.,STEVENS MARK A,Director,,2025-06-18,I
+131,1000000,142804600,,Sale at price 142.80 per share.,COXE TENCH C,Director,,2025-06-09,I
+132,358849,51028855,,Sale at price 141.86 - 142.51 per share.,STEVENS MARK A,Director,,2025-06-09,I
+133,1060836,149094297,,Sale at price 137.79 - 140.92 per share.,STEVENS MARK A,Director,,2025-06-03,I
+134,660000,0,,Stock Gift at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-06-02,I
+135,50000,6740820,,Sale at price 134.82 per share.,BURGESS ROBERT KENNETH,Director,,2025-05-30,D
+136,660,91608,,Sale at price 138.80 per share.,DABIRI JOHN O,Director,,2025-05-30,D
+137,66660,7787993,,Sale at price 116.25 - 117.70 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-03-21,D
+138,42000,0,,Stock Gift at price 0.00 per share.,SHOQUIST DEBORA C,Officer,,2025-03-21,I
+139,4500,525585,,Sale at price 116.31 - 117.77 per share.,ROBERTSON DONALD F JR,Officer,,2025-03-21,D
+140,20000,2368377,,Sale at price 116.99 - 118.87 per share.,SHAH AARTI S,Director,,2025-03-20,D
+141,53324,6158405,,Sale at price 115.49 per share.,BURGESS ROBERT KENNETH,Director,,2025-03-13,D
+142,57106,0,,Stock Award(Grant) at price 0.00 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-03-10,D
+143,57489,0,,Stock Award(Grant) at price 0.00 per share.,TETER TIMOTHY S,General Counsel,,2025-03-10,D
+144,2663,292930,,Sale at price 110.00 per share.,DABIRI JOHN O,Director,,2025-03-10,D
+145,57489,0,,Stock Award(Grant) at price 0.00 per share.,SHOQUIST DEBORA C,Officer,,2025-03-10,D
+146,55559,0,,Stock Award(Grant) at price 0.00 per share.,PURI AJAY K,Officer,,2025-03-10,D
+147,8489,0,,Stock Award(Grant) at price 0.00 per share.,ROBERTSON DONALD F JR,Officer,,2025-03-10,D
+148,956480,0,,Stock Award(Grant) at price 0.00 per share.,HUANG JEN-HSUN,Chief Executive Officer,,2025-03-03,D
+149,139640,0,,Stock Award(Grant) at price 0.00 per share.,KRESS COLETTE M.,Chief Financial Officer,,2025-03-03,D
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Vendor 'fred' not configured for get_macro_indicators; trying next vendor.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+Optional macro_data unavailable for get_macro_indicators: FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.
+
+================================== Ai Message ==================================
+
+**overall_band**: Mixed
+**overall_score**: 5.5
+**confidence**: low
+**narrative**: 
+
+The sentiment for NVDA is mixed, with a slight bullish tilt, but the overall picture is clouded by a lack of data from key sources. 
+
+News headlines from Yahoo Finance over the past week are overwhelmingly focused on the departure of Jensen Huang, NVDA's former CEO, and the potential impact on the company's future. The narrative suggests a bearish sentiment, with articles discussing the loss of value in NVDA stock, the potential for a leadership vacuum, and the need for the company to adapt to a post-Huang era. 
+
+StockTwits messages, on the other hand, paint a more bullish picture. The majority of messages are bullish or unlabeled, with only a few bearing a bearish tag. Many messages express support for Huang and hope for his return, or at least a belief that NVDA will weather the leadership change. There is also a sense of optimism about the company's future, with some users predicting a potential rally and others discussing the potential for Huang to start a new AI company. 
+
+However, the lack of data from Reddit posts, which are often a key source of community sentiment, significantly limits the overall picture. The absence of discussion on r/wallstreetbets, r/stocks, and r/investing makes it difficult to gauge the broader community's sentiment and adds a layer of uncertainty to the analysis. 
+
+In summary, the sentiment for NVDA is mixed, with a slight bullish tilt driven by StockTwits messages, but the overall picture is clouded by the absence of Reddit discussion and the overwhelmingly negative news headlines surrounding Huang's departure. 
+
+| Direction | Source | Supporting Evidence |
+| --- | --- | --- |
+| Bearish | Yahoo Finance News | Articles discussing NVDA's loss of value, leadership concerns, and the need to adapt post-Huang |
+| Bullish | StockTwits | Majority of messages are bullish or unlabeled, expressing support for Huang and optimism for NVDA's future |
+| Uncertain | Reddit | No posts fetched from r/wallstreetbets, r/stocks, or r/investing, limiting the overall sentiment picture |
+================================== Ai Message ==================================
+Tool Calls:
+  get_news (get_news_wtabfpavr4r2)
+ Call ID: get_news_wtabfpavr4r2
+  Args:
+    start_date: 2026-11-08
+    end_date: 2026-11-15
+  get_global_news (get_global_news_96ecea4dsf9g)
+ Call ID: get_global_news_96ecea4dsf9g
+  Args:
+    curr_date: 2026-11-15
+    look_back_days: 7
+    limit: 10
+  get_macro_indicators (get_macro_indicators_8svh2avb60ah)
+ Call ID: get_macro_indicators_8svh2avb60ah
+  Args:
+    indicator: cpi
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_daw47g628cf1)
+ Call ID: get_macro_indicators_daw47g628cf1
+  Args:
+    indicator: core_pce
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_efqadry4r74s)
+ Call ID: get_macro_indicators_efqadry4r74s
+  Args:
+    indicator: unemployment
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_nqvdc4ktvyst)
+ Call ID: get_macro_indicators_nqvdc4ktvyst
+  Args:
+    indicator: fed_funds_rate
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_5r3hvbsh3pmc)
+ Call ID: get_macro_indicators_5r3hvbsh3pmc
+  Args:
+    indicator: 10y_treasury
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_macro_indicators (get_macro_indicators_zv2mmezs1zwr)
+ Call ID: get_macro_indicators_zv2mmezs1zwr
+  Args:
+    indicator: yield_curve
+    curr_date: 2026-11-15
+    look_back_days: 365
+  get_prediction_markets (get_prediction_markets_ayyanj6k4rsf)
+ Call ID: get_prediction_markets_ayyanj6k4rsf
+  Args:
+    topic: recession 2026
+    limit: 3
+  get_prediction_markets (get_prediction_markets_8anqmmhssacz)
+ Call ID: get_prediction_markets_8anqmmhssacz
+  Args:
+    topic: Fed rate cut
+    limit: 3
+================================= Tool Message =================================
+Name: get_news
+
+Fleet-verified news & disclosures for NVDA (fetched live by the Borsagator fleet from Google News RSS and SEC EDGAR; nothing after 2026-11-15):
+
+OFFICIAL DISCLOSURES / FILINGS:
+- [2026-11-12] (SEC EDGAR) 8-K — NVIDIA CORP
+- [2026-11-06] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-10-09] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-23] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-22] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-18] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-18] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-18] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-18] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-18] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-11] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-08] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-04] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-03] (SEC EDGAR) 8-K — NVIDIA CORP
+- [2026-09-02] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-09-02] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-08-26] (SEC EDGAR) 10-Q — NVIDIA CORP
+- [2026-08-26] (SEC EDGAR) 8-K — NVIDIA CORP
+- [2026-08-24] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-08-17] (SEC EDGAR) 8-K — NVIDIA CORP
+- [2026-08-12] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-08-07] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-07-06] (SEC EDGAR) 4 — NVIDIA CORP
+- [2026-07-02] (SEC EDGAR) 8-K — NVIDIA CORP
+- [2026-06-30] (SEC EDGAR) 8-K — NVIDIA CORP
+
+NEWS COVERAGE:
+- [Sat, 14 Nov 2026 19:04:46 GMT] (TradingKey) Nvidia Reports After the Bell Today — Five Things That Will Move NVDA After the Close - TradingKey
+- [Sat, 14 Nov 2026 16:30:02 GMT] (Yahoo Finance) After Jensen Huang’s Departure, Nvidia Just Did Something It Hasn’t Done Since 2019 - Yahoo Finance
+- [Sat, 14 Nov 2026 15:51:20 GMT] (Moomoo) ​$NVDA Earnings Preview - Moomoo
+- [Sat, 14 Nov 2026 15:49:58 GMT] (Yahoo Finance) Big Shareholders and 3,000 Nvidia Employees Want Jensen Huang Back - Yahoo Finance
+- [Sat, 14 Nov 2026 15:45:00 GMT] (Yahoo Finance) Nvidia lost $1.6 trillion after Jensen Huang's exit, but Apple's and Uber's CEO transitions offer a blueprint - Yahoo Finance
+- [Sat, 14 Nov 2026 15:41:51 GMT] (Yahoo Finance) AMD Just Crushed Nvidia by 32 Points After Scandal. Here’s How NVDA Can Come Back - Yahoo Finance
+- [Sat, 14 Nov 2026 14:01:02 GMT] (Yahoo Finance) Nvidia Stock Falls Below $165 After Its CEO Resigns: Is It a Bargain Buy? - Yahoo Finance
+- [Sat, 14 Nov 2026 11:05:02 GMT] (Yahoo Finance) Should You Buy Nvidia Stock Before Nov. 17? - Yahoo Finance
+- [Sat, 14 Nov 2026 11:00:00 GMT] (Yahoo Finance) Nvidia and Jensen Huang fallout: Here’s everything we know after a momentous week - Yahoo Finance
+- [Sat, 14 Nov 2026 06:49:00 GMT] (Yahoo Finance) Is Nvidia Worth This Much Less Without Jensen Huang? - Yahoo Finance
+- [Fri, 13 Nov 2026 23:00:00 GMT] (Yahoo Finance) Jensen Huang will forfeit $108 million in Nvidia stock awards — a minuscule 0.08% of his $138.4 billion fortune - Yahoo Finance
+- [Fri, 13 Nov 2026 22:16:32 GMT] (FOREX.com) Nvidia Earnings Preview: NVDA’s First Test of the Post Jenson Huang Era - FOREX.com
+- [Fri, 13 Nov 2026 21:35:00 GMT] (Yahoo Finance) Nvidia lost $600B in value as the Jensen Huang scandal exploded — but insiders had already sold $1B+. Lucky or illegal? - Yahoo Finance
+- [Fri, 13 Nov 2026 21:30:00 GMT] (Investor's Business Daily) Nvidia Stock Braces For AI Chipmaker's First Report Without Jensen Huang - Investor's Business Daily
+- [Fri, 13 Nov 2026 20:57:20 GMT] (Yahoo Finance) Nvidia Q3 Earnings Preview: What Options Traders Expect After Jensen Huang’s Sudden Exit - Yahoo Finance
+- [Fri, 13 Nov 2026 20:45:22 GMT] (Yahoo Finance) 'Nothing has changed': Why some Nvidia stock bulls aren't wavering after Jensen Huang ouster - Yahoo Finance
+- [Fri, 13 Nov 2026 19:37:00 GMT] (Yahoo Finance) Wall Street Is Writing Off Nvidia Stock. Here's Why That's a Mistake. - Yahoo Finance
+- [Fri, 13 Nov 2026 19:30:36 GMT] (CNBC) A trading strategy to ride out the Nvidia uncertainty and generate income in the process - CNBC
+- [Fri, 13 Nov 2026 19:10:58 GMT] (ETF Database) NVDA Earnings: What Active ETFs Can Do - ETF Database
+- [Fri, 13 Nov 2026 19:07:36 GMT] (Longbridge) $NVIDIA(NVDA.US)Background: NVDA is expected to report Q3… - Longbridge
+- [Fri, 13 Nov 2026 18:32:47 GMT] (CNBC) Lutnick faces questions over Nvidia spy scandal. His sons' firm has deep ties to the chipmaker - CNBC
+- [Fri, 13 Nov 2026 18:19:13 GMT] (Yahoo Finance) How Nvidia's stock decline could impact your 401(k) and portfolio - Yahoo Finance
+- [Fri, 13 Nov 2026 17:44:00 GMT] (Barron's) Nvidia Stock Falls. It Faces One Big Threat in Life After Jensen. - Barron's
+- [Fri, 13 Nov 2026 17:42:14 GMT] (Investopedia) Here’s How Much Traders Expect Nvidia Stock to Move After Earnings Next Week - Investopedia
+- [Fri, 13 Nov 2026 17:03:58 GMT] (CNN) NVDA Stock Quote Price and Forecast - CNN
+- [Fri, 13 Nov 2026 16:46:19 GMT] (Seeking Alpha) Nvidia: A House Of Cards (Rating Downgrade) (NASDAQ:NVDA) - Seeking Alpha
+- [Fri, 13 Nov 2026 16:23:18 GMT] (Yahoo Finance) Nvidia stock slips as investors digest CEO exit, broader chip sell-off accelerates - Yahoo Finance
+- [Fri, 13 Nov 2026 16:14:39 GMT] (Morningstar) What to Watch in Nvidia Earnings: Leadership, China, Data Center Concerns Take Center Stage - Morningstar
+- [Fri, 13 Nov 2026 16:00:00 GMT] (Yahoo Finance) Nvidia director sold nearly $1B in stock weeks before the Jensen Huang scandal broke — and no trading plan was flagged - Yahoo Finance
+- [Fri, 13 Nov 2026 15:59:03 GMT] (Yahoo Finance) What the Nvidia scandal means for the company's earnings next week - Yahoo Finance
+- [Fri, 13 Nov 2026 15:56:57 GMT] (Moomoo) Playing the Post-Earnings Rebound on NVIDIA (NVDA) - Moomoo
+- [Fri, 13 Nov 2026 15:06:00 GMT] (Investor's Business Daily) Stock Market Rebounds Even As Nvidia CEO Jensen Huang Resigns, Treasury Yields Jump: Weekly Review - Investor's Business Daily
+- [Fri, 13 Nov 2026 14:51:22 GMT] (Benzinga) Options Traders Expect Nvidia's Biggest Earnings Move Since 2024 - Benzinga
+- [Fri, 13 Nov 2026 14:04:57 GMT] (Yahoo Finance) Is Nvidia Stock a Buy Right Now? - Yahoo Finance
+- [Fri, 13 Nov 2026 13:29:00 GMT] (Barron's) Nvidia Stock Is Still a Buy After CEO Jensen Huang’s Departure - Barron's
+- [Fri, 13 Nov 2026 13:22:40 GMT] (Longbridge) $NVIDIA(NVDA.US)Background: NVIDIA reported earnings on Nov… - Longbridge
+- [Fri, 13 Nov 2026 13:10:00 GMT] (The Motley Fool) How Much Is Nvidia Stock Worth Without Jensen Huang? - The Motley Fool
+- [Fri, 13 Nov 2026 13:00:45 GMT] (Seeking Alpha) The Nvidia Earnings Report Could Wreck The Market (NASDAQ:NVDA) - Seeking Alpha
+- [Fri, 13 Nov 2026 09:06:38 GMT] (CNBC) Nvidia closes below $4T market cap for first time since July 2025 in Huang fallout - CNBC
+- [Fri, 13 Nov 2026 08:00:00 GMT] (StoneX) S&P 500, Nasdaq 100 Claw Back But NVDA Cloud Looms Overhead - StoneX
+================================= Tool Message =================================
+Name: get_global_news
+
+## Global Market News, from 2026-11-08 to 2026-11-15:
+
+### Forget Take-Two: Sony Is the Overlooked Winner of GTA VI’s Huge Preorders (source: TIKR)
+Link: https://finance.yahoo.com/markets/stocks/articles/forget-two-sony-overlooked-winner-121918108.html
+
+### GTA 6's $1.9 billion test comes with a catch for gamers (source: TheStreet)
+Link: https://finance.yahoo.com/media-advertising/articles/gta-6s-1-9-billion-020300547.html
+
+### Earnings week scorecard: beats rewarded selectively as AI-infrastructure names pull back (source: Investing.com)
+Link: https://finance.yahoo.com/markets/stocks/articles/earnings-week-scorecard-beats-rewarded-203315112.html
+
+### Game On: The Hidden Value in Take-Two's Stock (source: MarketBeat)
+Link: https://finance.yahoo.com/markets/stocks/articles/game-hidden-value-twos-stock-181500198.html
+
+### Is Citi Wrong to Give Up on Roblox? It Trades at 4.9x Sales, Below Its 5-Year Average (source: TIKR)
+Link: https://finance.yahoo.com/markets/stocks/articles/citi-wrong-roblox-trades-4-172125542.html
+
+### GTA 6 Nears Launch With $1 Billion in Estimated Preorders: Bettors See 97% Chance of Record First-Day Sales (source: Benzinga Prediction Markets)
+Link: https://finance.yahoo.com/media-advertising/articles/gta-6-nears-launch-1-160556076.html
+
+### This Video Game Publisher Has a Huge Catalyst Looming (source: Zacks)
+Link: https://finance.yahoo.com/markets/stocks/articles/video-game-publisher-huge-catalyst-151500741.html
+
+### 10-Year Treasury yield spikes on hot inflation read, Nvidia leads chip stocks lower: AlphaCheck (source: Yahoo Finance)
+Link: https://finance.yahoo.com/markets/article/copy-tech-rises-coreweave-results-reignite-ai-trade-alphacheck-150655549.html
+
+### Kalshi is hiring a 'GTA VI Researcher' to livestream the game and study its economy (source: Yahoo Finance)
+Link: https://finance.yahoo.com/technology/article/kalshi-is-hiring-a-gta-vi-researcher-to-livestream-the-game-and-study-its-economy-110000519.html
+
+### Grand Theft Auto VI Makes Take-Two Stock Look Like a Steal (source: Barrons.com)
+Link: https://finance.yahoo.com/m/71d9f72e-471f-3b18-a9fd-e82af767e21b/grand-theft-auto-vi-makes.html
+
+
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_macro_indicators
+
+DATA_UNAVAILABLE: optional macro_data could not be retrieved (FRED_API_KEY environment variable is not set. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html.). Proceed without it; do not fabricate values.
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "recession 2026"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **US recession by end of 2026?** — Yes 2% ($2,477,169 volume, resolves 2027-01-31, 1-week -1.2pp)
+- **UK Recession in 2026?** — Yes 2% ($15,917 volume, resolves 2027-05-01, 1-week -1.8pp)
+- **Japan recession in 2026?** — Yes 8% ($4,336 volume, resolves 2027-05-01, 1-week -0.5pp)
+
+================================= Tool Message =================================
+Name: get_prediction_markets
+
+## Polymarket prediction markets: "Fed rate cut"
+Live, market-implied probabilities (higher traded volume = deeper, more reliable). A probability is the crowd's priced odds of the event, not a forecast you should take as certain.
+
+- **Will no Fed rate cuts happen in 2026?** — Yes 98% ($9,654,305 volume, resolves 2027-01-01)
+- **Will 11 Fed rate cuts happen in 2026?** — Yes 0.05% ($5,331,617 volume, resolves 2027-01-01)
+- **Will 10 Fed rate cuts happen in 2026?** — Yes 0.05% ($4,991,783 volume, resolves 2027-01-01)
+
+================================== Ai Message ==================================
+Tool Calls:
+  get_indicators (get_indicators_mdxrhftpnj16)
+ Call ID: get_indicators_mdxrhftpnj16
+  Args:
+    indicator: close_50_sma
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_yty4bnrv1hn9)
+ Call ID: get_indicators_yty4bnrv1hn9
+  Args:
+    indicator: close_200_sma
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_gx1zv3p4t8rk)
+ Call ID: get_indicators_gx1zv3p4t8rk
+  Args:
+    indicator: close_10_ema
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_25x1vgzxet02)
+ Call ID: get_indicators_25x1vgzxet02
+  Args:
+    indicator: macd
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_qd65m7ppdkn0)
+ Call ID: get_indicators_qd65m7ppdkn0
+  Args:
+    indicator: macds
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_15ny9a48vbb5)
+ Call ID: get_indicators_15ny9a48vbb5
+  Args:
+    indicator: macdh
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_6tdc9d0df09f)
+ Call ID: get_indicators_6tdc9d0df09f
+  Args:
+    indicator: rsi
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_33fjf7dy4ssk)
+ Call ID: get_indicators_33fjf7dy4ssk
+  Args:
+    indicator: boll
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_78nng27etrfy)
+ Call ID: get_indicators_78nng27etrfy
+  Args:
+    indicator: boll_ub
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_paj73c4fwd92)
+ Call ID: get_indicators_paj73c4fwd92
+  Args:
+    indicator: boll_lb
+    curr_date: 2026-11-15
+    look_back_days: 30
+  get_indicators (get_indicators_1f58q4b3n1ft)
+ Call ID: get_indicators_1f58q4b3n1ft
+  Args:
+    indicator: atr
+    curr_date: 2026-11-15
+    look_back_days: 30
+================================= Tool Message =================================
+Name: get_indicators
+
+close_50_sma for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 218.9194
+2026-10-06: 219.7740
+2026-10-07: 220.5832
+2026-10-08: 221.3926
+2026-10-09: 222.0774
+2026-10-12: 222.5888
+2026-10-13: 223.0264
+2026-10-14: 223.2136
+2026-10-15: 223.1738
+2026-10-16: 223.0766
+2026-10-19: 222.9392
+2026-10-20: 222.9176
+2026-10-21: 223.0070
+2026-10-22: 222.7694
+2026-10-23: 222.4826
+2026-10-26: 222.2994
+2026-10-27: 222.1580
+2026-10-28: 222.0708
+2026-10-29: 221.9928
+2026-10-30: 221.7486
+2026-11-02: 221.4954
+2026-11-03: 221.4596
+2026-11-04: 221.2012
+2026-11-05: 220.6400
+2026-11-06: 219.8132
+2026-11-09: 219.0356
+2026-11-10: 217.9978
+2026-11-11: 217.1236
+2026-11-12: 215.9592
+2026-11-13: 214.6472
+================================= Tool Message =================================
+Name: get_indicators
+
+close_200_sma for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 201.0205
+2026-10-06: 201.3620
+2026-10-07: 201.6787
+2026-10-08: 201.9261
+2026-10-09: 202.1540
+2026-10-12: 202.3396
+2026-10-13: 202.5392
+2026-10-14: 202.6930
+2026-10-15: 202.8381
+2026-10-16: 202.9710
+2026-10-19: 203.1240
+2026-10-20: 203.2621
+2026-10-21: 203.4313
+2026-10-22: 203.5562
+2026-10-23: 203.6654
+2026-10-26: 203.8202
+2026-10-27: 203.9856
+2026-10-28: 204.1378
+2026-10-29: 204.2771
+2026-10-30: 204.3846
+2026-11-02: 204.4596
+2026-11-03: 204.5619
+2026-11-04: 204.6722
+2026-11-05: 204.6636
+2026-11-06: 204.6726
+2026-11-09: 204.6276
+2026-11-10: 204.5397
+2026-11-11: 204.4658
+2026-11-12: 204.3391
+2026-11-13: 204.1908
+================================= Tool Message =================================
+Name: get_indicators
+
+close_10_ema for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 229.8225
+2026-10-06: 231.5348
+2026-10-07: 232.6139
+2026-10-08: 232.2259
+2026-10-09: 231.6903
+2026-10-12: 230.7139
+2026-10-13: 230.3150
+2026-10-14: 228.6759
+2026-10-15: 226.5948
+2026-10-16: 224.3285
+2026-10-19: 223.0124
+2026-10-20: 221.8229
+2026-10-21: 221.8496
+2026-10-22: 220.0970
+2026-10-23: 218.4357
+2026-10-26: 217.9928
+2026-10-27: 217.9832
+2026-10-28: 217.5099
+2026-10-29: 216.8099
+2026-10-30: 214.5972
+2026-11-02: 212.3177
+2026-11-03: 211.2945
+2026-11-04: 209.2646
+2026-11-05: 204.2347
+2026-11-06: 201.0356
+2026-11-09: 196.9692
+2026-11-10: 191.8639
+2026-11-11: 188.5668
+2026-11-12: 184.4983
+2026-11-13: 180.5622
+================================= Tool Message =================================
+Name: get_indicators
+
+macd for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 4.1727
+2026-10-06: 4.6883
+2026-10-07: 4.8976
+2026-10-08: 4.4481
+2026-10-09: 3.9496
+2026-10-12: 3.2779
+2026-10-13: 2.8897
+2026-10-14: 1.9767
+2026-10-15: 0.9142
+2026-10-16: -0.1759
+2026-10-19: -0.7919
+2026-10-20: -1.3150
+2026-10-21: -1.2710
+2026-10-22: -2.0007
+2026-10-23: -2.6493
+2026-10-26: -2.7252
+2026-10-27: -2.5988
+2026-10-28: -2.6744
+2026-10-29: -2.8404
+2026-10-30: -3.6576
+2026-11-02: -4.4620
+2026-11-03: -4.6721
+2026-11-04: -5.3067
+2026-11-05: -7.2216
+2026-11-06: -8.2375
+2026-11-09: -9.5754
+2026-11-10: -11.2946
+2026-11-11: -12.1268
+2026-11-12: -13.2421
+2026-11-13: -14.2314
+================================= Tool Message =================================
+Name: get_indicators
+
+macds for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 2.9637
+2026-10-06: 3.3086
+2026-10-07: 3.6264
+2026-10-08: 3.7907
+2026-10-09: 3.8225
+2026-10-12: 3.7136
+2026-10-13: 3.5488
+2026-10-14: 3.2344
+2026-10-15: 2.7704
+2026-10-16: 2.1811
+2026-10-19: 1.5865
+2026-10-20: 1.0062
+2026-10-21: 0.5508
+2026-10-22: 0.0405
+2026-10-23: -0.4975
+2026-10-26: -0.9430
+2026-10-27: -1.2742
+2026-10-28: -1.5542
+2026-10-29: -1.8115
+2026-10-30: -2.1807
+2026-11-02: -2.6370
+2026-11-03: -3.0440
+2026-11-04: -3.4965
+2026-11-05: -4.2415
+2026-11-06: -5.0407
+2026-11-09: -5.9477
+2026-11-10: -7.0171
+2026-11-11: -8.0390
+2026-11-12: -9.0796
+2026-11-13: -10.1100
+================================= Tool Message =================================
+Name: get_indicators
+
+macdh for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 1.2091
+2026-10-06: 1.3797
+2026-10-07: 1.2712
+2026-10-08: 0.6574
+2026-10-09: 0.1271
+2026-10-12: -0.4357
+2026-10-13: -0.6591
+2026-10-14: -1.2577
+2026-10-15: -1.8561
+2026-10-16: -2.3570
+2026-10-19: -2.3784
+2026-10-20: -2.3212
+2026-10-21: -1.8218
+2026-10-22: -2.0411
+2026-10-23: -2.1518
+2026-10-26: -1.7822
+2026-10-27: -1.3247
+2026-10-28: -1.1202
+2026-10-29: -1.0290
+2026-10-30: -1.4769
+2026-11-02: -1.8251
+2026-11-03: -1.6281
+2026-11-04: -1.8102
+2026-11-05: -2.9800
+2026-11-06: -3.1968
+2026-11-09: -3.6277
+2026-11-10: -4.2776
+2026-11-11: -4.0878
+2026-11-12: -4.1624
+2026-11-13: -4.1214
+================================= Tool Message =================================
+Name: get_indicators
+
+rsi for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 66.9010
+2026-10-06: 67.1631
+2026-10-07: 64.3082
+2026-10-08: 54.4624
+2026-10-09: 52.9633
+2026-10-12: 49.3544
+2026-10-13: 51.9737
+2026-10-14: 43.9417
+2026-10-15: 40.1728
+2026-10-16: 37.5323
+2026-10-19: 41.4871
+2026-10-20: 40.9030
+2026-10-21: 47.9096
+2026-10-22: 39.0596
+2026-10-23: 38.0891
+2026-10-26: 44.1178
+2026-10-27: 46.2860
+2026-10-28: 43.8673
+2026-10-29: 42.2691
+2026-10-30: 35.0560
+2026-11-02: 33.3053
+2026-11-03: 39.1757
+2026-11-04: 34.5373
+2026-11-05: 25.3918
+2026-11-06: 30.7622
+2026-11-09: 27.4030
+2026-11-10: 23.9474
+2026-11-11: 28.7369
+2026-11-12: 25.9908
+2026-11-13: 24.8577
+================================= Tool Message =================================
+Name: get_indicators
+
+boll for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 224.2130
+2026-10-06: 224.8885
+2026-10-07: 225.5785
+2026-10-08: 226.1845
+2026-10-09: 226.7340
+2026-10-12: 227.5020
+2026-10-13: 228.3195
+2026-10-14: 228.6895
+2026-10-15: 228.5840
+2026-10-16: 228.1770
+2026-10-19: 227.6625
+2026-10-20: 227.0425
+2026-10-21: 226.8655
+2026-10-22: 226.2470
+2026-10-23: 225.5415
+2026-10-26: 224.8985
+2026-10-27: 224.4350
+2026-10-28: 223.7850
+2026-10-29: 222.9250
+2026-10-30: 221.4595
+2026-11-02: 219.6175
+2026-11-03: 217.9900
+2026-11-04: 216.1230
+2026-11-05: 213.6790
+2026-11-06: 211.5470
+2026-11-09: 209.1645
+2026-11-10: 206.1830
+2026-11-11: 203.8045
+2026-11-12: 201.2525
+2026-11-13: 198.6885
+================================= Tool Message =================================
+Name: get_indicators
+
+boll_ub for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 238.4545
+2026-10-06: 240.6351
+2026-10-07: 242.2807
+2026-10-08: 242.6619
+2026-10-09: 242.8315
+2026-10-12: 241.7953
+2026-10-13: 240.6570
+2026-10-14: 239.5633
+2026-10-15: 239.8727
+2026-10-16: 240.9178
+2026-10-19: 241.3357
+2026-10-20: 241.5823
+2026-10-21: 241.5691
+2026-10-22: 242.3312
+2026-10-23: 243.0205
+2026-10-26: 242.8044
+2026-10-27: 242.5674
+2026-10-28: 242.2510
+2026-10-29: 241.6045
+2026-10-30: 241.0727
+2026-11-02: 239.2538
+2026-11-03: 236.1160
+2026-11-04: 233.4764
+2026-11-05: 235.6679
+2026-11-06: 235.3598
+2026-11-09: 236.0859
+2026-11-10: 237.0041
+2026-11-11: 236.9668
+2026-11-12: 237.7523
+2026-11-13: 238.4392
+================================= Tool Message =================================
+Name: get_indicators
+
+boll_lb for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 209.9715
+2026-10-06: 209.1419
+2026-10-07: 208.8763
+2026-10-08: 209.7071
+2026-10-09: 210.6365
+2026-10-12: 213.2087
+2026-10-13: 215.9820
+2026-10-14: 217.8157
+2026-10-15: 217.2953
+2026-10-16: 215.4362
+2026-10-19: 213.9893
+2026-10-20: 212.5027
+2026-10-21: 212.1619
+2026-10-22: 210.1628
+2026-10-23: 208.0625
+2026-10-26: 206.9926
+2026-10-27: 206.3026
+2026-10-28: 205.3190
+2026-10-29: 204.2456
+2026-10-30: 201.8463
+2026-11-02: 199.9812
+2026-11-03: 199.8640
+2026-11-04: 198.7696
+2026-11-05: 191.6901
+2026-11-06: 187.7342
+2026-11-09: 182.2431
+2026-11-10: 175.3619
+2026-11-11: 170.6422
+2026-11-12: 164.7527
+2026-11-13: 158.9378
+================================= Tool Message =================================
+Name: get_indicators
+
+atr for NVDA up to 2026-11-15 (fleet-adjusted price series):
+2026-10-05: 5.9272
+2026-10-06: 5.8231
+2026-10-07: 5.6115
+2026-10-08: 5.7549
+2026-10-09: 5.6874
+2026-10-12: 5.5941
+2026-10-13: 5.5931
+2026-10-14: 5.8278
+2026-10-15: 6.0151
+2026-10-16: 5.9683
+2026-10-19: 5.9342
+2026-10-20: 5.9167
+2026-10-21: 5.9027
+2026-10-22: 6.2461
+2026-10-23: 6.0621
+2026-10-26: 6.1141
+2026-10-27: 5.9388
+2026-10-28: 5.9089
+2026-10-29: 5.7225
+2026-10-30: 6.2238
+2026-11-02: 6.3735
+2026-11-03: 6.4240
+2026-11-04: 6.4730
+2026-11-05: 7.3442
+2026-11-06: 7.7696
+2026-11-09: 8.3860
+2026-11-10: 8.6999
+2026-11-11: 8.6963
+2026-11-12: 9.8559
+2026-11-13: 9.9812
+================================== Ai Message ==================================
+
+# Fundamental Analysis of NVIDIA Corporation (NVDA)
+
+## Company Profile
+NVIDIA Corporation (NVDA) is a technology company specialising in semiconductors. The company's revenue has grown significantly over the years, with the most recent quarterly revenue reported at $90,805,000,000. NVDA's net income has also increased, reaching $45,197,000,000 in the quarter ending July 2026.
+
+## Financial Documents
+### Balance Sheet
+The balance sheet for NVDA shows a steady increase in total assets, which reached $206,803,000,000 as of January 2026. Current assets, cash and equivalents, total liabilities, and current liabilities have also increased over time. Stockholders' equity has seen a notable rise, reaching $79,327,000,000 in January 2026.
+
+### Cash Flow Statement
+NVDA's cash flow statement reveals a positive operating cash flow, which has grown significantly over the years. The most recent quarterly operating cash flow was $74,421,000,000. Investing cash flow has been negative in recent quarters, while financing cash flow has fluctuated.
+
+### Income Statement
+The income statement for NVDA shows a consistent growth in revenue, with the most recent quarterly revenue reaching $96,221,000,000. Cost of revenue has also increased, but gross profit has remained strong. Operating income has fluctuated, while net income has shown a steady increase, reaching $59,688,000,000 in the quarter ending July 2026. Diluted EPS has also increased, with the most recent quarterly figure at $2.46.
+
+## Insider Transactions
+Insider transactions for NVDA indicate a mix of stock awards, grants, gifts, and sales. The majority of transactions involve sales, with several directors and officers selling large amounts of shares. The Chief Executive Officer, Huang Jen-Hsun, has been particularly active in selling shares, with multiple transactions in the millions of dollars. Other directors and officers have also sold significant amounts of shares, while some have received stock awards and grants.
+
+## Key Takeaways
+- NVDA's revenue and net income have grown significantly over the years.
+- The company's balance sheet shows a strong financial position with increasing total assets and stockholders' equity.
+- Operating cash flow has been positive and growing, while investing cash flow has been negative.
+- Insider transactions involve a mix of stock awards, grants, gifts, and sales, with several directors and officers selling large amounts of shares.
+
+## Table: Key Financial Metrics for NVDA
+| Metric | Value |
+| --- | --- |
+| Revenue (Q4 2026) | $96,221,000,000 |
+| Net Income (Q4 2026) | $59,688,000,000 |
+| Total Assets (Jan 2026) | $206,803,000,000 |
+| Stockholders' Equity (Jan 2026) | $157,293,000,000 |
+| Operating Cash Flow (Q4 2026) | $74,421,000,000 |
+| Investing Cash Flow (Q4 2026) | -$35,124,000,000 |
+| Financing Cash Flow (Q4 2026) | -$27,459,000,000 |
+| Diluted EPS (Q4 2026) | $2.46 |
+
+Please note that the data provided is based on the most recent information available as of November 2026.Research Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Trader: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+Portfolio Manager: structured-output invocation failed (Error code: 422 - unprocessable entity: parallel_tool_calls is not supported); retrying once as free text
+
+================================== Ai Message ==================================
+
+# NVDA
+
+## Company News
+- Nvidia's CEO Jensen Huang has resigned, with the company set to report Q3 earnings after the bell today.
+- Huang's exit has caused a $1.6 trillion loss in Nvidia's value, with some speculating that insiders had sold $1 billion in stock prior to the scandal.
+- The company's stock has fallen below $165, but some bulls are not wavering and believe that Nvidia is still a buy.
+- Nvidia has not reported earnings without Huang since 2019.
+
+## Global News
+- The 10-year Treasury yield has spiked on hot inflation, with Nvidia leading chip stocks lower.
+- Sony is the overlooked winner of GTA VI's huge preorders.
+- GTA 6 nears launch with $1 billion in estimated preorders.
+
+## Prediction Markets
+- The market implies a 2% probability of a US recession by the end of 2026.
+- The market implies a 98% probability that no Fed rate cuts will happen in 2026.
+
+| Topic | Probability | Volume | Resolution Date |
+|---|---|---|---|
+| US recession by end of 2026 | 2% | $2,477,169 | 2027-01-31 |
+| No Fed rate cuts in 2026 | 98% | $9,654,305 | 2027-01-01 |
+
+## Key Insights
+- Nvidia's CEO resignation has caused a significant drop in the company's value, but some investors remain bullish.
+- The market expects no Fed rate cuts in 2026 and a low probability of a US recession.
+================================== Ai Message ==================================
+
+# Technical Analysis Report for NVDA
+
+## Overview
+This report provides an in-depth analysis of the technical indicators for NVDA, a leading technology company, as of 2026-11-15. The indicators selected offer a comprehensive view of the stock's recent performance and potential future trends.
+
+## Moving Averages
+The 50 SMA, a medium-term trend indicator, currently stands at 214.6472, suggesting a potential support level for the stock. The 200 SMA, a long-term benchmark, is at 204.1908, indicating a possible resistance level. The 10 EMA, a short-term average, is at 180.5622, reflecting the stock's recent downward momentum.
+
+## MACD Analysis
+The MACD indicator, which measures momentum, is currently at -14.2314, suggesting a bearish trend. The MACD Signal, an EMA smoothing of the MACD line, is at -10.1100, confirming the bearish sentiment. The MACD Histogram, which visualizes momentum strength, is at -4.1214, indicating a potential reversal signal.
+
+## Momentum and Volatility Indicators
+The RSI, a measure of momentum, is at 24.8577, suggesting that the stock is in an oversold condition. The Bollinger Middle, a dynamic benchmark for price movement, is at 198.6885. The Bollinger Upper Band, which signals potential overbought conditions, is at 238.4392. The Bollinger Lower Band, indicating potential oversold conditions, is at 158.9378. The ATR, which measures volatility, is at 9.9812, suggesting moderate volatility.
+
+## Key Insights
+- The moving averages and MACD indicators suggest a bearish trend, with potential support and resistance levels identified.
+- The RSI indicates an oversold condition, which could signal a potential reversal.
+- The Bollinger Bands suggest that the stock is currently trading within a normal range, with the potential for a breakout or reversal.
+- The ATR indicates moderate volatility, which could impact trading strategies and risk management.
+
+## Trading Implications
+Traders may consider the following strategies based on these indicators:
+- Short positions could be considered, especially if the stock price approaches the 50 SMA or the MACD Histogram indicates a reversal.
+- Long positions could be taken if the RSI indicates an oversold condition and the price rebounds.
+- Traders should monitor the Bollinger Bands for potential breakouts or reversals, especially if the price approaches the upper or lower bands.
+- Risk management strategies should consider the moderate volatility indicated by the ATR.
+
+## Conclusion
+This technical analysis provides a comprehensive view of NVDA's recent performance and potential future trends. Traders can use these indicators to make informed decisions and develop appropriate trading strategies.
+
+## Table: Key Indicator Values
+| Indicator | Value |
+| --- | --- |
+| 50 SMA | 214.6472 |
+| 200 SMA | 204.1908 |
+| 10 EMA | 180.5622 |
+| MACD | -14.2314 |
+| MACD Signal | -10.1100 |
+| MACD Histogram | -4.1214 |
+| RSI | 24.8577 |
+| Bollinger Middle | 198.6885 |
+| Bollinger Upper Band | 238.4392 |
+| Bollinger Lower Band | 158.9378 |
+| ATR | 9.9812 |
+================================== Ai Message ==================================
+
+- **Action**: Hold
+
+- **Reasoning**: The technical analysis report indicates a mixed picture for NVDA, with potential reversal signals but an overall bearish trend. The moving averages and MACD indicators suggest a bearish outlook, while the RSI and Bollinger Bands hint at a potential rebound or reversal. Given this ambiguity, a Hold recommendation is prudent. This allows traders to maintain their current position while closely monitoring NVDA's performance and market dynamics. The strategy aims to capitalize on potential reversals while mitigating downside risks.
+
+- **Entry Price**: N/A
+- **Stop Loss**: N/A
+- **Position Sizing**: N/A
+Prose audit: 11/86 figures unverified
+Done. Decision: Hold
