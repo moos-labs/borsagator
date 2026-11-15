@@ -1,0 +1,23 @@
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 3200.22it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 20721.52it/s]
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701268/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 3}
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 21660.47it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6385.72it/s]
+WARN cohere brief attempt 1 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 2, "arabic_headlines": 21, "latest_news_date": "Sun, 15 Nov 2026 08:47:51 GMT", "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.684, "multilingual_negative": 0.007, "multilingual_neutral": 0.308, "multilingual_scored": 21, "bodies_fetched": 8, "egx_bodies_attached": 0, "translation_provider": "nllb+cohere", "translated_positive": 0.311, "translated_negative": 0.196, "translated_neutral": 0.493, "translated_scored": 21}
+BRIEF:
+- Cairo Poultry's cash distribution right ends today, with a distribution of 1.89 EGP per share.
+- The company's third-quarter consolidated profit was 152 million EGP.
+- Despite a 1.1% increase in revenue to 12.1 billion EGP in the first nine months of 2026, Cairo Poultry's net profit decreased by 39.1% to 1.43 billion EGP.
+- This decline in profit is a significant development, indicating a potential challenge for the company's financial performance.
+- The regulatory body, the General Authority for Financial Supervision, has approved the publication of a disclosure regarding Cairo Poultry's capital increase to 2 billion EGP.
+- This capital increase is part of the company's expansion plans, which include adding new activities related to the poultry and food industries.
+- The company's stock has been in the news, with headlines highlighting the profit decline and capital increase.
+- While Cairo Poultry's stock may be impacted by these developments, it's important to note that the market reaction and stock performance will depend on various factors and investor sentiment.

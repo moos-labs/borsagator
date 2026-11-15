@@ -1,0 +1,57 @@
+{
+  "job": "category news POUL.CA",
+  "ticker": "POUL.CA",
+  "date": "2026-11-15",
+  "started": "2026-11-15T13:08:24.808302+00:00",
+  "finished": "2026-11-15T13:16:41.293823+00:00",
+  "results": [
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "run_url": "https://github.com/moos-labs/news-disclosure-runner/actions/runs/43717424692",
+      "conclusion": "success",
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "fetched_at": "2026-11-15T13:16:17Z",
+          "tool": "news-disclosure",
+          "news_count": 22,
+          "disclosure_count": 2,
+          "arabic_headlines": 21,
+          "latest_news_date": "Sun, 15 Nov 2026 08:47:51 GMT",
+          "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT",
+          "llm_provider": "cohere",
+          "finbert_positive": 0.044,
+          "finbert_negative": 0.258,
+          "finbert_neutral": 0.698,
+          "finbert_scored": 3,
+          "multilingual_positive": 0.684,
+          "multilingual_negative": 0.007,
+          "multilingual_neutral": 0.308,
+          "multilingual_scored": 21,
+          "bodies_fetched": 8,
+          "egx_bodies_attached": 0,
+          "translation_provider": "nllb+cohere",
+          "translated_positive": 0.311,
+          "translated_negative": 0.196,
+          "translated_neutral": 0.493,
+          "translated_scored": 21
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
