@@ -1,0 +1,28 @@
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6227.78it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14192.61it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+bodies: 10/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 2}
+egx-harvest: attached 1 official bodies
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 18086.36it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5959.25it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 23, "disclosure_count": 2, "arabic_headlines": 22, "latest_news_date": "Thu, 12 Nov 2026 11:20:08 GMT", "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.697, "multilingual_negative": 0.012, "multilingual_neutral": 0.291, "multilingual_scored": 22, "bodies_fetched": 10, "egx_bodies_attached": 1, "translation_provider": "nllb", "translated_positive": 0.346, "translated_negative": 0.274, "translated_neutral": 0.38, "translated_scored": 22}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Thu, 12 Nov 2026 11:20:08 GMT] (شبكة تواصل الإخبارية) «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية
+- [Thu, 12 Nov 2026 10:12:35 GMT] (https://www.youlyou.com/) رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/
+- [Thu, 12 Nov 2026 09:07:35 GMT] (عالم المال) القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال
+- [Thu, 12 Nov 2026 08:55:38 GMT] (مجلة البوصلة الاقتصادية) أرباح القاهرة للدواجن تنخفض إلى 1.4 مليار جنيه في 9 أشهر - مجلة البوصلة الاقتصادية
+- [Thu, 12 Nov 2026 08:53:23 GMT] (جريدة المال) أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال
+- [Thu, 12 Nov 2026 08:22:00 GMT] (آراب فاينانس) القاهرة للدواجن تخفض أرباحها في تسعة أشهر - آراب فاينانس
+- [Thu, 12 Nov 2026 08:08:08 GMT] (TradingView) Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView
+- [Tue, 10 Nov 2026 14:28:33 GMT] (جريدة المال) المنصورة للدواجن تقفز 7.28% وتتصدر ارتفاعات قطاع الأغذية بالبورصة - جريدة المال
