@@ -1,0 +1,40 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "COMI.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "COMI.CA",
+    "fetched_at": "2026-11-15T13:24:51Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 2,
+    "arabic_headlines": 25,
+    "latest_news_date": "Sun, 15 Nov 2026 12:33:35 GMT",
+    "latest_disclosure_date": "Tue, 10 Nov 2026 07:42:46 GMT",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.204,
+    "finbert_negative": 0.094,
+    "finbert_neutral": 0.702,
+    "finbert_scored": 17,
+    "multilingual_positive": 0.466,
+    "multilingual_negative": 0.025,
+    "multilingual_neutral": 0.508,
+    "multilingual_scored": 25,
+    "bodies_fetched": 10,
+    "egx_bodies_attached": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.226,
+    "translated_negative": 0.021,
+    "translated_neutral": 0.754,
+    "translated_scored": 25
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
