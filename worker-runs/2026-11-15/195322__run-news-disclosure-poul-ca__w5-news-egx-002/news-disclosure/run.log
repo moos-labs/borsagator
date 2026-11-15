@@ -1,0 +1,22 @@
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6312.23it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14347.19it/s]
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701268/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 4}
+egx-harvest: attached 2 official bodies
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 18541.08it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5955.59it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 3, "arabic_headlines": 22, "latest_news_date": "Sun, 15 Nov 2026 14:08:47 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.618, "multilingual_negative": 0.008, "multilingual_neutral": 0.373, "multilingual_scored": 22, "bodies_fetched": 8, "egx_bodies_attached": 2, "translation_provider": "nllb", "translated_positive": 0.342, "translated_negative": 0.213, "translated_neutral": 0.445, "translated_scored": 22}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Sun, 15 Nov 2026 14:08:47 GMT] (مجلة البوصلة الاقتصادية) البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجلة البوصلة الاقتصادية
+- [Sun, 15 Nov 2026 08:51:39 GMT] (مجلة البوصلة الاقتصادية) اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية
+- [Thu, 12 Nov 2026 11:20:08 GMT] (شبكة تواصل الإخبارية) «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية
+- [Thu, 12 Nov 2026 10:12:35 GMT] (https://www.youlyou.com/) رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/
+- [Thu, 12 Nov 2026 08:53:23 GMT] (جريدة المال) أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال
+- [Thu, 12 Nov 2026 08:08:08 GMT] (TradingView) Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView
+- [Thu, 12 Nov 2026 07:39:22 GMT] (Mubasher) أرباح القاهرة للدواجن تتراجع 39% خلال 9 أشهر رغم نمو الإيرادات - Mubasher
+- [Tue, 10 Nov 2026 14:28:33 GMT] (جريدة المال) المنصورة للدواجن تقفز 7.28% وتتصدر ارتفاعات قطاع الأغذية بالبورصة - جريدة المال
