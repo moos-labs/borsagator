@@ -1,0 +1,1027 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 40,
+  "label_counts": {
+    "positive": 5,
+    "negative": 4,
+    "neutral": 31
+  },
+  "label_counts_raw": {
+    "neutral": 31,
+    "negative": 4,
+    "positive": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.12751854954526837,
+    "negative": 0.09392037575212789,
+    "neutral": 0.7785610683129007
+  },
+  "items": [
+    {
+      "text": "Apple HomeView available today - Apple",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.367337732626766e-07,
+        "negative": 1.1641717492238968e-06,
+        "neutral": 0.9999982118606567
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999982118606567
+        },
+        {
+          "label": "Negative",
+          "score": 1.1641717492238968e-06
+        },
+        {
+          "label": "Positive",
+          "score": 6.367337732626766e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Shane Pinto Celebrates His Birthday With an OT Winner! 🎂 - BVM Sports",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00022382356110028923,
+        "negative": 3.8921621126064565e-06,
+        "neutral": 0.9997722506523132
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997722506523132
+        },
+        {
+          "label": "Positive",
+          "score": 0.00022382356110028923
+        },
+        {
+          "label": "Negative",
+          "score": 3.8921621126064565e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Toll Brothers Announces Opening of New Luxury Home Community in Rancho Murieta, California - GlobeNewswire",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00017055278294719756,
+        "negative": 1.7631980426813243e-06,
+        "neutral": 0.9998276233673096
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998276233673096
+        },
+        {
+          "label": "Positive",
+          "score": 0.00017055278294719756
+        },
+        {
+          "label": "Negative",
+          "score": 1.7631980426813243e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIBC releases revised Supplementary Financial Information following previously announced changes to strategic business units - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4964592082833406e-05,
+        "negative": 0.0006385665619745851,
+        "neutral": 0.9993464350700378
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9993464350700378
+        },
+        {
+          "label": "Negative",
+          "score": 0.0006385665619745851
+        },
+        {
+          "label": "Positive",
+          "score": 1.4964592082833406e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why is Aviva stock rallying today? By Investing.com - Investing.com Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.05720722675323486,
+        "negative": 0.046612635254859924,
+        "neutral": 0.8961800932884216
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.8961800932884216
+        },
+        {
+          "label": "Positive",
+          "score": 0.05720722675323486
+        },
+        {
+          "label": "Negative",
+          "score": 0.046612635254859924
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nvidia stock faces new twist as Colette Kress breaks silence: what its new CEO reveal - Invezz",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.9342076484463178e-05,
+        "negative": 0.9943444728851318,
+        "neutral": 0.005636162590235472
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9943444728851318
+        },
+        {
+          "label": "Neutral",
+          "score": 0.005636162590235472
+        },
+        {
+          "label": "Positive",
+          "score": 1.9342076484463178e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egyptian Pound Strengthens by EGP 2.63 Against Dollar in Two Weeks - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0019412449328228831,
+        "negative": 6.913445395184681e-05,
+        "neutral": 0.9979896545410156
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9979896545410156
+        },
+        {
+          "label": "Positive",
+          "score": 0.0019412449328228831
+        },
+        {
+          "label": "Negative",
+          "score": 6.913445395184681e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "BofA downgrades iHeartMedia stock rating on leverage concerns By Investing.com - Investing.com Canada",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.8516075215302408e-05,
+        "negative": 0.9999401569366455,
+        "neutral": 4.1289440559921786e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999401569366455
+        },
+        {
+          "label": "Neutral",
+          "score": 4.1289440559921786e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.8516075215302408e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Who is Kimberly Powell? Nvidia stock slides 7% after hours on new Jensen Huang report - Invezz",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.7263528206967749e-06,
+        "negative": 4.098465433344245e-05,
+        "neutral": 0.9999573230743408
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999573230743408
+        },
+        {
+          "label": "Negative",
+          "score": 4.098465433344245e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.7263528206967749e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What CIB’s 2025 ESGDD Report Reveals About Sustainable Finance Along the Africa–Middle East Corridor - Global Finance Magazine",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.53060157623986e-07,
+        "negative": 1.0421832712381729e-06,
+        "neutral": 0.9999980926513672
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999980926513672
+        },
+        {
+          "label": "Negative",
+          "score": 1.0421832712381729e-06
+        },
+        {
+          "label": "Positive",
+          "score": 8.53060157623986e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Aveanna Healthcare earnings ahead: Can California rate gains deliver? By Investing.com - Investing.com South Africa",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.999764621257782,
+        "negative": 1.5106439832379692e-07,
+        "neutral": 0.00023521427647210658
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.999764621257782
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00023521427647210658
+        },
+        {
+          "label": "Negative",
+          "score": 1.5106439832379692e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Samsung Canada Welcomes 50 Students to Inaugural Galaxy Campus Crew - samsung.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.597802060539834e-05,
+        "negative": 5.233999218035024e-06,
+        "neutral": 0.9999587535858154
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999587535858154
+        },
+        {
+          "label": "Positive",
+          "score": 3.597802060539834e-05
+        },
+        {
+          "label": "Negative",
+          "score": 5.233999218035024e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Juhayna Secures USD 32.3M Financing from CIB to Expand Livestock Operations - waya.media",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0002356150944251567,
+        "negative": 9.869781024463009e-06,
+        "neutral": 0.9997544884681702
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997544884681702
+        },
+        {
+          "label": "Positive",
+          "score": 0.0002356150944251567
+        },
+        {
+          "label": "Negative",
+          "score": 9.869781024463009e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Apple TV introduces new Sign Language interpretation feature - Apple",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.13060176372528076,
+        "negative": 0.0008440457750111818,
+        "neutral": 0.8685541749000549
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.8685541749000549
+        },
+        {
+          "label": "Positive",
+          "score": 0.13060176372528076
+        },
+        {
+          "label": "Negative",
+          "score": 0.0008440457750111818
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "iShares U.S. Aerospace & Defense ETF Price & Chart - FOREX.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.3169860620982945e-06,
+        "negative": 3.413834519960801e-06,
+        "neutral": 0.9999911785125732
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999911785125732
+        },
+        {
+          "label": "Positive",
+          "score": 5.3169860620982945e-06
+        },
+        {
+          "label": "Negative",
+          "score": 3.413834519960801e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIB reports EGP 103bn in revenue, EGP 63.1bn in net income in 9M 2026 - Daily News Egypt",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.9485457275768567e-07,
+        "negative": 8.906729220825582e-08,
+        "neutral": 0.9999996423721313
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999996423721313
+        },
+        {
+          "label": "Positive",
+          "score": 2.9485457275768567e-07
+        },
+        {
+          "label": "Negative",
+          "score": 8.906729220825582e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Commercial International Bank (Egypt) S.A.E. Q3 Earnings Call Highlights - MarketBeat",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.004757088143378496,
+        "negative": 4.141256067669019e-05,
+        "neutral": 0.9952014684677124
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9952014684677124
+        },
+        {
+          "label": "Positive",
+          "score": 0.004757088143378496
+        },
+        {
+          "label": "Negative",
+          "score": 4.141256067669019e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIB to Launch Yomo Digital Bank in Egypt with $300M Investment by 2027 - FF News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.1616442609229125e-05,
+        "negative": 1.6328365290974034e-06,
+        "neutral": 0.9999767541885376
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999767541885376
+        },
+        {
+          "label": "Positive",
+          "score": 2.1616442609229125e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.6328365290974034e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why is Sally Beauty stock climbing today? By Investing.com - Investing.com Canada",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.6933447122573853,
+        "negative": 0.0010941729415208101,
+        "neutral": 0.3055610954761505
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.6933447122573853
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3055610954761505
+        },
+        {
+          "label": "Negative",
+          "score": 0.0010941729415208101
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Earnings call transcript: Commercial International Bank posts strong Q3 2026 growth - Investing.com",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999992847442627,
+        "negative": 1.1812930189591953e-08,
+        "neutral": 7.3052939342233e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999992847442627
+        },
+        {
+          "label": "Neutral",
+          "score": 7.3052939342233e-07
+        },
+        {
+          "label": "Negative",
+          "score": 1.1812930189591953e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Commercial International Bank Egypt CIB S A E Q3 2026 Earnings Call Is Live - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.073637569490529e-07,
+        "negative": 4.557294232654385e-06,
+        "neutral": 0.9999951124191284
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999951124191284
+        },
+        {
+          "label": "Negative",
+          "score": 4.557294232654385e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.073637569490529e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "JPMorgan Announces Cash Distributions for the JPMorgan ETFs - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.497371891280636e-05,
+        "negative": 3.471010131761432e-05,
+        "neutral": 0.999880313873291
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999880313873291
+        },
+        {
+          "label": "Positive",
+          "score": 8.497371891280636e-05
+        },
+        {
+          "label": "Negative",
+          "score": 3.471010131761432e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Commercial International Bank Egypt Qtrly Consol Profit EGP 23.76 Bln - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0004910663701593876,
+        "negative": 3.0807568691670895e-05,
+        "neutral": 0.9994780421257019
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994780421257019
+        },
+        {
+          "label": "Positive",
+          "score": 0.0004910663701593876
+        },
+        {
+          "label": "Negative",
+          "score": 3.0807568691670895e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt’s CIB Targets Q1 2027 Launch for Yomo Digital Bank - waya.media",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.0060677343280986e-05,
+        "negative": 3.7193461821516394e-07,
+        "neutral": 0.9999796152114868
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999796152114868
+        },
+        {
+          "label": "Positive",
+          "score": 2.0060677343280986e-05
+        },
+        {
+          "label": "Negative",
+          "score": 3.7193461821516394e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Baraka Bank Egypt stock: H1 growth masks return mix - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 4.029528645332903e-05,
+        "negative": 0.8567347526550293,
+        "neutral": 0.14322496950626373
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8567347526550293
+        },
+        {
+          "label": "Neutral",
+          "score": 0.14322496950626373
+        },
+        {
+          "label": "Positive",
+          "score": 4.029528645332903e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIBC Private Banking named Best Private Bank in Canada for Innovation and for Customer Service - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0004977798671461642,
+        "negative": 9.6349605883006e-05,
+        "neutral": 0.9994058609008789
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994058609008789
+        },
+        {
+          "label": "Positive",
+          "score": 0.0004977798671461642
+        },
+        {
+          "label": "Negative",
+          "score": 9.6349605883006e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "McDonalds Stock Price & Chart - FOREX.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.913993951864541e-07,
+        "negative": 4.776910827786196e-06,
+        "neutral": 0.9999943971633911
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999943971633911
+        },
+        {
+          "label": "Negative",
+          "score": 4.776910827786196e-06
+        },
+        {
+          "label": "Positive",
+          "score": 8.913993951864541e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "5 Best Copper Stocks for 2026 and How to Invest - The Motley Fool",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.8850670456886292,
+        "negative": 5.178560968488455e-05,
+        "neutral": 0.11488118022680283
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.8850670456886292
+        },
+        {
+          "label": "Neutral",
+          "score": 0.11488118022680283
+        },
+        {
+          "label": "Negative",
+          "score": 5.178560968488455e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Canadian Employment (October 2026) - TD Economics",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.201876996987266e-07,
+        "negative": 1.1576193173823413e-05,
+        "neutral": 0.9999877214431763
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999877214431763
+        },
+        {
+          "label": "Negative",
+          "score": 1.1576193173823413e-05
+        },
+        {
+          "label": "Positive",
+          "score": 7.201876996987266e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "EUR CZK Chart & Rate - EUR CZK Trading - FOREX.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0191001109660647e-07,
+        "negative": 1.0353247716921032e-06,
+        "neutral": 0.9999988079071045
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999988079071045
+        },
+        {
+          "label": "Negative",
+          "score": 1.0353247716921032e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.0191001109660647e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "USD TRY Chart & Rate - USD TRY Trading - FOREX.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.345400162084843e-06,
+        "negative": 2.2264932340476662e-05,
+        "neutral": 0.999975323677063
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999975323677063
+        },
+        {
+          "label": "Negative",
+          "score": 2.2264932340476662e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.345400162084843e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Media Advisory - CIBC to Announce Fourth Quarter 2026 Results on December 3, 2026 - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.374592092266539e-06,
+        "negative": 4.11672008340247e-05,
+        "neutral": 0.9999535083770752
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999535083770752
+        },
+        {
+          "label": "Negative",
+          "score": 4.11672008340247e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.374592092266539e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Redesigned Health app expands language support - Apple",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999176263809204,
+        "negative": 1.2481053772717132e-06,
+        "neutral": 8.115351374726743e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999176263809204
+        },
+        {
+          "label": "Neutral",
+          "score": 8.115351374726743e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.2481053772717132e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "[Invitation] Galaxy Unpacked February 2026: The Next AI Phone Makes Your Life Easier - samsung.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.28225675225257874,
+        "negative": 0.0008457743679173291,
+        "neutral": 0.7168974876403809
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.7168974876403809
+        },
+        {
+          "label": "Positive",
+          "score": 0.28225675225257874
+        },
+        {
+          "label": "Negative",
+          "score": 0.0008457743679173291
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIBC Announces Appointment of Bill Morneau as Chair of the Board - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0004889850970357656,
+        "negative": 1.3102581760904286e-05,
+        "neutral": 0.9994978904724121
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994978904724121
+        },
+        {
+          "label": "Positive",
+          "score": 0.0004889850970357656
+        },
+        {
+          "label": "Negative",
+          "score": 1.3102581760904286e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Canadian Monthly GDP (August 2026) - TD Economics",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.175181836288175e-07,
+        "negative": 9.721416063257493e-07,
+        "neutral": 0.999998927116394
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999998927116394
+        },
+        {
+          "label": "Negative",
+          "score": 9.721416063257493e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.175181836288175e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Commercial International Bank Egypt (CIB)E (CASE:COMI) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.67628780143059e-07,
+        "negative": 1.2894705832877662e-05,
+        "neutral": 0.9999866485595703
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999866485595703
+        },
+        {
+          "label": "Negative",
+          "score": 1.2894705832877662e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.67628780143059e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Many of Africa’s banks got bigger in 2025. Did they get better? - The Africa Report",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.04062177985906601,
+        "negative": 0.012525695376098156,
+        "neutral": 0.9468525648117065
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9468525648117065
+        },
+        {
+          "label": "Positive",
+          "score": 0.04062177985906601
+        },
+        {
+          "label": "Negative",
+          "score": 0.012525695376098156
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt clock change to temporarily disrupt e-banking services, prepaid electricity card charging - Economy - Business - Ahram Online",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.00018985454516950995,
+        "negative": 0.8412887454032898,
+        "neutral": 0.15852132439613342
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8412887454032898
+        },
+        {
+          "label": "Neutral",
+          "score": 0.15852132439613342
+        },
+        {
+          "label": "Positive",
+          "score": 0.00018985454516950995
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TD Asset Management Inc. Announces Risk Rating Changes for Certain TD ETFs - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0026901576202362776,
+        "negative": 0.0014385959366336465,
+        "neutral": 0.9958712458610535
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9958712458610535
+        },
+        {
+          "label": "Positive",
+          "score": 0.0026901576202362776
+        },
+        {
+          "label": "Negative",
+          "score": 0.0014385959366336465
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

@@ -1,0 +1,622 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 40,
+  "label_counts": {
+    "positive": 16,
+    "negative": 4,
+    "neutral": 20
+  },
+  "mean_probabilities": {
+    "positive": 0.4070516984385904,
+    "negative": 0.104115324052691,
+    "neutral": 0.48883296311832963
+  },
+  "items": [
+    {
+      "text": "Apple HomeView available today - Apple",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00187382020521909,
+        "negative": 0.00033004782744683325,
+        "neutral": 0.9977961778640747
+      },
+      "raw_probabilities": {
+        "neutral": 0.9977961778640747,
+        "positive": 0.00187382020521909,
+        "negative": 0.00033004782744683325
+      }
+    },
+    {
+      "text": "Shane Pinto Celebrates His Birthday With an OT Winner! 🎂 - BVM Sports",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976227879524231,
+        "negative": 0.0004797594156116247,
+        "neutral": 0.0018973946571350098
+      },
+      "raw_probabilities": {
+        "positive": 0.9976227879524231,
+        "neutral": 0.0018973946571350098,
+        "negative": 0.0004797594156116247
+      }
+    },
+    {
+      "text": "Toll Brothers Announces Opening of New Luxury Home Community in Rancho Murieta, California - GlobeNewswire",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980034232139587,
+        "negative": 0.0005447263829410076,
+        "neutral": 0.0014517947565764189
+      },
+      "raw_probabilities": {
+        "positive": 0.9980034232139587,
+        "neutral": 0.0014517947565764189,
+        "negative": 0.0005447263829410076
+      }
+    },
+    {
+      "text": "CIBC releases revised Supplementary Financial Information following previously announced changes to strategic business units - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00029155032825656235,
+        "negative": 0.00016407891234848648,
+        "neutral": 0.9995443224906921
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995443224906921,
+        "positive": 0.00029155032825656235,
+        "negative": 0.00016407891234848648
+      }
+    },
+    {
+      "text": "Why is Aviva stock rallying today? By Investing.com - Investing.com Canada",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9845852255821228,
+        "negative": 0.0002832546888384968,
+        "neutral": 0.01513148657977581
+      },
+      "raw_probabilities": {
+        "positive": 0.9845852255821228,
+        "neutral": 0.01513148657977581,
+        "negative": 0.0002832546888384968
+      }
+    },
+    {
+      "text": "Nvidia stock faces new twist as Colette Kress breaks silence: what its new CEO reveal - Invezz",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0017668789951130748,
+        "negative": 0.15534013509750366,
+        "neutral": 0.8428930044174194
+      },
+      "raw_probabilities": {
+        "neutral": 0.8428930044174194,
+        "negative": 0.15534013509750366,
+        "positive": 0.0017668789951130748
+      }
+    },
+    {
+      "text": "Egyptian Pound Strengthens by EGP 2.63 Against Dollar in Two Weeks - Sada Elbalad English",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9953910112380981,
+        "negative": 0.0020241308957338333,
+        "neutral": 0.0025848224759101868
+      },
+      "raw_probabilities": {
+        "positive": 0.9953910112380981,
+        "neutral": 0.0025848224759101868,
+        "negative": 0.0020241308957338333
+      }
+    },
+    {
+      "text": "BofA downgrades iHeartMedia stock rating on leverage concerns By Investing.com - Investing.com Canada",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00027718953788280487,
+        "negative": 0.9984810948371887,
+        "neutral": 0.0012416689423844218
+      },
+      "raw_probabilities": {
+        "negative": 0.9984810948371887,
+        "neutral": 0.0012416689423844218,
+        "positive": 0.00027718953788280487
+      }
+    },
+    {
+      "text": "Who is Kimberly Powell? Nvidia stock slides 7% after hours on new Jensen Huang report - Invezz",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00027467860491015017,
+        "negative": 0.9988441467285156,
+        "neutral": 0.0008810759172774851
+      },
+      "raw_probabilities": {
+        "negative": 0.9988441467285156,
+        "neutral": 0.0008810759172774851,
+        "positive": 0.00027467860491015017
+      }
+    },
+    {
+      "text": "What CIB’s 2025 ESGDD Report Reveals About Sustainable Finance Along the Africa–Middle East Corridor - Global Finance Magazine",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0012613576836884022,
+        "negative": 0.00019573335885070264,
+        "neutral": 0.9985430240631104
+      },
+      "raw_probabilities": {
+        "neutral": 0.9985430240631104,
+        "positive": 0.0012613576836884022,
+        "negative": 0.00019573335885070264
+      }
+    },
+    {
+      "text": "Aveanna Healthcare earnings ahead: Can California rate gains deliver? By Investing.com - Investing.com South Africa",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9851890802383423,
+        "negative": 0.00029288954101502895,
+        "neutral": 0.014518004842102528
+      },
+      "raw_probabilities": {
+        "positive": 0.9851890802383423,
+        "neutral": 0.014518004842102528,
+        "negative": 0.00029288954101502895
+      }
+    },
+    {
+      "text": "Samsung Canada Welcomes 50 Students to Inaugural Galaxy Campus Crew - samsung.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976119995117188,
+        "negative": 0.00040324023575522006,
+        "neutral": 0.001984730828553438
+      },
+      "raw_probabilities": {
+        "positive": 0.9976119995117188,
+        "neutral": 0.001984730828553438,
+        "negative": 0.00040324023575522006
+      }
+    },
+    {
+      "text": "Juhayna Secures USD 32.3M Financing from CIB to Expand Livestock Operations - waya.media",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981797933578491,
+        "negative": 0.0005946161691099405,
+        "neutral": 0.0012256550835445523
+      },
+      "raw_probabilities": {
+        "positive": 0.9981797933578491,
+        "neutral": 0.0012256550835445523,
+        "negative": 0.0005946161691099405
+      }
+    },
+    {
+      "text": "Apple TV introduces new Sign Language interpretation feature - Apple",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9972979426383972,
+        "negative": 0.00038279854925349355,
+        "neutral": 0.0023192481603473425
+      },
+      "raw_probabilities": {
+        "positive": 0.9972979426383972,
+        "neutral": 0.0023192481603473425,
+        "negative": 0.00038279854925349355
+      }
+    },
+    {
+      "text": "iShares U.S. Aerospace & Defense ETF Price & Chart - FOREX.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0009327190346084535,
+        "negative": 0.0002795340842567384,
+        "neutral": 0.9987877011299133
+      },
+      "raw_probabilities": {
+        "neutral": 0.9987877011299133,
+        "positive": 0.0009327190346084535,
+        "negative": 0.0002795340842567384
+      }
+    },
+    {
+      "text": "CIB reports EGP 103bn in revenue, EGP 63.1bn in net income in 9M 2026 - Daily News Egypt",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.002659422345459461,
+        "negative": 0.00014596445544157177,
+        "neutral": 0.9971945285797119
+      },
+      "raw_probabilities": {
+        "neutral": 0.9971945285797119,
+        "positive": 0.002659422345459461,
+        "negative": 0.00014596445544157177
+      }
+    },
+    {
+      "text": "Commercial International Bank (Egypt) S.A.E. Q3 Earnings Call Highlights - MarketBeat",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010100158397108316,
+        "negative": 0.000248934724368155,
+        "neutral": 0.998741090297699
+      },
+      "raw_probabilities": {
+        "neutral": 0.998741090297699,
+        "positive": 0.0010100158397108316,
+        "negative": 0.000248934724368155
+      }
+    },
+    {
+      "text": "CIB to Launch Yomo Digital Bank in Egypt with $300M Investment by 2027 - FF News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981511235237122,
+        "negative": 0.0006075575947761536,
+        "neutral": 0.0012413091026246548
+      },
+      "raw_probabilities": {
+        "positive": 0.9981511235237122,
+        "neutral": 0.0012413091026246548,
+        "negative": 0.0006075575947761536
+      }
+    },
+    {
+      "text": "Why is Sally Beauty stock climbing today? By Investing.com - Investing.com Canada",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9953823685646057,
+        "negative": 0.000319746439345181,
+        "neutral": 0.004297841805964708
+      },
+      "raw_probabilities": {
+        "positive": 0.9953823685646057,
+        "neutral": 0.004297841805964708,
+        "negative": 0.000319746439345181
+      }
+    },
+    {
+      "text": "Earnings call transcript: Commercial International Bank posts strong Q3 2026 growth - Investing.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982962012290955,
+        "negative": 0.000600489613134414,
+        "neutral": 0.0011032676557078958
+      },
+      "raw_probabilities": {
+        "positive": 0.9982962012290955,
+        "neutral": 0.0011032676557078958,
+        "negative": 0.000600489613134414
+      }
+    },
+    {
+      "text": "Commercial International Bank Egypt CIB S A E Q3 2026 Earnings Call Is Live - TradingView",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00025334188831038773,
+        "negative": 0.00015613299910910428,
+        "neutral": 0.9995905756950378
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995905756950378,
+        "positive": 0.00025334188831038773,
+        "negative": 0.00015613299910910428
+      }
+    },
+    {
+      "text": "JPMorgan Announces Cash Distributions for the JPMorgan ETFs - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.3250221312046051,
+        "negative": 0.000508242635987699,
+        "neutral": 0.6744696497917175
+      },
+      "raw_probabilities": {
+        "neutral": 0.6744696497917175,
+        "positive": 0.3250221312046051,
+        "negative": 0.000508242635987699
+      }
+    },
+    {
+      "text": "Commercial International Bank Egypt Qtrly Consol Profit EGP 23.76 Bln - TradingView",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.011844001710414886,
+        "negative": 0.0001876223977888003,
+        "neutral": 0.9879683256149292
+      },
+      "raw_probabilities": {
+        "neutral": 0.9879683256149292,
+        "positive": 0.011844001710414886,
+        "negative": 0.0001876223977888003
+      }
+    },
+    {
+      "text": "Egypt’s CIB Targets Q1 2027 Launch for Yomo Digital Bank - waya.media",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9975460171699524,
+        "negative": 0.00039860629476606846,
+        "neutral": 0.002055397955700755
+      },
+      "raw_probabilities": {
+        "positive": 0.9975460171699524,
+        "neutral": 0.002055397955700755,
+        "negative": 0.00039860629476606846
+      }
+    },
+    {
+      "text": "CIBC Private Banking named Best Private Bank in Canada for Innovation and for Customer Service - Yahoo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978456497192383,
+        "negative": 0.0008691104594618082,
+        "neutral": 0.001285246922634542
+      },
+      "raw_probabilities": {
+        "positive": 0.9978456497192383,
+        "neutral": 0.001285246922634542,
+        "negative": 0.0008691104594618082
+      }
+    },
+    {
+      "text": "McDonalds Stock Price & Chart - FOREX.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007762438617646694,
+        "negative": 0.0003453158715274185,
+        "neutral": 0.9988784193992615
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988784193992615,
+        "positive": 0.0007762438617646694,
+        "negative": 0.0003453158715274185
+      }
+    },
+    {
+      "text": "5 Best Copper Stocks for 2026 and How to Invest - The Motley Fool",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00446462444961071,
+        "negative": 0.0002545035968068987,
+        "neutral": 0.9952808022499084
+      },
+      "raw_probabilities": {
+        "neutral": 0.9952808022499084,
+        "positive": 0.00446462444961071,
+        "negative": 0.0002545035968068987
+      }
+    },
+    {
+      "text": "Canadian Employment (October 2026) - TD Economics",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004761286545544863,
+        "negative": 0.00016461487393826246,
+        "neutral": 0.9993591904640198
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993591904640198,
+        "positive": 0.0004761286545544863,
+        "negative": 0.00016461487393826246
+      }
+    },
+    {
+      "text": "EUR CZK Chart & Rate - EUR CZK Trading - FOREX.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005467251176014543,
+        "negative": 0.0002312883298145607,
+        "neutral": 0.999221920967102
+      },
+      "raw_probabilities": {
+        "neutral": 0.999221920967102,
+        "positive": 0.0005467251176014543,
+        "negative": 0.0002312883298145607
+      }
+    },
+    {
+      "text": "USD TRY Chart & Rate - USD TRY Trading - FOREX.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003376477397978306,
+        "negative": 0.0002678262535482645,
+        "neutral": 0.9993945360183716
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993945360183716,
+        "positive": 0.0003376477397978306,
+        "negative": 0.0002678262535482645
+      }
+    },
+    {
+      "text": "Media Advisory - CIBC to Announce Fourth Quarter 2026 Results on December 3, 2026 - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000262759393081069,
+        "negative": 0.000204087991733104,
+        "neutral": 0.9995331764221191
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995331764221191,
+        "positive": 0.000262759393081069,
+        "negative": 0.000204087991733104
+      }
+    },
+    {
+      "text": "Redesigned Health app expands language support - Apple",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978424310684204,
+        "negative": 0.0005440443637780845,
+        "neutral": 0.001613452099263668
+      },
+      "raw_probabilities": {
+        "positive": 0.9978424310684204,
+        "neutral": 0.001613452099263668,
+        "negative": 0.0005440443637780845
+      }
+    },
+    {
+      "text": "[Invitation] Galaxy Unpacked February 2026: The Next AI Phone Makes Your Life Easier - samsung.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9860542416572571,
+        "negative": 0.00017608917551115155,
+        "neutral": 0.013769656419754028
+      },
+      "raw_probabilities": {
+        "positive": 0.9860542416572571,
+        "neutral": 0.013769656419754028,
+        "negative": 0.00017608917551115155
+      }
+    },
+    {
+      "text": "CIBC Announces Appointment of Bill Morneau as Chair of the Board - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.001404351438395679,
+        "negative": 0.00020741623302455992,
+        "neutral": 0.9983881711959839
+      },
+      "raw_probabilities": {
+        "neutral": 0.9983881711959839,
+        "positive": 0.001404351438395679,
+        "negative": 0.00020741623302455992
+      }
+    },
+    {
+      "text": "Canadian Monthly GDP (August 2026) - TD Economics",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005423081456683576,
+        "negative": 0.0001484896638430655,
+        "neutral": 0.9993093013763428
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993093013763428,
+        "positive": 0.0005423081456683576,
+        "negative": 0.0001484896638430655
+      }
+    },
+    {
+      "text": "Commercial International Bank Egypt (CIB)E (CASE:COMI) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007943141390569508,
+        "negative": 0.0001789330126484856,
+        "neutral": 0.9990267753601074
+      },
+      "raw_probabilities": {
+        "neutral": 0.9990267753601074,
+        "positive": 0.0007943141390569508,
+        "negative": 0.0001789330126484856
+      }
+    },
+    {
+      "text": "Many of Africa’s banks got bigger in 2025. Did they get better? - The Africa Report",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.997082531452179,
+        "negative": 0.0011794444872066379,
+        "neutral": 0.0017380175413563848
+      },
+      "raw_probabilities": {
+        "positive": 0.997082531452179,
+        "neutral": 0.0017380175413563848,
+        "negative": 0.0011794444872066379
+      }
+    },
+    {
+      "text": "Egypt clock change to temporarily disrupt e-banking services, prepaid electricity card charging - Economy - Business - Ahram Online",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.000256682513281703,
+        "negative": 0.9988458156585693,
+        "neutral": 0.0008974462980404496
+      },
+      "raw_probabilities": {
+        "negative": 0.9988458156585693,
+        "neutral": 0.0008974462980404496,
+        "positive": 0.000256682513281703
+      }
+    },
+    {
+      "text": "TD Asset Management Inc. Announces Risk Rating Changes for Certain TD ETFs - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.002258271211758256,
+        "negative": 0.0004616735386662185,
+        "neutral": 0.9972801208496094
+      },
+      "raw_probabilities": {
+        "neutral": 0.9972801208496094,
+        "positive": 0.002258271211758256,
+        "negative": 0.0004616735386662185
+      }
+    },
+    {
+      "text": "N.L. Hydro fined $100,000 over veteran electrician’s switchyard death - Canadian Occupational Safety",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00039894538349471986,
+        "negative": 0.9987208247184753,
+        "neutral": 0.0008801924414001405
+      },
+      "raw_probabilities": {
+        "negative": 0.9987208247184753,
+        "neutral": 0.0008801924414001405,
+        "positive": 0.00039894538349471986
+      }
+    }
+  ]
+}

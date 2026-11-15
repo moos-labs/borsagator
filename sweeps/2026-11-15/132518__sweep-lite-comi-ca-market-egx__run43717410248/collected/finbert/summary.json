@@ -1,0 +1,17 @@
+{
+  "tool": "finbert",
+  "ticker": "COMI.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "label": "live",
+    "model": "ProsusAI/finbert",
+    "count": 40
+  },
+  "files": [
+    "report.md",
+    "run.log",
+    "sentiment.json"
+  ]
+}
