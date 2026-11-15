@@ -1,0 +1,125 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 10.15,
+ "base_source": "pandas-ta",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "yahooquery/poul.ca.csv": 10.199999809265137,
+   "pandas-ta/indicators.csv": 10.199999809265137,
+   "egx-data/egxpy_poul.csv": 10.2,
+   "talib/indicators.csv": 10.199999809265137,
+   "openbb/poul_ca.csv": 10.199999809265137
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-11",
+  "base_used": 10.15,
+  "base_source_used": "pandas-ta"
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.89,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.62,
+   "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+  },
+  {
+   "type": "dividend",
+   "dps": 1.9,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.72,
+   "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة"
+  }
+ ],
+ "sigma_daily": 0.0225,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0186)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-15",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+  ],
+  "events": [
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+   }
+  ],
+  "move_z": {
+   "last": 0.66,
+   "max3": 0.66
+  }
+ },
+ "weights_source": "ledger",
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": 0.003,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.258
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.21,
+   "range_low_pct": -3.42,
+   "range_high_pct": 5.84,
+   "confidence": 0.3,
+   "net_score": 0.242,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.003,
+    "price-forecast": 0.343
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "down",
+   "expected_move_pct": -1.0,
+   "range_low_pct": -9.28,
+   "range_high_pct": 7.29,
+   "confidence": 0.3,
+   "net_score": 0.001,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.003,
+    "price-forecast": -0.213
+   },
+   "horizon_short": false,
+   "trading_sessions": 3
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -1.91,
+   "range_low_pct": -20.44,
+   "range_high_pct": 16.61,
+   "confidence": 0.3,
+   "net_score": 0.162,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": 0.003,
+    "fundamentals": 0.4,
+    "price-forecast": -0.258
+   },
+   "horizon_short": false,
+   "trading_sessions": 14
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}
