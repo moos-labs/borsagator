@@ -1,0 +1,34 @@
+{
+  "job": "run kronos NVDA",
+  "ticker": "NVDA",
+  "date": "2026-11-15",
+  "started": "2026-11-15T13:08:12.234729+00:00",
+  "finished": "2026-11-15T13:09:20.150862+00:00",
+  "results": [
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "run_url": "https://github.com/moos-labs/kronos-runner/actions/runs/43717407660",
+      "conclusion": "success",
+      "summary": {
+        "tool": "kronos",
+        "ticker": "NVDA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-13",
+          "forecast.csv_last_close": "180.6044"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
