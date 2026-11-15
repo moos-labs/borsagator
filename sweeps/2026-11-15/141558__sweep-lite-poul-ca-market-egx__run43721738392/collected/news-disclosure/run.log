@@ -1,0 +1,25 @@
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 9254.07it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 25188.38it/s]
+WARN body extract short (0 chars): https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701268/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 3}
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 22788.36it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6474.28it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 2, "arabic_headlines": 21, "latest_news_date": "Sun, 15 Nov 2026 13:37:06 GMT", "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.044, "finbert_negative": 0.258, "finbert_neutral": 0.698, "finbert_scored": 3, "multilingual_positive": 0.646, "multilingual_negative": 0.008, "multilingual_neutral": 0.345, "multilingual_scored": 21, "bodies_fetched": 8, "egx_bodies_attached": 0, "translation_provider": "nllb+cohere", "translated_positive": 0.348, "translated_negative": 0.216, "translated_neutral": 0.436, "translated_scored": 21}
+BRIEF:
+Here is a brief summary of the news headlines:
+
+- The Egyptian Stock Exchange has allowed the price of Cairo Poultry's stock to move down by 35.19% and set a temporary suspension level at 27.09%.
+- Today, November 15, 2026, is the last day to receive the cash distribution for Cairo Poultry's stock, with a coupon value of 1.89 Egyptian pounds per share.
+- Cairo Poultry's profits for the first quarter of 2026 have been announced, with a consolidated financial statement showing a profit of 1.43 billion Egyptian pounds.
+- Despite a 1.1% increase in revenue to 12.1 billion Egyptian pounds, Cairo Poultry's profits have dropped by 39.1% to 1.44 billion Egyptian pounds for the first nine months of 2026.
+- The company's consolidated profit for the third quarter was 152 million Egyptian pounds.
+- Cairo Poultry's profits have declined by 39% during the first nine months of 2026, despite a growth in revenues to 12.6 billion Egyptian pounds.
+- The stock of Mansoura Poultry has seen a significant rise, leading the food sector in the Egyptian Stock Exchange with a 7.28% increase.
+- The regulatory authority has approved the disclosure of Cairo Poultry's capital increase to 2 billion Egyptian pounds, allowing for expansion in its poultry and food-related activities.
+
+These headlines indicate a mixed performance for Cairo Poultry, with a decline in profits despite revenue growth. The stock's price
