@@ -2,10 +2,12 @@ name: Ledger guard
 
 # Issue #64 backstop: worker-archived sweeps never fire an Actions
 # run, so the orchestrate.yml ledger step cannot see them. This guard
-# runs the same publisher hourly; it is idempotent — it skips when
-# the committed ledger already records the live archive tree, and it
-# commits only when the rerun's outputs actually changed. A failed
-# rerun fails this run (the surface), and the next hour retries.
+# runs the same publisher hourly; every run revalidates the ledger
+# (issue #116 removed the tree-sha idempotency skip) and it commits
+# only when the rerun's outputs actually changed. A failed rerun
+# fails this run (the surface), and the next hour retries.
+# Issue #115: this comment-only touch re-registers the hourly
+# schedule — the 09:23Z, 10:23Z and 11:23Z ticks never fired.
 
 on:
   schedule:
