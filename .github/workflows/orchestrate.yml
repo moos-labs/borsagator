@@ -86,6 +86,18 @@ jobs:
             git push origin archive || echo "ARCHIVE PUSH FAILED (non-fatal)"
           fi
 
+      # Issue #64: after the sweep is archived, rerun the calibration
+      # ledger against the archive and publish ledger/ to main. The
+      # publisher validates the run, appends a ledger section (or a
+      # ⚠️ failure line) to the digest, and commits only on change.
+      # It never fails the sweep. The token is the workflow token
+      # (contents: write) — the App token has no Contents access.
+      - name: Rerun + publish the calibration ledger
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/ledger_publish.py --digest digest/digest.md --commit
+
       - name: Upload the digest
         if: always()
         uses: actions/upload-artifact@v4
