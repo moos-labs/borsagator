@@ -984,6 +984,80 @@ def main():
     except Exception:
         actions = []
 
+    # ---------- issue #130: ex-date-today Kronos rescale ----------
+    # On the ex-date itself (as_of == ex_date) the base is already
+    # post-ex while the Kronos path is still pre-ex scale: the model
+    # was fit on pre-ex history and knows nothing of the dividend,
+    # so kronos_at() measures a ~+DPS/pre-ex move that is purely the
+    # mechanical ex-gap (16 Nov proof run: +28.55% move, day expected
+    # +18.61%). Re-anchor the whole path multiplicatively to the
+    # post-ex level — factor (pre_ex_close - DPS) / pre_ex_close —
+    # which preserves Kronos's own relative moves instead of
+    # subtracting a flat DPS from each bar. The path carries no
+    # usable dates for this (its row dates lag as_of by a session
+    # and row 0 IS the day forecast), so the rescale applies to the
+    # whole path, not by row date. It applies only when the base is
+    # provably post-ex (base_date >= ex_date) AND the path actually
+    # sits above the post-ex base by at least half the mechanical
+    # gap — a path already in post-ex scale is left alone. Any
+    # failure here degrades to no rescale; the marking below still
+    # says the ex-date is today.
+    ex_rescale = None
+    try:
+        _today = [a for a in actions
+                  if a.get("ex_date")
+                  and date.fromisoformat(a["ex_date"]) == as_of]
+        if _today:
+            _a = _today[0]
+            _ex = date.fromisoformat(_a["ex_date"])
+            _dps = float(_a["dps"])
+            _base_d = None
+            try:
+                _base_d = date.fromisoformat(str(base_date)[:10]) if base_date else None
+            except Exception:
+                _base_d = None
+            ex_rescale = {"ex_date": _a["ex_date"], "dps": _a["dps"],
+                          "applied": False}
+            if _base_d is not None and _base_d >= _ex:
+                _pre, _pre_src = None, None
+                _cands = []
+                for _src, _m in (series or {}).items():
+                    _dated = sorted(d for d in _m
+                                    if len(d) == 10 and d[4] == "-"
+                                    and d < _a["ex_date"])
+                    if _dated:
+                        _cands.append((_dated[-1],
+                                       _src.startswith("egx-data/"),
+                                       _src, _m[_dated[-1]]))
+                if _cands:
+                    _cands.sort(key=lambda t: (t[0], t[1]))
+                    _pre = _cands[-1][3]
+                    _pre_src = _cands[-1][2]
+                if _pre is None:
+                    _pre, _pre_src = base + _dps, "base+dps (no pre-ex close in series)"
+                if _pre and 0 < _dps < _pre:
+                    _f = (_pre - _dps) / _pre
+                    _gap = _dps / _pre
+                    _inflated = bool(kronos_path) and (
+                        kronos_path[0][0] / base - 1.0 > 0.5 * _gap)
+                    ex_rescale.update(
+                        pre_ex_close=_pre, pre_ex_source=_pre_src,
+                        factor=round(_f, 4))
+                    if 0.5 < _f < 1.0 and _inflated:
+                        kronos_path = [(c * _f, h * _f, l * _f)
+                                       for (c, h, l) in kronos_path]
+                        ex_rescale["applied"] = True
+                    else:
+                        ex_rescale["reason"] = (
+                            "path already post-ex scale"
+                            if not _inflated else "factor out of range")
+                else:
+                    ex_rescale["reason"] = "no usable pre-ex close"
+            else:
+                ex_rescale["reason"] = "base not post-ex (base_date %s)" % (base_date,)
+    except Exception as e:
+        ex_rescale = {"applied": False, "reason": f"rescale error: {e}"}
+
     # ---------- combine per horizon ----------
     fam_fixed = {"technicals": tech, "sentiment": sentiment,
                  "agent": agent, "fundamentals": fund}
@@ -991,6 +1065,7 @@ def main():
            "base_price": base, "base_source": base_src,
            "base_date": base_date,
            "price_crosscheck": check, "corporate_actions": actions,
+           "kronos_ex_rescale": ex_rescale,
            "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
@@ -1043,6 +1118,10 @@ def main():
         }
         # Mark horizons spanning an ex-date: the mechanical dividend
         # drop inside them is decomposed, not forecast skill/error.
+        # Issue #130: the window starts AT the ex-date, not after
+        # it — on the ex-date itself the base is already post-ex,
+        # so the horizon must say so out loud (and the Kronos path
+        # above was rescaled to the post-ex level when it applied).
         # Issue #131: keep the FIRST in-window action — after the
         # detection dedup at most one action per distribution
         # survives, so the horizon block no longer depends on
@@ -1054,11 +1133,20 @@ def main():
                     ex = date.fromisoformat(a["ex_date"])
                 except Exception:
                     continue
-                if as_of < ex <= as_of + timedelta(days=bar):
-                    out["horizons"][hname]["corporate_action"] = {
+                if as_of <= ex <= as_of + timedelta(days=bar):
+                    _mark = {
                         "type": a["type"], "dps": a["dps"],
                         "ex_date": a["ex_date"],
                         "mechanical_pct": a["mechanical_pct"]}
+                    if ex == as_of:
+                        _mark["ex_date_today"] = True
+                        _mark["kronos_rescaled"] = bool(
+                            ex_rescale and ex_rescale.get("applied")
+                            and ex_rescale.get("ex_date") == a["ex_date"])
+                        if _mark["kronos_rescaled"]:
+                            _mark["rescale_factor"] = ex_rescale["factor"]
+                            _mark["pre_ex_close"] = ex_rescale["pre_ex_close"]
+                    out["horizons"][hname]["corporate_action"] = _mark
     out["family_scores"] = {k: (round(v, 3) if v is not None else None)
                             for k, v in fam_display.items()}
 
@@ -1095,12 +1183,31 @@ def main():
         f"{k} ×{_fmt_factor(v)}" for k, v in _aw.items()) + ".", ""]
     for a in actions:
         if a.get("ex_date"):
-            lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
-                      f"ex-date {a['ex_date']} — a mechanical "
-                      f"≈ {a['mechanical_pct']:+.2f}% move is expected on the "
-                      f"ex-date (not a market signal). Horizons spanning it "
-                      f"are marked; the calibration ledger will score them "
-                      f"dividend-adjusted.", ""]
+            if a["ex_date"] == as_of.isoformat():
+                # Issue #130: the ex-date is TODAY — the drop already
+                # happened and the base already reflects it, so there
+                # is no mechanical move left to expect; say what was
+                # done about the pre-ex Kronos path instead.
+                if ex_rescale and ex_rescale.get("applied"):
+                    _rs = (f"the Kronos path was rescaled ×{ex_rescale['factor']:.3f} "
+                           f"to the post-ex level (pre-ex close "
+                           f"{ex_rescale['pre_ex_close']:g}), so the "
+                           f"forecasts below carry no mechanical ex-gap")
+                else:
+                    _rs = ("the Kronos path showed no mechanical "
+                           "inflation, so no rescale was applied")
+                lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
+                          f"ex-date {a['ex_date']} (today) — the base price "
+                          f"already reflects the ex-dividend drop; {_rs}. "
+                          f"Horizons are marked ex-distorted; the calibration "
+                          f"ledger scores them without further adjustment.", ""]
+            else:
+                lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
+                          f"ex-date {a['ex_date']} — a mechanical "
+                          f"≈ {a['mechanical_pct']:+.2f}% move is expected on the "
+                          f"ex-date (not a market signal). Horizons spanning it "
+                          f"are marked; the calibration ledger will score them "
+                          f"dividend-adjusted.", ""]
     lines += [
              "| Horizon | Direction | Expected | Range | Confidence |",
              "|---|---|---|---|---|"]
@@ -1113,8 +1220,16 @@ def main():
         if h.get("trading_sessions") and h["trading_sessions"] != HORIZONS[hname]:
             note += f" (≈{h['trading_sessions']} sessions)"
         if h.get("corporate_action"):
-            note += (f" (incl. {h['corporate_action']['mechanical_pct']:+.1f}% "
-                     f"mechanical ex-dividend)")
+            _ca = h["corporate_action"]
+            if _ca.get("ex_date_today"):
+                if _ca.get("kronos_rescaled"):
+                    note += (f" (ex-date today — Kronos path rescaled "
+                             f"×{_ca['rescale_factor']:.3f} to post-ex level)")
+                else:
+                    note += " (ex-date today — no Kronos rescale needed)"
+            else:
+                note += (f" (incl. {_ca['mechanical_pct']:+.1f}% "
+                         f"mechanical ex-dividend)")
         lines.append(f"| {hname}{note} | {arrow} | {h['expected_move_pct']:+.2f}% | "
                      f"{h['range_low_pct']:+.2f}% … {h['range_high_pct']:+.2f}% | {h['confidence']:.2f} |")
     lines += ["", "Family scores (−1…+1): " + ", ".join(
