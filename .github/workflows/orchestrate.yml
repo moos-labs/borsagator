@@ -62,28 +62,58 @@ jobs:
         run: python3 scripts/ensemble.py || true
 
       - name: Stage the sweep archive
-        if: always()
-        run: python3 scripts/archive.py || true
-
-      - name: Commit the archive
+        id: archive-stage
         if: always()
         run: |
+          # Issue #118: the ledger step runs only when the archive
+          # actually landed — record the staged target as the marker.
+          python3 scripts/archive.py || true
           if [ -f archive_stage/TARGET.txt ]; then
-            TARGET=$(cat archive_stage/TARGET.txt)
-            git config user.name "borsagator-archive"
-            git config user.email "moos@sherbeeny.com"
-            if git ls-remote --exit-code origin archive >/dev/null 2>&1; then
-              git fetch origin "+refs/heads/archive:refs/remotes/origin/archive"
-              git worktree add -b archive /tmp/arch origin/archive
+            echo "target=$(cat archive_stage/TARGET.txt)" >> "$GITHUB_OUTPUT"
+            echo "staged=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "staged=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit the archive
+        id: archive-commit
+        if: always()
+        run: |
+          # Issue #118: archive_ok=true only when the push actually
+          # landed — the ledger step below gates on this output, so a
+          # failed archive can never publish a stale-as-current ledger.
+          # A failed archive stays non-fatal for the sweep itself.
+          echo "archive_ok=false" >> "$GITHUB_OUTPUT"
+          if [ ! -f archive_stage/TARGET.txt ]; then
+            echo "No archive target staged — nothing to commit."
+            exit 0
+          fi
+          TARGET=$(cat archive_stage/TARGET.txt)
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          git config user.name "borsagator-archive"
+          git config user.email "moos@sherbeeny.com"
+          if git ls-remote --exit-code origin archive >/dev/null 2>&1; then
+            git fetch origin "+refs/heads/archive:refs/remotes/origin/archive" || true
+            git worktree add -b archive /tmp/arch origin/archive || true
+          else
+            git worktree add --orphan -b archive /tmp/arch || true
+          fi
+          if [ ! -e /tmp/arch/.git ]; then
+            echo "Archive worktree setup failed — skipping commit."
+            exit 0
+          fi
+          mkdir -p "/tmp/arch/$TARGET"
+          cp -r archive_stage/data/. "/tmp/arch/$TARGET/"
+          cd /tmp/arch || exit 0
+          git add -A
+          if git commit -m "Archive sweep: $TARGET"; then
+            if git push origin archive; then
+              echo "archive_ok=true" >> "$GITHUB_OUTPUT"
             else
-              git worktree add --orphan -b archive /tmp/arch
+              echo "ARCHIVE PUSH FAILED (non-fatal)"
             fi
-            mkdir -p "/tmp/arch/$TARGET"
-            cp -r archive_stage/data/. "/tmp/arch/$TARGET/"
-            cd /tmp/arch
-            git add -A
-            git commit -m "Archive sweep: $TARGET" || echo "nothing to commit"
-            git push origin archive || echo "ARCHIVE PUSH FAILED (non-fatal)"
+          else
+            echo "nothing to commit — archive not updated"
           fi
 
       # Issue #64: after the sweep is archived, rerun the calibration
@@ -92,11 +122,38 @@ jobs:
       # ⚠️ failure line) to the digest, and commits only on change.
       # It never fails the sweep. The token is the workflow token
       # (contents: write) — the App token has no Contents access.
+      # Issue #118: this step runs ONLY when the archive push landed
+      # (steps.archive-commit.outputs.archive_ok) — with an
+      # if: always() here it would read the previous archive tree and
+      # publish a ledger omitting this sweep while the digest claims
+      # it is current. LEDGER_SWEEP_TARGET lets the publisher refuse
+      # the same way if the tree does not contain this sweep.
       - name: Rerun + publish the calibration ledger
-        if: always()
+        if: always() && steps.archive-commit.outputs.archive_ok == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          LEDGER_SWEEP_TARGET: ${{ steps.archive-commit.outputs.target }}
         run: python3 scripts/ledger_publish.py --digest digest/digest.md --commit
+
+      # Issue #118: when the archive did not land, the ledger step
+      # above is skipped — say so in the digest instead of publishing
+      # a ledger that omits this sweep while claiming to be current.
+      - name: Note the skipped ledger in the digest
+        if: always() && steps.archive-commit.outputs.archive_ok != 'true'
+        run: |
+          if [ -f digest/digest.md ]; then
+            {
+              echo ""
+              echo "## ⚠️ Calibration ledger"
+              echo ""
+              echo "⚠️ This sweep was not archived on branch \`archive\`"
+              echo "(the archive step failed or its push failed), so the"
+              echo "ledger rerun was skipped — the committed ledger on main"
+              echo "was NOT updated and does not include this sweep. Treat"
+              echo "the published weights as stale until the next successful"
+              echo "rerun."
+            } >> digest/digest.md
+          fi
 
       - name: Upload the digest
         if: always()

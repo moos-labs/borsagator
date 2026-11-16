@@ -22,6 +22,15 @@ snapshot — the snapshot is consistent, and the next guard tick
 refreshes it for the new tree. Refusing to publish on a benign
 advance would fail the guard run for no integrity gain.
 
+Issue #118: the sweep-path ledger step is gated on the archive push
+in orchestrate.yml, and the publisher additionally refuses to
+publish when the live archive tree does not contain this sweep's
+directory (--sweep-target / LEDGER_SWEEP_TARGET): a failed archive
+must never produce a ledger that omits the sweep while the digest
+claims it is current. On such a refusal the publisher writes a ⚠️
+section to the digest and skips the publish — it never fails the
+sweep. The guard path passes no target, so it is unaffected.
+
 Modes:
   sweep path (orchestrate.yml):  ledger_publish.py --digest digest/digest.md --commit
   guard path (ledger-guard.yml): ledger_publish.py --commit --fail-hard
@@ -35,7 +44,7 @@ issue #116 (a missing sweep was never re-added until the tree moved
 again). Revalidation costs one ledger run per guard tick and keeps
 that lock-in impossible.
 """
-import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.request
+import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER_DIR = os.path.join(ROOT, "ledger")
@@ -69,6 +78,37 @@ def live_archive_commit_sha():
         return (data.get("object") or {}).get("sha")
     except Exception as e:
         log(f"live archive HEAD check failed ({e}) — skipping comparison")
+        return None
+
+
+def live_archive_contains(target):
+    """True when this sweep's directory is present on the live archive
+    branch (its manifest.json is reachable), False when it is absent,
+    None when the check itself could not be performed (issue #118
+    belt-and-braces: the workflow gates the sweep-path ledger step
+    on the archive push, but if the branch moved on between the push
+    and this run, never publish a ledger that omits the sweep while
+    claiming to be current). An unreachable check never blocks a
+    publish — the pinned snapshot is self-consistent either way,
+    mirroring live_archive_commit_sha."""
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    headers = {"User-Agent": "borsagator-ledger-publish",
+               "Accept": "application/vnd.github+json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    url = ("https://api.github.com/repos/moos-labs/borsagator/contents/"
+           f"{target}/manifest.json?ref=archive")
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status == 200
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return False
+        log(f"archive-contains check failed (HTTP {e.code}) — proceeding")
+        return None
+    except Exception as e:
+        log(f"archive-contains check failed ({e}) — proceeding")
         return None
 
 
@@ -170,6 +210,15 @@ def section_unchanged(doc):
             f"{_counts_line(doc)}. Nothing to publish.")
 
 
+def section_skipped(target):
+    return ("## ⚠️ Calibration ledger\n\n"
+            f"⚠️ This sweep (`{target}`) is not in the archive tree on "
+            "branch `archive`, so the ledger rerun was skipped — the "
+            "committed ledger on main was NOT updated and does not "
+            "include this sweep. Treat the published weights as stale "
+            "until the next successful rerun.")
+
+
 def section_failed(reason):
     reason = " ".join(str(reason).split())[:220]
     return ("## ⚠️ Calibration ledger\n\n"
@@ -226,9 +275,31 @@ def fail(reason, digest_path, fail_hard):
     return 1 if fail_hard else 0
 
 
-def publish(commit, digest_path, fail_hard):
+def skip(reason, digest_path, target):
+    """Issue #118: the sweep is absent from the live archive tree —
+    refuse to publish a stale-as-current ledger. Visible in the
+    digest, never a run failure (the sweep path never passes
+    --fail-hard, and a skipped ledger must not fail the sweep)."""
+    log(f"SKIPPED: {reason}")
+    append_digest(digest_path, section_skipped(target))
+    return 0
+
+
+def publish(commit, digest_path, fail_hard, sweep_target=None):
     old = committed_ledger()
     old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
+    # Issue #118: when the sweep path names this sweep's archive
+    # directory, refuse to publish unless the live archive tree
+    # contains it — otherwise the rerun below would publish a ledger
+    # that omits this sweep while the digest claims it is current.
+    # No target (guard path, local runs) means no check.
+    if sweep_target:
+        contains = live_archive_contains(sweep_target)
+        if contains is False:
+            return skip("archive tree does not contain this sweep "
+                        f"({sweep_target})", digest_path, sweep_target)
+        if contains:
+            log(f"archive tree contains this sweep ({sweep_target})")
     # Issue #116: NO tree-sha skip here. The rerun below always
     # revalidates (run_ledger rejects on a per-file fetch failure),
     # and the byte-identical check further down is the only skip —
@@ -286,9 +357,19 @@ def main():
                     help="commit + push ledger/ to main when changed")
     ap.add_argument("--fail-hard", action="store_true",
                     help="exit non-zero on failure (guard mode)")
+    ap.add_argument("--sweep-target", default=None,
+                    help="this sweep's archive directory, e.g. "
+                         "sweeps/2026-11-16/081500__sweep-lite-poul-ca__run123 "
+                         "(issue #118: refuse to publish when the live "
+                         "archive tree does not contain it; defaults to "
+                         "LEDGER_SWEEP_TARGET)")
     a = ap.parse_args()
+    sweep_target = (a.sweep_target or
+                    os.environ.get("LEDGER_SWEEP_TARGET") or None)
+    if sweep_target:
+        sweep_target = sweep_target.strip() or None
     try:
-        return publish(a.commit, a.digest, a.fail_hard)
+        return publish(a.commit, a.digest, a.fail_hard, sweep_target)
     except Exception as e:  # the publisher must never crash a sweep
         return fail(f"unexpected publisher error: {e}",
                     a.digest, a.fail_hard)
