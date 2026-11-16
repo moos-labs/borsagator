@@ -1,0 +1,23 @@
+WARN body http 404: https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7796841/
+bodies: 5/12 fetched; failures by stage: {'decode': 4, 'http': 3, 'extract': 0}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T19:58:58Z)
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 3492.14it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 25442.27it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 35115.42it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6970.05it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 11, "arabic_headlines": 29, "latest_news_date": "Mon, 16 Nov 2026 14:51:18 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.398, "multilingual_negative": 0.041, "multilingual_neutral": 0.561, "multilingual_scored": 29, "bodies_fetched": 5, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "published", "translation_provider": "nllb+cohere", "translated_positive": 0.201, "translated_negative": 0.229, "translated_neutral": 0.57, "translated_scored": 29}
+BRIEF:
+- Cairo Poultry's stock has seen a significant decline, with a 17% drop, leading the most declining stocks in the Egyptian stock market.
+- The company's nine-month profit took a hit, dropping by 38.3%, as reported on November 16, 2026.
+- Despite revenue growth, Cairo Poultry's profits for the first nine months of 2026 saw a decline of 39%.
+- The Egyptian Stock Exchange has set price limits for Cairo Poultry's stock, allowing a 35.19% decrease and a 27.09% temporary halt.
+- Shareholders of Cairo Poultry will no longer be entitled to the cash dividend as of November 15, 2026.
+- The company's third-quarter consolidated profit was EGP 152 million.
+- These developments indicate a challenging period for Cairo Poultry, which could impact investor confidence and potentially affect the stock's performance.
+- The stock's sudden drop and the company's profit decline may raise concerns among investors, leading to a reevaluation of their holdings.

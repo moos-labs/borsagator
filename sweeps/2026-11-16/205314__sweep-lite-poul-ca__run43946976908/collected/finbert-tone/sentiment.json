@@ -1,0 +1,502 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 19,
+  "label_counts": {
+    "positive": 1,
+    "negative": 2,
+    "neutral": 16
+  },
+  "label_counts_raw": {
+    "negative": 2,
+    "neutral": 16,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.05195524934499331,
+    "negative": 0.10654775572052849,
+    "neutral": 0.8414969659336892
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.014869926497340202,
+        "negative": 0.9803637862205505,
+        "neutral": 0.00476625794544816
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9803637862205505
+        },
+        {
+          "label": "Positive",
+          "score": 0.014869926497340202
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00476625794544816
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.4893549784319475e-05,
+        "negative": 0.0007036483148112893,
+        "neutral": 0.9992514252662659
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9992514252662659
+        },
+        {
+          "label": "Negative",
+          "score": 0.0007036483148112893
+        },
+        {
+          "label": "Positive",
+          "score": 4.4893549784319475e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "\"Tutafute hela\": Tanzanian influencer on being 'chased' from Charlene's wedding - Tuko News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1721409691745066e-06,
+        "negative": 4.788715159520507e-05,
+        "neutral": 0.9999508857727051
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999508857727051
+        },
+        {
+          "label": "Negative",
+          "score": 4.788715159520507e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.1721409691745066e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.4569318308494985e-06,
+        "negative": 3.274824484833516e-05,
+        "neutral": 0.9999617338180542
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999617338180542
+        },
+        {
+          "label": "Negative",
+          "score": 3.274824484833516e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.4569318308494985e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4938271988285123e-06,
+        "negative": 2.0036914065713063e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.0036914065713063e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.4938271988285123e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Paul Kagame | Biography, Education, & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1985030141659081e-05,
+        "negative": 8.641326712677255e-05,
+        "neutral": 0.999901533126831
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999901533126831
+        },
+        {
+          "label": "Negative",
+          "score": 8.641326712677255e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.1985030141659081e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0009315142524428666,
+        "negative": 0.04165801405906677,
+        "neutral": 0.9574103951454163
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9574103951454163
+        },
+        {
+          "label": "Negative",
+          "score": 0.04165801405906677
+        },
+        {
+          "label": "Positive",
+          "score": 0.0009315142524428666
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Poul Andersen - Oct. 5 - Red Deer Rebels - Canadian Hockey League",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.2216834117425606e-07,
+        "negative": 3.71364330931101e-05,
+        "neutral": 0.999962329864502
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999962329864502
+        },
+        {
+          "label": "Negative",
+          "score": 3.71364330931101e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.2216834117425606e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rebels Poul Andersen named WHL Player of the Week - Red Deer Advocate",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.084298896283144e-06,
+        "negative": 4.474382512853481e-05,
+        "neutral": 0.9999521970748901
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999521970748901
+        },
+        {
+          "label": "Negative",
+          "score": 4.474382512853481e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.084298896283144e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Four Goals – Poul Andersen - Western Hockey League - Canadian Hockey League",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.664522632287117e-06,
+        "negative": 5.773693192168139e-05,
+        "neutral": 0.999936580657959
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999936580657959
+        },
+        {
+          "label": "Negative",
+          "score": 5.773693192168139e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.664522632287117e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rand Paul - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00010248917533317581,
+        "negative": 0.0030079626012593508,
+        "neutral": 0.9968896508216858
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9968896508216858
+        },
+        {
+          "label": "Negative",
+          "score": 0.0030079626012593508
+        },
+        {
+          "label": "Positive",
+          "score": 0.00010248917533317581
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Poul Andersen bringing offensive punch to Red Deer Rebels lineup - Red Deer Advocate",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.2175732232863083e-05,
+        "negative": 0.00016189749294426292,
+        "neutral": 0.9997959733009338
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997959733009338
+        },
+        {
+          "label": "Negative",
+          "score": 0.00016189749294426292
+        },
+        {
+          "label": "Positive",
+          "score": 4.2175732232863083e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Poul Sejr Nielsen Service A/S and Poul Sejr Nielsen EL A/S join InstallatørGruppen - GlobeNewswire",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.2403053751295374e-07,
+        "negative": 6.836049124103738e-06,
+        "neutral": 0.999992847442627
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999992847442627
+        },
+        {
+          "label": "Negative",
+          "score": 6.836049124103738e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.2403053751295374e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Where does Paul McCartney live? Inside the former Beatle's homes, from London to Scotland to the United States - House & Garden",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.955003424176539e-07,
+        "negative": 7.759820618957747e-06,
+        "neutral": 0.9999920129776001
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999920129776001
+        },
+        {
+          "label": "Negative",
+          "score": 7.759820618957747e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.955003424176539e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ghana secures US$270M poultry investment to cut chicken imports, boost local production - Food Business Middle East & Africa",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9709124565124512,
+        "negative": 4.530730620899703e-06,
+        "neutral": 0.029083022847771645
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9709124565124512
+        },
+        {
+          "label": "Neutral",
+          "score": 0.029083022847771645
+        },
+        {
+          "label": "Negative",
+          "score": 4.530730620899703e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "2026 Training Camp Interviews – Poul Andersen - Canadian Hockey League",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.262262210540939e-07,
+        "negative": 0.00012702812091447413,
+        "neutral": 0.9998719692230225
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998719692230225
+        },
+        {
+          "label": "Negative",
+          "score": 0.00012702812091447413
+        },
+        {
+          "label": "Positive",
+          "score": 9.262262210540939e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Chicken heist gone wrong! Gang steals 300lbs of frozen poultry from moving truck near Cairo; ends in deadly shootout - Indiatimes",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.0002145679172826931,
+        "negative": 0.9980277419090271,
+        "neutral": 0.0017576313111931086
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9980277419090271
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0017576313111931086
+        },
+        {
+          "label": "Positive",
+          "score": 0.0002145679172826931
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Videos - St. Paul Swordsmen (Santa Fe Springs, CA) Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.1250595239052927e-07,
+        "negative": 7.2327379712078255e-06,
+        "neutral": 0.9999924898147583
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999924898147583
+        },
+        {
+          "label": "Negative",
+          "score": 7.2327379712078255e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.1250595239052927e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Where Is Pastor John-Paul Miller Now? Inside His Life as He Awaits Trial After Wife Mica Miller’s Death - People.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.76734941862378e-07,
+        "negative": 2.2251088012126274e-05,
+        "neutral": 0.9999769926071167
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999769926071167
+        },
+        {
+          "label": "Negative",
+          "score": 2.2251088012126274e-05
+        },
+        {
+          "label": "Positive",
+          "score": 6.76734941862378e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 1,
+    "negative": 4,
+    "neutral": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.11096668373081936,
+    "negative": 0.4253144034834501,
+    "neutral": 0.46371890292114887
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003271246387157589,
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316
+      },
+      "raw_probabilities": {
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316,
+        "positive": 0.0003271246387157589
+      }
+    },
+    {
+      "text": "Joshua Paul Malmberg - Sheridan Media",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00072122534038499,
+        "negative": 0.00029516281210817397,
+        "neutral": 0.9989835619926453
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989835619926453,
+        "positive": 0.00072122534038499,
+        "negative": 0.00029516281210817397
+      }
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9950209856033325,
+        "negative": 0.0003907421778421849,
+        "neutral": 0.004588231910020113
+      },
+      "raw_probabilities": {
+        "positive": 0.9950209856033325,
+        "neutral": 0.004588231910020113,
+        "negative": 0.0003907421778421849
+      }
+    },
+    {
+      "text": "\"Tutafute hela\": Tanzanian influencer on being 'chased' from Charlene's wedding - Tuko News",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0004259594134055078,
+        "negative": 0.8618147969245911,
+        "neutral": 0.137759268283844
+      },
+      "raw_probabilities": {
+        "negative": 0.8618147969245911,
+        "neutral": 0.137759268283844,
+        "positive": 0.0004259594134055078
+      }
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005521238199435174,
+        "negative": 0.00020821730140596628,
+        "neutral": 0.9992396831512451
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992396831512451,
+        "positive": 0.0005521238199435174,
+        "negative": 0.00020821730140596628
+      }
+    },
+    {
+      "text": "Paul Kagame | Biography, Education, & Facts - Britannica",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003339172981213778,
+        "negative": 0.0002223389019491151,
+        "neutral": 0.9994437098503113
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994437098503113,
+        "positive": 0.0003339172981213778,
+        "negative": 0.0002223389019491151
+      }
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003835358074866235,
+        "negative": 0.0003114596474915743,
+        "neutral": 0.9993048906326294
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993048906326294,
+        "positive": 0.0003835358074866235,
+        "negative": 0.0003114596474915743
+      }
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0007058993796817958,
+        "negative": 0.9675126075744629,
+        "neutral": 0.03178151696920395
+      },
+      "raw_probabilities": {
+        "negative": 0.9675126075744629,
+        "neutral": 0.03178151696920395,
+        "positive": 0.0007058993796817958
+      }
+    },
+    {
+      "text": "Paul Mackenzie, the Kenyan preacher who led hundreds to starve to death - Reuters",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022938227630220354,
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051176935434341
+      },
+      "raw_probabilities": {
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051176935434341,
+        "positive": 0.00022938227630220354
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 4,
+  "label_counts": {
+    "positive": 0,
+    "negative": 2,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.03498071141075343,
+    "negative": 0.43334122467786074,
+    "neutral": 0.5316780814900994
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.007490364369004965,
+        "negative": 0.9603140354156494,
+        "neutral": 0.032195646315813065
+      }
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.045525263994932175,
+        "negative": 0.028933072462677956,
+        "neutral": 0.9255416393280029
+      }
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.059629712253808975,
+        "negative": 0.019983166828751564,
+        "neutral": 0.9203871488571167
+      }
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.0272775050252676,
+        "negative": 0.724134624004364,
+        "neutral": 0.24858789145946503
+      }
+    }
+  ]
+}
