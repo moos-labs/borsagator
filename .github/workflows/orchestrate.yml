@@ -99,8 +99,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Issue #113: never file with an empty title. The gator now
+          # heads digest.md up front, but a headerless/missing file
+          # must still fall back to digest.json's job — the JSON is
+          # written before the markdown and survives a gator death
+          # (run 43815097317: head -n 1 of a headerless file was empty
+          # and `gh issue create --title ""` failed, losing the digest).
+          if [ ! -f digest/digest.md ] && [ -f digest/digest.json ]; then
+            job=$(python3 -c "import json; print(json.load(open('digest/digest.json')).get('job',''))" 2>/dev/null || echo "")
+            job=${job:-"run ${{ github.run_id }}"}
+            printf '# 🐊 Borsagator digest — %s\n\n_Gator digest missing — see digest.json._\n' "$job" > digest/digest.md
+          fi
           if [ -f digest/digest.md ]; then
             title=$(head -n 1 digest/digest.md | sed 's/^# //')
+            if [ -z "$title" ]; then
+              job=$(python3 -c "import json; print(json.load(open('digest/digest.json')).get('job',''))" 2>/dev/null || echo "")
+              if [ -n "$job" ]; then
+                title="🐊 Borsagator digest — $job"
+              else
+                title="🐊 Borsagator digest — run ${{ github.run_id }}"
+              fi
+            fi
             gh issue create --title "$title" --body-file digest/digest.md --label borsagator \
               || gh issue create --title "$title" --body-file digest/digest.md
           fi

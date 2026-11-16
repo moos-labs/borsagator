@@ -46,6 +46,33 @@ W = {
 }
 
 
+def _digest_header(digest):
+    job = (digest or {}).get("job") or ""
+    return (f"# 🐊 Borsagator digest — {job}"
+            if job else "# 🐊 Borsagator digest")
+
+
+def _ensure_digest_header(digest):
+    """Issue #113: the ensemble appends to digest.md with mode 'a',
+    which CREATES a headerless file when the gator died before writing
+    it — and the issue step titles from that file's first line, so an
+    empty first line killed the digest issue (run 43815097317).
+    Ensure the '# 🐊' header line is present first: prepend it when
+    absent, create the file headed when missing."""
+    header = _digest_header(digest)
+    existing = ""
+    if os.path.exists(OUT_MD):
+        with open(OUT_MD, encoding="utf-8") as f:
+            existing = f.read()
+    if any(line.startswith("# 🐊") for line in existing.splitlines()):
+        return
+    with open(OUT_MD, "w", encoding="utf-8") as f:
+        if existing:
+            f.write(header + "\n" + existing)
+        else:
+            f.write(header + "\n")
+
+
 def _apply_measured_weights(base):
     """Issue #28: measured-weights feedback. If the calibration
     ledger has published family skill factors (ledger/weights.json
@@ -999,6 +1026,10 @@ def main():
         f"{k} {v:+.2f}" if v is not None else f"{k} —" for k, v in fam_display.items()) + ".",
         "Verdicts are combined by family, weighted by horizon; disagreement widens "
         "the range instead of being averaged away."]
+    # Issue #113: ensure the digest is headed before appending, so a
+    # gator that died before writing digest.md cannot leave the
+    # ensemble section orphaned in a headerless file.
+    _ensure_digest_header(digest)
     with open(OUT_MD, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("ensemble v2: written for", ticker, "| sigma", round(sigma, 4),
@@ -1021,6 +1052,22 @@ if __name__ == "__main__":
                 with open(OUT_MD, "a") as f:
                     f.write("\n## ⚠️ Ensemble failed — see ensemble_error.txt; "
                             "this digest has NO ensemble forecast.\n")
+            else:
+                # Issue #113: a missing digest.md must not stay missing
+                # — write it headed (job from digest.json when present)
+                # so the issue step still titles and files the digest.
+                job = ""
+                try:
+                    with open(DIGEST, encoding="utf-8") as f:
+                        job = json.load(f).get("job") or ""
+                except Exception:
+                    pass
+                header = (f"# 🐊 Borsagator digest — {job}"
+                          if job else "# 🐊 Borsagator digest")
+                with open(OUT_MD, "w", encoding="utf-8") as f:
+                    f.write(header + "\n\n## ⚠️ Ensemble failed — see "
+                            "ensemble_error.txt; this digest has NO "
+                            "ensemble forecast.\n")
         except Exception:
             pass
     sys.exit(0)

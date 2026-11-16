@@ -403,7 +403,14 @@ def run_tool_safe(tool, ticker, date_str):
     try:
         return run_tool(tool, ticker, date_str)
     except Exception as e:
-        return {"tool": tool.get("id", "?"), "status": "error",
+        # Issue #113: the error row must carry the same shape as a
+        # success row — the digest table reads r['category'], so an
+        # error row without it killed the whole gator (run
+        # 43815097317: stocksharp RemoteDisconnected) AFTER
+        # digest.json was written and BEFORE digest.md was.
+        return {"tool": tool.get("id", "?"),
+                "category": tool.get("category", "error"),
+                "status": "error",
                 "detail": f"orchestrator exception: {type(e).__name__}: {e}"}
 
 
@@ -469,11 +476,19 @@ def main():
         return 2
 
     print(f"Borsagator job: {job} | tools: {[t['id'] for t in selected]} | date {date_str}", flush=True)
+    # Issue #113: head the digest file BEFORE any tool runs, so a
+    # mid-run death still leaves a headed digest.md for the ensemble
+    # append and the issue step (which titles from its first line).
+    # The full digest below overwrites this placeholder on success.
+    os.makedirs(DIGEST_DIR, exist_ok=True)
+    header = f"# 🐊 Borsagator digest — {job}"
+    with open(os.path.join(DIGEST_DIR, "digest.md"), "w") as f:
+        f.write(header + "\n\n_Running — tools in progress; replaced by "
+                "the full digest when the sweep finishes._\n")
     started = datetime.now(timezone.utc)
     results = [run_tool_safe(t, ticker, date_str) for t in selected]
     finished = datetime.now(timezone.utc)
 
-    os.makedirs(DIGEST_DIR, exist_ok=True)
     digest = {
         "job": job, "ticker": ticker, "date": date_str,
         "started": started.isoformat(), "finished": finished.isoformat(),
@@ -482,27 +497,49 @@ def main():
     with open(os.path.join(DIGEST_DIR, "digest.json"), "w") as f:
         json.dump(digest, f, indent=2)
 
-    lines = [f"# 🐊 Borsagator digest — {job}", "",
-             f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
-             f"{len(results)} tools", "",
-             "| Tool | Category | Status | Key results | Run |",
-             "|---|---|---|---|---|"]
-    for r in results:
-        summary = r.get("summary") or {}
-        metrics = summary.get("metrics") or {}
-        verdict_keys = [k for k in metrics if any(w in k.lower() for w in
-                        ("rating", "decision", "verdict", "signal", "recommendation"))]
-        ordered = [(k, metrics[k]) for k in verdict_keys] + \
-                  [(k, v) for k, v in metrics.items() if k not in verdict_keys]
-        keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
-        # Tool-controlled values must not break the table (INS-R4-06).
-        keys = keys.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
-        status = r.get("status", "?")
-        if r.get("conclusion") and r["conclusion"] != "success":
-            status += f" ({r['conclusion']})"
-        run_link = f"[run]({r['run_url']})" if r.get("run_url") else "—"
-        lines.append(f"| {r['tool']} | {r['category']} | {status} | {keys} | {run_link} |")
-    lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
+    # Issue #113: the digest write itself must never be the hole that
+    # loses the record — the Ins #49 principle covered tool failures
+    # but NOT the digest-writing section, and a table-building
+    # exception (KeyError: 'category', run 43815097317) killed the
+    # gator after digest.json and before digest.md. Any failure here
+    # still writes a minimal headed digest; the run then exits 0 with
+    # the failure recorded in the digest, not lost with it.
+    try:
+        lines = [header, "",
+                 f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
+                 f"{len(results)} tools", "",
+                 "| Tool | Category | Status | Key results | Run |",
+                 "|---|---|---|---|---|"]
+        for r in results:
+            summary = r.get("summary") or {}
+            metrics = summary.get("metrics") or {}
+            verdict_keys = [k for k in metrics if any(w in k.lower() for w in
+                            ("rating", "decision", "verdict", "signal", "recommendation"))]
+            ordered = [(k, metrics[k]) for k in verdict_keys] + \
+                      [(k, v) for k, v in metrics.items() if k not in verdict_keys]
+            keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
+            # Tool-controlled values must not break the table (INS-R4-06).
+            keys = keys.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
+            status = r.get("status", "?")
+            if r.get("conclusion") and r["conclusion"] != "success":
+                status += f" ({r['conclusion']})"
+            run_link = f"[run]({r['run_url']})" if r.get("run_url") else "—"
+            lines.append(f"| {r.get('tool', '?')} | {r.get('category', '—')} | {status} | {keys} | {run_link} |")
+        lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
+    except Exception as e:  # noqa: BLE001 - the fallback digest must not throw
+        print(f"borsagator: digest table build failed ({type(e).__name__}: {e}); "
+              f"writing minimal digest", file=sys.stderr, flush=True)
+        lines = [header, "",
+                 f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
+                 f"{len(results)} tools", "",
+                 f"⚠️ The detailed results table could not be built "
+                 f"({type(e).__name__}: {e}). Tool outcomes are preserved "
+                 f"in digest.json.", ""]
+        for r in results:
+            detail = (r.get("detail") or "").replace("\n", " ").replace("|", "\\|")
+            lines.append(f"- {r.get('tool', '?')}: {r.get('status', '?')}"
+                         + (f" — {detail}" if detail else ""))
+        lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
     with open(os.path.join(DIGEST_DIR, "digest.md"), "w") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))
