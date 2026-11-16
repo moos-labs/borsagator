@@ -15,6 +15,20 @@ on the sweep path — a push failure that survives the reset +
 recompute retry must fail the step (issue #119 follow-up); other
 failures still warn-only unless --fail-hard is also passed.
 
+Issue #127: _git_publish used to swallow git's stderr on every
+failure path — `git add` failing logged nothing at all, `git
+commit` failing logged only "nothing staged?", and a rejected push
+logged a canned "almost always a concurrent ledger publish"
+assertion without the push output — so the digest warning named
+the wrong cause (any add/commit failure was reported as a push
+failure). Every failure path now logs git's actual stderr, and
+publish() carries that cause into the digest warning (and into
+the retry-path fetch/reset failures). No behaviour change: still
+no rebase, still reset + recompute, still a plain fast-forward
+push, and a push failure keeps the established "git push of
+ledger/ to main failed" digest wording with the push stderr
+appended.
+
 Issue #117: ledger.py pins every archive read to the commit sha it
 resolves at run start, so the ledger is a self-consistent snapshot
 of that commit whatever the branch does mid-run. The publisher
@@ -381,38 +395,105 @@ def git_publish(new_doc):
     in-progress rebase (e.g. one left by a killed earlier run) and
     returns False. NOTE: this function performs NO rebase itself
     any more (see _git_publish): a rejected push is retried by
-    publish(), which resets to origin/main and recomputes."""
+    publish(), which resets to origin/main and recomputes.
+    Issue #127: a failure's cause is recorded in LAST_GIT_* (see
+    _record_git_failure) so publish() can name it in the digest
+    instead of asserting a push failure."""
+    global LAST_GIT_STAGE, LAST_GIT_DETAIL, LAST_GIT_ERROR
     try:
         return _git_publish(new_doc)
-    except (subprocess.TimeoutExpired, KeyboardInterrupt):
+    except (subprocess.TimeoutExpired, KeyboardInterrupt) as e:
+        LAST_GIT_STAGE = "interrupted"
+        LAST_GIT_DETAIL = f"{type(e).__name__} during git publish"
+        LAST_GIT_ERROR = ("git publish interrupted/timed out: " +
+                          LAST_GIT_DETAIL)
         log("git publish interrupted/timed out — cleaning up")
         abort_rebase()
         return False
 
 
+# Issue #127: the last _git_publish failure's cause, for publish()
+# to carry into the digest warning. _git_publish used to swallow
+# git's stderr on every failure path (add: no log at all; commit:
+# only "nothing staged?"; push: a canned "almost always a
+# concurrent publish" assertion), so a failed publish named the
+# wrong cause. Each path now records its stage, the one-line
+# stderr summary, and the full log line — cleared at the start of
+# every _git_publish call so a later success never carries a
+# stale cause.
+LAST_GIT_STAGE = ""
+LAST_GIT_DETAIL = ""
+LAST_GIT_ERROR = ""
+
+
+def _git_err(r):
+    """One-line stderr summary for a failed git call: the last 200
+    chars of stderr (stdout when stderr is empty), whitespace
+    collapsed. The tail holds the cause for push rejections
+    ('error: failed to push some refs ...') and for add/commit
+    failures alike."""
+    err = (r.stderr or "").strip() or (r.stdout or "").strip()
+    if not err:
+        return "(no output)"
+    return " ".join(err.split())[-200:]
+
+
+def _record_git_failure(stage, label, r):
+    """Record + log one failed git call inside _git_publish."""
+    global LAST_GIT_STAGE, LAST_GIT_DETAIL, LAST_GIT_ERROR
+    LAST_GIT_STAGE = stage
+    LAST_GIT_DETAIL = _git_err(r)
+    LAST_GIT_ERROR = (f"{label} failed (rc {r.returncode}): "
+                      f"{LAST_GIT_DETAIL}")
+    log(LAST_GIT_ERROR)
+
+
+def _publish_fail_reason(stage, detail, cause):
+    """Digest fail reason naming the real cause (issue #127). A
+    push failure keeps the established 'git push of ledger/ to
+    main failed' wording (test_119 test 10 asserts it) with the
+    push stderr appended; any other stage names its stage instead
+    of asserting a push failure."""
+    if stage == "push":
+        return "git push of ledger/ to main failed: " + detail
+    if stage:
+        return f"ledger publish failed at git {stage}: {detail}"
+    return cause or "ledger publish failed"
+
+
 def _git_publish(new_doc):
+    global LAST_GIT_STAGE, LAST_GIT_DETAIL, LAST_GIT_ERROR
+    LAST_GIT_STAGE = ""
+    LAST_GIT_DETAIL = ""
+    LAST_GIT_ERROR = ""
     git("config", "user.name", "borsagator-ledger")
     git("config", "user.email", "moos@sherbeeny.com")
-    if git("add", "ledger/").returncode != 0:
+    r = git("add", "ledger/")
+    if r.returncode != 0:
+        _record_git_failure("add", "git add ledger/", r)
         return False
     c = new_doc["counts"]
     msg = (f"Ledger: tree {str(new_doc['source']['tree_sha'])[:8]} — "
            f"{c['forecasts']} forecasts, {c['matured']} matured, "
            f"{c['pending']} pending, {c['invalid']} invalid (#64)")
-    if git("commit", "-m", msg).returncode != 0:
-        log("git commit failed (nothing staged?)")
+    r = git("commit", "-m", msg)
+    if r.returncode != 0:
+        _record_git_failure("commit", "git commit", r)
         return False
-    if git("push", "origin", "HEAD:main").returncode == 0:
+    r = git("push", "origin", "HEAD:main")
+    if r.returncode == 0:
         return True
-    # Push rejected — almost always a concurrent ledger publish
-    # landed after this checkout (a schedule run, the guard, or
-    # another sweep). Do NOT rebase here: the other commit rewrote
-    # the same ledger.json / ledger.md lines, so a rebase conflicts
-    # every time (proven live in run 43889942381 and reproduced
-    # locally against 2d33c27). publish() handles the retry: it
-    # discards this commit, resets to origin/main, recomputes the
-    # ledger from a fresh archive pin, and pushes that.
-    log("push rejected — leaving the retry to publish() "
+    # Push rejected — the actual stderr logged above IS the cause
+    # (a concurrent ledger publish is the common case, but only
+    # the push output says so — issue #127). Do NOT rebase here:
+    # the other commit rewrote the same ledger.json / ledger.md
+    # lines, so a rebase conflicts every time (proven live in run
+    # 43889942381 and reproduced locally against 2d33c27).
+    # publish() handles the retry: it discards this commit, resets
+    # to origin/main, recomputes the ledger from a fresh archive
+    # pin, and pushes that.
+    _record_git_failure("push", "git push origin HEAD:main", r)
+    log("leaving the retry to publish() "
         "(reset to origin/main + recompute, never rebase)")
     return False
 
@@ -456,9 +537,9 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             log(f"archive tree contains this sweep ({sweep_target})")
     # Issue #119 follow-up: the compute → compare → commit/push
     # cycle runs up to twice. A push rejected on attempt 1 means
-    # main moved after this checkout (almost always a concurrent
-    # ledger publish); a rebase onto it conflicts on the ledger
-    # lines, so instead the local commit is discarded, the checkout
+    # main moved after this checkout (usually a concurrent ledger
+    # publish — the logged stderr is the cause, issue #127); a
+    # rebase onto it conflicts on the ledger lines, so instead the local commit is discarded, the checkout
     # is reset to origin/main, and attempt 2 recomputes the ledger
     # from a fresh archive pin — never re-copying attempt 1's
     # outputs, which may predate the other run's tree.
@@ -514,32 +595,41 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             append_digest(digest_path,
                           section_published(old, new, old_w, new_w))
             return 0
-        # The push was rejected (or its commit/push failed). One
-        # retry, by reset + recompute — never by rebase (see the
+        # The publish failed — its cause is in LAST_GIT_* (issue
+        # #127: never assert "push failed" when the failure was at
+        # add/commit, and never drop git's own stderr). Capture the
+        # stage/detail now: the fetch/reset below must not
+        # overwrite them.
+        stage, detail = LAST_GIT_STAGE, LAST_GIT_DETAIL
+        cause = LAST_GIT_ERROR or "ledger publish failed (no cause recorded)"
+        # One retry, by reset + recompute — never by rebase (see the
         # #119 follow-up note at the top of this file).
         if attempt == 1:
-            log("ledger push failed — resetting to origin/main and "
-                "recomputing from a fresh archive pin (attempt 2)")
+            log("ledger publish failed — " + cause +
+                " — resetting to origin/main and recomputing from a "
+                "fresh archive pin (attempt 2)")
             try:
-                if git("fetch", "origin", "main").returncode != 0:
-                    return fail("git push of ledger/ to main failed "
-                                "(and the origin/main fetch for the "
-                                "retry failed)",
+                r = git("fetch", "origin", "main")
+                if r.returncode != 0:
+                    return fail(_publish_fail_reason(stage, detail, cause) +
+                                " (and the origin/main fetch for the "
+                                "retry failed: " + _git_err(r) + ")",
                                 digest_path, fail_hard or fail_push)
-                if git("reset", "--hard", "origin/main").returncode != 0:
-                    return fail("git push of ledger/ to main failed "
-                                "(and the reset to origin/main for "
-                                "the retry failed)",
+                r = git("reset", "--hard", "origin/main")
+                if r.returncode != 0:
+                    return fail(_publish_fail_reason(stage, detail, cause) +
+                                " (and the reset to origin/main for "
+                                "the retry failed: " + _git_err(r) + ")",
                                 digest_path, fail_hard or fail_push)
             except (subprocess.TimeoutExpired, KeyboardInterrupt):
                 log("interrupted during the push-retry reset — "
                     "cleaning up")
                 abort_rebase()
-                return fail("git push of ledger/ to main failed "
-                            "(interrupted during the retry reset)",
+                return fail(_publish_fail_reason(stage, detail, cause) +
+                            " (interrupted during the retry reset)",
                             digest_path, fail_hard or fail_push)
             continue
-        return fail("git push of ledger/ to main failed",
+        return fail(_publish_fail_reason(stage, detail, cause),
                     digest_path, fail_hard or fail_push)
 
 
