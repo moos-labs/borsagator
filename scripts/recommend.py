@@ -216,6 +216,8 @@ def newest_ensemble(ticker):
               "closed, no recommendation written", file=sys.stderr)
         return None, None
     slug = ticker.lower().replace(".", "-")
+    skipped = []  # sweep dirs newer than the match whose ensemble
+                  # fetch failed (issue #136)
     for d in dirs:
         # sweep dir names embed the job, not reliably the ticker —
         # read the ensemble and check.
@@ -223,9 +225,23 @@ def newest_ensemble(ticker):
             # Issue #121: body at the pinned commit, never the live
             # branch.
             e = json.loads(fetch_text(blob_url(d + "/ensemble.json")))
-        except Exception:
+        except Exception as ex:
+            # Issue #136: log the skip — a transient fetch failure
+            # must never silently fall back to an older ensemble.
+            print(f"recommend: skipped sweep {d} — ensemble fetch "
+                  f"failed ({ex})", file=sys.stderr)
+            skipped.append(d)
             continue
         if (e.get("ticker") or "").upper() == ticker:
+            if skipped:
+                # A newer sweep failed to fetch, so this ensemble
+                # may not be the newest one for the ticker — fail
+                # closed rather than silently stand on an older
+                # ensemble.
+                print(f"recommend: newest sweep {skipped[0]} failed "
+                      f"to fetch — failing closed, no "
+                      f"recommendation written", file=sys.stderr)
+                return None, None
             return e, d
     return None, None
 
