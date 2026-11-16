@@ -28,13 +28,21 @@ actually did, using ONLY the point-in-time sweep archive (branch
   dividend ex-date recorded by the forecast (issue #26), the realized
   move is computed dividend-adjusted (DPS added back to post-ex
   closes) and the row is marked adjusted.
+- Issue #129: an ex-date ON the forecast date (`as_of == ex_date`)
+  adjusts ONLY when the base is cum-dividend — detectable in-ledger
+  as base ~= evidenced close at as_of + DPS; a base already at the
+  post-ex level is never double-adjusted. Undated dividend actions
+  are kept, never silently dropped: their ex-date is resolved from a
+  carried `entitlement_end` (+1 day) when present, and a matured row
+  that spans a known ex-date (or carries an undated action) without
+  being adjusted carries a `dividend_gap` flag and a ledger gap.
 
 Outputs ledger.json + ledger.md. Stdlib only, deterministic, and
 defensive throughout: a bad sweep, file or row is recorded as a gap,
 never raised.
 """
 import csv, io, json, os, re, subprocess, sys, urllib.parse, urllib.request
-from datetime import date
+from datetime import date, timedelta
 
 REPO = "moos-labs/borsagator"
 BRANCH = "archive"
@@ -406,33 +414,95 @@ def _dps_same(a, b):
 
 
 def _dedup_actions(actions):
-    """Unique (ex_date, DPS) pairs, keep first, in order."""
+    """Unique (ex_date, DPS) pairs, keep first, in order. Issue #129:
+    an undated action is the same distribution as a dated one with
+    the same DPS — the dated action supersedes it; two dated actions
+    with different ex-dates stay distinct events."""
     out = []
     for a in actions:
-        if any(o["ex_date"] == a["ex_date"]
-               and _dps_same(o["dps"], a["dps"]) for o in out):
-            continue
-        out.append(a)
+        dup = False
+        for i, o in enumerate(out):
+            if (_dps_same(o["dps"], a["dps"])
+                    and (o["ex_date"] == a["ex_date"]
+                         or o["ex_date"] is None
+                         or a["ex_date"] is None)):
+                if o["ex_date"] is None and a["ex_date"] is not None:
+                    out[i] = a
+                dup = True
+                break
+        if not dup:
+            out.append(a)
     return out
+
+
+def _cum_div_match(base_price, level, dps):
+    """Issue #129: does `base_price` look like a CUM-dividend base
+    against the post-ex evidenced close `level` — i.e. base ~=
+    level + dps, and strictly closer to level + dps than to level
+    itself? The strict-closeness test keeps a small DPS from
+    matching both hypotheses at once (a tie resolves to ex-div:
+    never double-adjust)."""
+    try:
+        dps = float(dps)
+    except Exception:
+        return False
+    cum_dist = rel_close(base_price, level + dps)
+    ex_dist = rel_close(base_price, level)
+    return cum_dist <= VALID_TOL and cum_dist < ex_dist
+
+
+def cum_div_base_valid(base_price, level, level_date, as_of, actions):
+    """Issue #129: the issue-#87 guard's cum-dividend allowance. A
+    base set cum-dividend legitimately sits ~DPS above the post-ex
+    evidenced close, so the plain level check wrongly invalidates
+    it. Valid iff some action has ex_date == as_of == level_date
+    and the base matches level + DPS (see _cum_div_match). A base
+    already ex-dividend passes the plain check and never reaches
+    here; an ex-date on any other day cannot explain a base at
+    as_of."""
+    if level_date != as_of:
+        return False
+    for a in actions or []:
+        if a.get("ex_date") == as_of and _cum_div_match(
+                base_price, level, a.get("dps")):
+            return True
+    return False
 
 
 def normalize_actions(ens, horizon_block):
     """Dividend actions for one horizon: the horizon-level block
-    (issue #26) wins; else the ensemble-level corporate_actions."""
+    (issue #26) wins; else the ensemble-level corporate_actions.
+    Issue #129: undated actions are KEPT, never silently dropped —
+    an action without ex_date but with a carried `entitlement_end`
+    resolves to ex_date = entitlement_end + 1 day (the detection
+    side records it, issue #129a); one with neither stays undated
+    (ex_date None) so scoring can gap-flag it instead of scoring
+    the mechanical drop as if no dividend existed."""
     raw = []
     ha = (horizon_block or {}).get("corporate_action")
-    if isinstance(ha, dict) and ha.get("ex_date"):
+    if isinstance(ha, dict) and (ha.get("ex_date")
+                                 or ha.get("entitlement_end")):
         raw = [ha]
     elif isinstance(ens.get("corporate_actions"), list):
         raw = [a for a in ens["corporate_actions"]
-               if isinstance(a, dict) and a.get("ex_date")]
+               if isinstance(a, dict)]
     out = []
     for a in raw:
         try:
-            out.append({"dps": float(a["dps"]), "ex_date": str(a["ex_date"])[:10],
-                        "mechanical_pct": a.get("mechanical_pct")})
+            dps = float(a["dps"])
         except Exception:
             continue
+        ex = a.get("ex_date")
+        ent = a.get("entitlement_end")
+        if not ex and ent:
+            try:
+                ex = (date.fromisoformat(str(ent)[:10])
+                      + timedelta(days=1)).isoformat()
+            except Exception:
+                ex = None
+        out.append({"dps": dps, "ex_date": str(ex)[:10] if ex else None,
+                    "entitlement_end": str(ent)[:10] if ent else None,
+                    "mechanical_pct": a.get("mechanical_pct")})
     # Issue #131: two dated detections of one coupon must count
     # once, however they reached the ledger. Keep the first.
     return _dedup_actions(out)
@@ -453,8 +523,17 @@ def score_forecast(fc, series, provenance, own_sweep):
     close = series[maturity]
     adjusted, dps_total = False, 0.0
     counted = []  # (ex_date, dps) pairs already added — issue #131
+    # Issue #129: why this matured row is unadjusted despite a
+    # dividend being known. None when clean (adjusted, or no action
+    # spans the horizon); surfaced as a ledger gap by main().
+    dividend_gap = None
+    undated = [a for a in fc.get("corporate_actions") or []
+               if not a.get("ex_date")]
     for a in fc.get("corporate_actions") or []:
-        if fc["as_of"] < a["ex_date"] <= maturity:
+        ex = a.get("ex_date")
+        if not ex:
+            continue  # undated: cannot place the drop; flagged below
+        if fc["as_of"] < ex <= maturity:
             # Issue #131: sum each (ex_date, DPS) pair once. A
             # duplicate dated detection of one coupon (1.89 vs 1.9
             # vs 1.8999999998) arriving from any path must not be
@@ -466,6 +545,41 @@ def score_forecast(fc, series, provenance, own_sweep):
             counted.append((a["ex_date"], dps))
             dps_total += dps
             adjusted = True
+        elif ex == fc["as_of"]:
+            # Issue #129: NO blanket `as_of <= ex_date` — on the
+            # ex-date itself the base may already be post-ex (base
+            # 8.02 on 16 Nov) and a blanket rule would double-adjust
+            # it. Adjust ONLY when the base is cum-dividend,
+            # detectable in-ledger as base ~= evidenced close at
+            # as_of + DPS (here 8.02 + 1.9 = 9.92 ~= 10.0).
+            dps = float(a["dps"])
+            level = series.get(fc["as_of"])
+            if level is not None and _cum_div_match(
+                    fc["base_price"], level, dps):
+                if not any(ex == a["ex_date"]
+                           and _dps_same(d, dps) for ex, d in counted):
+                    counted.append((a["ex_date"], dps))
+                    dps_total += dps
+                    adjusted = True
+            elif level is not None and rel_close(
+                    fc["base_price"], level) <= VALID_TOL:
+                pass  # ex-dividend base: correctly unadjusted, no gap
+            else:
+                dividend_gap = (
+                    f"ex-date {ex} == as_of but base_price "
+                    f"{fc['base_price']} matches neither the "
+                    f"cum-dividend level "
+                    f"({level + dps if level is not None else '—'} = "
+                    f"evidenced close {level} at {fc['as_of']} + DPS "
+                    f"{dps}) nor the ex-dividend close {level} — "
+                    f"realized move is unadjusted (issue #129)")
+    if not adjusted and undated:
+        dividend_gap = dividend_gap or (
+            f"{len(undated)} undated dividend action(s) (DPS "
+            f"{', '.join(str(a.get('dps')) for a in undated)}) with no "
+            f"ex-date and no entitlement_end — the horizon may span "
+            f"the ex-date but the drop cannot be placed, so the "
+            f"realized move is unadjusted (issue #129)")
     if adjusted:
         close = close + dps_total
     realized = (close / fc["base_price"] - 1.0) * 100.0
@@ -479,6 +593,7 @@ def score_forecast(fc, series, provenance, own_sweep):
         status="matured", maturity_date=maturity,
         close_at_maturity=series[maturity],
         dividend_adjusted=adjusted,
+        dividend_gap=dividend_gap,
         realized_move_pct=round(realized, 2),
         realized_direction=rdir,
         direction_hit=(rdir == fc["direction"]),
@@ -489,6 +604,45 @@ def score_forecast(fc, series, provenance, own_sweep):
                    if isinstance(fc.get("net_score"), (int, float)) else None),
         sessions_available=len(usable))
     return row
+
+
+def flag_cross_sweep_spans(rows, series):
+    """Issue #129 (d), cross-sweep leg: a matured row whose own
+    forecast carries NO dividend action can still span a known
+    ex-date — the date is recorded by another sweep's ensemble for
+    the same ticker (the real 15 Nov POUL sweep 132459 archived
+    `corporate_actions: []` while sibling sweeps recorded the
+    16 Nov ex-date). Such a row scores the mechanical drop raw and
+    must be gap-flagged too. Mutates the flagged rows' `dividend_gap`
+    in place and returns them. Only matured, unadjusted, not-yet-
+    flagged rows are touched; a row whose own actions already
+    explain the span keeps its own gap (or its adjustment)."""
+    known = {}
+    for r in rows:
+        for a in r.get("corporate_actions") or []:
+            if a.get("ex_date"):
+                known.setdefault(r["ticker"], []).append(
+                    (a["ex_date"], a.get("dps"), r.get("sweep")))
+    flagged = []
+    for r in rows:
+        if (r.get("status") != "matured" or r.get("dividend_adjusted")
+                or r.get("dividend_gap")):
+            continue
+        for ex, dps, src in known.get(r["ticker"], ()):
+            spans = r["as_of"] < ex <= (r.get("maturity_date") or "")
+            if not spans and ex == r["as_of"]:
+                level = series.get(r["ticker"], {}).get(r["as_of"])
+                spans = (level is not None and _cum_div_match(
+                    r["base_price"], level, dps))
+            if spans:
+                r["dividend_gap"] = (
+                    f"horizon spans known ex-date {ex} (DPS {dps}, "
+                    f"recorded by {src}) but this forecast carries no "
+                    f"dividend action — realized move is unadjusted "
+                    f"(issue #129)")
+                flagged.append(r)
+                break
+    return flagged
 
 
 def num(x):
@@ -677,16 +831,24 @@ def main():
             level_date = max(ev_dates)
             level = ev[level_date]
             if rel_close(fc["base_price"], level) > VALID_TOL:
-                r = dict(fc)
-                r.update(status="invalid",
-                         invalid_reason=(
-                             f"base_price {fc['base_price']} deviates "
-                             f"{rel_close(fc['base_price'], level) * 100:.1f}% from the "
-                             f"ticker-evidenced close {level} at {level_date} "
-                             f"— the sweep's data does not match {t} (issue #87)"))
-                rows.append(r)
-                invalid.append(r)
-                continue
+                # Issue #129: a cum-dividend base on the ex-date
+                # legitimately sits ~DPS above the post-ex close
+                # (10.0 vs 8.02 on 2026-11-16) — that is not a
+                # wrong-ticker base. Score it; score_forecast()
+                # applies the same cum-dividend test before adjusting.
+                if not cum_div_base_valid(
+                        fc["base_price"], level, level_date, fc["as_of"],
+                        fc.get("corporate_actions")):
+                    r = dict(fc)
+                    r.update(status="invalid",
+                             invalid_reason=(
+                                 f"base_price {fc['base_price']} deviates "
+                                 f"{rel_close(fc['base_price'], level) * 100:.1f}% from the "
+                                 f"ticker-evidenced close {level} at {level_date} "
+                                 f"— the sweep's data does not match {t} (issue #87)"))
+                    rows.append(r)
+                    invalid.append(r)
+                    continue
         try:
             rows.append(score_forecast(fc, series.get(t, {}),
                                        provenance.get(t, {}), fc["sweep"]))
@@ -694,6 +856,10 @@ def main():
             warn(f"scoring failed for {fc}: {e}")
             r = dict(fc); r.update(status="error", error=str(e))
             rows.append(r)
+    # Issue #129 (d), cross-sweep leg: flag matured rows whose own
+    # forecast carries no dividend action but whose horizon spans an
+    # ex-date recorded by another sweep for the same ticker.
+    flag_cross_sweep_spans(rows, series)
     matured = [r for r in rows if r["status"] == "matured"]
     pending = [r for r in rows if r["status"] == "pending"]
     if invalid:
@@ -703,6 +869,22 @@ def main():
                     "; ".join(f"{r['ticker']} as of {r['as_of']} "
                               f"({r['horizon']}) from {r['sweep']}"
                               for r in invalid))
+    # Issue #129 (d): a matured row whose horizon spans a known
+    # ex-date (or carries an undated dividend action) but was NOT
+    # dividend-adjusted scores the mechanical drop as if it were a
+    # market move. Flag every such row — the realized move on it is
+    # unadjusted and it distorts the calibration weights.
+    gapped = [r for r in matured if r.get("dividend_gap")]
+    if gapped:
+        gaps.append(f"{len(gapped)} matured forecast(s) span a known "
+                    "dividend ex-date (or carry an undated dividend "
+                    "action) but were NOT dividend-adjusted — their "
+                    "realized move includes the mechanical ex-div "
+                    "drop (issue #129): " +
+                    "; ".join(f"{r['ticker']} as of {r['as_of']} "
+                              f"({r['horizon']}) from {r['sweep']}: "
+                              f"{r.get('dividend_gap')}"
+                              for r in gapped))
     adjusted_rows = [r for r in matured if r.get("dividend_adjusted")]
     if not any((fc.get("corporate_actions") for fc in forecasts)):
         gaps.append("no archived ensemble carries a corporate_actions block "

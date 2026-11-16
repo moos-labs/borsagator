@@ -500,15 +500,19 @@ def _norm_digits(s):
 
 
 def _find_dates(text, default_year):
-    """All (date, context_window) pairs in a text: numeric d/m/Y,
-    '15 نوفمبر 2026', '15 November 2026', 'November 15, 2026'."""
+    """All (date, start, end) triples in a text: numeric d/m/Y,
+    '15 نوفمبر 2026', '15 November 2026', 'November 15, 2026'.
+    Positions are character offsets into the digit-normalised text,
+    so callers can measure the distance between a date and a wording
+    mention (issue #129: the entitlement wording need not sit next
+    to the date)."""
     t = _norm_digits(text)
     found = []
     for m in re.finditer(r"(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{4})", t):
         try:
             found.append((date(int(m.group(3)), int(m.group(2)),
                                int(m.group(1))),
-                          t[max(0, m.start() - 40):m.start()]))
+                          m.start(), m.end()))
         except ValueError:
             pass
     low = t.lower()
@@ -518,14 +522,14 @@ def _find_dates(text, default_year):
             try:
                 found.append((date(int(m.group(2) or default_year), mon,
                                    int(m.group(1))),
-                              low[max(0, m.start() - 40):m.start()]))
+                              m.start(), m.end()))
             except ValueError:
                 pass
         for m in re.finditer(re.escape(name) +
                              r"\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})", low):
             try:
                 found.append((date(int(m.group(2)), mon, int(m.group(1))),
-                              low[max(0, m.start() - 40):m.start()]))
+                              m.start(), m.end()))
             except ValueError:
                 pass
     return found
@@ -562,9 +566,14 @@ def detect_corporate_actions(items, base, default_year):
     """Dividend announcements in the collected items. Conservative by
     design: an amount is only trusted next to dividend wording, an
     ex-date only next to entitlement/ex wording (a payout date is NOT
-    an ex-date). A miss records nothing — scoring-time re-detection on
-    the archived items remains possible; a false positive would poison
-    the ledger, so precision beats recall here."""
+    an ex-date). Issue #129: the entitlement-end date is carried on
+    the action (`entitlement_end`, ex-date = +1 day) and derived by
+    nearest-mention distance, not only by adjacency — press wording
+    can put «نهاية الحق» far from the date and name the payout date
+    in the same item. A miss records nothing — scoring-time
+    re-detection on the archived items remains possible; a false
+    positive would poison the ledger, so precision beats recall
+    here."""
     actions = []
     for it in items:
         text = (str(it.get("title") or "") + " "
@@ -582,29 +591,72 @@ def detect_corporate_actions(items, base, default_year):
                 break
         if dps is None or base <= 0 or not (0 < dps < base):
             continue
-        ex_date, basis = None, None
+        ex_date, basis, entitlement_end = None, None, None
         item_year = None
         try:
             item_year = int(str(it.get("date") or "")[:4]) or None
         except Exception:
             item_year = None
         dates = _find_dates(text, item_year or default_year)
-        for d, ctx in dates:
-            if any(w in ctx for w in ("نهاية الحق", "استحقاق", "entitlement")):
-                ex_date, basis = d + timedelta(days=1), "entitlement+1"
-                break
-            if "ex-" in ctx or "ex date" in ctx or "خارج" in ctx:
+        # Issue #129: the entitlement-end date is carried into the
+        # action (as `entitlement_end`, ex-date = +1 day) so it can
+        # be derived even when the date is not adjacent to the
+        # entitlement wording. The old 40-chars-before window missed
+        # the real 15 Nov press item, where «نهاية الحق» sits ~65
+        # chars before the date and a payout date («صرفه يوم 18
+        # نوفمبر») vetoed the item-level fallback. A date counts as
+        # an entitlement end when an entitlement mention precedes it
+        # with no other parsed date in between (so the payout date
+        # and the later price-limit-move date in the EGX disclosure
+        # are never misread as the entitlement end) and within 200
+        # chars; an explicit ex-date mention wins for the same date.
+        ent_mentions = [m.start() for w in
+                        ("نهاية الحق", "استحقاق", "entitlement")
+                        for m in re.finditer(re.escape(w), low)]
+        ex_mentions = [m.start() for w in
+                       ("ex-", "ex date", "خارج")
+                       for m in re.finditer(re.escape(w), low)]
+
+        def _mention_before(mentions, date_start):
+            best = None
+            for mp in mentions:
+                if mp >= date_start or date_start - mp > 200:
+                    continue
+                if any(ds > mp and ds < date_start
+                       for _, ds, _ in dates):
+                    continue
+                if best is None or mp > best:
+                    best = mp
+            return best
+
+        for d, ds, _de in dates:
+            if _mention_before(ex_mentions, ds) is not None:
                 ex_date, basis = d, "ex-date"
                 break
+            if _mention_before(ent_mentions, ds) is not None:
+                entitlement_end = d
+                ex_date, basis = d + timedelta(days=1), "entitlement+1"
+                break
         if ex_date is None and dates:
-            # Item-level fallback: disclosure titles put «نهاية الحق»
-            # far from the date — if the item speaks of entitlement and
-            # never of payout, its lone date is the entitlement end.
-            has_ent = any(w in low for w in ("نهاية الحق", "استحقاق", "entitlement"))
-            has_pay = any(w in low for w in ("صرف", "payment", "يوزع يوم"))
-            if has_ent and not has_pay:
-                ex_date = dates[0][0] + timedelta(days=1)
-                basis = "entitlement+1"
+            # Item-level fallback: the wording need not precede the
+            # date at all — take the date NEAREST to an entitlement
+            # (or ex-date) mention. A payout date elsewhere in the
+            # item loses on distance; the old blanket payout veto is
+            # gone, it was the second half of the 15 Nov miss.
+            for mentions, is_ent in ((ent_mentions, True),
+                                     (ex_mentions, False)):
+                if not mentions:
+                    continue
+                nearest = min(
+                    dates,
+                    key=lambda e: min(abs(e[1] - mp) for mp in mentions))
+                if is_ent:
+                    entitlement_end = nearest[0]
+                    ex_date = entitlement_end + timedelta(days=1)
+                    basis = "entitlement+1"
+                else:
+                    ex_date, basis = nearest[0], "ex-date"
+                break
         # Issue #131: dedup on rounded DPS + ex-date with reporting-
         # noise tolerance — 1.89 / 1.9 / 1.8999999998 are one coupon
         # (42), not three. Keep the first detection (the EGX
@@ -622,6 +674,12 @@ def detect_corporate_actions(items, base, default_year):
         actions.append({
             "type": "dividend", "dps": dps,
             "ex_date": ex_date.isoformat() if ex_date else None,
+            # Issue #129: the raw entitlement-end date travels with
+            # the action so the ledger can re-derive the ex-date
+            # (entitlement_end + 1) even when ex_date itself is
+            # missing downstream.
+            "entitlement_end": (entitlement_end.isoformat()
+                                if entitlement_end else None),
             "date_basis": basis,
             "mechanical_pct": round(-dps / base * 100, 2),
             "title": str(it.get("title") or "")[:90]})
@@ -1138,6 +1196,11 @@ def main():
                         "type": a["type"], "dps": a["dps"],
                         "ex_date": a["ex_date"],
                         "mechanical_pct": a["mechanical_pct"]}
+                    # Issue #129: carry the entitlement-end date
+                    # into the horizon block too, so the ledger can
+                    # re-derive the ex-date from the block alone.
+                    if a.get("entitlement_end"):
+                        _mark["entitlement_end"] = a["entitlement_end"]
                     if ex == as_of:
                         _mark["ex_date_today"] = True
                         _mark["kronos_rescaled"] = bool(
