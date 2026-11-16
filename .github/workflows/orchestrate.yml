@@ -120,8 +120,18 @@ jobs:
       # ledger against the archive and publish ledger/ to main. The
       # publisher validates the run, appends a ledger section (or a
       # ⚠️ failure line) to the digest, and commits only on change.
-      # It never fails the sweep. The token is the workflow token
-      # (contents: write) — the App token has no Contents access.
+      # It never fails the sweep on a degraded run. The token is the
+      # workflow token (contents: write) — the App token has no
+      # Contents access. The git push here uses the checkout's
+      # persisted workflow token, NEVER the app token minted in step
+      # 5 (which the gator step alone consumes) — so a long gator
+      # step cannot expire this push (issue #119 follow-up: the
+      # expired-app-token theory for run 43889942381 was refuted;
+      # its push died on a rebase conflict, not on expiry).
+      # Issue #119 follow-up: --fail-push — a push failure that
+      # survives the publisher's reset + recompute retry fails this
+      # step (run 43889942381's step exited 0 while publishing
+      # nothing, and only the digest warning disclosed it).
       # Issue #118: this step runs ONLY when the archive push landed
       # (steps.archive-commit.outputs.archive_ok) — with an
       # if: always() here it would read the previous archive tree and
@@ -133,7 +143,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           LEDGER_SWEEP_TARGET: ${{ steps.archive-commit.outputs.target }}
-        run: python3 scripts/ledger_publish.py --digest digest/digest.md --commit
+        run: python3 scripts/ledger_publish.py --digest digest/digest.md --commit --fail-push
 
       # Issue #118: when the archive did not land, the ledger step
       # above is skipped — say so in the digest instead of publishing

@@ -10,7 +10,10 @@ with zeroed counts is worse than a stale one). On the sweep path the
 failure surfaces as a ⚠️ section in the digest — the issue's hard
 requirement: never fail silently. With --fail-hard the failure exits
 non-zero instead (the scheduled guard's surface is the failed Actions
-run itself).
+run itself). With --fail-push only a failed git push exits non-zero
+on the sweep path — a push failure that survives the reset +
+recompute retry must fail the step (issue #119 follow-up); other
+failures still warn-only unless --fail-hard is also passed.
 
 Issue #117: ledger.py pins every archive read to the commit sha it
 resolves at run start, so the ledger is a self-consistent snapshot
@@ -45,13 +48,35 @@ else is refused loudly instead of publishing into it. No repo-side
 serialization was added: the guard and the sweep publisher run on
 different runners, so a /tmp lockfile cannot serialize them, and a
 lock ref would add a new stale-lock failure mode (a killed run
-strands the lock — the exact class this issue eliminates). The
-push → rebase → retry in git_publish already serializes concurrent
-publishers through the push itself: only one wins, the loser
-rebases onto the new main and retries.
+strands the lock — the exact class this issue eliminates). Concurrent
+publishers are serialized through the push itself: only one wins,
+and the loser resets to the new main and retries from a fresh pin
+(see the follow-up note below) — never by rebasing onto it.
+
+Issue #119 follow-up (live proof run 43889942381): the push-retry
+itself was the failure. A rebase can NEVER replay a ledger commit
+onto a newer ledger commit — both rewrite the same ledger.json /
+ledger.md lines (tree_sha, counts, per-ticker rows), so the rebase
+conflicts every time. Reproduced locally: a bb645b6 checkout's
+ledger commit rebased onto origin/main at 2d33c27 conflicts on
+ledger/ledger.json and ledger/ledger.md. (The same run also refuted
+the expired-app-token theory: the ledger push uses the checkout's
+persisted GITHUB_TOKEN — actions/checkout's default — never the app
+token minted in step 5, which the gator step alone consumes; the
+archive push seconds earlier succeeded with that same credential.)
+So on a rejected push _git_publish no longer rebases at all:
+publish() discards the local commit, resets to origin/main,
+recomputes the ledger from a fresh archive pin, and retries once.
+Recomputing (not re-copying the first attempt's outputs) matters:
+the other run's publish may come from a newer archive tree, and
+re-copying the older outputs would regress the ledger. The retry
+is still a plain fast-forward push — no force push anywhere. A
+push failure that survives the retry fails the step on the sweep
+path (--fail-push): run 43889942381's step 11 exited 0 while
+publishing nothing, and only the digest warning disclosed it.
 
 Modes:
-  sweep path (orchestrate.yml):  ledger_publish.py --digest digest/digest.md --commit
+  sweep path (orchestrate.yml):  ledger_publish.py --digest digest/digest.md --commit --fail-push
   guard path (ledger-guard.yml): ledger_publish.py --commit --fail-hard
   local/dry:                     ledger_publish.py [--digest PATH]
 
@@ -352,8 +377,11 @@ def ensure_clean_checkout():
 def git_publish(new_doc):
     """Commit ledger/ and push to main. Returns True on success.
     Issue #119: a timeout / interrupt anywhere in this path must
-    never strand the checkout mid-rebase — the rebase is wrapped
-    so any failure aborts it, and the abort itself is checked."""
+    never strand the checkout mid-rebase — the wrapper aborts any
+    in-progress rebase (e.g. one left by a killed earlier run) and
+    returns False. NOTE: this function performs NO rebase itself
+    any more (see _git_publish): a rejected push is retried by
+    publish(), which resets to origin/main and recomputes."""
     try:
         return _git_publish(new_doc)
     except (subprocess.TimeoutExpired, KeyboardInterrupt):
@@ -376,18 +404,17 @@ def _git_publish(new_doc):
         return False
     if git("push", "origin", "HEAD:main").returncode == 0:
         return True
-    # Someone else pushed to main in the meantime (board-sync does):
-    # rebase once onto the new main and retry.
-    log("push rejected — rebasing onto origin/main and retrying")
-    if git("fetch", "origin", "main").returncode != 0:
-        return False
-    # A timeout / interrupt here raises out to git_publish, which
-    # aborts the rebase; a plain non-zero exit (conflict) aborts
-    # here. Either way the checkout is never left mid-rebase.
-    if git("rebase", "origin/main").returncode != 0:
-        abort_rebase()
-        return False
-    return git("push", "origin", "HEAD:main").returncode == 0
+    # Push rejected — almost always a concurrent ledger publish
+    # landed after this checkout (a schedule run, the guard, or
+    # another sweep). Do NOT rebase here: the other commit rewrote
+    # the same ledger.json / ledger.md lines, so a rebase conflicts
+    # every time (proven live in run 43889942381 and reproduced
+    # locally against 2d33c27). publish() handles the retry: it
+    # discards this commit, resets to origin/main, recomputes the
+    # ledger from a fresh archive pin, and pushes that.
+    log("push rejected — leaving the retry to publish() "
+        "(reset to origin/main + recompute, never rebase)")
+    return False
 
 
 def fail(reason, digest_path, fail_hard):
@@ -406,7 +433,8 @@ def skip(reason, digest_path, target):
     return 0
 
 
-def publish(commit, digest_path, fail_hard, sweep_target=None):
+def publish(commit, digest_path, fail_hard, sweep_target=None,
+            fail_push=False):
     # Issue #119: verify the checkout is clean BEFORE any `git add`
     # — and fail fast, before the expensive ledger rerun, when a
     # previous killed run left it mid-rebase or dirty.
@@ -414,8 +442,6 @@ def publish(commit, digest_path, fail_hard, sweep_target=None):
     if not clean:
         return fail("checkout not clean at publish start: " + why,
                     digest_path, fail_hard)
-    old = committed_ledger()
-    old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
     # Issue #118: when the sweep path names this sweep's archive
     # directory, refuse to publish unless the live archive tree
     # contains it — otherwise the rerun below would publish a ledger
@@ -428,52 +454,93 @@ def publish(commit, digest_path, fail_hard, sweep_target=None):
                         f"({sweep_target})", digest_path, sweep_target)
         if contains:
             log(f"archive tree contains this sweep ({sweep_target})")
-    # Issue #116: NO tree-sha skip here. The rerun below always
-    # revalidates (run_ledger rejects on a per-file fetch failure),
-    # and the byte-identical check further down is the only skip —
-    # so an incomplete ledger can neither be published nor locked in.
-    tmp = tempfile.mkdtemp(prefix="ledger-run-")
-    try:
-        new = run_ledger(tmp)
-    except Exception as e:
-        return fail(str(e), digest_path, fail_hard)
-    # Issue #117 interim check: compare the pinned commit the ledger
-    # was computed from against the live archive HEAD. A mismatch
-    # means the branch advanced mid-run — the ledger is still a
-    # self-consistent snapshot of its pinned commit, so publish it
-    # and let the next guard tick refresh for the new tree.
-    live = live_archive_commit_sha()
-    pinned = (new.get("source") or {}).get("commit_sha")
-    if live and pinned and live != pinned:
-        log(f"archive advanced during the run (pinned "
-            f"{str(pinned)[:8]}, live {str(live)[:8]}) — publishing "
-            "the pinned snapshot; the next guard tick refreshes it")
-    elif live and pinned:
-        log(f"pinned commit {str(pinned)[:8]} matches live archive HEAD")
-    changed = []
-    for name in FILES:
-        newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
-        if not os.path.exists(newp):
-            return fail(f"ledger.py did not write {name}",
-                        digest_path, fail_hard)
-        if not os.path.exists(oldp) or \
-                open(newp, "rb").read() != open(oldp, "rb").read():
-            changed.append(name)
-    if not changed:
-        log("rerun produced byte-identical outputs — nothing to publish")
-        append_digest(digest_path, section_unchanged(new))
-        return 0
-    os.makedirs(LEDGER_DIR, exist_ok=True)
-    for name in changed:
-        shutil.copyfile(os.path.join(tmp, name),
-                        os.path.join(LEDGER_DIR, name))
-    new_w = _read_json(os.path.join(tmp, "weights.json"))
-    log(f"changed: {', '.join(changed)} — {new['counts']}")
-    if commit and not git_publish(new):
+    # Issue #119 follow-up: the compute → compare → commit/push
+    # cycle runs up to twice. A push rejected on attempt 1 means
+    # main moved after this checkout (almost always a concurrent
+    # ledger publish); a rebase onto it conflicts on the ledger
+    # lines, so instead the local commit is discarded, the checkout
+    # is reset to origin/main, and attempt 2 recomputes the ledger
+    # from a fresh archive pin — never re-copying attempt 1's
+    # outputs, which may predate the other run's tree.
+    for attempt in (1, 2):
+        old = committed_ledger()
+        old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
+        # Issue #116: NO tree-sha skip here. The rerun below always
+        # revalidates (run_ledger rejects on a per-file fetch failure),
+        # and the byte-identical check further down is the only skip —
+        # so an incomplete ledger can neither be published nor locked in.
+        tmp = tempfile.mkdtemp(prefix="ledger-run-")
+        try:
+            new = run_ledger(tmp)
+        except Exception as e:
+            return fail(str(e), digest_path, fail_hard)
+        # Issue #117 interim check: compare the pinned commit the ledger
+        # was computed from against the live archive HEAD. A mismatch
+        # means the branch advanced mid-run — the ledger is still a
+        # self-consistent snapshot of its pinned commit, so publish it
+        # and let the next guard tick refresh for the new tree.
+        live = live_archive_commit_sha()
+        pinned = (new.get("source") or {}).get("commit_sha")
+        if live and pinned and live != pinned:
+            log(f"archive advanced during the run (pinned "
+                f"{str(pinned)[:8]}, live {str(live)[:8]}) — publishing "
+                "the pinned snapshot; the next guard tick refreshes it")
+        elif live and pinned:
+            log(f"pinned commit {str(pinned)[:8]} matches live archive HEAD")
+        changed = []
+        for name in FILES:
+            newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
+            if not os.path.exists(newp):
+                return fail(f"ledger.py did not write {name}",
+                            digest_path, fail_hard)
+            if not os.path.exists(oldp) or \
+                    open(newp, "rb").read() != open(oldp, "rb").read():
+                changed.append(name)
+        if not changed:
+            log("rerun produced byte-identical outputs — nothing to publish")
+            append_digest(digest_path, section_unchanged(new))
+            return 0
+        os.makedirs(LEDGER_DIR, exist_ok=True)
+        for name in changed:
+            shutil.copyfile(os.path.join(tmp, name),
+                            os.path.join(LEDGER_DIR, name))
+        new_w = _read_json(os.path.join(tmp, "weights.json"))
+        log(f"changed: {', '.join(changed)} — {new['counts']}")
+        if not commit:
+            append_digest(digest_path,
+                          section_published(old, new, old_w, new_w))
+            return 0
+        if git_publish(new):
+            append_digest(digest_path,
+                          section_published(old, new, old_w, new_w))
+            return 0
+        # The push was rejected (or its commit/push failed). One
+        # retry, by reset + recompute — never by rebase (see the
+        # #119 follow-up note at the top of this file).
+        if attempt == 1:
+            log("ledger push failed — resetting to origin/main and "
+                "recomputing from a fresh archive pin (attempt 2)")
+            try:
+                if git("fetch", "origin", "main").returncode != 0:
+                    return fail("git push of ledger/ to main failed "
+                                "(and the origin/main fetch for the "
+                                "retry failed)",
+                                digest_path, fail_hard or fail_push)
+                if git("reset", "--hard", "origin/main").returncode != 0:
+                    return fail("git push of ledger/ to main failed "
+                                "(and the reset to origin/main for "
+                                "the retry failed)",
+                                digest_path, fail_hard or fail_push)
+            except (subprocess.TimeoutExpired, KeyboardInterrupt):
+                log("interrupted during the push-retry reset — "
+                    "cleaning up")
+                abort_rebase()
+                return fail("git push of ledger/ to main failed "
+                            "(interrupted during the retry reset)",
+                            digest_path, fail_hard or fail_push)
+            continue
         return fail("git push of ledger/ to main failed",
-                    digest_path, fail_hard)
-    append_digest(digest_path, section_published(old, new, old_w, new_w))
-    return 0
+                    digest_path, fail_hard or fail_push)
 
 
 def main():
@@ -485,6 +552,13 @@ def main():
                     help="commit + push ledger/ to main when changed")
     ap.add_argument("--fail-hard", action="store_true",
                     help="exit non-zero on failure (guard mode)")
+    ap.add_argument("--fail-push", action="store_true",
+                    help="exit non-zero when the git push fails "
+                         "(sweep path, issue #119 follow-up: a push "
+                         "failure that survives the reset + recompute "
+                         "retry must fail the step instead of warning "
+                         "only in the digest; other failures still "
+                         "warn-only unless --fail-hard is also passed)")
     ap.add_argument("--sweep-target", default=None,
                     help="this sweep's archive directory, e.g. "
                          "sweeps/2026-11-16/081500__sweep-lite-poul-ca__run123 "
@@ -497,7 +571,8 @@ def main():
     if sweep_target:
         sweep_target = sweep_target.strip() or None
     try:
-        return publish(a.commit, a.digest, a.fail_hard, sweep_target)
+        return publish(a.commit, a.digest, a.fail_hard, sweep_target,
+                       a.fail_push)
     except KeyboardInterrupt:
         # Issue #119: an interrupt used to propagate out uncaught
         # (and, mid-rebase, strand the checkout). git_publish
