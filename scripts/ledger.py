@@ -11,6 +11,12 @@ actually did, using ONLY the point-in-time sweep archive (branch
   longest content-validated series for the ticker). Later sweeps
   extend the series; a forecast is never scored on data from its own
   sweep.
+- Point-in-time pin (issue #117): the archive branch is resolved to
+  its HEAD commit sha at run start; the tree is fetched at that
+  commit and every body via raw at that same commit. A branch advance
+  mid-run therefore cannot mix bodies from a newer tree into a ledger
+  that records this tree's sha; the pinned commit sha is recorded in
+  ledger.json alongside the tree sha.
 - Validity guard (issue #87): a forecast is scored only when its
   base_price matches the ticker's evidenced price level — closes from
   files positively tied to the ticker by symbol column or filename —
@@ -32,11 +38,16 @@ from datetime import date
 
 REPO = "moos-labs/borsagator"
 BRANCH = "archive"
-API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
-            f"{BRANCH}?recursive=1")
-API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
-                   f"{BRANCH}:sweeps?recursive=1")
-RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
+API_REF = (f"https://api.github.com/repos/{REPO}/git/ref/heads/"
+           f"{BRANCH}")
+# Issue #117: the tree is fetched at the pinned commit sha, never at
+# the live branch — the tree URL is built in fetch_tree() once the
+# commit is resolved. Bodies are fetched via blob_url() at the same
+# commit, so a branch advance mid-run cannot mix bodies from tree Y
+# into a ledger that records tree X.
+# The sweeps-subtree fallback URL is likewise built at the pinned
+# commit inside fetch_tree_sweeps_subtree().
+# NOTE: the old module-level RAW (branch URL) is gone by design.
 # INS-R7-02: anchored to the checkout like the other two scripts
 # (INS-R6-04 pattern) — the old $HOME path was dead weight off-VM.
 HELPER = os.path.normpath(os.path.join(
@@ -75,13 +86,39 @@ def fetch_text(url, timeout=60):
         return r.read().decode("utf-8", "replace")
 
 
+# Issue #117: the archive commit sha resolved at run start — the pin
+# for the whole run. Set by main() once fetch_tree() resolves it;
+# blob_url() refuses to fetch before it is set (fail closed, never
+# silently fall back to the live branch).
+PINNED_COMMIT = None
+
+
+def blob_url(rel):
+    """raw.githubusercontent URL for a path at the pinned commit."""
+    if not PINNED_COMMIT:
+        raise RuntimeError("archive commit not resolved before body "
+                           "fetch (issue #117 pin missing)")
+    return (f"https://raw.githubusercontent.com/{REPO}/{PINNED_COMMIT}/"
+            + urllib.parse.quote(rel))
+
+
 def fetch_tree():
-    """Archive tree via the public API; fall back to the connector
-    helper (authenticated) if the anonymous rate limit bites."""
+    """Archive tree pinned to one immutable commit (issue #117).
+
+    The branch is resolved to its HEAD commit sha FIRST; the tree is
+    then fetched at that commit sha and every body via raw at the
+    same commit sha. A commit is immutable, so a worker archiving a
+    sweep mid-run cannot mix bodies from a newer tree into a ledger
+    that records this tree's sha. Returns (tree, commit_sha, via).
+    Raises on failure — main() records it as a gap and the publisher
+    rejects the run (issue #116)."""
+    commit_sha = resolve_archive_commit()
+    tree_url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                f"{commit_sha}?recursive=1")
     try:
-        data = json.loads(fetch_text(API_TREE))
+        data = json.loads(fetch_text(tree_url))
         if not data.get("truncated"):
-            return data, "api-token" if TOKEN else "api-anonymous"
+            return data, commit_sha, "api-token" if TOKEN else "api-anonymous"
         # INS-R6-05 (extension): a truncated recursive tree must
         # never be silently consumed — fall through to the helper.
         warn("anonymous tree truncated; trying API helper")
@@ -89,7 +126,7 @@ def fetch_tree():
         warn(f"anonymous tree fetch failed ({e}); trying API helper")
     out = subprocess.run(
         [sys.executable, HELPER, "get",
-         f"/repos/{REPO}/git/trees/{BRANCH}?recursive=1"],
+         f"/repos/{REPO}/git/trees/{commit_sha}?recursive=1"],
         capture_output=True, text=True, timeout=120)
     if out.returncode != 0:
         raise RuntimeError(f"tree fetch failed: {out.stderr[:200]}")
@@ -99,17 +136,48 @@ def fetch_tree():
         # so the helper truncates identically — recover via the
         # sweeps subtree (the only part the ledger reads) instead of
         # consuming a known-incomplete tree.
-        return fetch_tree_sweeps_subtree()
-    return data, "api-helper"
+        return fetch_tree_sweeps_subtree(commit_sha)
+    return data, commit_sha, "api-helper"
 
 
-def fetch_tree_sweeps_subtree():
-    """Fallback when the recursive tree truncates: fetch the
-    recursive tree rooted at sweeps/ only. If even that truncates,
-    fail closed — a silently truncated tree would corrupt the
-    calibration instrument (INS-R7-03)."""
+def resolve_archive_commit():
+    """Resolve the archive branch to its HEAD commit sha via the
+    GitHub API; fall back to the connector helper (authenticated)
+    if the anonymous rate limit bites. The commit sha is the pin
+    for the run (issue #117)."""
     try:
-        data = json.loads(fetch_text(API_TREE_SWEEPS))
+        data = json.loads(fetch_text(API_REF))
+        sha = (data.get("object") or {}).get("sha")
+        if sha and (data.get("object") or {}).get("type") == "commit":
+            return sha
+        warn(f"archive ref has no commit sha ({str(data)[:120]}); "
+             "trying API helper")
+    except Exception as e:
+        warn(f"archive ref fetch failed ({e}); trying API helper")
+    out = subprocess.run(
+        [sys.executable, HELPER, "get",
+         f"/repos/{REPO}/git/ref/heads/{BRANCH}"],
+        capture_output=True, text=True, timeout=120)
+    if out.returncode != 0:
+        raise RuntimeError(f"archive ref fetch failed: {out.stderr[:200]}")
+    data = json.loads(out.stdout)
+    sha = (data.get("object") or {}).get("sha")
+    if not sha or (data.get("object") or {}).get("type") != "commit":
+        raise RuntimeError("archive ref fetch returned no commit sha")
+    return sha
+
+
+def fetch_tree_sweeps_subtree(commit_sha):
+    """Fallback when the recursive tree truncates: fetch the
+    recursive tree rooted at sweeps/ only, at the pinned commit
+    (issue #117 — the subtree must come from the same commit as
+    the tree it replaces). If even that truncates, fail closed —
+    a silently truncated tree would corrupt the calibration
+    instrument (INS-R7-03)."""
+    url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+           f"{commit_sha}:sweeps?recursive=1")
+    try:
+        data = json.loads(fetch_text(url))
         if not data.get("truncated"):
             prefixed = []
             for entry in data.get("tree", []):
@@ -117,7 +185,7 @@ def fetch_tree_sweeps_subtree():
                 e["path"] = "sweeps/" + e["path"]
                 prefixed.append(e)
             data["tree"] = prefixed
-            return data, "api-sweeps-subtree"
+            return data, commit_sha, "api-sweeps-subtree"
     except Exception as e:
         warn(f"sweeps-subtree fetch failed ({e})")
     raise RuntimeError("tree truncated and sweeps-subtree unavailable "
@@ -217,7 +285,8 @@ def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
         if code not in tokens and any(t in foreign_codes for t in tokens):
             continue  # filename names another ticker: reference workload
         try:
-            series, symbols = parse_price_csv(fetch_text(RAW + urllib.parse.quote(rel)))
+            # Issue #117: body at the pinned commit, never the live branch.
+            series, symbols = parse_price_csv(fetch_text(blob_url(rel)))
         except Exception as e:
             warn(f"{sweep['dir']}: unreadable {rel} ({e})")
             continue
@@ -355,16 +424,19 @@ def num(x):
 
 
 def main():
+    global PINNED_COMMIT
     out_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         "ledger_out")
     os.makedirs(out_dir, exist_ok=True)
     gaps = []
     try:
-        tree, tree_src = fetch_tree()
+        tree, commit_sha, tree_src = fetch_tree()
     except Exception as e:
-        tree, tree_src = {"tree": [], "sha": None}, "failed"
+        tree, commit_sha, tree_src = {"tree": [], "sha": None}, None, "failed"
         gaps.append(f"archive tree could not be fetched: {e}")
+    # Issue #117: pin every body fetch below to this commit.
+    PINNED_COMMIT = commit_sha
     entries = [(e["path"], e.get("size") or 0)
                for e in tree.get("tree", []) if e.get("type") == "blob"]
 
@@ -389,8 +461,9 @@ def main():
         for kind in ("digest", "ensemble"):
             if s[kind]:
                 try:
+                    # Issue #117: body at the pinned commit.
                     s[kind + "_data"] = json.loads(fetch_text(
-                        RAW + urllib.parse.quote(s[kind])))
+                        blob_url(s[kind])))
                 except Exception as e:
                     warn(f"{s['dir']}: bad {kind}.json ({e})")
                     s[kind + "_data"] = None
@@ -591,7 +664,9 @@ def main():
     ledger = {
         "tool": "calibration-ledger", "version": 1,
         "source": {"repo": REPO, "branch": BRANCH,
-                   "tree_sha": tree.get("sha"), "tree_via": tree_src},
+                   "tree_sha": tree.get("sha"),
+                   # Issue #117: the commit every body was fetched at.
+                   "commit_sha": commit_sha, "tree_via": tree_src},
         "counts": {"sweeps": len(sweep_list),
                    "sweeps_with_ensemble": sum(1 for s in sweep_list if s["has_ensemble"]),
                    "forecasts": len(rows), "matured": len(matured),
@@ -636,7 +711,8 @@ def main():
 
     # ---- markdown -------------------------------------------------------------
     L = ["# 🐊 Borsagator — calibration ledger (v1)", "",
-         f"Source: `{REPO}` branch `{BRANCH}` (tree {str(tree.get('sha'))[:8]}). "
+         f"Source: `{REPO}` branch `{BRANCH}` (tree {str(tree.get('sha'))[:8]}, "
+         f"commit {str(commit_sha)[:8] if commit_sha else '—'}). "
          f"Sweeps archived: {ledger['counts']['sweeps']} "
          f"({ledger['counts']['sweeps_with_ensemble']} with an ensemble).", "",
          f"**Forecasts found: {len(rows)} · matured: {len(matured)} · "

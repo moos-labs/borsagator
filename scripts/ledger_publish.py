@@ -12,6 +12,16 @@ requirement: never fail silently. With --fail-hard the failure exits
 non-zero instead (the scheduled guard's surface is the failed Actions
 run itself).
 
+Issue #117: ledger.py pins every archive read to the commit sha it
+resolves at run start, so the ledger is a self-consistent snapshot
+of that commit whatever the branch does mid-run. The publisher
+additionally compares the pinned commit against the live archive
+HEAD before publishing (the interim check from the #117 triage):
+on a mismatch it logs the advance and still publishes the pinned
+snapshot — the snapshot is consistent, and the next guard tick
+refreshes it for the new tree. Refusing to publish on a benign
+advance would fail the guard run for no integrity gain.
+
 Modes:
   sweep path (orchestrate.yml):  ledger_publish.py --digest digest/digest.md --commit
   guard path (ledger-guard.yml): ledger_publish.py --commit --fail-hard
@@ -25,7 +35,7 @@ issue #116 (a missing sweep was never re-added until the tree moved
 again). Revalidation costs one ledger run per guard tick and keeps
 that lock-in impossible.
 """
-import argparse, json, os, shutil, subprocess, sys, tempfile
+import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER_DIR = os.path.join(ROOT, "ledger")
@@ -33,10 +43,33 @@ LEDGER_PY = os.path.join(ROOT, "scripts", "ledger.py")
 FILES = ("ledger.json", "ledger.md", "weights.json")
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
+API_REF = ("https://api.github.com/repos/moos-labs/borsagator/"
+           "git/ref/heads/archive")
 
 
 def log(msg):
     print(f"[ledger-publish] {msg}", flush=True)
+
+
+def live_archive_commit_sha():
+    """HEAD commit sha of the archive branch right now (issue #117
+    interim check: compare the ledger's pinned commit against live
+    before publishing). Returns None when the API cannot be reached
+    — the check is advisory; the pinned ledger is self-consistent
+    either way, so an unreachable check never blocks a publish."""
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    headers = {"User-Agent": "borsagator-ledger-publish",
+               "Accept": "application/vnd.github+json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        req = urllib.request.Request(API_REF, headers=headers)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.loads(r.read().decode())
+        return (data.get("object") or {}).get("sha")
+    except Exception as e:
+        log(f"live archive HEAD check failed ({e}) — skipping comparison")
+        return None
 
 
 def _read_json(path):
@@ -61,6 +94,11 @@ def validate_ledger(doc):
     if not (doc.get("source") or {}).get("tree_sha"):
         raise RuntimeError("degraded run: no archive tree sha "
                            "(the archive fetch failed — see gaps)")
+    # Issue #117: a ledger without the pinned commit sha was not
+    # computed from a pinned snapshot — reject it.
+    if not (doc.get("source") or {}).get("commit_sha"):
+        raise RuntimeError("degraded run: no archive commit sha "
+                           "(the archive pin was not resolved — see gaps)")
     for g in doc.get("gaps") or []:
         if g.startswith("archive tree could not be fetched"):
             raise RuntimeError(f"degraded run: {g}")
@@ -111,12 +149,14 @@ def _weights_sentence(old_w, new_w):
 
 def section_published(old, new, old_w, new_w):
     sha = str(new["source"]["tree_sha"])[:8]
+    commit = str(new["source"].get("commit_sha") or "")[:8]
     delta = ""
     if old and old["counts"]["matured"] != new["counts"]["matured"]:
         delta = (f" (matured {old['counts']['matured']} → "
                  f"{new['counts']['matured']})")
     return ("## 📒 Calibration ledger\n\n"
-            f"Ledger rerun after this sweep (archive tree `{sha}`): "
+            f"Ledger rerun after this sweep (archive tree `{sha}`, "
+            f"commit `{commit}`): "
             f"{_counts_line(new)}{delta}."
             f"{_weights_sentence(old_w, new_w)} "
             "Published to `ledger/` on main; the new weights take "
@@ -198,6 +238,19 @@ def publish(commit, digest_path, fail_hard):
         new = run_ledger(tmp)
     except Exception as e:
         return fail(str(e), digest_path, fail_hard)
+    # Issue #117 interim check: compare the pinned commit the ledger
+    # was computed from against the live archive HEAD. A mismatch
+    # means the branch advanced mid-run — the ledger is still a
+    # self-consistent snapshot of its pinned commit, so publish it
+    # and let the next guard tick refresh for the new tree.
+    live = live_archive_commit_sha()
+    pinned = (new.get("source") or {}).get("commit_sha")
+    if live and pinned and live != pinned:
+        log(f"archive advanced during the run (pinned "
+            f"{str(pinned)[:8]}, live {str(live)[:8]}) — publishing "
+            "the pinned snapshot; the next guard tick refreshes it")
+    elif live and pinned:
+        log(f"pinned commit {str(pinned)[:8]} matches live archive HEAD")
     changed = []
     for name in FILES:
         newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
