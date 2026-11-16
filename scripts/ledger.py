@@ -224,7 +224,7 @@ def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
     ev_pick, ev_src = None, None
     if evidenced:
         pool_ev = sorted(evidenced, key=lambda rs: len(rs[1]), reverse=True)
-        ev_pick, ev_src = pool_ev[0]
+        ev_src, ev_pick = pool_ev[0]
         for rel, series in evidenced:
             if "/egx-data/" in rel:
                 ev_pick, ev_src = series, rel
