@@ -17,46 +17,26 @@ Modes:
   guard path (ledger-guard.yml): ledger_publish.py --commit --fail-hard
   local/dry:                     ledger_publish.py [--digest PATH]
 
-Idempotency: when the committed ledger already records the live
-archive tree, the rerun is skipped; when a rerun produces
-byte-identical outputs, nothing is committed. Weights published by a
-sweep take effect on the NEXT sweep's ensemble (the ensemble runs
-before the archive commit) — one sweep of latency, by construction.
+Idempotency: when a rerun produces byte-identical outputs, nothing
+is committed. The ledger is revalidated on EVERY run — the old
+tree-sha skip trusted the committed ledger blindly for the live
+archive tree, which locked in any incomplete ledger published before
+issue #116 (a missing sweep was never re-added until the tree moved
+again). Revalidation costs one ledger run per guard tick and keeps
+that lock-in impossible.
 """
 import argparse, json, os, shutil, subprocess, sys, tempfile
-import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER_DIR = os.path.join(ROOT, "ledger")
 LEDGER_PY = os.path.join(ROOT, "scripts", "ledger.py")
 FILES = ("ledger.json", "ledger.md", "weights.json")
-API = "https://api.github.com/repos/moos-labs/borsagator"
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
 
 
 def log(msg):
     print(f"[ledger-publish] {msg}", flush=True)
-
-
-def _token():
-    return os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
-
-
-def api_get(path):
-    headers = {"User-Agent": "borsagator-ledger-publish"}
-    tok = _token()
-    if tok:
-        headers["Authorization"] = f"Bearer {tok}"
-    req = urllib.request.Request(API + path, headers=headers)
-    with urllib.request.build_opener().open(req, timeout=60) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
-
-
-def live_archive_tree_sha():
-    ref = api_get("/git/ref/heads/archive")
-    commit = api_get(f"/git/commits/{ref['object']['sha']}")
-    return commit["tree"]["sha"]
 
 
 def _read_json(path):
@@ -71,12 +51,31 @@ def committed_ledger():
     return _read_json(os.path.join(LEDGER_DIR, "ledger.json"))
 
 
+def validate_ledger(doc):
+    """Raise RuntimeError on any degraded ledger document.
+    ledger.py itself never exits non-zero — it catches everything
+    and still writes zeroed outputs on a fetch failure, so this
+    validation is the failure detector. Rejection is on the specific
+    failure signal (a gap prefix), never on count monotonicity
+    (issue #116)."""
+    if not (doc.get("source") or {}).get("tree_sha"):
+        raise RuntimeError("degraded run: no archive tree sha "
+                           "(the archive fetch failed — see gaps)")
+    for g in doc.get("gaps") or []:
+        if g.startswith("archive tree could not be fetched"):
+            raise RuntimeError(f"degraded run: {g}")
+        if g.startswith("per-file fetch failed"):
+            raise RuntimeError(f"degraded run: {g}")
+    if (doc.get("counts") or {}).get("sweeps", 0) == 0:
+        raise RuntimeError("degraded run: zero sweeps read from the "
+                           "archive tree")
+    return doc
+
+
 def run_ledger(out_dir):
     """Run scripts/ledger.py into out_dir and validate its output.
     Returns the parsed ledger.json; raises RuntimeError on any
-    degraded run (ledger.py itself never exits non-zero — it catches
-    everything and still writes zeroed outputs on a fetch failure,
-    so the validation here is the failure detector)."""
+    degraded run."""
     r = subprocess.run([sys.executable, LEDGER_PY, out_dir],
                        capture_output=True, text=True, timeout=1200)
     p = os.path.join(out_dir, "ledger.json")
@@ -86,16 +85,7 @@ def run_ledger(out_dir):
     doc = _read_json(p)
     if doc is None:
         raise RuntimeError("ledger.json is not parseable JSON")
-    if not (doc.get("source") or {}).get("tree_sha"):
-        raise RuntimeError("degraded run: no archive tree sha "
-                           "(the archive fetch failed — see gaps)")
-    for g in doc.get("gaps") or []:
-        if g.startswith("archive tree could not be fetched"):
-            raise RuntimeError(f"degraded run: {g}")
-    if (doc.get("counts") or {}).get("sweeps", 0) == 0:
-        raise RuntimeError("degraded run: zero sweeps read from the "
-                           "archive tree")
-    return doc
+    return validate_ledger(doc)
 
 
 def _counts_line(doc):
@@ -199,16 +189,10 @@ def fail(reason, digest_path, fail_hard):
 def publish(commit, digest_path, fail_hard):
     old = committed_ledger()
     old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
-    try:
-        live_tree = live_archive_tree_sha()
-    except Exception as e:
-        live_tree = None
-        log(f"could not read the live archive tree ({e}); running anyway")
-    if old and live_tree and \
-            (old.get("source") or {}).get("tree_sha") == live_tree:
-        log(f"archive tree {live_tree[:8]} already published — skipping")
-        append_digest(digest_path, section_unchanged(old))
-        return 0
+    # Issue #116: NO tree-sha skip here. The rerun below always
+    # revalidates (run_ledger rejects on a per-file fetch failure),
+    # and the byte-identical check further down is the only skip —
+    # so an incomplete ledger can neither be published nor locked in.
     tmp = tempfile.mkdtemp(prefix="ledger-run-")
     try:
         new = run_ledger(tmp)

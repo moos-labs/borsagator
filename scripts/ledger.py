@@ -394,13 +394,26 @@ def main():
                 except Exception as e:
                     warn(f"{s['dir']}: bad {kind}.json ({e})")
                     s[kind + "_data"] = None
+                    # Issue #116: a fetch failure is NOT the same as a
+                    # missing file — record it as a gap so the
+                    # publisher rejects the run instead of publishing
+                    # a ledger that silently drops the sweep.
+                    s[kind + "_fetch_failed"] = True
+                    gaps.append(f"per-file fetch failed: {s['dir']}: "
+                                f"{kind}.json could not be fetched ({e})")
         d = s.get("digest_data") or {}
         e = s.get("ensemble_data") or {}
         s["ticker"] = e.get("ticker") or d.get("ticker")
         if d.get("date"):
             s["date"] = str(d["date"])[:10]
         s["has_ensemble"] = bool(e)
-    no_ens = [s["dir"] for s in sweep_list if not s["has_ensemble"]]
+    # Issue #116: only sweeps with NO ensemble.json in the tree count
+    # here — a sweep whose ensemble.json exists but failed to fetch is
+    # already recorded in gaps (per-file fetch failed) and must not
+    # be mislabelled as a legitimately ensemble-less run.
+    no_ens = [s["dir"] for s in sweep_list
+              if not s["has_ensemble"]
+              and not s.get("ensemble_fetch_failed")]
     if no_ens:
         gaps.append(f"{len(no_ens)} sweep(s) carry no ensemble.json "
                     f"(category/single-tool runs): " + "; ".join(no_ens))
