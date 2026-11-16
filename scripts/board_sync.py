@@ -5,10 +5,19 @@ with a reason, or read WSJF scores).
 
 Runs from .github/workflows/board-sync.yml with a Borsagator App token.
 
+Note: the `projects_v2_item` Actions trigger is unusable for this org
+project (adding it makes GitHub reject the whole workflow file — proven
+2026-11-16 by bisection), so card moves are picked up two ways:
+the built-in Auto-close workflow closes the issue when a card lands on
+Released (this script then adds the label + comment from the resulting
+`issues.closed` event), and a scheduled reconcile pass closes any still-open
+issue whose card sits on Released or Cancelled.
+
 Rules:
-  - Card moved to Cancelled -> close issue as not_planned + 'cancelled' label + comment.
-  - Card moved to Released  -> 'released' label + comment + close as completed
-    (the built-in Auto-close workflow also closes; both paths are idempotent).
+  - Card moved to Released -> issue closed (built-in), then 'released'
+    label + comment added here.
+  - Card moved to Cancelled -> reconcile closes the issue as not_planned
+    with the 'cancelled' label + comment.
   - Issue closed as not_planned, or closed with the 'cancelled' label
     -> card to Cancelled (the built-in Item-closed workflow sends every
     close to Released, so this corrects the cancelled branch).
@@ -80,15 +89,6 @@ query($id:ID!){ node(id:$id){ ... on Issue {
       ... on ProjectV2ItemFieldSingleSelectValue { name } } } } } } }
 """
 
-ITEM_Q = """
-query($id:ID!){ node(id:$id){ ... on ProjectV2Item {
-  project { id }
-  fieldValueByName(name:"Status"){
-    ... on ProjectV2ItemFieldSingleSelectValue { name } }
-  content { ... on Issue { id number state title
-    repository { nameWithOwner } } } } } }
-"""
-
 SET_STATUS = """
 mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){
   updateProjectV2ItemFieldValue(input:{ projectId:$p, itemId:$i,
@@ -98,6 +98,14 @@ mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){
 ADD_ITEM = """
 mutation($p:ID!,$c:ID!){ addProjectV2ItemById(input:{ projectId:$p,
   contentId:$c }){ item { id } } }
+"""
+
+OPEN_ITEMS_Q = """
+query($p:ID!,$cursor:String){ node(id:$p){ ... on ProjectV2 {
+  items(first:100, after:$cursor){ pageInfo { hasNextPage endCursor }
+    nodes { id fieldValueByName(name:"Status"){
+      ... on ProjectV2ItemFieldSingleSelectValue { name } }
+      content { ... on Issue { id number state title } } } } } } }
 """
 
 
@@ -163,11 +171,49 @@ def close_issue(number, reason):
         {"state": "closed", "state_reason": reason})
 
 
+def reconcile(board):
+    """Close any OPEN issue whose card sits on Released or Cancelled."""
+    cursor = None
+    acted = 0
+    while True:
+        data = gql(OPEN_ITEMS_Q, {"p": board.project_id, "cursor": cursor})
+        items = data["node"]["items"]
+        for node in items["nodes"]:
+            content = node.get("content") or {}
+            if content.get("state") != "OPEN":
+                continue
+            if "Borsagator digest" in (content.get("title") or ""):
+                continue
+            status = (node.get("fieldValueByName") or {}).get("name")
+            number = content["number"]
+            if status == "Cancelled":
+                add_label(number, "cancelled")
+                add_comment(number, CANCELLED_COMMENT)
+                close_issue(number, "not_planned")
+                acted += 1
+                print(f"reconcile: #{number} card Cancelled -> closed not_planned")
+            elif status == "Released":
+                add_label(number, "released")
+                add_comment(number, RELEASED_COMMENT)
+                close_issue(number, "completed")
+                acted += 1
+                print(f"reconcile: #{number} card Released -> closed completed")
+        if not items["pageInfo"]["hasNextPage"]:
+            break
+        cursor = items["pageInfo"]["endCursor"]
+    print(f"reconcile done, {acted} issue(s) closed")
+
+
 def main():
-    with open(os.environ["GITHUB_EVENT_PATH"]) as fh:
-        event = json.load(fh)
     event_name = os.environ["GITHUB_EVENT_NAME"]
     board = Board()
+
+    if event_name in ("schedule", "workflow_dispatch"):
+        reconcile(board)
+        return
+
+    with open(os.environ["GITHUB_EVENT_PATH"]) as fh:
+        event = json.load(fh)
 
     if event_name == "issues":
         issue = event["issue"]
@@ -209,6 +255,19 @@ def main():
             elif "released" in labels and status != "Released":
                 board.set_status(item_id, "Released")
                 print(f"#{number}: closed with 'released' label -> card Released")
+            elif status == "Released":
+                # Closed by the built-in Auto-close after a card move to
+                # Released (or closed while the card already sat there):
+                # attach the label + comment the built-in cannot add.
+                if "released" not in labels:
+                    add_label(number, "released")
+                add_comment(number, RELEASED_COMMENT)
+                print(f"#{number}: closed with card on Released -> labeled + commented")
+            elif status == "Cancelled":
+                if "cancelled" not in labels:
+                    add_label(number, "cancelled")
+                add_comment(number, CANCELLED_COMMENT)
+                print(f"#{number}: closed with card on Cancelled -> labeled + commented")
 
         elif action == "labeled":
             label = (event.get("label") or {}).get("name")
@@ -218,32 +277,6 @@ def main():
                 if item_id and status != target:
                     board.set_status(item_id, target)
                     print(f"#{number}: labeled {label} after close -> card {target}")
-
-    elif event_name == "projects_v2_item":
-        item = event["projects_v2_item"]
-        data = gql(ITEM_Q, {"id": item["node_id"]})
-        node = data["node"]
-        if not node or node["project"]["id"] != board.project_id:
-            return
-        content = node.get("content") or {}
-        if content.get("repository", {}).get("nameWithOwner") != f"{ORG}/{REPO}":
-            return
-        if "Borsagator digest" in (content.get("title") or ""):
-            return
-        status = (node.get("fieldValueByName") or {}).get("name")
-        if content.get("state") != "OPEN":
-            return
-        number = content["number"]
-        if status == "Cancelled":
-            add_label(number, "cancelled")
-            add_comment(number, CANCELLED_COMMENT)
-            close_issue(number, "not_planned")
-            print(f"#{number}: card -> Cancelled, issue closed as not_planned")
-        elif status == "Released":
-            add_label(number, "released")
-            add_comment(number, RELEASED_COMMENT)
-            close_issue(number, "completed")
-            print(f"#{number}: card -> Released, issue closed as completed")
 
     else:
         print(f"unhandled event {event_name}")
