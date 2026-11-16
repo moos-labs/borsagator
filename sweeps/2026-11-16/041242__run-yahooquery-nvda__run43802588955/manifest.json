@@ -1,0 +1,49 @@
+{
+ "job": "run yahooquery NVDA",
+ "ticker": "NVDA",
+ "digest_date": "2026-11-16",
+ "archived_at": "2026-11-16T04:12:42.399157+00:00",
+ "github_run_id": "43802588955",
+ "target": "sweeps/2026-11-16/041242__run-yahooquery-nvda__run43802588955",
+ "tools": {
+  "yahooquery": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 864,
+   "sha256": "5ffc33108bede1958e5a0f2c14f367aaf039844a85fdaf8bf88da1ccd69e1f9d"
+  },
+  {
+   "path": "ensemble.json",
+   "bytes": 955,
+   "sha256": "b8145f9946f8b99157c7d74ef8344bf9ecef07fc1fc8050a2b67c7054752655b"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 1272,
+   "sha256": "ca25bad038669f57e033ea136d64d01977717e76aadd965905f735c1f56480d2"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 15081,
+   "sha256": "6b0a65824c9dbf78f4f2e18e8051dd4a1a8ed3860730d538b17122266bc8c3af"
+  },
+  {
+   "path": "collected/yahooquery/NVDA.csv",
+   "bytes": 156287,
+   "sha256": "12dcb07390bdbf86f117fdc60cc8fe2c9bd74c9a834f05cade23dadbfe46ed95"
+  },
+  {
+   "path": "collected/yahooquery/run.log",
+   "bytes": 3033,
+   "sha256": "cc8a58dc1bd3912c47ff3f9697f4c8f3575132180da3a69a8295bad9a06c9c1a"
+  },
+  {
+   "path": "collected/yahooquery/summary.json",
+   "bytes": 307,
+   "sha256": "6807fcde991e88d804c79c92df3777153d50bd211b1fb7842c2d78aa7cc8b813"
+  }
+ ],
+ "skipped": []
+}

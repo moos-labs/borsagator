@@ -1,0 +1,40 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "NVDA",
+ "base_price": 162.85000610351562,
+ "base_source": "yahooquery",
+ "price_crosscheck": {
+  "status": "single-source",
+  "witnesses": {
+   "yahooquery/nvda.csv": 162.85000610351562
+  },
+  "spread_pct": null,
+  "common_date": null,
+  "base_used": 162.85000610351562,
+  "base_source_used": "yahooquery"
+ },
+ "corporate_actions": [],
+ "sigma_daily": 0.0387,
+ "sigma_source": "yahooquery/nvda.csv (σ60=0.0274, σ10=0.0387)",
+ "sessions_per_calendar_day": 0.688,
+ "date": "2026-11-16",
+ "risk": {
+  "level": "unknown",
+  "conf_cap": 0.35,
+  "price_mult": 0.8,
+  "flags": [
+   "news overlay unavailable — risk unassessed, confidence capped"
+  ]
+ },
+ "weights_source": "ledger",
+ "family_scores": {
+  "technicals": null,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": null
+ },
+ "horizons": {},
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

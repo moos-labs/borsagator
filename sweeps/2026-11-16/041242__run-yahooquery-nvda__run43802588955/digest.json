@@ -1,0 +1,34 @@
+{
+  "job": "run yahooquery NVDA",
+  "ticker": "NVDA",
+  "date": "2026-11-16",
+  "started": "2026-11-16T04:11:54.358764+00:00",
+  "finished": "2026-11-16T04:12:42.272039+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/yahooquery-runner/actions/runs/43802608662",
+      "conclusion": "success",
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "NVDA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_NVDA.csv": 1255,
+          "NVDA.csv_last_date": "2026-11-13",
+          "NVDA.csv_last_close": "162.85000610351562"
+        },
+        "files": [
+          "NVDA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}
