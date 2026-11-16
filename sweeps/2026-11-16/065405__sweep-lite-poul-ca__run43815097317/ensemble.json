@@ -1,0 +1,178 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 10.0,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_date": "2026-11-15",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "talib/indicators.csv": 10.199999809265137,
+   "yahooquery/poul.ca.csv": 10.199999809265137,
+   "egx-data/egxpy_poul.csv": 10.2,
+   "openbb/poul_ca.csv": 10.199999809265137,
+   "pandas-ta/indicators.csv": 10.199999809265137
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-11",
+  "base_used": 10.0,
+  "base_source_used": "egx-data/egxpy_poul.csv",
+  "base_date": "2026-11-15",
+  "latest_collected_date": "2026-11-15",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "date_basis": "entitlement+1",
+   "mechanical_pct": -19.0,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي"
+  },
+  {
+   "type": "dividend",
+   "dps": 1.89,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.9,
+   "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+  },
+  {
+   "type": "dividend",
+   "dps": 1.9,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -19.0,
+   "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة"
+  }
+ ],
+ "sigma_daily": 0.0225,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0186)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-16",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+   "earnings event: القاهرة للدواجن تخفض أرباحها في تسعة أشهر - ArabFinance",
+   "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تخفض أرباحها في تسعة أشهر - ArabFinance"
+   },
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+   }
+  ],
+  "move_z": {
+   "last": 0.66,
+   "max3": 0.66
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "0b4830e811c0cf2348c5beb67e77ef916152ca9e564a815505a5ddeb4b602a4c",
+  "factors": {
+   "price-forecast": 0.993,
+   "technicals": 0.742,
+   "sentiment": 1.024,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.993,
+    "n": 5,
+    "skill": -0.007
+   },
+   "technicals": {
+    "factor": 0.742,
+    "n": 5,
+    "skill": -0.258
+   },
+   "sentiment": {
+    "factor": 1.024,
+    "n": 5,
+    "skill": 0.024
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": -0.063,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.222
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 2.26,
+   "range_low_pct": -2.71,
+   "range_high_pct": 7.23,
+   "confidence": 0.3,
+   "net_score": 0.35,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "price-forecast": 0.687
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": -0.61,
+   "range_low_pct": -8.81,
+   "range_high_pct": 7.58,
+   "confidence": 0.3,
+   "net_score": 0.015,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "price-forecast": -0.137
+   },
+   "horizon_short": false,
+   "trading_sessions": 3
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -1.54,
+   "range_low_pct": -19.98,
+   "range_high_pct": 16.9,
+   "confidence": 0.3,
+   "net_score": 0.164,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "fundamentals": 0.4,
+    "price-forecast": -0.222
+   },
+   "horizon_short": false,
+   "trading_sessions": 14
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

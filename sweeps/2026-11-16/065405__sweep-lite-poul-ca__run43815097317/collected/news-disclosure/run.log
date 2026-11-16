@@ -1,0 +1,25 @@
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+WARN body extract short (0 chars): https://www.mubasher.info/news/4701268/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 3, 'extract': 2}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T02:15:52Z)
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 2635.28it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15813.02it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 23200.49it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6470.90it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 11, "arabic_headlines": 29, "latest_news_date": "Mon, 16 Nov 2026 01:58:26 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.455, "multilingual_negative": 0.009, "multilingual_neutral": 0.537, "multilingual_scored": 29, "bodies_fetched": 7, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "published", "translation_provider": "nllb+cohere", "translated_positive": 0.23, "translated_negative": 0.162, "translated_neutral": 0.608, "translated_scored": 29}
+BRIEF:
+- Cairo Poultry's nine-month profit dropped by 38.3%, a significant decline.
+- The company's consolidated revenue increased during the same period, but standalone net income rose.
+- Despite the revenue growth, Cairo Poultry's profit decrease is a cause for concern.
+- The stock price of Cairo Poultry is allowed to move 35.19% downwards, indicating a potential impact on investors.
+- The company's third-quarter consolidated profit was EGP 152 million, a notable figure.
+- Cairo Poultry's nine-month earnings stood at EGP 1.43 billion, a 39.1% decrease from the previous year.
+- The decline in profit is attributed to various factors, including rising costs and market competition.
+- This news may impact the stock's performance and investor confidence, especially with the allowed price movement.

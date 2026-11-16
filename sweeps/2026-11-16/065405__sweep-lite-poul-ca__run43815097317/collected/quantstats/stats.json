@@ -1,0 +1,95 @@
+{
+  "ticker": "POUL.CA",
+  "source": "Yahoo chart API (direct, via requests)",
+  "exchange_tz": "Africa/Cairo",
+  "rows": 2180,
+  "range": [
+    "2018-01-01",
+    "2026-11-12"
+  ],
+  "series": {
+    "sessions": 33,
+    "returns_days": 32,
+    "start": "2026-09-28",
+    "end": "2026-11-12",
+    "start_close": 9.710000038146973,
+    "end_close": 10.149999618530273,
+    "cumulative_return_pct": 4.531406577288433,
+    "sharpe": 1.1321884404950202,
+    "sortino": 1.9553516069439578,
+    "max_drawdown_pct": -12.330101303357942,
+    "volatility_pct": 36.49056147249631,
+    "daily_win_rate_pct": 43.75,
+    "tearsheet": "ok"
+  },
+  "capture": {
+    "events": [
+      {
+        "end": "2019-07-14",
+        "ex": "2019-07-15",
+        "div": 0.25,
+        "entry_session": "2019-07-14",
+        "entry_close": 4.96999979019165,
+        "ex_session": "2019-07-15",
+        "ex_close": 4.78000020980835,
+        "capture_ex_close_pct": 1.2072519547206162,
+        "payday_session": "2019-07-17",
+        "payday_close": 4.619999885559082,
+        "capture_payday_pct": -2.0120706006853215
+      },
+      {
+        "end": "2021-05-17",
+        "ex": "2021-05-18",
+        "div": 0.16,
+        "entry_session": "2021-05-17",
+        "entry_close": 2.930000066757202,
+        "ex_session": "2021-05-18",
+        "ex_close": 2.8399999141693115,
+        "capture_ex_close_pct": 2.3890732360829716,
+        "payday_session": "2021-05-20",
+        "payday_close": 3.140000104904175,
+        "capture_payday_pct": 12.627987362350911
+      },
+      {
+        "end": "2024-10-21",
+        "ex": "2024-10-22",
+        "div": 0.847875,
+        "entry_session": "2024-10-21",
+        "entry_close": 12.25,
+        "ex_session": "2024-10-22",
+        "ex_close": 12.010000228881836,
+        "capture_ex_close_pct": 4.962246766382336,
+        "payday_session": "2024-10-24",
+        "payday_close": 13.180000305175781,
+        "capture_payday_pct": 14.513267797353318
+      },
+      {
+        "end": "2026-04-26",
+        "ex": "2026-04-27",
+        "div": 0.33,
+        "entry_session": "2026-04-26",
+        "entry_close": 34.90999984741211,
+        "ex_session": "2026-04-27",
+        "ex_close": 35.349998474121094,
+        "capture_ex_close_pct": 2.20566780313539,
+        "payday_session": "2026-04-29",
+        "payday_close": 35.75,
+        "capture_payday_pct": 3.351475673737711
+      }
+    ],
+    "ex_close": {
+      "n": 4,
+      "mean_pct": 2.6910599400803283,
+      "win_rate_pct": 100.0,
+      "min_pct": 1.2072519547206162,
+      "max_pct": 4.962246766382336
+    },
+    "payday_close": {
+      "n": 4,
+      "mean_pct": 7.120165058189155,
+      "win_rate_pct": 75.0,
+      "min_pct": -2.0120706006853215,
+      "max_pct": 14.513267797353318
+    }
+  }
+}
