@@ -1,31 +1,11 @@
 name: board-sync
 
-# Custom layer over GitHub's built-in project workflows: label/branch logic,
-# close reasons, comments, WSJF promotion and assignment -> Doing.
-# See scripts/board_sync.py for the rules.
-
 on:
   issues:
-    types: [opened, closed, labeled, assigned]
-  projects_v2_item:
-    types: [edited]
+    types: [opened]
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
-      - name: Mint Borsagator App token
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ secrets.BORSAGATOR_APP_ID }}
-          private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Sync board and issue
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: python3 scripts/board_sync.py
+      - run: echo board-sync-probe
