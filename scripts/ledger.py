@@ -59,8 +59,18 @@ def warn(msg):
     WARNINGS.append(str(msg))
 
 
+# Issue #64: in Actions a token is always available — using it for
+# the API reads removes the anonymous rate limit, the flakiest
+# failure mode of the automated rerun. Raw-file fetches stay
+# anonymous (public repo); the header is scoped to api.github.com.
+TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+
+
 def fetch_text(url, timeout=60):
-    req = urllib.request.Request(url, headers={"User-Agent": "borsagator-ledger"})
+    headers = {"User-Agent": "borsagator-ledger"}
+    if TOKEN and url.startswith("https://api.github.com/"):
+        headers["Authorization"] = f"Bearer {TOKEN}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.build_opener().open(req, timeout=timeout) as r:
         return r.read().decode("utf-8", "replace")
 
@@ -71,7 +81,7 @@ def fetch_tree():
     try:
         data = json.loads(fetch_text(API_TREE))
         if not data.get("truncated"):
-            return data, "api-anonymous"
+            return data, "api-token" if TOKEN else "api-anonymous"
         # INS-R6-05 (extension): a truncated recursive tree must
         # never be silently consumed — fall through to the helper.
         warn("anonymous tree truncated; trying API helper")
