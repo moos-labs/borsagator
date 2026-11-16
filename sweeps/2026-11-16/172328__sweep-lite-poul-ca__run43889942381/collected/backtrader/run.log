@@ -1,0 +1,20 @@
+Fetching https://query1.finance.yahoo.com/v8/finance/chart/AAPL?period1=1700171835&period2=1794844635&interval=1d
+Rows: 752  Range: 2023-11-16 to 2026-11-16
+Starting Portfolio Value: 100000.00
+Final Portfolio Value: 113192.49
+{
+  "ticker": "AAPL",
+  "strategy": "SMA20 cross (buy on cross above, close on cross below, 95% cash stake)",
+  "start_value": 100000.0,
+  "final_value": 113192.49,
+  "total_return_pct": 13.1925,
+  "completed_trades": 33,
+  "data_rows": 752,
+  "date_range": {
+    "start": "2023-11-16",
+    "end": "2026-11-16"
+  },
+  "starting_cash": 100000.0,
+  "sma_period": 20
+}
+Wrote results/stats.json

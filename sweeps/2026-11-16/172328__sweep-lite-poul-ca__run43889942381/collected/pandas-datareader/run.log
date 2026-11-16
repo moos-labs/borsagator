@@ -1,0 +1,6 @@
+ERROR fetching stooq:^SPX: ConnectTimeout: HTTPSConnectionPool(host='stooq.com', port=443): Max retries exceeded with url: /q/d/l/?s=%5ESPX&i=d&d1=20251116&d2=20261116 (Caused by ConnectTimeoutError(<HTTPSConnection(host='stooq.com', port=443) at 0x7e5bbbae9850>, 'Connection to stooq.com timed out. (connect timeout=30)'))
+Fetching fred:DGS10 from 2025-11-16 to 2026-11-16 ...
+  OK: 259 rows, 2025-11-17 -> 2026-11-12, DGS10 4.13 -> 5.1
+Fetching stooq:^SPX from 2025-11-16 to 2026-11-16 ...
+  FAILED: ConnectTimeout: HTTPSConnectionPool(host='stooq.com', port=443): Max retries exceeded with url: /q/d/l/?s=%5ESPX&i=d&d1=20251116&d2=20261116 (Caused by ConnectTimeoutError(<HTTPSConnection(host='stooq.com', port=443) at 0x7e5bbbae9850>, 'Connection to stooq.com timed out. (connect timeout=30)'))
+Wrote results/summary.json

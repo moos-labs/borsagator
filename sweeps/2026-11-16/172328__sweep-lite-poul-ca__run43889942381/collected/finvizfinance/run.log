@@ -1,0 +1,5 @@
+finvizfinance version: 1.7.0
+ticker: AAPL
+fundamentals: ok fields=90 error=None
+screener: error rows=0 error=FinvizBlockedError: finviz blocked the request at https://finviz.com/screener.ashx (Cloudflare challenge / 403). The source IP is being rate-limited. Slow down your request rate, or supply your own session/proxy via finvizfinance.util.set_session() or set_proxy().
+wrote results/summary.json
