@@ -1,0 +1,202 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 12,
+  "label_counts": {
+    "positive": 2,
+    "negative": 5,
+    "neutral": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.1667569070098883,
+    "negative": 0.4019171943485465,
+    "neutral": 0.43132588860559434
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003271246387157589,
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316
+      },
+      "raw_probabilities": {
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316,
+        "positive": 0.0003271246387157589
+      }
+    },
+    {
+      "text": "Joshua Paul Malmberg - Sheridan Media",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00072122534038499,
+        "negative": 0.00029516281210817397,
+        "neutral": 0.9989835619926453
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989835619926453,
+        "positive": 0.00072122534038499,
+        "negative": 0.00029516281210817397
+      }
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9950209856033325,
+        "negative": 0.0003907421778421849,
+        "neutral": 0.004588231910020113
+      },
+      "raw_probabilities": {
+        "positive": 0.9950209856033325,
+        "neutral": 0.004588231910020113,
+        "negative": 0.0003907421778421849
+      }
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.004215402994304895,
+        "negative": 0.00023612579389009625,
+        "neutral": 0.9955484867095947
+      },
+      "raw_probabilities": {
+        "neutral": 0.9955484867095947,
+        "positive": 0.004215402994304895,
+        "negative": 0.00023612579389009625
+      }
+    },
+    {
+      "text": "\"Tutafute hela\": Tanzanian influencer on being 'chased' from Charlene's wedding - Tuko News",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0004259594134055078,
+        "negative": 0.8618147969245911,
+        "neutral": 0.137759268283844
+      },
+      "raw_probabilities": {
+        "negative": 0.8618147969245911,
+        "neutral": 0.137759268283844,
+        "positive": 0.0004259594134055078
+      }
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005521238199435174,
+        "negative": 0.00020821730140596628,
+        "neutral": 0.9992396831512451
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992396831512451,
+        "positive": 0.0005521238199435174,
+        "negative": 0.00020821730140596628
+      }
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9977030158042908,
+        "negative": 0.0004603227716870606,
+        "neutral": 0.0018367004813626409
+      },
+      "raw_probabilities": {
+        "positive": 0.9977030158042908,
+        "neutral": 0.0018367004813626409,
+        "negative": 0.0004603227716870606
+      }
+    },
+    {
+      "text": "Paul Kagame | Biography, Education, & Facts - Britannica",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003339172981213778,
+        "negative": 0.0002223389019491151,
+        "neutral": 0.9994437098503113
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994437098503113,
+        "positive": 0.0003339172981213778,
+        "negative": 0.0002223389019491151
+      }
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003835358074866235,
+        "negative": 0.0003114596474915743,
+        "neutral": 0.9993048906326294
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993048906326294,
+        "positive": 0.0003835358074866235,
+        "negative": 0.0003114596474915743
+      }
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0007058993796817958,
+        "negative": 0.9675126075744629,
+        "neutral": 0.03178151696920395
+      },
+      "raw_probabilities": {
+        "negative": 0.9675126075744629,
+        "neutral": 0.03178151696920395,
+        "positive": 0.0007058993796817958
+      }
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0004643117426894605,
+        "negative": 0.9944802522659302,
+        "neutral": 0.005055349785834551
+      },
+      "raw_probabilities": {
+        "negative": 0.9944802522659302,
+        "neutral": 0.005055349785834551,
+        "positive": 0.0004643117426894605
+      }
+    },
+    {
+      "text": "Paul Mackenzie, the Kenyan preacher who led hundreds to starve to death - Reuters",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022938227630220354,
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051176935434341
+      },
+      "raw_probabilities": {
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051176935434341,
+        "positive": 0.00022938227630220354
+      }
+    }
+  ]
+}

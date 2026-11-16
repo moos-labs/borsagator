@@ -1,0 +1,51 @@
+Fetching https://query1.finance.yahoo.com/v8/finance/chart/AAPL?period1=1698811200&period2=1793505600&interval=1d
+Saved 752 bars to results/AAPL_daily.csv (2023-11-01 .. 2026-10-30)
+2026-11-16 13:51:16.306727	Strategy initialization complete
+2026-11-16 13:51:16.306745	Start replaying historical data
+2026-11-16 13:51:16.307187	Backtesting progress: = [0%]
+2026-11-16 13:51:16.307896	Backtesting progress: == [10%]
+2026-11-16 13:51:16.308623	Backtesting progress: === [20%]
+2026-11-16 13:51:16.309275	Backtesting progress: ==== [30%]
+2026-11-16 13:51:16.309922	Backtesting progress: ===== [40%]
+2026-11-16 13:51:16.310575	Backtesting progress: ====== [50%]
+2026-11-16 13:51:16.311238	Backtesting progress: ======= [60%]
+2026-11-16 13:51:16.311862	Backtesting progress: ======== [70%]
+2026-11-16 13:51:16.312482	Backtesting progress: ========= [80%]
+2026-11-16 13:51:16.313112	Backtesting progress: ========== [90%]
+2026-11-16 13:51:16.313131	Backtesting progress: =========== [100%]
+2026-11-16 13:51:16.313139	Historical backtest complete
+2026-11-16 13:51:16.313143	Start calculating daily mark-to-market profit and loss
+2026-11-16 13:51:16.316139	The daily mark-to-market profit and loss calculation is complete
+2026-11-16 13:51:16.316162	Start calculating strategy statistical indicators
+2026-11-16 13:51:16.319800	------------------------------
+2026-11-16 13:51:16.319810	Start Date: 	2023-11-01
+2026-11-16 13:51:16.319814	End Date: 	2026-10-30
+2026-11-16 13:51:16.319832	Total Days: 	752
+2026-11-16 13:51:16.319834	Profit Days: 	330
+2026-11-16 13:51:16.319836	Loss Days: 	320
+2026-11-16 13:51:16.319844	Capital: 	1,000,000.00
+2026-11-16 13:51:16.319849	End Balance: 	999,916.78
+2026-11-16 13:51:16.319853	Total Return: 	-0.01%
+2026-11-16 13:51:16.319856	Annual Return: 	-0.00%
+2026-11-16 13:51:16.319859	Max Drawdown: 	-151.30
+2026-11-16 13:51:16.319862	Max Ddpercent: -0.02%
+2026-11-16 13:51:16.319864	Max Drawdown Duration: 	577
+2026-11-16 13:51:16.319867	Total Det Pnl: 	-83.22
+2026-11-16 13:51:16.319869	Total Commission: 	0.00
+2026-11-16 13:51:16.319872	Total Slippage: 	0.00
+2026-11-16 13:51:16.319874	Total Turnover: 	10,677.81
+2026-11-16 13:51:16.319877	Total Trade Count: 	45
+2026-11-16 13:51:16.319880	Daily Net P&L: 	-0.11
+2026-11-16 13:51:16.319883	Daily Commission: 	0.00
+2026-11-16 13:51:16.319886	Daily Slippage: 	0.00
+2026-11-16 13:51:16.319888	Daily Turnover: 	14.20
+2026-11-16 13:51:16.319892	Daily Trade Count: 	0.0598404255319149
+2026-11-16 13:51:16.319895	Daily Return: 	-0.00%
+2026-11-16 13:51:16.319897	Return Std: 	0.00%
+2026-11-16 13:51:16.319900	Sharpe Ratio：	-0.44
+2026-11-16 13:51:16.319904	EWM Sharpe：	-0.46
+2026-11-16 13:51:16.319907	Return Drawdown Ratio: 	-0.55
+2026-11-16 13:51:16.319909	RGR Ratio：	-0.29
+2026-11-16 13:51:16.320133	Strategy statistical indicators calculation completed
+Wrote results/statistics.json: {'start_date': '2023-11-01', 'end_date': '2026-10-30', 'total_days': 752, 'profit_days': 330, 'loss_days': 320, 'capital': 1000000, 'end_balance': 999916.7799536133, 'max_drawdown': -151.3000048828544, 'max_ddpercent': -0.015129411197996307, 'max_drawdown_duration': 577, 'total_net_pnl': -83.22004638671876, 'daily_net_pnl': -0.11066495530148772, 'total_commission': 0.0, 'daily_commission': 0.0, 'total_slippage': 0.0, 'daily_slippage': 0.0, 'total_turnover': 10677.810048828125, 'daily_turnover': 14.199215490462933, 'total_trade_count': 45, 'daily_trade_count': 0.0598404255319149, 'total_return': -0.008322004638672276, 'annual_return': -0.0026559589272358327, 'daily_return': -1.1066956032765596e-05, 'return_std': 0.0003933855941779823, 'sharpe_ratio': -0.43582822596923493, 'ewm_sharpe': -0.4567579314941506, 'return_drawdown_ratio': -0.5500547595516748, 'rgr_ratio': -0.28560631590922686}
+Wrote results/vnpy_result.md

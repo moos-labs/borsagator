@@ -1,0 +1,26 @@
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body extract short (0 chars): https://www.mubasher.info/news/21587272/%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%85%D8%B5%D8%B1-
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 3}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T07:53:37Z)
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 2319.85it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 9337.19it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 24459.09it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4180.37it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 11, "arabic_headlines": 29, "latest_news_date": "Mon, 16 Nov 2026 13:18:04 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.402, "multilingual_negative": 0.041, "multilingual_neutral": 0.557, "multilingual_scored": 29, "bodies_fetched": 7, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "published", "translation_provider": "nllb+cohere", "translated_positive": 0.211, "translated_negative": 0.205, "translated_neutral": 0.585, "translated_scored": 29}
+BRIEF:
+- Cairo Poultry's stock saw a significant drop, leading the decline in the Egyptian stock market, with a 17% decrease in share price.
+- The company's nine-month profit dropped by 38.3%, a notable decline.
+- The Egyptian stock exchange allowed for a 35.19% downward movement in Cairo Poultry's share price, indicating a potential impact on the stock's value.
+- The end of the right to receive a cash dividend for Cairo Poultry's shares was announced, with a value of 1.89 EGP per share.
+- Despite an increase in revenues, Cairo Poultry's profits for the first nine months of 2026 showed a 39% decline, with a drop from 2.36 billion EGP to 1.44 billion EGP.
+- The company's third-quarter consolidated profit was reported at 152 million EGP.
+- These developments may impact investor confidence and the overall performance of the stock, especially with the mentioned declines in profit and share price.
+- Further analysis of the company's performance and market trends would provide a more comprehensive understanding of the stock's future prospects.
