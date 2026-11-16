@@ -222,10 +222,15 @@ def pick_series(sweep, ticker, base_price, accumulated):
         if ok:
             validated.append((rel, series))
     pool = validated or []
-    # egx-data is the exchange series for EGX tickers: it wins outright
-    # whenever it is among the candidates (validated or not — the tool
-    # only ever fetches the sweep's own ticker).
-    for rel, series in candidates:
+    # egx-data is the exchange series for EGX tickers: among the
+    # VALIDATED candidates it wins outright. It must pass the same
+    # content validation as every other source — the old shortcut
+    # trusted it unconditionally ("the tool only ever fetches the
+    # sweep's own ticker"), and issue #87 broke that assumption:
+    # egx-data ignored the sweep ticker and returned POUL data for
+    # COMI and NVDA sweeps, and the unvalidated shortcut let it
+    # poison those tickers' actuals series (phantom -94% NVDA rows).
+    for rel, series in validated:
         if "/egx-data/" in rel:
             return series, rel
     if not pool:
