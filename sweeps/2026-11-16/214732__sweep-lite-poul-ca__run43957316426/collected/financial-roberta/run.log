@@ -1,0 +1,5 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights: 100%|██████████| 393/393 [00:00<00:00, 17049.13it/s]
+Scored 10 texts | counts={'negative': 4, 'positive': 2, 'neutral': 4} | means=positive=0.2000, negative=0.3828, neutral=0.4172

@@ -1,0 +1,172 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 10,
+  "label_counts": {
+    "positive": 2,
+    "negative": 4,
+    "neutral": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.19998973382316762,
+    "negative": 0.3828230976563646,
+    "neutral": 0.4171871645899955
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00032712495885789394,
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641461561433971
+      },
+      "raw_probabilities": {
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641461561433971,
+        "positive": 0.00032712495885789394
+      }
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9950209856033325,
+        "negative": 0.00039074255619198084,
+        "neutral": 0.004588214214891195
+      },
+      "raw_probabilities": {
+        "positive": 0.9950209856033325,
+        "neutral": 0.004588214214891195,
+        "negative": 0.00039074255619198084
+      }
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00421539694070816,
+        "negative": 0.00023612557561136782,
+        "neutral": 0.9955484867095947
+      },
+      "raw_probabilities": {
+        "neutral": 0.9955484867095947,
+        "positive": 0.00421539694070816,
+        "negative": 0.00023612557561136782
+      }
+    },
+    {
+      "text": "\"Tutafute hela\": Tanzanian influencer on being 'chased' from Charlene's wedding - Tuko News",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00042596005368977785,
+        "negative": 0.8618144392967224,
+        "neutral": 0.13775959610939026
+      },
+      "raw_probabilities": {
+        "negative": 0.8618144392967224,
+        "neutral": 0.13775959610939026,
+        "positive": 0.00042596005368977785
+      }
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000552124110981822,
+        "negative": 0.00020821687940042466,
+        "neutral": 0.9992396831512451
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992396831512451,
+        "positive": 0.000552124110981822,
+        "negative": 0.00020821687940042466
+      }
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9977030158042908,
+        "negative": 0.00046032233512960374,
+        "neutral": 0.0018366987351328135
+      },
+      "raw_probabilities": {
+        "positive": 0.9977030158042908,
+        "neutral": 0.0018366987351328135,
+        "negative": 0.00046032233512960374
+      }
+    },
+    {
+      "text": "Paul Kagame | Biography, Education, & Facts - Britannica",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003339172981213778,
+        "negative": 0.00022233974596019834,
+        "neutral": 0.9994437098503113
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994437098503113,
+        "positive": 0.0003339172981213778,
+        "negative": 0.00022233974596019834
+      }
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003835360112134367,
+        "negative": 0.0003114593564532697,
+        "neutral": 0.9993048906326294
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993048906326294,
+        "positive": 0.0003835360112134367,
+        "negative": 0.0003114593564532697
+      }
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0007058949558995664,
+        "negative": 0.9675130248069763,
+        "neutral": 0.03178110346198082
+      },
+      "raw_probabilities": {
+        "negative": 0.9675130248069763,
+        "neutral": 0.03178110346198082,
+        "positive": 0.0007058949558995664
+      }
+    },
+    {
+      "text": "Paul Mackenzie, the Kenyan preacher who led hundreds to starve to death - Reuters",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022938249458093196,
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051168786361814
+      },
+      "raw_probabilities": {
+        "negative": 0.9981655478477478,
+        "neutral": 0.0016051168786361814,
+        "positive": 0.00022938249458093196
+      }
+    }
+  ]
+}
