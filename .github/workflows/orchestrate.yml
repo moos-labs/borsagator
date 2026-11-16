@@ -177,7 +177,58 @@ jobs:
           if [ ! -f digest/digest.md ] && [ -f digest/digest.json ]; then
             job=$(python3 -c "import json; print(json.load(open('digest/digest.json')).get('job',''))" 2>/dev/null || echo "")
             job=${job:-"run ${{ github.run_id }}"}
-            printf '# 🐊 Borsagator digest — %s\n\n_Gator digest missing — see digest.json._\n' "$job" > digest/digest.md
+            printf '# 🐊 Borsagator digest — %s\n\n<!-- borsagator-digest-status: failed -->\n\n_Gator digest missing — see digest.json._\n' "$job" > digest/digest.md
+          fi
+          # Issue #120: a digest still marked "running" means the sweep
+          # died mid-run before the orchestrator could record a failure
+          # (SIGKILL / runner crash / hard timeout) — it must NEVER be
+          # filed as a finished run. Replace the placeholder line with
+          # a failure notice (what died: the sweep itself, mid-run;
+          # when: now) and flag the title FAILED. A digest marked
+          # "failed" is filed with the FAILED title flag as well; a
+          # "complete" (or unmarked legacy) digest is filed as before.
+          if [ -f digest/digest.md ]; then
+            GITHUB_RUN_ID=${{ github.run_id }} python3 - <<'PYEOF'
+          import os, re
+          from datetime import datetime, timezone
+          path = "digest/digest.md"
+          with open(path, encoding="utf-8") as f:
+              text = f.read()
+          m = re.search(r"borsagator-digest-status: (\w+)", text)
+          status = m.group(1) if m else None
+          if status in ("running", "failed"):
+              when = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+              run_id = os.environ.get("GITHUB_RUN_ID", "?")
+              if status == "running":
+                  notice = ("⚠️ **SWEEP FAILED — died mid-run.** The sweep "
+                            "was still marked running when the issue step ran "
+                            f"({when}); the orchestrator never recorded a "
+                            "failure, so it died without warning (runner "
+                            "crash, timeout, or SIGKILL). This is NOT a "
+                            "completed sweep — do not treat the absence of "
+                            f"results as an all-clear. (Run {run_id}.)")
+                  # New placeholder wording (#120) first, then the
+                  # pre-#120 wording, so either placeholder is caught.
+                  for sentinel in (
+                          "⚠️ **SWEEP INCOMPLETE — this digest was never finished.**",
+                          "_Running — tools in progress; replaced by the full digest when the sweep finishes._"):
+                      if sentinel in text:
+                          text = text.replace(sentinel, notice, 1)
+                          break
+                  else:
+                      # Placeholder wording drifted — prepend the notice
+                      # right after the header instead of dropping it.
+                      head, sep, rest = text.partition("\n")
+                      text = head + "\n\n" + notice + "\n" + (sep + rest if sep else "")
+                  text = text.replace("borsagator-digest-status: running",
+                                      "borsagator-digest-status: failed", 1)
+              lines = text.split("\n")
+              if "⚠️ FAILED" not in lines[0]:
+                  lines[0] = lines[0].rstrip() + " — ⚠️ FAILED"
+                  text = "\n".join(lines)
+              with open(path, "w", encoding="utf-8") as f:
+                  f.write(text)
+          PYEOF
           fi
           if [ -f digest/digest.md ]; then
             title=$(head -n 1 digest/digest.md | sed 's/^# //')

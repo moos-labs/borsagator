@@ -25,7 +25,7 @@ Design (v2 — root fixes over v1):
 
 Deterministic, stdlib only, no LLM. Never raises.
 """
-import csv, glob, json, math, os, re, sys
+import csv, glob, json, math, os, re, sys, tempfile
 from datetime import datetime, timezone, date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -58,7 +58,10 @@ def _ensure_digest_header(digest):
     it — and the issue step titles from that file's first line, so an
     empty first line killed the digest issue (run 43815097317).
     Ensure the '# 🐊' header line is present first: prepend it when
-    absent, create the file headed when missing."""
+    absent, create the file headed when missing.
+    Issue #120: the prepend is a temp file + atomic rename in the
+    same directory — the old read + rewrite-in-place could leave a
+    torn digest if the process died mid-rewrite."""
     header = _digest_header(digest)
     existing = ""
     if os.path.exists(OUT_MD):
@@ -66,11 +69,49 @@ def _ensure_digest_header(digest):
             existing = f.read()
     if any(line.startswith("# 🐊") for line in existing.splitlines()):
         return
-    with open(OUT_MD, "w", encoding="utf-8") as f:
-        if existing:
-            f.write(header + "\n" + existing)
-        else:
-            f.write(header + "\n")
+    directory = os.path.dirname(OUT_MD) or "."
+    os.makedirs(directory, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=directory, prefix=".digest-header-",
+                               suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            if existing:
+                f.write(header + "\n" + existing)
+            else:
+                f.write(header + "\n")
+        os.replace(tmp, OUT_MD)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+# Issue #120: set immediately after this run writes ensemble.json.
+# The __main__ handler deletes the file only when this run wrote it —
+# a stale file from an earlier run is never this run's to remove.
+_ENSEMBLE_JSON_WRITTEN = False
+
+
+def _fmt_factor(v):
+    """Issue #120: a None factor renders as "—", never raises
+    TypeError on :g formatting in the digest-section build (as the
+    family-scores line already does)."""
+    return f"{v:g}" if v is not None else "—"
+
+
+def _note_digest_warning(line):
+    """Issue #120: an early return must leave a ⚠️ line in the digest
+    like the exception handler does — silently returning with exit 0
+    used to leave nothing at all. Best-effort: never raises."""
+    try:
+        os.makedirs(os.path.dirname(OUT_MD) or ".", exist_ok=True)
+        _ensure_digest_header(load_json(DIGEST))
+        with open(OUT_MD, "a", encoding="utf-8") as f:
+            f.write("\n" + line + "\n")
+    except Exception:
+        pass
 
 
 def _apply_measured_weights(base):
@@ -556,9 +597,15 @@ def detect_corporate_actions(items, base, default_year):
 
 
 def main():
+    global _ENSEMBLE_JSON_WRITTEN
     digest = load_json(DIGEST)
     if not digest:
         print("ensemble: no digest.json — skipping")
+        # Issue #120: a silent early return leaves nothing in the
+        # digest — write a ⚠️ line like the exception handler does.
+        _note_digest_warning("⚠️ **Ensemble skipped — no digest.json:** the "
+                             "orchestrator wrote no digest, so no ensemble "
+                             "forecast was produced for this sweep.")
         return
     ticker = (digest.get("ticker") or "").upper()
     results = {r["tool"]: r for r in digest.get("results", [])
@@ -603,6 +650,11 @@ def main():
                     break
     if not base:
         print("ensemble: no base price found — skipping")
+        # Issue #120: see the no-digest.json early return above.
+        _note_digest_warning("⚠️ **Ensemble skipped — no base price found:** "
+                             "no usable close could be read from the "
+                             "collected series or the digest metrics, so no "
+                             "ensemble forecast was produced for this sweep.")
         return
 
     # ---------- two-source price verification ----------
@@ -973,8 +1025,14 @@ def main():
     out["family_scores"] = {k: (round(v, 3) if v is not None else None)
                             for k, v in fam_display.items()}
 
+    # Issue #120: ensemble.json is written BEFORE the digest section
+    # is appended below — if anything raises in between, the __main__
+    # handler removes this run's ensemble.json, so the digest's "NO
+    # ensemble forecast" line and the file on disk cannot contradict
+    # each other (the ledger scores ensemble.json when present).
     with open(OUT_JSON, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
+    _ENSEMBLE_JSON_WRITTEN = True
 
     lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
              f"Base price {base} ({base_src}"
@@ -997,7 +1055,7 @@ def main():
                   f"this forecast is anchored on an older close.", ""]
     _aw = WEIGHTS_INFO.get("factors") or {}
     lines += ["Applied weights (" + WEIGHTS_SOURCE + "): " + ", ".join(
-        f"{k} ×{v:g}" for k, v in _aw.items()) + ".", ""]
+        f"{k} ×{_fmt_factor(v)}" for k, v in _aw.items()) + ".", ""]
     for a in actions:
         if a.get("ex_date"):
             lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
@@ -1041,6 +1099,18 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print("ensemble failed (non-fatal):", e)
+        # Issue #120: ensemble.json is written BEFORE the digest
+        # section is appended — an exception in between used to leave
+        # a complete ensemble.json on disk while the handler wrote
+        # "this digest has NO ensemble forecast", and the ledger later
+        # scored the file. Remove this run's file so the warning is
+        # true; the failure is still recorded in ensemble_error.txt
+        # and the digest.
+        if _ENSEMBLE_JSON_WRITTEN:
+            try:
+                os.remove(OUT_JSON)
+            except OSError:
+                pass
         # Never fail SILENTLY: leave a sentinel next to the digest and a
         # visible warning in it, so a missing ensemble is noticed.
         try:

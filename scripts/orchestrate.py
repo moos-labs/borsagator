@@ -25,7 +25,9 @@ import io
 import json
 import os
 import re
+import signal
 import sys
+import tempfile
 import time
 import urllib.request
 import urllib.error
@@ -414,6 +416,89 @@ def run_tool_safe(tool, ticker, date_str):
                 "detail": f"orchestrator exception: {type(e).__name__}: {e}"}
 
 
+# Issue #120: digest status markers — a digest file must never look
+# finished when it isn't. The placeholder carries "running"; the full
+# digest "complete"; a failure notice "failed". The workflow's issue
+# step reads the marker and refuses to file a "running" digest as a
+# finished run (a SIGKILL / runner crash leaves the placeholder in
+# place — no Python code runs then, so only the issue step can catch
+# that death).
+DIGEST_STATUS_RUNNING = "running"
+DIGEST_STATUS_COMPLETE = "complete"
+DIGEST_STATUS_FAILED = "failed"
+
+
+def _digest_status_line(status):
+    return f"<!-- borsagator-digest-status: {status} -->"
+
+
+def _write_text_atomic(path, text):
+    """Write text via a temp file + os.replace in the same directory,
+    so a crash mid-write can never leave a torn digest behind."""
+    directory = os.path.dirname(path) or "."
+    os.makedirs(directory, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=directory, prefix=".digest-",
+                               suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _write_failure_digest(header, job, started, total, results, exc):
+    """Issue #120: replace the "Running" placeholder with a failure
+    notice — what died, when, and how far the sweep got. digest.json
+    is deliberately NOT written here, and any partial/stale copy is
+    removed: with no digest.json the ensemble step records that no
+    forecast was produced instead of forecasting on partial or stale
+    results. Best-effort: must never raise itself (it runs on the way
+    out of a failure)."""
+    try:
+        detail = str(exc).strip() or "interrupted (no further detail)"
+        died = datetime.now(timezone.utc)
+        lines = [header, "", _digest_status_line(DIGEST_STATUS_FAILED), "",
+                 f"⚠️ **SWEEP FAILED — {type(exc).__name__}: {detail}.**",
+                 "",
+                 f"The sweep died at {died.strftime('%Y-%m-%d %H:%M UTC')} "
+                 f"(started {started.strftime('%Y-%m-%d %H:%M UTC')}) after "
+                 f"{len(results)} of {total} tools finished. This is NOT a "
+                 f"completed sweep — do not treat the absence of results "
+                 f"as an all-clear. No digest.json was written, so the "
+                 f"ensemble step records that no forecast was produced.",
+                 ""]
+        if results:
+            lines.append("Tools completed before the failure:")
+            lines.append("")
+            for r in results:
+                r_detail = (r.get("detail") or "").replace("\n", " ")
+                lines.append(f"- {r.get('tool', '?')}: {r.get('status', '?')}"
+                             + (f" — {r_detail}" if r_detail else ""))
+            lines.append("")
+        lines.append("_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._")
+        try:
+            os.remove(os.path.join(DIGEST_DIR, "digest.json"))
+        except OSError:
+            pass
+        _write_text_atomic(os.path.join(DIGEST_DIR, "digest.md"),
+                           "\n".join(lines) + "\n")
+    except Exception as e:  # noqa: BLE001 - the failure notice must not mask the original failure
+        print(f"borsagator: could not write the failure digest ({e})",
+              file=sys.stderr, flush=True)
+
+
+def _sigterm_handler(signum, frame):
+    """Issue #120: a runner timeout / cancellation kills with SIGTERM.
+    Turn it into an exception so the failure path above can replace
+    the placeholder with a failure notice instead of leaving it."""
+    raise KeyboardInterrupt("SIGTERM received — runner timeout or cancellation")
+
+
 def main():
     job = (os.environ.get("JOB") or (sys.argv[1] if len(sys.argv) > 1 else "")).strip()
     if not job:
@@ -476,72 +561,106 @@ def main():
         return 2
 
     print(f"Borsagator job: {job} | tools: {[t['id'] for t in selected]} | date {date_str}", flush=True)
+    # Issue #120: a runner timeout / cancellation arrives as SIGTERM —
+    # turn it into an exception so the failure path below can replace
+    # the placeholder with a failure notice. (SIGKILL cannot be
+    # caught; that death is flagged by the workflow's issue step,
+    # which reads the digest status marker.)
+    try:
+        signal.signal(signal.SIGTERM, _sigterm_handler)
+    except (AttributeError, ValueError, OSError):
+        pass
+    started = datetime.now(timezone.utc)
     # Issue #113: head the digest file BEFORE any tool runs, so a
     # mid-run death still leaves a headed digest.md for the ensemble
     # append and the issue step (which titles from its first line).
     # The full digest below overwrites this placeholder on success.
+    # Issue #120: the placeholder is explicitly marked "running" and
+    # says the sweep is INCOMPLETE — if the run dies before the
+    # orchestrator can replace it (SIGKILL, runner crash), the issue
+    # step reads the marker and files it as a failure, never as a
+    # finished run.
     os.makedirs(DIGEST_DIR, exist_ok=True)
     header = f"# 🐊 Borsagator digest — {job}"
-    with open(os.path.join(DIGEST_DIR, "digest.md"), "w") as f:
-        f.write(header + "\n\n_Running — tools in progress; replaced by "
-                "the full digest when the sweep finishes._\n")
-    started = datetime.now(timezone.utc)
-    results = [run_tool_safe(t, ticker, date_str) for t in selected]
-    finished = datetime.now(timezone.utc)
-
-    digest = {
-        "job": job, "ticker": ticker, "date": date_str,
-        "started": started.isoformat(), "finished": finished.isoformat(),
-        "results": results,
-    }
-    with open(os.path.join(DIGEST_DIR, "digest.json"), "w") as f:
-        json.dump(digest, f, indent=2)
-
-    # Issue #113: the digest write itself must never be the hole that
-    # loses the record — the Ins #49 principle covered tool failures
-    # but NOT the digest-writing section, and a table-building
-    # exception (KeyError: 'category', run 43815097317) killed the
-    # gator after digest.json and before digest.md. Any failure here
-    # still writes a minimal headed digest; the run then exits 0 with
-    # the failure recorded in the digest, not lost with it.
+    _write_text_atomic(
+        os.path.join(DIGEST_DIR, "digest.md"),
+        header + "\n\n" + _digest_status_line(DIGEST_STATUS_RUNNING) + "\n\n"
+        "⚠️ **SWEEP INCOMPLETE — this digest was never finished.**\n\n"
+        f"The sweep started {started.strftime('%Y-%m-%d %H:%M UTC')} and was "
+        "still running when this file was last written. If this issue was "
+        "filed with this text, the sweep died mid-run (runner crash, "
+        "timeout, or SIGKILL) before any results were recorded — do NOT "
+        "treat it as a completed sweep.\n")
+    results = []
     try:
-        lines = [header, "",
-                 f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
-                 f"{len(results)} tools", "",
-                 "| Tool | Category | Status | Key results | Run |",
-                 "|---|---|---|---|---|"]
-        for r in results:
-            summary = r.get("summary") or {}
-            metrics = summary.get("metrics") or {}
-            verdict_keys = [k for k in metrics if any(w in k.lower() for w in
-                            ("rating", "decision", "verdict", "signal", "recommendation"))]
-            ordered = [(k, metrics[k]) for k in verdict_keys] + \
-                      [(k, v) for k, v in metrics.items() if k not in verdict_keys]
-            keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
-            # Tool-controlled values must not break the table (INS-R4-06).
-            keys = keys.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
-            status = r.get("status", "?")
-            if r.get("conclusion") and r["conclusion"] != "success":
-                status += f" ({r['conclusion']})"
-            run_link = f"[run]({r['run_url']})" if r.get("run_url") else "—"
-            lines.append(f"| {r.get('tool', '?')} | {r.get('category', '—')} | {status} | {keys} | {run_link} |")
-        lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
-    except Exception as e:  # noqa: BLE001 - the fallback digest must not throw
-        print(f"borsagator: digest table build failed ({type(e).__name__}: {e}); "
-              f"writing minimal digest", file=sys.stderr, flush=True)
-        lines = [header, "",
-                 f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
-                 f"{len(results)} tools", "",
-                 f"⚠️ The detailed results table could not be built "
-                 f"({type(e).__name__}: {e}). Tool outcomes are preserved "
-                 f"in digest.json.", ""]
-        for r in results:
-            detail = (r.get("detail") or "").replace("\n", " ").replace("|", "\\|")
-            lines.append(f"- {r.get('tool', '?')}: {r.get('status', '?')}"
-                         + (f" — {detail}" if detail else ""))
-        lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
-    with open(os.path.join(DIGEST_DIR, "digest.md"), "w") as f:
-        f.write("\n".join(lines) + "\n")
+        for t in selected:
+            results.append(run_tool_safe(t, ticker, date_str))
+        finished = datetime.now(timezone.utc)
+
+        digest = {
+            "job": job, "ticker": ticker, "date": date_str,
+            "started": started.isoformat(), "finished": finished.isoformat(),
+            "results": results,
+        }
+        # Atomic like digest.md: a failed write must leave NO digest.json
+        # behind, so the failure path's "no digest.json was written"
+        # stays true and the ensemble cannot read a torn file.
+        _write_text_atomic(os.path.join(DIGEST_DIR, "digest.json"),
+                           json.dumps(digest, indent=2))
+
+        # Issue #113: the digest write itself must never be the hole that
+        # loses the record — the Ins #49 principle covered tool failures
+        # but NOT the digest-writing section, and a table-building
+        # exception (KeyError: 'category', run 43815097317) killed the
+        # gator after digest.json and before digest.md. Any failure here
+        # still writes a minimal headed digest; the run then exits 0 with
+        # the failure recorded in the digest, not lost with it.
+        try:
+            lines = [header, _digest_status_line(DIGEST_STATUS_COMPLETE), "",
+                     f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
+                     f"{len(results)} tools", "",
+                     "| Tool | Category | Status | Key results | Run |",
+                     "|---|---|---|---|---|"]
+            for r in results:
+                summary = r.get("summary") or {}
+                metrics = summary.get("metrics") or {}
+                verdict_keys = [k for k in metrics if any(w in k.lower() for w in
+                                ("rating", "decision", "verdict", "signal", "recommendation"))]
+                ordered = [(k, metrics[k]) for k in verdict_keys] + \
+                          [(k, v) for k, v in metrics.items() if k not in verdict_keys]
+                keys = "; ".join(f"{k}={v}" for k, v in ordered[:5]) or r.get("detail", "") or "—"
+                # Tool-controlled values must not break the table (INS-R4-06).
+                keys = keys.replace("|", "\\|").replace("\n", " ").replace("\r", " ")
+                status = r.get("status", "?")
+                if r.get("conclusion") and r["conclusion"] != "success":
+                    status += f" ({r['conclusion']})"
+                run_link = f"[run]({r['run_url']})" if r.get("run_url") else "—"
+                lines.append(f"| {r.get('tool', '?')} | {r.get('category', '—')} | {status} | {keys} | {run_link} |")
+            lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
+        except Exception as e:  # noqa: BLE001 - the fallback digest must not throw
+            print(f"borsagator: digest table build failed ({type(e).__name__}: {e}); "
+                  f"writing minimal digest", file=sys.stderr, flush=True)
+            lines = [header, _digest_status_line(DIGEST_STATUS_COMPLETE), "",
+                     f"Started {started.strftime('%Y-%m-%d %H:%M UTC')} · finished {finished.strftime('%H:%M UTC')} · "
+                     f"{len(results)} tools", "",
+                     f"⚠️ The detailed results table could not be built "
+                     f"({type(e).__name__}: {e}). Tool outcomes are preserved "
+                     f"in digest.json.", ""]
+            for r in results:
+                detail = (r.get("detail") or "").replace("\n", " ").replace("|", "\\|")
+                lines.append(f"- {r.get('tool', '?')}: {r.get('status', '?')}"
+                             + (f" — {detail}" if detail else ""))
+            lines += ["", "_Verdicts are each tool's own, preserved as reported — Borsagator never averages them into one score._"]
+        _write_text_atomic(os.path.join(DIGEST_DIR, "digest.md"),
+                           "\n".join(lines) + "\n")
+    except BaseException as e:
+        # Issue #120: replace the placeholder with a failure notice
+        # (what died, when) instead of leaving a "Running" digest
+        # that the issue step would file as a finished run. The
+        # exception propagates so the workflow step fails loudly.
+        _write_failure_digest(header, job, started, len(selected),
+                              results, e)
+        raise
     print("\n".join(lines))
     return 0
 
