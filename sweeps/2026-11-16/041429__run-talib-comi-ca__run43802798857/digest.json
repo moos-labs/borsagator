@@ -1,0 +1,39 @@
+{
+  "job": "run talib COMI.CA",
+  "ticker": "COMI.CA",
+  "date": "2026-11-16",
+  "started": "2026-11-16T04:14:02.409379+00:00",
+  "finished": "2026-11-16T04:14:29.813317+00:00",
+  "results": [
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "run_url": "https://github.com/moos-labs/talib-runner/actions/runs/43802831965",
+      "conclusion": "success",
+      "summary": {
+        "tool": "talib",
+        "ticker": "COMI.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "COMI.CA",
+          "rows_fetched": 6529,
+          "rows_used": 6529,
+          "last_date": "2026-11-12",
+          "last_close": 128.75,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-12",
+          "indicators.csv_last_close": "128.75"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}

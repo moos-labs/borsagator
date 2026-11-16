@@ -1,0 +1,49 @@
+{
+ "job": "run talib COMI.CA",
+ "ticker": "COMI.CA",
+ "digest_date": "2026-11-16",
+ "archived_at": "2026-11-16T04:14:29.895845+00:00",
+ "github_run_id": "43802798857",
+ "target": "sweeps/2026-11-16/041429__run-talib-comi-ca__run43802798857",
+ "tools": {
+  "talib": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 1028,
+   "sha256": "9cc05511be6c331a51f98554d2d94da295b5839e1d4ae6e9aa5a22ff7827c028"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 485,
+   "sha256": "b9993717171826feeafebf4df07e6deded7ff89ba776d5fb69427c970dd14ce2"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 15081,
+   "sha256": "6b0a65824c9dbf78f4f2e18e8051dd4a1a8ed3860730d538b17122266bc8c3af"
+  },
+  {
+   "path": "collected/talib/indicators.csv",
+   "bytes": 55703,
+   "sha256": "63a22e02ed050bde90fe42277d770e3d6a0b4ccc886f15742959e44882585c0e"
+  },
+  {
+   "path": "collected/talib/run.log",
+   "bytes": 711,
+   "sha256": "993baa5f2fa819725f334e47e622d5b486dbc7a342f63622977a0fbf1245dd24"
+  },
+  {
+   "path": "collected/talib/summary.json",
+   "bytes": 449,
+   "sha256": "65fca57766291ed022a33eebb25240d965f2b2462ac3fddef2f0e573083a3451"
+  },
+  {
+   "path": "collected/talib/ta_latest.json",
+   "bytes": 710,
+   "sha256": "989a74d7edef2b44e0c38874fee62181f234b324f249335a32bf37672a7b1f00"
+  }
+ ],
+ "skipped": []
+}
