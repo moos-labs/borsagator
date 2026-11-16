@@ -3,11 +3,9 @@ name: board-sync
 on:
   issues:
     types: [opened, closed, labeled, assigned]
-  projects_v2_item:
-    types: [edited]
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - run: echo board-sync-probe-A
+      - run: echo board-sync-probe-B
