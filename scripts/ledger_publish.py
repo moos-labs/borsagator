@@ -31,6 +31,25 @@ claims it is current. On such a refusal the publisher writes a ⚠️
 section to the digest and skips the publish — it never fails the
 sweep. The guard path passes no target, so it is unaffected.
 
+Issue #119: a timeout or interrupt DURING the rebase used to
+propagate out of git_publish with no abort — the checkout was left
+MID-REBASE and every later publish failed until manual cleanup.
+The rebase is now wrapped so a timeout / interrupt / non-zero exit
+all abort it (and the abort itself is checked), publish() verifies
+the checkout is clean before any `git add`, and a stale rebase left
+by a killed earlier run is aborted at publish start. Dirt confined
+to ledger/ (the publisher's own leftovers from a run killed between
+copy and commit) is reset to HEAD — the ledger is recomputed from
+the archive on every run, so discarding it is safe; dirt anywhere
+else is refused loudly instead of publishing into it. No repo-side
+serialization was added: the guard and the sweep publisher run on
+different runners, so a /tmp lockfile cannot serialize them, and a
+lock ref would add a new stale-lock failure mode (a killed run
+strands the lock — the exact class this issue eliminates). The
+push → rebase → retry in git_publish already serializes concurrent
+publishers through the push itself: only one wins, the loser
+rebases onto the new main and retries.
+
 Modes:
   sweep path (orchestrate.yml):  ledger_publish.py --digest digest/digest.md --commit
   guard path (ledger-guard.yml): ledger_publish.py --commit --fail-hard
@@ -243,8 +262,107 @@ def git(*args):
                           capture_output=True, text=True, timeout=120)
 
 
+def _git_dir():
+    """Absolute path of this checkout's git dir, or None when git
+    cannot tell us (a broken checkout — the callers treat that as
+    'no rebase known', never as a reason to publish blind)."""
+    r = git("rev-parse", "--git-dir")
+    if r.returncode != 0:
+        return None
+    d = r.stdout.strip()
+    return d if os.path.isabs(d) else os.path.join(ROOT, d)
+
+
+def rebase_in_progress():
+    """True when a rebase is mid-flight in this checkout (issue #119:
+    a timed-out / interrupted rebase used to strand the checkout
+    here, and every later publish failed until manual cleanup)."""
+    gd = _git_dir()
+    if gd is None:
+        return False
+    return (os.path.isdir(os.path.join(gd, "rebase-merge")) or
+            os.path.isdir(os.path.join(gd, "rebase-apply")))
+
+
+def abort_rebase():
+    """Best-effort `rebase --abort`, only when a rebase is actually
+    in progress. Returns True when no rebase remains afterwards.
+    The abort's own result is checked and logged — the old code
+    fired it and never looked."""
+    if not rebase_in_progress():
+        return True
+    log("aborting in-progress rebase")
+    try:
+        r = git("rebase", "--abort")
+    except (subprocess.TimeoutExpired, KeyboardInterrupt) as e:
+        log(f"rebase --abort did not finish ({type(e).__name__}) — "
+            "checkout may still be mid-rebase")
+        return not rebase_in_progress()
+    if r.returncode != 0:
+        log(f"rebase --abort failed (rc {r.returncode}): "
+            f"{r.stderr.strip()[-200:]}")
+    ok = not rebase_in_progress()
+    log("rebase aborted — checkout clean" if ok else
+        "rebase --abort finished but a rebase is still in progress")
+    return ok
+
+
+def ensure_clean_checkout():
+    """Pre-flight check for publish() (issue #119): the checkout
+    must have no rebase in progress and no modification to any
+    tracked file before `git add` runs. A stale mid-rebase state
+    (left by a killed earlier run) is aborted here. Dirt confined
+    to ledger/ is the publisher's own leftover from a run killed
+    between copying the new outputs and committing them — it is
+    reset to HEAD, which is safe because the ledger is recomputed
+    from the archive on every run. Dirt anywhere else is refused
+    loudly instead of publishing into it. Untracked files
+    (digest/, archive_stage/, runner outputs) are expected in the
+    sweep checkout and are ignored. Returns (True, '') or
+    (False, reason)."""
+    if rebase_in_progress():
+        log("stale rebase in progress at publish start — aborting it")
+        if not abort_rebase():
+            return False, ("a rebase is in progress and "
+                           "`rebase --abort` did not clear it")
+    try:
+        r = git("status", "--porcelain")
+    except subprocess.TimeoutExpired:
+        return False, "git status timed out — refusing to publish blind"
+    if r.returncode != 0:
+        return False, (f"git status failed (rc {r.returncode}) — "
+                       "refusing to publish blind")
+    dirty = [line for line in r.stdout.splitlines()
+             if line and not line.startswith("??")]
+    if not dirty:
+        return True, ""
+    paths = [line[3:] for line in dirty]
+    if all(p == "ledger" or p.startswith("ledger/") for p in paths):
+        log("resetting the publisher's own leftover ledger/ changes "
+            "to HEAD (a previous run was killed before committing)")
+        if git("reset", "-q", "--", "ledger/").returncode != 0 or \
+                git("checkout", "-q", "--", "ledger/").returncode != 0:
+            return False, ("ledger/ is dirty and the reset to HEAD "
+                           "failed — refusing to publish")
+        return True, ""
+    return False, ("tracked files modified in the working tree: " +
+                   ", ".join(paths[:5]))
+
+
 def git_publish(new_doc):
-    """Commit ledger/ and push to main. Returns True on success."""
+    """Commit ledger/ and push to main. Returns True on success.
+    Issue #119: a timeout / interrupt anywhere in this path must
+    never strand the checkout mid-rebase — the rebase is wrapped
+    so any failure aborts it, and the abort itself is checked."""
+    try:
+        return _git_publish(new_doc)
+    except (subprocess.TimeoutExpired, KeyboardInterrupt):
+        log("git publish interrupted/timed out — cleaning up")
+        abort_rebase()
+        return False
+
+
+def _git_publish(new_doc):
     git("config", "user.name", "borsagator-ledger")
     git("config", "user.email", "moos@sherbeeny.com")
     if git("add", "ledger/").returncode != 0:
@@ -263,8 +381,11 @@ def git_publish(new_doc):
     log("push rejected — rebasing onto origin/main and retrying")
     if git("fetch", "origin", "main").returncode != 0:
         return False
+    # A timeout / interrupt here raises out to git_publish, which
+    # aborts the rebase; a plain non-zero exit (conflict) aborts
+    # here. Either way the checkout is never left mid-rebase.
     if git("rebase", "origin/main").returncode != 0:
-        git("rebase", "--abort")
+        abort_rebase()
         return False
     return git("push", "origin", "HEAD:main").returncode == 0
 
@@ -286,6 +407,13 @@ def skip(reason, digest_path, target):
 
 
 def publish(commit, digest_path, fail_hard, sweep_target=None):
+    # Issue #119: verify the checkout is clean BEFORE any `git add`
+    # — and fail fast, before the expensive ledger rerun, when a
+    # previous killed run left it mid-rebase or dirty.
+    clean, why = ensure_clean_checkout()
+    if not clean:
+        return fail("checkout not clean at publish start: " + why,
+                    digest_path, fail_hard)
     old = committed_ledger()
     old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
     # Issue #118: when the sweep path names this sweep's archive
@@ -370,6 +498,14 @@ def main():
         sweep_target = sweep_target.strip() or None
     try:
         return publish(a.commit, a.digest, a.fail_hard, sweep_target)
+    except KeyboardInterrupt:
+        # Issue #119: an interrupt used to propagate out uncaught
+        # (and, mid-rebase, strand the checkout). git_publish
+        # already aborts any rebase on its way out; this is the
+        # backstop for an interrupt anywhere else in the run.
+        log("interrupted — aborting any in-progress rebase")
+        abort_rebase()
+        return fail("publisher interrupted", a.digest, a.fail_hard)
     except Exception as e:  # the publisher must never crash a sweep
         return fail(f"unexpected publisher error: {e}",
                     a.digest, a.fail_hard)
