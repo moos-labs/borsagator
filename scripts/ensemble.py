@@ -61,11 +61,21 @@ def _apply_measured_weights(base):
     A document with no eligible factor at all reports 'builtin'
     (INS-R5-09): the committed weights.json at first publication
     carries n=0 everywhere, and that must not be labelled
-    calibrated."""
+    calibrated.
+    Issue #93: also return an audit record of the factors ACTUALLY
+    applied (every family, 1.0 where no eligible factor entered)
+    plus the provenance of the weights document (path + sha256 of
+    the exact bytes read), so a verifier can reconcile the merge
+    against the committed ledger/weights.json."""
+    import hashlib
     path = os.environ.get("BORSAGATOR_WEIGHTS", "ledger/weights.json")
+    info = {"source": "builtin", "file": path, "file_sha256": None,
+            "factors": {fam: 1.0 for fam in base}, "eligible": {}}
     try:
-        with open(path, encoding="utf-8") as f:
-            doc = json.load(f)
+        with open(path, "rb") as f:
+            raw = f.read()
+        info["file_sha256"] = hashlib.sha256(raw).hexdigest()
+        doc = json.loads(raw.decode("utf-8"))
         factors = {}
         for k, v in (doc.get("factors") or {}).items():
             if k not in base:
@@ -80,17 +90,21 @@ def _apply_measured_weights(base):
                       f"factor={v.get('factor')} n={v.get('n')}")
                 continue
             factors[k] = fv
+            info["eligible"][k] = {"factor": fv, "n": n,
+                                   "skill": v.get("skill")}
         if not factors:
-            return base, "builtin"
+            return base, "builtin", info
     except Exception:
-        return base, "builtin"
+        return base, "builtin", info
+    info["source"] = "ledger"
+    info["factors"] = {fam: factors.get(fam, 1.0) for fam in base}
     out = {fam: {h: round(w * factors.get(fam, 1.0), 4)
                  for h, w in hs.items()}
            for fam, hs in base.items()}
-    return out, "ledger"
+    return out, "ledger", info
 
 
-W, WEIGHTS_SOURCE = _apply_measured_weights(W)
+W, WEIGHTS_SOURCE, WEIGHTS_INFO = _apply_measured_weights(W)
 RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5, "unknown": 1.3}
 SHOCK_WORDS = [
     "resign", "oust", "ceo", "earnings", "guidance", "investigat", "fraud",
@@ -287,7 +301,35 @@ def price_series(ticker):
     return series
 
 
-def price_crosscheck(ticker, base, base_src, series):
+def _series_last(m):
+    """(last_date, close) among a series' dated entries, else
+    (None, None). Undated 'rowN' keys never count."""
+    dated = sorted(d for d in m if len(d) == 10 and d[4] == "-")
+    if not dated:
+        return None, None
+    return dated[-1], m[dated[-1]]
+
+
+def freshest_close(series):
+    """The freshest close across the collected series (issue #94):
+    the series whose last dated close is newest wins; on a date tie
+    the EGX-native series (egx-data) wins, then source name so the
+    choice is deterministic. Returns {value, source, date} or None
+    when no series carries dates."""
+    cands = []
+    for src, m in series.items():
+        d, c = _series_last(m)
+        if d is not None and c:
+            cands.append((d, src.startswith("egx-data/"), src, c))
+    if not cands:
+        return None
+    cands.sort(key=lambda t: t[2])
+    cands.sort(key=lambda t: (t[0], t[1]), reverse=True)
+    d, _, src, c = cands[0]
+    return {"value": c, "source": src, "date": d}
+
+
+def price_crosscheck(ticker, base, base_src, series, base_date=None):
     """Two-source verification of the price the forecast stands on
     (audit item: Yahoo was the single artery, with corrupted segments).
     Witnesses: the base from the digest metrics + the last close of
@@ -295,9 +337,21 @@ def price_crosscheck(ticker, base, base_src, series):
     two dated series share. A spread above 2% means the sources
     disagree: the ensemble then stands on the EGX-native series
     (egx-data) when present, else the median witness, and the digest
-    says so out loud."""
+    says so out loud.
+    Issue #94: the check is date-aware. It records base_date, the
+    latest collected date across all series, and base_stale — set
+    when the base's date trails the freshest collected close, the
+    exact failure the old check blessed (a 15 Nov ensemble standing
+    on an 11 Nov-aligned 'agree'). When the base IS a collected
+    series' own close it needs no separate metrics witness."""
+    dated_all = {s: _series_last(m)[0] for s, m in series.items()}
+    latest_date = max((d for d in dated_all.values() if d), default=None)
+    info = {"base_date": base_date, "latest_collected_date": latest_date,
+            "base_stale": bool(base_date and latest_date
+                               and base_date < latest_date)}
+    base_is_series = base_src in series
     witnesses = {}
-    if base:
+    if base and not base_is_series:
         witnesses[f"metrics:{base_src}"] = base
     dated = {s: m for s, m in series.items()
              if any(len(k) == 10 and k[4] == "-" for k in m)}
@@ -323,7 +377,7 @@ def price_crosscheck(ticker, base, base_src, series):
     if len(vals) < 2:
         return {"status": "single-source", "witnesses": witnesses,
                 "spread_pct": None, "common_date": common,
-                "base_used": base, "base_source_used": base_src}
+                "base_used": base, "base_source_used": base_src, **info}
     # Cluster the witnesses (2% chaining): the largest cluster is the
     # consensus. A lone outlier series must not veto four agreeing
     # sources — and the base standing OUTSIDE the consensus is exactly
@@ -342,13 +396,14 @@ def price_crosscheck(ticker, base, base_src, series):
     spread = (cvals[-1] - cvals[0]) / cvals[len(cvals) // 2] \
         if cvals[len(cvals) // 2] else 0.0
     base_key = f"metrics:{base_src}"
-    base_in_cons = (base_key in cons
-                    or any(s.split("/")[0] == base_src for s in cons))
+    base_in_cons = (base_key in cons or base_src in cons
+                    or any(s.split("/")[0] == base_src.split("/")[0]
+                           for s in cons))
     if base_in_cons and len(consensus) >= 2:
         return {"status": "agree", "witnesses": witnesses,
                 "outliers": outliers,
                 "spread_pct": round(spread * 100, 2), "common_date": common,
-                "base_used": base, "base_source_used": base_src}
+                "base_used": base, "base_source_used": base_src, **info}
     egx = next((s for s in cons if s.startswith("egx-data/")), None)
     if egx:
         chosen, chosen_src = cons[egx], egx
@@ -359,7 +414,7 @@ def price_crosscheck(ticker, base, base_src, series):
     return {"status": "disagree", "witnesses": witnesses,
             "outliers": outliers,
             "spread_pct": round(gap * 100, 2), "common_date": common,
-            "base_used": chosen, "base_source_used": chosen_src}
+            "base_used": chosen, "base_source_used": chosen_src, **info}
 
 
 _AR_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
@@ -490,33 +545,54 @@ def main():
         return (results.get(tool) or {}).get("status") == "ok"
 
     # ---------- base price ----------
-    base, base_src = None, ""
-    for tool in ("pandas-ta", "talib"):
-        m = metrics(tool)
-        if ok(tool) and fnum(m.get("close")) and (m.get("ticker", ticker) == ticker):
-            base, base_src = fnum(m["close"]), tool
-            break
-    if base is None:
-        for tool in results:
-            if not ok(tool):
-                continue
-            for k, v in metrics(tool).items():
-                if k.endswith("_last_close") and ticker.replace(".", "_") in k.upper().replace(".", "_"):
-                    base, base_src = fnum(v), tool
-                    break
-            if base:
+    # Freshest close wins (issue #94): the base is the newest dated
+    # close across the collected price series. Vendor series lag —
+    # on 15 Nov the ensemble stood on pandas-ta's 10.15 while the
+    # same sweep's egx-data series already ended at the 15 Nov close
+    # of 10.00, mis-anchoring every horizon by ~1.5%. The digest
+    # metrics remain the fallback for sweeps whose collected CSVs
+    # carry no usable dates.
+    series = price_series(ticker)
+    fresh = freshest_close(series)
+    base, base_src, base_date = None, "", None
+    if fresh:
+        base, base_src, base_date = (fresh["value"], fresh["source"],
+                                     fresh["date"])
+    else:
+        for tool in ("pandas-ta", "talib"):
+            m = metrics(tool)
+            if ok(tool) and fnum(m.get("close")) and (m.get("ticker", ticker) == ticker):
+                base, base_src = fnum(m["close"]), tool
                 break
+        if base is None:
+            for tool in results:
+                if not ok(tool):
+                    continue
+                for k, v in metrics(tool).items():
+                    if k.endswith("_last_close") and ticker.replace(".", "_") in k.upper().replace(".", "_"):
+                        base, base_src = fnum(v), tool
+                        break
+                if base:
+                    break
     if not base:
         print("ensemble: no base price found — skipping")
         return
 
     # ---------- two-source price verification ----------
-    check = price_crosscheck(ticker, base, base_src, price_series(ticker))
+    check = price_crosscheck(ticker, base, base_src, series, base_date)
     if check["status"] == "disagree":
         print(f"ensemble: PRICE SOURCES DISAGREE (spread "
               f"{check['spread_pct']}%): {check['witnesses']} — "
               f"standing on {check['base_source_used']}")
         base, base_src = check["base_used"], check["base_source_used"]
+        # The re-stood base is a common-date close: restamp the
+        # check's date fields so base_stale describes the base the
+        # forecast actually stands on (issue #94).
+        base_date = check.get("common_date")
+        check["base_date"] = base_date
+        check["base_stale"] = bool(
+            base_date and check.get("latest_collected_date")
+            and base_date < check["latest_collected_date"])
 
     sigma, sigma_src, density = realized_sigma(ticker, base)
 
@@ -802,11 +878,13 @@ def main():
                  "agent": agent, "fundamentals": fund}
     out = {"tool": "forecast-ensemble", "version": 2, "ticker": ticker,
            "base_price": base, "base_source": base_src,
+           "base_date": base_date,
            "price_crosscheck": check, "corporate_actions": actions,
            "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
            "weights_source": WEIGHTS_SOURCE,
+           "applied_weights": WEIGHTS_INFO,
            "family_scores": {}, "horizons": {},
            "confidence_basis": ("calibrated (ledger skill factors applied)"
                                 if WEIGHTS_SOURCE == "ledger" else
@@ -872,7 +950,8 @@ def main():
         json.dump(out, f, indent=1, ensure_ascii=False)
 
     lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
-             f"Base price {base} ({base_src}). Daily volatility σ {sigma:.2%} ({sigma_src}). "
+             f"Base price {base} ({base_src}"
+             + (f", {base_date}" if base_date else "") + f"). Daily volatility σ {sigma:.2%} ({sigma_src}). "
              f"Kronos bars are calendar days — horizons are scaled to trading sessions "
              f"(density {density:.2f}/day). "
              f"News risk: **{risk['level']}**"
@@ -884,6 +963,14 @@ def main():
         lines += [f"⚠️ **Price sources disagree** (spread {check['spread_pct']}%: "
                   f"{wit}) — this forecast stands on {check['base_source_used']} "
                   f"= {check['base_used']:g}.", ""]
+    if check.get("base_stale"):
+        lines += [f"⚠️ **Stale base:** the base close is dated "
+                  f"{check.get('base_date')} but the freshest collected "
+                  f"series reaches {check.get('latest_collected_date')} — "
+                  f"this forecast is anchored on an older close.", ""]
+    _aw = WEIGHTS_INFO.get("factors") or {}
+    lines += ["Applied weights (" + WEIGHTS_SOURCE + "): " + ", ".join(
+        f"{k} ×{v:g}" for k, v in _aw.items()) + ".", ""]
     for a in actions:
         if a.get("ex_date"):
             lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
