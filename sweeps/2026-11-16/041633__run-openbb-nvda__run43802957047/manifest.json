@@ -1,0 +1,49 @@
+{
+ "job": "run openbb NVDA",
+ "ticker": "NVDA",
+ "digest_date": "2026-11-16",
+ "archived_at": "2026-11-16T04:16:33.534991+00:00",
+ "github_run_id": "43802957047",
+ "target": "sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047",
+ "tools": {
+  "openbb": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 843,
+   "sha256": "ab47e7532f969a04cd7f063aa153d2ec72c4d2e3a74f016ff93d7a514b7f26e1"
+  },
+  {
+   "path": "ensemble.json",
+   "bytes": 939,
+   "sha256": "557ba931b81cc5a31736915d0ef4b92cc81eea34b5d4e4ee93e723015e77ccfd"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 1251,
+   "sha256": "de906e774dd97bf968c4e7ef9499daf1af297d10ee113df5ca6ad99ce4fa97a1"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 15081,
+   "sha256": "6b0a65824c9dbf78f4f2e18e8051dd4a1a8ed3860730d538b17122266bc8c3af"
+  },
+  {
+   "path": "collected/openbb/NVDA.csv",
+   "bytes": 47920,
+   "sha256": "6dc479954a602c07c4a5a428b6236e3bc03f70075aa474c6d069fc2e61fee830"
+  },
+  {
+   "path": "collected/openbb/run.log",
+   "bytes": 2090,
+   "sha256": "1944e12b3546bed5b4f9008622ac85aca09e8f6713be9a9f27d293d1586e5074"
+  },
+  {
+   "path": "collected/openbb/summary.json",
+   "bytes": 302,
+   "sha256": "6d9ea3ef9fa8672bb75e71a7ac46d9b25ee263ac25bb6ea523852000ce29f011"
+  }
+ ],
+ "skipped": []
+}
