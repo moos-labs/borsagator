@@ -1,0 +1,282 @@
+Pulling quantconnect/lean:latest...
+latest: Pulling from quantconnect/lean
+8e058277d049: Pulling fs layer
+f0009b7b7ef1: Pulling fs layer
+fa33a5c25ce3: Pulling fs layer
+8fc8718b09b3: Pulling fs layer
+2b55860d4c66: Pulling fs layer
+1d82a971bb75: Pulling fs layer
+cae0f483a095: Pulling fs layer
+f92906f0ffea: Pulling fs layer
+92e6c1c62655: Pulling fs layer
+892dce12f8ad: Pulling fs layer
+b1e58c74b9da: Pulling fs layer
+ac85f4ab5281: Pulling fs layer
+7b88f10adb20: Pulling fs layer
+c91556d7d9df: Pulling fs layer
+cac814e1eefd: Pulling fs layer
+84345bc5a055: Pulling fs layer
+c577892d685b: Pulling fs layer
+befc02687970: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+e8e1164c963a: Pulling fs layer
+0ebde657cdd8: Pulling fs layer
+80083f0f1b07: Pulling fs layer
+36fa0aff5b49: Pulling fs layer
+0040a3ccdde0: Pulling fs layer
+8a7b7a93e178: Pulling fs layer
+f80fad9c1875: Pulling fs layer
+d2275ceaf082: Pulling fs layer
+e5fe63163e45: Pulling fs layer
+0e4120226025: Pulling fs layer
+2d3340ab62a3: Pulling fs layer
+557102c7b457: Pulling fs layer
+3dc65eb25e0b: Pulling fs layer
+296a47a88fb1: Pulling fs layer
+61c230e61fb7: Pulling fs layer
+051ad4c8721c: Pulling fs layer
+4f4fb700ef54: Already exists
+8e058277d049: Download complete
+befc02687970: Download complete
+b1e58c74b9da: Download complete
+d2275ceaf082: Download complete
+f92906f0ffea: Download complete
+f80fad9c1875: Download complete
+1d82a971bb75: Download complete
+557102c7b457: Download complete
+36fa0aff5b49: Download complete
+119e6ceda020: Download complete
+e8e1164c963a: Download complete
+84345bc5a055: Download complete
+e5fe63163e45: Download complete
+0e4120226025: Download complete
+8a7b7a93e178: Download complete
+2b55860d4c66: Download complete
+7b88f10adb20: Download complete
+296a47a88fb1: Download complete
+80083f0f1b07: Download complete
+cac814e1eefd: Download complete
+2b55860d4c66: Pull complete
+3dc65eb25e0b: Download complete
+0ebde657cdd8: Download complete
+92e6c1c62655: Download complete
+61c230e61fb7: Download complete
+c91556d7d9df: Download complete
+8e058277d049: Pull complete
+892dce12f8ad: Download complete
+c577892d685b: Download complete
+cae0f483a095: Download complete
+8fc8718b09b3: Download complete
+cac814e1eefd: Pull complete
+0040a3ccdde0: Download complete
+2d3340ab62a3: Download complete
+fa33a5c25ce3: Download complete
+051ad4c8721c: Download complete
+f0009b7b7ef1: Download complete
+0040a3ccdde0: Pull complete
+fa33a5c25ce3: Pull complete
+cae0f483a095: Pull complete
+ac85f4ab5281: Download complete
+ac85f4ab5281: Pull complete
+84345bc5a055: Pull complete
+e8e1164c963a: Pull complete
+f92906f0ffea: Pull complete
+2d3340ab62a3: Pull complete
+f0009b7b7ef1: Pull complete
+1d82a971bb75: Pull complete
+892dce12f8ad: Pull complete
+c91556d7d9df: Pull complete
+befc02687970: Pull complete
+d2275ceaf082: Pull complete
+557102c7b457: Pull complete
+80083f0f1b07: Pull complete
+b1e58c74b9da: Pull complete
+36fa0aff5b49: Pull complete
+f80fad9c1875: Pull complete
+61c230e61fb7: Pull complete
+3dc65eb25e0b: Pull complete
+051ad4c8721c: Pull complete
+8fc8718b09b3: Pull complete
+e5fe63163e45: Pull complete
+92e6c1c62655: Pull complete
+7b88f10adb20: Pull complete
+c577892d685b: Pull complete
+0ebde657cdd8: Pull complete
+8a7b7a93e178: Pull complete
+296a47a88fb1: Pull complete
+4f4fb700ef54: Pull complete
+0e4120226025: Pull complete
+Digest: sha256:c752c86b681823fc4b15a6294051f6273b9f8e8b25c795b7b959f91ba571fedc
+Status: Downloaded newer image for quantconnect/lean:latest
+docker.io/quantconnect/lean:latest
+Compiling '/LeanCLI/main.py'...
+20261116 19:41:09.415 TRACE:: Composer(): Loading Assemblies from 
+/Lean/Launcher/bin/Debug
+20261116 19:41:09.543 TRACE:: Python for .NET Assembly: Python.Runtime, 
+Version=2.0.70.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd
+20261116 19:41:09.601 TRACE:: 
+Composer.LoadPartsSafely(/Lean/Launcher/bin/Debug/System.Private.ServiceModel.dl
+l): Skipping FileLoadException: Could not load file or assembly 
+'/Lean/Launcher/bin/Debug/System.Private.ServiceModel.dll'. The located 
+assembly's manifest definition does not match the assembly reference. 
+(0x80131040)
+20261116 19:41:10.908 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE 
+v2.5.0.0 Mode: DEBUG (64bit) Host: runnervmccnms
+20261116 19:41:10.923 TRACE:: Engine.Main(): Started 7:41 PM
+20261116 19:41:10.944 TRACE:: JobQueue.NextJob(): Selected /LeanCLI/main.py
+20261116 19:41:10.999 TRACE:: AlgorithmManager.CreateTokenBucket(): Initializing
+LeakyBucket: Capacity: 120 RefillAmount: 18 TimeInterval: 1440
+20261116 19:41:11.007 TRACE:: Engine.Run(): Resource limits '0' CPUs. 2147483647
+MB RAM.
+20261116 19:41:11.007 TRACE:: TextSubscriptionDataSourceReader.SetCacheSize(): 
+Setting cache size to 71582788 items
+20261116 19:41:11.513 TRACE:: PythonInitializer.Initialize(): start...
+PythonEngine.Initialize(): clr GetManifestResourceStream...
+20261116 19:41:11.768 TRACE:: PythonInitializer.Initialize(): ended
+20261116 19:41:11.770 TRACE:: AlgorithmPythonWrapper(): Python version 3.11.14 
+(main, Oct 21 2025, 18:40:40) [GCC 11.2.0]: Importing python module main
+20261116 19:41:15.133 TRACE:: AlgorithmPythonWrapper(): main successfully 
+imported.
+20261116 19:41:15.136 TRACE:: AlgorithmPythonWrapper(): Creating IAlgorithm 
+instance.
+20261116 19:41:15.305 TRACE:: LocalObjectStore.Initialize(): Storage Root: 
+/Storage. StorageFileCount 9999999. StorageLimit 10240MB. StoragePermissions 
+Read=True Write=True Delete=True
+20261116 19:41:15.316 TRACE:: HistoryProviderManager.Initialize(): history 
+providers [SubscriptionDataReaderHistoryProvider]
+20261116 19:41:15.319 TRACE:: BaseSetupHandler.Setup(LocalPlatform): UID: 0, 
+PID: -1, Version: 2.5.0.0, Source: WebIDE
+20261116 19:41:15.417 TRACE:: WeightedWorkScheduler(): will use 4 workers and 
+MaxWorkWeight is 400
+20261116 19:41:15.423 TRACE:: BaseSetupHandler.SetupCurrencyConversions():
+Account Type: Margin
+
+Symbol      Quantity    Conversion = Value in USD
+USD: $      100000.00 @       1.00 = $100000
+-------------------------------------------------
+CashBook Total Value:                $100000
+
+20261116 19:41:15.425 TRACE:: Total margin information: TotalMarginUsed: 0.00, 
+MarginRemaining: 100000.00
+20261116 19:41:15.426 TRACE:: SetUp Backtesting: User: 0 ProjectId: -1 AlgoId: 
+1256948276
+20261116 19:41:15.428 TRACE:: Dates: Start: 01/01/2020 End: 01/01/2021 Cash: 
+¤100,000.00 MaximumRuntime: 100.00:00:00 MaxOrders: 2147483647
+20261116 19:41:15.431 TRACE:: BacktestingResultHandler(): Sample Period Set: 
+132.12
+20261116 19:41:15.432 TRACE:: JOB HANDLERS:
+         DataFeed:             
+QuantConnect.Lean.Engine.DataFeeds.FileSystemDataFeed
+         Setup:                
+QuantConnect.Lean.Engine.Setup.BacktestingSetupHandler
+         RealTime:             
+QuantConnect.Lean.Engine.RealTime.BacktestingRealTimeHandler
+         Results:              
+QuantConnect.Lean.Engine.Results.BacktestingResultHandler
+         Transactions:         
+QuantConnect.Lean.Engine.TransactionHandlers.BacktestingTransactionHandler
+         Object Store:         QuantConnect.Lean.Engine.Storage.LocalObjectStore
+         History Provider:     
+QuantConnect.Lean.Engine.HistoricalData.HistoryProviderManager
+         Brokerage:            
+QuantConnect.Brokerages.Backtesting.BacktestingBrokerage
+         Data Provider:        
+QuantConnect.Lean.Engine.DataFeeds.DefaultDataProvider
+
+20261116 19:41:15.446 TRACE:: Event Name "Daily Sampling", scheduled to run.
+20261116 19:41:15.447 TRACE:: AlgorithmManager.Run(): Begin DataStream - Start: 
+1/1/2020 12:00:00 AM Stop: 1/1/2021 11:59:59 PM Time: 1/1/2020 12:00:00 AM 
+Warmup: False
+20261116 19:41:15.472 TRACE:: Debug: 2020-01-01 00:00:00 Launching analysis for 
+1256948276 with LEAN Engine v2.5.0.0
+20261116 19:41:15.569 TRACE:: UniverseSelection.AddPendingInternalDataFeeds(): 
+Adding internal benchmark data feed 
+SPY,#0,SPY,Hour,TradeBar,Trade,Adjusted,OpenInterest,Internal
+20261116 19:41:15.822 TRACE:: Debug: 2020-01-02 16:00:00 Purchased Stock
+20261116 19:41:15.904 TRACE:: Synchronizer.GetEnumerator(): Exited thread.
+20261116 19:41:15.905 TRACE:: AlgorithmManager.Run(): Firing On End Of 
+Algorithm...
+20261116 19:41:15.906 TRACE:: Engine.Run(): Exiting Algorithm Manager
+20261116 19:41:15.909 TRACE:: OrderRequestProcessingPool.Dispose(): completed
+20261116 19:41:15.909 TRACE:: StopSafely(): Waiting for 'Isolator Thread' thread
+to stop...
+20261116 19:41:15.910 TRACE:: FileSystemDataFeed.Exit(): Start. Setting 
+cancellation token...
+20261116 19:41:15.911 TRACE:: FileSystemDataFeed.Exit(): Exit Finished.
+20261116 19:41:15.911 TRACE:: DataMonitor.Exit(): start...
+20261116 19:41:15.911 TRACE:: StopSafely(): Waiting for '' thread to stop...
+20261116 19:41:15.912 TRACE:: DataMonitor.GenerateReport():
+DATA USAGE:: Total data requests 2
+DATA USAGE:: Succeeded data requests 2
+DATA USAGE:: Failed data requests 0
+DATA USAGE:: Failed data requests percentage 0%
+DATA USAGE:: Total universe data requests 0
+DATA USAGE:: Succeeded universe data requests 0
+DATA USAGE:: Failed universe data requests 0
+DATA USAGE:: Failed universe data requests percentage 0%
+20261116 19:41:15.913 TRACE:: DataMonitor.Exit(): end
+20261116 19:41:15.913 TRACE:: BacktestingResultHandler.Exit(): starting...
+20261116 19:41:15.913 TRACE:: BacktestingResultHandler.Exit(): Saving logs...
+20261116 19:41:15.914 TRACE:: Debug: 2020-12-31 16:00:00 Algorithm 
+Id:(1256948276) completed in 0.47 seconds at 4k data points per second. 
+Processing total of 2,030 data points.
+20261116 19:41:15.914 TRACE:: Debug: 2020-12-31 16:00:00 Your log was 
+successfully created and can be retrieved from: /Results/1256948276-log.txt
+20261116 19:41:15.914 TRACE:: BacktestingResultHandler.Run(): Ending Thread...
+20261116 19:41:15.914 TRACE:: StopSafely(): Waiting for 'Result Thread' thread 
+to stop...
+20261116 19:41:16.249 TRACE::
+STATISTICS:: Total Orders 1
+STATISTICS:: Average Win 0%
+STATISTICS:: Average Loss 0%
+STATISTICS:: Compounding Annual Return 18.237%
+STATISTICS:: Drawdown 33.200%
+STATISTICS:: Expectancy 0
+STATISTICS:: Start Equity 100000
+STATISTICS:: End Equity 118273.52
+STATISTICS:: Net Profit 18.274%
+STATISTICS:: Sharpe Ratio 0.584
+STATISTICS:: Sortino Ratio 0.545
+STATISTICS:: Probabilistic Sharpe Ratio 29.230%
+STATISTICS:: Loss Rate 0%
+STATISTICS:: Win Rate 0%
+STATISTICS:: Profit-Loss Ratio 0
+STATISTICS:: Alpha 0.001
+STATISTICS:: Beta 0.98
+STATISTICS:: Annual Standard Deviation 0.273
+STATISTICS:: Annual Variance 0.074
+STATISTICS:: Information Ratio -0.161
+STATISTICS:: Tracking Error 0.013
+STATISTICS:: Treynor Ratio 0.163
+STATISTICS:: Total Fees $1.57
+STATISTICS:: Estimated Strategy Capacity $960000000.00
+STATISTICS:: Lowest Capacity Asset SPY R735QTJ8XC9X
+STATISTICS:: Portfolio Turnover 0.27%
+STATISTICS:: Drawdown Recovery 172
+STATISTICS:: OrderListHash e01da43217ed0e277aaa8a5618712f99
+20261116 19:41:16.249 TRACE:: BacktestingResultHandler.SendAnalysisResult(): 
+Processed final packet
+20261116 19:41:16.250 TRACE:: Engine.Run(): Disconnecting from brokerage...
+20261116 19:41:16.250 TRACE:: Engine.Run(): Disposing of setup handler...
+20261116 19:41:16.250 TRACE:: Engine.Main(): Analysis Completed and Results 
+Posted.
+Engine.Main(): Analysis Complete.
+20261116 19:41:16.254 TRACE:: Engine.Main(): Packet removed from queue: 
+1256948276
+20261116 19:41:16.254 TRACE:: LeanEngineSystemHandlers.Dispose(): start...
+20261116 19:41:16.255 TRACE:: LeanEngineSystemHandlers.Dispose(): Disposed of 
+system handlers.
+20261116 19:41:16.255 TRACE:: LeanEngineAlgorithmHandlers.Dispose(): start...
+20261116 19:41:16.255 TRACE:: LocalObjectStore.Dispose(): start...
+20261116 19:41:16.255 TRACE:: LocalObjectStore.Dispose(): end
+20261116 19:41:16.256 TRACE:: LeanEngineAlgorithmHandlers.Dispose(): Disposed of
+algorithm handlers.
+20261116 19:41:16.256 TRACE:: StopSafely(): Waiting for 'CpuPerformance' thread 
+to stop...
+20261116 19:41:16.256 TRACE:: PythonInitializer.Shutdown(): start
+20261116 19:41:16.256 TRACE:: PythonInitializer.Shutdown(): calling engine 
+shutdown...
+20261116 19:41:19.082 TRACE:: PythonInitializer.Shutdown(): ended
+20261116 19:41:19.082 TRACE:: Program.Main(): Exiting Lean...
+Successfully ran 'BuyAndHold' in the 'backtesting' environment and stored the 
+output in 'BuyAndHold/backtests/2026-11-16_19-35-34'

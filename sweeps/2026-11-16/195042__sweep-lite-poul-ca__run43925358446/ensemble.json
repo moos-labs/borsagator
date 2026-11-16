@@ -1,0 +1,182 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 10.149999618530273,
+ "base_source": "openbb/poul_ca.csv",
+ "base_date": "2026-11-12",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "yahooquery/poul.ca.csv": 10.149999618530273,
+   "pandas-ta/indicators.csv": 10.149999618530273,
+   "talib/indicators.csv": 10.149999618530273,
+   "openbb/poul_ca.csv": 10.149999618530273
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-12",
+  "base_used": 10.149999618530273,
+  "base_source_used": "openbb/poul_ca.csv",
+  "base_date": "2026-11-12",
+  "latest_collected_date": "2026-11-12",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "date_basis": "entitlement+1",
+   "mechanical_pct": -18.72,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي"
+  },
+  {
+   "type": "dividend",
+   "dps": 1.89,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.62,
+   "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+  },
+  {
+   "type": "dividend",
+   "dps": 1.9,
+   "ex_date": null,
+   "date_basis": null,
+   "mechanical_pct": -18.72,
+   "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة"
+  }
+ ],
+ "sigma_daily": 0.1765,
+ "sigma_source": "quantstats/ohlc.csv (σ60=0.1765, σ10=0.0183)",
+ "sessions_per_calendar_day": 0.714,
+ "date": "2026-11-16",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية",
+   "earnings event: Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+   "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de"
+   },
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+   },
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "بورصة مصر تعلن الحدود السعرية لتحركات سهم \"القاهرة للدواجن\" - Mubasher"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+   }
+  ],
+  "move_z": {
+   "last": 0.03,
+   "max3": 0.17
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "730d7db0e344e725b92951e47434b4bc39ee922557bc8c80fe277365771c8c59",
+  "factors": {
+   "price-forecast": 0.843,
+   "technicals": 0.725,
+   "sentiment": 1.009,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.843,
+    "n": 9,
+    "skill": -0.157
+   },
+   "technicals": {
+    "factor": 0.725,
+    "n": 9,
+    "skill": -0.275
+   },
+   "sentiment": {
+    "factor": 1.009,
+    "n": 9,
+    "skill": 0.009
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": -0.091,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.038
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.9,
+   "range_low_pct": -34.73,
+   "range_high_pct": 38.54,
+   "confidence": 0.3,
+   "net_score": 0.106,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.091,
+    "price-forecast": 0.045
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": -0.61,
+   "range_low_pct": -74.1,
+   "range_high_pct": 72.88,
+   "confidence": 0.3,
+   "net_score": 0.05,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.091,
+    "price-forecast": -0.036
+   },
+   "horizon_short": false,
+   "trading_sessions": 4
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 4.77,
+   "range_low_pct": -140.22,
+   "range_high_pct": 149.76,
+   "confidence": 0.3,
+   "net_score": 0.225,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.091,
+    "fundamentals": 0.4,
+    "price-forecast": -0.038
+   },
+   "horizon_short": false,
+   "trading_sessions": 15
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}
