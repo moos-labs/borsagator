@@ -206,13 +206,23 @@ def committed_ledger():
     return _read_json(os.path.join(LEDGER_DIR, "ledger.json"))
 
 
-def validate_ledger(doc):
+def validate_ledger(doc, committed=None):
     """Raise RuntimeError on any degraded ledger document.
     ledger.py itself never exits non-zero — it catches everything
     and still writes zeroed outputs on a fetch failure, so this
     validation is the failure detector. Rejection is on the specific
-    failure signal (a gap prefix), never on count monotonicity
-    (issue #116)."""
+    failure signal (a gap prefix) or on a sharp regression versus
+    the committed ledger — never on plain count monotonicity
+    (issue #116). `committed` is the ledger.json currently on main
+    (None on a first publish); the regression check is skipped
+    without one.
+    Issue #132: the gate used to check exactly five conditions and
+    never inspected forecasts_detail[].status (scoring exceptions
+    produce "error" rows) nor compared counts.matured against the
+    committed ledger — so a total CSV-fetch failure, which wipes
+    every matured forecast back to zero and resets all weights to
+    neutral, published as long as sweeps > 0 and no rejecting gap
+    prefix existed."""
     if not (doc.get("source") or {}).get("tree_sha"):
         raise RuntimeError("degraded run: no archive tree sha "
                            "(the archive fetch failed — see gaps)")
@@ -226,16 +236,53 @@ def validate_ledger(doc):
             raise RuntimeError(f"degraded run: {g}")
         if g.startswith("per-file fetch failed"):
             raise RuntimeError(f"degraded run: {g}")
+        # Issue #132: no price series could be built at all (the
+        # archive held candidate CSVs but none could be read) —
+        # the ledger below carries no realized data whatsoever.
+        # Note the `price-CSV fetch failed` prefix is deliberately
+        # NOT rejected here: a single failed CSV among many
+        # candidates still publishes.
+        if g.startswith("no price series could be built"):
+            raise RuntimeError(f"degraded run: {g}")
     if (doc.get("counts") or {}).get("sweeps", 0) == 0:
         raise RuntimeError("degraded run: zero sweeps read from the "
                            "archive tree")
+    # Issue #132: a scoring exception leaves a forecasts_detail row
+    # with status "error" — a ledger that could not score a
+    # forecast must not publish as if it had.
+    errors = [r for r in doc.get("forecasts_detail") or []
+              if r.get("status") == "error"]
+    if errors:
+        shown = "; ".join(
+            f"{r.get('ticker')} as of {r.get('as_of')} "
+            f"({r.get('horizon')}) from {r.get('sweep')}: "
+            f"{str(r.get('error'))[:120]}" for r in errors[:3])
+        raise RuntimeError(
+            f"degraded run: {len(errors)} forecast row(s) failed to "
+            f"score (status 'error'): {shown}")
+    # Issue #132: sharp matured regression versus the committed
+    # ledger. Matured counts can legitimately dip a little (a guard
+    # change invalidating a few rows), so — per issue #116, which
+    # ruled out absolute count-monotonicity rejection — only a
+    # collapse of more than half the committed matured set rejects.
+    # The total-failure mode is 9 → 0; a 9 → 8 dip still publishes.
+    if committed is not None:
+        old_matured = (committed.get("counts") or {}).get("matured")
+        new_matured = (doc.get("counts") or {}).get("matured", 0)
+        if (isinstance(old_matured, int) and old_matured > 0
+                and new_matured < old_matured / 2):
+            raise RuntimeError(
+                f"degraded run: matured forecasts collapsed "
+                f"{old_matured} → {new_matured} versus the committed "
+                "ledger — a sharp regression, not a dip (see gaps)")
     return doc
 
 
-def run_ledger(out_dir):
+def run_ledger(out_dir, committed=None):
     """Run scripts/ledger.py into out_dir and validate its output.
     Returns the parsed ledger.json; raises RuntimeError on any
-    degraded run."""
+    degraded run. `committed` is the ledger currently on main, for
+    the issue-#132 regression checks in validate_ledger."""
     r = subprocess.run([sys.executable, LEDGER_PY, out_dir],
                        capture_output=True, text=True, timeout=1200)
     p = os.path.join(out_dir, "ledger.json")
@@ -245,7 +292,7 @@ def run_ledger(out_dir):
     doc = _read_json(p)
     if doc is None:
         raise RuntimeError("ledger.json is not parseable JSON")
-    return validate_ledger(doc)
+    return validate_ledger(doc, committed)
 
 
 def _counts_line(doc):
@@ -824,7 +871,10 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
         # so an incomplete ledger can neither be published nor locked in.
         tmp = tempfile.mkdtemp(prefix="ledger-run-")
         try:
-            new = run_ledger(tmp)
+            # Issue #132: pass the committed ledger in so
+            # validate_ledger can reject a sharp matured regression
+            # (and error rows) instead of publishing a wiped ledger.
+            new = run_ledger(tmp, old)
         except Exception as e:
             return fail(str(e), digest_path, fail_hard, ctx)
         # Issue #117 interim check: compare the pinned commit the ledger

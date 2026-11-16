@@ -268,13 +268,18 @@ def rel_close(a, b):
 
 def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
     """Choose this sweep's price series for the ticker. Returns
-    (series, source_rel, evidenced_series, evidenced_rel): the main
-    pick plus the best positively ticker-evidenced series (a file
-    whose symbol column names the ticker, or whose filename carries
-    the ticker's code as a token — egxpy_comi.csv, NVDA.csv). Either
-    pair may be (None, None)."""
+    (series, source_rel, evidenced_series, evidenced_rel,
+    fetch_failures): the main pick plus the best positively
+    ticker-evidenced series (a file whose symbol column names the
+    ticker, or whose filename carries the ticker's code as a token —
+    egxpy_comi.csv, NVDA.csv). Either pair may be (None, None).
+    fetch_failures is [(rel, error)] for every candidate CSV whose
+    body could not be fetched at all. Issue #132: a fetch failure
+    used to be warn() + continue and nothing else, so a total
+    raw-host failure silently left every forecast pending, matured
+    0, and the ledger published with all weights reset to neutral."""
     code = ticker.split(".")[0].lower()
-    candidates, evidenced = [], []
+    candidates, evidenced, fetch_failures = [], [], []
     for rel, size in sweep["csvs"]:
         name = rel.rsplit("/", 1)[-1].lower()
         if any(b in name for b in BLOCKLIST):
@@ -289,6 +294,9 @@ def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
             series, symbols = parse_price_csv(fetch_text(blob_url(rel)))
         except Exception as e:
             warn(f"{sweep['dir']}: unreadable {rel} ({e})")
+            # Issue #132: record the failure for the caller — a
+            # warn() alone never reached the validation gate.
+            fetch_failures.append((rel, str(e)))
             continue
         if series is None:
             continue
@@ -309,7 +317,7 @@ def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
                 ev_pick, ev_src = series, rel
                 break
     if not candidates:
-        return None, None, ev_pick, ev_src
+        return None, None, ev_pick, ev_src, fetch_failures
 
     def last_on_or_before(series, iso):
         ds = [d for d in series if d <= iso]
@@ -339,11 +347,38 @@ def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
     # poison those tickers' actuals series (phantom -94% NVDA rows).
     for rel, series in validated:
         if "/egx-data/" in rel:
-            return series, rel, ev_pick, ev_src
+            return series, rel, ev_pick, ev_src, fetch_failures
     if not pool:
-        return None, None, ev_pick, ev_src
+        return None, None, ev_pick, ev_src, fetch_failures
     pool.sort(key=lambda rs: len(rs[1]), reverse=True)
-    return pool[0][1], pool[0][0], ev_pick, ev_src
+    return pool[0][1], pool[0][0], ev_pick, ev_src, fetch_failures
+
+
+def csv_failure_gaps(series, fetch_failures, pick_failures=()):
+    """Gap strings for price-CSV failures (issue #132).
+    `fetch_failures` is [(sweep_dir, rel, error)] aggregated across
+    sweeps; `pick_failures` is [(sweep_dir, error)] for sweeps whose
+    whole series pick raised. Every failed fetch is recorded under
+    the distinct `price-CSV fetch failed` prefix — the publisher
+    does NOT reject on that prefix alone, so a single failed CSV
+    among many candidates still publishes. Only the last gap is a
+    rejecting signal: it fires when no price series could be built
+    for any ticker AND at least one fetch or pick failed, i.e. the
+    archive held candidate CSVs but none could be read. With no
+    failures at all an empty series is an honest data state (no
+    CSVs in the tree yet), not a fetch failure, and no gap fires.
+    Pure and testable — main() only aggregates its inputs."""
+    gaps = [f"price-CSV fetch failed: {d}: {rel} could not be "
+            f"fetched ({e})" for d, rel, e in fetch_failures]
+    gaps += [f"price series pick failed: {d} ({e})"
+             for d, e in pick_failures]
+    if not series and (fetch_failures or pick_failures):
+        gaps.append(
+            f"no price series could be built: "
+            f"{len(fetch_failures)} price-CSV fetch(es) and "
+            f"{len(pick_failures)} series pick(s) failed and no "
+            "actuals series exists for any ticker")
+    return gaps
 
 
 def sign(x):
@@ -533,6 +568,11 @@ def main():
                  for s in sweep_list if s.get("ticker")}
     series, provenance, sources = {}, {}, {}
     evidenced_series = {}
+    # Issue #132: CSV fetch / series-pick failures aggregated here
+    # so the validation gate can see them (they used to be warn()
+    # + continue and nothing else).
+    csv_fetch_failures = []  # (sweep_dir, rel, error)
+    series_pick_failures = []  # (sweep_dir, error)
     for s in sweep_list:  # chronological by path sort
         t = s["ticker"]
         if not t:
@@ -540,12 +580,16 @@ def main():
         base = num((s.get("ensemble_data") or {}).get("base_price"))
         acc = series.get(t, {})
         foreign = all_codes - {t.split(".")[0].lower()}
-        picked, src, ev_picked, ev_src = (None, None, None, None)
+        picked, src, ev_picked, ev_src, failures = (None, None, None,
+                                                    None, [])
         try:
-            picked, src, ev_picked, ev_src = pick_series(
+            picked, src, ev_picked, ev_src, failures = pick_series(
                 s, t, base, acc, foreign)
         except Exception as e:
             warn(f"{s['dir']}: series pick failed ({e})")
+            series_pick_failures.append((s["dir"], str(e)))
+        csv_fetch_failures.extend(
+            (s["dir"], rel, err) for rel, err in failures)
         if ev_picked:
             etgt = evidenced_series.setdefault(t, {})
             for d, c in ev_picked.items():
@@ -571,6 +615,10 @@ def main():
         gaps.append(f"{t}: actuals series has {summ['points']} sessions, "
                     f"{summ['first_date']} → {summ['last_date']} "
                     f"(last source: {summ['sources'][-1]['file'] if summ['sources'] else '—'})")
+    # Issue #132: record CSV fetch failures as gaps (distinct
+    # prefix) and fail closed when no series could be built at all.
+    gaps.extend(csv_failure_gaps(series, csv_fetch_failures,
+                                 series_pick_failures))
     if STATS["skipped_rows"]:
         gaps.append(f"price-CSV parsing skipped {STATS['skipped_rows']} "
                     "malformed/non-positive row(s) across all candidate files")
