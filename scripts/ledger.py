@@ -7,9 +7,16 @@ actually did, using ONLY the point-in-time sweep archive (branch
 
 - Forecasts come from each sweep's ensemble.json.
 - Actual daily closes come from the sweeps' own collected price CSVs
-  (egx-data preferred; otherwise the longest content-validated series
-  for the ticker). Later sweeps extend the series; a forecast is never
-  scored on data from its own sweep.
+  (egx-data preferred among content-validated series; otherwise the
+  longest content-validated series for the ticker). Later sweeps
+  extend the series; a forecast is never scored on data from its own
+  sweep.
+- Validity guard (issue #87): a forecast is scored only when its
+  base_price matches the ticker's evidenced price level — closes from
+  files positively tied to the ticker by symbol column or filename —
+  at its as-of date. A sweep whose ensemble base was manufactured
+  from another ticker's data fails this check and its forecasts are
+  marked invalid, never scored.
 - A horizon matures when the series holds at least `trading_sessions`
   sessions strictly after the forecast date. If the window spans a
   dividend ex-date recorded by the forecast (issue #26), the realized
@@ -181,16 +188,24 @@ def rel_close(a, b):
     return abs(a - b) / b if b else 1.0
 
 
-def pick_series(sweep, ticker, base_price, accumulated):
+def pick_series(sweep, ticker, base_price, accumulated, foreign_codes=()):
     """Choose this sweep's price series for the ticker. Returns
-    ({date: close}, source_rel_path) or (None, None)."""
-    candidates = []
+    (series, source_rel, evidenced_series, evidenced_rel): the main
+    pick plus the best positively ticker-evidenced series (a file
+    whose symbol column names the ticker, or whose filename carries
+    the ticker's code as a token — egxpy_comi.csv, NVDA.csv). Either
+    pair may be (None, None)."""
+    code = ticker.split(".")[0].lower()
+    candidates, evidenced = [], []
     for rel, size in sweep["csvs"]:
         name = rel.rsplit("/", 1)[-1].lower()
         if any(b in name for b in BLOCKLIST):
             continue
         if size > 1_500_000:
             continue  # screeners/dumps, never a daily target series
+        tokens = [t for t in re.split(r"[^a-z0-9]+", name) if t]
+        if code not in tokens and any(t in foreign_codes for t in tokens):
+            continue  # filename names another ticker: reference workload
         try:
             series, symbols = parse_price_csv(fetch_text(RAW + urllib.parse.quote(rel)))
         except Exception as e:
@@ -201,8 +216,21 @@ def pick_series(sweep, ticker, base_price, accumulated):
         if symbols and ticker not in symbols:
             continue  # reference workload for another ticker
         candidates.append((rel, series))
+        if (symbols and ticker in symbols) or code in tokens:
+            evidenced.append((rel, series))
+    # Evidenced pick: the file positively names this ticker, so it is
+    # trusted for level checks without price validation (egx first,
+    # else longest) — the yardstick for the issue-#87 scoring guard.
+    ev_pick, ev_src = None, None
+    if evidenced:
+        pool_ev = sorted(evidenced, key=lambda rs: len(rs[1]), reverse=True)
+        ev_pick, ev_src = pool_ev[0]
+        for rel, series in evidenced:
+            if "/egx-data/" in rel:
+                ev_pick, ev_src = series, rel
+                break
     if not candidates:
-        return None, None
+        return None, None, ev_pick, ev_src
 
     def last_on_or_before(series, iso):
         ds = [d for d in series if d <= iso]
@@ -232,11 +260,11 @@ def pick_series(sweep, ticker, base_price, accumulated):
     # poison those tickers' actuals series (phantom -94% NVDA rows).
     for rel, series in validated:
         if "/egx-data/" in rel:
-            return series, rel
+            return series, rel, ev_pick, ev_src
     if not pool:
-        return None, None
+        return None, None, ev_pick, ev_src
     pool.sort(key=lambda rs: len(rs[1]), reverse=True)
-    return pool[0][1], pool[0][0]
+    return pool[0][1], pool[0][0], ev_pick, ev_src
 
 
 def sign(x):
@@ -368,18 +396,28 @@ def main():
                     f"(category/single-tool runs): " + "; ".join(no_ens))
 
     # ---- build actual-close series per ticker -----------------------------
+    all_codes = {str(s["ticker"]).split(".")[0].lower()
+                 for s in sweep_list if s.get("ticker")}
     series, provenance, sources = {}, {}, {}
+    evidenced_series = {}
     for s in sweep_list:  # chronological by path sort
         t = s["ticker"]
         if not t:
             continue
         base = num((s.get("ensemble_data") or {}).get("base_price"))
         acc = series.get(t, {})
-        picked, src = (None, None)
+        foreign = all_codes - {t.split(".")[0].lower()}
+        picked, src, ev_picked, ev_src = (None, None, None, None)
         try:
-            picked, src = pick_series(s, t, base, acc)
+            picked, src, ev_picked, ev_src = pick_series(
+                s, t, base, acc, foreign)
         except Exception as e:
             warn(f"{s['dir']}: series pick failed ({e})")
+        if ev_picked:
+            etgt = evidenced_series.setdefault(t, {})
+            for d, c in ev_picked.items():
+                if d not in etgt or (ev_src and "/egx-data/" in ev_src):
+                    etgt[d] = c
         if not picked:
             continue
         tgt = series.setdefault(t, {})
@@ -441,9 +479,33 @@ def main():
             })
 
     # ---- score ---------------------------------------------------------------
-    rows = []
+    # Issue #87 validity guard: a forecast is scored only when its
+    # base_price matches the ticker's evidenced price level (closes
+    # from files positively tied to the ticker by symbol column or
+    # filename) at its as-of date. Price-vs-base validation inside
+    # pick_series cannot catch a sweep whose ensemble base was itself
+    # manufactured from the wrong ticker's data (the COMI sweep-lite
+    # based COMI on POUL's 10.15); such forecasts are invalid, never
+    # scored, and excluded from skill/weights.
+    rows, invalid = [], []
     for fc in forecasts:
         t = fc["ticker"]
+        ev = evidenced_series.get(t, {})
+        ev_dates = [d for d in ev if d <= fc["as_of"]]
+        if ev_dates:
+            level_date = max(ev_dates)
+            level = ev[level_date]
+            if rel_close(fc["base_price"], level) > VALID_TOL:
+                r = dict(fc)
+                r.update(status="invalid",
+                         invalid_reason=(
+                             f"base_price {fc['base_price']} deviates "
+                             f"{rel_close(fc['base_price'], level) * 100:.1f}% from the "
+                             f"ticker-evidenced close {level} at {level_date} "
+                             f"— the sweep's data does not match {t} (issue #87)"))
+                rows.append(r)
+                invalid.append(r)
+                continue
         try:
             rows.append(score_forecast(fc, series.get(t, {}),
                                        provenance.get(t, {}), fc["sweep"]))
@@ -453,6 +515,13 @@ def main():
             rows.append(r)
     matured = [r for r in rows if r["status"] == "matured"]
     pending = [r for r in rows if r["status"] == "pending"]
+    if invalid:
+        gaps.append(f"{len(invalid)} forecast(s) invalidated by the "
+                    "issue-#87 guard (base_price inconsistent with the "
+                    "ticker-evidenced price level; never scored): " +
+                    "; ".join(f"{r['ticker']} as of {r['as_of']} "
+                              f"({r['horizon']}) from {r['sweep']}"
+                              for r in invalid))
     adjusted_rows = [r for r in matured if r.get("dividend_adjusted")]
     if not any((fc.get("corporate_actions") for fc in forecasts)):
         gaps.append("no archived ensemble carries a corporate_actions block "
@@ -485,7 +554,8 @@ def main():
         by_ticker[t] = {
             "found": sum(1 for r in rows if r["ticker"] == t),
             "matured": sum(1 for r in matured if r["ticker"] == t),
-            "pending": sum(1 for r in pending if r["ticker"] == t)}
+            "pending": sum(1 for r in pending if r["ticker"] == t),
+            "invalid": sum(1 for r in invalid if r["ticker"] == t)}
     fam_vals = {}
     for r in matured:
         for fam, v in (r.get("family_skill") or {}).items():
@@ -502,7 +572,7 @@ def main():
         "counts": {"sweeps": len(sweep_list),
                    "sweeps_with_ensemble": sum(1 for s in sweep_list if s["has_ensemble"]),
                    "forecasts": len(rows), "matured": len(matured),
-                   "pending": len(pending),
+                   "pending": len(pending), "invalid": len(invalid),
                    "dividend_adjusted": len(adjusted_rows)},
         "by_ticker": by_ticker, "by_horizon": by_horizon,
         "family_skill": family_skill,
@@ -547,14 +617,16 @@ def main():
          f"Sweeps archived: {ledger['counts']['sweeps']} "
          f"({ledger['counts']['sweeps_with_ensemble']} with an ensemble).", "",
          f"**Forecasts found: {len(rows)} · matured: {len(matured)} · "
-         f"pending: {len(pending)} · dividend-adjusted: {len(adjusted_rows)}**", ""]
+         f"pending: {len(pending)} · invalid: {len(invalid)} · "
+         f"dividend-adjusted: {len(adjusted_rows)}**", ""]
     L += ["## By ticker", "",
-          "| Ticker | Found | Matured | Pending | Series span |",
-          "|---|---|---|---|---|"]
+          "| Ticker | Found | Matured | Pending | Invalid | Series span |",
+          "|---|---|---|---|---|---|"]
     for t, b in by_ticker.items():
         ss = series_summary.get(t, {})
         span = f"{ss.get('first_date','—')} → {ss.get('last_date','—')}" if ss else "—"
-        L.append(f"| {t} | {b['found']} | {b['matured']} | {b['pending']} | {span} |")
+        L.append(f"| {t} | {b['found']} | {b['matured']} | {b['pending']} | "
+                 f"{b.get('invalid', 0)} | {span} |")
     L += ["", "## By horizon (matured only)", "",
           "| Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |",
           "|---|---|---|---|---|"]
@@ -582,6 +654,10 @@ def main():
                      f"{'✅' if r.get('direction_hit') else '❌'} | {f0(r.get('move_error_pp'))} | "
                      f"{'✅' if r.get('in_range') else '❌'} | "
                      f"{'💰' if r.get('dividend_adjusted') else ''} | matured {r.get('maturity_date', '')} |")
+        elif r["status"] == "invalid":
+            L.append(f"| {r['ticker']} | {r['as_of']} | {r['horizon']} | {r['direction']} | "
+                     f"{r['expected_move_pct']:+.2f} | — | — | — | — | | "
+                     f"invalid — {r.get('invalid_reason', '')} |")
         else:
             L.append(f"| {r['ticker']} | {r['as_of']} | {r['horizon']} | {r['direction']} | "
                      f"{r['expected_move_pct']:+.2f} | — | — | — | — | | "
