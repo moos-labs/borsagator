@@ -1,0 +1,25 @@
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7796841/
+WARN body extract short (0 chars): https://www.mubasher.info/news/21587272/%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%85%D8%B5%D8%B1-
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+bodies: 6/12 fetched; failures by stage: {'decode': 0, 'http': 4, 'extract': 2}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T07:53:37Z)
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights:  13%|█▎        | 27/201 [00:00<00:00, 269.61it/s]Loading weights:  27%|██▋       | 54/201 [00:00<00:00, 269.11it/s]Loading weights:  40%|████      | 81/201 [00:00<00:00, 269.16it/s]Loading weights:  60%|█████▉    | 120/201 [00:00<00:00, 316.75it/s]Loading weights:  76%|███████▌  | 152/201 [00:00<00:00, 305.97it/s]Loading weights:  91%|█████████ | 183/201 [00:00<00:00, 306.98it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 327.62it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14189.50it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 15378.82it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4216.22it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 24, "disclosure_count": 11, "arabic_headlines": 31, "latest_news_date": "Mon, 16 Nov 2026 14:51:18 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.432, "multilingual_negative": 0.038, "multilingual_neutral": 0.529, "multilingual_scored": 31, "bodies_fetched": 6, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "published", "translation_provider": "cohere+nllb", "translated_positive": 0.221, "translated_negative": 0.184, "translated_neutral": 0.595, "translated_scored": 31}
+BRIEF:
+- Cairo Poultry's stock has seen a significant decline, with a 17% drop in value, leading it to be the most declined stock on the Egyptian stock exchange.
+- The company's nine-month profit has dropped by 38.3%, indicating a substantial decrease in earnings.
+- Despite a rise in revenues of approximately 1.1% to EGP 12.1 billion, Cairo Poultry's net profit for the first nine months of 2026 fell by 39% to EGP 1.44 billion.
+- The Egyptian stock exchange has set price limits for Cairo Poultry's stock, allowing a 35.19% downward movement and a 27.09% temporary suspension.
+- Investors have until the end of Sunday, November 15, 2026, to purchase Cairo Poultry shares and receive a cash distribution of EGP 1.89 per share, payable on November 18, 2026.
+- Cairo Poultry's third-quarter consolidated profit was EGP 152 million.
+- The small and medium-sized company index on the stock exchange fell by more than 2% during Monday's mid-session, driven by a decline in most of the index's stocks, led by Cairo Poultry.
+- These developments may impact investor confidence and stock performance, especially with the significant profit drop and the stock's recent performance.
