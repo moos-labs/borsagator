@@ -4,15 +4,15 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "704e0e1d863af2a21f51be808c80003baa5aeea9",
-  "tree_via": "api-anonymous"
+  "tree_sha": "f780a182cfdb3059e02d1c460936d32f1afc0169",
+  "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 34,
-  "sweeps_with_ensemble": 13,
-  "forecasts": 33,
+  "sweeps": 36,
+  "sweeps_with_ensemble": 15,
+  "forecasts": 39,
   "matured": 5,
-  "pending": 25,
+  "pending": 31,
   "invalid": 3,
   "dividend_adjusted": 0
  },
@@ -30,9 +30,9 @@
    "invalid": 0
   },
   "POUL.CA": {
-   "found": 24,
+   "found": 30,
    "matured": 4,
-   "pending": 20,
+   "pending": 26,
    "invalid": 0
   }
  },
@@ -179,6 +179,18 @@
     {
      "sweep": "sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392",
      "file": "sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-15"
+    },
+    {
+     "sweep": "sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446",
+     "file": "sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446/collected/egx-data/egxpy_poul.csv",
+     "points": 3000,
+     "last_date": "2026-11-15"
+    },
+    {
+     "sweep": "sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317",
+     "file": "sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317/collected/egx-data/egxpy_poul.csv",
      "points": 3000,
      "last_date": "2026-11-15"
     }
@@ -992,15 +1004,181 @@
    "corporate_actions": [],
    "status": "pending",
    "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.19,
+   "range_low_pct": -4.48,
+   "range_high_pct": 4.86,
+   "confidence": 0.3,
+   "net_score": 0.165,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.028
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.26,
+   "range_low_pct": -7.84,
+   "range_high_pct": 8.37,
+   "confidence": 0.3,
+   "net_score": 0.132,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.028
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.39,
+   "range_low_pct": -15.98,
+   "range_high_pct": 18.75,
+   "confidence": 0.3,
+   "net_score": 0.321,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.028,
+    "fundamentals": 0.4
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 2.26,
+   "range_low_pct": -2.71,
+   "range_high_pct": 7.23,
+   "confidence": 0.3,
+   "net_score": 0.35,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "price-forecast": 0.687
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.61,
+   "range_low_pct": -8.81,
+   "range_high_pct": 7.58,
+   "confidence": 0.3,
+   "net_score": 0.015,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "price-forecast": -0.137
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-16",
+   "sweep": "sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.54,
+   "range_low_pct": -19.98,
+   "range_high_pct": 16.9,
+   "confidence": 0.3,
+   "net_score": 0.164,
+   "base_price": 10.0,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.063,
+    "fundamentals": 0.4,
+    "price-forecast": -0.222
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "mechanical_pct": -19.0
+    }
+   ],
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
   "21 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667; sweeps/2026-11-13/175202__category-news-poul-ca__run43475305450; sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234; sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601; sweeps/2026-11-13/184846__category-agent-poul-ca__run43482153785; sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341; sweeps/2026-11-15/130920__run-kronos-nvda__run43717394637; sweeps/2026-11-15/131641__category-news-poul-ca__run43717400241; sweeps/2026-11-15/134248__category-agent-poul-ca__run43717405249; sweeps/2026-11-15/140746__sweep-nvda__run43717388468; sweeps/2026-11-16/040734__run-egx-data-comi-ca__run43801992894; sweeps/2026-11-16/041112__category-news-poul-ca__run43801982888; sweeps/2026-11-16/041429__run-talib-comi-ca__run43802798857; sweeps/2026-11-16/042354__category-news-poul-ca__run43802770319",
   "COMI.CA: actuals series has 2180 sessions, 2018-01-01 → 2026-11-12 (last source: sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248/collected/quantstats/ohlc.csv)",
   "NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)",
-  "POUL.CA: actuals series has 3001 sessions, 2014-06-04 → 2026-11-15 (last source: sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392/collected/egx-data/egxpy_poul.csv)",
-  "3 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248",
-  "no archived ensemble carries a corporate_actions block yet (the first post-#26 sweep has not run) — the dividend-adjustment path is implemented and covered by a synthetic check, with zero real adjusted rows so far"
+  "POUL.CA: actuals series has 3001 sessions, 2014-06-04 → 2026-11-15 (last source: sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317/collected/egx-data/egxpy_poul.csv)",
+  "3 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248"
  ],
  "warnings": []
 }
