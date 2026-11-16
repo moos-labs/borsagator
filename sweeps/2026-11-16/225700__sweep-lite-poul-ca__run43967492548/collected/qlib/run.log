@@ -1,0 +1,216 @@
+# Qlib pilot run
+Started (UTC): 2026-11-16T22:32:12.384957+00:00
+Python: 3.11.18
+pyqlib: 0.9.6
+lightgbm: 4.7.0
+pandas: 2.2.3
+numpy: 1.26.4
+mlflow: 2.22.5
+
+## Stage 1: data download
+$ /opt/hostedtoolcache/Python/3.11.18/x64/bin/python -m qlib.cli.data qlib_data --target_dir /home/runner/.qlib/qlib_data/cn_data --region cn
+/opt/hostedtoolcache/Python/3.11.18/x64/bin/python: Error while finding module specification for 'qlib.cli.data' (ModuleNotFoundError: No module named 'qlib.cli')
+  -> exit 1 in 0.6s
+  data check after qlib.cli.data: ok=False calendar=None..None (0 days), csi300=None, feature_dirs=0
+$ /opt/hostedtoolcache/Python/3.11.18/x64/bin/python -m qlib.run.get_data qlib_data --target_dir /home/runner/.qlib/qlib_data/cn_data --region cn
+[32m2026-11-16 22:32:15.954 +00:00[0m | [33m[1mWARNING [0m | [36mqlib.tests.data[0m:[36mdownload[0m:[36m62[0m - [33m[1mThe data for the example is collected from Yahoo Finance. Please be aware that the quality of the data might not be perfect. (You can refer to the original data source: https://finance.yahoo.com/lookup.)[0m
+[32m2026-11-16 22:32:15.955 +00:00[0m | [1mINFO    [0m | [36mqlib.tests.data[0m:[36mdownload[0m:[36m65[0m - [1m20261116223215_qlib_data_cn_1d_latest.zip downloading......[0m
+  0%|          | 0/196549189 [00:00<?, ?it/s]  6%|▌         | 11142144/196549189 [00:00<00:01, 111413311.72it/s] 13%|█▎        | 25009152/196549189 [00:00<00:01, 127442541.39it/s] 19%|█▉        | 37753856/196549189 [00:00<00:01, 104792630.04it/s] 26%|██▌       | 51584000/196549189 [00:00<00:01, 116490419.52it/s] 33%|███▎      | 65586176/196549189 [00:00<00:01, 124318137.87it/s] 41%|████      | 79721472/196549189 [00:00<00:00, 129805270.60it/s] 48%|████▊     | 93715456/196549189 [00:00<00:00, 132973371.91it/s] 55%|█████▍    | 107607040/196549189 [00:00<00:00, 134803425.41it/s] 62%|██████▏   | 121578496/196549189 [00:00<00:00, 136310114.88it/s] 69%|██████▉   | 135657472/196549189 [00:01<00:00, 137675477.69it/s] 76%|███████▌  | 149487616/196549189 [00:01<00:00, 137396742.91it/s] 83%|████████▎ | 163270656/196549189 [00:01<00:00, 117025576.58it/s] 89%|████████▉ | 175513600/196549189 [00:01<00:00, 117949434.62it/s] 96%|█████████▌| 187710464/196549189 [00:01<00:00, 119051209.68it/s]196549632it [00:01, 125183192.62it/s]                               
+[32m2026-11-16 22:32:17.527 +00:00[0m | [33m[1mWARNING [0m | [36mqlib.tests.data[0m:[36m_unzip[0m:[36m124[0m - [33m[1mwill delete the old qlib data directory(features, instruments, calendars, features_cache, dataset_cache): /home/runner/.qlib/qlib_data/cn_data[0m
+[32m2026-11-16 22:32:17.528 +00:00[0m | [1mINFO    [0m | [36mqlib.tests.data[0m:[36m_unzip[0m:[36m128[0m - [1m/home/runner/.qlib/qlib_data/cn_data/20261116223215_qlib_data_cn_1d_latest.zip unzipping......[0m
+  0%|          | 0/31008 [00:00<?, ?it/s]  2%|▏         | 514/31008 [00:00<00:05, 5136.50it/s]  3%|▎         | 1028/31008 [00:00<00:05, 5056.95it/s]  5%|▍         | 1534/31008 [00:00<00:05, 4999.13it/s]  7%|▋         | 2039/31008 [00:00<00:05, 5017.58it/s]  8%|▊         | 2542/31008 [00:00<00:05, 5018.76it/s] 10%|▉         | 3061/31008 [00:00<00:05, 5073.49it/s] 12%|█▏        | 3582/31008 [00:00<00:05, 5115.26it/s] 13%|█▎        | 4094/31008 [00:00<00:05, 5108.75it/s] 15%|█▍        | 4605/31008 [00:00<00:05, 5066.93it/s] 16%|█▋        | 5112/31008 [00:01<00:05, 5037.25it/s] 18%|█▊        | 5616/31008 [00:01<00:05, 5020.43it/s] 20%|█▉        | 6119/31008 [00:01<00:04, 5005.34it/s] 22%|██▏       | 6710/31008 [00:01<00:04, 5275.79it/s] 24%|██▎       | 7335/31008 [00:01<00:04, 5567.10it/s] 26%|██▌       | 7967/31008 [00:01<00:03, 5791.99it/s] 28%|██▊       | 8642/31008 [00:01<00:03, 6078.92it/s] 30%|███       | 9367/31008 [00:01<00:03, 6427.95it/s] 33%|███▎      | 10087/31008 [00:01<00:03, 6657.79it/s] 35%|███▍      | 10805/31008 [00:01<00:02, 6812.85it/s] 37%|███▋      | 11521/31008 [00:02<00:02, 6915.50it/s] 39%|███▉      | 12240/31008 [00:02<00:02, 6997.63it/s] 42%|████▏     | 12940/31008 [00:02<00:02, 6645.84it/s] 44%|████▍     | 13609/31008 [00:02<00:02, 6086.03it/s] 46%|████▌     | 14229/31008 [00:02<00:02, 5738.78it/s] 48%|████▊     | 14813/31008 [00:02<00:02, 5523.96it/s] 50%|████▉     | 15373/31008 [00:02<00:02, 5359.12it/s] 51%|█████▏    | 15914/31008 [00:02<00:02, 5256.67it/s] 53%|█████▎    | 16443/31008 [00:02<00:02, 5244.06it/s] 55%|█████▍    | 16992/31008 [00:03<00:02, 5312.29it/s] 57%|█████▋    | 17555/31008 [00:03<00:02, 5402.51it/s] 58%|█████▊    | 18133/31008 [00:03<00:02, 5509.20it/s] 60%|██████    | 18727/31008 [00:03<00:02, 5632.86it/s] 62%|██████▏   | 19330/31008 [00:03<00:02, 5748.28it/s] 64%|██████▍   | 19927/31008 [00:03<00:01, 5812.73it/s] 66%|██████▌   | 20539/31008 [00:03<00:01, 5903.69it/s] 68%|██████▊   | 21157/31008 [00:03<00:01, 5985.50it/s] 70%|███████   | 21786/31008 [00:03<00:01, 6075.73it/s] 72%|███████▏  | 22459/31008 [00:03<00:01, 6268.86it/s] 75%|███████▍  | 23170/31008 [00:04<00:01, 6518.66it/s] 77%|███████▋  | 23932/31008 [00:04<00:01, 6847.98it/s] 79%|███████▉  | 24618/31008 [00:04<00:00, 6670.78it/s] 82%|████████▏ | 25287/31008 [00:04<00:00, 6131.49it/s] 84%|████████▎ | 25909/31008 [00:04<00:00, 6141.67it/s] 86%|████████▌ | 26534/31008 [00:04<00:00, 6170.12it/s] 88%|████████▊ | 27189/31008 [00:04<00:00, 6277.19it/s] 90%|████████▉ | 27869/31008 [00:04<00:00, 6427.37it/s] 92%|█████████▏| 28565/31008 [00:04<00:00, 6581.57it/s] 94%|█████████▍| 29278/31008 [00:04<00:00, 6741.17it/s] 97%|█████████▋| 30016/31008 [00:05<00:00, 6929.47it/s] 99%|█████████▉| 30815/31008 [00:05<00:00, 7244.81it/s]100%|██████████| 31008/31008 [00:05<00:00, 5971.40it/s]
+  -> exit 0 in 10.1s
+  data check after qlib.run.get_data: ok=True calendar=1999-11-10..2020-09-25 (4943 days), csi300=820, feature_dirs=3875
+Data route used: official: python -m qlib.run.get_data qlib_data --region cn
+Data dir: /home/runner/.qlib/qlib_data/cn_data
+Calendar: 1999-11-10 .. 2020-09-25 (4943 trading days)
+Instruments: csi300.txt=820, all.txt=3875, feature dirs=3875
+
+## Stage 2: qrun LightGBM + Alpha158
+qrun output is also tee'd to /home/runner/work/qlib-runner/qlib-runner/qlib_run/qrun_stdout.txt
+[2657:MainThread](2026-11-16 22:32:25,886) INFO - qlib.qrun - [cli.py:78] - Render the template with the context: {}
+[2657:MainThread](2026-11-16 22:32:25,897) INFO - qlib.Initialization - [config.py:420] - default_conf: client.
+[2657:MainThread](2026-11-16 22:32:25,899) INFO - qlib.Initialization - [__init__.py:74] - qlib successfully initialized based on client settings.
+[2657:MainThread](2026-11-16 22:32:25,899) INFO - qlib.Initialization - [__init__.py:76] - data_path={'__DEFAULT_FREQ': PosixPath('/home/runner/.qlib/qlib_data/cn_data')}
+[2657:MainThread](2026-11-16 22:32:25,905) WARNING - qlib.workflow - [expm.py:231] - No valid experiment found. Create a new experiment with name workflow.
+[2657:MainThread](2026-11-16 22:32:25,908) INFO - qlib.workflow - [exp.py:258] - Experiment 373617808838393530 starts running ...
+[2657:MainThread](2026-11-16 22:32:25,992) INFO - qlib.workflow - [recorder.py:345] - Recorder e0f705e746694b488f09de449d56d663 starts running under Experiment 373617808838393530 ...
+ModuleNotFoundError. CatBoostModel are skipped. (optional: maybe installing CatBoostModel can fix it.)
+ModuleNotFoundError. XGBModel is skipped(optional: maybe installing xgboost can fix it).
+ModuleNotFoundError.  PyTorch models are skipped (optional: maybe installing pytorch can fix it).
+[2657:MainThread](2026-11-16 22:33:19,826) INFO - qlib.timer - [log.py:127] - Time cost: 53.680s | Loading data Done
+[2657:MainThread](2026-11-16 22:33:20,129) INFO - qlib.timer - [log.py:127] - Time cost: 0.131s | DropnaLabel Done
+[2657:MainThread](2026-11-16 22:33:22,563) INFO - qlib.timer - [log.py:127] - Time cost: 2.433s | CSZScoreNorm Done
+[2657:MainThread](2026-11-16 22:33:22,565) INFO - qlib.timer - [log.py:127] - Time cost: 2.739s | fit & process data Done
+[2657:MainThread](2026-11-16 22:33:22,566) INFO - qlib.timer - [log.py:127] - Time cost: 56.420s | Init data Done
+[2657:MainThread](2026-11-16 22:33:39,910) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[2657:MainThread](2026-11-16 22:33:40,269) INFO - qlib.workflow - [record_temp.py:198] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 373617808838393530
+[2657:MainThread](2026-11-16 22:33:41,448) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+Training until validation scores don't improve for 50 rounds
+[20]	train's l2: 0.981377	valid's l2: 0.993566
+[40]	train's l2: 0.973811	valid's l2: 0.993977
+[60]	train's l2: 0.967152	valid's l2: 0.994648
+Early stopping, best iteration is:
+[18]	train's l2: 0.982182	valid's l2: 0.993497
+'The following are prediction results of the LGBModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.027139
+           SH600008    0.007009
+           SH600009    0.009770
+           SH600010    0.012275
+           SH600015   -0.112909
+{'IC': 0.04680587323833807,
+ 'ICIR': 0.3815683918932706,
+ 'Rank IC': 0.049049290457489736,
+ 'Rank ICIR': 0.406748756941287}
+[2657:MainThread](2026-11-16 22:33:49,947) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[2657:MainThread](2026-11-16 22:33:49,948) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[2657:MainThread](2026-11-16 22:33:49,952) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[2657:MainThread](2026-11-16 22:33:49,952) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[2657:MainThread](2026-11-16 22:34:05,190) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[2657:MainThread](2026-11-16 22:34:05,190) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[2657:MainThread](2026-11-16 22:34:05,204) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x784053b39310>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   1%|          | 9/871 [00:00<00:10, 79.51it/s]
+backtest loop:   2%|▏         | 18/871 [00:00<00:10, 80.42it/s]
+backtest loop:   3%|▎         | 27/871 [00:00<00:10, 80.77it/s]
+backtest loop:   4%|▍         | 36/871 [00:00<00:10, 80.38it/s]
+backtest loop:   5%|▌         | 45/871 [00:00<00:10, 80.52it/s]
+backtest loop:   6%|▌         | 54/871 [00:00<00:10, 81.67it/s]
+backtest loop:   7%|▋         | 63/871 [00:00<00:09, 82.11it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:09, 81.90it/s]
+backtest loop:   9%|▉         | 81/871 [00:00<00:09, 80.95it/s]
+backtest loop:  10%|█         | 91/871 [00:01<00:09, 81.27it/s]
+backtest loop:  11%|█▏        | 100/871 [00:01<00:09, 80.73it/s]
+backtest loop:  13%|█▎        | 109/871 [00:01<00:09, 81.28it/s]
+backtest loop:  14%|█▎        | 119/871 [00:01<00:09, 82.40it/s]
+backtest loop:  15%|█▍        | 129/871 [00:01<00:09, 81.83it/s]
+backtest loop:  16%|█▌        | 139/871 [00:01<00:08, 81.96it/s]
+backtest loop:  17%|█▋        | 149/871 [00:01<00:08, 81.59it/s]
+backtest loop:  18%|█▊        | 159/871 [00:01<00:08, 82.13it/s]
+backtest loop:  19%|█▉        | 169/871 [00:02<00:08, 82.44it/s]
+backtest loop:  21%|██        | 179/871 [00:02<00:08, 82.79it/s]
+backtest loop:  22%|██▏       | 189/871 [00:02<00:08, 83.67it/s]
+backtest loop:  23%|██▎       | 199/871 [00:02<00:08, 82.41it/s]
+backtest loop:  24%|██▍       | 209/871 [00:02<00:08, 81.72it/s]
+backtest loop:  25%|██▌       | 219/871 [00:02<00:07, 81.70it/s]
+backtest loop:  26%|██▋       | 229/871 [00:02<00:07, 81.33it/s]
+backtest loop:  27%|██▋       | 239/871 [00:02<00:07, 82.29it/s]
+backtest loop:  28%|██▊       | 248/871 [00:03<00:07, 81.98it/s]
+backtest loop:  30%|██▉       | 258/871 [00:03<00:07, 81.60it/s]
+backtest loop:  31%|███       | 268/871 [00:03<00:07, 81.82it/s]
+backtest loop:  32%|███▏      | 277/871 [00:03<00:07, 81.86it/s]
+backtest loop:  33%|███▎      | 286/871 [00:03<00:07, 80.92it/s]
+backtest loop:  34%|███▍      | 295/871 [00:03<00:07, 79.56it/s]
+backtest loop:  35%|███▍      | 303/871 [00:03<00:07, 78.69it/s]
+backtest loop:  36%|███▌      | 311/871 [00:03<00:07, 77.98it/s]
+backtest loop:  37%|███▋      | 321/871 [00:03<00:06, 79.13it/s]
+backtest loop:  38%|███▊      | 329/871 [00:04<00:06, 78.66it/s]
+backtest loop:  39%|███▉      | 339/871 [00:04<00:06, 79.14it/s]
+backtest loop:  40%|████      | 349/871 [00:04<00:06, 81.04it/s]
+backtest loop:  41%|████      | 358/871 [00:04<00:06, 81.92it/s]
+backtest loop:  42%|████▏     | 368/871 [00:04<00:06, 82.64it/s]
+backtest loop:  43%|████▎     | 378/871 [00:04<00:05, 82.72it/s]
+backtest loop:  45%|████▍     | 388/871 [00:04<00:05, 84.02it/s]
+backtest loop:  46%|████▌     | 398/871 [00:04<00:05, 84.98it/s]
+backtest loop:  47%|████▋     | 408/871 [00:04<00:05, 85.56it/s]
+backtest loop:  48%|████▊     | 418/871 [00:05<00:05, 85.74it/s]
+backtest loop:  49%|████▉     | 427/871 [00:05<00:05, 86.15it/s]
+backtest loop:  50%|█████     | 437/871 [00:05<00:05, 86.49it/s]
+backtest loop:  51%|█████▏    | 447/871 [00:05<00:04, 86.00it/s]
+backtest loop:  52%|█████▏    | 457/871 [00:05<00:04, 85.26it/s]
+backtest loop:  54%|█████▎    | 466/871 [00:05<00:04, 86.26it/s]
+backtest loop:  55%|█████▍    | 475/871 [00:05<00:04, 83.28it/s]
+backtest loop:  56%|█████▌    | 484/871 [00:05<00:04, 82.01it/s]
+backtest loop:  57%|█████▋    | 493/871 [00:06<00:04, 81.23it/s]
+backtest loop:  58%|█████▊    | 502/871 [00:06<00:04, 80.11it/s]
+backtest loop:  59%|█████▊    | 511/871 [00:06<00:04, 78.80it/s]
+backtest loop:  60%|█████▉    | 520/871 [00:06<00:04, 78.37it/s]
+backtest loop:  61%|██████    | 530/871 [00:06<00:04, 78.83it/s]
+backtest loop:  62%|██████▏   | 540/871 [00:06<00:04, 78.82it/s]
+backtest loop:  63%|██████▎   | 549/871 [00:06<00:04, 77.66it/s]
+backtest loop:  64%|██████▍   | 559/871 [00:06<00:03, 78.74it/s]/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  65%|██████▌   | 570/871 [00:06<00:03, 85.19it/s]
+backtest loop:  66%|██████▋   | 579/871 [00:07<00:03, 82.80it/s]
+backtest loop:  68%|██████▊   | 588/871 [00:07<00:03, 81.56it/s]
+backtest loop:  69%|██████▊   | 597/871 [00:07<00:03, 80.39it/s]
+backtest loop:  70%|██████▉   | 606/871 [00:07<00:03, 79.27it/s]
+backtest loop:  71%|███████   | 615/871 [00:07<00:03, 77.84it/s]
+backtest loop:  72%|███████▏  | 624/871 [00:07<00:03, 80.59it/s]
+backtest loop:  73%|███████▎  | 633/871 [00:07<00:03, 78.23it/s]
+backtest loop:  74%|███████▎  | 641/871 [00:07<00:03, 76.61it/s]
+backtest loop:  75%|███████▍  | 650/871 [00:07<00:02, 76.38it/s]
+backtest loop:  76%|███████▌  | 659/871 [00:08<00:02, 76.10it/s]
+backtest loop:  77%|███████▋  | 669/871 [00:08<00:02, 76.96it/s]
+backtest loop:  78%|███████▊  | 677/871 [00:08<00:02, 75.99it/s]
+backtest loop:  79%|███████▊  | 685/871 [00:08<00:02, 74.79it/s]
+backtest loop:  80%|███████▉  | 694/871 [00:08<00:02, 75.35it/s]
+backtest loop:  81%|████████  | 704/871 [00:08<00:02, 76.21it/s]
+backtest loop:  82%|████████▏ | 714/871 [00:08<00:02, 77.48it/s]
+backtest loop:  83%|████████▎ | 724/871 [00:08<00:01, 78.18it/s]
+backtest loop:  84%|████████▍ | 732/871 [00:09<00:01, 76.93it/s]
+backtest loop:  85%|████████▍ | 740/871 [00:09<00:01, 76.19it/s]
+backtest loop:  86%|████████▌ | 748/871 [00:09<00:01, 76.06it/s]
+backtest loop:  87%|████████▋ | 757/871 [00:09<00:01, 76.08it/s]
+backtest loop:  88%|████████▊ | 766/871 [00:09<00:01, 79.31it/s]
+backtest loop:  89%|████████▉ | 774/871 [00:09<00:01, 77.01it/s]
+backtest loop:  90%|████████▉ | 782/871 [00:09<00:01, 75.54it/s]
+backtest loop:  91%|█████████ | 792/871 [00:09<00:01, 76.64it/s]
+backtest loop:  92%|█████████▏| 801/871 [00:09<00:00, 76.78it/s]
+backtest loop:  93%|█████████▎| 810/871 [00:10<00:00, 77.07it/s]
+backtest loop:  94%|█████████▍| 818/871 [00:10<00:00, 76.54it/s]
+backtest loop:  95%|█████████▌| 828/871 [00:10<00:00, 77.77it/s]
+backtest loop:  96%|█████████▌| 837/871 [00:10<00:00, 80.95it/s]
+backtest loop:  97%|█████████▋| 846/871 [00:10<00:00, 75.32it/s]
+backtest loop:  98%|█████████▊| 856/871 [00:10<00:00, 76.30it/s]
+backtest loop:  99%|█████████▉| 866/871 [00:10<00:00, 77.38it/s]
+backtest loop: 100%|██████████| 871/871 [00:10<00:00, 80.12it/s]
+[2657:MainThread](2026-11-16 22:34:16,128) INFO - qlib.workflow - [record_temp.py:515] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 373617808838393530
+[2657:MainThread](2026-11-16 22:34:16,137) INFO - qlib.workflow - [record_temp.py:540] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 373617808838393530
+[2657:MainThread](2026-11-16 22:34:16,838) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000530
+std                0.005718
+annualized_return  0.126029
+information_ratio  1.428574
+max_drawdown      -0.072310
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000339
+std                0.005717
+annualized_return  0.080654
+information_ratio  0.914486
+max_drawdown      -0.086083
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+qrun exit 0 in 114.4s
+
+## Stage 3: recorder / mlflow extraction
+mlruns dirs found: ['/home/runner/work/qlib-runner/qlib-runner/qlib_run/mlruns']
+metrics found: 19; artifact files found: 17
+
+Wrote /home/runner/work/qlib-runner/qlib-runner/results/qlib_result.md
+Finished in 126.0s; exit code 0

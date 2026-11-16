@@ -1,0 +1,168 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 8.02,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_date": "2026-11-16",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "talib/indicators.csv": 10.149999618530273,
+   "yahooquery/poul.ca.csv": 10.149999618530273,
+   "egx-data/egxpy_poul.csv": 10.15,
+   "openbb/poul_ca.csv": 10.149999618530273,
+   "pandas-ta/indicators.csv": 10.149999618530273
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-12",
+  "base_used": 8.02,
+  "base_source_used": "egx-data/egxpy_poul.csv",
+  "base_date": "2026-11-16",
+  "latest_collected_date": "2026-11-16",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "date_basis": "entitlement+1",
+   "mechanical_pct": -23.69,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي"
+  }
+ ],
+ "sigma_daily": 0.0677,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0360, σ10=0.0677)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-17",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية",
+   "earnings event: Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+   "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية",
+   "price confirms: last session 3.3σ"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de"
+   },
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل"
+   },
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "بورصة مصر تعلن الحدود السعرية لتحركات سهم \"القاهرة للدواجن\" - Mubasher"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+   }
+  ],
+  "move_z": {
+   "last": 3.26,
+   "max3": 3.26
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "730d7db0e344e725b92951e47434b4bc39ee922557bc8c80fe277365771c8c59",
+  "factors": {
+   "price-forecast": 0.843,
+   "technicals": 0.725,
+   "sentiment": 1.009,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.843,
+    "n": 9,
+    "skill": -0.157
+   },
+   "technicals": {
+    "factor": 0.725,
+    "n": 9,
+    "skill": -0.275
+   },
+   "sentiment": {
+    "factor": 1.009,
+    "n": 9,
+    "skill": 0.009
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.297,
+  "sentiment": -0.294,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.395
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 18.43,
+   "range_low_pct": 2.15,
+   "range_high_pct": 34.71,
+   "confidence": 0.3,
+   "net_score": 0.376,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.294,
+    "price-forecast": 1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 16.17,
+   "range_low_pct": -12.37,
+   "range_high_pct": 44.7,
+   "confidence": 0.3,
+   "net_score": 0.358,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.294,
+    "price-forecast": 0.996
+   },
+   "horizon_short": false,
+   "trading_sessions": 3
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 16.08,
+   "range_low_pct": -37.56,
+   "range_high_pct": 69.72,
+   "confidence": 0.3,
+   "net_score": 0.314,
+   "families": {
+    "technicals": 0.297,
+    "sentiment": -0.294,
+    "fundamentals": 0.4,
+    "price-forecast": 0.395
+   },
+   "horizon_short": false,
+   "trading_sessions": 14
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

@@ -1,0 +1,28 @@
+WARN gnews failed (POUL.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA%20stock%20when%3A30d&hl=en&gl=US&ceid=US:en
+WARN body http 404: https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://twaslnews1.twaslnews.com/7563158/
+bodies: 6/12 fetched; failures by stage: {'decode': 2, 'http': 4, 'extract': 0}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T19:58:58Z)
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 2895.98it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 27080.89it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 25883.59it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6549.17it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 23, "disclosure_count": 11, "arabic_headlines": 31, "latest_news_date": "Mon, 16 Nov 2026 14:51:18 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.038, "finbert_negative": 0.336, "finbert_neutral": 0.626, "finbert_scored": 3, "multilingual_positive": 0.432, "multilingual_negative": 0.038, "multilingual_neutral": 0.529, "multilingual_scored": 31, "bodies_fetched": 6, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "published", "translation_provider": "nllb+cohere", "translated_positive": 0.207, "translated_negative": 0.217, "translated_neutral": 0.576, "translated_scored": 31}
+BRIEF:
+- Cairo Poultry's stock has seen a significant decline, with a 17% drop in value, making it the most affected stock in the Egyptian stock market.
+- The company's nine-month profit has dropped by 38.3%, indicating a substantial decrease in earnings.
+- The Egyptian Stock Exchange has allowed the share price of Cairo Poultry to move downwards by 35.19%, with a temporary suspension limit set at 27.09%.
+- Shareholders of Cairo Poultry have until the end of today's session to claim their cash distribution of EGP 1.89 per share.
+- Despite a slight increase in revenue, Cairo Poultry's profits have taken a hit, with a 39% decline in the first nine months of 2026, totaling EGP 1.44 billion.
+- The company's third-quarter consolidated profit stands at EGP 152 million.
+- The small and medium-sized company index in the stock exchange has dropped by over 2%, with Cairo Poultry leading the decline.
+- These developments may impact investor confidence and could potentially affect the company's future performance and stock price.

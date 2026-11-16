@@ -1,0 +1,35 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 2,
+  "label_counts": {
+    "positive": 0,
+    "negative": 2,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.01738389814272523,
+    "negative": 0.8422251641750336,
+    "neutral": 0.14039095677435398
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.0074903713539242744,
+        "negative": 0.9603140354156494,
+        "neutral": 0.03219570592045784
+      }
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.027277424931526184,
+        "negative": 0.7241362929344177,
+        "neutral": 0.24858620762825012
+      }
+    }
+  ]
+}

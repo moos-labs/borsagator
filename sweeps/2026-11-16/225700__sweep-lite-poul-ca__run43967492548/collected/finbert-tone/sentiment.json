@@ -1,0 +1,101 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "negative": 1,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.004972083822432675,
+    "negative": 0.3270231670665756,
+    "neutral": 0.6680046995170414
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.014869864098727703,
+        "negative": 0.9803638458251953,
+        "neutral": 0.004766249563544989
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9803638458251953
+        },
+        {
+          "label": "Positive",
+          "score": 0.014869864098727703
+        },
+        {
+          "label": "Neutral",
+          "score": 0.004766249563544989
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.4893549784319475e-05,
+        "negative": 0.0007036516908556223,
+        "neutral": 0.9992514252662659
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9992514252662659
+        },
+        {
+          "label": "Negative",
+          "score": 0.0007036516908556223
+        },
+        {
+          "label": "Positive",
+          "score": 4.4893549784319475e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.493818786002521e-06,
+        "negative": 2.0036836758663412e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.0036836758663412e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.493818786002521e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

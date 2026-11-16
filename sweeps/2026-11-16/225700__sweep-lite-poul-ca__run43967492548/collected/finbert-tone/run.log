@@ -1,0 +1,5 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model: yiyanghkust/finbert-tone
+id2label: {0: 'Neutral', 1: 'Positive', 2: 'Negative'}
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 11572.32it/s]
+Scored 3 texts | counts={'negative': 1, 'neutral': 2} | means=positive=0.0050, negative=0.3270, neutral=0.6680
