@@ -3,8 +3,7 @@
  "tools": [
   {
    "category": "data",
-   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
-   "fixed_target": "POUL.CA (script default)",
+   "command": "mkdir -p results\npython scripts/fetch.py --tickers {ticker} 2>&1 | tee results/run.log",
    "id": "yahooquery",
    "repo": "yahooquery-runner",
    "status": "active",
@@ -13,12 +12,12 @@
     "US"
    ],
    "family": "data",
-   "role": "plumbing"
+   "role": "plumbing",
+   "inputs": true
   },
   {
    "category": "data",
-   "command": "mkdir -p results\npython scripts/fetch.py 2>&1 | tee results/run.log",
-   "fixed_target": "POUL.CA (script default)",
+   "command": "mkdir -p results\npython scripts/fetch.py --tickers {ticker} 2>&1 | tee results/run.log",
    "id": "openbb",
    "repo": "openbb-runner",
    "status": "active",
@@ -32,8 +31,7 @@
   },
   {
    "category": "data",
-   "command": "mkdir -p results\npython scripts/egx_fetch.py 2>&1 | tee results/run.log",
-   "fixed_target": "POUL (script default)",
+   "command": "mkdir -p results\npython scripts/egx_fetch.py --ticker {ticker} 2>&1 | tee results/run.log",
    "id": "egx-data",
    "repo": "egx-data-runner",
    "status": "active",
@@ -60,8 +58,7 @@
   },
   {
    "category": "technicals",
-   "command": "mkdir -p results\npython scripts/ta.py 2>&1 | tee results/run.log",
-   "fixed_target": "POUL.CA (script default)",
+   "command": "mkdir -p results\npython scripts/ta.py {ticker} 2>&1 | tee results/run.log",
    "id": "talib",
    "repo": "talib-runner",
    "status": "active",
