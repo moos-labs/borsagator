@@ -531,6 +531,33 @@ def _find_dates(text, default_year):
     return found
 
 
+def _dps_same(a, b):
+    """Issue #131: two reports of one coupon differ in the last
+    digits (1.89 vs 1.9 vs 1.8999999998 for coupon 42) — exact-float
+    dedup treats them as three distributions. They are the same
+    coupon when they agree within reporting noise: truncation to 2dp
+    loses < 0.01 and 1dp rounding < 0.05, so tolerate the larger of
+    0.02 absolute and 1% relative. This subsumes dedup on
+    (round(dps, 2), ex_date) and also merges the adjacent-bucket
+    case (1.89 vs 1.90) that 2dp rounding alone cannot."""
+    try:
+        a, b = float(a), float(b)
+    except Exception:
+        return False
+    return abs(a - b) <= max(0.02, 0.01 * max(abs(a), abs(b)))
+
+
+def _same_distribution(a_dps, a_ex, b_dps, b_ex):
+    """One coupon reported twice: DPS within reporting noise and the
+    ex-dates agree — or either side is undated (an undated press
+    mention of ~the same amount is the same distribution). Two dated
+    actions with different ex-dates are different events, however
+    close their DPS."""
+    if a_ex is not None and b_ex is not None and a_ex != b_ex:
+        return False
+    return _dps_same(a_dps, b_dps)
+
+
 def detect_corporate_actions(items, base, default_year):
     """Dividend announcements in the collected items. Conservative by
     design: an amount is only trusted next to dividend wording, an
@@ -578,14 +605,19 @@ def detect_corporate_actions(items, base, default_year):
             if has_ent and not has_pay:
                 ex_date = dates[0][0] + timedelta(days=1)
                 basis = "entitlement+1"
-        key = (dps, ex_date.isoformat() if ex_date else None)
-        if any((a["dps"], a["ex_date"]) == (key[0], key[1]) for a in actions):
-            continue
-        # A dated detection supersedes an undated one for the same DPS.
+        # Issue #131: dedup on rounded DPS + ex-date with reporting-
+        # noise tolerance — 1.89 / 1.9 / 1.8999999998 are one coupon
+        # (42), not three. Keep the first detection (the EGX
+        # disclosure's precise value wins: disclosures are scanned
+        # before news). A dated detection supersedes an undated one
+        # for the same distribution.
+        ex_iso = ex_date.isoformat() if ex_date else None
         if ex_date is not None:
             actions = [a for a in actions
-                       if not (a["dps"] == dps and a["ex_date"] is None)]
-        elif any(a["dps"] == dps and a["ex_date"] is not None for a in actions):
+                       if not (a["ex_date"] is None
+                               and _dps_same(a["dps"], dps))]
+        if any(_same_distribution(a["dps"], a["ex_date"], dps, ex_iso)
+               for a in actions):
             continue
         actions.append({
             "type": "dividend", "dps": dps,
@@ -1011,8 +1043,13 @@ def main():
         }
         # Mark horizons spanning an ex-date: the mechanical dividend
         # drop inside them is decomposed, not forecast skill/error.
+        # Issue #131: keep the FIRST in-window action — after the
+        # detection dedup at most one action per distribution
+        # survives, so the horizon block no longer depends on
+        # disclosure-item order.
         for a in actions:
-            if a.get("ex_date"):
+            if (a.get("ex_date")
+                    and "corporate_action" not in out["horizons"][hname]):
                 try:
                     ex = date.fromisoformat(a["ex_date"])
                 except Exception:

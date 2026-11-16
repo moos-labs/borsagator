@@ -356,6 +356,31 @@ def realized_direction(pct):
     return "up" if pct > 0 else "down"
 
 
+# Issue #131: same reporting-noise tolerance as ensemble.py —
+# 1.89 / 1.9 / 1.8999999998 are one coupon, not three. Defence in
+# depth: a duplicate arriving from any path (not only detection)
+# must not be summed twice. This subsumes dedup on
+# (ex_date, round(dps, 2)): values rounding to the same — or an
+# adjacent — 2dp bucket differ by <= 0.01 and merge here.
+def _dps_same(a, b):
+    try:
+        a, b = float(a), float(b)
+    except Exception:
+        return False
+    return abs(a - b) <= max(0.02, 0.01 * max(abs(a), abs(b)))
+
+
+def _dedup_actions(actions):
+    """Unique (ex_date, DPS) pairs, keep first, in order."""
+    out = []
+    for a in actions:
+        if any(o["ex_date"] == a["ex_date"]
+               and _dps_same(o["dps"], a["dps"]) for o in out):
+            continue
+        out.append(a)
+    return out
+
+
 def normalize_actions(ens, horizon_block):
     """Dividend actions for one horizon: the horizon-level block
     (issue #26) wins; else the ensemble-level corporate_actions."""
@@ -373,7 +398,9 @@ def normalize_actions(ens, horizon_block):
                         "mechanical_pct": a.get("mechanical_pct")})
         except Exception:
             continue
-    return out
+    # Issue #131: two dated detections of one coupon must count
+    # once, however they reached the ledger. Keep the first.
+    return _dedup_actions(out)
 
 
 def score_forecast(fc, series, provenance, own_sweep):
@@ -390,9 +417,19 @@ def score_forecast(fc, series, provenance, own_sweep):
     maturity = usable[fc["sessions"] - 1]
     close = series[maturity]
     adjusted, dps_total = False, 0.0
+    counted = []  # (ex_date, dps) pairs already added — issue #131
     for a in fc.get("corporate_actions") or []:
         if fc["as_of"] < a["ex_date"] <= maturity:
-            dps_total += a["dps"]
+            # Issue #131: sum each (ex_date, DPS) pair once. A
+            # duplicate dated detection of one coupon (1.89 vs 1.9
+            # vs 1.8999999998) arriving from any path must not be
+            # summed twice; keep the first.
+            dps = float(a["dps"])
+            if any(ex == a["ex_date"] and _dps_same(d, dps)
+                   for ex, d in counted):
+                continue
+            counted.append((a["ex_date"], dps))
+            dps_total += dps
             adjusted = True
     if adjusted:
         close = close + dps_total
