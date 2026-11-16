@@ -1,0 +1,37 @@
+{
+  "job": "run egx-data COMI.CA",
+  "ticker": "COMI.CA",
+  "date": "2026-11-16",
+  "started": "2026-11-16T04:06:06.463177+00:00",
+  "finished": "2026-11-16T04:07:34.486192+00:00",
+  "results": [
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "run_url": "https://github.com/moos-labs/egx-data-runner/actions/runs/43802008805",
+      "conclusion": "success",
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "COMI.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "COMI.CA",
+          "symbol": "COMI",
+          "rows_egxpy_comi.csv": 3000,
+          "egxpy_comi.csv_last_date": "2026-11-15",
+          "egxpy_comi.csv_last_close": "128.51"
+        },
+        "files": [
+          "egxpy_comi.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "status": "ok"
+    }
+  ]
+}

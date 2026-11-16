@@ -1,0 +1,97 @@
+{
+  "ticker": "COMI.CA",
+  "symbol": "COMI",
+  "reference": {
+    "symbol": "COMI"
+  },
+  "sources": {
+    "egxpy": {
+      "install_attempts": [
+        {
+          "spec": "egxpy",
+          "ok": false,
+          "output_tail": "ERROR: Could not find a version that satisfies the requirement egxpy (from versions: none)\nERROR: No matching distribution found for egxpy"
+        },
+        {
+          "spec": "git+https://github.com/mmabas77/egxpy",
+          "ok": true,
+          "output_tail": ""
+        },
+        {
+          "spec": "dep:streamlit",
+          "ok": true,
+          "output_tail": ""
+        }
+      ],
+      "fetch_attempts": [
+        {
+          "call": "get_OHLCV_data(COMI, EGX, Daily, 3000)",
+          "ok": true,
+          "rows": 3000
+        }
+      ],
+      "import_error": null,
+      "available_functions": [
+        "get_OHLCV_data",
+        "get_EGXdata"
+      ],
+      "rows": 3000,
+      "date_range": [
+        "2014-07-09",
+        "2026-11-15"
+      ],
+      "columns": [
+        "Date",
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume"
+      ],
+      "latest": {
+        "date": "2026-11-15",
+        "close": 128.51
+      },
+      "ex_day_opens": [],
+      "status": "ok"
+    },
+    "borsa": {
+      "install_attempts": [
+        {
+          "spec": "git+https://github.com/7ashraf/borsa",
+          "ok": false,
+          "output_tail": "ERROR: Package 'borsa' requires a different Python: 3.11.18 not in '>=3.12'"
+        }
+      ],
+      "api_surface": "REST API exposes quotes only (/v1/quote/{symbol}, /v1/quotes, /v1/stocks, /v1/health); Fetcher protocol = fetch_quote. No history/OHLC endpoint exists in the published API.",
+      "demo_service": {
+        "/v1/health": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/quote/COMI": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/demo/quote/COMI": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/history/COMI": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/ohlc/COMI": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        },
+        "/v1/candles/COMI": {
+          "status_code": 404,
+          "body_head": "<!DOCTYPE html><html lang=\"en\" class=\"inter_5901b7c6-module__ec5Qua__variable\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/0uv9frbv9x2k5.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/16kxsx4sjfat4.js\"/><script src=\"/_next/static/chunk"
+        }
+      },
+      "status": "no_history",
+      "failure": "Borsa is a quote service by design: no historical OHLC endpoint or library function exists, so it cannot provide ex-day opens or any price history. Demo-service probe results above show its live surface."
+    }
+  }
+}

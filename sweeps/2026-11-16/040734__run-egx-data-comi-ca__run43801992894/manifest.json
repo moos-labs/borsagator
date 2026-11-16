@@ -1,0 +1,54 @@
+{
+ "job": "run egx-data COMI.CA",
+ "ticker": "COMI.CA",
+ "digest_date": "2026-11-16",
+ "archived_at": "2026-11-16T04:07:34.598525+00:00",
+ "github_run_id": "43801992894",
+ "target": "sweeps/2026-11-16/040734__run-egx-data-comi-ca__run43801992894",
+ "tools": {
+  "egx-data": "ok"
+ },
+ "files": [
+  {
+   "path": "digest.json",
+   "bytes": 957,
+   "sha256": "ff6f612558d5c1ae9715ac063997bd151214d88c346c56d9b03277973df6f737"
+  },
+  {
+   "path": "digest.md",
+   "bytes": 522,
+   "sha256": "5d9d3fbe05be040149a0f1c17f49597d81d44e9f397b280dd9b1ac7222fc8cee"
+  },
+  {
+   "path": "registry.json",
+   "bytes": 15081,
+   "sha256": "6b0a65824c9dbf78f4f2e18e8051dd4a1a8ed3860730d538b17122266bc8c3af"
+  },
+  {
+   "path": "collected/egx-data/egxpy_comi.csv",
+   "bytes": 216857,
+   "sha256": "a2b88a707fdf1d21a646128995188df8ab6431ed03324b17441b5ed13644676e"
+  },
+  {
+   "path": "collected/egx-data/report.md",
+   "bytes": 662,
+   "sha256": "dd69901367e3903789462ef000f7d167ad0372d5350f9366002391ad1d1ef8e5"
+  },
+  {
+   "path": "collected/egx-data/run.log",
+   "bytes": 760,
+   "sha256": "9d66f43b5272c518e224c79693a76a428e51b35fc2d92dc1c9de1ed61d3369e9"
+  },
+  {
+   "path": "collected/egx-data/summary.json",
+   "bytes": 384,
+   "sha256": "2ce3dcdf897b91fb26d9d60af8b242c886cd74534d89c2c5b4cec4d12f48b440"
+  },
+  {
+   "path": "collected/egx-data/verdict.json",
+   "bytes": 5128,
+   "sha256": "45e3b11873756a0e85e7fc67871e5e65a92f1f4c179f26fa21b1280cec92b416"
+  }
+ ],
+ "skipped": []
+}
