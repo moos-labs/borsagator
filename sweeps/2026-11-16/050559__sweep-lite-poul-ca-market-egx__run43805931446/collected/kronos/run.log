@@ -1,0 +1,22 @@
+[data] source=yahooquery raw_rows=6523
+Traceback (most recent call last):
+  File "/home/runner/work/kronos-runner/kronos-runner/scripts/kronos_forecast.py", line 253, in <module>
+    main()
+  File "/home/runner/work/kronos-runner/kronos-runner/scripts/kronos_forecast.py", line 167, in main
+    df = clean(df)
+         ^^^^^^^^^
+  File "/home/runner/work/kronos-runner/kronos-runner/scripts/kronos_forecast.py", line 90, in clean
+    df["date"] = pd.to_datetime(df["date"]).dt.tz_localize(None).dt.normalize()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pandas/core/tools/datetimes.py", line 1067, in to_datetime
+    values = convert_listlike(arg._values, format)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pandas/core/tools/datetimes.py", line 435, in _convert_listlike_datetimes
+    result, tz_parsed = objects_to_datetime64(
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/pandas/core/arrays/datetimes.py", line 2398, in objects_to_datetime64
+    result, tz_parsed = tslib.array_to_datetime(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "tslib.pyx", line 414, in pandas._libs.tslib.array_to_datetime
+  File "tslib.pyx", line 630, in pandas._libs.tslib.array_to_datetime
+ValueError: Cannot mix tz-aware with tz-naive values
