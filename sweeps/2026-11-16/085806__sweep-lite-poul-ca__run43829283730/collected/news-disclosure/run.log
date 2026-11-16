@@ -1,0 +1,23 @@
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http failed: HTTPSConnectionPool(host='twaslnews1.twaslnews.com', port=443): Max retries exceeded with url: /7563158/ (Caused by ConnectTimeoutError(<HTTPSConnection(host='twaslnews1.twaslnews.com', port=443) at 0x75b141c9e3d0>, 'Connection to twaslnews1.twaslnews.com timed out. (connect timeout=30)'))
+WARN body http 404: https://www.mubasher.info/news/4701268/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 4, 'extract': 0}
+egx-harvest: using published harvest for POUL.CA (harvested_at=2026-11-16T07:53:37Z)
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 2771.27it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 9642.63it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 21621.87it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4210.90it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 22, "disclosure_count": 11, "arabic_headlines": 29, "latest_news_date": "Mon, 16 Nov 2026 01:58:26 GMT", "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT", "top_headline": "العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر", "llm_provider": "cohere", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.425, "multilingual_negative": 0.01, "multilingual_neutral": 0.566, "multilingual_scored": 29, "bodies_fetched": 8, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "published", "translation_provider": "cohere+nllb", "translated_positive": 0.236, "translated_negative": 0.157, "translated_neutral": 0.607, "translated_scored": 29}
+BRIEF:
+- Cairo Poultry's nine-month profit has dropped significantly, with a 38.3% decline reported.
+- The company's consolidated revenue increased during the first nine months of 2026, but standalone net income rose over the same period.
+- Despite the revenue growth, Cairo Poultry's profit for the first nine months of 2026 was 1.439 billion Egyptian pounds, down from 2.333 billion Egyptian pounds in the previous year.
+- The stock price of Cairo Poultry is expected to experience a downward movement, with a 35.19% drop allowed and a temporary halt set at 27.09%.
+- Shareholders of Cairo Poultry are entitled to a cash distribution of 1.89 Egyptian pounds per share, with the end of the right to obtain this distribution falling on November 15, 2026.
+- Cairo Poultry's third-quarter consolidated profit was reported at 152 million Egyptian pounds.
+- The company's overall profit decline is attributed to a 39.1% drop in net profit, despite a 1.1% increase in revenue to 12.1 billion Egyptian pounds during the first nine months of 2026.
+- This profit decline may impact the stock's performance and investor confidence, especially with the allowed price movement and temporary halt mechanisms in place.
