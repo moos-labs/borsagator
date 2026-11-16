@@ -48,6 +48,27 @@ claims it is current. On such a refusal the publisher writes a ⚠️
 section to the digest and skips the publish — it never fails the
 sweep. The guard path passes no target, so it is unaffected.
 
+Issue #128: a failed publish used to leave only a ⚠️ section in the
+digest — and digest issues are auto-closed records, so the warning
+could vanish from attention while the committed ledger stayed stale.
+fail() now also files a durable signal: a dedicated issue labelled
+`ledger-failure` (never a digest issue — its title never contains
+"Borsagator digest" and it never carries the `digest` label, so
+neither the digest watch nor board_sync's digest skip can close or
+ignore it). One open signal issue per failure kind: a repeat failure
+comments on the existing one instead of filing a duplicate. A later
+successful publish closes the publish-failure signal again with a
+recovery comment (guard-dead signals are NOT closed here — a current
+ledger says nothing about guard liveness; the watchdog in
+scripts/ledger_guard_watch.py owns those). All signal calls are
+best-effort and never raise: no token (local run) or an API failure
+is logged and the digest warning remains the only record.
+
+Issue #128 also: the guard writes a timestamped heartbeat
+(ledger/guard-heartbeat.json, see ledger-guard.yml) and the watchdog
+notices a dead guard within 2h (90-minute staleness threshold on a
+30-minute cadence).
+
 Issue #119: a timeout or interrupt DURING the rebase used to
 propagate out of git_publish with no abort — the checkout was left
 MID-REBASE and every later publish failed until manual cleanup.
@@ -102,7 +123,8 @@ issue #116 (a missing sweep was never re-added until the tree moved
 again). Revalidation costs one ledger run per guard tick and keeps
 that lock-in impossible.
 """
-import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.error, urllib.request
+import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.error, urllib.request, urllib.parse
+from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER_DIR = os.path.join(ROOT, "ledger")
@@ -110,6 +132,8 @@ LEDGER_PY = os.path.join(ROOT, "scripts", "ledger.py")
 FILES = ("ledger.json", "ledger.md", "weights.json")
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
+ORG = "moos-labs"
+REPO = "borsagator"
 API_REF = ("https://api.github.com/repos/moos-labs/borsagator/"
            "git/ref/heads/archive")
 
@@ -498,9 +522,12 @@ def _git_publish(new_doc):
     return False
 
 
-def fail(reason, digest_path, fail_hard):
+def fail(reason, digest_path, fail_hard, signal_ctx=None):
     log(f"FAILED: {reason}")
     append_digest(digest_path, section_failed(reason))
+    # Issue #128: the digest warning alone can vanish when the digest
+    # issue is auto-closed — file the durable signal too.
+    file_failure_signal(reason, signal_ctx)
     return 1 if fail_hard else 0
 
 
@@ -514,15 +541,260 @@ def skip(reason, digest_path, target):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Issue #128 — durable failure signal (shared with the watchdog in
+# scripts/ledger_guard_watch.py, which imports these helpers).
+#
+# The signal is a dedicated issue labelled `ledger-failure`. It is
+# never a digest issue: its title never contains "Borsagator digest"
+# and it never carries the `digest` label, so the digest watch (which
+# closes digest issues after reporting) and board_sync.is_digest
+# (which skips digest issues entirely) can neither close it nor
+# ignore it. Dedup is by label + title prefix, one open issue per
+# failure kind: a repeat failure comments on the open issue instead
+# of filing a duplicate, and a verified recovery closes it again.
+# Every function here is best-effort and never raises — the signal
+# must never break a sweep or a guard run.
+# ---------------------------------------------------------------------------
+SIGNAL_LABEL = "ledger-failure"
+SIGNAL_LABEL_COLOR = "B60205"
+SIGNAL_LABEL_DESC = ("Ledger publish failed — durable signal, not "
+                     "auto-closed (issue #128)")
+PUBLISH_TITLE_PREFIX = "⚠️ Ledger publish failed"
+
+
+def _gh_token():
+    return os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+
+
+def _api_base():
+    # GITHUB_API_URL is the standard override (gh CLI / Actions use
+    # it too); the harness points it at a local stub server.
+    return os.environ.get("GITHUB_API_URL",
+                          "https://api.github.com").rstrip("/")
+
+
+def gh_api(method, path, body=None, token=None):
+    """One GitHub REST call. Returns (status, parsed_json_or_None).
+    HTTP errors come back as their status (never raised); transport
+    errors raise and are caught by the callers."""
+    token = token or _gh_token()
+    headers = {"User-Agent": "borsagator-ledger-publish",
+               "Accept": "application/vnd.github+json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    data = json.dumps(body).encode() if body is not None else None
+    if data is not None:
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(_api_base() + path, method=method,
+                                 data=data, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            raw = r.read()
+            return r.status, (json.loads(raw.decode())
+                              if raw else None)
+    except urllib.error.HTTPError as e:
+        raw = e.read()
+        try:
+            parsed = json.loads(raw.decode()) if raw else None
+        except Exception:
+            parsed = None
+        return e.code, parsed
+
+
+def ensure_signal_label(token):
+    """Create the `ledger-failure` label if it does not exist yet.
+    Returns True when the label exists afterwards (or the check
+    could not tell — the issue create below is the real test)."""
+    status, _ = gh_api("GET", f"/repos/{ORG}/{REPO}/labels/"
+                              f"{SIGNAL_LABEL}", token=token)
+    if status == 200:
+        return True
+    if status != 404:
+        log(f"signal label check failed (HTTP {status}) — proceeding")
+        return True
+    status, _ = gh_api("POST", f"/repos/{ORG}/{REPO}/labels",
+                       {"name": SIGNAL_LABEL, "color": SIGNAL_LABEL_COLOR,
+                        "description": SIGNAL_LABEL_DESC}, token=token)
+    if status in (200, 201):
+        log(f"signal label '{SIGNAL_LABEL}' created")
+        return True
+    log(f"signal label creation failed (HTTP {status}) — proceeding")
+    return True
+
+
+def find_open_signal_issues(token, title_prefix):
+    """Open issues carrying the signal label whose title starts with
+    title_prefix (one failure kind per prefix). Returns a list of
+    issue dicts (number, title), most recently updated first, or []
+    when the search fails — callers treat [] as 'none found'."""
+    q = urllib.parse.quote(f"repo:{ORG}/{REPO} label:{SIGNAL_LABEL} "
+                           f"state:open", safe="")
+    status, data = gh_api("GET", f"/search/issues?q={q}&per_page=20",
+                          token=token)
+    if status != 200 or not isinstance(data, dict):
+        log(f"signal issue search failed (HTTP {status}) — assuming none")
+        return []
+    return [it for it in data.get("items", [])
+            if (it.get("title") or "").startswith(title_prefix)]
+
+
+def _comment_issue(token, number, body):
+    status, _ = gh_api(
+        "POST", f"/repos/{ORG}/{REPO}/issues/{number}/comments",
+        {"body": body}, token=token)
+    return status in (200, 201)
+
+
+def _create_issue(token, title, body):
+    status, data = gh_api("POST", f"/repos/{ORG}/{REPO}/issues",
+                          {"title": title, "body": body,
+                           "labels": [SIGNAL_LABEL]}, token=token)
+    if status in (200, 201) and isinstance(data, dict):
+        return data.get("number")
+    log(f"signal issue creation failed (HTTP {status})")
+    return None
+
+
+def _close_issue(token, number, comment=None):
+    if comment:
+        _comment_issue(token, number, comment)
+    status, _ = gh_api("PATCH", f"/repos/{ORG}/{REPO}/issues/{number}",
+                       {"state": "closed", "state_reason": "completed"},
+                       token=token)
+    return status == 200
+
+
+def _signal_context(sweep_target=None):
+    """Run/sweep facts for a signal body, from the Actions env (or
+    empty strings on a local run — the body then says 'local run')."""
+    run_id = os.environ.get("GITHUB_RUN_ID") or ""
+    server = os.environ.get("GITHUB_SERVER_URL",
+                            "https://github.com").rstrip("/")
+    repo = os.environ.get("GITHUB_REPOSITORY", f"{ORG}/{REPO}")
+    run_url = (f"{server}/{repo}/actions/runs/{run_id}"
+               if run_id else "")
+    return {"run_id": run_id, "run_url": run_url,
+            "sweep_target": sweep_target or "",
+            "seen_utc": datetime.now(timezone.utc).strftime(
+                "%Y-%m-%d %H:%M UTC")}
+
+
+def _run_line(ctx):
+    return ctx.get("run_url") or (f"run {ctx['run_id']}"
+                                  if ctx.get("run_id") else "local run")
+
+
+def publish_failure_title_body(reason, ctx=None):
+    ctx = ctx or {}
+    reason = " ".join(str(reason).split())[:220]
+    sweep = ctx.get("sweep_target") or "— (guard path: no single sweep)"
+    body = (f"⚠️ The calibration ledger publish failed, and the "
+            f"committed ledger on `main` was NOT updated — treat the "
+            f"published weights as stale until a later publish "
+            f"succeeds.\n\n"
+            f"**Cause:** {reason}\n"
+            f"**Run:** {_run_line(ctx)}\n"
+            f"**Sweep:** `{sweep}`\n"
+            f"**First seen:** {ctx.get('seen_utc', '')}\n\n"
+            "This issue is the durable signal for #128. It is NOT a "
+            "digest issue: the digest watch only closes digest issues, "
+            "and board-sync only skips digest issues — this one stays "
+            "open until the ledger is publishing again. A later "
+            "successful publish closes it automatically with a "
+            "recovery comment.\n\n"
+            # WSJF 6.0 is the board's auto-promote threshold: a stale
+            # ledger feeds wrong weights into the next sweep, so this
+            # is live-correctness work, not backlog.
+            "WSJF: 6.0")
+    return PUBLISH_TITLE_PREFIX + " — " + reason[:80], body
+
+
+def _recurrence_comment(reason, ctx=None):
+    ctx = ctx or {}
+    return (f"⚠️ Ledger publish failed again "
+            f"({ctx.get('seen_utc', '')}).\n\n"
+            f"**Cause:** {' '.join(str(reason).split())[:220]}\n"
+            f"**Run:** {_run_line(ctx)}\n\n"
+            "The committed ledger on `main` is still not updated.")
+
+
+def _recovery_comment(ctx=None):
+    ctx = ctx or {}
+    counts = ctx.get("counts") or ""
+    return (f"✅ Ledger published successfully{counts}. The committed "
+            f"ledger on `main` is current again — closing this "
+            f"failure signal.")
+
+
+def file_failure_signal(reason, ctx=None):
+    """File (or comment on) the durable publish-failure signal.
+    Returns True when a signal issue was created or commented on.
+    Best-effort: no token or any API failure is logged, never raised
+    — the digest warning remains the only record then."""
+    token = _gh_token()
+    if not token:
+        log("no GH_TOKEN — durable ledger-failure signal not filed "
+            "(local run?)")
+        return False
+    try:
+        ensure_signal_label(token)
+        existing = find_open_signal_issues(token, PUBLISH_TITLE_PREFIX)
+        if existing:
+            number = existing[0]["number"]
+            if _comment_issue(token, number,
+                              _recurrence_comment(reason, ctx)):
+                log(f"durable signal: recurrence noted on open issue "
+                    f"#{number}")
+                return True
+            return False
+        title, body = publish_failure_title_body(reason, ctx)
+        number = _create_issue(token, title, body)
+        if number:
+            log(f"durable signal: ledger-failure issue #{number} filed")
+            return True
+        return False
+    except Exception as e:
+        log(f"durable signal: filing failed ({e}) — digest warning only")
+        return False
+
+
+def clear_failure_signal(ctx=None):
+    """Close any open publish-failure signal issue after a verified
+    successful publish. Guard-dead issues are NOT touched — a current
+    ledger says nothing about guard liveness; the watchdog owns
+    those. Best-effort, never raises. Returns True when at least one
+    issue was closed."""
+    token = _gh_token()
+    if not token:
+        return False
+    try:
+        existing = find_open_signal_issues(token, PUBLISH_TITLE_PREFIX)
+        closed_any = False
+        for it in existing:
+            if _close_issue(token, it["number"],
+                            _recovery_comment(ctx)):
+                log(f"durable signal: closed ledger-failure issue "
+                    f"#{it['number']} (ledger current again)")
+                closed_any = True
+        return closed_any
+    except Exception as e:
+        log(f"durable signal: clearing failed ({e})")
+        return False
+
+
 def publish(commit, digest_path, fail_hard, sweep_target=None,
             fail_push=False):
     # Issue #119: verify the checkout is clean BEFORE any `git add`
     # — and fail fast, before the expensive ledger rerun, when a
     # previous killed run left it mid-rebase or dirty.
+    # Issue #128: the signal context travels with every fail() below
+    # so the durable signal names the run and the sweep.
+    ctx = _signal_context(sweep_target)
     clean, why = ensure_clean_checkout()
     if not clean:
         return fail("checkout not clean at publish start: " + why,
-                    digest_path, fail_hard)
+                    digest_path, fail_hard, ctx)
     # Issue #118: when the sweep path names this sweep's archive
     # directory, refuse to publish unless the live archive tree
     # contains it — otherwise the rerun below would publish a ledger
@@ -554,7 +826,7 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
         try:
             new = run_ledger(tmp)
         except Exception as e:
-            return fail(str(e), digest_path, fail_hard)
+            return fail(str(e), digest_path, fail_hard, ctx)
         # Issue #117 interim check: compare the pinned commit the ledger
         # was computed from against the live archive HEAD. A mismatch
         # means the branch advanced mid-run — the ledger is still a
@@ -573,13 +845,18 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
             if not os.path.exists(newp):
                 return fail(f"ledger.py did not write {name}",
-                            digest_path, fail_hard)
+                            digest_path, fail_hard, ctx)
             if not os.path.exists(oldp) or \
                     open(newp, "rb").read() != open(oldp, "rb").read():
                 changed.append(name)
         if not changed:
             log("rerun produced byte-identical outputs — nothing to publish")
             append_digest(digest_path, section_unchanged(new))
+            # Issue #128: the ledger is verified current — a recovery
+            # closes any open publish-failure signal.
+            ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
+                             f"{new['counts']['matured']} matured)")
+            clear_failure_signal(ctx)
             return 0
         os.makedirs(LEDGER_DIR, exist_ok=True)
         for name in changed:
@@ -594,6 +871,11 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
         if git_publish(new):
             append_digest(digest_path,
                           section_published(old, new, old_w, new_w))
+            # Issue #128: verified publish — close any open
+            # publish-failure signal with a recovery comment.
+            ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
+                             f"{new['counts']['matured']} matured)")
+            clear_failure_signal(ctx)
             return 0
         # The publish failed — its cause is in LAST_GIT_* (issue
         # #127: never assert "push failed" when the failure was at
@@ -614,23 +896,23 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                     return fail(_publish_fail_reason(stage, detail, cause) +
                                 " (and the origin/main fetch for the "
                                 "retry failed: " + _git_err(r) + ")",
-                                digest_path, fail_hard or fail_push)
+                                digest_path, fail_hard or fail_push, ctx)
                 r = git("reset", "--hard", "origin/main")
                 if r.returncode != 0:
                     return fail(_publish_fail_reason(stage, detail, cause) +
                                 " (and the reset to origin/main for "
                                 "the retry failed: " + _git_err(r) + ")",
-                                digest_path, fail_hard or fail_push)
+                                digest_path, fail_hard or fail_push, ctx)
             except (subprocess.TimeoutExpired, KeyboardInterrupt):
                 log("interrupted during the push-retry reset — "
                     "cleaning up")
                 abort_rebase()
                 return fail(_publish_fail_reason(stage, detail, cause) +
                             " (interrupted during the retry reset)",
-                            digest_path, fail_hard or fail_push)
+                            digest_path, fail_hard or fail_push, ctx)
             continue
         return fail(_publish_fail_reason(stage, detail, cause),
-                    digest_path, fail_hard or fail_push)
+                    digest_path, fail_hard or fail_push, ctx)
 
 
 def main():
@@ -670,10 +952,11 @@ def main():
         # backstop for an interrupt anywhere else in the run.
         log("interrupted — aborting any in-progress rebase")
         abort_rebase()
-        return fail("publisher interrupted", a.digest, a.fail_hard)
+        return fail("publisher interrupted", a.digest, a.fail_hard,
+                    _signal_context(sweep_target))
     except Exception as e:  # the publisher must never crash a sweep
         return fail(f"unexpected publisher error: {e}",
-                    a.digest, a.fail_hard)
+                    a.digest, a.fail_hard, _signal_context(sweep_target))
 
 
 if __name__ == "__main__":

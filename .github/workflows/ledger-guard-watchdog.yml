@@ -1,0 +1,42 @@
+name: Ledger guard watchdog
+
+# Issue #128: the guard schedule missed 9 straight hourly ticks
+# (#115) with nothing in-repo noticing — the misses were only visible
+# from outside GitHub. The guard writes a timestamped heartbeat on
+# every completed run (ledger/guard-heartbeat.json); this watchdog
+# runs every 30 minutes and pages when no heartbeat is younger than
+# 90 minutes, so a dead guard is noticed in-repo within 2h of its
+# last heartbeat (90 + 30). The signal is a dedicated
+# `ledger-failure` issue ("Ledger guard dead"), never a digest issue,
+# filed or commented on by scripts/ledger_guard_watch.py; a fresh
+# heartbeat closes it again. This is a separate schedule registration
+# from the guard's own — it does not share #115's registration — and
+# the guard is the retry path for failed publishes, so the watchdog
+# is load-bearing here, not a nicety.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  ledger-guard-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the guard heartbeat
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/ledger_guard_watch.py --heartbeat ledger/guard-heartbeat.json
