@@ -231,6 +231,33 @@ def publish(job, results_dir, manifest):
     dest = arch / "worker-runs" / f"{ts}__{slug}__{job['id']}"
     sh(f"mkdir -p {dest} && cp -r {results_dir}/. {dest}/", timeout=300)
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=1))
+    # Issue #91: keep a stable pointer to the newest harvest per EGX
+    # code at harvest/<CODE>.json on this branch. GitHub Actions
+    # runs have no local harvest, so fetch_feed.py fetches the
+    # pointer from the public repo; worker-runs/ keeps the full
+    # timestamped history. Sources: a successful harvest-egx job's
+    # own output, or the harvest-pointer/ stash _execute leaves
+    # when a news run used the local harvest cache.
+    ptr_src = []
+    if job["job"].startswith("harvest-egx"):
+        parts = job["job"].split()
+        code = parts[1].upper().replace(".CA", "") if len(parts) > 1 else ""
+        cand = results_dir / "egx-harvest" / "results" / "disclosures.json"
+        if manifest.get("tools", {}).get("egx-harvest") == "ok" \
+                and TICKER_RE.match(code) and cand.exists():
+            ptr_src.append((code, cand))
+    stash = results_dir / "harvest-pointer"
+    if stash.is_dir():
+        for f in sorted(stash.glob("*.json")):
+            ptr_src.append((f.stem.upper(), f))
+        copied = dest / "harvest-pointer"
+        if copied.exists():
+            sh(f"rm -rf {copied}", timeout=60)  # plumbing, not a result
+    if ptr_src:
+        hdir = arch / "harvest"
+        hdir.mkdir(parents=True, exist_ok=True)
+        for code, src in ptr_src:
+            (hdir / f"{code}.json").write_bytes(src.read_bytes())
     # Commit message via a file: job text never enters a shell string.
     msg_file = arch / ".commit-msg"
     msg_file.write_text(f"worker run {job['id']}: {job['job']}\n")
@@ -373,6 +400,16 @@ def _execute(job):
             sh(f"mkdir -p {dest} && cp -r {src}/. {dest}/", timeout=120)
         (workdir / f"{tool}.log").write_text(log)
         manifest["tools"][tool] = status
+        if tool == "news-disclosure" and ticker.upper().endswith(".CA"):
+            # Issue #91: stash the harvest this run used (run_tool
+            # may have refreshed it via ensure_harvest) so publish()
+            # can refresh the archive-branch pointer for Actions.
+            code = ticker.upper().split(".")[0]
+            cache = ROOT / "harvest" / f"{code}.json"
+            if cache.exists():
+                stash = workdir / "harvest-pointer"
+                stash.mkdir(parents=True, exist_ok=True)
+                (stash / f"{code}.json").write_bytes(cache.read_bytes())
     manifest["finished"] = now()
     if not publish(job, workdir, manifest):
         # Failures must be observable on the bus, not just local.
