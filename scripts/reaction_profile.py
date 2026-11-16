@@ -25,16 +25,23 @@ import re
 import statistics
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
 REPO = "moos-labs/borsagator"
 BRANCH = "archive"
-RAW = f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/"
-API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
-            f"{BRANCH}?recursive=1")
-API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
-                   f"{BRANCH}:sweeps?recursive=1")
+API_REF = (f"https://api.github.com/repos/{REPO}/git/ref/heads/"
+           f"{BRANCH}")
+# Issue #121: the tree is fetched at the pinned commit sha, never at
+# the live branch — the tree URLs are built in fetch_tree() once the
+# commit is resolved. Bodies are fetched via blob_url() at the same
+# commit, so a branch advance mid-run cannot mix bodies from tree Y
+# into a profile that records tree X.
+# NOTE: the old module-level RAW (live-branch URL) is gone by design.
+# The GDELT fetch below still reads profiles/gdelt_<TICKER>.json from
+# the main branch — that is a main-branch input, not an archive body,
+# and stays as-is for the same reason recommend.py keeps RAW_MAIN.
 # INS-R6-04: anchored to the checkout, not the caller's cwd (the
 # old relative path only worked when run from $HOME).
 HELPER = [sys.executable, os.path.normpath(os.path.join(
@@ -55,14 +62,74 @@ def fetch_text(url, timeout=60):
         return None
 
 
+# Issue #121: the archive commit sha resolved at run start — the pin
+# for the whole run. Set by fetch_tree() once it resolves it;
+# blob_url() refuses to fetch before it is set (fail closed, never
+# silently fall back to the live branch).
+PINNED_COMMIT = None
+
+
+def blob_url(rel):
+    """raw.githubusercontent URL for a path at the pinned commit."""
+    if not PINNED_COMMIT:
+        raise RuntimeError("archive commit not resolved before body "
+                           "fetch (issue #121 pin missing)")
+    return (f"https://raw.githubusercontent.com/{REPO}/{PINNED_COMMIT}/"
+            + urllib.parse.quote(rel))
+
+
+def resolve_archive_commit():
+    """Resolve the archive branch to its HEAD commit sha via the
+    GitHub API; fall back to the connector helper (authenticated)
+    if the anonymous rate limit bites. The commit sha is the pin
+    for the run (issue #121, same as #117)."""
+    try:
+        txt = fetch_text(API_REF)
+        if txt:
+            data = json.loads(txt)
+            sha = (data.get("object") or {}).get("sha")
+            if sha and (data.get("object") or {}).get("type") == "commit":
+                return sha
+            warn(f"archive ref has no commit sha ({str(data)[:120]}); "
+                 "trying API helper")
+        else:
+            raise RuntimeError("empty response")
+    except Exception as e:
+        warn(f"archive ref fetch failed ({e}); trying API helper")
+    out = subprocess.run(
+        HELPER + ["get", f"/repos/{REPO}/git/ref/heads/{BRANCH}"],
+        capture_output=True, text=True, timeout=120)
+    if out.returncode != 0:
+        raise RuntimeError(
+            f"archive ref fetch failed: {out.stderr[:200]}")
+    data = json.loads(out.stdout)
+    sha = (data.get("object") or {}).get("sha")
+    if not sha or (data.get("object") or {}).get("type") != "commit":
+        raise RuntimeError("archive ref fetch returned no commit sha")
+    return sha
+
+
 def fetch_tree():
     """Archive tree via the public API first; the connector helper
     (authenticated) only if the anonymous fetch fails. The helper
     is anchored to the repo checkout — no machine-specific cwd or
     absolute path (INS-R5-01, INS-R6-04). A truncated recursive
-    tree is never silently consumed (INS-R6-05)."""
+    tree is never silently consumed (INS-R6-05).
+
+    Issue #121: the branch is resolved to its HEAD commit sha FIRST
+    and the tree is fetched at that commit sha, so the tree and
+    every body fetched from it belong to one immutable commit."""
+    global PINNED_COMMIT
     try:
-        txt = fetch_text(API_TREE)
+        PINNED_COMMIT = resolve_archive_commit()
+    except Exception as e:
+        warn(f"archive commit resolution failed ({e}); failing "
+             "closed, no profile written")
+        return []
+    tree_url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                f"{PINNED_COMMIT}?recursive=1")
+    try:
+        txt = fetch_text(tree_url)
         if txt:
             data = json.loads(txt)
             if not data.get("truncated"):
@@ -75,7 +142,7 @@ def fetch_tree():
     try:
         out = subprocess.run(
             HELPER + ["get",
-                      f"/repos/{REPO}/git/trees/{BRANCH}?recursive=1"],
+                      f"/repos/{REPO}/git/trees/{PINNED_COMMIT}?recursive=1"],
             capture_output=True, text=True, timeout=120)
         # INS-R7-04: mirror ledger.py — a hard helper failure must
         # not degrade to a JSON error mislabeled as missing data.
@@ -88,21 +155,25 @@ def fetch_tree():
             # so the helper truncates identically — recover via the
             # sweeps subtree instead of consuming a known-incomplete
             # tree.
-            return fetch_tree_sweeps_subtree()
+            return fetch_tree_sweeps_subtree(PINNED_COMMIT)
         return [t["path"] for t in data.get("tree", [])]
     except Exception as e:
         warn(f"tree fetch failed: {e}")
         return []
 
 
-def fetch_tree_sweeps_subtree():
+def fetch_tree_sweeps_subtree(commit_sha):
     """Fallback when the recursive tree truncates: fetch the
-    recursive tree rooted at sweeps/ only. Every path this script
-    reads lives under sweeps/, and the subtree is far under the
-    truncation cap. If even that truncates, fail closed — never
-    consume a known-incomplete tree (INS-R7-03)."""
+    recursive tree rooted at sweeps/ only, at the pinned commit
+    (issue #121 — the subtree must come from the same commit as
+    the tree it replaces). Every path this script reads lives
+    under sweeps/, and the subtree is far under the truncation
+    cap. If even that truncates, fail closed — never consume a
+    known-incomplete tree (INS-R7-03)."""
+    tree_url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                f"{commit_sha}:sweeps?recursive=1")
     try:
-        txt = fetch_text(API_TREE_SWEEPS)
+        txt = fetch_text(tree_url)
         if txt:
             data = json.loads(txt)
             if not data.get("truncated"):
@@ -213,6 +284,12 @@ def main():
     if not paths:
         print("reaction_profile: no archive tree — nothing to do")
         return 0
+    if PINNED_COMMIT is None:
+        # fetch_tree() failed to resolve the pin — fail closed,
+        # never read bodies from the live branch (issue #121).
+        print("reaction_profile: archive commit not resolved — "
+              "failing closed, no profile written")
+        return 0
 
     # --- price series: newest egxpy csv for the ticker -------------
     csvs = sorted(p for p in paths
@@ -220,7 +297,8 @@ def main():
                   and p.endswith(f"egxpy_{code}.csv"))
     series = []
     if csvs:
-        txt = fetch_text(RAW + csvs[-1])
+        # Issue #121: body at the pinned commit, never the live branch.
+        txt = fetch_text(blob_url(csvs[-1]))
         if txt:
             series = parse_price_csv(txt)
     if not series:
@@ -251,7 +329,8 @@ def main():
     for p in sorted(x for x in paths
                     if x.startswith("sweeps/")
                     and x.endswith("ensemble.json")):
-        txt = fetch_text(RAW + p)
+        # Issue #121: body at the pinned commit, never the live branch.
+        txt = fetch_text(blob_url(p))
         if not txt:
             continue
         try:
@@ -274,7 +353,8 @@ def main():
         if ("news-disclosure" in p or "egx-harvest" in p)
         and (p.endswith("disclosures.json") or p.endswith("news.json")))
     for p in feed_files:
-        txt = fetch_text(RAW + p)
+        # Issue #121: body at the pinned commit, never the live branch.
+        txt = fetch_text(blob_url(p))
         if not txt:
             continue
         try:
@@ -525,6 +605,7 @@ def main():
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     profile = {"ticker": ticker, "built_at": stamp,
+               "archive_commit": PINNED_COMMIT,
                "series": {"sessions": len(series),
                           "from": dates[0].isoformat(),
                           "to": dates[-1].isoformat()},
@@ -619,7 +700,7 @@ def main():
     with open(f"profiles/{ticker}.md", "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print(f"reaction_profile: {ticker} events={len(measured)} "
-          f"types={list(by_type)}")
+          f"types={list(by_type)} archive={PINNED_COMMIT[:8]}")
     return 0
 
 

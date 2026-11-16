@@ -37,16 +37,24 @@ import os
 import statistics
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 from datetime import date, timedelta
 
 REPO = "moos-labs/borsagator"
-RAW_ARCHIVE = f"https://raw.githubusercontent.com/{REPO}/archive/"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
-API_TREE = (f"https://api.github.com/repos/{REPO}/git/trees/"
-            f"archive?recursive=1")
-API_TREE_SWEEPS = (f"https://api.github.com/repos/{REPO}/git/trees/"
-                   f"archive:sweeps?recursive=1")
+API_REF = (f"https://api.github.com/repos/{REPO}/git/ref/heads/"
+           f"archive")
+# Issue #121: the tree is fetched at the pinned commit sha, never at
+# the live branch — the tree URLs are built in fetch_tree() once the
+# commit is resolved. Bodies are fetched via blob_url() at the same
+# commit, so a branch advance mid-run cannot mix bodies from tree Y
+# into a recommendation that records tree X.
+# NOTE: the old module-level RAW_ARCHIVE (live-branch URL) is gone
+# by design. RAW_MAIN stays: profiles/<TICKER>.json is a main-branch
+# input (the latest committed reaction fit), not an archive body,
+# and the output records no main tree — pinning it would freeze a
+# stale profile, not fix the archive race this issue covers.
 # Connector helper, anchored to the checkout (not a machine path,
 # not cwd-dependent — INS-R6-04 pattern). Only used if the
 # anonymous API fetch fails or truncates.
@@ -61,14 +69,74 @@ def fetch_text(url, timeout=60):
         return r.read().decode("utf-8", "replace")
 
 
+# Issue #121: the archive commit sha resolved at run start — the pin
+# for the whole run. Set by fetch_tree() once it resolves it;
+# blob_url() refuses to fetch before it is set (fail closed, never
+# silently fall back to the live branch).
+PINNED_COMMIT = None
+
+
+def blob_url(rel):
+    """raw.githubusercontent URL for a path at the pinned commit."""
+    if not PINNED_COMMIT:
+        raise RuntimeError("archive commit not resolved before body "
+                           "fetch (issue #121 pin missing)")
+    return (f"https://raw.githubusercontent.com/{REPO}/{PINNED_COMMIT}/"
+            + urllib.parse.quote(rel))
+
+
+def resolve_archive_commit():
+    """Resolve the archive branch to its HEAD commit sha via the
+    GitHub API; fall back to the connector helper (authenticated)
+    if the anonymous rate limit bites. The commit sha is the pin
+    for the run (issue #121, same as #117)."""
+    try:
+        data = json.loads(fetch_text(API_REF))
+        sha = (data.get("object") or {}).get("sha")
+        if sha and (data.get("object") or {}).get("type") == "commit":
+            return sha
+        print(f"recommend: archive ref has no commit sha "
+              f"({str(data)[:120]}); trying API helper",
+              file=sys.stderr)
+    except Exception as e:
+        print(f"recommend: archive ref fetch failed ({e}); "
+              "trying API helper", file=sys.stderr)
+    out = subprocess.run(
+        [sys.executable, HELPER, "get",
+         f"/repos/{REPO}/git/ref/heads/archive"],
+        capture_output=True, text=True, timeout=120)
+    if out.returncode != 0:
+        raise RuntimeError(
+            f"archive ref fetch failed: {out.stderr[:200]}")
+    data = json.loads(out.stdout)
+    sha = (data.get("object") or {}).get("sha")
+    if not sha or (data.get("object") or {}).get("type") != "commit":
+        raise RuntimeError("archive ref fetch returned no commit sha")
+    return sha
+
+
 def fetch_tree():
     """Archive tree via the public API first; the connector helper
     (authenticated) only if the anonymous fetch fails or the API
     truncates the recursive tree (INS-R6-01, INS-R6-05). Re-applies
     the #59 fix that #60's rewrite dropped: no /opt/muse import,
-    runnable off the VM."""
+    runnable off the VM.
+
+    Issue #121: the branch is resolved to its HEAD commit sha FIRST
+    and the tree is fetched at that commit sha, so the tree and
+    every body fetched from it belong to one immutable commit."""
+    global PINNED_COMMIT
     try:
-        txt = fetch_text(API_TREE)
+        PINNED_COMMIT = resolve_archive_commit()
+    except Exception as e:
+        print(f"recommend: archive commit resolution failed ({e}); "
+              "failing closed, no recommendation written",
+              file=sys.stderr)
+        return []
+    tree_url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                f"{PINNED_COMMIT}?recursive=1")
+    try:
+        txt = fetch_text(tree_url)
         if txt:
             data = json.loads(txt)
             if not data.get("truncated"):
@@ -81,7 +149,7 @@ def fetch_tree():
     try:
         out = subprocess.run(
             [sys.executable, HELPER, "get",
-             f"/repos/{REPO}/git/trees/archive?recursive=1"],
+             f"/repos/{REPO}/git/trees/{PINNED_COMMIT}?recursive=1"],
             capture_output=True, text=True, timeout=120)
         # INS-R7-04: a hard helper failure (nonzero exit, empty
         # stdout) must not degrade to a JSON error mislabeled as
@@ -96,21 +164,25 @@ def fetch_tree():
             # fetching the sweeps subtree (the only part these
             # scripts read) instead of consuming a known-incomplete
             # tree.
-            return fetch_tree_sweeps_subtree()
+            return fetch_tree_sweeps_subtree(PINNED_COMMIT)
         return [t["path"] for t in data.get("tree", [])]
     except Exception as e:
         print(f"recommend: tree fetch failed: {e}", file=sys.stderr)
         return []
 
 
-def fetch_tree_sweeps_subtree():
+def fetch_tree_sweeps_subtree(commit_sha):
     """Fallback when the recursive tree truncates: fetch the
-    recursive tree rooted at sweeps/ only. Every path these scripts
-    read lives under sweeps/, and the subtree is far under the
-    truncation cap. If even that truncates, fail closed — never
-    consume a known-incomplete tree (INS-R7-03)."""
+    recursive tree rooted at sweeps/ only, at the pinned commit
+    (issue #121 — the subtree must come from the same commit as
+    the tree it replaces). Every path these scripts read lives
+    under sweeps/, and the subtree is far under the truncation
+    cap. If even that truncates, fail closed — never consume a
+    known-incomplete tree (INS-R7-03)."""
+    tree_url = (f"https://api.github.com/repos/{REPO}/git/trees/"
+                f"{commit_sha}:sweeps?recursive=1")
     try:
-        txt = fetch_text(API_TREE_SWEEPS)
+        txt = fetch_text(tree_url)
         if txt:
             data = json.loads(txt)
             if not data.get("truncated"):
@@ -137,12 +209,20 @@ def list_sweep_dirs():
 
 def newest_ensemble(ticker):
     dirs, paths = list_sweep_dirs()
+    if PINNED_COMMIT is None:
+        # fetch_tree() failed to resolve the pin — fail closed,
+        # never read bodies from the live branch (issue #121).
+        print("recommend: archive commit not resolved — failing "
+              "closed, no recommendation written", file=sys.stderr)
+        return None, None
     slug = ticker.lower().replace(".", "-")
     for d in dirs:
         # sweep dir names embed the job, not reliably the ticker —
         # read the ensemble and check.
         try:
-            e = json.loads(fetch_text(RAW_ARCHIVE + d + "/ensemble.json"))
+            # Issue #121: body at the pinned commit, never the live
+            # branch.
+            e = json.loads(fetch_text(blob_url(d + "/ensemble.json")))
         except Exception:
             continue
         if (e.get("ticker") or "").upper() == ticker:
@@ -165,6 +245,8 @@ def main():
     conf = week.get("confidence", 0.3)
     risk = (ens.get("risk") or {}).get("level", "unknown")
     notes = [f"ensemble as of {ens.get('date')} (sweep {sweep_dir})",
+             f"archive pinned to commit {PINNED_COMMIT} — ensemble "
+             f"body fetched at that commit (issue #121)",
              f"weights source: {ens.get('weights_source', 'builtin')}"]
 
     # --- reaction-fit nudge -------------------------------------------
@@ -284,6 +366,7 @@ def main():
         conf = min(conf, 0.35)
 
     rec = {"ticker": ticker, "as_of": ens.get("date"),
+           "archive_commit": PINNED_COMMIT,
            "base_price": base, "reference_price": ref_base,
            "action": action, "buy_below": buy_below,
            "sell_above": sell_above,
@@ -309,7 +392,8 @@ def main():
               encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print(f"recommend: {ticker} {action} buy<={buy_below} "
-          f"sell>={sell_above} (base {base}, ref {ref_base})")
+          f"sell>={sell_above} (base {base}, ref {ref_base}, "
+          f"archive {PINNED_COMMIT[:8]})")
     return 0
 
 
