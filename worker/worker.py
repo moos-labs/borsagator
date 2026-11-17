@@ -438,6 +438,31 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
     return status, (r.stdout + r.stderr)[-4000:]
 
 
+def push_archive(arch, attempts=3):
+    """Push the archive clone with bounded fetch+rebase retry
+    (issue #67, R5: a dropped merge push is a sweep with no digest
+    and no ensemble, invisible until the watch). The local commit
+    is a single fleet+merge commit, so a rebase replay is safe; a
+    conflicting rebase aborts and the push fails loudly. Returns
+    True on success."""
+    for attempt in range(1, attempts + 1):
+        if sh(f"git -C {arch} push origin archive",
+              timeout=300).returncode == 0:
+            return True
+        if attempt == attempts:
+            break
+        print(f"push_archive: push failed (attempt {attempt}); "
+              f"fetching and rebasing", flush=True)
+        if sh(f"git -C {arch} fetch origin archive",
+              timeout=180).returncode != 0:
+            return False
+        if sh(f"git -C {arch} rebase origin/archive",
+              timeout=180).returncode != 0:
+            sh(f"git -C {arch} rebase --abort", timeout=60)
+            return False
+    return False
+
+
 def publish(job, results_dir, manifest):
     arch = ROOT / "archive-push"
     if not arch.exists():
@@ -460,7 +485,16 @@ def publish(job, results_dir, manifest):
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d/%H%M%S")
     dest = arch / "worker-runs" / f"{ts}__{slug}__{job['id']}"
     sh(f"mkdir -p {dest} && cp -r {results_dir}/. {dest}/", timeout=300)
+    # Issue #67: the merge stages under results_dir/_merge_out — it
+    # is not a fleet result and must not ride into worker-runs/.
+    sh(f"rm -rf {dest}/_merge_out", timeout=60)
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=1))
+    # Issue #67: a merged sweep rides the SAME commit as its fleet
+    # (one commit, one push): copy the merge's sweeps/ tree to the
+    # archive root alongside worker-runs/.
+    merge_out = Path(results_dir) / "_merge_out"
+    if merge_out.is_dir():
+        sh(f"cp -r {merge_out}/. {arch}/", timeout=300)
     # Issue #91: keep a stable pointer to the newest harvest per EGX
     # code at harvest/<CODE>.json on this branch. GitHub Actions
     # runs have no local harvest, so fetch_feed.py fetches the
@@ -494,8 +528,7 @@ def publish(job, results_dir, manifest):
     sh(f"git -C {arch} add -A && git -C {arch} commit -F {msg_file}",
        timeout=120)
     msg_file.unlink(missing_ok=True)
-    return sh(f"git -C {arch} push origin archive",
-              timeout=300).returncode == 0
+    return push_archive(arch)
 
 
 def run_harvest(job, workdir):
@@ -601,6 +634,82 @@ def execute(job):
         stop.set()
 
 
+def maybe_merge(job, workdir, manifest, plan):
+    """Issue #67: post-sweep merge hook. Runs scripts/merge.py
+    (shared module, stdlib-only) on the just-finished sweep's local
+    OUT/<job-id> tree, before publish() archives fleet + merge in
+    one commit. Fires only for sweep / sweep-lite plans — category
+    and single-tool runs have no ensemble to build. A merge failure
+    or refusal must NEVER lose the fleet: it writes merge_error.txt
+    in the run dir, records manifest["merge"], and returns False so
+    _execute still publishes the fleet. Never raises."""
+    kind = (job.get("job") or "").split()
+    if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
+        return False
+    merge_script = CODE / "scripts" / "merge.py"
+    err_file = Path(workdir) / "merge_error.txt"
+    try:
+        env = {k: v for k, v in os.environ.items()
+               if k not in ENV_DENY_FOR_TOOLS}
+        cmd = [sys.executable, str(merge_script),
+               "--job", job["job"], "--run-dir", str(workdir),
+               "--registry", str(CODE / "registry" / "tools.json"),
+               "--weights", str(CODE / "ledger" / "weights.json"),
+               "--ensemble", str(CODE / "scripts" / "ensemble.py"),
+               "--release-sha", update_checkout_sha(),
+               "--claim-id", str(job.get("id", "")),
+               "--worker", os.uname().nodename,
+               "--plan", ",".join(t for t, _ in plan),
+               "--out", str(Path(workdir) / "_merge_out"),
+               "--error-file", str(err_file)]
+        # JOB_SCHEDULED (#67 §8 item 9): the cycle sets the repo
+        # variable to `sweep-lite POUL.CA market=EGX` if unset. The
+        # worker records what it was told via the environment, never
+        # a guess — an unset value is recorded as unchecked.
+        scheduled = os.environ.get("JOB_SCHEDULED")
+        if scheduled:
+            cmd += ["--job-scheduled", scheduled,
+                    "--job-scheduled-checked"]
+        proc = subprocess.run(cmd, env=env, capture_output=True,
+                              text=True, timeout=3600)
+        if proc.stdout.strip():
+            print(proc.stdout, end="", flush=True)
+        if proc.stderr.strip():
+            print(proc.stderr, end="", file=sys.stderr, flush=True)
+        if proc.returncode != 0:
+            detail = err_file.read_text(
+                encoding="utf-8", errors="replace").strip() \
+                if err_file.is_file() else \
+                f"merge.py exited {proc.returncode}"
+            manifest["merge"] = {"status": "failed",
+                                 "detail": detail[:500]}
+            return False
+        # The merge writes exactly one merge-manifest.json; find it
+        # under any date dir.
+        found = list((Path(workdir) / "_merge_out").rglob(
+            "merge-manifest.json")) if \
+            (Path(workdir) / "_merge_out").is_dir() else []
+        if found:
+            mm = json.loads(found[0].read_text())
+            manifest["merge"] = {"status": mm.get("merge"),
+                                 "sweep_dir": mm.get("sweep_dir")}
+            return True
+        manifest["merge"] = {"status": "failed",
+                             "detail": "merge exited 0 but no "
+                                       "merge-manifest.json found"}
+        return False
+    except Exception as e:  # noqa: BLE001 - the fleet must publish
+        try:
+            err_file.write_text(f"merge hook failed: "
+                                f"{type(e).__name__}: {e}\n")
+        except OSError:
+            pass
+        manifest["merge"] = {"status": "failed",
+                             "detail": f"merge hook failed: "
+                                       f"{type(e).__name__}: {e}"[:500]}
+        return False
+
+
 def _execute(job):
     reg = registry()
     workdir = OUT / job["id"]
@@ -646,6 +755,10 @@ def _execute(job):
                 stash.mkdir(parents=True, exist_ok=True)
                 (stash / f"{code}.json").write_bytes(cache.read_bytes())
     manifest["finished"] = now()
+    # Issue #67: post-sweep merge hook — fleet + merge publish in
+    # one commit. A merge failure never loses the fleet (see
+    # maybe_merge): publish() below still runs.
+    maybe_merge(job, workdir, manifest, plan)
     if not publish(job, workdir, manifest):
         # Failures must be observable on the bus, not just local.
         try:
