@@ -61,10 +61,35 @@ STALE_CLAIM_HOURS = 6
 OUT_RETENTION_DAYS = 7
 
 
+def _assert_no_denied(env):
+    """Final subprocess-boundary guard (issue #146): a supplied env
+    must never carry a denied credential. Fail closed — a caller
+    that built the env wrong is a bug, and the leak it would cause
+    lands in a publicly archived tool log."""
+    leaked = sorted(set(env) & ENV_DENY_FOR_TOOLS)
+    if leaked:
+        raise AssertionError(
+            "refusing to spawn a subprocess with denied env keys: "
+            + ", ".join(leaked))
+
+
 def sh(cmd, cwd=None, env=None, timeout=3600):
-    e = dict(os.environ)
-    if env:
-        e.update(env)
+    if env is None:
+        # Worker-internal calls (git/bus plumbing): the worker's own
+        # process env, bus credential included — this is the worker,
+        # not a tool.
+        e = dict(os.environ)
+    else:
+        # Issue #146: a supplied env is the COMPLETE subprocess env.
+        # The old `e = dict(os.environ); e.update(env)` merged the
+        # caller's filtered env back into the full parent env, so the
+        # ENV_DENY_FOR_TOOLS filtering in run_tool (which strips
+        # GATOR_BUS_URL) was undone at this final boundary and the bus
+        # write-credential reached every tool process. Callers that
+        # supply env (run_tool, the EGX harvest) already pass a full
+        # filtered copy of os.environ, so nothing is lost here.
+        _assert_no_denied(env)
+        e = dict(env)
     return subprocess.run(cmd, shell=True, cwd=cwd, env=e,
                           capture_output=True, text=True, timeout=timeout)
 
@@ -670,6 +695,9 @@ def maybe_merge(job, workdir, manifest, plan):
         if scheduled:
             cmd += ["--job-scheduled", scheduled,
                     "--job-scheduled-checked"]
+        # Issue #146: maybe_merge calls subprocess.run directly, not
+        # sh() — apply the same final-boundary guard here.
+        _assert_no_denied(env)
         proc = subprocess.run(cmd, env=env, capture_output=True,
                               text=True, timeout=3600)
         if proc.stdout.strip():
