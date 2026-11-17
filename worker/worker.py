@@ -421,9 +421,18 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
     # registry, not the tool id (financial-roberta's repo is
     # roberta-sentiment-runner; the old id-derived URL could never
     # clone it).
+    repo = RUNNERS / tool
+    # Issue #147: clear the previous run's results BEFORE any early
+    # return. A ref failure (ref-unpinned / clone-failed /
+    # ref-unavailable) used to return while the old results/ was
+    # still in place, and _execute then archived those stale files
+    # as the current run's (probe 003: byte-identical CSV/log/
+    # summary under a ref-unavailable manifest). The clear is a
+    # no-op when the repo/results do not exist yet.
+    results = repo / "results"
+    sh(f"rm -rf {results}", timeout=60)
     if not ref or not re.fullmatch(r"[0-9a-f]{40}", ref):
         return "ref-unpinned", ""
-    repo = RUNNERS / tool
     url = f"https://github.com/{ORG}/{repo_name or tool + '-runner'}"
     if not repo.exists():
         if sh(f"git clone --depth 1 {url} {repo}",
@@ -446,8 +455,6 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
         req = repo / "requirements.txt"
         if req.exists():
             sh(f"{venv}/bin/pip install -q -r {req}", timeout=1800)
-    results = repo / "results"
-    sh(f"rm -rf {results}", timeout=60)
     cmd = template.replace("{ticker}", ticker).replace(
         "{date}", datetime.now(timezone.utc).date().isoformat())
     env = {k: v for k, v in os.environ.items()
@@ -768,8 +775,21 @@ def _execute(job):
                                refs.get(tool), repos.get(tool))
         dest = workdir / tool
         src = RUNNERS / tool / "results"
-        if src.exists():
-            sh(f"mkdir -p {dest} && cp -r {src}/. {dest}/", timeout=120)
+        if status == "ok":
+            if src.exists():
+                sh(f"mkdir -p {dest} && cp -r {src}/. {dest}/",
+                   timeout=120)
+        else:
+            # Issue #147: a failed tool archives an EMPTY results
+            # dir — never another run's outputs as this run's.
+            # run_tool already cleared results/ before the run, so
+            # anything left in src is at most this run's partial
+            # output; it stays on the worker (the next run clears
+            # it) and is never copied into the run dir, where the
+            # merge would scan it into digest metrics and the
+            # ensemble would read it as data. The failure itself is
+            # recorded in the manifest and in <tool>.log.
+            dest.mkdir(parents=True, exist_ok=True)
         (workdir / f"{tool}.log").write_text(log)
         manifest["tools"][tool] = status
         if tool == "news-disclosure" and ticker.upper().endswith(".CA"):
