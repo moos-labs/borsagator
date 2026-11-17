@@ -1,0 +1,25 @@
+{
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "method_note": "Per-stock pages fetched for every ticker in our covered universe; Musaffa's methodology is AAOIFI with a trailing 36-month average market-value denominator.",
+  "retrieved_at": "2026-11-17T22:08:31Z",
+  "rows": [
+    {
+      "as_of": "November 2026",
+      "purification_note": "Musaffa publishes no per-stock purification ratio on its public stock pages (checked at freeze time); its purification figures sit behind its calculator/account.",
+      "purification_ratio": null,
+      "retrieved_at": "2026-11-17T22:08:31Z",
+      "source_url": "https://musaffa.com/stock/POUL.CA/",
+      "ticker": "POUL.CA",
+      "verdict": "non-compliant",
+      "verdict_raw": "NOT HALAL"
+    }
+  ],
+  "source_id": "musaffa",
+  "source_name_ar": "مصفّى — تصنيف الأسهم وفق أيوفي",
+  "source_name_en": "Musaffa — per-stock Shariah screening (AAOIFI)",
+  "source_url": "https://musaffa.com/screening-methodology/",
+  "standard": "AAOIFI",
+  "status": "ok",
+  "unavailable_reason": null
+}

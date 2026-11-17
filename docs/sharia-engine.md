@@ -24,6 +24,7 @@ Sharia standard. It never copies another site's verdicts.
 | Tests | `scripts/test_sharia_engine.py` |
 | Purification calculator (issue #171) | `scripts/sharia_purification.py` |
 | Calculator tests | `scripts/test_sharia_purification.py` |
+| Accuracy benchmark vs Musaffa / Faisal / Ostool / EGX33 (issue #172) | `scripts/sharia_benchmark.py`, `docs/sharia-benchmark.md` |
 
 ## Verdicts
 
