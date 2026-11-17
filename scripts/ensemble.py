@@ -245,7 +245,7 @@ def find_key(obj, needles, depth=0):
     return None
 
 
-def realized_sigma(ticker, base=None):
+def realized_sigma(ticker, base=None, ok=None):
     """Daily-return stdev from collected price CSVs.
     Returns (sigma, source, density): sigma = max(sigma_60, sigma_10);
     density = trading sessions per calendar day in that series — Kronos
@@ -255,7 +255,10 @@ def realized_sigma(ticker, base=None):
     longest (a stray foreign series must not set the volatility); with
     no anchor available, fall back to the DEFAULT sigma — a stale
     unanchored series must not set the volatility. Without a base
-    to anchor on, the longest candidate is still used."""
+    to anchor on, the longest candidate is still used.
+    `ok` (issue #147) is an optional tool -> bool predicate from the
+    digest (status == "ok"): when given, a failed tool's CSVs never
+    enter the sigma pool, even if they are sitting in collected/."""
     code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     best = None
     anchored = None
@@ -274,6 +277,11 @@ def realized_sigma(ticker, base=None):
         # Same exclusion as price_series (issue #133): backtest/stats
         # tools run reference workloads — their CSVs never enter
         # the sigma pool.
+        # Issue #147: a failed tool's CSVs never enter the pool
+        # either (its digest status is not "ok").
+        if ok is not None and not ok(os.path.basename(
+                os.path.dirname(path))):
+            continue
         if _cats.get(os.path.basename(os.path.dirname(path))) in (
                 EXCLUDED_PRICE_CATEGORIES):
             continue
@@ -344,13 +352,17 @@ def realized_sigma(ticker, base=None):
     return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})", density
 
 
-def price_series(ticker):
+def price_series(ticker, ok=None):
     """Collected price series for the ticker as {source: {date: close}}
     (date '' when the CSV has no usable date column). Backtest and
     stats tools are excluded by registry category: they run
     REFERENCE workloads (their CSVs are not this ticker's series —
     vectorbt's poul_ohlc.csv ends at 3.13, quantstats' at 2.83, while
-    every price-bearing tool agrees on ~10.2)."""
+    every price-bearing tool agrees on ~10.2).
+    `ok` (issue #147) is an optional tool -> bool predicate from the
+    digest (status == "ok"): when given, a failed tool's CSVs are
+    excluded from voting/base selection, even if they are sitting in
+    collected/ (a stale carry-over from an earlier run)."""
     code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     registry = load_json(REGISTRY) or {}
     cats = {t.get("id"): t.get("category")
@@ -361,6 +373,10 @@ def price_series(ticker):
     # unsorted glob makes ensemble.json bytes vary run to run.
     for path in sorted(glob.glob(os.path.join(COLLECTED, "*", "*.csv"))):
         tool = os.path.basename(os.path.dirname(path))
+        # Issue #147: exclude a failed tool's files from base
+        # selection and crosscheck witnesses.
+        if ok is not None and not ok(tool):
+            continue
         if cats.get(tool) in EXCLUDED_PRICE_CATEGORIES:
             continue
         name = os.path.basename(path).lower()
@@ -753,7 +769,7 @@ def main():
     # of 10.00, mis-anchoring every horizon by ~1.5%. The digest
     # metrics remain the fallback for sweeps whose collected CSVs
     # carry no usable dates.
-    series = price_series(ticker)
+    series = price_series(ticker, ok)
     fresh = freshest_close(series)
     base, base_src, base_date = None, "", None
     if fresh:
@@ -800,12 +816,14 @@ def main():
             base_date and check.get("latest_collected_date")
             and base_date < check["latest_collected_date"])
 
-    sigma, sigma_src, density = realized_sigma(ticker, base)
+    sigma, sigma_src, density = realized_sigma(ticker, base, ok)
 
     # ---------- Kronos path ----------
     kronos_path = []
     kcsv = os.path.join(COLLECTED, "kronos", "forecast.csv")
-    if os.path.exists(kcsv):
+    # Issue #147: a failed Kronos run's forecast.csv (stale carry-over
+    # or this run's partial output) must not set the price path.
+    if ok("kronos") and os.path.exists(kcsv):
         try:
             with open(kcsv, newline="", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
@@ -1021,7 +1039,7 @@ def main():
         # confirms, and a >=2.5-sigma session is a shock on its own.
         z_last = z_max3 = 0.0
         try:
-            series = price_series(ticker)
+            series = price_series(ticker, ok)
             pick = next((s for s in series if s.startswith("egx-data/")), None)
             if pick is None and series:
                 pick = max(series, key=lambda s: len(series[s]))
