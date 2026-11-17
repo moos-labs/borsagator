@@ -1,0 +1,205 @@
+{
+ "tool": "benchmark-ledger",
+ "version": 1,
+ "source": {
+  "repo": "moos-labs/borsagator",
+  "branch": "archive",
+  "tree_sha": "6462dd63bf5cd3325ed2432a79de75e0b56f3483",
+  "commit_sha": "6462dd63bf5cd3325ed2432a79de75e0b56f3483",
+  "tree_via": "api-token"
+ },
+ "counts": {
+  "sweeps": 44,
+  "sweeps_with_freeze": 0,
+  "entrant_rows": 0,
+  "matured": 0,
+  "pending": 0,
+  "invalid": 0,
+  "excluded_flagged": 0
+ },
+ "by_entrant": {
+  "ensemble": {
+   "day": {
+    "n": 5,
+    "hit_rate": 0.0,
+    "mean_abs_error_pp": 1.74,
+    "range_coverage": 1.0
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "buy-and-hold": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "family-agent": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "family-fundamentals": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "family-price-forecast": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "family-sentiment": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "family-technicals": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "kronos-alone": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  },
+  "raw-llm-cohere": {
+   "day": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "week": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   },
+   "month": {
+    "n": 0,
+    "hit_rate": null,
+    "mean_abs_error_pp": null,
+    "range_coverage": null
+   }
+  }
+ },
+ "rows": [],
+ "gaps": [],
+ "warnings": []
+}

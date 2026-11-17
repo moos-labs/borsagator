@@ -4,8 +4,8 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "e5e343af794a0fe169ffbc1136ac3292eeddf8ec",
-  "commit_sha": "e5e343af794a0fe169ffbc1136ac3292eeddf8ec",
+  "tree_sha": "6462dd63bf5cd3325ed2432a79de75e0b56f3483",
+  "commit_sha": "6462dd63bf5cd3325ed2432a79de75e0b56f3483",
   "tree_via": "api-token"
  },
  "counts": {
@@ -15,7 +15,8 @@
   "matured": 9,
   "pending": 51,
   "invalid": 3,
-  "dividend_adjusted": 0
+  "dividend_adjusted": 0,
+  "excluded_flagged": 4
  },
  "by_ticker": {
   "COMI.CA": {
@@ -39,10 +40,10 @@
  },
  "by_horizon": {
   "day": {
-   "n": 9,
+   "n": 5,
    "hit_rate": 0.0,
-   "mean_abs_error_pp": 10.84,
-   "range_coverage": 0.556
+   "mean_abs_error_pp": 1.74,
+   "range_coverage": 1.0
   },
   "week": {
    "n": 0,
@@ -63,20 +64,20 @@
    "n": 1
   },
   "ensemble (net_score)": {
-   "mean_skill": -0.159,
-   "n": 9
+   "mean_skill": -0.089,
+   "n": 5
   },
   "price-forecast": {
-   "mean_skill": -0.157,
-   "n": 9
+   "mean_skill": -0.007,
+   "n": 5
   },
   "sentiment": {
-   "mean_skill": 0.009,
-   "n": 9
+   "mean_skill": 0.024,
+   "n": 5
   },
   "technicals": {
-   "mean_skill": -0.275,
-   "n": 9
+   "mean_skill": -0.258,
+   "n": 5
   }
  },
  "series": {
@@ -2067,7 +2068,8 @@
   "POUL.CA: actuals series has 3046 sessions, 2014-06-04 → 2026-11-16 (last source: sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548/collected/egx-data/egxpy_poul.csv)",
   "price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files",
   "3 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248",
-  "4 matured forecast(s) span a known dividend ex-date (or carry an undated dividend action) but were NOT dividend-adjusted — their realized move includes the mechanical ex-div drop (issue #129): POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129)"
+  "4 matured forecast(s) span a known dividend ex-date (or carry an undated dividend action) but were NOT dividend-adjusted — their realized move includes the mechanical ex-div drop (issue #129): POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129)",
+  "4 gap-flagged matured forecast(s) excluded from skill/weights/aggregates (issue #79): the rows stay listed with their dividend_gap flag — only the means exclude them; the published weights change on the next publish is the intended correction, announced at the #79 landing"
  ],
  "warnings": []
 }
