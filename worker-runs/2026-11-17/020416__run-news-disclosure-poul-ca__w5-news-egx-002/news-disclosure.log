@@ -1,0 +1,30 @@
+WARN gnews failed (POUL.CA): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA%20when%3A30d&hl=ar&gl=EG&ceid=EG:ar
+WARN gnews failed (Cairo Poultry): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=Cairo+Poultry+when:30d&hl=en-US&gl=US&ceid=US:en
+WARN gnews failed (POUL.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA%20stock%20when%3A30d&hl=en&gl=US&ceid=US:en
+WARN body http 404: https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+bodies: 4/12 fetched; failures by stage: {'decode': 7, 'http': 1, 'extract': 0}
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6108.25it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14920.27it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 18393.86it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6195.84it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 20, "disclosure_count": 11, "arabic_headlines": 31, "latest_news_date": "Mon, 16 Nov 2026 14:51:18 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "multilingual_positive": 0.432, "multilingual_negative": 0.038, "multilingual_neutral": 0.529, "multilingual_scored": 31, "bodies_fetched": 4, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.202, "translated_negative": 0.228, "translated_neutral": 0.57, "translated_scored": 31}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Mon, 16 Nov 2026 14:51:18 GMT] (شبكة تواصل الإخبارية) القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية
+- [Mon, 16 Nov 2026 13:18:04 GMT] (https://www.youlyou.com/) القاهرة للدواجن تتصدر الأسهم الأكثر انخفاضا بالبورصة المصرية بنسبة 17% - https://www.youlyou.com/
+- [Mon, 16 Nov 2026 10:32:00 GMT] (اليوم السابع) سقوط مفاجئ لأسهم المضاربات بأكثر من 2%.. والقاهرة للدواجن تقود التراجع بالبورصة - اليوم السابع
+- [Sun, 15 Nov 2026 14:08:47 GMT] (مجلة البوصلة الاقتصادية) البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجلة البوصلة الاقتصادية
+- [Sun, 15 Nov 2026 10:42:05 GMT] (Mubasher) بورصة مصر تعلن الحدود السعرية لتحركات سهم "القاهرة للدواجن" - Mubasher
+- [Sun, 15 Nov 2026 08:51:39 GMT] (مجلة البوصلة الاقتصادية) اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية
+- [Thu, 12 Nov 2026 11:20:08 GMT] (شبكة تواصل الإخبارية) «القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية
+- [Thu, 12 Nov 2026 10:12:35 GMT] (https://www.youlyou.com/) رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/
