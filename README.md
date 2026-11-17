@@ -55,10 +55,15 @@ named explicitly.
 
 ## Scheduled sweep
 
-The workflow also runs on a schedule — **Sun–Thu 06:15 UTC** (08:15 Cairo in
-winter, 09:15 in summer; always before the EGX 10:00 open) — using the
-`JOB_SCHEDULED` repository variable, set to `sweep-lite POUL.CA market=EGX`.
-Manual dispatches use the job input, falling back to the `JOB` variable.
+The worker fires the sweep itself — **Sun–Thu 08:15 Cairo** (06:15 UTC
+in winter, 05:15 in summer; Cairo observes DST) — by writing a
+deterministic `sched-<date>` job to the bus, from the schedule in
+`queue/schedule.json` on the `queue` branch (issue #66). The GitHub
+Actions schedule — **Sun–Thu 06:45 UTC** — is only a fallback: it
+stands down when the worker already claimed today's job. Scheduled
+runs use the `JOB_SCHEDULED` repository variable, set to
+`sweep-lite POUL.CA market=EGX`. Manual dispatches use the job input,
+falling back to the `JOB` variable.
 
 ## Scope
 

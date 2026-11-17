@@ -16,6 +16,13 @@ HTTPS calls (GitHub + the data sources the tools themselves use).
 LLM/API keys for the tools come from /etc/gator.env (written at
 provisioning time); tools whose keys are absent fail their run
 honestly and the rest of the job continues.
+
+Issue #66: the worker also owns the clock. The schedule lives as data
+in queue/schedule.json on the `queue` branch (Sun–Thu 08:15 Cairo);
+every poll cycle the worker checks it and enqueues a deterministic
+`sched-<date>` bus job when one is due. The GitHub Actions cron is
+only a fallback (staggered to 06:45 UTC, with a skip-check on today's
+claim) until the worker schedule has fired correctly twice.
 """
 import json
 import os
@@ -25,6 +32,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(os.environ.get("GATOR_ROOT", "/opt/gator"))
 BUS = ROOT / "bus"            # borsagator clone (token remote), queue branch
@@ -147,6 +155,170 @@ def claim(job):
     return push_bus(f"claim {job['id']}")
 
 
+# --- Issue #66: worker-owned schedule ---------------------------------
+# The schedule lives as data on the `queue` branch
+# (queue/schedule.json), e.g.:
+#   [{"id": "sched-sweep-lite-poul", "job": "sweep-lite POUL.CA market=EGX",
+#     "days": ["Sun", "Mon", "Tue", "Wed", "Thu"], "time": "08:15",
+#     "tz": "Africa/Cairo"}]
+# Every poll cycle run_schedule_check() reads it (the bus was just
+# re-synced) and enqueues a deterministic `sched-<YYYY-MM-DD>` job
+# when one is due. Cairo observes DST (Egypt reintroduced it in 2023:
+# 08:15 Cairo is 06:15 UTC in winter, 05:15 UTC in summer), so the
+# fire time is computed with zoneinfo, never a fixed UTC offset —
+# and 08:15 is never ambiguous or nonexistent on either 2026
+# transition day (both happen at 00:00 local).
+SCHEDULE_FILE = "queue/schedule.json"
+SCHEDULED_JOB_PREFIX = "sched-"
+# A missed fire is caught up only while still pre-open; after this
+# Cairo time the worker marks it missed explicitly instead of running
+# a post-open sweep on stale prices (the Actions fallback at 06:45
+# UTC covers the common worker-down case while it still exists).
+SCHEDULE_CATCHUP_HOUR = 9
+SCHEDULE_CATCHUP_MINUTE = 30
+# Poll is 5 min, so a job enqueued "at 08:15" lands 08:15–08:25
+# Cairo; nothing downstream may assume 08:15 sharp.
+
+
+def _schedule_fire_time(entry, day):
+    """The entry's fire time on `day` (a date) in the entry's tz,
+    or None if the entry is malformed."""
+    try:
+        hh, mm = entry["time"].split(":")
+        tz = ZoneInfo(entry.get("tz") or "Africa/Cairo")
+        return datetime(day.year, day.month, day.day,
+                        int(hh), int(mm), tzinfo=tz)
+    except Exception:
+        return None
+
+
+def schedule_decision(entry, now_local):
+    """Pure decision for one schedule entry at `now_local` (an aware
+    datetime already in the entry's tz). Returns "fire" when the
+    scheduled time today has passed and the 09:30 Cairo catch-up
+    cutoff has not, "missed" when past the cutoff, None when the
+    entry does not fire today or has not come due yet."""
+    if not entry.get("job") or not entry.get("time"):
+        return None
+    if now_local.strftime("%a") not in (entry.get("days") or []):
+        return None
+    fire = _schedule_fire_time(entry, now_local.date())
+    if fire is None or now_local < fire:
+        return None
+    cutoff = now_local.replace(hour=SCHEDULE_CATCHUP_HOUR,
+                               minute=SCHEDULE_CATCHUP_MINUTE,
+                               second=0, microsecond=0)
+    return "fire" if now_local < cutoff else "missed"
+
+
+def scheduled_job_id(day):
+    """Deterministic id for a scheduled firing (the same id the
+    Actions fallback's skip-check looks for). One scheduled sweep
+    per day by design — the id carries no entry id."""
+    return f"{SCHEDULED_JOB_PREFIX}{day.isoformat()}"
+
+
+def check_schedule(schedule, handled_ids, missed_job_ids, now_utc):
+    """Pure core of the scheduler check. `handled_ids` are job ids
+    already in queue.json or claimed; `missed_job_ids` are jobs
+    already marked missed. Returns (to_enqueue, to_mark_missed):
+    lists of (entry, job_id). A restart mid-cycle, a second worker,
+    or a re-run of the check can never double-fire: an id that is
+    already handled or already marked is skipped."""
+    to_enqueue, to_mark = [], []
+    for entry in schedule:
+        if not isinstance(entry, dict):
+            continue
+        try:
+            tz = ZoneInfo(entry.get("tz") or "Africa/Cairo")
+        except Exception:
+            print(f"check_schedule: bad tz {entry.get('tz')!r}; skipping "
+                  f"entry {entry.get('id')}", file=sys.stderr, flush=True)
+            continue
+        now_local = now_utc.astimezone(tz)
+        decision = schedule_decision(entry, now_local)
+        if decision is None:
+            continue
+        job_id = scheduled_job_id(now_local.date())
+        if job_id in handled_ids:
+            continue
+        if decision == "fire":
+            to_enqueue.append((entry, job_id))
+        elif job_id not in missed_job_ids:
+            to_mark.append((entry, job_id))
+    return to_enqueue, to_mark
+
+
+def load_schedule():
+    p = BUS / SCHEDULE_FILE
+    if not p.exists():
+        return []
+    try:
+        data = json.loads(p.read_text())
+    except Exception as e:
+        print(f"load_schedule: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return []
+    if not isinstance(data, list):
+        print("load_schedule: schedule is not a list; ignoring",
+              file=sys.stderr, flush=True)
+        return []
+    return [e for e in data if isinstance(e, dict)]
+
+
+def run_schedule_check(now_override=None):
+    """Enqueue due scheduled jobs; mark missed ones explicitly.
+    Runs at the top of every poll cycle, right after sync_bus, so
+    the queue read is fresh. Note the R6 edge case: while a job is
+    executing, no cycle runs — a >24 h job would delay the next
+    day's check. The catch-up rule covers the realistic case (a job
+    finishing after 08:15 but before 09:30 still fires today; after
+    09:30 the miss is marked, never silently skipped), and a sweep
+    running past 24 h is itself a failure the heartbeat exposes."""
+    schedule = load_schedule()
+    if not schedule:
+        return
+    now_utc = now_override or datetime.now(timezone.utc)
+    queue = read_queue()
+    if QUEUE_ERROR:
+        # A malformed queue.json must never be overwritten with a
+        # truncated list — skip the check; the heartbeat already
+        # carries the parse error (INS-R3-09).
+        print("run_schedule_check: queue.json unreadable; skipping",
+              file=sys.stderr, flush=True)
+        return
+    handled = {str(j.get("id", "")) for j in queue}
+    claims_dir = BUS / "queue" / "claims"
+    if claims_dir.exists():
+        handled |= {f.name[:-len(".json")]
+                    for f in claims_dir.glob("*.json")}
+    missed = {f"sched-{f.name[len('missed-'):-len('.json')]}"
+              for f in (BUS / "queue").glob("missed-*.json")}
+    to_enqueue, to_mark = check_schedule(schedule, handled, missed,
+                                          now_utc)
+    for entry, job_id in to_enqueue:
+        queue.append({"id": job_id, "job": entry["job"],
+                      "added": now()})
+        (BUS / "queue" / "queue.json").write_text(
+            json.dumps(queue, indent=1))  # no trailing newline:
+        # matches the existing queue.json byte style exactly
+        push_bus(f"schedule {job_id}")
+        print(f"run_schedule_check: enqueued {job_id}: {entry['job']}",
+              flush=True)
+    for entry, job_id in to_mark:
+        date = job_id[len(SCHEDULED_JOB_PREFIX):]
+        marker = BUS / "queue" / f"missed-{date}.json"
+        marker.write_text(json.dumps(
+            {"job_id": job_id, "job": entry["job"], "at": now(),
+             "worker": os.uname().nodename,
+             "reason": "scheduled fire missed: worker had not enqueued "
+                       "by the 09:30 Cairo catch-up cutoff — no "
+                       "post-open sweep; see the Actions fallback run "
+                       "or dispatch manually"}, indent=1))
+        push_bus(f"missed scheduled sweep {job_id}")
+        print(f"run_schedule_check: marked missed {job_id}", flush=True)
+
+
 def _ensure_update_checkout():
     """D2: the code checkout is the release branch, never main tip.
     Full clone, not --depth 1 — the fast-forward guard in
@@ -189,6 +361,24 @@ def parse_job(job, reg):
     elif kind in ("sweep", "sweep-lite") and len(parts) >= 2:
         sel = [(t, parts[1]) for t, v in tools.items()
                if kind == "sweep" or v.get("category") != "agent"]
+        # Issue #66 (R4): honour the orchestrator's trailing filters,
+        # exactly as scripts/orchestrate.py applies them — market=EGX /
+        # market=US / no-agent. Without this a worker sweep-lite runs
+        # 29 tools; with market=EGX it must run the same 14 the
+        # Actions sweep runs. An unknown filter fails closed (empty
+        # plan, like the orchestrator's exit 2) — a wrong sweep must
+        # never run silently.
+        for tok in parts[2:]:
+            if tok.startswith("market="):
+                mkt = tok.split("=", 1)[1].upper()
+                sel = [(t, tk) for t, tk in sel
+                       if mkt in [m.upper()
+                                  for m in tools[t].get("markets", [])]]
+            elif tok == "no-agent":
+                sel = [(t, tk) for t, tk in sel
+                       if tools[t].get("category") != "agent"]
+            else:
+                return []
     else:
         return []
     # Panel round 2: a job string reaches shell command templates via
@@ -558,6 +748,11 @@ def main():
         try:
             self_update()
             sync_bus()
+            # Issue #66: the worker owns the clock — check the
+            # schedule every cycle, before claiming, so a due
+            # firing is enqueued even on a cycle that then claims
+            # an older job first.
+            run_schedule_check()
             reclaim_stale_claims()
             prune_out()
             heartbeat()

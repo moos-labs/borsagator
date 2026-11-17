@@ -8,17 +8,68 @@ on:
         required: false
         default: ""
   schedule:
-    # Sun–Thu 06:15 UTC = 08:15 Cairo (winter) / 09:15 (summer DST) — always
-    # before the EGX 10:00 open. Scheduled runs use the JOB_SCHEDULED
-    # variable (default 'sweep-lite POUL.CA').
-    - cron: "15 6 * * 0,1,2,3,4"
+    # Issue #66: the worker owns the 08:15 Cairo trigger now; this
+    # cron is only the FALLBACK, staggered to 06:45 UTC = 08:45 Cairo
+    # (winter) / 09:45 (summer DST) — still before the EGX 10:00
+    # open. The fallback-check job below stands the run down when
+    # the worker already claimed today's sched-<date> job.
+    # Scheduled runs use the JOB_SCHEDULED variable (default
+    # 'sweep-lite POUL.CA').
+    - cron: "45 6 * * 0,1,2,3,4"
 
 permissions:
   contents: write
   issues: write
 
 jobs:
+  # Issue #66: the worker fires the scheduled sweep at 08:15 Cairo;
+  # this job stands the Actions fallback down when the worker already
+  # claimed today's job (queue/claims/sched-<date>.json on the queue
+  # branch) or already archived it (worker-runs/<date>/ on the
+  # archive branch). The claim is the single mutex. Scheduled runs
+  # only — manual dispatches always run. If this job fails or is
+  # skipped, the sweep job runs anyway (a failed check must never
+  # silently cancel the morning's only sweep).
+  fallback-check:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the queue branch (claims)
+        uses: actions/checkout@v4
+        with:
+          ref: queue
+          path: queue-branch
+
+      - name: Check out the archive branch (worker runs)
+        uses: actions/checkout@v4
+        with:
+          ref: archive
+          path: archive-branch
+
+      - name: Decide whether the worker already fired today
+        id: check
+        run: |
+          TODAY=$(TZ=Africa/Cairo date +%F)
+          SKIP=$(python3 scripts/fallback_skip_check.py --date "$TODAY" \
+            --claims-dir queue-branch/queue/claims \
+            --archive-dir archive-branch/worker-runs)
+          echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
+          echo "Worker-fired check for $TODAY: skip=$SKIP"
+
   orchestrate:
+    needs: fallback-check
+    # The fallback stands down only when the check job ran and said
+    # so; a skipped check (manual dispatch) or a failed check leaves
+    # the sweep running. `always()` keeps the job alive when its
+    # needed job is skipped or fails.
+    if: always() && (github.event_name != 'schedule' || needs.fallback-check.outputs.skip != 'true')
     # Issue #126: serialize ledger publishers — GitHub concurrency is
     # job-scoped, not step-scoped, so the group sits on the whole job
     # (the ledger publish is a step inside it), shared with the
