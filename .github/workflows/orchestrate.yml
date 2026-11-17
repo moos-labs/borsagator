@@ -149,6 +149,50 @@ jobs:
             echo "staged=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Issue #68: compile the Report Model from this sweep's staged
+      # archive tree, before the archive commit copies it to the
+      # archive branch. The compiler reads one sweep dir
+      # (digest.json + ensemble.json + collected/ + manifest.json at
+      # the top level), which only exists as archive_stage/data once
+      # the archive stage above has run — the live layout
+      # (digest/, collected/ at the repo root) is not a sweep dir,
+      # so this step sits here, not right after the ensemble step,
+      # and after the #79 freeze so the model's benchmark section
+      # sees the frozen entrants. The compiler runs against a copy
+      # of the staged tree named by the archive target (so the
+      # model's sweep_dir is the archive-relative path, and so the
+      # sweep dir is outside any git checkout — the tree SHA is
+      # then honestly null with a flag, instead of the main tree
+      # SHA mislabelled as the archive tree); the emitted
+      # report-model.json (or compile_error.txt on a fail-loudly
+      # refusal) is copied back into archive_stage/data, which the
+      # commit step below archives unchanged. The archive SHA is
+      # the archive HEAD at compile time (the commit before this
+      # sweep's own archive commit, which does not exist yet).
+      # Never fails the sweep: a refused or crashed compile leaves
+      # the sweep archived without a model, with the refusal
+      # recorded. The manifest's file list (written by the archive
+      # stage above) does not cover the model — see #68.
+      - name: Compile the Report Model
+        if: always()
+        run: |
+          if [ ! -f archive_stage/TARGET.txt ]; then
+            echo "No archive target staged — nothing to compile."
+            exit 0
+          fi
+          TARGET=$(cat archive_stage/TARGET.txt)
+          STAGE_SWEEP="/tmp/borsagator-model/$TARGET"
+          mkdir -p "$(dirname "$STAGE_SWEEP")"
+          cp -r archive_stage/data "$STAGE_SWEEP"
+          ARGS=(--compiler-sha "${{ github.sha }}")
+          ARCHIVE_SHA=$(git ls-remote origin refs/heads/archive | awk '{print $1}')
+          if [ -n "$ARCHIVE_SHA" ]; then
+            ARGS+=(--archive-sha "$ARCHIVE_SHA")
+          fi
+          python3 scripts/compile_model.py "$STAGE_SWEEP" "${ARGS[@]}" || true
+          cp "$STAGE_SWEEP/report-model.json" archive_stage/data/report-model.json 2>/dev/null || true
+          cp "$STAGE_SWEEP/compile_error.txt" archive_stage/data/compile_error.txt 2>/dev/null || true
+
       - name: Commit the archive
         id: archive-commit
         if: always()
