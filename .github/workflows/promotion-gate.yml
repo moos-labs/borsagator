@@ -1,0 +1,55 @@
+name: promotion-gate
+
+# Frozen-candidate gate for worker-release promotions (issue #145).
+# A promotion PR must come from a frozen `promote/<sha>` branch whose
+# head is exactly the reviewed SHA recorded in the PR body's
+# `Reviewed-SHA:` trailer. PRs opened from live `main` (whose head
+# drifts as commits land) fail this check, as does any head that no
+# longer equals the reviewed SHA. See docs/promotion.md and
+# scripts/promote.py. This check is advisory until it is added to
+# worker-release's required status checks (see the #145 fix notes);
+# a red X here means "do not merge".
+on:
+  pull_request:
+    branches: [worker-release]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  frozen-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check head is the frozen reviewed SHA
+        env:
+          EVENT_PATH: ${{ github.event_path }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, sys
+          with open(os.environ["EVENT_PATH"]) as f:
+              event = json.load(f)
+          pr = event["pull_request"]
+          head_ref = pr["head"]["ref"]
+          head_sha = pr["head"]["sha"]
+          body = pr.get("body") or ""
+          m = re.search(r"^Reviewed-SHA:\s*([0-9a-f]{40})\s*$", body, re.M)
+          errors = []
+          if head_ref == "main":
+              errors.append("head branch is live main; promotion PRs must "
+                            "come from a frozen promote/<sha> branch (#145)")
+          if not m:
+              errors.append("PR body has no Reviewed-SHA: <40-hex> trailer")
+          elif m.group(1) != head_sha:
+              errors.append("head SHA %s != reviewed SHA %s; candidate "
+                            "drifted, re-freeze" % (head_sha, m.group(1)))
+          elif head_ref != "promote/" + head_sha[:12]:
+              errors.append("head branch %r is not the frozen branch "
+                            "promote/%s" % (head_ref, head_sha[:12]))
+          if errors:
+              print("PROMOTION GATE FAILED:")
+              for e in errors:
+                  print("  -", e)
+              sys.exit(1)
+          print("PROMOTION GATE PASSED: head %s == reviewed SHA" % head_sha)
+          PY
