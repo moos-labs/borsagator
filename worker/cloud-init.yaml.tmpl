@@ -47,7 +47,7 @@ write_files:
       __GATOR_ENV_EXTRA__
 runcmd:
   - mkdir -p /opt/gator
-  - git clone --depth 1 https://github.com/moos-labs/borsagator /opt/gator/src
+  - git clone --branch worker-release --single-branch https://github.com/moos-labs/borsagator /opt/gator/src
   - cp /opt/gator/src/worker/worker.py /opt/gator/worker.py
   - cp /opt/gator/src/worker/borsagator-worker.service /etc/systemd/system/
   - chown -R gator:gator /opt/gator
