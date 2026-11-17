@@ -47,8 +47,6 @@ ORG = "moos-labs"
 # fast-forward descendant of the code it already runs. GATOR_PIN_SHA
 # is an optional emergency freeze (normally unset): when set, only
 # that exact SHA is adopted.
-# D2 canary 2026-11-17 (issue #65): no-op comment — proves worker-5
-# does NOT adopt main tip. Remove after the canary proof completes.
 UPDATE_BRANCH = os.environ.get("GATOR_UPDATE_BRANCH", "worker-release")
 UPDATE_PIN = os.environ.get("GATOR_PIN_SHA", "")
 CODE = ROOT / "release"      # release-branch checkout (was ROOT/"main")
