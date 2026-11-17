@@ -452,7 +452,14 @@ def price_crosscheck(ticker, base, base_src, series, base_date=None):
         if common and common in m:
             witnesses[src] = m[common]
         else:
-            witnesses[src] = m[sorted(m.keys())[-1]]
+            # Issue #135: dated-only witness. The old
+            # m[sorted(m.keys())[-1]] let an undated 'rowN' key win
+            # over a real date ('r' > '2'), so the witness could be
+            # an arbitrary mid-series close. Reuse _series_last's
+            # dated-only rule; only a series with no dated entries
+            # at all falls back to its last row key.
+            d, c = _series_last(m)
+            witnesses[src] = c if d is not None else m[sorted(m.keys())[-1]]
     # Deduplicate by TOOL: a tool's own collected series supersedes its
     # digest metric — the same underlying data must not vote twice
     # (Ins review, issue #49).
