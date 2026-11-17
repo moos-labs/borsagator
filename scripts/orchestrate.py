@@ -10,7 +10,9 @@ selected tool in registry/tools.json:
      plus an exit-code capture and a summary.json emitter,
   3. dispatches the child's run.yml workflow,
   4. waits for the run, downloads its "results" artifact,
-  5. restores the child's original COMMANDS,
+  5. restores the child's original COMMANDS — only once the child run
+     has reached a terminal state (#134), so a still-running child can
+     never execute the restored value,
   6. collects results/<tool>/summary.json.
 Finally writes digest/digest.json and digest/digest.md.
 
@@ -42,6 +44,17 @@ OUT = os.path.join(os.getcwd(), "collected")
 DIGEST_DIR = os.path.join(os.getcwd(), "digest")
 POLL_SECONDS = 20
 TOOL_TIMEOUT = 60 * 60  # per tool, seconds (tradingagents took ~37 min)
+# Issue #134: a dispatched run used to get only 60s (15 x 4s) to appear
+# before the tool was recorded "dispatched but no run appeared" — while
+# the run later actually started and, worse, the finally block had
+# already restored COMMANDS, so it executed the wrong command.
+APPEARANCE_POLL_SECONDS = 4
+APPEARANCE_ATTEMPTS = 75  # 75 x 4s = 5 min appearance window
+APPEARANCE_TOLERANCE_SECONDS = 10  # clock-skew tolerance on created_at
+# Issue #134: bound on waiting for a timed-out child to reach a
+# terminal state before COMMANDS is restored. A run that is still
+# queued/in-progress may not have read the variable yet.
+RESTORE_GRACE_SECONDS = 30 * 60
 
 TOKEN = os.environ.get("GH_TOKEN", "")
 
@@ -237,19 +250,116 @@ def dispatch(repo, inputs=None):
     return status in (201, 204), data
 
 
-def find_new_run(repo, since_epoch):
-    status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/workflows/run.yml/runs?event=workflow_dispatch&per_page=5")
+def get_branch_sha(repo, branch="main"):
+    """Best-effort HEAD SHA of the child's branch, used only as a
+    preference when matching the dispatched run (#134). Returns None
+    on any failure — matching then falls back to branch + time."""
+    status, _, data = gh("GET", f"/repos/{ORG}/{repo}/branches/{branch}")
     if status != 200:
         return None
+    commit = data.get("commit") or {}
+    return commit.get("sha")
+
+
+def snapshot_runs(repo):
+    """Ids of the workflow_dispatch runs visible just before a dispatch,
+    so find_new_run can require a strictly newer run (#134). Returns an
+    empty set on any API failure — matching then falls back to branch +
+    time, never to refusing the dispatch."""
+    status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/workflows/run.yml/runs?event=workflow_dispatch&per_page=10")
+    if status != 200:
+        return set()
+    return {run["id"] for run in data.get("workflow_runs", [])
+            if isinstance(run.get("id"), int)}
+
+
+def find_new_run(repo, since_epoch, seen_ids=None, expected_branch="main",
+                 expected_sha=None):
+    """The run created by our just-issued dispatch — not merely the
+    newest workflow_dispatch run (#134).
+
+    Two overlapping sweeps dispatching the same child repo within
+    seconds used to cross-wire: the old code returned the first run
+    with created_at >= since - 10s from a newest-first list of 5, with
+    no check on branch, head SHA, or whether the run predated our
+    dispatch. Now a candidate must be a run we had not seen before the
+    dispatch, created within tolerance of it, on the dispatched branch;
+    among those, the run whose head SHA matches the branch HEAD we read
+    just before dispatching — and whose created_at is earliest at/after
+    our dispatch — wins. (A dispatch input carrying a correlation id
+    cannot be matched back: the runs API never returns dispatch inputs,
+    so identity has to come from id + time + branch + SHA.)"""
+    status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/workflows/run.yml/runs?event=workflow_dispatch&per_page=10")
+    if status != 200:
+        return None
+    seen_ids = seen_ids or set()
+    candidates = []
     for run in data.get("workflow_runs", []):
+        if run.get("id") in seen_ids:
+            continue
         created = run.get("created_at", "")
         try:
             ts = datetime.strptime(created, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
         except Exception:
             continue
-        if ts >= since_epoch - 10:
-            return run
-    return None
+        if ts < since_epoch - APPEARANCE_TOLERANCE_SECONDS:
+            continue
+        # Our dispatch always uses ref main; a run on another branch
+        # is somebody else's, however new it is.
+        head_branch = run.get("head_branch")
+        if head_branch is not None and head_branch != expected_branch:
+            continue
+        score = 0
+        if head_branch == expected_branch:
+            score += 2
+        if expected_sha and run.get("head_sha") == expected_sha:
+            score += 2
+        if ts >= since_epoch:
+            score += 1
+        candidates.append((score, ts, run.get("id", 0), run))
+    if not candidates:
+        return None
+    # Highest score wins; ties break to the earliest created run, which
+    # is the one our dispatch created — a later run from an overlapping
+    # sweep sorts after it.
+    candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
+    return candidates[0][3]
+
+
+def get_run_status(repo, run_id):
+    """The run's status string ('queued'/'in_progress'/'completed'/...),
+    or None if the API call failed."""
+    status, _, data = gh("GET", f"/repos/{ORG}/{repo}/actions/runs/{run_id}")
+    if status != 200:
+        return None
+    return data.get("status")
+
+
+def wait_for_terminal(repo, run_id, grace_seconds=RESTORE_GRACE_SECONDS):
+    """Poll until the child run reaches a terminal state ('completed').
+
+    Issue #134: the COMMANDS restore must not run while the child may
+    still read the variable — the child evaluates vars.COMMANDS when
+    its job executes, so a queued/in-progress run that has not read it
+    yet would execute the restored (wrong) command. Returns True if a
+    terminal state was observed, False if the grace expired or the API
+    stayed unreachable (the caller then restores anyway, loudly, so the
+    variable is never left composed forever — the restore is gated, not
+    deleted)."""
+    deadline = time.time() + grace_seconds
+    bad_polls = 0
+    while time.time() < deadline:
+        state = get_run_status(repo, run_id)
+        if state == "completed":
+            return True
+        if state is None:
+            bad_polls += 1
+            if bad_polls >= 6:
+                return False
+        else:
+            bad_polls = 0
+        time.sleep(POLL_SECONDS)
+    return False
 
 
 def wait_run(repo, run_id):
@@ -341,8 +451,16 @@ def run_tool(tool, ticker, date_str):
         result.update(status="error", detail="could not read COMMANDS variable — left untouched")
         return result
     changed = False
+    run_id = None
+    run_terminal = False
     try:
         since = time.time()
+        # #134: snapshot the runs visible before our dispatch, and the
+        # branch HEAD, so find_new_run can tell our run apart from an
+        # overlapping sweep's run to the same child repo. Both are
+        # best-effort: a failed read degrades matching, never the run.
+        expected_sha = get_branch_sha(repo)
+        seen_ids = snapshot_runs(repo)
         if use_inputs:
             # INS-R4-02: parameters travel as dispatch inputs; the
             # shared COMMANDS variable is never read as a channel
@@ -358,16 +476,18 @@ def run_tool(tool, ticker, date_str):
             result.update(status="error", detail=f"dispatch failed: {data}")
             return result
         run = None
-        for _ in range(15):
-            time.sleep(4)
-            run = find_new_run(repo, since)
+        for _ in range(APPEARANCE_ATTEMPTS):
+            time.sleep(APPEARANCE_POLL_SECONDS)
+            run = find_new_run(repo, since, seen_ids=seen_ids,
+                               expected_sha=expected_sha)
             if run:
                 break
         if not run:
             result.update(status="error", detail="dispatched but no run appeared")
             return result
+        run_id = run["id"]
         result["run_url"] = run.get("html_url")
-        finished = wait_run(repo, run["id"])
+        finished = wait_run(repo, run_id)
         if not finished:
             result.update(status="timeout", detail=f"no completion within {TOOL_TIMEOUT//60} min")
             return result
@@ -375,6 +495,7 @@ def run_tool(tool, ticker, date_str):
             result.update(status="api-error",
                           detail=f"run polling failed (HTTP {finished['_api_error']})")
             return result
+        run_terminal = True
         result["conclusion"] = finished.get("conclusion")
         summary, fs_detail = fetch_summary(repo, run["id"], tool_id)
         if summary:
@@ -387,6 +508,25 @@ def run_tool(tool, ticker, date_str):
         return result
     finally:
         if changed:
+            if run_id is not None and not run_terminal:
+                # #134: the child run exists but never reached a terminal
+                # state in our sight (wait timeout, API error, or an
+                # orchestrator exception mid-flight). It may not have
+                # read COMMANDS yet — restoring now would make it
+                # execute the restored (wrong) command. Wait for a
+                # terminal state first; the restore still happens, it
+                # is gated, not deleted.
+                if wait_for_terminal(repo, run_id):
+                    print(f"borsagator: child run {run_id} reached a "
+                          f"terminal state before COMMANDS restore",
+                          flush=True)
+                else:
+                    print(f"WARNING: COMMANDS restore for {repo} "
+                          f"proceeding although run {run_id} never "
+                          f"reached a terminal state", flush=True)
+                    result["detail"] = ((result.get("detail") or "")
+                                        + " [COMMANDS restored while child "
+                                        "run not terminal]")
             ok = (delete_variable(repo, "COMMANDS") if state == "missing"
                   else set_variable(repo, "COMMANDS", original))
             if not ok:
