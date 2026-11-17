@@ -1,0 +1,95 @@
+{
+  "calculator": "scripts/sharia_zakat.py",
+  "calculator_version": "1.0.0",
+  "comparisons": [
+    {
+      "case": "tedawal-trading-200k",
+      "delta": 0.0,
+      "explanation_en": "Identical method and inputs: market value 200,000 SAR x 2.5%, nisab 24,650 SAR (85 g x 290) below the base.",
+      "kind": "numeric",
+      "ours": 5000.0,
+      "published": 5000.0,
+      "source": "tedawal",
+      "source_url": "https://www.tedawal.com/%d8%ad%d8%b3%d8%a7%d8%a8-%d8%b2%d9%83%d8%a7%d8%a9-%d8%a7%d9%84%d8%a3%d8%b3%d9%87%d9%85/",
+      "verdict": "matched"
+    },
+    {
+      "case": "askzakariya aggregate (AAPL + SPUS + unspent dividends)",
+      "delta": -0.005,
+      "explanation_en": "Combined base 9,380 + 2,375 = 11,755 reproduces the published total exactly; 11,755 x 2.5% = 293.875 vs the published 293.88 -- the 0.005 delta is the source's own rounding to 2 decimal places, not a method difference. Judged per holding, the SPUS case alone is below the declared nisab parameter (2,375 < 6,800) and returns 0: the nisab is a wealth-level test, which is why the comparison aggregates, as the published example does.",
+      "kind": "numeric",
+      "ours": 293.875,
+      "published": 293.88,
+      "source": "askzakariya",
+      "source_url": "https://askzakariya.com/islamic-finance/zakat-on-stocks/",
+      "verdict": "matched"
+    },
+    {
+      "case": "trading formula",
+      "explanation_en": "Almurakib's speculation base = market value + realised profits - realised losses + available cash. The shared term (market value at the zakat day, nisab 85 g gold, full Hijri hawl, 2.5%) is identical to our TRADING method. Their extra terms are holder-level cash items, not share value: our calculator takes the holding plus declared held dividends, and the owner's other cash joins his zakat on his own zakat date. Input-scope difference, not an arithmetic difference.",
+      "kind": "formula",
+      "source": "almurakib",
+      "source_url": "https://almurakib.com/%D8%AD%D8%A7%D8%B3%D8%A8%D8%A9-%D8%B2%D9%83%D8%A7%D8%A9-%D8%A7%D9%84%D8%A3%D8%B3%D9%87%D9%85-%D9%88-%D8%B7%D8%B1%D9%8A%D9%82%D8%A9-%D8%A7%D9%84%D8%AD%D8%B3%D8%A7%D8%A8/",
+      "verdict": "explained-divergence"
+    },
+    {
+      "case": "investment formula",
+      "explanation_en": "Almurakib's investment formula, as published, sums market value + dividends (received and accrued) + sale cash. That contradicts the page's own note ('the full market value is NOT zakat-ed as in speculation; the dividends are') and matches neither our INVESTMENT method (AAOIFI Std 35 zakatable assets per share) nor the yield-only position. Recorded as published and flagged as an internal inconsistency in the source; not followed and not silently 'corrected'.",
+      "kind": "formula",
+      "source": "almurakib",
+      "source_url": "https://almurakib.com/%D8%AD%D8%A7%D8%B3%D8%A8%D8%A9-%D8%B2%D9%83%D8%A7%D8%A9-%D8%A7%D9%84%D8%A3%D8%B3%D9%87%D9%85-%D9%88-%D8%B7%D8%B1%D9%8A%D9%82%D8%A9-%D8%A7%D9%84%D8%AD%D8%B3%D8%A7%D8%A8/",
+      "verdict": "explained-divergence"
+    },
+    {
+      "case": "acme-investment-50k at a declared market price of 20.00/share (market value 1,000,000)",
+      "delta": 3750.0,
+      "explanation_en": "The 25% figure is an ESTIMATION proxy for this method's base, published for when the per-share zakatable-assets figure cannot be found (NZF's own condition; AAOIFI Std 35 allows estimation for shares, art. 4/2/4). The ACME fixture carries the company's actual figures, so our calculator applies the method itself (base 400,000 -> 10,000) instead of estimating it from market value. A proxy is not the base; the delta prices the estimation error the proxy accepts.",
+      "kind": "numeric-proxy",
+      "ours": 10000.0,
+      "published": 6250.0,
+      "source": "amal_nzf",
+      "source_url": "https://amalinvest.com/zakat-calculator",
+      "verdict": "explained-divergence"
+    },
+    {
+      "case": "acme-investment-50k at a declared market price of 20.00/share (market value 1,000,000)",
+      "delta": 2500.0,
+      "explanation_en": "The 30% figure is an ESTIMATION proxy for this method's base, published for when the per-share zakatable-assets figure cannot be found (NZF's own condition; AAOIFI Std 35 allows estimation for shares, art. 4/2/4). The ACME fixture carries the company's actual figures, so our calculator applies the method itself (base 400,000 -> 10,000) instead of estimating it from market value. A proxy is not the base; the delta prices the estimation error the proxy accepts.",
+      "kind": "numeric-proxy",
+      "ours": 10000.0,
+      "published": 7500.0,
+      "source": "zakatcalc",
+      "source_url": "https://www.zakatcalc.info/",
+      "verdict": "explained-divergence"
+    },
+    {
+      "attempts": [
+        "The kasheif.com homepage was reachable and is cached raw; its tools section names calculators, and Kashif's FAQ (read live in this series' 2026-11-17 source research) states a trader-zakat calculator is offered. The calculator itself is an interactive web tool: this runner cannot operate interactive tools, and no worked example or text formula for the trader calculator is published on the pages read -- so no like-for-like numeric comparison could be run. Recorded, not simulated."
+      ],
+      "explanation_en": "Kashif's trader zakat is the TRADING method family (trade goods at market value); with no published worked example, the numeric witnesses for that method in this run are Tedawal and AskZakariya.",
+      "kind": "numeric",
+      "source": "kashif",
+      "verdict": "unavailable"
+    },
+    {
+      "attempts": [
+        "GET https://www.borsahalal.com/faq via the browser reader (2026-11-18): the page returned no extractable content.",
+        "The same FAQ was read live in this series' 2026-11-17 source research: it states the platform offers purification and zakat calculators under AAOIFI and S&P Shariah standards, and publishes no numeric thresholds and no worked zakat example.",
+        "Not re-attempted by this freeze: two reads are on record and a third automated attempt would add no information. The calculator itself is interactive and, per the earlier research, its stock pages sit behind a login this benchmark never uses."
+      ],
+      "explanation_en": "No published worked example exists to compare against; recorded as unavailable rather than simulated.",
+      "kind": "numeric",
+      "source": "borsa_halal",
+      "verdict": "unavailable"
+    }
+  ],
+  "date": "2026-11-18",
+  "framing_ar": "حساب زكاة وفق الطريقة المنشورة المذكورة فقط، محسوب من المدخلات المعروضة. ليس فتوى، وليس نصيحة دينية أو استثمارية.",
+  "framing_en": "Zakat calculation under the named published method only, computed from the inputs shown. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T22:18:56Z",
+  "internal_gate": {
+    "worked_cases_reproduced": 15,
+    "worked_cases_total": 15
+  },
+  "schema": "borsagator-sharia-zakat-benchmark/1"
+}

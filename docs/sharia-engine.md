@@ -25,6 +25,7 @@ Sharia standard. It never copies another site's verdicts.
 | Purification calculator (issue #171) | `scripts/sharia_purification.py` |
 | Calculator tests | `scripts/test_sharia_purification.py` |
 | Accuracy benchmark vs Musaffa / Faisal / Ostool / EGX33 (issue #172) | `scripts/sharia_benchmark.py`, `docs/sharia-benchmark.md` |
+| Zakat calculator + benchmark vs published calculators (issue #173) | `scripts/sharia_zakat.py`, `scripts/sharia_zakat_methods/`, `docs/sharia-zakat.md` |
 
 ## Verdicts
 
@@ -176,6 +177,31 @@ with a `rule_differences` list naming how the selected
 standards' purification rules differ. Tests:
 `scripts/test_sharia_purification.py` (the POUL Nov 2026
 worked example is its first test).
+
+## Zakat calculator (issue #173)
+
+`scripts/sharia_zakat.py` computes zakat al-mal on one share
+holding under a named, published method — the methods are
+declared as data in `scripts/sharia_zakat_methods/`, the same
+pattern as the rule sets. **TRADING**: trade goods, zakat on
+the market value at the valuation date plus declared
+still-held cash dividends (IslamWeb 84386; Dar Al-Ifta Egypt
+2110; Kashif's trader-zakat calculator). **INVESTMENT**:
+AAOIFI Sharia Standard No. 35 — zakat on the holder's share
+of the company's zakatable assets, computed from this data
+model as `(cash_and_liquid_assets + accounts_receivable) /
+shares_outstanding` per share; paid-out dividends are the
+holder's cash and are never added to the share base. Every
+moving parameter (price, nisab metal price, calendar, hawl
+basis) is an explicit input with source and date; missing
+company figures return `insufficient-data` with the inputs
+named, and no estimation proxy (NZF 25% / ZakatCalc 30%) is
+ever substituted silently. The benchmark
+(`scripts/sharia_zakat_benchmark.py`, `docs/sharia-zakat.md`)
+matches both published worked examples it could run
+(Tedawal exactly; AskZakariya within the source's own
+rounding) and records Kashif's and Borsa Halal's calculators
+as unavailable with the attempts on record.
 
 ## Adding a standard
 
