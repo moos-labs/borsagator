@@ -6,6 +6,9 @@ The worker's control bus is the borsagator repo itself:
   {"id": "...", "job": "run yahooquery POUL.CA", "added": "<iso>"}
 - The worker claims a job by committing queue/claims/<id>.json and
   pushing; a push conflict means another worker won — skip.
+- A job that publishes successfully is recorded in
+  queue/done/<id>.json (archive commit); done jobs are never
+  re-claimed, even after the 6 h claim reclamation (issue #149).
 - Results are committed to the `archive` branch under
   worker-runs/<ts>__<job-slug>/ (same tree shape as Actions sweeps).
 - queue/heartbeat.json on the `queue` branch is rewritten every cycle
@@ -172,7 +175,35 @@ def claimed(job_id):
     return (BUS / "queue" / "claims" / f"{job_id}.json").exists()
 
 
+def done(job_id):
+    """Issue #149: durable completion state. A job is done only when
+    its done record exists — written after a successful publish, and
+    never reclaimed. Claims are the mutex, not the done-state."""
+    return (BUS / "queue" / "done" / f"{job_id}.json").exists()
+
+
+def _mark_done(job, archive_sha):
+    """Issue #149: persist the done record (archive commit) after a
+    successful publish. Returns True when the record reached the
+    bus; on failure the job stays re-runnable after reclamation
+    (the pre-fix behaviour) and the failure is loud on stderr."""
+    d = BUS / "queue" / "done"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{job['id']}.json").write_text(json.dumps(
+        {"worker": os.uname().nodename, "at": now(), "job": job["job"],
+         "archive": archive_sha}))
+    if push_bus(f"done {job['id']}"):
+        return True
+    print(f"_mark_done: push failed for {job['id']}; done record "
+          f"is local-only and will be lost on the next sync_bus",
+          file=sys.stderr, flush=True)
+    return False
+
+
 def claim(job):
+    if done(job["id"]):
+        # Issue #149: a completed job is never claimed again.
+        return False
     c = BUS / "queue" / "claims"
     c.mkdir(parents=True, exist_ok=True)
     (c / f"{job['id']}.json").write_text(json.dumps(
@@ -560,7 +591,13 @@ def publish(job, results_dir, manifest):
     sh(f"git -C {arch} add -A && git -C {arch} commit -F {msg_file}",
        timeout=120)
     msg_file.unlink(missing_ok=True)
-    return push_archive(arch)
+    # Issue #149: success returns the archive commit SHA (the done
+    # record's target); failure returns False. Callers use truthiness.
+    if not push_archive(arch):
+        return False
+    rev = sh(f"git -C {arch} rev-parse HEAD",
+             timeout=30).stdout.strip()
+    return rev if rev else "unknown"
 
 
 def run_harvest(job, workdir):
@@ -765,7 +802,8 @@ def _execute(job):
     if job["job"].startswith("harvest-egx"):
         manifest["tools"] = run_harvest(job, workdir)
         manifest["finished"] = now()
-        if not publish(job, workdir, manifest):
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
             try:
                 err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
                 err.write_text(json.dumps(
@@ -774,6 +812,9 @@ def _execute(job):
                 push_bus(f"publish failed {job['id']}")
             except Exception:
                 pass
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
     templates = {t["id"]: t["command"] for t in reg["tools"]}
@@ -828,7 +869,8 @@ def _execute(job):
     # the workdir copy so it stays truthful (publish() writes the
     # same final manifest into the archive dest).
     _write_manifest_atomic(workdir, manifest)
-    if not publish(job, workdir, manifest):
+    archive_sha = publish(job, workdir, manifest)
+    if not archive_sha:
         # Failures must be observable on the bus, not just local.
         try:
             err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
@@ -838,6 +880,9 @@ def _execute(job):
             push_bus(f"publish failed {job['id']}")
         except Exception:
             pass
+    else:
+        # Issue #149: only a successful publish marks the job done.
+        _mark_done(job, archive_sha)
 
 
 def prune_out():
@@ -849,7 +894,11 @@ def prune_out():
 
 def reclaim_stale_claims():
     """A claim whose push succeeded but whose result never published
-    (worker died mid-job) must not block the job forever."""
+    (worker died mid-job) must not block the job forever.
+    Issue #149: only UNFINISHED attempts are reclaimed for re-run.
+    A stale claim on a job with a done record is just a redundant
+    file — it is removed, but the job stays done (the main loop and
+    claim() both skip done jobs), so it can never execute again."""
     claims = BUS / "queue" / "claims"
     if not claims.exists():
         return
@@ -862,6 +911,10 @@ def reclaim_stale_claims():
         except Exception:
             continue  # unparseable claim: leave it, a human looks
         if claimed_ts < cutoff:
+            # A done job's claim is redundant once stale; an
+            # unfinished attempt is reclaimed for re-run. Either way
+            # the file goes — done() is what keeps a completed job
+            # from executing again, not the claim.
             f.unlink()
             changed = True
     if changed:
@@ -947,6 +1000,10 @@ def main():
             for job in read_queue():
                 if not JOB_ID_RE.match(str(job.get("id", ""))):
                     continue  # panel round 2: ids reach file paths
+                if done(job["id"]):
+                    # Issue #149: a completed job never runs again,
+                    # even after its claim was reclaimed.
+                    continue
                 if not claimed(job["id"]):
                     if claim(job):
                         execute(job)
