@@ -17,7 +17,13 @@ name: Ledger guard
 
 on:
   schedule:
-    - cron: "23 * * * *"
+    # Issue #126: staggered off :23 (was "23 * * * *") so the guard
+    # cannot collide with a sweep ledger step by schedule design —
+    # the sweep starts at :15 and its ledger step lands ~2.5h later
+    # at a varying minute, so no minute is collision-proof; the
+    # shared concurrency group below is the real serialization, this
+    # stagger is belt-and-braces.
+    - cron: "47 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -28,6 +34,16 @@ permissions:
 
 jobs:
   ledger-guard:
+    # Issue #126: serialize ledger publishers — same concurrency
+    # group as the orchestrate job (borsagator-ledger-publish), so a
+    # guard tick and a sweep ledger step never publish concurrently.
+    # cancel-in-progress: false so a queued guard run waits instead
+    # of cancelling a sweep in flight (or vice versa). The
+    # publisher's own recompute-and-retry remains the primary
+    # defence; this group is the backstop.
+    concurrency:
+      group: borsagator-ledger-publish
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

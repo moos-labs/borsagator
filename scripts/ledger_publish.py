@@ -86,7 +86,28 @@ lock ref would add a new stale-lock failure mode (a killed run
 strands the lock — the exact class this issue eliminates). Concurrent
 publishers are serialized through the push itself: only one wins,
 and the loser resets to the new main and retries from a fresh pin
-(see the follow-up note below) — never by rebasing onto it.
+(see the follow-up note below) — never by rebasing onto it. The
+concurrent publishers are the hourly ledger guard, other sweep runs,
+and human commits — NOT board-sync: scripts/board_sync.py makes
+GitHub API calls only and never pushes (issue #126 side correction;
+an older comment wrongly named board-sync as a pusher).
+
+Issue #126 (panel round 11, follow-up to #119): the #119
+token-expiry theory is refuted — the ledger push uses the
+checkout's persisted workflow token, never the app token, and the
+same job's archive push succeeded minutes before the ledger push
+failed. The failure is a race: between a run's checkout and its
+ledger push, main gains another ledger commit, the push is rejected
+as non-fast-forward, and the rebase conflicts on the same
+ledger.json / ledger.md lines. Two changes: (a) the retry below is
+now bounded at PUBLISH_MAX_ATTEMPTS attempts with jittered backoff
+instead of a single retry — a second overlapping publisher can land
+between the first retry's fetch and its push; (b) both workflows
+now share a GitHub `concurrency:` group
+(`borsagator-ledger-publish`, `cancel-in-progress: false`) so
+ledger publishers serialize instead of racing, and the guard cron
+is staggered off `:23`. A git-lock action is NOT the fix — the
+stale-lock failure mode above is why lock refs stay rejected.
 
 Issue #119 follow-up (live proof run 43889942381): the push-retry
 itself was the failure. A rebase can NEVER replay a ledger commit
@@ -101,7 +122,9 @@ token minted in step 5, which the gator step alone consumes; the
 archive push seconds earlier succeeded with that same credential.)
 So on a rejected push _git_publish no longer rebases at all:
 publish() discards the local commit, resets to origin/main,
-recomputes the ledger from a fresh archive pin, and retries once.
+recomputes the ledger from a fresh archive pin, and retries —
+issue #126 raised the bound from one retry to PUBLISH_MAX_ATTEMPTS
+attempts with jittered backoff (see above).
 Recomputing (not re-copying the first attempt's outputs) matters:
 the other run's publish may come from a newer archive tree, and
 re-copying the older outputs would regress the ledger. The retry
@@ -123,7 +146,7 @@ issue #116 (a missing sweep was never re-added until the tree moved
 again). Revalidation costs one ledger run per guard tick and keeps
 that lock-in impossible.
 """
-import argparse, json, os, shutil, subprocess, sys, tempfile, urllib.error, urllib.request, urllib.parse
+import argparse, json, os, random, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request, urllib.parse
 from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -136,6 +159,22 @@ ORG = "moos-labs"
 REPO = "borsagator"
 API_REF = ("https://api.github.com/repos/moos-labs/borsagator/"
            "git/ref/heads/archive")
+
+# Issue #126: bounded recompute-and-retry. At most this many publish
+# attempts in total (first try + retries). The ledger is fully
+# derived from the archive, so discarding the local commit, resetting
+# to the new main and recomputing from a fresh pin is always safe —
+# but the bound keeps a pathological contention storm from looping
+# forever. Two attempts (the #119 follow-up) proved too few: a second
+# overlapping publisher can land between the first retry's fetch and
+# its push, and the loser then had no attempt left.
+PUBLISH_MAX_ATTEMPTS = 3
+# Jittered backoff between retries (seconds): the delay grows with
+# the attempt number so two losers of the same race do not retry in
+# lockstep and collide again. Kept as module constants so tests can
+# zero them (no sleeping in the harness).
+RETRY_DELAY_BASE_S = 2.0
+RETRY_DELAY_JITTER_S = 4.0
 
 
 def log(msg):
@@ -854,15 +893,17 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                         f"({sweep_target})", digest_path, sweep_target)
         if contains:
             log(f"archive tree contains this sweep ({sweep_target})")
-    # Issue #119 follow-up: the compute → compare → commit/push
-    # cycle runs up to twice. A push rejected on attempt 1 means
-    # main moved after this checkout (usually a concurrent ledger
-    # publish — the logged stderr is the cause, issue #127); a
-    # rebase onto it conflicts on the ledger lines, so instead the local commit is discarded, the checkout
-    # is reset to origin/main, and attempt 2 recomputes the ledger
-    # from a fresh archive pin — never re-copying attempt 1's
-    # outputs, which may predate the other run's tree.
-    for attempt in (1, 2):
+    # Issue #119 follow-up, extended by issue #126: the compute →
+    # compare → commit/push cycle runs up to PUBLISH_MAX_ATTEMPTS
+    # times. A push rejected on an attempt means main moved after
+    # this checkout (usually a concurrent ledger publish — the
+    # logged stderr is the cause, issue #127); a rebase onto it
+    # conflicts on the ledger lines, so instead the local commit is
+    # discarded, the checkout is reset to origin/main, and the next
+    # attempt recomputes the ledger from a fresh archive pin —
+    # never re-copying an earlier attempt's outputs, which may
+    # predate the other run's tree.
+    for attempt in range(1, PUBLISH_MAX_ATTEMPTS + 1):
         old = committed_ledger()
         old_w = _read_json(os.path.join(LEDGER_DIR, "weights.json"))
         # Issue #116: NO tree-sha skip here. The rerun below always
@@ -934,12 +975,16 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
         # overwrite them.
         stage, detail = LAST_GIT_STAGE, LAST_GIT_DETAIL
         cause = LAST_GIT_ERROR or "ledger publish failed (no cause recorded)"
-        # One retry, by reset + recompute — never by rebase (see the
-        # #119 follow-up note at the top of this file).
-        if attempt == 1:
+        # Retry, by reset + recompute — never by rebase (see the
+        # #119 follow-up note at the top of this file). Issue #126:
+        # bounded at PUBLISH_MAX_ATTEMPTS attempts with a jittered
+        # backoff between them, so a second overlapping publisher
+        # landing mid-retry does not exhaust the attempts.
+        if attempt < PUBLISH_MAX_ATTEMPTS:
             log("ledger publish failed — " + cause +
                 " — resetting to origin/main and recomputing from a "
-                "fresh archive pin (attempt 2)")
+                f"fresh archive pin (attempt {attempt + 1} of "
+                f"{PUBLISH_MAX_ATTEMPTS})")
             try:
                 r = git("fetch", "origin", "main")
                 if r.returncode != 0:
@@ -959,6 +1004,18 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                 abort_rebase()
                 return fail(_publish_fail_reason(stage, detail, cause) +
                             " (interrupted during the retry reset)",
+                            digest_path, fail_hard or fail_push, ctx)
+            delay = (RETRY_DELAY_BASE_S * attempt +
+                     random.uniform(0, RETRY_DELAY_JITTER_S))
+            log(f"waiting {delay:.1f}s before attempt "
+                f"{attempt + 1} (jittered backoff)")
+            try:
+                time.sleep(delay)
+            except KeyboardInterrupt:
+                log("interrupted during the retry backoff — cleaning up")
+                abort_rebase()
+                return fail(_publish_fail_reason(stage, detail, cause) +
+                            " (interrupted during the retry backoff)",
                             digest_path, fail_hard or fail_push, ctx)
             continue
         return fail(_publish_fail_reason(stage, detail, cause),

@@ -19,6 +19,20 @@ permissions:
 
 jobs:
   orchestrate:
+    # Issue #126: serialize ledger publishers — GitHub concurrency is
+    # job-scoped, not step-scoped, so the group sits on the whole job
+    # (the ledger publish is a step inside it), shared with the
+    # ledger-guard job under the same group name. cancel-in-progress:
+    # false so a queued run waits instead of killing a sweep in
+    # flight. Whole sweep runs therefore serialize when they overlap
+    # — scheduled once daily, so that needs a manual dispatch, and
+    # concurrent sweeps already race on the archive-branch push. The
+    # publisher's own recompute-and-retry remains the primary
+    # defence, so a queued run still lands if two publishers ever
+    # get through at once.
+    concurrency:
+      group: borsagator-ledger-publish
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
