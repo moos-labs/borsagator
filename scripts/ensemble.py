@@ -261,7 +261,15 @@ def realized_sigma(ticker, base=None):
     anchored = None
     _reg = load_json(REGISTRY) or {}
     _cats = {t.get("id"): t.get("category") for t in _reg.get("tools", [])}
-    for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
+    # Issue #67: sorted globs — glob order follows filesystem
+    # scandir order, which varies by directory creation order, so
+    # an unsorted glob makes ensemble.json's dict key order (and
+    # hence its bytes) vary between two runs on identical inputs.
+    # Sorting makes the output deterministic: the worker merge's
+    # byte-parity bar depends on it, and Actions runs gain it too.
+    # Selections here are max/longest-based, so order changes no
+    # value — only the serialization order.
+    for path in sorted(glob.glob(os.path.join(COLLECTED, "*", "*.csv"))):
         name = os.path.basename(path).lower()
         # Same exclusion as price_series (issue #133): backtest/stats
         # tools run reference workloads — their CSVs never enter
@@ -348,7 +356,10 @@ def price_series(ticker):
     cats = {t.get("id"): t.get("category")
             for t in registry.get("tools", [])}
     series = {}
-    for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
+    # Issue #67: sorted glob — see realized_sigma above. The
+    # witnesses dict in price_crosscheck inherits this order, so an
+    # unsorted glob makes ensemble.json bytes vary run to run.
+    for path in sorted(glob.glob(os.path.join(COLLECTED, "*", "*.csv"))):
         tool = os.path.basename(os.path.dirname(path))
         if cats.get(tool) in EXCLUDED_PRICE_CATEGORIES:
             continue
@@ -946,7 +957,9 @@ def main():
                 return max(-.5, min(.5, s))
 
             quality = None
-            for path in glob.glob(os.path.join(COLLECTED, "financetoolkit", "*.json")):
+            # Issue #67: sorted glob — see realized_sigma above.
+            for path in sorted(glob.glob(os.path.join(
+                    COLLECTED, "financetoolkit", "*.json"))):
                 d = load_json(path)
                 if not d:
                     continue

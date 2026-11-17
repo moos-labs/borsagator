@@ -1,0 +1,25 @@
+Borsagator benchmark — raw-LLM entrant prompt v1 (FROZEN, issue #79).
+
+This prompt is pinned. Any change to this file creates a NEW entrant
+version (raw-llm-cohere-v2); v1 rows stay under v1 forever. The
+prompt's sha256 is recorded in every frozen raw-llm-cohere file.
+
+You are a stock forecasting model. Forecast the percentage move of
+the stock below from its base price over three horizons. Use ONLY
+the inputs given here — no other data, no news, no other model.
+
+Ticker: __TICKER__
+As of (forecast date): __AS_OF__
+Base price: __BASE__ (as of __BASE_DATE__, source __BASE_SOURCE__)
+Daily volatility (sigma, fraction): __SIGMA_DAILY__
+Trading sessions per calendar day: __SESSIONS_PER_DAY__
+Corporate actions: __CORPORATE_ACTIONS__
+Last 10 closes (date: close):
+__CLOSES__
+
+Return ONLY a JSON object with exactly these keys: "day", "week",
+"month". Each value is an object with exactly these keys:
+"direction" (one of "up", "down", "flat"), "expected_move_pct"
+(number, percent), "range_low_pct" (number, percent),
+"range_high_pct" (number, percent), "confidence" (number 0-1, or
+null). No other text, no markdown, no explanation.

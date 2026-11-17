@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4). Sweeps archived: 44 (23 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree 779db6a4, commit 779db6a4). Sweeps archived: 44 (23 with an ensemble).
 
-**Forecasts found: 63 · matured: 9 · pending: 39 · invalid: 15 · dividend-adjusted: 0**
+**Forecasts found: 63 · matured: 9 · pending: 51 · invalid: 3 · dividend-adjusted: 0 · excluded from skill: 4 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -10,13 +10,13 @@ Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4)
 |---|---|---|---|---|---|
 | COMI.CA | 3 | 0 | 0 | 3 | 2018-01-01 → 2026-11-12 |
 | NVDA | 6 | 1 | 5 | 0 | 2021-11-15 → 2026-11-13 |
-| POUL.CA | 54 | 8 | 34 | 12 | 2014-06-04 → 2026-11-16 |
+| POUL.CA | 54 | 8 | 46 | 0 | 2014-06-04 → 2026-11-16 |
 
-## By horizon (matured only)
+## By horizon (matured only, gap-flagged rows excluded from skill — issue #79)
 
 | Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| day | 9 | 0.0 | 10.84 | 0.556 |
+| day | 5 | 0.0 | 1.74 | 1.0 |
 | week | 0 | — | — | — |
 | month | 0 | — | — | — |
 
@@ -25,10 +25,10 @@ Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4)
 | Family | Mean skill | n |
 |---|---|---|
 | agent | +0.750 | 1 |
-| ensemble (net_score) | -0.159 | 9 |
-| price-forecast | -0.157 | 9 |
-| sentiment | +0.009 | 9 |
-| technicals | -0.275 | 9 |
+| ensemble (net_score) | -0.089 | 5 |
+| price-forecast | -0.007 | 5 |
+| sentiment | +0.024 | 5 |
+| technicals | -0.258 | 5 |
 
 ## Forecasts
 
@@ -67,15 +67,15 @@ Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4)
 | POUL.CA | 2026-11-15 | day | up | +1.21 | -20.99 | ❌ | 22.20 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -1.00 | — | — | — | — | | pending (1/3 sessions) |
 | POUL.CA | 2026-11-15 | month | down | -1.91 | — | — | — | — | | pending (1/14 sessions) |
-| POUL.CA | 2026-11-16 | day | flat | +0.19 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | week | flat | +0.26 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | month | up | +1.39 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | day | up | +2.26 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | week | flat | -0.61 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | month | down | -1.54 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | day | up | +2.25 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | week | flat | -0.63 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | month | down | -1.55 | — | — | — | — | | invalid — base_price 10.0 deviates 24.7% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
+| POUL.CA | 2026-11-16 | day | flat | +0.19 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-16 | week | flat | +0.26 | — | — | — | — | | pending (0/3 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +1.39 | — | — | — | — | | pending (0/14 sessions) |
+| POUL.CA | 2026-11-16 | day | up | +2.26 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-16 | week | flat | -0.61 | — | — | — | — | | pending (0/3 sessions) |
+| POUL.CA | 2026-11-16 | month | down | -1.54 | — | — | — | — | | pending (0/14 sessions) |
+| POUL.CA | 2026-11-16 | day | up | +2.25 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-16 | week | flat | -0.63 | — | — | — | — | | pending (0/3 sessions) |
+| POUL.CA | 2026-11-16 | month | down | -1.55 | — | — | — | — | | pending (0/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.71 | — | — | — | — | | pending (0/1 sessions) |
 | POUL.CA | 2026-11-16 | week | up | +16.73 | — | — | — | — | | pending (0/3 sessions) |
 | POUL.CA | 2026-11-16 | month | up | +16.36 | — | — | — | — | | pending (0/14 sessions) |
@@ -85,9 +85,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4)
 | POUL.CA | 2026-11-16 | day | up | +18.61 | — | — | — | — | | pending (0/1 sessions) |
 | POUL.CA | 2026-11-16 | week | up | +16.54 | — | — | — | — | | pending (0/3 sessions) |
 | POUL.CA | 2026-11-16 | month | up | +16.33 | — | — | — | — | | pending (0/14 sessions) |
-| POUL.CA | 2026-11-16 | day | up | +1.90 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 26.6% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | week | flat | -0.61 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 26.6% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
-| POUL.CA | 2026-11-16 | month | up | +4.77 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 26.6% from the ticker-evidenced close 8.02 at 2026-11-16 — the sweep's data does not match POUL.CA (issue #87) |
+| POUL.CA | 2026-11-16 | day | up | +1.90 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-16 | week | flat | -0.61 | — | — | — | — | | pending (0/4 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +4.77 | — | — | — | — | | pending (0/15 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.52 | — | — | — | — | | pending (0/1 sessions) |
 | POUL.CA | 2026-11-16 | week | up | +16.35 | — | — | — | — | | pending (0/3 sessions) |
 | POUL.CA | 2026-11-16 | month | up | +16.21 | — | — | — | — | | pending (0/14 sessions) |
@@ -105,6 +105,8 @@ Source: `moos-labs/borsagator` branch `archive` (tree 42c094b4, commit 42c094b4)
 - NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)
 - POUL.CA: actuals series has 3046 sessions, 2014-06-04 → 2026-11-16 (last source: sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548/collected/egx-data/egxpy_poul.csv)
 - price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files
-- 15 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; POUL.CA as of 2026-11-16 (day) from sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446; POUL.CA as of 2026-11-16 (week) from sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446; POUL.CA as of 2026-11-16 (month) from sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446; POUL.CA as of 2026-11-16 (day) from sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317; POUL.CA as of 2026-11-16 (week) from sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317; POUL.CA as of 2026-11-16 (month) from sweeps/2026-11-16/065405__sweep-lite-poul-ca__run43815097317; POUL.CA as of 2026-11-16 (day) from sweeps/2026-11-16/085806__sweep-lite-poul-ca__run43829283730; POUL.CA as of 2026-11-16 (week) from sweeps/2026-11-16/085806__sweep-lite-poul-ca__run43829283730; POUL.CA as of 2026-11-16 (month) from sweeps/2026-11-16/085806__sweep-lite-poul-ca__run43829283730; POUL.CA as of 2026-11-16 (day) from sweeps/2026-11-16/195042__sweep-lite-poul-ca__run43925358446; POUL.CA as of 2026-11-16 (week) from sweeps/2026-11-16/195042__sweep-lite-poul-ca__run43925358446; POUL.CA as of 2026-11-16 (month) from sweeps/2026-11-16/195042__sweep-lite-poul-ca__run43925358446
+- 3 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248
+- 4 matured forecast(s) span a known dividend ex-date (or carry an undated dividend action) but were NOT dividend-adjusted — their realized move includes the mechanical ex-div drop (issue #129): POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129)
+- 4 gap-flagged matured forecast(s) excluded from skill/weights/aggregates (issue #79): the rows stay listed with their dividend_gap flag — only the means exclude them; the published weights change on the next publish is the intended correction, announced at the #79 landing
 
 _Skill is provisional until a meaningful number of forecasts have matured; a family is only as good as its measured record._

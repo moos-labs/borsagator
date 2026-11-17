@@ -10,6 +10,12 @@ name: Ledger guard
 # Contents API) to force a fresh schedule registration — the
 # 09:23Z-14:23Z ticks never fired (six consecutive misses); repo
 # and org Actions settings both rule out the cause.
+# Issue #142: recreated 2026-11-17 (delete + re-create via the
+# Contents API) — the #115 recreate did NOT restore firing: no guard
+# run ever refreshed the seeded heartbeat (22:00:46Z 16 Nov); ticks
+# 23:47Z-05:47Z missed (seven consecutive). The #128/#126 edits
+# followed the #115 recreate; this registration is left undisturbed.
+# Evidence point: the 06:47Z tick.
 # Issue #128: every completed run also writes a timestamped
 # heartbeat (ledger/guard-heartbeat.json) — the watchdog notices a
 # dead guard within 2h, so a missed schedule can never again go

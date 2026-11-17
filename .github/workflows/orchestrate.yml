@@ -8,17 +8,68 @@ on:
         required: false
         default: ""
   schedule:
-    # Sun–Thu 06:15 UTC = 08:15 Cairo (winter) / 09:15 (summer DST) — always
-    # before the EGX 10:00 open. Scheduled runs use the JOB_SCHEDULED
-    # variable (default 'sweep-lite POUL.CA').
-    - cron: "15 6 * * 0,1,2,3,4"
+    # Issue #66: the worker owns the 08:15 Cairo trigger now; this
+    # cron is only the FALLBACK, staggered to 06:45 UTC = 08:45 Cairo
+    # (winter) / 09:45 (summer DST) — still before the EGX 10:00
+    # open. The fallback-check job below stands the run down when
+    # the worker already claimed today's sched-<date> job.
+    # Scheduled runs use the JOB_SCHEDULED variable (default
+    # 'sweep-lite POUL.CA').
+    - cron: "45 6 * * 0,1,2,3,4"
 
 permissions:
   contents: write
   issues: write
 
 jobs:
+  # Issue #66: the worker fires the scheduled sweep at 08:15 Cairo;
+  # this job stands the Actions fallback down when the worker already
+  # claimed today's job (queue/claims/sched-<date>.json on the queue
+  # branch) or already archived it (worker-runs/<date>/ on the
+  # archive branch). The claim is the single mutex. Scheduled runs
+  # only — manual dispatches always run. If this job fails or is
+  # skipped, the sweep job runs anyway (a failed check must never
+  # silently cancel the morning's only sweep).
+  fallback-check:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the queue branch (claims)
+        uses: actions/checkout@v4
+        with:
+          ref: queue
+          path: queue-branch
+
+      - name: Check out the archive branch (worker runs)
+        uses: actions/checkout@v4
+        with:
+          ref: archive
+          path: archive-branch
+
+      - name: Decide whether the worker already fired today
+        id: check
+        run: |
+          TODAY=$(TZ=Africa/Cairo date +%F)
+          SKIP=$(python3 scripts/fallback_skip_check.py --date "$TODAY" \
+            --claims-dir queue-branch/queue/claims \
+            --archive-dir archive-branch/worker-runs)
+          echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
+          echo "Worker-fired check for $TODAY: skip=$SKIP"
+
   orchestrate:
+    needs: fallback-check
+    # The fallback stands down only when the check job ran and said
+    # so; a skipped check (manual dispatch) or a failed check leaves
+    # the sweep running. `always()` keeps the job alive when its
+    # needed job is skipped or fails.
+    if: always() && (github.event_name != 'schedule' || needs.fallback-check.outputs.skip != 'true')
     # Issue #126: serialize ledger publishers — GitHub concurrency is
     # job-scoped, not step-scoped, so the group sits on the whole job
     # (the ledger publish is a step inside it), shared with the
@@ -75,6 +126,15 @@ jobs:
         if: always()
         run: python3 scripts/ensemble.py || true
 
+      # Issue #79: freeze the benchmark entrants (family-alone,
+      # Kronos-alone, raw-LLM, buy-and-hold) from this sweep's
+      # ensemble + Kronos path, before the archive stage. Never
+      # fails the sweep: the freeze exits 0 always and a missing
+      # benchmark/ dir is legal.
+      - name: Freeze the benchmark entrants
+        if: always()
+        run: python3 scripts/benchmark_freeze.py || true
+
       - name: Stage the sweep archive
         id: archive-stage
         if: always()
@@ -88,6 +148,50 @@ jobs:
           else
             echo "staged=false" >> "$GITHUB_OUTPUT"
           fi
+
+      # Issue #68: compile the Report Model from this sweep's staged
+      # archive tree, before the archive commit copies it to the
+      # archive branch. The compiler reads one sweep dir
+      # (digest.json + ensemble.json + collected/ + manifest.json at
+      # the top level), which only exists as archive_stage/data once
+      # the archive stage above has run — the live layout
+      # (digest/, collected/ at the repo root) is not a sweep dir,
+      # so this step sits here, not right after the ensemble step,
+      # and after the #79 freeze so the model's benchmark section
+      # sees the frozen entrants. The compiler runs against a copy
+      # of the staged tree named by the archive target (so the
+      # model's sweep_dir is the archive-relative path, and so the
+      # sweep dir is outside any git checkout — the tree SHA is
+      # then honestly null with a flag, instead of the main tree
+      # SHA mislabelled as the archive tree); the emitted
+      # report-model.json (or compile_error.txt on a fail-loudly
+      # refusal) is copied back into archive_stage/data, which the
+      # commit step below archives unchanged. The archive SHA is
+      # the archive HEAD at compile time (the commit before this
+      # sweep's own archive commit, which does not exist yet).
+      # Never fails the sweep: a refused or crashed compile leaves
+      # the sweep archived without a model, with the refusal
+      # recorded. The manifest's file list (written by the archive
+      # stage above) does not cover the model — see #68.
+      - name: Compile the Report Model
+        if: always()
+        run: |
+          if [ ! -f archive_stage/TARGET.txt ]; then
+            echo "No archive target staged — nothing to compile."
+            exit 0
+          fi
+          TARGET=$(cat archive_stage/TARGET.txt)
+          STAGE_SWEEP="/tmp/borsagator-model/$TARGET"
+          mkdir -p "$(dirname "$STAGE_SWEEP")"
+          cp -r archive_stage/data "$STAGE_SWEEP"
+          ARGS=(--compiler-sha "${{ github.sha }}")
+          ARCHIVE_SHA=$(git ls-remote origin refs/heads/archive | awk '{print $1}')
+          if [ -n "$ARCHIVE_SHA" ]; then
+            ARGS+=(--archive-sha "$ARCHIVE_SHA")
+          fi
+          python3 scripts/compile_model.py "$STAGE_SWEEP" "${ARGS[@]}" || true
+          cp "$STAGE_SWEEP/report-model.json" archive_stage/data/report-model.json 2>/dev/null || true
+          cp "$STAGE_SWEEP/compile_error.txt" archive_stage/data/compile_error.txt 2>/dev/null || true
 
       - name: Commit the archive
         id: archive-commit

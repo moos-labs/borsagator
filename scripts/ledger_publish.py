@@ -152,9 +152,16 @@ from datetime import datetime, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER_DIR = os.path.join(ROOT, "ledger")
 LEDGER_PY = os.path.join(ROOT, "scripts", "ledger.py")
-FILES = ("ledger.json", "ledger.md", "weights.json")
+FILES = ("ledger.json", "ledger.md", "weights.json",
+         "benchmark.json", "benchmark.md")
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
+# Issue #79: the fixed benchmark entrant registry (mirrors
+# scripts/ledger.py). Class B entrants are "class-b-<slug>".
+BENCH_ENTRANTS = ("family-price-forecast", "family-technicals",
+                  "family-sentiment", "family-agent",
+                  "family-fundamentals", "kronos-alone",
+                  "raw-llm-cohere", "buy-and-hold")
 ORG = "moos-labs"
 REPO = "borsagator"
 API_REF = ("https://api.github.com/repos/moos-labs/borsagator/"
@@ -317,6 +324,65 @@ def validate_ledger(doc, committed=None):
     return doc
 
 
+def validate_benchmark(doc, committed=None):
+    """Raise RuntimeError on any degraded benchmark document (issue
+    #79 F12). `committed` is the benchmark.json currently on main
+    (None on a first publish). Checks: parseable JSON with the
+    benchmark-ledger tool marker; no malformed-file gap (ledger.py
+    records one when a frozen entrant file could not be validated);
+    no row with status 'error'; every row entrant in the registry
+    (or a class-b-<slug> entrant); per-(entrant, horizon) matured
+    counts NEVER decrease vs the committed benchmark (monotone, same
+    spirit as the #132 matured-regression guard — a decrease rejects
+    the run). The 'ensemble' reference row in by_entrant is exempt
+    from the monotone check: it mirrors the ensemble ledger, whose
+    own regression rule is the #132 collapse check, and its skill
+    count can dip when a row is newly gap-flagged."""
+    if doc is None:
+        raise RuntimeError("degraded run: benchmark.json is not "
+                           "parseable JSON")
+    if doc.get("tool") != "benchmark-ledger":
+        raise RuntimeError("degraded run: benchmark.json is not a "
+                           "benchmark-ledger document")
+    for g in doc.get("gaps") or []:
+        if g.startswith("benchmark file malformed"):
+            raise RuntimeError(f"degraded run: {g}")
+    errors = [r for r in doc.get("rows") or []
+              if r.get("status") == "error"]
+    if errors:
+        shown = "; ".join(
+            f"{r.get('entrant')} {r.get('ticker')} as of "
+            f"{r.get('as_of')} ({r.get('horizon')}) from "
+            f"{r.get('sweep')}: {str(r.get('error'))[:120]}"
+            for r in errors[:3])
+        raise RuntimeError(
+            f"degraded run: {len(errors)} benchmark row(s) failed to "
+            f"score (status 'error'): {shown}")
+    for r in doc.get("rows") or []:
+        ent = r.get("entrant")
+        if ent and ent not in BENCH_ENTRANTS \
+                and not ent.startswith("class-b-"):
+            raise RuntimeError(
+                f"degraded run: benchmark row entrant {ent!r} not in "
+                f"the registry (issue #79)")
+    if committed is not None:
+        old_by = committed.get("by_entrant") or {}
+        for ent, horizons in (doc.get("by_entrant") or {}).items():
+            if ent == "ensemble":
+                continue
+            for h, a in (horizons or {}).items():
+                old_n = ((old_by.get(ent) or {}).get(h) or {}).get("n")
+                new_n = (a or {}).get("n", 0)
+                if (isinstance(old_n, int) and isinstance(new_n, int)
+                        and new_n < old_n):
+                    raise RuntimeError(
+                        f"degraded run: benchmark matured count "
+                        f"regressed for {ent}/{h} ({old_n} → {new_n}) "
+                        f"versus the committed benchmark — a decrease "
+                        f"rejects the run (issue #79)")
+    return doc
+
+
 def run_ledger(out_dir, committed=None):
     """Run scripts/ledger.py into out_dir and validate its output.
     Returns the parsed ledger.json; raises RuntimeError on any
@@ -331,7 +397,16 @@ def run_ledger(out_dir, committed=None):
     doc = _read_json(p)
     if doc is None:
         raise RuntimeError("ledger.json is not parseable JSON")
-    return validate_ledger(doc, committed)
+    validate_ledger(doc, committed)
+    # Issue #79: the benchmark table rides the same run — validate
+    # it the same way (missing / unparseable / degraded rejects).
+    bp = os.path.join(out_dir, "benchmark.json")
+    if not os.path.exists(bp):
+        raise RuntimeError("ledger.py wrote no benchmark.json")
+    bench = _read_json(bp)
+    validate_benchmark(
+        bench, _read_json(os.path.join(LEDGER_DIR, "benchmark.json")))
+    return doc
 
 
 def _counts_line(doc):
@@ -355,18 +430,25 @@ def _weights_sentence(old_w, new_w):
     return " Weights unchanged."
 
 
-def section_published(old, new, old_w, new_w):
+def section_published(old, new, old_w, new_w, bench=None):
     sha = str(new["source"]["tree_sha"])[:8]
     commit = str(new["source"].get("commit_sha") or "")[:8]
     delta = ""
     if old and old["counts"]["matured"] != new["counts"]["matured"]:
         delta = (f" (matured {old['counts']['matured']} → "
                  f"{new['counts']['matured']})")
+    bench_line = ""
+    if bench is not None:
+        bc = (bench.get("counts") or {})
+        bench_line = (f" Benchmark: {bc.get('entrant_rows', 0)} entrant "
+                      f"rows, {bc.get('matured', 0)} matured "
+                      f"({bc.get('sweeps_with_freeze', 0)} sweeps with a "
+                      f"freeze).")
     return ("## 📒 Calibration ledger\n\n"
             f"Ledger rerun after this sweep (archive tree `{sha}`, "
             f"commit `{commit}`): "
             f"{_counts_line(new)}{delta}."
-            f"{_weights_sentence(old_w, new_w)} "
+            f"{_weights_sentence(old_w, new_w)}{bench_line} "
             "Published to `ledger/` on main; the new weights take "
             "effect from the next sweep.")
 
@@ -954,14 +1036,20 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             shutil.copyfile(os.path.join(tmp, name),
                             os.path.join(LEDGER_DIR, name))
         new_w = _read_json(os.path.join(tmp, "weights.json"))
+        # Issue #79: the benchmark table rides the same publish —
+        # its counts line travels in the digest section (counts
+        # only, no claims).
+        new_bench = _read_json(os.path.join(tmp, "benchmark.json"))
         log(f"changed: {', '.join(changed)} — {new['counts']}")
         if not commit:
             append_digest(digest_path,
-                          section_published(old, new, old_w, new_w))
+                          section_published(old, new, old_w, new_w,
+                                            new_bench))
             return 0
         if git_publish(new):
             append_digest(digest_path,
-                          section_published(old, new, old_w, new_w))
+                          section_published(old, new, old_w, new_w,
+                                            new_bench))
             # Issue #128: verified publish — close any open
             # publish-failure signal with a recovery comment.
             ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
