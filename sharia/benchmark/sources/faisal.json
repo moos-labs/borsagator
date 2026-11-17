@@ -1,0 +1,14 @@
+{
+  "document_date": "2024-03-31",
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "retrieved_at": "2026-11-17T22:08:13Z",
+  "rows": [],
+  "source_id": "faisal",
+  "source_name_ar": "فيصل لتداول الأوراق المالية",
+  "source_name_en": "Faisal Securities Brokerage — compliant-stocks report (AAOIFI, spot market cap)",
+  "source_url": "https://fbcbrokerage.com/wp-content/uploads/2024/03/التحليل-الفني-لأهم-الاسهم-المتوافقة-31-03-2024.pdf",
+  "standard": "AAOIFI",
+  "status": "unavailable",
+  "unavailable_reason": "Attempted 2026-11-18: the report PDF named in the issue (fbcbrokerage.com, dated 2024-03-31, financials through 2023-09-30) could not be retrieved with the fetch tooling available to this run — the fetch failed on the Arabic filename URL with a resolution error, and the run did not fall back to another route. No rows are recorded and none were fabricated. The parser (parse_faisal_text) is implemented and unit-tested against a synthetic excerpt; the next freeze should retry retrieval of the PDF."
+}

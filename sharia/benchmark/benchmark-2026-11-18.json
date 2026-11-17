@@ -1,0 +1,183 @@
+{
+  "benchmark": "sharia-accuracy-benchmark",
+  "comparisons": [
+    {
+      "agreement_pct": null,
+      "counts": {
+        "agree": 0,
+        "not_covered_by_source": 0,
+        "our_insufficient_data": 1,
+        "their_indeterminate": 0,
+        "we_compliant_they_non_compliant": 0,
+        "we_noncompliant_they_compliant": 0
+      },
+      "determinate_pairs": 0,
+      "our_config": "aaoifi-avg36m",
+      "rows": [
+        {
+          "explanation": "Not comparable: our engine returned insufficient-data (missing inputs: activity.classification, avg_market_value_36m, interest_bearing_assets, interest_bearing_debt, non_compliant_revenue, total_revenue). Counted separately, never as agreement or disagreement.",
+          "our_missing_inputs": [
+            "activity.classification",
+            "avg_market_value_36m",
+            "interest_bearing_assets",
+            "interest_bearing_debt",
+            "non_compliant_revenue",
+            "total_revenue"
+          ],
+          "ours": "insufficient-data",
+          "ours_normalized": "insufficient-data",
+          "outcome": "our-insufficient-data",
+          "their_published_ratios": null,
+          "theirs": "non-compliant",
+          "theirs_raw": "NOT HALAL",
+          "ticker": "POUL.CA"
+        }
+      ],
+      "source_document_date": null,
+      "source_id": "musaffa",
+      "source_retrieved_at": "2026-11-17T22:08:31Z",
+      "source_status": "ok",
+      "standard": "AAOIFI (avg36m)"
+    },
+    {
+      "note": "Source unavailable at freeze time: Attempted 2026-11-18: the report PDF named in the issue (fbcbrokerage.com, dated 2024-03-31, financials through 2023-09-30) could not be retrieved with the fetch tooling available to this run — the fetch failed on the Arabic filename URL with a resolution error, and the run did not fall back to another route. No rows are recorded and none were fabricated. The parser (parse_faisal_text) is implemented and unit-tested against a synthetic excerpt; the next freeze should retry retrieval of the PDF.",
+      "our_config": "aaoifi-spot",
+      "source_document_date": "2024-03-31",
+      "source_id": "faisal",
+      "source_retrieved_at": "2026-11-17T22:08:13Z",
+      "source_status": "unavailable",
+      "standard": "AAOIFI (spot)"
+    },
+    {
+      "agreement_pct": null,
+      "counts": {
+        "agree": 0,
+        "not_covered_by_source": 0,
+        "our_insufficient_data": 1,
+        "their_indeterminate": 0,
+        "we_compliant_they_non_compliant": 0,
+        "we_noncompliant_they_compliant": 0
+      },
+      "determinate_pairs": 0,
+      "our_config": "egx33",
+      "rows": [
+        {
+          "driver_hypothesis": "Hypothesis (not our engine's computation): on Ostool's own published percentages, this ticker breaches the EGX33 limits on interest-bearing deposits 40.0% > limit 33.0%; prohibited income 5.5% > limit 5.0%. If our input pipeline (issues #78/#110) lands equivalent financials, our EGX33 screen would be expected to reach the same verdict. Our engine has NOT computed this — its verdict today is insufficient-data.",
+          "explanation": "Not comparable: our engine returned insufficient-data (missing inputs: activity.classification, avg_market_value_review_period, cash_and_liquid_assets, interest_bearing_assets, interest_bearing_debt, non_compliant_revenue, total_assets, total_revenue). Counted separately, never as agreement or disagreement.",
+          "our_missing_inputs": [
+            "activity.classification",
+            "avg_market_value_review_period",
+            "cash_and_liquid_assets",
+            "interest_bearing_assets",
+            "interest_bearing_debt",
+            "non_compliant_revenue",
+            "total_assets",
+            "total_revenue"
+          ],
+          "ours": "insufficient-data",
+          "ours_normalized": "insufficient-data",
+          "outcome": "our-insufficient-data",
+          "their_published_ratios": {
+            "interest_deposits_pct": 40.0,
+            "interest_loans_pct": 1.0,
+            "liquid_assets_pct": 40.5,
+            "prohibited_income_pct": 5.5
+          },
+          "theirs": "non-compliant",
+          "theirs_raw": "غير متوافق",
+          "ticker": "POUL.CA"
+        }
+      ],
+      "source_document_date": "2026-08-04",
+      "source_id": "ostool",
+      "source_retrieved_at": "2026-11-17T22:08:10Z",
+      "source_status": "ok",
+      "standard": "EGX33"
+    },
+    {
+      "agreement_pct": null,
+      "counts": {
+        "agree": 0,
+        "not_covered_by_source": 0,
+        "our_insufficient_data": 1,
+        "their_indeterminate": 0,
+        "we_compliant_they_non_compliant": 0,
+        "we_noncompliant_they_compliant": 0
+      },
+      "determinate_pairs": 0,
+      "our_config": "egx33",
+      "rows": [
+        {
+          "explanation": "Not comparable: our engine returned insufficient-data (missing inputs: activity.classification, avg_market_value_review_period, cash_and_liquid_assets, interest_bearing_assets, interest_bearing_debt, non_compliant_revenue, total_assets, total_revenue). Counted separately, never as agreement or disagreement.",
+          "our_missing_inputs": [
+            "activity.classification",
+            "avg_market_value_review_period",
+            "cash_and_liquid_assets",
+            "interest_bearing_assets",
+            "interest_bearing_debt",
+            "non_compliant_revenue",
+            "total_assets",
+            "total_revenue"
+          ],
+          "ours": "insufficient-data",
+          "ours_normalized": "insufficient-data",
+          "outcome": "our-insufficient-data",
+          "their_published_ratios": null,
+          "theirs": "non-compliant",
+          "theirs_raw": "not an EGX33 constituent (derived from the complete frozen list)",
+          "ticker": "POUL.CA"
+        }
+      ],
+      "source_document_date": null,
+      "source_id": "egx33",
+      "source_retrieved_at": "2026-11-17T22:08:12Z",
+      "source_status": "ok",
+      "standard": "EGX33"
+    }
+  ],
+  "covered_universe": [
+    "POUL.CA"
+  ],
+  "engine_version": "1.0.0",
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T22:09:13Z",
+  "issue": 172,
+  "method_notes": [
+    "Scored against frozen snapshots in sharia/benchmark/sources/ (per-row source URL + retrieval date), never against a moving page.",
+    "Our verdicts are re-computed by the engine from the covered-universe inputs at score time, per comparison configuration (AAOIFI avg36m / AAOIFI spot / EGX33).",
+    "insufficient-data on our side is its own bucket, never agreement or disagreement; agreement % is null when there are no determinate pairs.",
+    "No accuracy claim is made from this benchmark (issues #77/#79 rule): with the covered universe at one ticker and its balance-sheet inputs not yet wired (issues #78/#110), every comparison currently lands in the insufficient-data bucket — that IS the measured result."
+  ],
+  "purification": {
+    "awaiting_our_inputs": [
+      {
+        "basis": "Ostool's published prohibited-income % — the non-compliant revenue share that AAOIFI-style purification applies to dividends.",
+        "note": "Our purification ratio is not computable yet (engine verdict insufficient-data); the published figure is recorded for the first scored run.",
+        "ours": null,
+        "published_pct": 5.5,
+        "ratio": 0.055,
+        "source": "ostool",
+        "ticker": "POUL.CA"
+      }
+    ],
+    "stats": {
+      "max_abs_diff": null,
+      "mean_abs_diff": null,
+      "mean_rel_diff": null,
+      "n_pairs": 0,
+      "pairs": []
+    },
+    "witnesses_unavailable": [
+      {
+        "reason": "Musaffa publishes no per-stock purification ratio on its public stock pages (checked at freeze time); its purification figures sit behind its calculator/account.",
+        "source": "musaffa"
+      },
+      {
+        "reason": "Attempted 2026-11-18: nourborsa.com's homepage renders as a JavaScript application shell and its per-stock Sharia/purification data sits behind the site's login; a web search surfaced no public per-stock page for POUL.CA. No login was attempted and nothing was scraped behind one. Recorded as an unavailable purification witness for this run.",
+        "source": "nour_borsa"
+      }
+    ]
+  },
+  "report_date": "2026-11-18"
+}
