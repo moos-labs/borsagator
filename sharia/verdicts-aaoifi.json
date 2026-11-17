@@ -1,0 +1,124 @@
+{
+  "engine": "scripts/sharia_engine.py",
+  "engine_version": "1.0.0",
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T21:43:39Z",
+  "rows": [
+    {
+      "activity": {
+        "classification": null,
+        "evidence_source": null
+      },
+      "engine_version": "1.0.0",
+      "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+      "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+      "inputs": {
+        "dividends": [
+          {
+            "ex_date": "2026-11-16",
+            "pay_date": "2026-11-18",
+            "per_share": 1.9
+          }
+        ],
+        "financials": {
+          "shares_outstanding": 1789351397
+        },
+        "market_aggregates": {}
+      },
+      "missing_inputs": [
+        "activity.classification",
+        "avg_market_value_36m",
+        "interest_bearing_assets",
+        "interest_bearing_debt",
+        "non_compliant_revenue",
+        "total_revenue"
+      ],
+      "parameters": {
+        "denominator_variant": "avg36m"
+      },
+      "purification": {
+        "defined": true,
+        "notes_ar": "التطهير واجب وفق أيوفي عن الجزء غير المتوافق من الدخل. النسبة هي حصة كل توزيع واجبة التطهير، وقيمة السهم هي الدخل غير المتوافق المنسوب لسهم واحد خلال الفترة المالية.",
+        "notes_en": "Purification is mandatory under AAOIFI for the non-permissible portion of income. The ratio is the share of each dividend that must be purified; the per-share figure is the non-permissible income attributable to one share over the statement period.",
+        "per_share": null,
+        "per_share_definition": "non_compliant_revenue / shares_outstanding",
+        "ratio": null,
+        "ratio_definition": "non_compliant_revenue / total_revenue"
+      },
+      "ratios": [
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "total_revenue",
+          "error": null,
+          "id": "non_compliant_income",
+          "label_ar": "الدخل غير المتوافق / إجمالي الإيرادات",
+          "label_en": "Non-permissible income / total revenue",
+          "missing": [
+            "non_compliant_revenue",
+            "total_revenue"
+          ],
+          "numerator": null,
+          "numerator_field": "non_compliant_revenue",
+          "passed": null,
+          "threshold": 0.05,
+          "value": null
+        },
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "market_value[avg36m]:avg_market_value_36m",
+          "error": null,
+          "id": "interest_bearing_debt",
+          "label_ar": "الديون ذات الفوائد / القيمة السوقية",
+          "label_en": "Interest-bearing debt / market value",
+          "missing": [
+            "interest_bearing_debt",
+            "avg_market_value_36m"
+          ],
+          "numerator": null,
+          "numerator_field": "interest_bearing_debt",
+          "passed": null,
+          "threshold": 0.3,
+          "value": null
+        },
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "market_value[avg36m]:avg_market_value_36m",
+          "error": null,
+          "id": "interest_bearing_assets",
+          "label_ar": "الأصول والودائع ذات الفوائد / القيمة السوقية",
+          "label_en": "Interest-bearing assets and deposits / market value",
+          "missing": [
+            "interest_bearing_assets",
+            "avg_market_value_36m"
+          ],
+          "numerator": null,
+          "numerator_field": "interest_bearing_assets",
+          "passed": null,
+          "threshold": 0.3,
+          "value": null
+        }
+      ],
+      "ruleset_version": "1.0.0",
+      "screening_date": "2026-11-17",
+      "standard": "AAOIFI",
+      "statement_period": null,
+      "ticker": "POUL.CA",
+      "verdict": "insufficient-data"
+    }
+  ],
+  "schema": "borsagator-sharia/1",
+  "standard": {
+    "id": "AAOIFI",
+    "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+    "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+    "ruleset_version": "1.0.0",
+    "sources": [
+      "https://musaffa.com/screening-methodology/",
+      "https://fbcbrokerage.com/wp-content/uploads/2024/03/التحليل-الفني-لأهم-الاسهم-المتوافقة-31-03-2024.pdf"
+    ]
+  }
+}

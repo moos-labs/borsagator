@@ -1,0 +1,146 @@
+{
+  "engine": "scripts/sharia_engine.py",
+  "engine_version": "1.0.0",
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T21:43:39Z",
+  "rows": [
+    {
+      "activity": {
+        "classification": null,
+        "evidence_source": null
+      },
+      "engine_version": "1.0.0",
+      "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+      "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+      "inputs": {
+        "dividends": [
+          {
+            "ex_date": "2026-11-16",
+            "pay_date": "2026-11-18",
+            "per_share": 1.9
+          }
+        ],
+        "financials": {
+          "shares_outstanding": 1789351397
+        },
+        "market_aggregates": {}
+      },
+      "missing_inputs": [
+        "activity.classification",
+        "avg_market_value_review_period",
+        "cash_and_liquid_assets",
+        "interest_bearing_assets",
+        "interest_bearing_debt",
+        "non_compliant_revenue",
+        "total_assets",
+        "total_revenue"
+      ],
+      "parameters": {},
+      "purification": {
+        "defined": false,
+        "notes_ar": "لا تنشر البورصة المصرية قاعدة تطهير خاصة بمؤشر EGX33؛ التطهير متروك للمستثمر. لذلك لا يعرض هذا المعيار نسبة تطهير ولا قيمة تطهير للسهم.",
+        "notes_en": "EGX publishes no purification rule for EGX33; purification is left to the investor. This rule set therefore reports no purification ratio and no per-share purification figure.",
+        "per_share": null,
+        "per_share_definition": null,
+        "ratio": null,
+        "ratio_definition": null
+      },
+      "ratios": [
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "total_revenue",
+          "error": null,
+          "id": "non_compliant_income",
+          "label_ar": "الدخل من أنشطة غير متوافقة / إجمالي الإيرادات",
+          "label_en": "Income from non-compliant activities / total revenue",
+          "missing": [
+            "non_compliant_revenue",
+            "total_revenue"
+          ],
+          "numerator": null,
+          "numerator_field": "non_compliant_revenue",
+          "passed": null,
+          "threshold": 0.05,
+          "value": null
+        },
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "max(total_assets, avg_market_value_review_period)",
+          "error": null,
+          "id": "interest_bearing_borrowing",
+          "label_ar": "الاقتراض بفوائد / الأكبر من (إجمالي الأصول، متوسط القيمة السوقية في فترة المراجعة)",
+          "label_en": "Interest-bearing borrowing / greater of (total assets, average market value in the review period)",
+          "missing": [
+            "interest_bearing_debt",
+            "total_assets",
+            "avg_market_value_review_period"
+          ],
+          "numerator": null,
+          "numerator_field": "interest_bearing_debt",
+          "passed": null,
+          "threshold": 0.33,
+          "value": null
+        },
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "max(total_assets, avg_market_value_review_period)",
+          "error": null,
+          "id": "interest_bearing_investments",
+          "label_ar": "الاستثمارات ذات الفوائد / الأكبر من (إجمالي الأصول، متوسط القيمة السوقية في فترة المراجعة)",
+          "label_en": "Interest-bearing investments / greater of (total assets, average market value in the review period)",
+          "missing": [
+            "interest_bearing_assets",
+            "total_assets",
+            "avg_market_value_review_period"
+          ],
+          "numerator": null,
+          "numerator_field": "interest_bearing_assets",
+          "passed": null,
+          "threshold": 0.33,
+          "value": null
+        },
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "total_assets",
+          "error": null,
+          "id": "liquid_assets",
+          "label_ar": "الأصول السائلة / إجمالي الأصول",
+          "label_en": "Liquid assets / total assets",
+          "missing": [
+            "cash_and_liquid_assets",
+            "total_assets"
+          ],
+          "numerator": null,
+          "numerator_field": "cash_and_liquid_assets",
+          "passed": null,
+          "threshold": 0.7,
+          "value": null
+        }
+      ],
+      "ruleset_version": "1.0.0",
+      "screening_date": "2026-11-17",
+      "standard": "EGX33",
+      "statement_period": null,
+      "ticker": "POUL.CA",
+      "verdict": "insufficient-data"
+    }
+  ],
+  "schema": "borsagator-sharia/1",
+  "standard": {
+    "id": "EGX33",
+    "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+    "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+    "ruleset_version": "1.0.0",
+    "sources": [
+      "https://shariaa.org/مناهج-مؤشرات-الأسهم-المتوافقة-مع-الشريعة/",
+      "https://beta.egx.com.eg/ar/market/indices/overview?index=EGX_SHARIAH",
+      "https://stocks.templatesnippet.com/pdfs/osoul/compliance-list.pdf",
+      "https://kasheif.com/articles/4"
+    ]
+  }
+}
