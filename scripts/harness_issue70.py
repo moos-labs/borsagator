@@ -46,6 +46,22 @@ TRIPWIRE_CUR = f"{A15}/132459__sweep-lite-poul-ca-market-egx__run43717383224"
 WORKER_DIR = ("worker-runs/2026-11-17/"
               "020416__run-news-disclosure-poul-ca__w5-news-egx-002")
 
+# Model path (#68 Report Models): the three golden pairs whose sweeps
+# both carry a report-model.json (schema borsagator-report-model/1).
+MODEL_PAIRS = [
+    ("Pair A", PAIR_A_PREV, PAIR_A_CUR),
+    ("Pair C1", PAIR_C1_PREV, PAIR_C1_CUR),
+    ("Pair C2", PAIR_C2_PREV, PAIR_C2_CUR),
+]
+MODEL_SCHEMA = "borsagator-report-model/1"
+# The ledger pin every golden model carries (archive 647fdfbc).
+PIN_COUNTS = {"dividend_adjusted": 0, "excluded_flagged": 4,
+              "forecasts": 63, "invalid": 3, "matured": 9,
+              "pending": 51, "sweeps": 44,
+              "sweeps_with_ensemble": 23}
+PIN_SHA = ("0b4830e811c0cf2348c5beb67e77ef916152ca9e564a815505a5ddeb"
+           "4b602a4c")
+
 
 def check(name, ok, detail=""):
     print(f"[{'PASS' if ok else 'FAIL'}] {name}" +
@@ -67,6 +83,102 @@ def load_delta_module(repo):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+# ------------------------------------------------- model-path helpers
+
+def strip_calibration(d):
+    """Deep copy of a delta with the ledger-pin-carrying fields
+    removed: the whole calibration section, the weights section's
+    ledger_counts, and the raw path's "ledger counts not carried"
+    suffix on the weights note.
+
+    The model path is REQUIRED to differ from the raw path exactly
+    here: the raw ensembles carry no ledger counts (counts None),
+    while the model carries the pinned counts -- that is the point
+    of the model path (re-proof 2026-11-17: "the delta simply never
+    looks at it"). A converter that reproduced the raw calibration
+    section byte-for-byte would have to discard the pin, i.e. it
+    would repeat the non-consumption the re-proof caught. So the
+    model-path bar is: byte-identical everywhere EXCEPT these
+    fields, which are asserted separately (calibration_failures)
+    against the exact pinned values.
+    """
+    import copy
+    out = copy.deepcopy(d)
+    sec = out.get("sections") or {}
+    sec.pop("calibration", None)
+    weights = sec.get("weights") or {}
+    weights.pop("ledger_counts", None)
+    note = weights.get("note") or ""
+    weights["note"] = note.replace(
+        "; ledger counts not carried by raw ensembles "
+        "(see #68 ledger_pin)", "")
+    return out
+
+
+def calibration_failures(d, d_raw, expect_129):
+    """Assertions on the model path's calibration section: the exact
+    pinned counts, and the weights fields equal to the raw path's
+    (minus the raw path's "ledger counts not carried" suffix -- the
+    model path has the pin, so it carries no such suffix). Returns
+    the list of failed assertion names (empty = pass).
+
+    Note the weights expectations are deliberately relative to the
+    raw path, not absolute: Pair A pins the weights file
+    (0b4830e8... both sides, source ledger -> ledger, unchanged),
+    but Pairs C1/C2 predate applied_weights (#93/#94): their
+    ensembles carry no applied_weights at all, so the file SHA is
+    None on both sides and the source moves (builtin -> ledger on
+    C1, absent -> ledger on C2) -- "weights changed" is the correct
+    model-path answer there, and the converter reproduces it
+    exactly. Asserting the Pair A pin on C1/C2 would be asserting
+    the wrong history.
+    """
+    bad = []
+    sec = (d or {}).get("sections") or {}
+    raw_sec = (d_raw or {}).get("sections") or {}
+    cal = sec.get("calibration") or {}
+    counts = cal.get("ledger_counts") or {}
+    for key, value in PIN_COUNTS.items():
+        entry = counts.get(key) or {}
+        if entry.get("from") != value or entry.get("to") != value:
+            bad.append(f"ledger count {key} pinned {value} both sides")
+    if set(counts) != set(PIN_COUNTS):
+        bad.append("ledger counts carry exactly the pinned keys")
+    if cal.get("ledger_counts_source") != (
+            "report-model ledger_pin (borsagator-report-model/1)"):
+        bad.append("ledger_counts_source names the report-model pin")
+    weights = sec.get("weights") or {}
+    raw_weights = raw_sec.get("weights") or {}
+    sha = weights.get("weights_file_sha256") or {}
+    raw_sha = raw_weights.get("weights_file_sha256") or {}
+    if sha.get("from") != raw_sha.get("from") \
+            or sha.get("to") != raw_sha.get("to"):
+        bad.append("weights_file_sha256 matches the raw path "
+                   f"({raw_sha})")
+    if weights.get("weights_source") != raw_weights.get("weights_source"):
+        bad.append("weights_source matches the raw path")
+    wcounts = weights.get("ledger_counts") or {}
+    if (wcounts.get("from") or {}).get("matured") != 9 or \
+            (wcounts.get("to") or {}).get("matured") != 9:
+        bad.append("weights ledger_counts carry the pin (matured 9)")
+    note = cal.get("note") or ""
+    if expect_129:
+        if "#129" not in note:
+            bad.append("calibration note flags unadjusted ledger rows "
+                       "(#129) on the ex-date pair")
+    else:
+        if "#129" in note or "not carried" in note:
+            bad.append("calibration note carries no #129 flag and no "
+                       "'not carried' suffix off the ex-date window")
+    expected_note = (raw_weights.get("note") or "").replace(
+        "; ledger counts not carried by raw ensembles "
+        "(see #68 ledger_pin)", "")
+    if (weights.get("note") or "") != expected_note:
+        bad.append("weights note matches the raw path's note minus "
+                   "its 'not carried' suffix")
+    return bad
 
 
 # ------------------------------------------------------- Pair A assertions
@@ -525,6 +637,154 @@ def main():
     check("re-delta Pair A is byte-identical",
           json.dumps(again, sort_keys=True)
           == json.dumps(d_a, sort_keys=True))
+
+    # -- 9. Model path: the six golden pairs through model_to_view.
+    # The converter is the missing piece from the 2026-11-17
+    # re-proof: the raw-path harness passed with all six
+    # report-model.json files deleted, because the delta never read
+    # them. These checks fail on any tree without model_to_view,
+    # and fail (not pass vacuously) when the models are removed.
+    has_converter = all(
+        callable(getattr(delta, name, None)) for name in
+        ("model_to_view", "load_model_view", "delta_pair_models"))
+    check("model_to_view + load_model_view + delta_pair_models exist",
+          has_converter,
+          "absent -- the model path is not implemented on this tree"
+          if not has_converter else "")
+    if has_converter:
+        def mpair(prev, cur):
+            return delta.delta_pair_models(
+                os.path.join(archive, prev), os.path.join(archive, cur))
+
+        for label, prev, cur in MODEL_PAIRS:
+            d_raw = pair(prev, cur)
+            try:
+                d_model = mpair(prev, cur)
+            except Exception as exc:  # noqa: BLE001 - harness reports it
+                check(f"model path {label}: converter runs",
+                      False, f"raised {type(exc).__name__}: {exc}")
+                continue
+            check(f"model path {label}: converter runs", True)
+            same = (json.dumps(strip_calibration(d_model),
+                               sort_keys=True)
+                    == json.dumps(strip_calibration(d_raw),
+                                  sort_keys=True))
+            check(f"model path {label}: delta matches the raw path "
+                  f"everywhere except the ledger-pin fields",
+                  same,
+                  "differs outside calibration/weights-ledger_counts"
+                  if not same else "byte-identical outside the pin")
+            bad = calibration_failures(d_model, d_raw,
+                                       label == "Pair A")
+            check(f"model path {label}: calibration carries the "
+                  f"pinned counts (63/9/51/3, dividend_adjusted 0)",
+                  not bad, "; ".join(bad) if bad else "pin exact")
+            if label == "Pair A":
+                bad_a = pair_a_failures(d_model)
+                check("model path Pair A: the section 7.1 assertions "
+                      "hold on the model path too",
+                      not bad_a, "; ".join(bad_a) if bad_a else
+                      "all section 7.1 assertions hold")
+
+        # Levels ride the view (for #69 / D2); the converter must
+        # read them off the model, not re-derive them.
+        view_141124 = delta.load_model_view(
+            os.path.join(archive, PAIR_A_CUR))
+        levels = view_141124.get("levels") or {}
+        check("model view carries levels: 141124 support 7.1346 / "
+              "resistance 11.5881",
+              approx(levels.get("support"), 7.1346)
+              and approx(levels.get("resistance"), 11.5881),
+              f"levels={levels}")
+        view_085806 = delta.load_model_view(
+            os.path.join(archive, PAIR_A_PREV))
+        levels_prev = view_085806.get("levels") or {}
+        check("model view carries levels: 085806 support 9.117 / "
+              "resistance 10.758",
+              approx(levels_prev.get("support"), 9.117)
+              and approx(levels_prev.get("resistance"), 10.758),
+              f"levels={levels_prev}")
+
+        # CLI --model path on Pair A, byte-identical to in-process.
+        out_model = os.path.join(tempfile.gettempdir(), "h70-pairA-model.json")
+        proc_m = subprocess.run(
+            [sys.executable, os.path.join(repo, "scripts", "delta.py"),
+             "--model",
+             os.path.join(archive, PAIR_A_PREV),
+             os.path.join(archive, PAIR_A_CUR), "--out", out_model],
+            capture_output=True, text=True, timeout=120)
+        check("delta.py --model CLI exits 0 on Pair A",
+              proc_m.returncode == 0, proc_m.stderr.strip()[:200])
+        cli_model = (json.load(open(out_model))
+                     if proc_m.returncode == 0 else {})
+        check("CLI --model output matches in-process model delta "
+              "(byte-identical JSON)",
+              json.dumps(cli_model, sort_keys=True)
+              == json.dumps(mpair(PAIR_A_PREV, PAIR_A_CUR),
+                            sort_keys=True))
+
+        # Guards: wrong schema refused; a missing model refused
+        # (never a silent fall-back to the raw path).
+        try:
+            delta.model_to_view({"schema": "borsagator-report-model/9",
+                                 "ticker": "POUL.CA"})
+            check("model_to_view refuses a non-/1 schema", False,
+                  "accepted a foreign schema")
+        except Exception:  # noqa: BLE001 - the refusal is the pass
+            check("model_to_view refuses a non-/1 schema", True)
+        tmp2 = tempfile.mkdtemp(prefix="h70-model-")
+        try:
+            no_model = os.path.join(tmp2, "sweep")
+            _copy_sweep_minimal(os.path.join(archive, PAIR_A_CUR),
+                                no_model)
+            try:
+                delta.load_model_view(no_model)
+                check("load_model_view refuses a sweep with no "
+                      "report-model.json", False,
+                      "loaded a view with no model")
+            except Exception:  # noqa: BLE001 - the refusal is the pass
+                check("load_model_view refuses a sweep with no "
+                      "report-model.json", True)
+
+            # Negative control: the stripped archive (all six models
+            # deleted). The model path MUST fail here -- and the raw
+            # path must still pass, proving the raw path cannot see
+            # the models and the model section is the discriminator.
+            stripped = os.path.join(tmp2, "stripped")
+            for rel in (PAIR_A_PREV, PAIR_A_CUR, PAIR_C1_PREV,
+                        PAIR_C1_CUR, PAIR_C2_PREV, PAIR_C2_CUR):
+                _copy_sweep_minimal(os.path.join(archive, rel),
+                                    os.path.join(stripped, rel))
+            try:
+                delta.delta_pair_models(
+                    os.path.join(stripped, PAIR_A_PREV),
+                    os.path.join(stripped, PAIR_A_CUR))
+                check("stripped archive: model path FAILS with the "
+                      "models removed", False,
+                      "model delta succeeded with no models present")
+            except Exception as exc:  # noqa: BLE001 - failure is pass
+                check("stripped archive: model path FAILS with the "
+                      "models removed", True,
+                      f"{type(exc).__name__}: {exc}")
+            d_raw_stripped = delta.delta_pair(
+                os.path.join(stripped, PAIR_A_PREV),
+                os.path.join(stripped, PAIR_A_CUR))
+            check("stripped archive: raw path still passes (it never "
+                  "read the models -- the model section is what "
+                  "catches this)",
+                  not pair_a_failures(d_raw_stripped),
+                  "; ".join(pair_a_failures(d_raw_stripped)))
+            proc_s = subprocess.run(
+                [sys.executable,
+                 os.path.join(repo, "scripts", "delta.py"), "--model",
+                 os.path.join(stripped, PAIR_A_PREV),
+                 os.path.join(stripped, PAIR_A_CUR)],
+                capture_output=True, text=True, timeout=120)
+            check("stripped archive: delta.py --model CLI exits "
+                  "non-zero", proc_s.returncode != 0,
+                  f"exit {proc_s.returncode}")
+        finally:
+            shutil.rmtree(tmp2, ignore_errors=True)
 
     print()
     if FAILS:

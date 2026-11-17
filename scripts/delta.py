@@ -12,12 +12,17 @@ Two input paths, one diff core:
   ``ensemble.json`` + ``digest.json`` + the price CSVs' last
   close-bearing rows + ``news.json`` / ``disclosures.json`` identity
   keys. This is the path the harness proves against the golden pairs.
-* **Report Models (when #68 lands).** A Report Model already carries
+* **Report Models (#68 landed).** A Report Model already carries
   every field the view needs (``price_series_last``, news identity
-  keys, ``ledger_pin``); a ``model_to_view`` converter will feed the
-  same ``compute_delta`` core, and the harness must re-prove the
-  golden pairs byte-identically through the model path. If it does
-  not, the gap is a #68 schema gap, not a delta bug.
+  keys, ``ledger_pin``); ``model_to_view`` feeds the same
+  ``compute_delta`` core, and the harness re-proves the golden pairs
+  through the model path. The model-path delta matches the raw-path
+  delta everywhere EXCEPT the ledger-pin-carrying fields: the raw
+  ensembles carry no ledger counts (``counts: None``), while the
+  model carries the pinned counts -- that difference is the point
+  of the model path, not a drift, and the harness asserts the pin
+  separately against its exact values (see ``harness_issue70.py``
+  ``strip_calibration`` / ``calibration_failures``).
 
 Legal gate (#77 framing v2, binding): every rendered delta line is
 descriptive-conditional only. No buy / sell / hold wording, no
@@ -406,6 +411,201 @@ def tripwire(digest, ensemble):
             problems.append({"field": f"summary.ticker:{result.get('tool')}",
                              "expected": digest_ticker, "found": found})
     return problems
+
+
+# ------------------------------------------------------- model-path input
+
+MODEL_SCHEMA = "borsagator-report-model/1"
+
+# The raw view's price-series entry carries exactly these five keys
+# (delta.py _read_price_series); the model carries more per series
+# (last_open / last_high / last_low / stale / note). The converter
+# projects down to the raw five so the price section diffs
+# identically -- the extra model fields are price detail for the
+# renderer, not delta inputs.
+_PRICE_SERIES_KEYS = ("last_date", "last_close", "last_volume",
+                      "source", "rows")
+
+
+def model_to_view(model, sweep_dir=None, archive_sha=None):
+    """Build a sweep view from a parsed Report Model dict (schema
+    ``borsagator-report-model/1``) -- the model-path input to the
+    same ``compute_delta`` core the raw-ensemble path feeds.
+
+    The converter reads ONLY the model (plus the sweep dir it is
+    handed, for the path strings the delta pins): it never re-reads
+    the raw sweep files, so a delta built this way proves the model
+    carries everything the delta needs. Raises DeltaError when the
+    dict is not a /1 model.
+
+    Field mapping (verified against the six golden models, archive
+    647fdfbc -- every one of these equalities is asserted by the
+    harness, not assumed):
+
+    * ``ensemble`` -- embedded verbatim in the model; dict-equal to
+      the sweep's ``ensemble.json`` on all six golden sweeps.
+    * ``price_series_last`` -- projected to the raw view's five
+      keys; values equal the CSV-derived raw series on all six.
+    * ``news.news_items`` / ``news.disclosure_items`` -- identity
+      keys + titles, dict-equal to the raw view's items.
+    * ``news`` latest dates (raw RFC-2822 + ISO) and counts --
+      equal to the raw view's ``news_meta`` on all six.
+    * ``tools`` -- rebuilt into digest results. The compiler
+      redacts the summary envelope (``tool`` / ``ticker`` /
+      ``status`` are dropped from the stored summary); the diff
+      core reads ``summary.status`` and ``summary.ticker``, which
+      the model carries at tool level (``status``) and top level
+      (``ticker``), so the envelope is rebuilt from those. A tool
+      with no summary in the model (``summary: null`` -- a
+      no-summary row) gets NO ``summary`` key in the rebuilt
+      result, so ``has_summary`` matches the raw view exactly
+      (085806 finbert-tone is the live case).
+    * ``ledger_pin`` -- carried as the pin: counts, weights-file
+      SHA, and ``eligible`` from the embedded ensemble's
+      ``applied_weights``. This is the one place the model view
+      deliberately differs from the raw view (raw counts are
+      None); the calibration section therefore reports the pinned
+      counts on the model path instead of "not carried".
+    * ``ticker_mismatch`` -- the compiler refuses to emit a model
+      on any ticker mismatch, so this is always [] on a valid
+      model; it is the view's tripwire, taken as the compiler's
+      recorded verdict rather than recomputed from the redacted
+      summaries (which carry no envelope ticker to check).
+    * ``levels`` -- carried in the view for the renderer (#69 /
+      D2); the v1 diff core does not read them.
+    """
+    if not isinstance(model, dict) or model.get("schema") != MODEL_SCHEMA:
+        raise DeltaError(
+            f"not a {MODEL_SCHEMA} report model: schema is "
+            f"{(model or {}).get('schema')!r}")
+    ensemble = model.get("ensemble") or {}
+    news = model.get("news") or {}
+    pin = model.get("ledger_pin") or {}
+    applied = ensemble.get("applied_weights") or {}
+    ticker = model.get("ticker")
+
+    series = []
+    for entry in model.get("price_series_last") or []:
+        series.append({key: (entry or {}).get(key)
+                       for key in _PRICE_SERIES_KEYS})
+    news_items = news.get("news_items") or []
+    disc_items = news.get("disclosure_items") or []
+    news_meta = {
+        "latest_news_date": news.get("latest_news_date_raw"),
+        "latest_news_date_iso": news.get("latest_news_date"),
+        "latest_disclosure_date":
+            news.get("latest_disclosure_date_raw"),
+        "latest_disclosure_date_iso":
+            news.get("latest_disclosure_date"),
+        "news_count": news.get("news_count") if news.get("news_count")
+        is not None else len(news_items),
+        "disclosure_count": news.get("disclosure_count")
+        if news.get("disclosure_count") is not None
+        else len(disc_items)}
+
+    # Rebuilt digest: only the fields the diff core reads (results
+    # with tool / conclusion / summary envelope). The model records
+    # no manifest, and no diff section reads one.
+    results = []
+    for tool in model.get("tools") or []:
+        summary = tool.get("summary")
+        entry = {"tool": tool.get("tool"),
+                 "conclusion": tool.get("conclusion")}
+        if summary is not None:
+            rebuilt = dict(summary)
+            rebuilt["tool"] = tool.get("tool")
+            rebuilt["ticker"] = ticker
+            rebuilt["status"] = tool.get("status")
+            entry["summary"] = rebuilt
+        results.append(entry)
+    digest = {"job": model.get("job"), "ticker": ticker,
+              "date": model.get("date"), "started": model.get("started"),
+              "finished": model.get("finished"), "results": results}
+
+    tripwire_problems = []
+    for problem in model.get("ticker_mismatch") or []:
+        field = problem.get("field")
+        if not field and problem.get("tool"):
+            field = f"summary.ticker:{problem.get('tool')}"
+        tripwire_problems.append(
+            {"field": field or "ticker",
+             "expected": problem.get("expected"),
+             "found": problem.get("found")})
+
+    if sweep_dir is not None:
+        sweep_dir = os.path.normpath(sweep_dir)
+    elif model.get("sweep_dir"):
+        sweep_dir = model.get("sweep_dir")
+    return {"kind": "sweep", "sweep_dir": sweep_dir,
+            "archive_sha": archive_sha, "ticker": ticker,
+            "job": model.get("job"),
+            "job_shape": model.get("job_shape")
+            or normalize_job_shape(model.get("job")),
+            "market": model.get("market", market_from_job(
+                model.get("job"))),
+            "date": model.get("date"),
+            "started": model.get("started"),
+            "finished": model.get("finished"),
+            "ensemble": ensemble,
+            "ensemble_absent": bool(model.get("ensemble_absent"))
+            or model.get("ensemble") is None,
+            "digest": digest, "manifest": None,
+            "price_series_last": series,
+            "news_items": news_items,
+            "disclosure_items": disc_items,
+            "news_meta": news_meta,
+            # The model records no feed-file presence: a sweep with
+            # an empty feed file is indistinguishable from a sweep
+            # with no feed. Best-effort flags; nothing in the diff
+            # core reads them.
+            "news_present": bool(news_items
+                                 or news.get("news_count")),
+            "disclosures_present": bool(disc_items
+                                        or news.get("disclosure_count")),
+            "ledger_pin": {"counts": pin.get("counts"),
+                           "counts_source": "report-model ledger_pin "
+                           f"({MODEL_SCHEMA})",
+                           "weights_file_sha256":
+                               pin.get("weights_file_sha256")
+                               or applied.get("file_sha256"),
+                           "eligible": applied.get("eligible") or {}},
+            "levels": model.get("levels"),
+            "tripwire": tripwire_problems,
+            "notes": ["view built from report-model.json "
+                      f"({MODEL_SCHEMA}); raw sweep files not read"]}
+
+
+def load_model_view(sweep_dir, archive_sha=None):
+    """Load ``<sweep_dir>/report-model.json`` and return its view.
+    Raises DeltaError when the model file is absent -- never a
+    silent fall-back to the raw ensemble path: a model-path run
+    with no models must fail visibly (that is the harness's
+    negative control)."""
+    sweep_dir = os.path.normpath(sweep_dir)
+    path = os.path.join(sweep_dir, "report-model.json")
+    if not os.path.exists(path):
+        raise DeltaError(
+            f"no report-model.json in {sweep_dir}: the model path "
+            "cannot run without the Report Model (see #68)")
+    return model_to_view(_load_json(path), sweep_dir, archive_sha)
+
+
+def delta_pair_models(prev_dir, cur_dir, archive_sha=None):
+    """Diff two sweep dirs through their Report Models. Mirrors
+    ``delta_pair``: an ensemble-absent model yields
+    delta_unavailable, a compiler-recorded ticker mismatch yields
+    pair_invalid; both are normal outputs (exit 0), not crashes."""
+    cur = load_model_view(cur_dir, archive_sha)
+    prev = load_model_view(prev_dir, archive_sha)
+    if prev.get("ensemble_absent") or cur.get("ensemble_absent"):
+        missing = prev_dir if prev.get("ensemble_absent") else cur_dir
+        return unavailable_delta(
+            cur, f"sweep dir {os.path.basename(missing)} carries no "
+            "ensemble (model path)")
+    problems = (prev.get("tripwire") or []) + (cur.get("tripwire") or [])
+    if problems:
+        return invalid_pair_delta(prev, cur, problems)
+    return compute_delta(prev, cur)
 
 
 # ------------------------------------------------------------- resolution
@@ -1271,11 +1471,23 @@ def main(argv=None):
     parser.add_argument("--shape", help="job shape for --resolve")
     parser.add_argument("--out", help="write delta JSON (+ MD twin) "
                                       "to this path")
+    parser.add_argument("--model", action="store_true",
+                        help="diff through the sweeps' report-model.json "
+                             "files (model_to_view) instead of the raw "
+                             "ensemble files")
     parser.add_argument("--archive-sha", default=None,
                         help="archive commit SHA to pin in the output")
     args = parser.parse_args(argv)
     try:
-        if args.resolve:
+        if args.model and args.resolve:
+            parser.error("--model cannot be combined with --resolve "
+                         "(the resolver is raw-path only)")
+        if args.model:
+            if not args.prev_dir or not args.cur_dir:
+                parser.error("--model needs PREV_DIR CUR_DIR")
+            delta = delta_pair_models(args.prev_dir, args.cur_dir,
+                                      args.archive_sha)
+        elif args.resolve:
             if not args.cur_dir or not args.ticker or not args.shape:
                 parser.error("--resolve needs CUR_DIR, --ticker and "
                              "--shape")
