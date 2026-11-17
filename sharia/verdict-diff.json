@@ -1,0 +1,98 @@
+{
+  "baselines": [
+    "AAOIFI",
+    "EGX33"
+  ],
+  "disagreements": [],
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T22:30:28Z",
+  "indeterminate": [
+    {
+      "baseline": "AAOIFI",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "FTSE",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "EGX33",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "FTSE",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "AAOIFI",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "ISLAMICLY",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "EGX33",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "ISLAMICLY",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "AAOIFI",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "MSCI",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "EGX33",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "MSCI",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "AAOIFI",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "MSCI_M",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    },
+    {
+      "baseline": "EGX33",
+      "baseline_verdict": "insufficient-data",
+      "reason": "insufficient-data on one or both sides: an absence of a verdict, not a dissent",
+      "standard": "MSCI_M",
+      "standard_verdict": "insufficient-data",
+      "ticker": "POUL.CA"
+    }
+  ],
+  "schema": "borsagator-sharia-diff/1",
+  "standards": [
+    "AAOIFI",
+    "EGX33",
+    "FTSE",
+    "ISLAMICLY",
+    "MSCI",
+    "MSCI_M"
+  ],
+  "tickers": [
+    "POUL.CA"
+  ],
+  "verdicts": {
+    "POUL.CA": {
+      "AAOIFI": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data"
+    }
+  }
+}

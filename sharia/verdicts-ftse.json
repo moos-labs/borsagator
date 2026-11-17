@@ -1,0 +1,146 @@
+{
+  "engine": "scripts/sharia_engine.py",
+  "engine_version": "1.0.0",
+  "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+  "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+  "generated_at": "2026-11-17T22:30:28Z",
+  "rows": [
+    {
+      "activity": {
+        "classification": null,
+        "evidence_source": null
+      },
+      "engine_version": "1.0.0",
+      "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+      "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+      "inputs": {
+        "dividends": [
+          {
+            "ex_date": "2026-11-16",
+            "pay_date": "2026-11-18",
+            "per_share": 1.9
+          }
+        ],
+        "financials": {
+          "shares_outstanding": 1789351397
+        },
+        "market_aggregates": {}
+      },
+      "missing_inputs": [
+        "accounts_receivable",
+        "activity.classification",
+        "cash_and_liquid_assets",
+        "interest_bearing_assets",
+        "interest_bearing_debt",
+        "non_compliant_revenue",
+        "total_assets",
+        "total_revenue"
+      ],
+      "parameters": {},
+      "purification": {
+        "defined": true,
+        "notes_ar": "تحسب ياسار نسبة التوزيعات الموزعة المستمدة من دخل الفوائد أو الأنشطة المحظورة وتتيحها للمستخدمين النهائيين ليخصموها من دخل توزيعاتهم ويخرجوها صدقة؛ ولا تُجرى تعديلات التطهير داخل مؤشر العائد الكلي نفسه (الورقة البحثية لمنهجية FTSE الشرعية). لا ينشر FTSE قيمة تطهير للسهم الواحد.",
+        "notes_en": "Yasaar calculates the percentage of distributed dividends derived from interest income or prohibited activities and makes it available to end users, so investors can deduct that share of their dividend income and give it to charity; dividend cleansing adjustments are not made within the total return index itself (FTSE Shariah methodology white paper). FTSE publishes no per-share purification figure, so per_share_definition is null and no per-share figure is produced.",
+        "per_share": null,
+        "per_share_definition": null,
+        "ratio": null,
+        "ratio_definition": "non_compliant_revenue / total_revenue"
+      },
+      "ratios": [
+        {
+          "comparison": "le",
+          "denominator": null,
+          "denominator_base": "total_revenue",
+          "error": null,
+          "id": "non_compliant_income",
+          "label_ar": "إجمالي دخل الفوائد والأنشطة غير المتوافقة / إجمالي الإيرادات",
+          "label_en": "Total interest and non-compliant activities income / total revenue",
+          "missing": [
+            "non_compliant_revenue",
+            "total_revenue"
+          ],
+          "numerator": null,
+          "numerator_field": "non_compliant_revenue",
+          "passed": null,
+          "threshold": 0.05,
+          "value": null
+        },
+        {
+          "comparison": "lt",
+          "denominator": null,
+          "denominator_base": "total_assets",
+          "error": null,
+          "id": "total_debt",
+          "label_ar": "الديون / إجمالي الأصول",
+          "label_en": "Debt / total assets",
+          "missing": [
+            "interest_bearing_debt",
+            "total_assets"
+          ],
+          "numerator": null,
+          "numerator_field": "interest_bearing_debt",
+          "passed": null,
+          "threshold": 0.33333,
+          "value": null
+        },
+        {
+          "comparison": "lt",
+          "denominator": null,
+          "denominator_base": "total_assets",
+          "error": null,
+          "id": "cash_and_interest_bearing_items",
+          "label_ar": "النقد والبنود ذات الفوائد / إجمالي الأصول",
+          "label_en": "Cash and interest bearing items / total assets",
+          "missing": [
+            "cash_and_liquid_assets",
+            "interest_bearing_assets",
+            "total_assets"
+          ],
+          "numerator": null,
+          "numerator_field": "cash_and_liquid_assets + interest_bearing_assets",
+          "passed": null,
+          "threshold": 0.33333,
+          "value": null
+        },
+        {
+          "comparison": "lt",
+          "denominator": null,
+          "denominator_base": "total_assets",
+          "error": null,
+          "id": "receivables_and_cash",
+          "label_ar": "الذمم المدينة والنقد / إجمالي الأصول",
+          "label_en": "Accounts receivable and cash / total assets",
+          "missing": [
+            "accounts_receivable",
+            "cash_and_liquid_assets",
+            "total_assets"
+          ],
+          "numerator": null,
+          "numerator_field": "accounts_receivable + cash_and_liquid_assets",
+          "passed": null,
+          "threshold": 0.5,
+          "value": null
+        }
+      ],
+      "ruleset_version": "1.0.0",
+      "screening_date": "2026-11-17",
+      "standard": "FTSE",
+      "statement_period": null,
+      "ticker": "POUL.CA",
+      "verdict": "insufficient-data"
+    }
+  ],
+  "schema": "borsagator-sharia/1",
+  "standard": {
+    "id": "FTSE",
+    "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+    "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+    "ruleset_version": "1.0.0",
+    "sources": [
+      "https://research.ftserussell.com/Analytics/FactSheets/Home/DownloadSingleIssue?issueName=SWD&IsManual=False",
+      "https://www.lseg.com/content/dam/ftse-russell/en_us/documents/other/ftse-yasaar-shariah-global-equity-index-series-fatwa.pdf",
+      "https://research.ftserussell.com/products/downloads/FTSE_Shariah_Whitepaper.pdf",
+      "https://kasheif.com/articles/10"
+    ]
+  }
+}

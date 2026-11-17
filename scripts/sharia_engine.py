@@ -67,6 +67,17 @@ Verdicts: ``compliant`` / ``compliant-with-purification`` (only for
 rule sets whose purification definition affects the verdict) /
 ``non-compliant`` / ``insufficient-data``.
 
+Rule-set expressiveness (issue #169): a ratio's ``numerator`` may
+name a single field or a LIST of fields to sum (MSCI's and FTSE's
+"cash and interest-bearing securities" and "accounts receivables
+and cash" are sums of two data-model fields). A rule set's
+purification may define a ratio only (``per_share_definition``
+null -- MSCI's dividend adjustment factor, FTSE/Yasaar's dividend
+percentage, Islamicly's DP ratio): then no per-share figure is
+produced and ``shares_outstanding`` is not a required input.
+Every pre-#169 rule set evaluates identically under these
+extensions.
+
 Usage:
     sharia_engine.py screen --inputs snapshots.json --out-dir sharia/
                      [--standard AAOIFI] [--standard EGX33]
@@ -238,11 +249,27 @@ def _eval_ratio(spec, snapshot, aggregates, ruleset, params):
              "passed": None, "missing": [], "error": None}
     missing = []
 
-    num, _ = _lookup(snapshot, aggregates, spec["numerator"])
-    if num is None:
-        missing.append(spec["numerator"])
+    # Numerator: a single field, or a list of fields to sum
+    # (issue #169 -- composite numerators such as MSCI's
+    # "accounts receivables and cash"). A missing component is
+    # named and the sum is never partially computed.
+    if isinstance(spec["numerator"], list):
+        entry["numerator_field"] = " + ".join(spec["numerator"])
+        total = 0
+        for field in spec["numerator"]:
+            v, _ = _lookup(snapshot, aggregates, field)
+            if v is None:
+                missing.append(field)
+            else:
+                total += v
+        if not missing:
+            entry["numerator"] = total
     else:
-        entry["numerator"] = num
+        num, _ = _lookup(snapshot, aggregates, spec["numerator"])
+        if num is None:
+            missing.append(spec["numerator"])
+        else:
+            entry["numerator"] = num
 
     den_spec = spec["denominator"]
     kind = den_spec["kind"]
@@ -283,7 +310,7 @@ def _eval_ratio(spec, snapshot, aggregates, ruleset, params):
     if den == 0:
         entry["error"] = "zero denominator: %s" % entry["denominator_base"]
         return entry, []
-    value = num / den
+    value = entry["numerator"] / den
     entry["value"] = round(value, 6)
     if entry["comparison"] == "le":
         entry["passed"] = value <= spec["threshold"]
@@ -317,7 +344,10 @@ def _eval_purification(ruleset, snapshot, aggregates):
         missing.append("total_revenue")
     if nonc is None:
         missing.append("non_compliant_revenue")
-    if shares is None:
+    # shares_outstanding is required only when the rule set defines
+    # a per-share purification figure (issue #169: MSCI / FTSE /
+    # Islamicly publish a dividend purification RATIO only).
+    if spec.get("per_share_definition") and shares is None:
         missing.append("shares_outstanding")
     if missing:
         return out, missing
@@ -325,7 +355,8 @@ def _eval_purification(ruleset, snapshot, aggregates):
         out["error"] = "zero denominator: total_revenue"
         return out, []
     out["ratio"] = round(nonc / rev, 6)
-    out["per_share"] = round(nonc / shares, 6) if shares else None
+    if spec.get("per_share_definition"):
+        out["per_share"] = round(nonc / shares, 6) if shares else None
     return out, missing
 
 
