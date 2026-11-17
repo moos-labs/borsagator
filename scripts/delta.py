@@ -473,6 +473,10 @@ def model_to_view(model, sweep_dir=None, archive_sha=None):
       summaries (which carry no envelope ticker to check).
     * ``levels`` -- carried in the view for the renderer (#69 /
       D2); the v1 diff core does not read them.
+    * ``sharia`` -- carried in the view for the renderer (#69 /
+      #170): the Report Model's Sharia evaluation section,
+      projected by the compiler from the engine's stored verdict
+      tables; the v1 diff core does not read it.
     """
     if not isinstance(model, dict) or model.get("schema") != MODEL_SCHEMA:
         raise DeltaError(
@@ -570,6 +574,7 @@ def model_to_view(model, sweep_dir=None, archive_sha=None):
                                or applied.get("file_sha256"),
                            "eligible": applied.get("eligible") or {}},
             "levels": model.get("levels"),
+            "sharia": model.get("sharia"),
             "tripwire": tripwire_problems,
             "notes": ["view built from report-model.json "
                       f"({MODEL_SCHEMA}); raw sweep files not read"]}
