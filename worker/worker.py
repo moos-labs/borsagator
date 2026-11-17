@@ -666,6 +666,17 @@ def execute(job):
         stop.set()
 
 
+def _write_manifest_atomic(workdir, manifest):
+    """Write manifest.json into the workdir atomically (temp file in
+    the same dir + os.replace) so a reader never sees a partial
+    manifest. Issue #148: merge.py refuses a run dir without
+    manifest.json, and publish() writes it only into the archive
+    dest — so a fresh worker sweep's merge always refused."""
+    tmp = Path(workdir) / ".manifest.json.tmp"
+    tmp.write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    os.replace(tmp, Path(workdir) / "manifest.json")
+
+
 def maybe_merge(job, workdir, manifest, plan):
     """Issue #67: post-sweep merge hook. Runs scripts/merge.py
     (shared module, stdlib-only) on the just-finished sweep's local
@@ -803,10 +814,20 @@ def _execute(job):
                 stash.mkdir(parents=True, exist_ok=True)
                 (stash / f"{code}.json").write_bytes(cache.read_bytes())
     manifest["finished"] = now()
+    # Issue #148: merge.py requires manifest.json in the run dir,
+    # and publish() writes it only into the archive dest — so a
+    # fresh worker sweep's merge always refused ("no manifest.json
+    # in run dir"). Write the current run manifest into the workdir
+    # before the merge hook reads it.
+    _write_manifest_atomic(workdir, manifest)
     # Issue #67: post-sweep merge hook — fleet + merge publish in
     # one commit. A merge failure never loses the fleet (see
     # maybe_merge): publish() below still runs.
     maybe_merge(job, workdir, manifest, plan)
+    # The merge records its outcome in the in-memory manifest; refresh
+    # the workdir copy so it stays truthful (publish() writes the
+    # same final manifest into the archive dest).
+    _write_manifest_atomic(workdir, manifest)
     if not publish(job, workdir, manifest):
         # Failures must be observable on the bus, not just local.
         try:
