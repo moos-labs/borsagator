@@ -1,0 +1,113 @@
+name: Ledger guard
+
+# Issue #64 backstop: worker-archived sweeps never fire an Actions
+# run, so the orchestrate.yml ledger step cannot see them. This guard
+# runs the same publisher hourly; every run revalidates the ledger
+# (issue #116 removed the tree-sha idempotency skip) and it commits
+# only when the rerun's outputs actually changed. A failed rerun
+# fails this run (the surface), and the next hour retries.
+# Issue #115: recreated 2026-11-16 (delete + re-create via the
+# Contents API) to force a fresh schedule registration — the
+# 09:23Z-14:23Z ticks never fired (six consecutive misses); repo
+# and org Actions settings both rule out the cause.
+# Issue #142: recreated 2026-11-17 (delete + re-create via the
+# Contents API) — the #115 recreate did NOT restore firing: no guard
+# run ever refreshed the seeded heartbeat (22:00:46Z 16 Nov); ticks
+# 23:47Z-05:47Z missed (seven consecutive). The #128/#126 edits
+# followed the #115 recreate; this registration is left undisturbed.
+# Evidence point: the 06:47Z tick.
+# Issue #128: every completed run also writes a timestamped
+# heartbeat (ledger/guard-heartbeat.json) — the watchdog notices a
+# dead guard within 2h, so a missed schedule can never again go
+# unnoticed in-repo.
+
+on:
+  schedule:
+    # Issue #126: staggered off :23 (was "23 * * * *") so the guard
+    # cannot collide with a sweep ledger step by schedule design —
+    # the sweep starts at :15 and its ledger step lands ~2.5h later
+    # at a varying minute, so no minute is collision-proof; the
+    # shared concurrency group below is the real serialization, this
+    # stagger is belt-and-braces.
+    - cron: "47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  # Issue #128: the publisher files a durable ledger-failure signal
+  # issue on failure — it needs issues: write on this path too.
+  issues: write
+
+jobs:
+  ledger-guard:
+    # Issue #126: serialize ledger publishers — same concurrency
+    # group as the orchestrate job (borsagator-ledger-publish), so a
+    # guard tick and a sweep ledger step never publish concurrently.
+    # cancel-in-progress: false so a queued guard run waits instead
+    # of cancelling a sweep in flight (or vice versa). The
+    # publisher's own recompute-and-retry remains the primary
+    # defence; this group is the backstop.
+    concurrency:
+      group: borsagator-ledger-publish
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Publish the ledger if the archive moved
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/ledger_publish.py --commit --fail-hard
+
+      # Issue #128: the guard schedule missed 9 straight ticks (#115)
+      # with nothing in-repo noticing. Every completed guard run
+      # writes a timestamped heartbeat to ledger/guard-heartbeat.json
+      # so the watchdog (ledger-guard-watchdog.yml, every 30 min) can
+      # notice a dead guard within 2h (90-minute staleness threshold).
+      # This step runs even when the publish failed — a failed run
+      # still proves the guard fired — and its status is recorded in
+      # the file. It resets to origin/main FIRST so an unpushed ledger
+      # commit from a failed publish is never smuggled onto main by
+      # the heartbeat push; the heartbeat push itself is non-fatal.
+      - name: Record the guard heartbeat
+        if: always()
+        env:
+          GUARD_OUTCOME: ${{ steps.publish.outcome }}
+          GUARD_RUN_ID: ${{ github.run_id }}
+        run: |
+          git config user.name "borsagator-ledger"
+          git config user.email "moos@sherbeeny.com"
+          git fetch origin main || true
+          git reset --hard origin/main
+          python3 - <<'PYEOF'
+          import json, os
+          from datetime import datetime, timezone
+          outcome = os.environ.get("GUARD_OUTCOME", "unknown")
+          doc = {
+              "last_run_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "run_id": int(os.environ.get("GUARD_RUN_ID") or 0) or None,
+              "status": "ok" if outcome == "success" else "failed",
+              "workflow": "ledger-guard",
+              "note": "Written by every completed ledger-guard run; the watchdog (ledger-guard-watchdog.yml) pages when this is older than 90 minutes.",
+          }
+          os.makedirs("ledger", exist_ok=True)
+          with open("ledger/guard-heartbeat.json", "w", encoding="utf-8") as f:
+              json.dump(doc, f, indent=2)
+              f.write("\n")
+          print(f"heartbeat: {doc['last_run_utc']} status={doc['status']}")
+          PYEOF
+          git add ledger/guard-heartbeat.json
+          if git diff --cached --quiet; then
+            echo "heartbeat unchanged — nothing to commit"
+          else
+            git commit -m "Ledger guard heartbeat $(date -u +%Y-%m-%dT%H:%M:%SZ) (${GUARD_OUTCOME:-unknown})" || exit 0
+            git push origin HEAD:main || echo "heartbeat push failed (non-fatal)"
+          fi
