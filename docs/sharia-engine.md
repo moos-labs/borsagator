@@ -99,6 +99,25 @@ python3 scripts/sharia_engine.py screen \
 python3 scripts/test_sharia_engine.py
 ```
 
+## Report Model section (issue #170)
+
+The Report Model compiler (`scripts/compile_model.py`) projects
+these stored tables into every model's `sharia` block: per selected
+standard the verdict, the ratio table, the purification figures,
+the statement period, the rule-set version and the denominator
+variant where the rule set has one — plus a disagreement flag and
+the **average purification ratio** across the selected standards
+that define one. A standard that defines no purification rule
+(EGX33) is excluded from the average, and the exclusion is listed
+in the block with its reason — never hidden. The compile job takes
+the selection as `--sharia-standards AAOIFI,EGX33`; no selection
+means all implemented standards, and an unknown or unimplemented
+standard refuses the compile instead of being silently dropped.
+`delta.model_to_view` carries the block through to the renderer
+unread by the diff core (the `levels` pattern). The block is
+additive, so the model schema stays `borsagator-report-model/1`.
+Tests: `scripts/test_compile_model_sharia.py`.
+
 ## Adding a standard
 
 Add one JSON file to `scripts/sharia_rules/` (activity screen, ratio

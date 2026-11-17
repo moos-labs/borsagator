@@ -37,6 +37,7 @@ Usage:
     compile_model.py <sweep_dir> [--repo-root PATH]
                      [--archive-sha SHA] [--compiler-sha SHA]
                      [--profiles-dir PATH] [--out PATH]
+                     [--sharia-standards AAOIFI,EGX33]
     compile_model.py --check-model <report-model.json>
 
 The compiler never re-reads the ledger to "correct" a sweep: the
@@ -46,6 +47,25 @@ SHA plus whether they match). It never dedups corporate actions, never
 recomputes a forecast, and never invents a field an input lacks --
 absent input fields normalise to ``null`` and are recorded in
 ``ensemble_shape``.
+
+Sharia section (issue #170): every model carries a ``sharia`` block
+projected from the Sharia engine's stored verdict tables
+(``<repo-root>/sharia/verdicts-<standard>.json``, issue #168) for
+the standards named by ``--sharia-standards`` (default: all
+implemented standards). The compiler consumes the engine's tables
+and API only -- it re-implements no screening logic. An unknown or
+unimplemented standard refuses the compile: the job errors clearly
+rather than silently dropping it. A selected standard with no
+stored row for the ticker renders as ``insufficient-data`` with the
+gap named -- never a blank or silently partial section. Standards
+that define no purification rule (EGX33) are excluded from the
+block's average purification ratio, and the exclusion is shown in
+the block itself, never hidden. The block is additive, so the
+schema stays ``borsagator-report-model/1``: every existing
+consumer reads named fields only (``delta.model_to_view`` carries
+the block through for the renderer, unread by the diff core). A
+change to an existing field's meaning still bumps the version
+under D-7.
 """
 import argparse
 import csv
@@ -783,6 +803,217 @@ def build_benchmark(sweep_dir):
     return out
 
 
+# ---------------------------------------------------------------- sharia
+
+# The average is labelled as exactly what it is -- an average of
+# per-standard ratios -- never as a standard's own figure (#170).
+AVG_PURIFICATION_LABEL_EN = (
+    "Average purification ratio across the selected standards that "
+    "define a purification rule (an average of per-standard ratios; "
+    "not a figure of any single standard)")
+AVG_PURIFICATION_LABEL_AR = (
+    "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير "
+    "(متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)")
+
+
+def _load_sharia_engine():
+    """Import the sibling Sharia engine (issue #168). The compiler
+    consumes its API only -- the implemented-standard list and the
+    framing lines -- and its stored verdict tables; no screening
+    logic is re-implemented here."""
+    scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    try:
+        import sharia_engine
+    except Exception as exc:
+        raise CompileError(f"sharia engine unavailable: {exc}")
+    return sharia_engine
+
+
+def resolve_sharia_standards(requested):
+    """Validate the ``sharia_standards`` job parameter (issue #170).
+
+    ``None`` selects all implemented standards. Any unknown or
+    unimplemented id refuses the compile (fail loudly): the job
+    errors clearly rather than silently dropping the standard.
+    Returns (resolved_ids, engine_module)."""
+    engine = _load_sharia_engine()
+    implemented = engine.available_standards()
+    if requested is None:
+        return list(implemented), engine
+    resolved = []
+    for raw in requested:
+        std = str(raw).strip().upper()
+        if not std:
+            continue
+        if std not in implemented:
+            raise CompileError(
+                f"unknown sharia standard {raw!r} in "
+                f"sharia_standards: implemented standards are "
+                f"{', '.join(implemented)}")
+        if std not in resolved:
+            resolved.append(std)
+    if not resolved:
+        raise CompileError(
+            "sharia_standards parameter names no standard")
+    return resolved, engine
+
+
+def load_sharia_table(repo_root, standard):
+    """Load the engine's stored verdict table
+    ``<repo-root>/sharia/verdicts-<standard>.json``; ``None`` when
+    the table file is absent or unreadable (the section renders
+    that as insufficient-data, never as a silent skip)."""
+    path = os.path.join(repo_root, "sharia",
+                        f"verdicts-{standard.lower()}.json")
+    if not os.path.isfile(path):
+        return None
+    try:
+        doc = _load_json_lenient(path)
+    except Exception:
+        return None
+    return doc if isinstance(doc, dict) else None
+
+
+def build_sharia_section(ticker, requested, standards, tables,
+                         engine):
+    """Assemble the model's ``sharia`` block (issue #170) from the
+    engine's stored verdict tables. Pure projection of the rows the
+    engine emitted: verdict, ratio table, purification, statement
+    period, rule-set version, the denominator variant where the
+    rule set has one, and the not-a-fatwa framing -- in both
+    languages, at section level and on every per-standard entry.
+
+    A selected standard whose table is missing, or which has no
+    row for the ticker, renders as ``insufficient-data`` with the
+    gap named in ``missing_inputs``. The average purification
+    ratio covers only the selected standards that define a
+    purification rule AND produced a ratio; every other selected
+    standard is listed under ``excluded`` with its reason.
+    Returns (section, flags)."""
+    entries = []
+    flags = []
+    included = []
+    excluded = []
+    for std in standards:
+        table = tables.get(std)
+        meta = (table or {}).get("standard") or {}
+        entry = {
+            "standard": std,
+            "name_en": meta.get("name_en"),
+            "name_ar": meta.get("name_ar"),
+            "ruleset_version": meta.get("ruleset_version"),
+            "engine_version": (table or {}).get("engine_version"),
+            "source_table": f"sharia/verdicts-{std.lower()}.json",
+            "table_generated_at": (table or {}).get("generated_at"),
+            "verdict": "insufficient-data",
+            "statement_period": None,
+            "screening_date": None,
+            "parameters": {},
+            "denominator_variant": None,
+            "activity": {"classification": None,
+                         "evidence_source": None},
+            "ratios": [],
+            "purification": {"defined": False, "ratio": None,
+                             "per_share": None},
+            "missing_inputs": [],
+            "framing_en": engine.FRAMING_EN,
+            "framing_ar": engine.FRAMING_AR,
+        }
+        row = None
+        if table is None:
+            entry["missing_inputs"] = [
+                f"stored verdict table "
+                f"sharia/verdicts-{std.lower()}.json"]
+            flags.append(f"sharia-table-missing: {std}")
+        else:
+            row = next((r for r in table.get("rows") or []
+                        if r.get("ticker") == ticker), None)
+            if row is None:
+                entry["missing_inputs"] = [
+                    f"verdict row for {ticker} in "
+                    f"sharia/verdicts-{std.lower()}.json"]
+                flags.append(f"sharia-row-missing: {std} {ticker}")
+        if row is not None:
+            entry.update({
+                "ruleset_version": row.get("ruleset_version"),
+                "engine_version": row.get("engine_version"),
+                "verdict": row.get("verdict"),
+                "statement_period": row.get("statement_period"),
+                "screening_date": row.get("screening_date"),
+                "parameters": row.get("parameters") or {},
+                "denominator_variant":
+                    (row.get("parameters") or {}).get(
+                        "denominator_variant"),
+                "activity": row.get("activity") or entry["activity"],
+                "ratios": row.get("ratios") or [],
+                "purification": row.get("purification")
+                or entry["purification"],
+                "missing_inputs": row.get("missing_inputs") or [],
+                "framing_en": row.get("framing_en")
+                or engine.FRAMING_EN,
+                "framing_ar": row.get("framing_ar")
+                or engine.FRAMING_AR,
+            })
+            if entry["verdict"] == "insufficient-data":
+                flags.append(f"sharia-insufficient-data: {std}")
+        entries.append(entry)
+
+        # Average-purification membership is decided here, where
+        # row presence is known, so the exclusion reason is exact.
+        purification = entry["purification"] or {}
+        if row is None:
+            excluded.append({
+                "standard": std,
+                "reason": "no verdict row (insufficient-data)"})
+        elif not purification.get("defined"):
+            excluded.append({
+                "standard": std,
+                "reason": "standard defines no purification rule"})
+        elif purification.get("ratio") is None:
+            excluded.append({
+                "standard": std,
+                "reason": "purification ratio unavailable "
+                          "(insufficient-data)"})
+        else:
+            included.append({"standard": std,
+                             "ratio": purification["ratio"]})
+
+    # Disagreement is judged on determinate verdicts only: an
+    # insufficient-data entry is an absence of a verdict, not a
+    # dissenting one.
+    determinate = [e["verdict"] for e in entries
+                   if e["verdict"] != "insufficient-data"]
+    disagreement = len(set(determinate)) > 1
+
+    average = None
+    if included:
+        average = round(
+            sum(item["ratio"] for item in included)
+            / len(included), 6)
+
+    section = {
+        "requested": list(requested) if requested is not None
+        else None,
+        "selection": "parameter" if requested is not None
+        else "default-all-implemented",
+        "standards": entries,
+        "verdicts": {e["standard"]: e["verdict"] for e in entries},
+        "disagreement": disagreement,
+        "average_purification": {
+            "value": average,
+            "label_en": AVG_PURIFICATION_LABEL_EN,
+            "label_ar": AVG_PURIFICATION_LABEL_AR,
+            "included": included,
+            "excluded": excluded,
+        },
+        "framing_en": engine.FRAMING_EN,
+        "framing_ar": engine.FRAMING_AR,
+    }
+    return section, flags
+
+
 # ---------------------------------------------------------------- compile
 
 def _sweep_rel_path(sweep_dir):
@@ -805,7 +1036,8 @@ def _run_id_from(sweep_dir, manifest):
 
 
 def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
-                  compiler_sha=None, profiles_dir=None):
+                  compiler_sha=None, profiles_dir=None,
+                  sharia_standards=None):
     """Compile one sweep dir into a Report Model dict. Raises
     CompileError on a fail-loudly refusal (F-1 / F-5 / F-9 / F-6 /
     F-10). Degraded models are returned with their flags."""
@@ -867,6 +1099,11 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
             f"digest without finished in {sweep_dir} (sweep shape)")
     if not finished:
         flags.append("finished-missing")
+
+    # ---- sharia parameter (issue #170): validate FIRST, so an
+    # ---- unknown standard refuses before any heavy verification.
+    sharia_resolved, sharia_engine_mod = resolve_sharia_standards(
+        sharia_standards)
 
     ensemble = None
     ensemble_absent = not os.path.isfile(ensemble_path)
@@ -1334,6 +1571,15 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
     llm, llm_flags = build_llm(tools, family_scores)
     flags.extend(llm_flags)
 
+    # ---- sharia section (issue #170): projection of the engine's
+    # ---- stored verdict tables from the main checkout.
+    sharia_tables = {std: load_sharia_table(repo_root, std)
+                     for std in sharia_resolved}
+    sharia, sharia_flags = build_sharia_section(
+        ticker, sharia_standards, sharia_resolved, sharia_tables,
+        sharia_engine_mod)
+    flags.extend(sharia_flags)
+
     model = {
         "model_version": MODEL_VERSION,
         "schema": SCHEMA,
@@ -1400,6 +1646,7 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         "reaction_profile": reaction_profile,
         "llm": llm,
         "benchmark": build_benchmark(sweep_dir),
+        "sharia": sharia,
         "flags": flags,
         "metrics_schema": "untyped-flat",
     }
@@ -1473,6 +1720,13 @@ def main(argv=None):
     ap.add_argument("--out", default=None,
                     help="model output path (default: "
                          "<sweep_dir>/report-model.json)")
+    ap.add_argument("--sharia-standards", default=None,
+                    action="append",
+                    help="Sharia standards for the model's sharia "
+                         "section (issue #170): comma-separated "
+                         "and/or repeatable; default: all "
+                         "implemented standards. An unknown "
+                         "standard refuses the compile.")
     ap.add_argument("--check-model", default=None,
                     help="consumer schema check for a model file "
                          "(exits 2 when unsupported)")
@@ -1498,12 +1752,18 @@ def main(argv=None):
         os.path.normpath(args.sweep_dir), "report-model.json")
     error_path = os.path.join(
         os.path.dirname(out_path), "compile_error.txt")
+    sharia_standards = None
+    if args.sharia_standards:
+        sharia_standards = [
+            part.strip() for chunk in args.sharia_standards
+            for part in chunk.split(",") if part.strip()]
     try:
         model = compile_sweep(
             args.sweep_dir, repo_root=args.repo_root,
             archive_sha=args.archive_sha,
             compiler_sha=args.compiler_sha,
-            profiles_dir=args.profiles_dir)
+            profiles_dir=args.profiles_dir,
+            sharia_standards=sharia_standards)
     except CompileError as exc:
         message = f"compile refused: {exc}\n"
         print(message, end="", file=sys.stderr)
