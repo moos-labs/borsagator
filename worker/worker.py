@@ -810,7 +810,13 @@ def self_update():
     worker keeps running the old, reviewed code. Fixes still reach
     the worker over the bus with no relaunch; what changes is that
     only reviewed, promoted code can arrive.
-    (Replaces the old pull-from-main-tip hook.)"""
+    (Replaces the old pull-from-main-tip hook.)
+    Promotion PRs must come from a frozen `promote/<sha>` branch
+    pinned to the exact reviewed SHA — never from live `main` —
+    and are gated by scripts/promote.py + docs/promotion.md
+    (issue #145). This guard alone cannot tell a reviewed
+    descendant from an unreviewed one; the frozen candidate is
+    what makes the descendant reviewed."""
     global UPDATE_ERROR
     _ensure_update_checkout()
     if not CODE.exists():
