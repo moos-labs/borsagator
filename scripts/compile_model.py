@@ -620,23 +620,41 @@ def read_news_items(sweep_dir, filename):
 
 def ex_date_adjustment(last_date, base_date, corporate_actions):
     """Mechanical adjustment for a series whose last close predates
-    an ex-date inside (last_date, base_date]: the first dated action
-    in that window, as a fraction (mechanical_pct / 100), or None
-    when no dated action applies."""
+    an ex-date inside (last_date, base_date]: the COMPOUNDED
+    fraction of EVERY dated action in that window, or None when no
+    dated action applies.
+
+    Each action's mechanical_pct is ``-dps / base * 100`` against
+    the same ensemble base (ensemble.py), so two in-window actions
+    drop the price by dps1 + dps2 off that one base -- the
+    compounded fraction is the SUM of the fractions. (Multiplicative
+    compounding would understate the drop by the m1*m2 cross-term
+    and is wrong for this definition.) In-window actions are summed
+    in (ex_date, mechanical_pct) order so the result never depends
+    on disclosure-item order. An unparseable mechanical_pct on any
+    in-window action returns None (fail closed, as before: the
+    tripwire then compares the unadjusted close and can only
+    false-flag, never false-pass)."""
     if not last_date or not base_date:
         return None
-    actions = corporate_actions or []
-    for action in actions:
+    in_window = []
+    for action in corporate_actions or []:
         ex_date = action.get("ex_date")
         mech = action.get("mechanical_pct")
         if not ex_date or mech is None:
             continue
         if last_date < ex_date <= base_date:
-            try:
-                return float(mech) / 100.0
-            except (TypeError, ValueError):
-                return None
-    return None
+            in_window.append((ex_date, mech))
+    if not in_window:
+        return None
+    total = 0.0
+    for _ex_date, mech in sorted(in_window, key=lambda pair: (
+            pair[0], str(pair[1]))):
+        try:
+            total += float(mech) / 100.0
+        except (TypeError, ValueError):
+            return None
+    return total
 
 
 def tripwire(digest, ensemble, series, base_source):
