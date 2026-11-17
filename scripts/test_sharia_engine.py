@@ -403,7 +403,11 @@ def test_screen_table_shape_and_framing():
 
 
 def test_rulesets_are_declarative_files():
-    assert se.available_standards() == ["AAOIFI", "EGX33"]
+    # Issue #169 added MSCI, MSCI_M, FTSE and ISLAMICLY as further
+    # declarative files; S&P Shariah / DJIM are draft-disabled
+    # under scripts/sharia_rules_draft/ and must NOT appear here.
+    assert se.available_standards() == [
+        "AAOIFI", "EGX33", "FTSE", "ISLAMICLY", "MSCI", "MSCI_M"]
     assert len(AAOIFI["ratios"]) == 3 and len(EGX33["ratios"]) == 4
     for rs in (AAOIFI, EGX33):
         assert rs["ruleset_version"] == "1.0.0"

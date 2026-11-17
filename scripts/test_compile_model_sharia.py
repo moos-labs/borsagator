@@ -224,7 +224,13 @@ def test_default_selection_all_implemented():
     assert section["requested"] is None
     assert [e["standard"] for e in section["standards"]] == \
         se.available_standards()
-    assert set(section["verdicts"]) == {"AAOIFI", "EGX33"}
+    assert set(section["verdicts"]) == {
+        "AAOIFI", "EGX33", "FTSE", "ISLAMICLY", "MSCI", "MSCI_M"}
+    # The fixture repo carries tables only for AAOIFI + EGX33;
+    # the packs added by issue #169 render insufficient-data
+    # (missing table), never a silent skip.
+    for std in ("FTSE", "ISLAMICLY", "MSCI", "MSCI_M"):
+        assert section["verdicts"][std] == "insufficient-data"
 
 
 def test_subset_selection_egx33_only():
@@ -245,7 +251,10 @@ def test_subset_selection_egx33_only():
 
 def test_unknown_standard_refused():
     _tmp, repo, sweep, profiles = fixture_env()
-    for bad in (["AAOIFI", "MSCI"], ["nope"], []):
+    # DJIM stands in for an unimplemented standard: it ships
+    # draft-disabled (issue #169 pin gate), so it must refuse the
+    # compile exactly like any unknown id.
+    for bad in (["AAOIFI", "DJIM"], ["nope"], []):
         try:
             compile_fixture(repo, sweep, profiles, bad)
         except compile_model.CompileError as exc:

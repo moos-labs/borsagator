@@ -401,7 +401,10 @@ def test_validation_fails_loudly():
         return False
     base = dict(snapshot=AAOIFI_SNAPSHOT, shares=SHARES,
                 buy_date="2026-11-02", sell_date="2026-11-20")
-    assert refused(**{**base, "standards": ["MSCI"]})
+    # DJIM is draft-disabled (issue #169 pin gate), hence an
+    # unknown standard for the calculator, like any unimplemented
+    # id. (MSCI itself became implemented in #169.)
+    assert refused(**{**base, "standards": ["DJIM"]})
     assert refused(**{**base, "standards": []})
     assert refused(**{**base, "shares": 0})
     assert refused(**{**base, "shares": -5})

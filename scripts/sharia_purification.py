@@ -333,8 +333,15 @@ def _calculate_standard(snapshot, ruleset, params, shares,
                     window_end=end.isoformat()),
             })
 
-    # --- engine figures the calculator needs
-    if pur["ratio"] is None or pur["per_share"] is None:
+    # --- engine figures the calculator needs: the purification
+    # ratio always; the per-share figure only where the rule set
+    # declares a capital component (issue #169: MSCI / FTSE /
+    # Islamicly publish a dividend purification ratio only, and
+    # their rows carry no per-share figure).
+    declaration = (ruleset.get("purification") or {}).get(
+        "capital_component") or {}
+    if pur["ratio"] is None or (declaration.get("applies")
+                                and pur["per_share"] is None):
         entry["status"] = STATUS_INSUFFICIENT
         return entry
 
@@ -352,8 +359,6 @@ def _calculate_standard(snapshot, ruleset, params, shares,
 
     # --- capital component, where the rule set declares it
     cap = entry["components"]["capital"]
-    declaration = (ruleset.get("purification") or {}).get(
-        "capital_component") or {}
     cap["applies"] = bool(declaration.get("applies"))
     cap["method"] = declaration.get("method")
     if not cap["applies"]:

@@ -18,10 +18,13 @@ Sharia standard. It never copies another site's verdicts.
 | Piece | Path |
 |---|---|
 | Engine (data model, rule evaluation, CLI) | `scripts/sharia_engine.py` |
-| Rule sets (declarative JSON, one file per standard) | `scripts/sharia_rules/aaoifi.json`, `scripts/sharia_rules/egx33.json` |
+| Rule sets (declarative JSON, one file per standard) | `scripts/sharia_rules/aaoifi.json`, `scripts/sharia_rules/egx33.json`, `scripts/sharia_rules/msci.json`, `scripts/sharia_rules/msci_m.json`, `scripts/sharia_rules/ftse.json`, `scripts/sharia_rules/islamicly.json` |
+| Draft-disabled rule sets (pin gate unmet, NOT loaded) | `scripts/sharia_rules_draft/sp_shariah.json`, `scripts/sharia_rules_draft/djim.json` |
 | Covered-universe input snapshot | `scripts/sharia_fixtures/covered_universe.json` |
-| Stored verdict tables (generated, committed) | `sharia/verdicts-aaoifi.json`, `sharia/verdicts-egx33.json` |
+| Stored verdict tables (generated, committed) | `sharia/verdicts-<standard>.json` |
 | Tests | `scripts/test_sharia_engine.py` |
+| Standard-pack tests (issue #169) | `scripts/test_sharia_packs.py` |
+| Verdict-diff report (issue #169) | `scripts/sharia_diff.py`, `sharia/verdict-diff.json`, `sharia/verdict-diff.md` |
 | Purification calculator (issue #171) | `scripts/sharia_purification.py` |
 | Calculator tests | `scripts/test_sharia_purification.py` |
 | Accuracy benchmark vs Musaffa / Faisal / Ostool / EGX33 (issue #172) | `scripts/sharia_benchmark.py`, `docs/sharia-benchmark.md` |
@@ -77,6 +80,90 @@ quoted by the committee's vice-chair and EGX's August 2025 review
 release state 5%. The rule set encodes **5%** as operative and records
 the 10% figure in its `documented_conflicts`.
 
+**MSCI** — MSCI Islamic Index Series Methodology (May 2025),
+encoded from MSCI's own published methodology document.
+Business screen: more than 5% cumulative revenue (interest income
+included, against total income) from alcohol, tobacco/cannabis,
+pork, conventional financial services, defence/weapons, gambling,
+music, hotels, cinema or adult entertainment excludes the stock.
+Ratios vs **total assets**: total debt ≤ 33.33%; cash +
+interest-bearing securities ≤ 33.33%; accounts receivable + cash
+≤ 70%. The methodology's entry/exit buffers (30%/35%; 46%/none)
+govern index membership, so they are recorded per ratio as
+`buffers` metadata — the encoded threshold is the Financial Ratio
+Threshold. Purification is defined (§2.3): MSCI's dividend
+adjustment factor means the share of a dividend to purify is the
+non-permissible income share — the engine's ratio. MSCI publishes
+no per-share figure, so the rule set defines a ratio only.
+
+**MSCI_M** — the MSCI Islamic **M-Series** (same methodology,
+§2.2.2): the same numerators against the trailing **36-month
+average market capitalisation** instead of total assets, with the
+receivables-and-cash threshold at **49%** (entry buffer 46%; the
+M-Series table publishes no exit buffers). It ships as its own
+rule-set file, mirroring MSCI's two-series structure, because the
+engine's parameter mechanism swaps a denominator only and cannot
+also change a threshold.
+
+**FTSE** — FTSE Shariah (screening by Yasaar Limited, fatwa-
+certified by Yasaar's Shariah Supervisory Board), encoded from
+FTSE Russell's own published criteria (index factsheet, data as
+at 30 Oct 2026; Board Opinion, 2025-02-03) — Kashif's summary of
+this standard is imprecise and was used only as a cross-check.
+Sector screen (conventional finance, alcohol, pork/non-halal
+food, entertainment, tobacco, weapons/defence), then ratios vs
+**total assets**, all "less than": debt < 33.333%; cash +
+interest-bearing items < 33.333%; accounts receivable + cash
+< 50%; and total interest and non-compliant income "should not
+exceed" 5% of revenue (the one non-strict comparison). Dividend
+purification is defined (Yasaar calculates the percentage of
+dividends derived from interest income or prohibited activities);
+no per-share figure is published. One wording conflict is
+documented: the Board Opinion words the cash limit "should not
+exceed" where the current factsheets say "less than" — the
+factsheets' strict reading is operative.
+
+**ISLAMICLY** — Islamicly's own criteria (in-house Shariah
+Advisory Board; "in convergence with AAOIFI"), encoded from
+Islamicly's published screening page. All ratios vs the
+**36-month average market value of equity**, all strict: debt
+< 30%; accounts receivable < 49%; non-permissible revenue
+(incl. all interest income) < 5%; and a published dividend
+purification (DP) ratio = non-permissible revenue / total
+revenue. **Documented conflict:** the page states the cash +
+interest-bearing securities ratio as 33% in its Cash Compliance
+section and as < 30% in its Leverage Compliance section. The
+operative value is **< 30%** — the Leverage section states the
+operative compliance inequality, it is the stricter of the
+provider's two figures, and it matches the AAOIFI limit
+Islamicly claims convergence with; the 33% figure is recorded
+in `documented_conflicts`.
+
+**Draft-disabled: SP_SHARIAH and DJIM.** Issue #169's pin gate
+requires S&P DJI's own current methodology before encoding.
+Those documents live on spglobal.com, which could not be
+fetched from the build environment, and the rulebooks changed
+materially on 2026-09-21 (debt/cash limits 33% → 30%), while
+secondary summaries conflict on whether the accounts-receivable
+screen survives the revision. The packs therefore ship as
+explicitly disabled drafts in `scripts/sharia_rules_draft/`
+(status + reason + the unpinned secondary reports recorded);
+the engine never loads that directory, the Report Model refuses
+them like any unimplemented standard, and no figure in them is
+encoded as a ratio.
+
+**Verdict diff (issue #169).** `scripts/sharia_diff.py` compares
+the stored tables across standards: every determinate
+disagreement of a new pack with AAOIFI / EGX33 is reported with
+the flipping ratio named (`sharia/verdict-diff.json` /
+`.md`). Over today's covered universe every standard is
+insufficient-data on POUL.CA, so the stored diff honestly
+reports zero determinate disagreements and lists the pairs as
+indeterminate; the flipping-ratio machinery is proven on
+hand-computed fixtures in `scripts/test_sharia_packs.py`
+(including the canonical MSCI-vs-MSCI_M flip on identical
+financials, driven by `receivables_and_cash`).
+
 ## Data model
 
 One snapshot per ticker per statement period: activity classification
@@ -90,9 +177,9 @@ the engine itself does no network I/O.
 
 Today's covered universe is POUL.CA only, and its fleet data carries
 just shares outstanding (1,789,351,397) plus the Nov 2026 dividend
-event — so the stored tables honestly read `insufficient-data` for both
-standards, naming every missing input. That is the designed behaviour,
-not an error.
+event — so the stored tables honestly read `insufficient-data` for
+every implemented standard, naming every missing input. That is the
+designed behaviour, not an error.
 
 ## Run it
 
@@ -208,10 +295,17 @@ as unavailable with the attempts on record.
 Add one JSON file to `scripts/sharia_rules/` (activity screen, ratio
 definitions with numerator/denominator/threshold, parameters,
 purification definition, sources, documented conflicts) plus tests.
-No engine-code change. The remaining published packs (MSCI Islamic,
-FTSE Shariah, S&P Shariah / DJIM) are scoped in the follow-up issue of
-this series; entry/exit buffers are already reserved in the schema for
-standards that define them.
+A ratio's numerator may name one field or a list of fields to sum
+(MSCI's and FTSE's composite numerators), and a purification
+definition may be ratio-only (`per_share_definition` null) where
+the standard publishes no per-share figure — both forms were added
+with issue #169 and every earlier rule set evaluates identically
+under them. Entry/exit buffers are recorded as per-ratio `buffers`
+metadata where a standard defines them (MSCI); they govern index
+membership, not the screening threshold. The packs added in
+issue #169 (MSCI, MSCI_M, FTSE, Islamicly) needed no other
+engine change; S&P Shariah / DJIM remain draft-disabled under
+`scripts/sharia_rules_draft/` until their pin gate is met.
 
 ## Decisions taken where the issue left room
 
