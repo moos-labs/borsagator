@@ -68,7 +68,12 @@ ENTRANTS = ("family-price-forecast", "family-technicals",
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
 LLM_MODEL = "command-r-08-2024"
-LLM_URL_DEFAULT = "https://api.cohere.com/v1/chat"
+# v2 endpoint: the request body ({messages, response_format}) and
+# the response parse (message.content) are the v2 contract — v1
+# uses `message`/`text` and rejects this model with "this model is
+# not supported with '/v1/chat', please use '/v2/chat' instead"
+# (Cohere migration guide, docs.cohere.com/docs/migrating-v1-to-v2).
+LLM_URL_DEFAULT = "https://api.cohere.com/v2/chat"
 DIRECTIONS = ("up", "down", "flat")
 
 # Pinned literals, used only when the ensemble import fails (the
