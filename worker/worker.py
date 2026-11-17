@@ -27,6 +27,7 @@ every poll cycle the worker checks it and enqueues a deterministic
 only a fallback (staggered to 06:45 UTC, with a skip-check on today's
 claim) until the worker schedule has fired correctly twice.
 """
+import hashlib
 import json
 import os
 import re
@@ -54,6 +55,31 @@ UPDATE_BRANCH = os.environ.get("GATOR_UPDATE_BRANCH", "worker-release")
 UPDATE_PIN = os.environ.get("GATOR_PIN_SHA", "")
 CODE = ROOT / "release"      # release-branch checkout (was ROOT/"main")
 UPDATE_ERROR = None          # last self-update refusal, in heartbeat
+
+
+def _sha256_file(path):
+    try:
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    except Exception:
+        return ""
+
+
+# Issue #160: the code the RUNNING process loaded, hashed once at
+# import. The heartbeat used to report update_checkout_sha() — the
+# /opt/gator/release checkout's HEAD — so after a checkout of the new
+# tip a failed me.write_bytes / os.execv (swallowed by
+# `except Exception: pass`) left the heartbeat claiming the new SHA
+# while old code ran. Hashing the file at heartbeat time would still
+# lie in that window (a successful write + failed execv leaves new
+# bytes on disk under an old process); the import-time hash is the
+# bytes this process actually loaded, and a successful execv re-imports
+# (and re-hashes) in the new process.
+RUNNING_CODE_SHA = _sha256_file(Path(__file__).resolve())
+
+
+def running_code_sha():
+    """SHA-256 of the running worker.py bytes (issue #160)."""
+    return RUNNING_CODE_SHA
 # Panel round 2 (Gemini review, 2026-11-14): the bus credential must
 # never reach a tool's process environment — tools have dumped env in
 # debug logs before, and results are pushed to a public archive.
@@ -141,7 +167,13 @@ def heartbeat():
     (BUS / "queue").mkdir(exist_ok=True)
     payload = {"worker": os.uname().nodename, "at": now(),
                "version": "worker-v1",
-               "code_sha": update_checkout_sha(),
+               # Issue #160: code_sha is the hash of the RUNNING code,
+               # not the release checkout's HEAD (update_checkout_sha
+               # lies after a failed adopt). checkout_sha keeps the
+               # checkout HEAD visible for diagnostics.
+               "code_sha": running_code_sha(),
+               "code_sha_kind": "sha256-running-bytes",
+               "checkout_sha": update_checkout_sha(),
                "update_branch": UPDATE_BRANCH}
     if QUEUE_ERROR:
         # A malformed queue.json must not idle the fleet behind a
@@ -977,8 +1009,17 @@ def self_update():
         if src.exists() and src.read_bytes() != me.read_bytes():
             me.write_bytes(src.read_bytes())
             os.execv(sys.executable, [sys.executable, str(me)])
-    except Exception:
-        pass
+    except Exception as e:
+        # Issue #160: a failed write/execv must NOT be silent. The old
+        # `except Exception: pass` left UPDATE_ERROR None, so the next
+        # heartbeat claimed the new SHA while this (old) process kept
+        # running. Record the failure; the heartbeat carries it.
+        # (os.execv never returns on success, so reaching here after a
+        # successful write means the exec failed and old code runs
+        # under new bytes on disk — the import-time RUNNING_CODE_SHA
+        # still reports the old code, correctly.)
+        UPDATE_ERROR = (f"self-update failed to adopt {tip[:12]}: "
+                        f"{type(e).__name__}: {e}; running old code")
 
 
 def main():
