@@ -75,9 +75,13 @@ DEGRADED_REASONS = ("keyless", "partial-fleet", "no-base-price",
 # (the 25% anchor ``realized_sigma`` uses, ensemble.py:311-315).
 SANITY_PCT = 0.25
 # A credential key is an exact known name, an ``_API_KEY`` suffix,
-# or a TOKEN / SECRET / PASSWORD-style underscore component. A bare
-# ``KEY`` component alone is NOT enough: tools legitimately emit
-# ``*_stat_key`` metrics (bt), which are data, not credentials.
+# or a TOKEN / SECRET / PASSWORD-style component. The component test
+# is a SUBSTRING test, not a whole-part test: concatenated /
+# camelCase spellings (apiKey, accessToken, clientSecret, secretKey)
+# split to a single part and would otherwise match nothing (#150).
+# A bare ``KEY`` alone is NOT enough: tools legitimately emit
+# ``*_stat_key`` metrics (bt), which are data, not credentials —
+# ``KEY`` only counts together with ``API``.
 SECRET_PATTERNS = ("TOKEN", "SECRET", "PASSWORD", "PRIVATE",
                    "BEARER", "SESSION", "COOKIE", "CREDENTIAL", "AUTH")
 KNOWN_SECRET_NAMES = ("COHERE_API_KEY", "SIMFIN_API_KEY",
@@ -210,15 +214,21 @@ def _git_rev_parse(repo_dir, rev):
 def _is_secret_key(key):
     """A metric/summary key that names a credential (R-12). Exact
     known names, an ``_API_KEY`` suffix, or a TOKEN / SECRET /
-    PASSWORD-style underscore component. A bare ``KEY`` component
-    (``total_return_stat_key``) is a tool metric, not a credential,
-    and is kept."""
+    PASSWORD-style component. The component test is a SUBSTRING
+    test on the upper-cased key, so concatenated / camelCase
+    spellings (``apiKey``, ``accessToken``, ``clientSecret``,
+    ``secretKey``) are caught too (#150). A bare ``KEY`` alone
+    (``total_return_stat_key``, ``monkey``) is a tool metric, not
+    a credential, and is kept — ``KEY`` only counts together with
+    ``API``."""
     upper = str(key).upper()
     if upper in KNOWN_SECRET_NAMES:
         return True
-    parts = re.split(r"[^A-Z0-9]+", upper)
-    if "API" in parts and "KEY" in parts:
+    if any(p in upper for p in ("TOKEN", "SECRET", "PASSWORD")):
         return True
+    if "API" in upper and "KEY" in upper:
+        return True
+    parts = re.split(r"[^A-Z0-9]+", upper)
     return any(p in SECRET_PATTERNS for p in parts)
 
 
