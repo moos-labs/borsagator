@@ -1,0 +1,1154 @@
+{
+  "archive_commit": "6462dd63bf5cd3325ed2432a79de75e0b56f3483",
+  "benchmark": {
+    "entrants": [],
+    "files": {},
+    "present": false,
+    "statuses": {}
+  },
+  "coercion_failed": [],
+  "corporate_actions": [
+    {
+      "date_basis": null,
+      "dps": 1.89,
+      "ex_date": null,
+      "mechanical_pct": -18.62,
+      "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل",
+      "type": "dividend"
+    },
+    {
+      "date_basis": null,
+      "dps": 1.9,
+      "ex_date": null,
+      "mechanical_pct": -18.72,
+      "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة",
+      "type": "dividend"
+    }
+  ],
+  "date": "2026-11-15",
+  "degraded": null,
+  "degraded_derived": false,
+  "ensemble": {
+    "base_price": 10.15,
+    "base_source": "pandas-ta",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [
+      {
+        "date_basis": null,
+        "dps": 1.89,
+        "ex_date": null,
+        "mechanical_pct": -18.62,
+        "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل",
+        "type": "dividend"
+      },
+      {
+        "date_basis": null,
+        "dps": 1.9,
+        "ex_date": null,
+        "mechanical_pct": -18.72,
+        "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة",
+        "type": "dividend"
+      }
+    ],
+    "date": "2026-11-15",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": -0.258,
+      "sentiment": 0.003,
+      "technicals": 0.297
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.21,
+        "families": {
+          "price-forecast": 0.343,
+          "sentiment": 0.003,
+          "technicals": 0.297
+        },
+        "horizon_short": false,
+        "net_score": 0.242,
+        "range_high_pct": 5.84,
+        "range_low_pct": -3.42,
+        "trading_sessions": 1
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "down",
+        "expected_move_pct": -1.91,
+        "families": {
+          "fundamentals": 0.4,
+          "price-forecast": -0.258,
+          "sentiment": 0.003,
+          "technicals": 0.297
+        },
+        "horizon_short": false,
+        "net_score": 0.162,
+        "range_high_pct": 16.61,
+        "range_low_pct": -20.44,
+        "trading_sessions": 14
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "down",
+        "expected_move_pct": -1.0,
+        "families": {
+          "price-forecast": -0.213,
+          "sentiment": 0.003,
+          "technicals": 0.297
+        },
+        "horizon_short": false,
+        "net_score": 0.001,
+        "range_high_pct": 7.29,
+        "range_low_pct": -9.28,
+        "trading_sessions": 3
+      }
+    },
+    "price_crosscheck": {
+      "base_source_used": "pandas-ta",
+      "base_used": 10.15,
+      "common_date": "2026-11-11",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_poul.csv": 10.2,
+        "openbb/poul_ca.csv": 10.199999809265137,
+        "pandas-ta/indicators.csv": 10.199999809265137,
+        "talib/indicators.csv": 10.199999809265137,
+        "yahooquery/poul.ca.csv": 10.199999809265137
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "medium",
+          "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل",
+          "type": "dividend"
+        },
+        {
+          "severity": "high",
+          "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.66,
+        "max3": 0.66
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.66,
+    "sigma_daily": 0.0225,
+    "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0186)",
+    "ticker": "POUL.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": false,
+    "has_base_date": false,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": false,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": -0.258,
+    "sentiment": 0.003,
+    "technicals": 0.297
+  },
+  "finished": "2026-11-15T14:05:08.799460+00:00",
+  "flags": [
+    "kronos-ex-rescale-not-recorded: ensemble predates #130 rescale code",
+    "undated-actions: 2",
+    "recommendation-stale: profile as_of 2026-11-13 base 10.15 != sweep 2026-11-15 base 10.15"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.21,
+      "families": {
+        "price-forecast": 0.343,
+        "sentiment": 0.003,
+        "technicals": 0.297
+      },
+      "horizon_short": false,
+      "net_score": 0.242,
+      "range_high_pct": 5.84,
+      "range_low_pct": -3.42,
+      "trading_sessions": 1
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "down",
+      "expected_move_pct": -1.91,
+      "families": {
+        "fundamentals": 0.4,
+        "price-forecast": -0.258,
+        "sentiment": 0.003,
+        "technicals": 0.297
+      },
+      "horizon_short": false,
+      "net_score": 0.162,
+      "range_high_pct": 16.61,
+      "range_low_pct": -20.44,
+      "trading_sessions": 14
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "down",
+      "expected_move_pct": -1.0,
+      "families": {
+        "price-forecast": -0.213,
+        "sentiment": 0.003,
+        "technicals": 0.297
+      },
+      "horizon_short": false,
+      "net_score": 0.001,
+      "range_high_pct": 7.29,
+      "range_low_pct": -9.28,
+      "trading_sessions": 3
+    }
+  },
+  "job": "sweep-lite POUL.CA market=EGX",
+  "job_shape": "sweep-lite POUL.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 0,
+      "excluded_flagged": 4,
+      "forecasts": 63,
+      "invalid": 3,
+      "matured": 9,
+      "pending": 51,
+      "sweeps": 44,
+      "sweeps_with_ensemble": 23
+    },
+    "tree_sha": "2250aa8399b70f32f7959a6541134e8fe262a549",
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "0b4830e811c0cf2348c5beb67e77ef916152ca9e564a815505a5ddeb4b602a4c",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "descriptive-conditional levels (D2); not a buy/sell instruction",
+    "resistance": 10.8899,
+    "support": 9.2081
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 1,
+  "news": {
+    "disclosure_count": 2,
+    "disclosure_items": [
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "3d32d7ca8892506d",
+        "key_type": "title-date-hash",
+        "source": "معلومات مباشر",
+        "title": "العنوان : القاهرة للدواجن (POUL.CA) قرار لجنة القيد بجلستها المنعقدة بتاريخ 28/10/2026اسم الشركة : القاهرة للدواجنكود الترقيم الدولي : EGS02 - معلومات مباشر"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 06:28:13 GMT",
+        "identity_key": "f8507bc8b2e3b005",
+        "key_type": "title-date-hash",
+        "source": "معلومات مباشر",
+        "title": "العنوان: القاهرة للدواجن (POUL.CA) - ملخص قرارات الجمعية العامة العادية المنعقدة في 18/10/2026اسم الشركة: القاهرة للدواجنكود الترقيم الدولي - معلومات مباشر"
+      }
+    ],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": "2026-10-28T07:00:00Z",
+    "latest_disclosure_date_raw": "Wed, 28 Oct 2026 07:00:00 GMT",
+    "latest_news_date": "2026-11-15T13:37:06Z",
+    "latest_news_date_raw": "Sun, 15 Nov 2026 13:37:06 GMT",
+    "news_count": 22,
+    "news_items": [
+      {
+        "date": "Sun, 15 Nov 2026 13:37:06 GMT",
+        "identity_key": "https://alboslanews.com/%D8%A3%D8%B3%D9%88%D8%A7%D9%82-%D9%85%D8%A7%D9%84/%D8%A7%D9%84%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D8%AA%D8%B3%D9%85%D8%AD-%D8%A8%D8%AA%D8%AD%D8%B1%D9%83-%D8%B3%D8%B9%D8%B1-%D8%B3%D9%87%D9%85-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-3519-%D9%87%D8%A8%D9%88%D8%B7%D8%A7%D9%8B-%D9%88%D8%AA%D8%AD%D8%AF%D8%AF-2709-%D9%84%D9%84%D8%A5%D9%8A%D9%82%D8%A7%D9%81-%D8%A7%D9%84%D9%85%D8%A4%D9%82%D8%AA-430818",
+        "key_type": "resolved_url",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:47:51 GMT",
+        "identity_key": "https://alboslanews.com/%D8%A3%D8%B3%D9%88%D8%A7%D9%82-%D9%85%D8%A7%D9%84/%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D9%86%D9%87%D8%A7%D9%8A%D8%A9-%D8%AD%D9%82-%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%AA%D9%88%D8%B2%D9%8A%D8%B9-%D8%A7%D9%84%D9%86%D9%82%D8%AF%D9%8A-%D9%84%D9%80-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-430757",
+        "key_type": "resolved_url",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 11:20:08 GMT",
+        "identity_key": "e0178ad1053869e7",
+        "key_type": "title-date-hash",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "«القاهرة للدواجن» تحقق أرباحًا بقيمة 1.43 مليار جنيه خلال 9 أشهر بتراجع 39.1% - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 10:12:35 GMT",
+        "identity_key": "https://www.youlyou.com/92704",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:53:23 GMT",
+        "identity_key": "https://almalnews.com/2146754/%D8%A3%D8%B1%D8%A8%D8%A7%D8%AD-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-%D8%AA%D9%87%D8%A8%D8%B7-39-1-%D8%AE%D9%84%D8%A7%D9%84/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:08:08 GMT",
+        "identity_key": "https://www.tradingview.com/news/reuters.com,2026:newsml_FWN46T01O:0-cairo-poultry-q3-consol-profit-egp-152-million/",
+        "key_type": "resolved_url",
+        "source": "TradingView",
+        "title": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 07:39:22 GMT",
+        "identity_key": "c6b72ada2672cfb1",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "أرباح القاهرة للدواجن تتراجع 39% خلال 9 أشهر رغم نمو الإيرادات - Mubasher"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 14:28:33 GMT",
+        "identity_key": "https://almalnews.com/2146418/%D8%A7%D9%84%D9%85%D9%86%D8%B5%D9%88%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-%D8%AA%D9%82%D9%81%D8%B2-7-28-%D9%88%D8%AA%D8%AA%D8%B5%D8%AF%D8%B1-%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9%D8%A7%D8%AA/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "المنصورة للدواجن تقفز 7.28% وتتصدر ارتفاعات قطاع الأغذية بالبورصة - جريدة المال"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 13:40:05 GMT",
+        "identity_key": "https://almalnews.com/2146103/%D8%B3%D9%87%D9%85-%D8%A7%D9%84%D9%85%D9%86%D8%B5%D9%88%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-%D9%8A%D8%AA%D8%B5%D8%AF%D8%B1-%D9%82%D8%A7%D8%A6%D9%85%D8%A9-%D8%A7%D9%84%D8%A3%D8%B3%D9%87%D9%85-%D8%A7%D9%84%D9%85%D8%B1%D8%AA%D9%81%D8%B9%D8%A9/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "سهم المنصورة للدواجن يتصدر قائمة الأسهم المرتفعة بقطاع الأغذية والمشروبات والتبغ بالبورصة - جريدة المال"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 10:46:23 GMT",
+        "identity_key": "https://www.osoulmisrmagazine.com/451849",
+        "key_type": "resolved_url",
+        "source": "أصول مصر",
+        "title": "الرقابة المالية توافق على نشر إفصاح زيادة رأسمال القاهرة للدواجن إلى ملياري جنيه - أصول مصر"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "c6144588d025bcb3",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "لعبة المليارات في البورصة.. \"القاهرة للدواجن\" تقفز برأس المال إلى 2 مليار جنيه - اليوم السابع"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "3360407399cb02d6",
+        "key_type": "title-date-hash",
+        "source": "عالم المال",
+        "title": "الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة رأسمالها إلى ملياري جنيه - عالم المال"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "387fef5dec1b3fb2",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "البورصة تعلن نهاية حق وموعد توزيع كوبون \"القاهرة للدواجن\" - جريدة المال"
+      },
+      {
+        "date": "Sat, 31 Oct 2026 00:02:07 GMT",
+        "identity_key": "9d5b80c62c6ef3b1",
+        "key_type": "title-date-hash",
+        "source": "ad-hoc-news.de",
+        "title": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de"
+      },
+      {
+        "date": "Tue, 27 Oct 2026 07:00:00 GMT",
+        "identity_key": "13fe47494d5655d7",
+        "key_type": "title-date-hash",
+        "source": "https://www.youlyou.com/",
+        "title": "القاهرة للدواجن تقرر توزيع 3.4 مليار جنيه للمساهمين عن أرباح 2025 - https://www.youlyou.com/"
+      },
+      {
+        "date": "Sat, 24 Oct 2026 07:00:00 GMT",
+        "identity_key": "71dc4142cd214065",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance",
+        "title": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "d20acaef9f6298e4",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "عمومية ​\"القاهرة للدواجن\" تقرر توزيع كوبون.. ومجلس الإدارة يقترح زيادة رأس المال - Mubasher"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "27bef30f24ebec83",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "عمومية \"القاهرة للدواجن\" تُقر توزيع 1.9 جنيه للسهم - جريدة البورصة"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "4d0daacb980b4b11",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "القاهرة للدواجن تقترح توزيع 1.9 جنيه للسهم وتدعو لجمعية غير عادية - جريدة المال"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "f0bbe5820b31b7d4",
+        "key_type": "title-date-hash",
+        "source": "معلومات مباشر",
+        "title": "سهم القاهرة للدواجن يقفز 4% بعد اعتماد مقترح التوزيعات - معلومات مباشر"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "663a065d9b47c397",
+        "key_type": "title-date-hash",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "عمومية القاهرة للدواجن تقرر توزيع أرباح بـ 1.9 جنيه للسهم - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Mon, 19 Oct 2026 07:00:00 GMT",
+        "identity_key": "d0d9d8f051b3e382",
+        "key_type": "title-date-hash",
+        "source": "أموال الغد",
+        "title": "«القاهرة للدواجن» تقر توزيع أرباح بقيمة 1.9 جنيه للسهم وتدرس زيادة رأس المال المرخص - أموال الغد"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": null,
+    "base_price": 10.15,
+    "base_source": "pandas-ta",
+    "price_crosscheck": {
+      "base_source_used": "pandas-ta",
+      "base_used": 10.15,
+      "common_date": "2026-11-11",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_poul.csv": 10.2,
+        "openbb/poul_ca.csv": 10.199999809265137,
+        "pandas-ta/indicators.csv": 10.199999809265137,
+        "talib/indicators.csv": 10.199999809265137,
+        "yahooquery/poul.ca.csv": 10.199999809265137
+      }
+    },
+    "sessions_per_calendar_day": 0.66,
+    "sigma_daily": 0.0225,
+    "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0225, σ10=0.0186)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 10.0,
+      "last_date": "2026-11-15",
+      "last_high": 10.22,
+      "last_low": 9.91,
+      "last_open": 10.15,
+      "last_volume": 32750060.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_poul.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.149999618530273,
+      "last_date": "2026-11-12",
+      "last_high": 10.399999618530273,
+      "last_low": 10.149999618530273,
+      "last_open": 10.199999809265137,
+      "last_volume": 18277604.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/POUL_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.149999618530273,
+      "last_date": "2026-11-12",
+      "last_high": 10.399999618530273,
+      "last_low": 10.149999618530273,
+      "last_open": 10.199999809265137,
+      "last_volume": 18277604.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.149999618530273,
+      "last_date": "2026-11-12",
+      "last_high": 10.399999618530273,
+      "last_low": 10.149999618530273,
+      "last_open": 10.199999809265137,
+      "last_volume": 18277604.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.199999809265137,
+      "last_date": "2026-11-11",
+      "last_high": 10.399999618530273,
+      "last_low": 10.140000343322754,
+      "last_open": 10.289999961853027,
+      "last_volume": 14446436.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/POUL.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": null,
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "62cba8c9bf31cd8e14aaa0d5f2485768b6c171ca",
+    "merged_by": "actions",
+    "run_id": "43720903619",
+    "source_runs": null,
+    "worker_code_sha": null,
+    "worker_release_sha": null
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": "2026-11-14T23:44:23Z",
+    "fit": {
+      "dividend_shrunk": 3.46,
+      "global_median_r5_adj": 0.99,
+      "shrinkage_k": 5
+    },
+    "present": true,
+    "ticker": "POUL.CA",
+    "walk_forward": {
+      "baseline_hits": 0,
+      "hits": 0,
+      "purged": 4,
+      "test": 6,
+      "train": 3
+    }
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "medium",
+        "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجل",
+        "type": "dividend"
+      },
+      {
+        "severity": "high",
+        "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.66,
+      "max3": 0.66
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/1",
+  "secret_fields_dropped": [],
+  "started": "2026-11-15T13:48:25.640121+00:00",
+  "sweep_dir": "sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619",
+  "ticker": "POUL.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": "https://github.com/moos-labs/yahooquery-runner/actions/runs/43720918447",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "AAPL.csv",
+          "POUL.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "AAPL.csv_last_close": 356.2699890136719,
+          "AAPL.csv_last_date": "2026-11-13",
+          "POUL.CA.csv_last_close": 10.199999809265137,
+          "POUL.CA.csv_last_date": "2026-11-11",
+          "rows_AAPL.csv": 1255,
+          "rows_POUL.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "3b54f2a09371cb76c2dc09350195ae6bf0bd467c5b353f628211afdddfd2b57f",
+      "tool": "yahooquery",
+      "worker_run": null
+    },
+    {
+      "category": "data",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": "https://github.com/moos-labs/openbb-runner/actions/runs/43720958279",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "AAPL.csv",
+          "POUL_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "AAPL.csv_last_close": 356.2699890136719,
+          "AAPL.csv_last_date": "2026-11-13",
+          "POUL_CA.csv_last_close": 10.149999618530273,
+          "POUL_CA.csv_last_date": "2026-11-12",
+          "rows_AAPL.csv": 500,
+          "rows_POUL_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "5d9e79a5f6de94c99214a5fce2a7e8c0931f8249afd2ec1e3e6556a1c092e0b4",
+      "tool": "openbb",
+      "worker_run": null
+    },
+    {
+      "category": "data",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/egx-data-runner/actions/runs/43721026426",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_poul.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_poul.csv_last_close": 10.0,
+          "egxpy_poul.csv_last_date": "2026-11-15",
+          "rows_egxpy_poul.csv": 3000
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "f5fd84a9b6e1ec38c3f2b0f1b2021c1c049da999d1028d01465ff86b821ff20e",
+      "tool": "egx-data",
+      "worker_run": null
+    },
+    {
+      "category": "technicals",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/pandas-ta-runner/actions/runs/43721127107",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 52.6746,
+          "atr_14": 0.6014,
+          "bb_lower": 9.1605,
+          "bb_mid": 9.8375,
+          "bb_pctb": 0.7308,
+          "bb_upper": 10.5145,
+          "close": 10.15,
+          "date": "2026-11-12",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.9809,
+          "ema_200": 27.0247,
+          "ema_50": 17.4897,
+          "first_date_used": "2019-01-01",
+          "high": 10.4,
+          "indicators.csv_last_close": 10.149999618530273,
+          "indicators.csv_last_date": "2026-11-12",
+          "last_date": "2026-11-12",
+          "low": 10.15,
+          "macd": -2.0545,
+          "macd_hist": 0.8608,
+          "macd_signal": -2.9153,
+          "open": 10.2,
+          "rows_fetched": 6522,
+          "rows_indicators.csv": 250,
+          "rows_used": 1922,
+          "rsi_14": 26.6369,
+          "stoch_d": 86.5545,
+          "stoch_k": 88.8566,
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "221e8c3c92f3ca669824e11bc58a6896cb13a63266bd5472c3b1f520e2c5f93a",
+      "tool": "pandas-ta",
+      "worker_run": null
+    },
+    {
+      "category": "technicals",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": "https://github.com/moos-labs/talib-runner/actions/runs/43721166547",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "indicators.csv_last_close": 10.149999618530273,
+          "indicators.csv_last_date": "2026-11-12",
+          "last_close": 10.149999618530273,
+          "last_date": "2026-11-12",
+          "rows_fetched": 6522,
+          "rows_indicators.csv": 250,
+          "rows_used": 1922,
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "c2cf343bb6851660279e7432a091532fc0d3a9b3605410bbda4dfe37d55eff43",
+      "tool": "talib",
+      "worker_run": null
+    },
+    {
+      "category": "stats",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/quantstats-runner/actions/runs/43721204072",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 10.149999618530273,
+          "rows": 2180,
+          "rows_ohlc.csv": 2180,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "c998857ae73a811cd52fa207ff936622462cc02b5f5ca2f562621eb073294635",
+      "tool": "quantstats",
+      "worker_run": null
+    },
+    {
+      "category": "backtest",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/vectorbt-runner/actions/runs/43721275386",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 10.149999618530273,
+          "rows_poul_ohlc.csv": 2429
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "cc14d02e285455484d44a839ba657a80d2d125352fb69ae711910d9f732e8d27",
+      "tool": "vectorbt",
+      "worker_run": null
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/financetoolkit-runner/actions/runs/43721400851",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "company": "Cairo Poultry Company (EGX: POUL)",
+          "input_csv": "data/poul_statements.csv"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "a5c7cfd0a18a11ae2589227131a10c2fe157523fe10d98a6236647ac18755483",
+      "tool": "financetoolkit",
+      "worker_run": null
+    },
+    {
+      "category": "sentiment",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/finbert-runner/actions/runs/43721470066",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 9,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "549187d365e65dd1752b51b89af374a5cc00cbe625d8e8791f2072b6d08ca04a",
+      "tool": "finbert",
+      "worker_run": null
+    },
+    {
+      "category": "sentiment",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/finbert-tone-runner/actions/runs/43721599070",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 10,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "72b6a9fd33589aac85e7dd0adc0486588d1868709a39555ef27b5565f8db3ca9",
+      "tool": "finbert-tone",
+      "worker_run": null
+    },
+    {
+      "category": "sentiment",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/roberta-sentiment-runner/actions/runs/43721693312",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 9,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "79b09b19271f06159f0e209c9566a2078d38daa41482151682204c59a3921a9d",
+      "tool": "financial-roberta",
+      "worker_run": null
+    },
+    {
+      "category": "forecast",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": "https://github.com/moos-labs/kronos-runner/actions/runs/43721812589",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 9.7086,
+          "forecast.csv_last_date": "2026-12-10",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "25bec2037d48a977538ba7bf3b47aabfc7a3d687f1c94310f85423276d0faa4e",
+      "tool": "kronos",
+      "worker_run": null
+    },
+    {
+      "category": "data",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": "https://github.com/moos-labs/financedatabase-runner/actions/runs/43721904870",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "6449413059599804bd0f55431de3b87f83103e99edcfe405d3cf274fad00c9d6",
+      "tool": "financedatabase",
+      "worker_run": null
+    },
+    {
+      "category": "news",
+      "claim_id": null,
+      "conclusion": "success",
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": "https://github.com/moos-labs/news-disclosure-runner/actions/runs/43721985064",
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 21,
+          "bodies_fetched": 8,
+          "disclosure_count": 2,
+          "egx_bodies_attached": 0,
+          "fetched_at": "2026-11-15T14:04:57Z",
+          "finbert_negative": 0.258,
+          "finbert_neutral": 0.698,
+          "finbert_positive": 0.044,
+          "finbert_scored": 3,
+          "latest_disclosure_date": "Wed, 28 Oct 2026 07:00:00 GMT",
+          "latest_news_date": "Sun, 15 Nov 2026 13:37:06 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.008,
+          "multilingual_neutral": 0.345,
+          "multilingual_positive": 0.646,
+          "multilingual_scored": 21,
+          "news_count": 22,
+          "ticker": "POUL.CA",
+          "tool": "news-disclosure",
+          "translated_negative": 0.159,
+          "translated_neutral": 0.421,
+          "translated_positive": 0.42,
+          "translated_scored": 21,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "88b2fea6324b2bac4252f5fcd046fac3e0048ee439db3981361bc3021ae218bf",
+      "tool": "news-disclosure",
+      "worker_run": null
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": null,
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}
