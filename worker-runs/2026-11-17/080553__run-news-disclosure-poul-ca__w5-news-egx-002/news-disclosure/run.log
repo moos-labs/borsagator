@@ -1,0 +1,22 @@
+WARN gnews failed (القاهرة للدواجن): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9%20%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86%20when%3A30d&hl=ar&gl=EG&ceid=EG:ar
+WARN gnews failed (Cairo Poultry): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=Cairo%20Poultry%20when%3A30d&hl=en&gl=US&ceid=US:en
+WARN gnews failed (POUL.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA+stock+when:30d&hl=en-US&gl=US&ceid=US:en
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+bodies: 0/3 fetched; failures by stage: {'decode': 2, 'http': 1, 'extract': 0}
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6207.10it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16552.56it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 19013.53it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5682.04it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 0, "disclosure_count": 11, "arabic_headlines": 11, "latest_news_date": "", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "multilingual_positive": 0.082, "multilingual_negative": 0.005, "multilingual_neutral": 0.912, "multilingual_scored": 11, "bodies_fetched": 0, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.042, "translated_negative": 0.034, "translated_neutral": 0.924, "translated_scored": 11}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [2026-11-12] (egx.com.eg) القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر
+- [2026-11-12] (egx.com.eg) القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر
+- [2026-11-12] (egx.com.eg) القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة
+- [Sun, 08 Nov 2026 06:51:05 GMT] (معلومات مباشر) العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر
+- [2026-11-05] (egx.com.eg) القاهرة للدواجن (POUL.CA) - بيان من الهيئة العامة للرقابة المالية
+- [2026-11-04] (egx.com.eg) القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (موثق)
+- [2026-11-02] (egx.com.eg) القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي
+- [2026-10-29] (egx.com.eg) القاهرة للدواجن (POUL.CA) - قرار لجنة القيد
