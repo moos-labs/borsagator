@@ -45,6 +45,13 @@ W = {
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
 
+# Registry categories whose CSVs are REFERENCE workloads, never this
+# ticker's price series (issue #133): backtest tools run reference
+# backtests (vectorbt's poul_ohlc.csv ends at 3.13) and stats tools
+# (quantstats) emit reference analytics ending at 2.83, while every
+# price-bearing tool agrees on ~10.2. The registry holds no
+# further reference-workload category — do not invent one.
+EXCLUDED_PRICE_CATEGORIES = ("backtest", "stats")
 
 def _digest_header(digest):
     job = (digest or {}).get("job") or ""
@@ -246,7 +253,9 @@ def realized_sigma(ticker, base=None):
     Series choice is ANCHORED on the verified base close when known:
     among candidates whose last close sits within 25% of base, take the
     longest (a stray foreign series must not set the volatility); with
-    no anchor available, fall back to the longest candidate."""
+    no anchor available, fall back to the DEFAULT sigma — a stale
+    unanchored series must not set the volatility. Without a base
+    to anchor on, the longest candidate is still used."""
     code = re.sub(r"[^a-z0-9]", "", ticker.split(".")[0].lower())
     best = None
     anchored = None
@@ -254,10 +263,11 @@ def realized_sigma(ticker, base=None):
     _cats = {t.get("id"): t.get("category") for t in _reg.get("tools", [])}
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
         name = os.path.basename(path).lower()
-        # Same exclusion as price_series: validation/backtest tools run
-        # reference workloads — their CSVs never enter the sigma pool.
+        # Same exclusion as price_series (issue #133): backtest/stats
+        # tools run reference workloads — their CSVs never enter
+        # the sigma pool.
         if _cats.get(os.path.basename(os.path.dirname(path))) in (
-                "validation", "backtest"):
+                EXCLUDED_PRICE_CATEGORIES):
             continue
         if not any(s in name for s in ("ohlc", "indicators", code)):
             continue
@@ -299,6 +309,15 @@ def realized_sigma(ticker, base=None):
         best = anchored
     if not best:
         return 0.02, "default (no history found)", 5 / 7
+    if base and anchored is None:
+        # No candidate anchored on the verified base close: the
+        # longest series may be a stale reference (a dead series
+        # ending far below the live price), so it must not set the
+        # volatility — fall back to the default sigma instead.
+        print(f"ensemble: no series anchored within 25% of base {base} "
+              f"— longest candidate ends at {best[0][-1]} "
+              f"({best[2]}); using default sigma")
+        return 0.02, "default (no series anchored within 25% of base)", 5 / 7
     closes, dates, src = best
     density = 5 / 7
     ds = [d for d in dates if d]
@@ -319,8 +338,8 @@ def realized_sigma(ticker, base=None):
 
 def price_series(ticker):
     """Collected price series for the ticker as {source: {date: close}}
-    (date '' when the CSV has no usable date column). Validation and
-    backtest tools are excluded by registry category: they run
+    (date '' when the CSV has no usable date column). Backtest and
+    stats tools are excluded by registry category: they run
     REFERENCE workloads (their CSVs are not this ticker's series —
     vectorbt's poul_ohlc.csv ends at 3.13, quantstats' at 2.83, while
     every price-bearing tool agrees on ~10.2)."""
@@ -331,7 +350,7 @@ def price_series(ticker):
     series = {}
     for path in glob.glob(os.path.join(COLLECTED, "*", "*.csv")):
         tool = os.path.basename(os.path.dirname(path))
-        if cats.get(tool) in ("backtest", "stats"):
+        if cats.get(tool) in EXCLUDED_PRICE_CATEGORIES:
             continue
         name = os.path.basename(path).lower()
         if not any(s in name for s in ("ohlc", "indicators", code)):
