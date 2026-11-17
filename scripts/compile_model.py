@@ -1656,14 +1656,61 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
 def dump_model(model, out_path):
     """Write the model deterministically (sorted keys, fixed float
     formatting, no wall-clock timestamps) and verify it parses
-    under strict JSON before the write lands."""
+    under strict JSON before the write lands. The write is atomic
+    (#161): the text goes to a temp file in the same directory and
+    is moved into place, so a crash or write failure can never
+    leave a truncated report-model.json behind."""
     text = json.dumps(model, indent=2, ensure_ascii=False,
                       sort_keys=True, allow_nan=False) + "\n"
     json.loads(text, parse_constant=lambda c: (_ for _ in ()).throw(
         ValueError(f"non-finite constant {c!r} in model")))
-    with open(out_path, "w", encoding="utf-8") as handle:
-        handle.write(text)
+    tmp_path = out_path + ".tmp"
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        os.replace(tmp_path, out_path)
+    except Exception:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise
     return text
+
+
+def _quarantine_previous_model(out_path):
+    """#161: invalidate the previous model before a recompile is
+    attempted. A refused/failed recompile must not leave an older
+    report-model.json in place for a file-presence consumer to use
+    as current, so the old file is moved aside (kept for
+    inspection under ``.quarantined``) before compile_sweep runs.
+    Returns True when there was nothing to quarantine or the move
+    succeeded; False when the move failed -- in that case the
+    caller must not proceed, or the stale model would survive a
+    refusal exactly as before."""
+    if not os.path.isfile(out_path):
+        return True
+    try:
+        os.replace(out_path, out_path + ".quarantined")
+    except OSError as exc:
+        print(f"compile failed quarantining previous model "
+              f"{out_path}: {exc}", file=sys.stderr)
+        return False
+    return True
+
+
+def _clear_error_marker(error_path):
+    """#161: remove a stale compile_error.txt after a successful
+    compile, so a good model never sits next to an old error
+    marker. Best-effort with a warning: the model is already
+    written, so a removal failure must not fail the compile."""
+    if not os.path.isfile(error_path):
+        return
+    try:
+        os.remove(error_path)
+    except OSError as exc:
+        print(f"compile warning: could not clear stale error "
+              f"marker {error_path}: {exc}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------- consumer check
@@ -1752,6 +1799,12 @@ def main(argv=None):
         os.path.normpath(args.sweep_dir), "report-model.json")
     error_path = os.path.join(
         os.path.dirname(out_path), "compile_error.txt")
+    # #161: invalidate the previous model BEFORE compiling, so a
+    # refusal, crash, or write failure can never leave it in place
+    # as if it were the current compile's result. Fail closed when
+    # the quarantine itself fails.
+    if not _quarantine_previous_model(out_path):
+        return 1
     sharia_standards = None
     if args.sharia_standards:
         sharia_standards = [
@@ -1779,6 +1832,9 @@ def main(argv=None):
         print(f"compile failed writing {out_path}: {exc}",
               file=sys.stderr)
         return 1
+    # #161: a successful compile clears any stale error marker, so
+    # a good model never sits next to an old refusal.
+    _clear_error_marker(error_path)
     degraded = "degraded" if model["flags"] else "clean"
     print(f"compile_model: {model['sweep_dir']} -> {out_path} "
           f"({degraded}, {len(model['flags'])} flags, "
