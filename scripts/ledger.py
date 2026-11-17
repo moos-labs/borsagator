@@ -40,6 +40,15 @@ actually did, using ONLY the point-in-time sweep archive (branch
 Outputs ledger.json + ledger.md. Stdlib only, deterministic, and
 defensive throughout: a bad sweep, file or row is recorded as a gap,
 never raised.
+
+Issue #79 adds a separate benchmark table (ledger/benchmark.json +
+benchmark.md): frozen entrant files under benchmark/ in each sweep
+dir are scored by the same score_forecast() path into that table
+only. The weights computation reads ONLY ledger.json's
+forecasts_detail — benchmark rows can never leak into the ensemble
+calibration. Gap-flagged matured rows (issue #129 dividend_gap) are
+excluded from skill / weights / aggregates (D-79-1) but stay listed
+with their flag and stay matured.
 """
 import csv, io, json, os, re, subprocess, sys, urllib.parse, urllib.request
 from datetime import date, timedelta
@@ -66,6 +75,15 @@ HORIZONS = ("day", "week", "month")
 DEFAULT_SESSIONS = {"day": 1, "week": 5, "month": 14}
 FLAT_BAND_PCT = 0.75          # |realized| below this counts as "flat"
 VALID_TOL = 0.03              # 3% close-vs-base validation tolerance
+# Issue #79: the fixed benchmark entrant registry. The ensemble
+# itself is the reference and is never an entrant row.
+ENTRANT_REGISTRY = ("family-price-forecast", "family-technicals",
+                    "family-sentiment", "family-agent",
+                    "family-fundamentals", "kronos-alone",
+                    "raw-llm-cohere", "buy-and-hold")
+# Issue #79: no quality claim for any (entrant, horizon) cell with
+# fewer matured forecasts than this.
+BENCHMARK_GATE_N = 10
 # Files that are never an actual-price series for the target ticker.
 BLOCKLIST = ("forecast.csv", "account_value", "port_analysis",
              "report_normal", "screener", "companies", "fred_")
@@ -589,6 +607,13 @@ def score_forecast(fc, series, provenance, own_sweep):
     for fam, s in fams.items():
         if isinstance(s, (int, float)):
             fam_skill[fam] = round(s * sign(realized), 4)
+    # Issue #79: an entrant may carry no range (Class B calls have
+    # no interval). in_range is None then — never invented — and
+    # agg() counts coverage only over rows that carry a range.
+    low, high = fc.get("range_low_pct"), fc.get("range_high_pct")
+    in_range = (low <= realized <= high
+                if isinstance(low, (int, float))
+                and isinstance(high, (int, float)) else None)
     row.update(
         status="matured", maturity_date=maturity,
         close_at_maturity=series[maturity],
@@ -598,7 +623,7 @@ def score_forecast(fc, series, provenance, own_sweep):
         realized_direction=rdir,
         direction_hit=(rdir == fc["direction"]),
         move_error_pp=round(abs(fc["expected_move_pct"] - realized), 2),
-        in_range=(fc["range_low_pct"] <= realized <= fc["range_high_pct"]),
+        in_range=in_range,
         family_skill=fam_skill,
         net_skill=(round(fc["net_score"] * sign(realized), 4)
                    if isinstance(fc.get("net_score"), (int, float)) else None),
@@ -645,6 +670,195 @@ def flag_cross_sweep_spans(rows, series):
     return flagged
 
 
+def _class_b_forecast(s, rel, doc):
+    """One Class B capture file -> a single-horizon forecast, or
+    (None, gap) when the file fails the anti-backfill rules (issue
+    #79 §8): captured_at must be <= as_of + 48h and the call must
+    carry a timestamp from the source; a later filing is rejected,
+    never backfilled. `target` is an expected move in percent (a
+    number, or a string like '+5%'). Returns (forecast, gap)."""
+    name = rel.rsplit("/", 1)[-1]
+    m = re.match(r"^(.+)\.\d{4}-\d{2}-\d{2}\.json$", name)
+    if not m:
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} filename is not <slug>.<YYYY-MM-DD>.json")
+    slug = m.group(1)
+    entrant = f"class-b-{slug}"
+    if not isinstance(doc, dict):
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} is not a JSON object")
+    call = doc.get("call") or {}
+    if not isinstance(call, dict):
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} carries no call object")
+    cap = str(doc.get("captured_at") or "")[:10]
+    try:
+        cap_d = date.fromisoformat(cap)
+        as_of_d = date.fromisoformat(s["date"])
+    except Exception:
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} captured_at is not a date")
+    if cap_d > as_of_d + timedelta(days=2):
+        return None, (f"benchmark class-b file rejected (anti-backfill): "
+                      f"{s['dir']}: {rel} captured_at {cap} is more "
+                      f"than 48h after as_of {s['date']} — filed too "
+                      f"late to be a contemporaneous capture")
+    if not str(call.get("timestamp") or "").strip():
+        return None, (f"benchmark class-b file rejected (anti-backfill): "
+                      f"{s['dir']}: {rel} call carries no timestamp "
+                      f"from the source")
+    horizon = call.get("horizon")
+    if horizon not in HORIZONS:
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} horizon {horizon!r} not in "
+                      f"{list(HORIZONS)}")
+    direction = call.get("direction")
+    if direction not in ("up", "down", "flat"):
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} direction {direction!r} invalid")
+    target = call.get("target")
+    if isinstance(target, str):
+        target = target.strip().rstrip("%")
+    try:
+        expected = float(target)
+    except Exception:
+        expected = None
+    if expected is None:
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} target {call.get('target')!r} is not an "
+                      f"expected move in percent")
+    ens = s.get("ensemble_data") or {}
+    base = num(ens.get("base_price"))
+    if not base:
+        return None, (f"benchmark class-b file skipped: {s['dir']}: "
+                      f"{rel} sweep carries no ensemble base")
+    return {"ticker": s.get("ticker"), "as_of": s["date"],
+            "sweep": s["dir"], "horizon": horizon,
+            "direction": direction, "expected_move_pct": expected,
+            "range_low_pct": None, "range_high_pct": None,
+            "confidence": None, "net_score": None,
+            "base_price": base, "families": {},
+            "sessions": DEFAULT_SESSIONS[horizon],
+            "corporate_actions": [],
+            "entrant": entrant, "frozen_at": doc.get("captured_at"),
+            "class_b": {"competitor": doc.get("competitor"),
+                        "url": doc.get("url"),
+                        "capturer": doc.get("capturer"),
+                        "verbatim": call.get("verbatim"),
+                        "source_type": call.get("source_type")}}, None
+
+
+def extract_benchmark_forecasts(sweep_list):
+    """Benchmark entrant files + Class B captures -> forecast dicts
+    in the ensemble extraction shape, scored by the same
+    score_forecast() path. Returns (forecasts, invalid_rows, gaps,
+    malformed): `invalid_rows` are rows for files that fail
+    validation against their sweep's ensemble (wrong ticker / date /
+    base) — recorded invalid in the benchmark table, never silently
+    rescored. `malformed` is True when a fetched file is
+    structurally unusable (bad entrant / bad status) — the publisher
+    rejects the run (issue #79 F12). Absent records contribute zero
+    rows and one gap/note line each."""
+    forecasts, invalid_rows, gaps_b, malformed = [], [], [], False
+    for s in sweep_list:
+        ens = s.get("ensemble_data") or {}
+        base = num(ens.get("base_price"))
+        for rel in sorted(s.get("benchmark") or []):
+            doc = (s.get("benchmark_data") or {}).get(rel)
+            if doc is None:
+                continue  # fetch failure / malformed already gapped
+            if not isinstance(doc, dict):
+                gaps_b.append(f"benchmark file malformed: {s['dir']}: "
+                              f"{rel} is not a JSON object")
+                malformed = True
+                continue
+            entrant = doc.get("entrant")
+            if entrant not in ENTRANT_REGISTRY:
+                gaps_b.append(f"benchmark file malformed: {s['dir']}: "
+                              f"{rel} entrant {entrant!r} not in the "
+                              f"registry — file skipped")
+                malformed = True
+                continue
+            status = doc.get("status")
+            if status == "absent":
+                gaps_b.append(f"{s['dir']}: {entrant} absent "
+                              f"({doc.get('reason')}) — no rows")
+                continue
+            if status != "present":
+                gaps_b.append(f"benchmark file malformed: {s['dir']}: "
+                              f"{rel} status {status!r} — file skipped")
+                malformed = True
+                continue
+            t = doc.get("ticker") or s.get("ticker")
+            as_of = str(doc.get("as_of") or "")[:10]
+            if (t != s.get("ticker") or as_of != s["date"]
+                    or num(doc.get("base_price")) != base):
+                why = (f"benchmark file {rel} does not match its "
+                       f"sweep's ensemble (ticker {t} vs "
+                       f"{s.get('ticker')}, as_of {as_of} vs "
+                       f"{s['date']}, base_price "
+                       f"{doc.get('base_price')} vs {base})")
+                gaps_b.append(f"{s['dir']}: {why} — rows invalid")
+                for h in HORIZONS:
+                    hb = (doc.get("horizons") or {}).get(h)
+                    if not isinstance(hb, dict):
+                        continue
+                    invalid_rows.append({
+                        "ticker": t, "as_of": as_of, "sweep": s["dir"],
+                        "horizon": h, "direction": hb.get("direction"),
+                        "expected_move_pct": num(hb.get("expected_move_pct")),
+                        "range_low_pct": num(hb.get("range_low_pct")),
+                        "range_high_pct": num(hb.get("range_high_pct")),
+                        "confidence": num(hb.get("confidence")),
+                        "net_score": num(hb.get("net_score")),
+                        "base_price": num(doc.get("base_price")),
+                        "families": {k: num(v) for k, v in
+                                     (hb.get("families") or {}).items()
+                                     if num(v) is not None},
+                        "sessions": hb.get("trading_sessions") or
+                        DEFAULT_SESSIONS[h],
+                        "corporate_actions": normalize_actions(doc, hb),
+                        "entrant": entrant,
+                        "frozen_at": doc.get("frozen_at"),
+                        "status": "invalid", "invalid_reason": why})
+                continue
+            for h in HORIZONS:
+                hb = (doc.get("horizons") or {}).get(h)
+                if not isinstance(hb, dict):
+                    continue
+                sess = hb.get("trading_sessions")
+                if not isinstance(sess, int) or sess <= 0:
+                    sess = DEFAULT_SESSIONS[h]
+                fc = {"ticker": t, "as_of": as_of, "sweep": s["dir"],
+                      "horizon": h, "direction": hb.get("direction"),
+                      "expected_move_pct": num(hb.get("expected_move_pct")),
+                      "range_low_pct": num(hb.get("range_low_pct")),
+                      "range_high_pct": num(hb.get("range_high_pct")),
+                      "confidence": num(hb.get("confidence")),
+                      "net_score": num(hb.get("net_score")),
+                      "base_price": num(doc.get("base_price")),
+                      "families": {k: num(v) for k, v in
+                                   (hb.get("families") or {}).items()
+                                   if num(v) is not None},
+                      "sessions": sess,
+                      "corporate_actions": normalize_actions(doc, hb),
+                      "entrant": entrant,
+                      "frozen_at": doc.get("frozen_at")}
+                if entrant == "raw-llm-cohere":
+                    fc["prompt_version"] = doc.get("prompt_version")
+                forecasts.append(fc)
+        for rel in sorted(s.get("class_b") or []):
+            doc = (s.get("benchmark_data") or {}).get(rel)
+            if doc is None:
+                continue  # fetch failure / malformed already gapped
+            fc, gap = _class_b_forecast(s, rel, doc)
+            if gap:
+                gaps_b.append(gap)
+            elif fc:
+                forecasts.append(fc)
+    return forecasts, invalid_rows, gaps_b, malformed
+
+
 def num(x):
     return x if isinstance(x, (int, float)) else None
 
@@ -673,12 +887,17 @@ def main():
         if len(parts) >= 4 and parts[0] == "sweeps":
             key = "/".join(parts[:3])
             s = sweeps.setdefault(key, {"dir": key, "csvs": [], "ensemble": None,
-                                        "digest": None})
+                                        "digest": None, "benchmark": [],
+                                        "class_b": []})
             rel = "/".join(parts[3:])
             if rel == "ensemble.json":
                 s["ensemble"] = p
             elif rel == "digest.json":
                 s["digest"] = p
+            elif rel.startswith("benchmark/class-b/") and rel.endswith(".json"):
+                s["class_b"].append(p)
+            elif rel.startswith("benchmark/") and rel.endswith(".json"):
+                s["benchmark"].append(p)
             elif rel.startswith("collected/") and rel.endswith(".csv"):
                 s["csvs"].append((p, size))
     sweep_list = [sweeps[k] for k in sorted(sweeps)]
@@ -706,6 +925,31 @@ def main():
         if d.get("date"):
             s["date"] = str(d["date"])[:10]
         s["has_ensemble"] = bool(e)
+        # Issue #79: fetch benchmark entrant files + Class B captures
+        # for this sweep. A fetch failure is a benchmark gap only —
+        # it must never reject the ensemble ledger (unlike a
+        # digest/ensemble fetch failure, issue #116); a fetched but
+        # malformed file IS rejecting (issue #79 F12) and is flagged
+        # in s["benchmark_malformed"] for the publisher.
+        s["benchmark_data"] = {}
+        s["benchmark_malformed"] = []
+        for rel_path in sorted(s.get("benchmark") or []) + sorted(
+                s.get("class_b") or []):
+            try:
+                raw = fetch_text(blob_url(rel_path))
+            except Exception as ex:
+                warn(f"{s['dir']}: bad {rel_path} ({ex})")
+                s["benchmark_data"][rel_path] = None
+                gaps.append(f"benchmark file fetch failed: {s['dir']}: "
+                            f"{rel_path} could not be fetched ({ex})")
+                continue
+            try:
+                s["benchmark_data"][rel_path] = json.loads(raw)
+            except Exception as ex:
+                s["benchmark_data"][rel_path] = None
+                s["benchmark_malformed"].append(rel_path)
+                gaps.append(f"benchmark file malformed: {s['dir']}: "
+                            f"{rel_path} is not parseable JSON ({ex})")
     # Issue #116: only sweeps with NO ensemble.json in the tree count
     # here — a sweep whose ensemble.json exists but failed to fetch is
     # already recorded in gaps (per-file fetch failed) and must not
@@ -813,6 +1057,15 @@ def main():
                 "corporate_actions": normalize_actions(ens, hb),
             })
 
+    # ---- benchmark entrants (issue #79) ----------------------------------
+    # Frozen entrant files under benchmark/ in each sweep dir, scored
+    # by the SAME score_forecast() path as the ensemble — but into a
+    # SEPARATE table (ledger/benchmark.json). They never enter the
+    # ensemble calibration below: fam_vals / weights read only the
+    # ensemble rows.
+    bench_forecasts, bench_invalid, bench_gaps, bench_malformed = \
+        extract_benchmark_forecasts(sweep_list)
+
     # ---- score ---------------------------------------------------------------
     # Issue #87 validity guard: a forecast is scored only when its
     # base_price matches the ticker's evidenced price level (closes
@@ -822,46 +1075,69 @@ def main():
     # manufactured from the wrong ticker's data (the COMI sweep-lite
     # based COMI on POUL's 10.15); such forecasts are invalid, never
     # scored, and excluded from skill/weights.
-    rows, invalid = [], []
-    for fc in forecasts:
-        t = fc["ticker"]
-        ev = evidenced_series.get(t, {})
-        ev_dates = [d for d in ev if d <= fc["as_of"]]
-        if ev_dates:
-            level_date = max(ev_dates)
-            level = ev[level_date]
-            if rel_close(fc["base_price"], level) > VALID_TOL:
-                # Issue #129: a cum-dividend base on the ex-date
-                # legitimately sits ~DPS above the post-ex close
-                # (10.0 vs 8.02 on 2026-11-16) — that is not a
-                # wrong-ticker base. Score it; score_forecast()
-                # applies the same cum-dividend test before adjusting.
-                if not cum_div_base_valid(
-                        fc["base_price"], level, level_date, fc["as_of"],
-                        fc.get("corporate_actions")):
-                    r = dict(fc)
-                    r.update(status="invalid",
-                             invalid_reason=(
-                                 f"base_price {fc['base_price']} deviates "
-                                 f"{rel_close(fc['base_price'], level) * 100:.1f}% from the "
-                                 f"ticker-evidenced close {level} at {level_date} "
-                                 f"— the sweep's data does not match {t} (issue #87)"))
-                    rows.append(r)
-                    invalid.append(r)
-                    continue
-        try:
-            rows.append(score_forecast(fc, series.get(t, {}),
-                                       provenance.get(t, {}), fc["sweep"]))
-        except Exception as e:
-            warn(f"scoring failed for {fc}: {e}")
-            r = dict(fc); r.update(status="error", error=str(e))
-            rows.append(r)
+    def score_list(fcs):
+        scored, invalid_list = [], []
+        for fc in fcs:
+            t = fc["ticker"]
+            ev = evidenced_series.get(t, {})
+            ev_dates = [d for d in ev if d <= fc["as_of"]]
+            if ev_dates:
+                level_date = max(ev_dates)
+                level = ev[level_date]
+                if rel_close(fc["base_price"], level) > VALID_TOL:
+                    # Issue #129: a cum-dividend base on the ex-date
+                    # legitimately sits ~DPS above the post-ex close
+                    # (10.0 vs 8.02 on 2026-11-16) — that is not a
+                    # wrong-ticker base. Score it; score_forecast()
+                    # applies the same cum-dividend test before adjusting.
+                    if not cum_div_base_valid(
+                            fc["base_price"], level, level_date, fc["as_of"],
+                            fc.get("corporate_actions")):
+                        r = dict(fc)
+                        r.update(status="invalid",
+                                 invalid_reason=(
+                                     f"base_price {fc['base_price']} deviates "
+                                     f"{rel_close(fc['base_price'], level) * 100:.1f}% from the "
+                                     f"ticker-evidenced close {level} at {level_date} "
+                                     f"— the sweep's data does not match {t} (issue #87)"))
+                        scored.append(r)
+                        invalid_list.append(r)
+                        continue
+            try:
+                scored.append(score_forecast(fc, series.get(t, {}),
+                                             provenance.get(t, {}),
+                                             fc["sweep"]))
+            except Exception as e:
+                warn(f"scoring failed for {fc}: {e}")
+                r = dict(fc)
+                r.update(status="error", error=str(e))
+                scored.append(r)
+        return scored, invalid_list
+
+    rows, invalid = score_list(forecasts)
+    bench_rows, bench_invalid_scored = score_list(bench_forecasts)
+    bench_rows.extend(bench_invalid)
+    invalid_bench = bench_invalid_scored + bench_invalid
     # Issue #129 (d), cross-sweep leg: flag matured rows whose own
     # forecast carries no dividend action but whose horizon spans an
-    # ex-date recorded by another sweep for the same ticker.
-    flag_cross_sweep_spans(rows, series)
+    # ex-date recorded by another sweep for the same ticker. Runs
+    # over ensemble + benchmark rows together: the known ex-dates
+    # come from every forecast, and every row gets the same flag.
+    flag_cross_sweep_spans(rows + bench_rows, series)
     matured = [r for r in rows if r["status"] == "matured"]
     pending = [r for r in rows if r["status"] == "pending"]
+    bench_matured = [r for r in bench_rows if r["status"] == "matured"]
+    bench_pending = [r for r in bench_rows if r["status"] == "pending"]
+    # Issue #79 (D-79-1): gap-flagged matured rows are EXCLUDED from
+    # skill / weights / aggregates. The rows STAY in forecasts_detail
+    # with their flag (and stay matured toward the D4 n≥30 bar); only
+    # the means move. The same rule applies identically to benchmark
+    # rows (same code path, same filter).
+    skill_matured = [r for r in matured if not r.get("dividend_gap")]
+    bench_skill_matured = [r for r in bench_matured
+                           if not r.get("dividend_gap")]
+    excluded_flagged = len(matured) - len(skill_matured)
+    bench_excluded_flagged = len(bench_matured) - len(bench_skill_matured)
     if invalid:
         gaps.append(f"{len(invalid)} forecast(s) invalidated by the "
                     "issue-#87 guard (base_price inconsistent with the "
@@ -885,6 +1161,24 @@ def main():
                               f"({r['horizon']}) from {r['sweep']}: "
                               f"{r.get('dividend_gap')}"
                               for r in gapped))
+    if excluded_flagged:
+        gaps.append(f"{excluded_flagged} gap-flagged matured forecast(s) "
+                    "excluded from skill/weights/aggregates (issue #79): "
+                    "the rows stay listed with their dividend_gap flag — "
+                    "only the means exclude them; the published weights "
+                    "change on the next publish is the intended "
+                    "correction, announced at the #79 landing")
+    if bench_excluded_flagged:
+        bench_gaps.append(f"{bench_excluded_flagged} gap-flagged matured "
+                          "benchmark row(s) excluded from benchmark "
+                          "aggregates (issue #79)")
+    if invalid_bench:
+        bench_gaps.append(f"{len(invalid_bench)} benchmark row(s) "
+                          "invalidated (validation mismatch or the "
+                          "issue-#87 guard) — never scored: " +
+                          "; ".join(f"{r.get('entrant')} {r['ticker']} as "
+                                    f"of {r['as_of']} ({r['horizon']}) from "
+                                    f"{r['sweep']}" for r in invalid_bench))
     adjusted_rows = [r for r in matured if r.get("dividend_adjusted")]
     if not any((fc.get("corporate_actions") for fc in forecasts)):
         gaps.append("no archived ensemble carries a corporate_actions block "
@@ -904,13 +1198,19 @@ def main():
         if not n:
             return {"n": 0, "hit_rate": None, "mean_abs_error_pp": None,
                     "range_coverage": None}
+        # Issue #79: range coverage counts only rows that carry a
+        # range (Class B rows carry none); hit rate / MAE count all.
+        ranged = [r for r in subset if r.get("in_range") is not None]
         return {"n": n,
                 "hit_rate": round(sum(r["direction_hit"] for r in subset) / n, 3),
                 "mean_abs_error_pp": round(
                     sum(r["move_error_pp"] for r in subset) / n, 2),
-                "range_coverage": round(
-                    sum(r["in_range"] for r in subset) / n, 3)}
-    by_horizon = {h: agg([r for r in matured if r["horizon"] == h])
+                "range_coverage": (round(
+                    sum(r["in_range"] for r in ranged) / len(ranged), 3)
+                    if ranged else None)}
+    # Issue #79 (D-79-1): aggregates + skill run on the
+    # gap-flagged-excluded set, not on all matured rows.
+    by_horizon = {h: agg([r for r in skill_matured if r["horizon"] == h])
                   for h in HORIZONS}
     by_ticker = {}
     for t in sorted({r["ticker"] for r in rows}):
@@ -920,7 +1220,7 @@ def main():
             "pending": sum(1 for r in pending if r["ticker"] == t),
             "invalid": sum(1 for r in invalid if r["ticker"] == t)}
     fam_vals = {}
-    for r in matured:
+    for r in skill_matured:
         for fam, v in (r.get("family_skill") or {}).items():
             fam_vals.setdefault(fam, []).append(v)
         if r.get("net_skill") is not None:
@@ -938,7 +1238,11 @@ def main():
                    "sweeps_with_ensemble": sum(1 for s in sweep_list if s["has_ensemble"]),
                    "forecasts": len(rows), "matured": len(matured),
                    "pending": len(pending), "invalid": len(invalid),
-                   "dividend_adjusted": len(adjusted_rows)},
+                   "dividend_adjusted": len(adjusted_rows),
+                   # Issue #79 (D-79-1): gap-flagged matured rows stay
+                   # matured (and stay in forecasts_detail) but are
+                   # excluded from skill/weights/aggregates.
+                   "excluded_flagged": excluded_flagged},
         "by_ticker": by_ticker, "by_horizon": by_horizon,
         "family_skill": family_skill,
         "series": series_summary,
@@ -984,7 +1288,10 @@ def main():
          f"({ledger['counts']['sweeps_with_ensemble']} with an ensemble).", "",
          f"**Forecasts found: {len(rows)} · matured: {len(matured)} · "
          f"pending: {len(pending)} · invalid: {len(invalid)} · "
-         f"dividend-adjusted: {len(adjusted_rows)}**", ""]
+         f"dividend-adjusted: {len(adjusted_rows)}"
+         + (f" · excluded from skill: {excluded_flagged} gap-flagged "
+            f"row(s) (issue #79)" if excluded_flagged else "")
+         + "**", ""]
     L += ["## By ticker", "",
           "| Ticker | Found | Matured | Pending | Invalid | Series span |",
           "|---|---|---|---|---|---|"]
@@ -993,7 +1300,8 @@ def main():
         span = f"{ss.get('first_date','—')} → {ss.get('last_date','—')}" if ss else "—"
         L.append(f"| {t} | {b['found']} | {b['matured']} | {b['pending']} | "
                  f"{b.get('invalid', 0)} | {span} |")
-    L += ["", "## By horizon (matured only)", "",
+    L += ["", "## By horizon (matured only, gap-flagged rows excluded "
+          "from skill — issue #79)", "",
           "| Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |",
           "|---|---|---|---|---|"]
     for h in HORIZONS:
@@ -1037,7 +1345,105 @@ def main():
           "have matured; a family is only as good as its measured record._"]
     with open(os.path.join(out_dir, "ledger.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(L) + "\n")
+
+    # ---- benchmark table (issue #79) --------------------------------------
+    # Separate file, scored by the same score_forecast() path above.
+    # The weights computation above reads ONLY the ensemble rows
+    # (fam_vals from skill_matured); benchmark rows can never leak
+    # into it — the no-leak proof (L1/L2/L3) asserts exactly this.
+    bench_counts = {
+        "sweeps": len(sweep_list),
+        "sweeps_with_freeze": sum(
+            1 for s in sweep_list
+            if s.get("benchmark") or s.get("class_b")),
+        "entrant_rows": len(bench_rows),
+        "matured": len(bench_matured),
+        "pending": len(bench_pending),
+        "invalid": len(invalid_bench),
+        "excluded_flagged": bench_excluded_flagged}
+    bench_order = ["ensemble"] + sorted(ENTRANT_REGISTRY) + sorted(
+        {r.get("entrant") for r in bench_rows
+         if (r.get("entrant") or "").startswith("class-b-")})
+    bench_by_entrant = {}
+    for ent in bench_order:
+        if ent == "ensemble":
+            pool = skill_matured
+        else:
+            pool = [r for r in bench_skill_matured
+                    if r.get("entrant") == ent]
+        bench_by_entrant[ent] = {
+            h: agg([r for r in pool if r["horizon"] == h])
+            for h in HORIZONS}
+    if bench_malformed:
+        bench_gaps.append("benchmark file malformed: one or more frozen "
+                          "entrant files could not be validated — the "
+                          "publisher rejects this run (issue #79 F12)")
+    benchmark = {
+        "tool": "benchmark-ledger", "version": 1,
+        "source": {"repo": REPO, "branch": BRANCH,
+                   "tree_sha": tree.get("sha"),
+                   "commit_sha": commit_sha, "tree_via": tree_src},
+        "counts": bench_counts,
+        "by_entrant": bench_by_entrant,
+        "rows": bench_rows,
+        "gaps": bench_gaps, "warnings": WARNINGS,
+    }
+    with open(os.path.join(out_dir, "benchmark.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(benchmark, f, indent=1, ensure_ascii=False)
+
+    # benchmark.md: one table per horizon, fixed order (ensemble
+    # first as the reference row, then the entrants alphabetically —
+    # never sorted by score). The n>=10 gate is enforced in
+    # generation: a cell with n < 10 shows its count and the gate
+    # wording with the metrics withheld — no quality claim of any
+    # kind is printed below the gate, and no "beats / wins / best"
+    # framing exists anywhere in this file.
+    B = ["# 🐊 Borsagator — forward quality benchmark (issue #79)", "",
+         f"Source: `{REPO}` branch `{BRANCH}` (tree "
+         f"{str(tree.get('sha'))[:8]}, commit "
+         f"{str(commit_sha)[:8] if commit_sha else '—'}). "
+         f"Sweeps archived: {bench_counts['sweeps']} "
+         f"({bench_counts['sweeps_with_freeze']} with a benchmark "
+         f"freeze).", "",
+         f"**Benchmark rows: {bench_counts['entrant_rows']} · matured: "
+         f"{bench_counts['matured']} · pending: "
+         f"{bench_counts['pending']} · invalid: "
+         f"{bench_counts['invalid']} · excluded gap-flagged: "
+         f"{bench_counts['excluded_flagged']}**", "",
+         "Quality gate: no quality claim for any (entrant, horizon) "
+         f"cell with fewer than {BENCHMARK_GATE_N} matured forecasts — "
+         "such cells show their count and the gate wording only. "
+         "Public accuracy claims need n ≥ 30 matured forecasts (D4).",
+         ""]
+    for h in HORIZONS:
+        B += [f"## {h} (matured only)", "",
+              "| Entrant | n | Direction hit rate | Mean |error| (pp) | "
+              "Range coverage |",
+              "|---|---|---|---|---|"]
+        for ent in bench_order:
+            a = bench_by_entrant[ent][h]
+            if a["n"] < BENCHMARK_GATE_N:
+                B.append(f"| {ent} | n={a['n']} — below the n≥"
+                         f"{BENCHMARK_GATE_N} gate, no claim | — | — | — |")
+            else:
+                fmt = lambda v: "—" if v is None else f"{v}"
+                B.append(f"| {ent} | {a['n']} | {fmt(a['hit_rate'])} | "
+                         f"{fmt(a['mean_abs_error_pp'])} | "
+                         f"{fmt(a['range_coverage'])} |")
+        B += [""]
+    if bench_gaps:
+        B += ["## Benchmark gaps & notes", ""]
+        for g in bench_gaps:
+            B.append(f"- {g}")
+        B += [""]
+    B += ["_The ensemble is the reference row: the table is symmetric "
+          "and fixed-order, and every cell is published as scored._"]
+    with open(os.path.join(out_dir, "benchmark.md"), "w",
+              encoding="utf-8") as f:
+        f.write("\n".join(B) + "\n")
     print("ledger:", ledger["counts"])
+    print("benchmark:", bench_counts)
 
 
 if __name__ == "__main__":

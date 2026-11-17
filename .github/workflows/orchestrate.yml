@@ -126,6 +126,15 @@ jobs:
         if: always()
         run: python3 scripts/ensemble.py || true
 
+      # Issue #79: freeze the benchmark entrants (family-alone,
+      # Kronos-alone, raw-LLM, buy-and-hold) from this sweep's
+      # ensemble + Kronos path, before the archive stage. Never
+      # fails the sweep: the freeze exits 0 always and a missing
+      # benchmark/ dir is legal.
+      - name: Freeze the benchmark entrants
+        if: always()
+        run: python3 scripts/benchmark_freeze.py || true
+
       - name: Stage the sweep archive
         id: archive-stage
         if: always()

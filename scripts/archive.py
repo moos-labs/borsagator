@@ -12,7 +12,7 @@ never raises).
 Layout on the archive branch:
   sweeps/<YYYY-MM-DD>/<HHMMSS>__<job-slug>__run<id>/
       manifest.json  digest.json  ensemble.json  digest.md
-      registry.json  collected/<tool>/...
+      registry.json  collected/<tool>/...  benchmark/<entrant>.json
 Files over 5 MB are skipped and recorded in the manifest.
 """
 import hashlib, json, os, re, shutil, sys
@@ -84,6 +84,19 @@ def main():
     collected = os.path.join(ROOT, "collected")
     if os.path.isdir(collected):
         for dirpath, _dirs, names in os.walk(collected):
+            for name in sorted(names):
+                src = os.path.join(dirpath, name)
+                rel = os.path.relpath(src, ROOT).replace(os.sep, "/")
+                copy(src, rel)
+
+    # Issue #79: frozen benchmark entrants (scripts/benchmark_freeze.py
+    # runs after ensemble.py). Same 5 MB cap, same manifest files[]
+    # entry with sha256, same skipped[] treatment. A sweep with no
+    # benchmark/ dir (pre-#79, or a failed freeze) archives fine
+    # without it.
+    bench = os.path.join(ROOT, "benchmark")
+    if os.path.isdir(bench):
+        for dirpath, _dirs, names in os.walk(bench):
             for name in sorted(names):
                 src = os.path.join(dirpath, name)
                 rel = os.path.relpath(src, ROOT).replace(os.sep, "/")

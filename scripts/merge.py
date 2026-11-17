@@ -24,11 +24,12 @@ Three pure steps, mirroring scripts/archive.py's layout:
    values are coerced to null — strict JSON only (the live hazard
    is yahooquery's native summary.json with last_close: NaN).
 3. **invoke** — run scripts/ensemble.py unmodified with CWD = the
-   staged tree, then **archive** the result under
-   sweeps/<date>/<HHMMSS>__<slug>__run<job-id>/ with worker
-   provenance in the manifest. The sweep-dir timestamp is the
-   sweep's finished time (from the run manifest), not the merge
-   time (#67 scoping §4f).
+   staged tree, then run scripts/benchmark_freeze.py the same way
+   (issue #79) to freeze the benchmark entrants, then **archive**
+   the result under sweeps/<date>/<HHMMSS>__<slug>__run<job-id>/
+   with worker provenance in the manifest. The sweep-dir timestamp
+   is the sweep's finished time (from the run manifest), not the
+   merge time (#67 scoping §4f).
 
 Completeness rule (#67 scoping §4g, adopted as written): a sweep is
 mergeable when every tool in the parsed plan has a manifest entry.
@@ -83,7 +84,8 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-MERGE_VERSION = 1
+MERGE_VERSION = 2  # #79: benchmark freeze runs after the ensemble
+                     # and benchmark/*.json is copied into the sweep
 MAX_FILE = 5 * 1024 * 1024  # same cap as scripts/archive.py
 MAX_METRIC_KEYS = 30        # EMITTER caps, verbatim
 MAX_METRIC_LEN = 120
@@ -549,6 +551,31 @@ def merge(job, run_dir, registry_path, weights_path, ensemble_path,
                   "ensemble failure) — digest ships without one",
                   file=sys.stderr)
 
+        # Issue #79: freeze the benchmark entrants from this sweep's
+        # ensemble + Kronos path, CWD = the staged tree (same
+        # invocation shape as ensemble.py above). The freeze never
+        # fails the merge: a missing script (a pre-#79 worker
+        # release) or a failed run leaves the sweep without
+        # benchmark/ — legal, like a pre-#79 sweep. BENCHMARK_RUN_ID
+        # is the claim id, so the frozen `sweep` field names this
+        # merge's sweep dir.
+        freeze_path = Path(ensemble_path).with_name("benchmark_freeze.py")
+        if freeze_path.is_file():
+            fenv = dict(env)
+            fenv["BENCHMARK_RUN_ID"] = claim_id or ""
+            fproc = subprocess.run(
+                [sys.executable, str(freeze_path)],
+                cwd=str(stage), env=fenv, capture_output=True, text=True,
+                timeout=600)
+            if fproc.stdout.strip():
+                print(fproc.stdout, end="")
+            if fproc.stderr.strip():
+                print(fproc.stderr, end="", file=sys.stderr)
+        else:
+            print("merge: no benchmark_freeze.py next to ensemble.py "
+                  "— sweep ships without benchmark/",
+                  file=sys.stderr)
+
         # Archive into sweeps/ with the archive.py shape + worker
         # provenance. Files over 5 MB are skipped and recorded.
         files, skipped = [], []
@@ -584,6 +611,16 @@ def merge(job, run_dir, registry_path, weights_path, ensemble_path,
             _copy(digest_dir / "ensemble_error.txt",
                   "ensemble_error.txt")
         _copy(stage / "registry" / "tools.json", "registry.json")
+        # Issue #79: explicit copy loop for the frozen benchmark
+        # entrants (like ensemble.json above — the collected/** walk
+        # below would NOT pick them up, and a benchmark/ dir at the
+        # staged root would otherwise be silently dropped).
+        bench_dir = stage / "benchmark"
+        if bench_dir.is_dir():
+            for name in sorted(os.listdir(bench_dir)):
+                src = bench_dir / name
+                if src.is_file():
+                    _copy(src, f"benchmark/{name}")
         for dirpath, _dirs, names in os.walk(collected):
             _dirs.sort()  # deterministic manifest file order
             for name in sorted(names):
