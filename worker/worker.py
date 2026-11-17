@@ -33,6 +33,16 @@ VENVS = ROOT / "venvs"
 OUT = ROOT / "out"
 POLL_SECONDS = int(os.environ.get("GATOR_POLL", "300"))
 ORG = "moos-labs"
+# D2 (issue #65): the worker's code channel. The worker NEVER executes
+# main-tip code: it follows the `worker-release` branch, which only
+# moves by a reviewed promotion, and only adopts a tip that is a
+# fast-forward descendant of the code it already runs. GATOR_PIN_SHA
+# is an optional emergency freeze (normally unset): when set, only
+# that exact SHA is adopted.
+UPDATE_BRANCH = os.environ.get("GATOR_UPDATE_BRANCH", "worker-release")
+UPDATE_PIN = os.environ.get("GATOR_PIN_SHA", "")
+CODE = ROOT / "release"      # release-branch checkout (was ROOT/"main")
+UPDATE_ERROR = None          # last self-update refusal, in heartbeat
 # Panel round 2 (Gemini review, 2026-11-14): the bus credential must
 # never reach a tool's process environment — tools have dumped env in
 # debug logs before, and results are pushed to a public archive.
@@ -94,11 +104,17 @@ QUEUE_ERROR = None  # last queue.json parse error (panel round 3, R3-09)
 def heartbeat():
     (BUS / "queue").mkdir(exist_ok=True)
     payload = {"worker": os.uname().nodename, "at": now(),
-               "version": "worker-v1"}
+               "version": "worker-v1",
+               "code_sha": update_checkout_sha(),
+               "update_branch": UPDATE_BRANCH}
     if QUEUE_ERROR:
         # A malformed queue.json must not idle the fleet behind a
         # green heartbeat (INS-R3-09).
         payload["queue_error"] = QUEUE_ERROR
+    if UPDATE_ERROR:
+        # D2: a refused update must be visible on the bus — stale
+        # code is safe code, but silent staleness is not.
+        payload["update_error"] = UPDATE_ERROR
     (BUS / "queue" / "heartbeat.json").write_text(json.dumps(payload))
     push_bus("heartbeat")
 
@@ -131,20 +147,29 @@ def claim(job):
     return push_bus(f"claim {job['id']}")
 
 
+def _ensure_update_checkout():
+    """D2: the code checkout is the release branch, never main tip.
+    Full clone, not --depth 1 — the fast-forward guard in
+    self_update needs history (a shallow clone has no ancestry
+    to check). Incremental fetches after the first are cheap."""
+    if not CODE.exists():
+        sh(f"git clone --branch {UPDATE_BRANCH} --single-branch "
+           f"https://github.com/{ORG}/borsagator {CODE}", timeout=300)
+    return CODE
+
+
+def update_checkout_sha():
+    r = sh(f"git -C {CODE} rev-parse HEAD", timeout=30)
+    return r.stdout.strip() if r.returncode == 0 else ""
+
+
 def registry():
-    # ALWAYS the pinned main checkout (INS-R3-02): the bus clone also
-    # carries a registry/ copy (the queue branch was branched from
-    # main), and reading templates from the low-trust job channel
-    # would let a bus push redefine them — while main-side registry
-    # updates would silently never arrive. self_update keeps the
-    # main checkout fresh each cycle.
-    main = ROOT / "main"
-    if not main.exists():
-        sh(f"git clone --depth 1 https://github.com/{ORG}/borsagator {main}",
-           timeout=300)
-    else:
-        sh(f"git -C {main} pull --ff-only", timeout=120)
-    return json.loads((main / "registry" / "tools.json").read_text())
+    # D2: templates come from the release-branch checkout that
+    # self_update maintains — never main tip, never the low-trust
+    # queue branch (INS-R3-02). No pull here: self_update runs
+    # first each cycle and is the only place the checkout moves.
+    _ensure_update_checkout()
+    return json.loads((CODE / "registry" / "tools.json").read_text())
 
 
 def parse_job(job, reg):
@@ -172,18 +197,33 @@ def parse_job(job, reg):
             if t in tools and TICKER_RE.match(tk)]
 
 
-def run_tool(tool, ticker, template):
+def run_tool(tool, ticker, template, ref=None, repo_name=None):
+    # D2 (issue #65): a tool runs ONLY at its registry-pinned SHA.
+    # No pull of the runner's branch tip, no fallback to tip: an
+    # unreachable ref fails the tool loudly ("ref-unavailable") and
+    # the job continues without it — unreviewed code never runs
+    # with the keys in its environment. The repo comes from the
+    # registry, not the tool id (financial-roberta's repo is
+    # roberta-sentiment-runner; the old id-derived URL could never
+    # clone it).
+    if not ref or not re.fullmatch(r"[0-9a-f]{40}", ref):
+        return "ref-unpinned", ""
     repo = RUNNERS / tool
+    url = f"https://github.com/{ORG}/{repo_name or tool + '-runner'}"
     if not repo.exists():
-        r = sh(f"git clone --depth 1 https://github.com/{ORG}/{tool}-runner {repo}",
-               timeout=600)
-        if r.returncode != 0:
-            r2 = sh(f"git clone --depth 1 https://github.com/{ORG}/{tool} {repo}",
-                    timeout=600)
-            if r2.returncode != 0:
-                return "clone-failed", ""
-    else:
-        sh(f"git -C {repo} pull --ff-only", timeout=180)
+        if sh(f"git clone --depth 1 {url} {repo}",
+               timeout=600).returncode != 0:
+            return "clone-failed", ""
+    # Fetch exactly the pinned commit (GitHub serves arbitrary SHAs
+    # for public repos): shallow first, full fetch as fallback.
+    if sh(f"git -C {repo} fetch --depth 1 origin {ref}",
+          timeout=180).returncode != 0:
+        if sh(f"git -C {repo} fetch origin {ref}",
+              timeout=180).returncode != 0:
+            return "ref-unavailable", ""
+    if sh(f"git -C {repo} checkout {ref}",
+          timeout=120).returncode != 0:
+        return "ref-unavailable", ""
     venv = VENVS / tool
     py = venv / "bin" / "python"
     if not py.exists():
@@ -285,7 +325,7 @@ def run_harvest(job, workdir):
     if not marker.exists():
         sh(f"{py} -m playwright install chromium", timeout=1800)
         marker.write_text(now())
-    script = ROOT / "main" / "worker" / "egx_harvest.py"
+    script = CODE / "worker" / "egx_harvest.py"
     run_dir = workdir / "egx-harvest"
     run_dir.mkdir(parents=True, exist_ok=True)
     env = {k: v for k, v in os.environ.items()
@@ -392,8 +432,13 @@ def _execute(job):
         return
     plan = parse_job(job["job"], reg)
     templates = {t["id"]: t["command"] for t in reg["tools"]}
+    # D2: each tool runs only at its registry-pinned SHA.
+    refs = {t["id"]: t.get("ref") for t in reg["tools"]}
+    repos = {t["id"]: t.get("repo", f"{t['id']}-runner")
+             for t in reg["tools"]}
     for tool, ticker in plan:
-        status, log = run_tool(tool, ticker, templates.get(tool, ""))
+        status, log = run_tool(tool, ticker, templates.get(tool, ""),
+                               refs.get(tool), repos.get(tool))
         dest = workdir / tool
         src = RUNNERS / tool / "results"
         if src.exists():
@@ -452,16 +497,50 @@ def reclaim_stale_claims():
 
 
 def self_update():
-    """Pull the main checkout; if worker/worker.py changed, adopt it
-    and restart — fixes reach the worker over the bus, no relaunch.
-    (Added after the w2 self-test forced a full replacement cycle.)"""
-    main = ROOT / "main"
-    if not main.exists():
-        sh(f"git clone --depth 1 https://github.com/{ORG}/borsagator {main}",
-           timeout=300)
+    """Adopt the release branch, never main tip (D2, issue #65).
+
+    Promotion is a deliberate act: a reviewed main commit is
+    fast-forwarded onto `worker-release`, and the worker only ever
+    adopts a tip that is a fast-forward descendant of the checkout
+    it already runs (or exactly GATOR_PIN_SHA when set). A
+    force-pushed / rewritten tip is refused and reported — the
+    worker keeps running the old, reviewed code. Fixes still reach
+    the worker over the bus with no relaunch; what changes is that
+    only reviewed, promoted code can arrive.
+    (Replaces the old pull-from-main-tip hook.)"""
+    global UPDATE_ERROR
+    _ensure_update_checkout()
+    if not CODE.exists():
+        UPDATE_ERROR = "update checkout missing after clone"
         return
-    sh(f"git -C {main} pull --ff-only", timeout=120)
-    src = main / "worker" / "worker.py"
+    if sh(f"git -C {CODE} fetch origin {UPDATE_BRANCH}",
+          timeout=120).returncode != 0:
+        UPDATE_ERROR = "fetch of release branch failed; keeping running code"
+        return
+    tip = sh(f"git -C {CODE} rev-parse FETCH_HEAD",
+             timeout=30).stdout.strip()
+    if not tip:
+        UPDATE_ERROR = "release branch tip unreadable; keeping running code"
+        return
+    if UPDATE_PIN and tip != UPDATE_PIN:
+        UPDATE_ERROR = (f"release tip {tip[:12]} != pinned "
+                        f"{UPDATE_PIN[:12]}; keeping running code")
+        return
+    cur = update_checkout_sha()
+    if cur and tip != cur:
+        # Fast-forward only: a rewritten history is refused even if
+        # the branch moved. (Needs the full clone from
+        # _ensure_update_checkout — shallow history has no ancestry.)
+        if sh(f"git -C {CODE} merge-base --is-ancestor HEAD {tip}",
+              timeout=60).returncode != 0:
+            UPDATE_ERROR = (f"release tip {tip[:12]} is not a "
+                            f"descendant of running {cur[:12]}; refusing")
+            return
+    if sh(f"git -C {CODE} checkout {tip}", timeout=60).returncode != 0:
+        UPDATE_ERROR = f"checkout of release tip {tip[:12]} failed"
+        return
+    UPDATE_ERROR = None
+    src = CODE / "worker" / "worker.py"
     me = Path(__file__).resolve()
     try:
         if src.exists() and src.read_bytes() != me.read_bytes():

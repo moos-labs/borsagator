@@ -6,6 +6,7 @@
    "command": "mkdir -p results\npython scripts/fetch.py --tickers {ticker} 2>&1 | tee results/run.log",
    "id": "yahooquery",
    "repo": "yahooquery-runner",
+   "ref": "ed4375401d91280fd3e4e9e19864ec9e78e3ea74",
    "status": "active",
    "markets": [
     "EGX",
@@ -20,6 +21,7 @@
    "command": "mkdir -p results\npython scripts/fetch.py --tickers {ticker} 2>&1 | tee results/run.log",
    "id": "openbb",
    "repo": "openbb-runner",
+   "ref": "b5c13e43d471023e9a257c962177954271910b35",
    "status": "active",
    "markets": [
     "EGX",
@@ -34,6 +36,7 @@
    "command": "mkdir -p results\npython scripts/egx_fetch.py --ticker {ticker} 2>&1 | tee results/run.log",
    "id": "egx-data",
    "repo": "egx-data-runner",
+   "ref": "c62411d058274ae6895b7b593695fbd00fb47167",
    "status": "active",
    "markets": [
     "EGX"
@@ -47,6 +50,7 @@
    "command": "mkdir -p results\npython scripts/ta_snapshot.py --ticker {ticker} 2>&1 | tee results/run.log",
    "id": "pandas-ta",
    "repo": "pandas-ta-runner",
+   "ref": "e126e8f8e54d94e19f319039a17b502eedc73c76",
    "status": "active",
    "markets": [
     "EGX",
@@ -61,6 +65,7 @@
    "command": "mkdir -p results\npython scripts/ta.py {ticker} 2>&1 | tee results/run.log",
    "id": "talib",
    "repo": "talib-runner",
+   "ref": "fa231091bc6c801515b98f63f3ee6a9689065dde",
    "status": "active",
    "markets": [
     "EGX"
@@ -75,6 +80,7 @@
    "fixed_target": "POUL.CA (script default)",
    "id": "quantstats",
    "repo": "quantstats-runner",
+   "ref": "d4deeb53f7b3629984ba0746ca060b885f92cd77",
    "status": "active",
    "markets": [
     "EGX"
@@ -89,6 +95,7 @@
    "fixed_target": "POUL dividend-capture study",
    "id": "vectorbt",
    "repo": "vectorbt-runner",
+   "ref": "8faf9a7f42b53648b76a51828931a86d44d2f147",
    "status": "active",
    "markets": [
     "EGX"
@@ -103,6 +110,7 @@
    "fixed_target": "POUL verified statements",
    "id": "financetoolkit",
    "repo": "financetoolkit-runner",
+   "ref": "cb1a2a37ed879c59ef2bf16bf01cf608a42b1fba",
    "status": "active",
    "markets": [
     "EGX"
@@ -117,6 +125,7 @@
    "fixed_target": "samples/poul_headlines.txt",
    "id": "finbert",
    "repo": "finbert-runner",
+   "ref": "7cebaee9b66b47d521d947a760dc01285e6f6073",
    "status": "active",
    "markets": [
     "EGX"
@@ -132,6 +141,7 @@
    "fixed_target": "samples/poul_headlines.txt",
    "id": "finbert-tone",
    "repo": "finbert-tone-runner",
+   "ref": "9e921b834cbd06730005e01ee4f179721018fd02",
    "status": "active",
    "markets": [
     "EGX"
@@ -147,6 +157,7 @@
    "fixed_target": "samples/poul_headlines.txt",
    "id": "financial-roberta",
    "repo": "roberta-sentiment-runner",
+   "ref": "d33584ceb4cd5594b4f7f60a110df3ac896c6886",
    "status": "active",
    "markets": [
     "EGX"
@@ -161,6 +172,7 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/ta_run.py --ticker {ticker} --date {date} --provider cohere --model command-r-08-2024 2>&1 | tee results/run.log",
    "id": "tradingagents",
    "repo": "tradingagents-runner",
+   "ref": "3aa9f5cd5e3772512edbae6a58d5454d19194d20",
    "status": "active",
    "markets": [
     "EGX",
@@ -175,6 +187,7 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
    "id": "kronos",
    "repo": "kronos-runner",
+   "ref": "a4b4b1180346b80684ec0a120a93a1bb7e2df007",
    "status": "active",
    "markets": [
     "EGX",
@@ -187,6 +200,7 @@
   {
    "id": "pandas-datareader",
    "repo": "pandas-datareader-runner",
+   "ref": "99de4ab21da6c4514266fda8b4c7f2da323af884",
    "category": "data",
    "markets": [
     "US"
@@ -201,6 +215,7 @@
   {
    "id": "backtrader",
    "repo": "backtrader-runner",
+   "ref": "01fd6771bf9d6f41d8e6ddc11106a7ca7a53ecba",
    "category": "backtest",
    "markets": [
     "US"
@@ -214,6 +229,7 @@
   {
    "id": "akshare",
    "repo": "akshare-runner",
+   "ref": "2e72ba5b69b9dc510649ebde48dc1afb2c081a98",
    "category": "data",
    "markets": [
     "CN",
@@ -228,6 +244,7 @@
   {
    "id": "financedatabase",
    "repo": "financedatabase-runner",
+   "ref": "5f28d1cb6c58fdd5f5484e6c62a2e0b7690435b8",
    "category": "data",
    "markets": [
     "EGX",
@@ -242,6 +259,7 @@
   {
    "id": "pybroker",
    "repo": "pybroker-runner",
+   "ref": "bbaf7aa32e7fb29b4fb670f67411df6a036a751f",
    "category": "backtest",
    "markets": [
     "US"
@@ -255,6 +273,7 @@
   {
    "id": "finvizfinance",
    "repo": "finvizfinance-runner",
+   "ref": "2e4c901c93b20484e2867ca3873ef1c9929cae95",
    "category": "data",
    "markets": [
     "US"
@@ -269,6 +288,7 @@
   {
    "id": "backtesting-py",
    "repo": "backtesting-py-runner",
+   "ref": "39ded435755bc31e1435e9f608801e55995d4d5a",
    "category": "backtest",
    "markets": [
     "EGX"
@@ -283,6 +303,7 @@
   {
    "id": "edgartools",
    "repo": "edgartools-runner",
+   "ref": "a81a1e29ab43b5526a8b9ff03b6f40ca850b5593",
    "category": "fundamentals",
    "markets": [
     "US"
@@ -296,6 +317,7 @@
   {
    "id": "bt",
    "repo": "bt-runner",
+   "ref": "0c1270233ad8dbb9cc137ef1ffc0181b62dda83e",
    "category": "backtest",
    "markets": [
     "US"
@@ -309,6 +331,7 @@
   {
    "id": "superalgos",
    "repo": "superalgos-runner",
+   "ref": "7ca448ec9bd3f571247eba7472f4acb6f55490b1",
    "category": "backtest",
    "markets": [
     "US"
@@ -323,6 +346,7 @@
   {
    "id": "simfin",
    "repo": "simfin-runner",
+   "ref": "2331563b1b8c9351f3f248f2d42fefd0dbbd17eb",
    "category": "fundamentals",
    "markets": [
     "US"
@@ -337,6 +361,7 @@
   {
    "id": "qlib",
    "repo": "qlib-runner",
+   "ref": "5e0eb8e840cfad6a71b0d73a4761ef8e014916cf",
    "category": "forecast",
    "markets": [
     "CN"
@@ -350,6 +375,7 @@
   {
    "id": "zipline",
    "repo": "zipline-runner",
+   "ref": "4ced005de53f32803b467540f10b678c54249406",
    "category": "backtest",
    "markets": [
     "US"
@@ -363,6 +389,7 @@
   {
    "id": "fingpt",
    "repo": "fingpt-runner",
+   "ref": "af4c994865a4e367a56b654a7eaa78f60127ad3e",
    "category": "sentiment",
    "markets": [
     "US"
@@ -377,6 +404,7 @@
   {
    "id": "vnpy",
    "repo": "vnpy-runner",
+   "ref": "fdea7c09c384589297bc59989d529e4053ec7964",
    "category": "backtest",
    "markets": [
     "US"
@@ -390,6 +418,7 @@
   {
    "id": "nautilus",
    "repo": "nautilus-runner",
+   "ref": "a58f6874efd595dce40c314d93f2185a6bc97a3c",
    "category": "backtest",
    "markets": [
     "US"
@@ -403,6 +432,7 @@
   {
    "id": "finrl",
    "repo": "finrl-runner",
+   "ref": "7a2cdf1206b3c2e4c88c6066cd6c842cd02060ba",
    "category": "backtest",
    "markets": [
     "US"
@@ -417,6 +447,7 @@
   {
    "id": "lean",
    "repo": "lean-runner",
+   "ref": "0870b7133c2b888add34b44fb6e0b407ef836ee9",
    "category": "backtest",
    "markets": [
     "US"
@@ -430,6 +461,7 @@
   {
    "id": "stocksharp",
    "repo": "stocksharp-runner",
+   "ref": "f51801c677b6f9cffc7468d72528d492a7948bd7",
    "category": "backtest",
    "markets": [
     "US"
@@ -443,6 +475,7 @@
   {
    "id": "egx-mcp",
    "repo": "egx-mcp-runner",
+   "ref": "80d302310603dcad9c6904936f83fee70a8e6f15",
    "category": "data",
    "markets": [
     "EGX"
@@ -457,6 +490,7 @@
   {
    "id": "ai-hedge-fund",
    "repo": "ai-hedge-fund-runner",
+   "ref": "8a6840e7a8299a6361d39f77a38f0d7e730e4e6b",
    "category": "agent",
    "markets": [
     "US"
@@ -471,6 +505,7 @@
   {
    "id": "vibe-trading",
    "repo": "vibe-trading-runner",
+   "ref": "f4dca4cb9131ec656d684ce577ea717125871c02",
    "category": "agent",
    "markets": [
     "EGX",
@@ -486,6 +521,7 @@
   {
    "id": "finrobot",
    "repo": "finrobot-runner",
+   "ref": "d8eb027adc6db8c7efda606c7a3c9bb4fbd3b24b",
    "category": "agent",
    "markets": [
     "US"
@@ -500,6 +536,7 @@
   {
    "id": "news-disclosure",
    "repo": "news-disclosure-runner",
+   "ref": "1d0ee7db23a82088025ac6905e8764af9e948de9",
    "category": "news",
    "status": "active",
    "markets": [
