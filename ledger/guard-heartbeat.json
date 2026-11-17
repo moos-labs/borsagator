@@ -1,7 +1,7 @@
 {
-  "last_run_utc": "2026-11-16T22:00:46Z",
-  "run_id": null,
-  "status": "seeded",
+  "last_run_utc": "2026-11-17T06:55:55Z",
+  "run_id": 44034725696,
+  "status": "ok",
   "workflow": "ledger-guard",
-  "note": "Seeded by the #128 fix so the watchdog has a heartbeat to check from the first tick; no guard run has refreshed this yet. The watchdog treats it like any heartbeat: it pages when this is older than 90 minutes, and a completed guard run overwrites it."
+  "note": "Written by every completed ledger-guard run; the watchdog (ledger-guard-watchdog.yml) pages when this is older than 90 minutes."
 }
