@@ -1,0 +1,157 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 1,
+    "negative": 4,
+    "neutral": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.11098006915482175,
+    "negative": 0.44008164703781305,
+    "neutral": 0.448938273158597
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003271246387157589,
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316
+      },
+      "raw_probabilities": {
+        "negative": 0.9989087581634521,
+        "neutral": 0.0007641458068974316,
+        "positive": 0.0003271246387157589
+      }
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9950209856033325,
+        "negative": 0.0003907429345417768,
+        "neutral": 0.004588220734149218
+      },
+      "raw_probabilities": {
+        "positive": 0.9950209856033325,
+        "neutral": 0.004588220734149218,
+        "negative": 0.0003907429345417768
+      }
+    },
+    {
+      "text": "St. Paul High School (Santa Fe Springs, CA) Flag Football - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005881228134967387,
+        "negative": 0.0004488059494178742,
+        "neutral": 0.9989629983901978
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989629983901978,
+        "positive": 0.0005881228134967387,
+        "negative": 0.0004488059494178742
+      }
+    },
+    {
+      "text": "Paul Mbong - Player profile 26/27 - Transfermarkt",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005491378251463175,
+        "negative": 0.0003086694923695177,
+        "neutral": 0.9991421699523926
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991421699523926,
+        "positive": 0.0005491378251463175,
+        "negative": 0.0003086694923695177
+      }
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005521230632439256,
+        "negative": 0.00020821730140596628,
+        "neutral": 0.9992396831512451
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992396831512451,
+        "positive": 0.0005521230632439256,
+        "negative": 0.00020821730140596628
+      }
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003835363604594022,
+        "negative": 0.0003114602295681834,
+        "neutral": 0.9993048906326294
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993048906326294,
+        "positive": 0.0003835363604594022,
+        "negative": 0.0003114602295681834
+      }
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0007058997871354222,
+        "negative": 0.9675122499465942,
+        "neutral": 0.031781911849975586
+      },
+      "raw_probabilities": {
+        "negative": 0.9675122499465942,
+        "neutral": 0.031781911849975586,
+        "positive": 0.0007058997871354222
+      }
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00046431002556346357,
+        "negative": 0.9944803714752197,
+        "neutral": 0.005055319517850876
+      },
+      "raw_probabilities": {
+        "negative": 0.9944803714752197,
+        "neutral": 0.005055319517850876,
+        "positive": 0.00046431002556346357
+      }
+    },
+    {
+      "text": "Paul Mackenzie, the Kenyan preacher who led hundreds to starve to death - Reuters",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00022938227630220354,
+        "negative": 0.9981655478477478,
+        "neutral": 0.001605118392035365
+      },
+      "raw_probabilities": {
+        "negative": 0.9981655478477478,
+        "neutral": 0.001605118392035365,
+        "positive": 0.00022938227630220354
+      }
+    }
+  ]
+}

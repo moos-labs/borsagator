@@ -1,0 +1,24 @@
+[data] source=yahooquery raw_rows=6523
+[data] cleaned_rows=1923 range=2019-01-01..2026-11-16
+[context] preferred_sessions=34 using=34 fallback=False
+[context] Kronos refused preferred context: No module named 'torch'
+[context] falling back to last 400 sessions
+Traceback (most recent call last):
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 197, in main
+    pred_df = run_forecast(context, args.pred_len)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 128, in run_forecast
+    import torch
+ModuleNotFoundError: No module named 'torch'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 261, in <module>
+    main()
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 206, in main
+    pred_df = run_forecast(context, args.pred_len)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 128, in run_forecast
+    import torch
+ModuleNotFoundError: No module named 'torch'

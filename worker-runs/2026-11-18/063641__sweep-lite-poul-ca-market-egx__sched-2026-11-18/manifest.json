@@ -1,0 +1,30 @@
+{
+ "job": {
+  "id": "sched-2026-11-18",
+  "job": "sweep-lite POUL.CA market=EGX",
+  "added": "2026-11-18T06:19:37.415454+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-18T06:19:43.326763+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "exit-1",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "finished": "2026-11-18T06:36:40.898535+00:00",
+ "merge": {
+  "status": "failed",
+  "detail": "merge refused: no manifest.json in run dir /opt/gator/out/sched-2026-11-18"
+ }
+}

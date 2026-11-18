@@ -1,0 +1,31 @@
+WARN body http 404: https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4692170/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4686952/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://www.wataninet.com/2026/11/%D8%B3%D9%8A%D8%B3%D8%A7%D9%83%D9%88-%D9%88%D8%A8%D9%88%
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 5, 'extract': 0}
+egx-harvest: attached 2 official bodies, added 8 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6135.64it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14000.75it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17376.85it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5967.43it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 33, "disclosure_count": 11, "arabic_headlines": 39, "latest_news_date": "Tue, 17 Nov 2026 23:17:37 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.052, "finbert_negative": 0.35, "finbert_neutral": 0.598, "finbert_scored": 5, "multilingual_positive": 0.512, "multilingual_negative": 0.032, "multilingual_neutral": 0.455, "multilingual_scored": 39, "bodies_fetched": 7, "egx_bodies_attached": 2, "egx_disclosures_added": 8, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.168, "translated_negative": 0.195, "translated_neutral": 0.637, "translated_scored": 39}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 17 Nov 2026 23:17:37 GMT] (شبكة تواصل الإخبارية) مهرجان القاهرة السينمائي ينظم جلسة حوارية لمصمم الصوت بول ديفيز - شبكة تواصل الإخبارية
+- [Tue, 17 Nov 2026 22:58:55 GMT] (شبكة تواصل الإخبارية) مهندس الصوت بول ديفيز يكشف أسرار كسر القواعد في القاهرة السينمائي - شبكة تواصل الإخبارية
+- [Tue, 17 Nov 2026 17:53:26 GMT] (وطنى) “سيساكو” و”بول ديفيز” يتصدران فعاليات أيام القاهرة لصناعة السينما - وطنى
+- [Tue, 17 Nov 2026 16:28:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائى: حولت إنذارات السيارات إلى موسيقى - اليوم السابع
+- [Tue, 17 Nov 2026 16:07:06 GMT] (Sada Elbalad English) Russian House in Cairo Opens Agricultural Innovation Festival for 100 Egyptian Students - Sada Elbalad English
+- [Tue, 17 Nov 2026 15:11:00 GMT] (اليوم السابع) بول ديفيز بالقاهرة السينمائى: اكتشفت شغفى بتصميم الصوت فى سن الـ15 - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: تصميم الصوت ساعد في إقناع المنتجين برؤية مخرجة We Need to Talk About Kevin - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: ديفيد لينش مصدر إلهامي وأستعين باللوحات الفنية - اليوم السابع
