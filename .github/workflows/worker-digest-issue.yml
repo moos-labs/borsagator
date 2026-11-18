@@ -18,6 +18,10 @@ name: Worker digest issue
 # serialization). There is no blind retry: one create attempt, then
 # a label re-check distinguishes a lost create response from a
 # real failure, and a real failure fails the step loudly.
+# Issue #220: pending runs queue up to 100 deep (`queue: max`)
+# instead of cancelling the middle run when archive pushes burst;
+# checkout is pinned to the push's after-commit (`github.sha`) so
+# the worktree matches the diffed event range.
 on:
   push:
     branches: [archive]
@@ -34,10 +38,11 @@ jobs:
     concurrency:
       group: worker-digest-issue
       cancel-in-progress: false
+      queue: max
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: archive
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Open digest issues for newly merged sweeps
