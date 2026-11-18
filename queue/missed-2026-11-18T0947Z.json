@@ -1,0 +1,7 @@
+{
+ "job_id": "guard-2026-11-18T0947Z",
+ "job": "ledger-guard",
+ "at": "2026-11-18T11:44:04.128190+00:00",
+ "worker": "borsagator-worker-5",
+ "reason": "scheduled fire missed: slot superseded without running (worker down or busy past the catch-up window); only the latest slot catches up \u2014 never silently dropped (issue #66 extension)"
+}
