@@ -23,6 +23,23 @@ a recovery comment. Publish-failure issues are NOT touched here —
 the publisher owns those; a current ledger says nothing about
 guard liveness.
 
+Issue #156: a stale heartbeat alone is NOT a dead guard. The
+guard shares the `borsagator-ledger-publish` concurrency group
+with the whole orchestrate job, so a guard tick queues behind a
+running sweep (up to the sweep's 350-minute timeout) while the
+heartbeat ages past the 90-minute threshold — a legitimate long
+sweep used to produce a false "Ledger guard dead" signal. The
+watchdog therefore asks the Actions API whether a ledger-guard
+run is currently queued / waiting / in progress: while one is
+pending, no signal is filed and no open signal is closed (the
+guard has not proven itself alive yet — the heartbeat is still
+stale). A maximum-latency alarm bounds the suppression: if the
+heartbeat is older than MAX_LATENCY_MINUTES even with a guard
+run pending, the signal fires anyway — a queued guard that never
+lands is a real outage, not a long sweep. The latency cap is
+derived from the two job timeouts: sweep 350 min + guard 30 min
++ 40 min scheduling/push slack = 420 min.
+
 Exit codes: 0 when the check ran (signal filed, or none needed);
 1 when a needed signal could not be filed (no token / API failure)
 so the run goes red instead of silently swallowing the page.
@@ -37,11 +54,16 @@ import sys
 from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ledger_publish import (SIGNAL_LABEL, ensure_signal_label,
+from ledger_publish import (ORG, REPO, SIGNAL_LABEL, ensure_signal_label,
                             find_open_signal_issues, _comment_issue,
-                            _create_issue, _close_issue, _gh_token)
+                            _create_issue, _close_issue, _gh_token, gh_api)
 
 STALE_MINUTES_DEFAULT = 90
+# Issue #156: maximum heartbeat age tolerated while a guard run is
+# pending — sweep timeout 350 min + guard timeout 30 min + 40 min
+# scheduling/push slack. Past this, a queued guard is a real outage.
+MAX_LATENCY_MINUTES_DEFAULT = 420
+GUARD_WORKFLOW = "ledger-guard.yml"
 GUARD_TITLE_PREFIX = "⚠️ Ledger guard dead"
 HEARTBEAT_DEFAULT = "ledger/guard-heartbeat.json"
 
@@ -115,21 +137,91 @@ def _recovery_comment(now):
             f"alive, closing this dead-guard signal.")
 
 
-def check(heartbeat_path, now, stale_minutes):
-    """Pure check: returns (stale, why, last, status). No API calls."""
+def pending_guard_runs(token):
+    """Non-completed ledger-guard runs (most recent first), each as
+    {"id", "status", "created_at", "html_url"} — or None when the
+    Actions API could not be read (no token / transport error /
+    non-200). A run waiting on the shared borsagator-ledger-publish
+    concurrency group shows up here while the sweep holding the lock
+    is still running: that is a queued guard, not a dead one (issue
+    #156). Any status other than "completed" counts as pending, so
+    the exact label GitHub reports for a concurrency-waiting run
+    ("waiting", "queued", ...) does not matter. Returns [] when the
+    API answered and no guard run is pending."""
+    if token is None:
+        return None
+    try:
+        status, data = gh_api(
+            "GET",
+            f"/repos/{ORG}/{REPO}/actions/workflows/"
+            f"{GUARD_WORKFLOW}/runs?per_page=5",
+            token=token)
+    except Exception as e:  # noqa: BLE001 — transport failure
+        log(f"guard-run lookup failed ({e}) — treating as unknown")
+        return None
+    if status != 200 or not isinstance(data, dict):
+        log(f"guard-run lookup failed (HTTP {status}) — "
+            "treating as unknown")
+        return None
+    return [{"id": r.get("id"), "status": r.get("status"),
+             "created_at": r.get("created_at"),
+             "html_url": r.get("html_url")}
+            for r in data.get("workflow_runs", [])
+            if (r.get("status") or "") != "completed"]
+
+
+def _pending_detail(pending):
+    """One-line description of the oldest pending guard run (the
+    list is most-recent-first, so the oldest waited longest)."""
+    oldest = pending[-1]
+    rid = oldest.get("id")
+    if rid is None:
+        return "a guard run is pending (forced)"
+    return (f"guard run {rid} ({oldest.get('status')}, created "
+            f"{oldest.get('created_at')}) is pending — queued "
+            f"behind a running sweep or mid-run")
+
+
+def check(heartbeat_path, now, stale_minutes, pending_runs=None,
+          max_latency_minutes=MAX_LATENCY_MINUTES_DEFAULT):
+    """Pure check: returns (state, why, last, status). No API calls.
+    state is "fresh" (heartbeat within threshold), "suppressed"
+    (stale heartbeat but a guard run is pending — issue #156), or
+    "dead" (signal the outage).
+    pending_runs: None = unknown (API not consulted / failed) — the
+    old age-only decision stands, i.e. fail-safe towards paging;
+    [] = no guard run pending; non-empty = a guard run is
+    queued/running. A missing or unreadable heartbeat is always
+    "dead": there is no baseline to measure latency against, and
+    in production the file already exists, so its absence is itself
+    worth paging about (a pending run writes it within ~30 min and
+    the next tick clears the signal)."""
     last, status, error = read_heartbeat(heartbeat_path)
     if last is None:
-        return True, error, None, status
+        return "dead", error, None, status
     age_min = (now - last).total_seconds() / 60
-    if age_min > stale_minutes:
-        return True, (f"last guard heartbeat "
-                      f"{last.strftime('%Y-%m-%d %H:%M UTC')} "
-                      f"({age_min:.0f} min ago, status {status}) — "
-                      f"older than the {stale_minutes}-minute "
-                      f"threshold"), last, status
-    return False, (f"guard heartbeat fresh: "
-                   f"{last.strftime('%Y-%m-%d %H:%M UTC')} "
-                   f"({age_min:.0f} min ago, status {status})"), last, status
+    if age_min <= stale_minutes:
+        return "fresh", (f"guard heartbeat fresh: "
+                         f"{last.strftime('%Y-%m-%d %H:%M UTC')} "
+                         f"({age_min:.0f} min ago, status {status})"), \
+            last, status
+    stale_why = (f"last guard heartbeat "
+                 f"{last.strftime('%Y-%m-%d %H:%M UTC')} "
+                 f"({age_min:.0f} min ago, status {status}) — "
+                 f"older than the {stale_minutes}-minute threshold")
+    if pending_runs:
+        detail = _pending_detail(pending_runs)
+        if age_min > max_latency_minutes:
+            return "dead", (f"{stale_why}; {detail}, but the "
+                            f"heartbeat is older than the "
+                            f"{max_latency_minutes}-minute maximum "
+                            f"latency — a queued guard that never "
+                            f"lands is a real outage"), last, status
+        return "suppressed", (f"{stale_why}, but {detail} — no "
+                              f"dead-guard signal while a guard "
+                              f"execution is pending (maximum latency "
+                              f"{max_latency_minutes} min)"), last, status
+    return "dead", stale_why, last, status
 
 
 def signal_dead_guard(token, why, now, last, status, stale_minutes,
@@ -216,6 +308,18 @@ def main():
                     default=STALE_MINUTES_DEFAULT,
                     help="fire when the heartbeat is older than this "
                          "(default: 90)")
+    ap.add_argument("--max-latency-minutes", type=int,
+                    default=MAX_LATENCY_MINUTES_DEFAULT,
+                    help="fire anyway when the heartbeat is older than "
+                         "this even with a guard run pending (issue "
+                         "#156; default: 420 = 350-min sweep timeout + "
+                         "30-min guard timeout + 40 min slack)")
+    ap.add_argument("--guard-pending", choices=("yes", "no"),
+                    default=None,
+                    help="force the pending-guard state instead of "
+                         "querying the Actions API (tests / manual "
+                         "runs): 'yes' = a guard run is queued or "
+                         "running, 'no' = none is")
     ap.add_argument("--signal-out", default=None,
                     help="write the would-be signal payload JSON here "
                          "instead of calling the GitHub API (dry run)")
@@ -224,11 +328,28 @@ def main():
     if now is None:
         log(f"cannot parse --now {a.now!r}")
         return 2
-    stale, why, last, status = check(a.heartbeat, now, a.stale_minutes)
-    if not stale:
+    if a.guard_pending == "yes":
+        pending = [{"id": None, "status": None, "created_at": None,
+                    "html_url": None}]
+    elif a.guard_pending == "no":
+        pending = []
+    else:
+        pending = pending_guard_runs(_gh_token())
+    state, why, last, status = check(a.heartbeat, now, a.stale_minutes,
+                                     pending_runs=pending,
+                                     max_latency_minutes=
+                                     a.max_latency_minutes)
+    if state == "fresh":
         log(why)
         ok = clear_dead_guard(_gh_token(), now, a.signal_out)
         return 0 if ok else 1
+    if state == "suppressed":
+        # Issue #156: a queued guard has not proven itself alive
+        # yet — the heartbeat is still stale — so an open
+        # dead-guard issue stays open until a fresh heartbeat
+        # arrives; only the false page is suppressed.
+        log(f"SUPPRESSED: {why}")
+        return 0
     log(f"GUARD DEAD: {why}")
     ok = signal_dead_guard(_gh_token(), why, now, last, status,
                            a.stale_minutes, a.signal_out)
