@@ -13,6 +13,17 @@ name: Ledger guard watchdog
 # from the guard's own — it does not share #115's registration — and
 # the guard is the retry path for failed publishes, so the watchdog
 # is load-bearing here, not a nicety.
+#
+# Issue #156: the watchdog asks the Actions API whether a
+# ledger-guard run is queued / waiting / in progress before paging.
+# The guard shares the borsagator-ledger-publish concurrency group
+# with the whole orchestrate job, so a guard tick queues behind a
+# running sweep while the heartbeat ages past 90 minutes — without
+# the pending-run check that is a false "Ledger guard dead" signal.
+# While a guard run is pending, no signal is filed (and no open
+# signal is closed — the heartbeat is still stale); past the
+# 420-minute maximum latency the signal fires anyway. That lookup
+# needs `actions: read` on the token below.
 
 on:
   schedule:
@@ -22,6 +33,9 @@ on:
 permissions:
   contents: read
   issues: write
+  # Issue #156: the watchdog lists ledger-guard workflow runs to
+  # tell a queued guard from a missing execution.
+  actions: read
 
 jobs:
   ledger-guard-watch:
