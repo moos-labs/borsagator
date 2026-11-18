@@ -350,6 +350,10 @@ def test_series_derived_aggregates():
     aggs = se._market_aggregates(s)
     assert aggs["spot_market_cap"] == (1234, "series"), aggs
     assert aggs["avg_market_value_36m"] == (1078.0, "series"), aggs
+    # 24-month window starts 2024-11-17, so the 2024-01-15 point
+    # falls outside it: avg24m = (1100+1234)/2 = 1167 (DJIM's
+    # trailing window, issue #169).
+    assert aggs["avg_market_value_24m"] == (1167.0, "series"), aggs
     assert aggs["avg_market_value_review_period"] == (1100, "series"), aggs
     # an explicit aggregate wins over the series-derived one
     s2 = snap(financials={}, market={"market_cap_series": series,
@@ -404,10 +408,13 @@ def test_screen_table_shape_and_framing():
 
 def test_rulesets_are_declarative_files():
     # Issue #169 added MSCI, MSCI_M, FTSE and ISLAMICLY as further
-    # declarative files; S&P Shariah / DJIM are draft-disabled
-    # under scripts/sharia_rules_draft/ and must NOT appear here.
+    # declarative files, and pinned S&P Shariah / DJIM from S&P
+    # DJI's own November 2026 methodology documents (the drafts
+    # that shipped disabled under scripts/sharia_rules_draft/ are
+    # gone -- the pinned packs live here now).
     assert se.available_standards() == [
-        "AAOIFI", "EGX33", "FTSE", "ISLAMICLY", "MSCI", "MSCI_M"]
+        "AAOIFI", "DJIM", "EGX33", "FTSE", "ISLAMICLY", "MSCI",
+        "MSCI_M", "SP_SHARIAH"]
     assert len(AAOIFI["ratios"]) == 3 and len(EGX33["ratios"]) == 4
     for rs in (AAOIFI, EGX33):
         assert rs["ruleset_version"] == "1.0.0"
