@@ -34,6 +34,36 @@ failure is then recognised as filed), and a genuine failure fails
 the step loudly so a re-run retries it — the re-run's label
 check then prevents any duplicate.
 
+Issue #223: twice in the #220 burst test a first attempt stayed
+green, created its identity label and filed NO issue, and the
+identical re-run then filed correctly. Green-exit paths
+consistent with that evidence: the skip branch and the lost-
+create recheck (both trust a bare `gh issue list --label`
+result), and a create that reported success without landing.
+Which one fired is UNPROVEN (scheduled-run logs are unavailable)
+and this script does not assume one. What changes is the trust:
+a bare listing can no longer suppress a filing on its own. Every
+listed issue number is fetched (verify_listed_issues) and sorted
+three ways: CONFIRMED (fetched, payload schema-valid, returned
+number exactly the requested positive int, identity label
+present) justifies a skip; REFUTED (successfully fetched and
+schema-valid, but the issue no longer carries the label) is
+treated as absent with a loud stderr note, so the sweep is
+filed; and INDETERMINATE (ANY failed fetch - network, DNS, auth
+or repository-concealment failures are indistinguishable from a
+missing issue in gh's output - plus timeout, malformed payload
+or number mismatch) raises and fails the step loudly. An unknown
+is never turned into "absent", so no transient error can file a
+duplicate; the cost is that a listing naming an unresolvable or
+nonexistent issue produces a red run rather than self-healing,
+which is the fail-loud alternative #223 sanctions. After the
+filing pass, every sweep in the event range is reconciled once
+against a confirmed issue, so a create that reported success
+without landing fails loudly instead of exiting 0. In --file
+mode an unexpected helper exception now exits 1 for the same
+reason. Guarantees are as observed by this run at verification
+time; there is no cross-writer atomicity with other actors.
+
 Usage (listing, unchanged — exit 0 always):
     worker_digest_issue.py --before <sha> --after <sha>
         --repo-dir <archive-branch checkout>
@@ -143,12 +173,102 @@ def issue_numbers_with_label(label):
             f"gh issue list --label {label} failed: "
             f"{(proc.stderr or proc.stdout or '').strip()[:200]}")
     try:
-        return [int(row["number"]) for row in
-                json.loads(proc.stdout or "[]")]
-    except (ValueError, KeyError, TypeError) as e:
+        # #223: no `or "[]"` fallback - a successful call with EMPTY
+        # output is malformed, not a verified empty array, and must
+        # fail loudly below.
+        rows = json.loads(proc.stdout)
+        if not isinstance(rows, list):
+            raise ValueError("payload is not a JSON array")
+        numbers = []
+        for row in rows:
+            # #223: no coercion - a bool (True == 1) or string row
+            # must fail loudly, not silently become a number.
+            n = row.get("number") if isinstance(row, dict) else None
+            if not isinstance(n, int) or isinstance(n, bool) \
+                    or n <= 0:
+                raise ValueError(f"unexpected issue number: {n!r}")
+            numbers.append(n)
+        return numbers
+    except (ValueError, TypeError) as e:
         raise RuntimeError(
             f"gh issue list --label {label} returned unparsable "
             f"output: {e}") from e
+
+
+class VerificationIndeterminate(RuntimeError):
+    """A listed issue could be neither confirmed nor ruled out.
+
+    Raised instead of guessing: an indeterminate verification must
+    fail the step loudly, never become a silent skip (the #223
+    class) and never become a fresh filing (a duplicate)."""
+
+
+def _fetch_issue_labels(number):
+    """The label names on issue #number, fetched and validated.
+
+    ANY nonzero `gh issue view` exit is indeterminate: gh's
+    not-found wording also covers DNS failures ("Could not
+    resolve host") and repository/auth concealment, so a failed
+    fetch cannot be read as "the issue does not exist" from here.
+    A successful fetch must return a schema-valid payload whose
+    number is exactly the requested positive int."""
+    proc = run_gh(["issue", "view", str(number),
+                   "--json", "number,labels"])
+    if proc.returncode != 0:
+        raise VerificationIndeterminate(
+            f"gh issue view {number} failed: "
+            f"{(proc.stderr or proc.stdout or '').strip()[:200]}")
+    try:
+        data = json.loads(proc.stdout or "")
+    except ValueError as e:
+        raise VerificationIndeterminate(
+            f"gh issue view {number} returned unparsable JSON: {e}"
+            ) from e
+    n = data.get("number") if isinstance(data, dict) else None
+    labels = data.get("labels") if isinstance(data, dict) else None
+    if not isinstance(n, int) or isinstance(n, bool) \
+            or n != number or not isinstance(labels, list):
+        raise VerificationIndeterminate(
+            f"gh issue view {number} returned a payload that does "
+            f"not match the request or the expected schema")
+    names = set()
+    for row in labels:
+        if not isinstance(row, dict) or \
+                not isinstance(row.get("name"), str):
+            raise VerificationIndeterminate(
+                f"gh issue view {number} returned a label entry "
+                f"without a string name")
+        names.add(row["name"])
+    return names
+
+
+def verify_listed_issues(label):
+    """Confirmed issue numbers for `label`, from a DISTRUSTED
+    listing (#223).
+
+    Every number from issue_numbers_with_label is fetched. A
+    number is CONFIRMED - and may justify a skip - only when the
+    fetch succeeds, the payload is schema-valid, its number is
+    exactly the requested one, and the issue still carries
+    `label`. A number that fetches cleanly but no longer carries
+    `label` is REFUTED and logged loudly; refuted listings never
+    suppress a filing. Anything else - a failed fetch of any
+    kind, malformed or mismatched payload - raises
+    VerificationIndeterminate and fails the step loudly instead
+    of choosing between a silent skip and a duplicate. The LIST
+    call itself still raises via issue_numbers_with_label: a
+    failed check is never read as "no issue exists"."""
+    confirmed = []
+    for number in issue_numbers_with_label(label):
+        names = _fetch_issue_labels(number)
+        if label in names:
+            confirmed.append(number)
+        else:
+            print(f"worker_digest_issue: label check listed issue "
+                  f"#{number} for {label} but the fetched issue "
+                  f"does not carry it - listing refuted, not "
+                  f"skipping", file=sys.stderr)
+    return confirmed
 
 
 def ensure_identity_label(label, sweep_dir):
@@ -168,11 +288,15 @@ def file_issue(sweep_dir, title, repo_dir):
 
     Returns "created" or "exists". Raises on a genuine failure —
     the caller records it and files the remaining sweeps first.
-    A missing digest.md is a failure, never a body-less issue."""
+    A missing digest.md is a failure, never a body-less issue.
+    "exists" requires a CONFIRMED issue (#223): a bare label-list
+    hit that a fetch cannot corroborate never suppresses filing,
+    and an indeterminate fetch fails loudly instead of guessing."""
     label = identity_label(sweep_dir)
     ensure_identity_label(label, sweep_dir)
-    if issue_numbers_with_label(label):
-        print(f"issue already exists for {sweep_dir} — skipping")
+    if verify_listed_issues(label):
+        print(f"issue already exists for {sweep_dir} - skipping "
+              f"(confirmed by fetch)")
         return "exists"
     body = Path(repo_dir) / sweep_dir / "digest.md"
     if not body.is_file():
@@ -189,9 +313,10 @@ def file_issue(sweep_dir, title, repo_dir):
     # while the CLI reported failure. Re-check the identity label
     # once — if the issue is there now, it was filed; only a real
     # absence is a failure, and it fails loudly.
-    if issue_numbers_with_label(label):
+    if verify_listed_issues(label):
         print(f"issue for {sweep_dir} exists after a failed create "
-              f"— treating as filed (create response was lost)")
+              f"- treating as filed (create response was lost; "
+              f"confirmed by fetch)")
         return "exists"
     raise RuntimeError(
         f"gh issue create for {sweep_dir} failed and no issue "
@@ -204,9 +329,17 @@ def file_issues(before, after, repo_dir):
 
     Returns 0 when every sweep was filed or already had its issue,
     1 when any sweep failed — after still filing the others, so
-    one bad sweep never blocks the rest of the push."""
+    one bad sweep never blocks the rest of the push. After the
+    filing pass every sweep is reconciled once against a
+    fetch-confirmed issue (#223): a create that reported success
+    without landing, an indeterminate verification, or any
+    remaining silent-skip path is aggregated into the failures
+    instead of exiting 0. Costs one extra list plus one fetch per
+    listed issue per sweep; a list that lags a just-created issue
+    fails the step loudly and a re-run then confirms and skips."""
+    sweeps = added_merge_manifests(before, after, repo_dir)
     failures = []
-    for sweep_dir in added_merge_manifests(before, after, repo_dir):
+    for sweep_dir in sweeps:
         md = Path(repo_dir) / sweep_dir / "digest.md"
         try:
             text = md.read_text(encoding="utf-8")
@@ -220,10 +353,36 @@ def file_issues(before, after, repo_dir):
             failures.append((sweep_dir, e))
             print(f"worker_digest_issue: FAILED {sweep_dir}: {e}",
                   file=sys.stderr)
+    # Post-run reconciliation (#223): every sweep that did not
+    # already fail must now have a fetch-confirmed issue carrying
+    # its identity label. Each check is isolated so one bad sweep
+    # never stops the others from being verified.
+    failed_dirs = {d for d, _ in failures}
+    for sweep_dir in sweeps:
+        if sweep_dir in failed_dirs:
+            continue
+        label = identity_label(sweep_dir)
+        try:
+            verified = bool(verify_listed_issues(label))
+        except Exception as e:  # noqa: BLE001 - aggregate, and keep
+            # checking the remaining sweeps
+            verified = False
+            print(f"worker_digest_issue: reconciliation for "
+                  f"{sweep_dir} could not complete: {e}",
+                  file=sys.stderr)
+        if not verified:
+            e = RuntimeError(
+                f"{sweep_dir}: no fetch-confirmed issue carries "
+                f"{label} after the filing pass - refusing to "
+                f"exit green")
+            failures.append((sweep_dir, e))
+            print(f"worker_digest_issue: FAILED {sweep_dir}: {e}",
+                  file=sys.stderr)
     if failures:
         print(f"worker_digest_issue: {len(failures)} sweep(s) failed "
-              f"to file; re-run the workflow to retry (the identity "
-              f"label check prevents duplicates)",
+              f"to file; re-run the workflow to retry (a re-run's "
+              f"fetch-confirmed label check skips sweeps whose "
+              f"issue genuinely exists at that time)",
               file=sys.stderr)
         return 1
     return 0
@@ -242,11 +401,14 @@ def main(argv=None):
     if args.file:
         try:
             return file_issues(args.before, args.after, args.repo_dir)
-        except Exception as e:  # noqa: BLE001 - never fail the
-            # workflow on a listing failure, as before
+        except Exception as e:  # noqa: BLE001 - #223: an unexpected
+            # failure must fail the step loudly in --file mode; a green
+            # exit here would hide that nothing was verified or filed.
+            # This intentionally changes --file mode only: plain
+            # listing mode below still never fails the workflow.
             print(f"worker_digest_issue: {type(e).__name__}: {e}",
                   file=sys.stderr)
-            return 0
+            return 1
     try:
         for sweep_dir in added_merge_manifests(args.before, args.after,
                                                args.repo_dir):
