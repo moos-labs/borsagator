@@ -26,6 +26,20 @@ every poll cycle the worker checks it and enqueues a deterministic
 `sched-<date>` bus job when one is due. The GitHub Actions cron is
 only a fallback (staggered to 06:45 UTC, with a skip-check on today's
 claim) until the worker schedule has fired correctly twice.
+
+Issue #66 extension (Muhammad, 2026-11-18): ALL scheduling moves to
+the worker. The schedule mechanism is generic: an entry is either
+the legacy daily form (above) or an interval form (`cadence`:
+"hourly" / "interval") with a deterministic per-slot job id
+(`<prefix><YYYY-MM-DDTHHMMZ>`), a missed marker per missed slot, and
+catch-up: the latest missed slot runs ONCE at the next poll (and the
+lateness is marked); older missed slots are marked, never run and
+never silently dropped. Two interval entries run the ledger guard
+(hourly at :47 UTC, job `ledger-guard`) and its watchdog (every
+30 min UTC, job `ledger-watchdog`) that used to be the GitHub
+schedules in ledger-guard.yml / ledger-guard-watchdog.yml. Each
+GitHub schedule line is retired only after its worker equivalent
+has fired correctly twice (counts tracked on issue #66).
 """
 import hashlib
 import json
@@ -306,6 +320,96 @@ def scheduled_job_id(day):
     return f"{SCHEDULED_JOB_PREFIX}{day.isoformat()}"
 
 
+# --- Issue #66 extension: generic interval entries --------------------
+# A daily entry (no `cadence`, or cadence "daily") keeps the exact
+# legacy behaviour above. An interval entry fires on a fixed grid in
+# its tz: slots start at `minute` (default 0) plus every
+# `every_minutes` minutes ("hourly" is shorthand for every 60).
+# Slot ids are deterministic per slot: <prefix><YYYY-MM-DDTHHMMZ>
+# in UTC, e.g. guard-2026-11-18T1047Z — they satisfy JOB_ID_RE.
+# Catch-up rule (per entry, `grace_minutes` / `catchup_minutes`):
+#   age <= grace            -> "fire"    (normal, on-time firing)
+#   grace < age <= catchup  -> "catchup" (enqueue ONCE + missed
+#                                         marker recording lateness)
+#   age > catchup           -> "mark"    (missed marker only)
+# Only the LATEST slot of an entry can ever enqueue; older slots in
+# the mark window (MARK_WINDOW_SLOTS) are marked, never run — a long
+# outage produces markers, not a firing storm. A slot id that is
+# already handled (queued / claimed / done) or already marked is
+# skipped entirely, so no slot ever runs twice.
+MARK_WINDOW_SLOTS = 4
+
+
+def entry_prefix(entry):
+    """Job-id prefix for an entry: explicit `prefix`, else the
+    legacy sweep prefix."""
+    return entry.get("prefix") or SCHEDULED_JOB_PREFIX
+
+
+def entry_every_minutes(entry):
+    """Slot spacing for an interval entry, or None for a daily
+    entry. `cadence: "hourly"` means 60; `cadence: "interval"`
+    takes `every_minutes`."""
+    cadence = entry.get("cadence")
+    if cadence == "hourly":
+        return 60
+    if cadence == "interval":
+        try:
+            every = int(entry.get("every_minutes") or 0)
+        except (TypeError, ValueError):
+            return None
+        return every if every > 0 else None
+    return None
+
+
+def slot_start_for(entry, now_local):
+    """The most recent slot start <= now_local for an interval
+    entry (an aware datetime in the entry's tz), or None."""
+    every = entry_every_minutes(entry)
+    if not every:
+        return None
+    try:
+        anchor = int(entry.get("minute") or 0)
+    except (TypeError, ValueError):
+        return None
+    from datetime import timedelta
+    midnight = now_local.replace(hour=0, minute=0, second=0,
+                                 microsecond=0)
+    rel = (now_local.hour * 60 + now_local.minute) - anchor
+    # Floor division: for a `now` before today's first slot, rel is
+    # negative and k = -1 lands on yesterday's last slot — correct.
+    return midnight + timedelta(minutes=anchor + (rel // every) * every)
+
+
+def slot_job_id(entry, slot_local):
+    """Deterministic per-slot job id (UTC stamp)."""
+    slot_utc = slot_local.astimezone(timezone.utc)
+    return f"{entry_prefix(entry)}{slot_utc.strftime('%Y-%m-%dT%H%MZ')}"
+
+
+def slot_decision(entry, slot_local, now_local):
+    """Pure decision for one interval slot: "fire" / "catchup" /
+    "mark" per the catch-up rule above; None when the slot is in
+    the future or the entry does not run today."""
+    days = entry.get("days")
+    if days and slot_local.strftime("%a") not in days:
+        return None
+    if now_local < slot_local:
+        return None
+    age_min = (now_local - slot_local).total_seconds() / 60
+    try:
+        grace = float(entry.get("grace_minutes", 10))
+        catchup = float(entry.get("catchup_minutes",
+                                  (entry_every_minutes(entry) or 60) * 2))
+    except (TypeError, ValueError):
+        return None
+    if age_min <= grace:
+        return "fire"
+    if age_min <= catchup:
+        return "catchup"
+    return "mark"
+
+
 def check_schedule(schedule, handled_ids, missed_job_ids, now_utc):
     """Pure core of the scheduler check. `handled_ids` are job ids
     already in queue.json or claimed; `missed_job_ids` are jobs
@@ -324,16 +428,45 @@ def check_schedule(schedule, handled_ids, missed_job_ids, now_utc):
                   f"entry {entry.get('id')}", file=sys.stderr, flush=True)
             continue
         now_local = now_utc.astimezone(tz)
-        decision = schedule_decision(entry, now_local)
-        if decision is None:
+        if entry_every_minutes(entry) is None:
+            # Legacy daily entry — unchanged behaviour.
+            decision = schedule_decision(entry, now_local)
+            if decision is None:
+                continue
+            job_id = scheduled_job_id(now_local.date())
+            if job_id in handled_ids:
+                continue
+            if decision == "fire":
+                to_enqueue.append((entry, job_id))
+            elif job_id not in missed_job_ids:
+                to_mark.append((entry, job_id))
             continue
-        job_id = scheduled_job_id(now_local.date())
-        if job_id in handled_ids:
+        # Interval entry (#66 extension): walk the mark window from
+        # the latest slot backwards. Only the latest slot may
+        # enqueue; a handled or already-marked slot is skipped
+        # entirely, so a slot never runs twice.
+        from datetime import timedelta
+        every = entry_every_minutes(entry)
+        latest = slot_start_for(entry, now_local)
+        if latest is None:
             continue
-        if decision == "fire":
-            to_enqueue.append((entry, job_id))
-        elif job_id not in missed_job_ids:
-            to_mark.append((entry, job_id))
+        for i in range(MARK_WINDOW_SLOTS):
+            slot = latest - timedelta(minutes=i * every)
+            job_id = slot_job_id(entry, slot)
+            if job_id in handled_ids or job_id in missed_job_ids:
+                continue
+            if i > 0:
+                # Superseded slot: record the miss, never run it.
+                to_mark.append((entry, job_id))
+                continue
+            decision = slot_decision(entry, slot, now_local)
+            if decision == "fire":
+                to_enqueue.append((entry, job_id))
+            elif decision == "catchup":
+                to_enqueue.append((entry, job_id))
+                to_mark.append((entry, job_id))
+            elif decision == "mark":
+                to_mark.append((entry, job_id))
     return to_enqueue, to_mark
 
 
@@ -380,8 +513,20 @@ def run_schedule_check(now_override=None):
     if claims_dir.exists():
         handled |= {f.name[:-len(".json")]
                     for f in claims_dir.glob("*.json")}
-    missed = {f"sched-{f.name[len('missed-'):-len('.json')]}"
-              for f in (BUS / "queue").glob("missed-*.json")}
+    done_dir = BUS / "queue" / "done"
+    if done_dir.exists():
+        # Issue #149 done records also suppress re-enqueue (matters
+        # for interval slots, whose ids stay meaningful all day).
+        handled |= {f.name[:-len(".json")]
+                    for f in done_dir.glob("*.json")}
+    # Missed markers are missed-<slot-suffix>.json; the job id is
+    # <entry prefix><suffix>. Reconstruct for every prefix in play
+    # (over-generation across entries is harmless: suffix shapes
+    # differ and check_schedule only matches real slot ids).
+    prefixes = {entry_prefix(e) for e in schedule} | {SCHEDULED_JOB_PREFIX}
+    missed = {p + f.name[len('missed-'):-len('.json')]
+              for f in (BUS / "queue").glob("missed-*.json")
+              for p in prefixes}
     to_enqueue, to_mark = check_schedule(schedule, handled, missed,
                                           now_utc)
     for entry, job_id in to_enqueue:
@@ -393,18 +538,301 @@ def run_schedule_check(now_override=None):
         push_bus(f"schedule {job_id}")
         print(f"run_schedule_check: enqueued {job_id}: {entry['job']}",
               flush=True)
+    enqueued_ids = {job_id for _, job_id in to_enqueue}
     for entry, job_id in to_mark:
-        date = job_id[len(SCHEDULED_JOB_PREFIX):]
-        marker = BUS / "queue" / f"missed-{date}.json"
+        suffix = job_id[len(entry_prefix(entry)):]
+        marker = BUS / "queue" / f"missed-{suffix}.json"
+        if entry_every_minutes(entry) is None:
+            reason = ("scheduled fire missed: worker had not enqueued "
+                      "by the 09:30 Cairo catch-up cutoff — no "
+                      "post-open sweep; see the Actions fallback run "
+                      "or dispatch manually")
+        elif job_id in enqueued_ids:
+            reason = ("scheduled fire was late: caught up ONCE at the "
+                      "next poll and enqueued — this marker records "
+                      "the lateness, the job still runs (issue #66 "
+                      "extension)")
+        else:
+            reason = ("scheduled fire missed: slot superseded without "
+                      "running (worker down or busy past the catch-up "
+                      "window); only the latest slot catches up — "
+                      "never silently dropped (issue #66 extension)")
         marker.write_text(json.dumps(
             {"job_id": job_id, "job": entry["job"], "at": now(),
              "worker": os.uname().nodename,
-             "reason": "scheduled fire missed: worker had not enqueued "
-                       "by the 09:30 Cairo catch-up cutoff — no "
-                       "post-open sweep; see the Actions fallback run "
-                       "or dispatch manually"}, indent=1))
-        push_bus(f"missed scheduled sweep {job_id}")
+             "reason": reason}, indent=1))
+        push_bus(f"missed scheduled job {job_id}")
         print(f"run_schedule_check: marked missed {job_id}", flush=True)
+
+
+# --- Issue #66 extension: ledger guard + watchdog execution -----------
+# The guard job runs scripts/ledger_publish.py --commit --fail-hard
+# (the exact command ledger-guard.yml runs) and then rewrites
+# ledger/guard-heartbeat.json on main, exactly as the workflow does.
+# The publisher needs a git checkout of MAIN with a push credential:
+# the release checkout (CODE) is an anonymous, detached checkout of
+# worker-release and can do neither, so the guard keeps a dedicated
+# checkout (ROOT/"main-ledger") cloned from GATOR_BUS_URL — the
+# worker PAT is borsagator-only Contents RW, which covers pushes to
+# main. D2 guard: the worker never EXECUTES main-tip code — before
+# running, the publisher scripts in the main checkout must be
+# byte-identical to the reviewed release checkout's copies, or the
+# run refuses loudly (and the heartbeat records the refusal).
+# The watchdog job runs scripts/ledger_guard_watch.py against that
+# heartbeat. The worker PAT has NO Issues permission (Contents RW
+# only), so the watchdog cannot file the `ledger-failure` issue
+# itself: it runs the script with --signal-out and mirrors the
+# would-be signal onto the bus as queue/guard-alert.json; Moos's
+# heartbeat/cycle reads the queue branch and files/closes the issue
+# from Moos's side. Same reason the guard, on a failed publish,
+# writes queue/ledger-failure.json (the publisher's own API signal
+# no-ops without an Issues-capable token).
+GUARD_CHECKOUT = ROOT / "main-ledger"
+GUARD_SCRIPTS = ("scripts/ledger_publish.py", "scripts/ledger.py")
+WATCH_SCRIPTS = ("scripts/ledger_guard_watch.py",) + GUARD_SCRIPTS
+GUARD_HEARTBEAT_REL = "ledger/guard-heartbeat.json"
+
+
+def bus_url_token(url):
+    """The credential embedded in a git HTTPS URL, or None. Pure:
+    `https://x-access-token:<PAT>@host/...` yields the PAT,
+    `https://<PAT>@host/...` yields the PAT, a credential-free URL
+    yields None. The value is never logged anywhere."""
+    import urllib.parse
+    try:
+        parts = urllib.parse.urlparse(url or "")
+    except Exception:
+        return None
+    if parts.password:
+        return parts.password
+    if parts.username and parts.username not in ("git", "x-access-token"):
+        return parts.username
+    return None
+
+
+def _guard_env():
+    """Environment for first-party guard/watchdog scripts: the bus
+    URL is stripped (as for tools) and its credential is re-exposed
+    as GH_TOKEN — the name ledger_publish.py / ledger.py read.
+    In-process only; never logged, never given to tool runs."""
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    token = bus_url_token(os.environ.get("GATOR_BUS_URL", ""))
+    if token:
+        env["GH_TOKEN"] = token
+    return env
+
+
+def _ensure_main_checkout():
+    """Clone or refresh the dedicated main checkout for the guard.
+    Returns the Path, or None when it cannot be established."""
+    if not GUARD_CHECKOUT.exists():
+        url = os.environ.get("GATOR_BUS_URL", "")
+        if not url:
+            return None
+        if sh(f"git clone --branch main --single-branch {url} "
+              f"{GUARD_CHECKOUT}", timeout=300).returncode != 0:
+            return None
+        sh(f"git -C {GUARD_CHECKOUT} config user.email "
+           f"worker@borsagator.local", timeout=30)
+        sh(f"git -C {GUARD_CHECKOUT} config user.name "
+           f"borsagator-worker", timeout=30)
+    if sh(f"git -C {GUARD_CHECKOUT} fetch origin main",
+          timeout=120).returncode != 0:
+        return None
+    if sh(f"git -C {GUARD_CHECKOUT} reset --hard origin/main",
+          timeout=60).returncode != 0:
+        return None
+    return GUARD_CHECKOUT
+
+
+def scripts_match(dir_a, dir_b, names):
+    """True when every named file is byte-identical in both trees
+    (the D2 guard for running main-checkout scripts)."""
+    for name in names:
+        ha = _sha256_file(Path(dir_a) / name)
+        if not ha or ha != _sha256_file(Path(dir_b) / name):
+            return False
+    return True
+
+
+def _write_guard_heartbeat(checkout, status):
+    """Rewrite ledger/guard-heartbeat.json on main and push it —
+    the worker twin of ledger-guard.yml's heartbeat step. Resets to
+    origin/main first so an unpushed ledger commit from a failed
+    publish is never smuggled onto main by the heartbeat push.
+    Non-fatal: returns True when the push landed."""
+    try:
+        sh(f"git -C {checkout} fetch origin main", timeout=120)
+        sh(f"git -C {checkout} reset --hard origin/main", timeout=60)
+        doc = {"last_run_utc": datetime.now(timezone.utc).strftime(
+                   "%Y-%m-%dT%H:%M:%SZ"),
+               "run_id": None,
+               "status": status,
+               "workflow": "ledger-guard",
+               "note": "Written by every completed worker ledger-guard "
+                       "run (issue #66 extension; formerly "
+                       "ledger-guard.yml); the watchdog pages when "
+                       "this is older than 90 minutes."}
+        p = Path(checkout) / GUARD_HEARTBEAT_REL
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(doc, indent=2) + "\n")
+        sh(f"git -C {checkout} config user.name borsagator-ledger",
+           timeout=30)
+        sh(f"git -C {checkout} config user.email moos@sherbeeny.com",
+           timeout=30)
+        sh(f"git -C {checkout} add {GUARD_HEARTBEAT_REL}", timeout=60)
+        if sh(f"git -C {checkout} diff --cached --quiet",
+              timeout=60).returncode == 0:
+            return True
+        msg = f"Ledger guard heartbeat {doc['last_run_utc']} ({status})"
+        if sh(f"git -C {checkout} commit -m {json.dumps(msg)}",
+              timeout=60).returncode != 0:
+            return False
+        return sh(f"git -C {checkout} push origin HEAD:main",
+                  timeout=120).returncode == 0
+    except Exception as e:
+        print(f"_write_guard_heartbeat: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return False
+
+
+def _write_bus_json(rel_name, payload, message):
+    """Write one JSON file onto the queue branch (best-effort)."""
+    try:
+        p = BUS / "queue" / rel_name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(payload, indent=1))
+        return push_bus(message)
+    except Exception as e:
+        print(f"_write_bus_json {rel_name}: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return False
+
+
+def run_ledger_guard(job):
+    """Execute one `ledger-guard` job. Returns True when the guard
+    attempt completed (publisher ran and the heartbeat was written,
+    whatever the publisher's own verdict) — the caller then marks
+    the slot done. Returns False on a setup refusal (no checkout /
+    script mismatch): the slot stays un-done, the claim goes stale
+    in 6 h and the job can be retried; the refusal is loud here and
+    in the heartbeat file when one could be written."""
+    checkout = _ensure_main_checkout()
+    if checkout is None:
+        print("run_ledger_guard: main checkout unavailable; refusing",
+              file=sys.stderr, flush=True)
+        return False
+    if not scripts_match(checkout, CODE, GUARD_SCRIPTS):
+        print("run_ledger_guard: publisher scripts on main differ "
+              "from the reviewed release copies; refusing to execute "
+              "unreviewed code (D2)", file=sys.stderr, flush=True)
+        _write_guard_heartbeat(checkout, "failed")
+        return False
+    env = _guard_env()
+    _assert_no_denied(env)
+    r = subprocess.run(
+        [sys.executable, str(checkout / "scripts" / "ledger_publish.py"),
+         "--commit", "--fail-hard"],
+        cwd=checkout, env=env, capture_output=True, text=True,
+        timeout=1800)
+    if r.stdout.strip():
+        print(r.stdout[-2000:], flush=True)
+    if r.stderr.strip():
+        print(r.stderr[-2000:], file=sys.stderr, flush=True)
+    status = "ok" if r.returncode == 0 else "failed"
+    if r.returncode != 0:
+        # The publisher's durable API signal needs an Issues-capable
+        # token the worker PAT is not; mirror the failure to the bus
+        # for Moos to file (see the section header above).
+        _write_bus_json(
+            "ledger-failure.json",
+            {"kind": "publish-failed", "job_id": job["id"],
+             "at": now(), "worker": os.uname().nodename,
+             "detail": (r.stdout + r.stderr)[-500:]},
+            f"ledger publish failed {job['id']}")
+    _write_guard_heartbeat(checkout, status)
+    return True
+
+
+def guard_pending_from_bus(queue_ids, claim_ids, done_ids):
+    """Pure: True when a guard slot is queued or claimed but not
+    done — the worker-bus equivalent of the watchdog's #156
+    pending-Actions-run check."""
+    live = (set(queue_ids) | set(claim_ids)) - set(done_ids)
+    return any(str(i).startswith("guard-") for i in live)
+
+
+def run_ledger_watchdog(job):
+    """Execute one `ledger-watchdog` job: run the watchdog script
+    against the main checkout's heartbeat file, with the pending
+    state taken from the bus, and mirror its signal decision to
+    queue/guard-alert.json (the worker PAT cannot file issues —
+    see the section header). Returns True when the check ran."""
+    checkout = _ensure_main_checkout()
+    if checkout is None:
+        print("run_ledger_watchdog: main checkout unavailable",
+              file=sys.stderr, flush=True)
+        return False
+    if not scripts_match(checkout, CODE, WATCH_SCRIPTS):
+        print("run_ledger_watchdog: watchdog scripts on main differ "
+              "from the reviewed release copies; refusing (D2)",
+              file=sys.stderr, flush=True)
+        return False
+    queue_ids = [str(j.get("id", "")) for j in read_queue()]
+    claims_dir = BUS / "queue" / "claims"
+    claim_ids = [f.name[:-len(".json")] for f in
+                 claims_dir.glob("*.json")] if claims_dir.exists() else []
+    done_dir = BUS / "queue" / "done"
+    done_ids = [f.name[:-len(".json")] for f in
+                done_dir.glob("*.json")] if done_dir.exists() else []
+    pending = guard_pending_from_bus(queue_ids, claim_ids, done_ids)
+    out = OUT / f"{job['id']}-signal.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    env = _guard_env()
+    _assert_no_denied(env)
+    r = subprocess.run(
+        [sys.executable,
+         str(checkout / "scripts" / "ledger_guard_watch.py"),
+         "--heartbeat", str(checkout / GUARD_HEARTBEAT_REL),
+         "--guard-pending", "yes" if pending else "no",
+         "--signal-out", str(out)],
+        cwd=checkout, env=env, capture_output=True, text=True,
+        timeout=600)
+    if r.stdout.strip():
+        print(r.stdout[-2000:], flush=True)
+    if r.stderr.strip():
+        print(r.stderr[-2000:], file=sys.stderr, flush=True)
+    try:
+        payload = json.loads(out.read_text())
+    except Exception:
+        payload = None
+    if payload and payload.get("action") == "create":
+        _write_bus_json(
+            "guard-alert.json",
+            {"state": "dead", "at": now(),
+             "worker": os.uname().nodename, "job_id": job["id"],
+             "signal": payload},
+            f"guard alert {job['id']}")
+    else:
+        # Fresh or suppressed: if an alert is on the bus, flip it to
+        # recovered so Moos's side closes the signal issue.
+        alert = BUS / "queue" / "guard-alert.json"
+        if alert.exists():
+            try:
+                cur = json.loads(alert.read_text())
+            except Exception:
+                cur = {}
+            if cur.get("state") == "dead":
+                _write_bus_json(
+                    "guard-alert.json",
+                    {"state": "recovered", "at": now(),
+                     "worker": os.uname().nodename,
+                     "job_id": job["id"],
+                     "reason": (payload or {}).get(
+                         "reason", "heartbeat fresh")},
+                    f"guard recovered {job['id']}")
+    return True
 
 
 def _ensure_update_checkout():
@@ -855,6 +1283,18 @@ def maybe_merge(job, workdir, manifest, plan):
 
 
 def _execute(job):
+    # Issue #66 extension: first-party schedule jobs — no tools, no
+    # archive publish; their outputs are ledger commits on main and
+    # bus markers. Done is marked only when the attempt completed
+    # (see run_ledger_guard / run_ledger_watchdog).
+    if job["job"] == "ledger-guard":
+        if run_ledger_guard(job):
+            _mark_done(job, "ledger-guard")
+        return
+    if job["job"] == "ledger-watchdog":
+        if run_ledger_watchdog(job):
+            _mark_done(job, "ledger-watchdog")
+        return
     reg = registry()
     workdir = OUT / job["id"]
     workdir.mkdir(parents=True, exist_ok=True)
