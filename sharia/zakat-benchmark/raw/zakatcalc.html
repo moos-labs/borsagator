@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZakatCalc — Free Islamic Zakat Calculator with Live Gold &amp; Silver Prices</title>
+
+<!-- SEO -->
+<meta name="description" content="Calculate your Zakat accurately with live gold and silver spot prices, karat-precise gold calculations, and guidance for all four schools of thought. Free, private, no account needed.">
+<meta name="keywords" content="zakat calculator, zakat, nisab, gold zakat, silver zakat, islamic finance, zakat al-fitr, hawl, zakat uk">
+<meta name="author" content="ZakatCalc">
+<link rel="canonical" href="https://zakatcalc.info/">
+  <link rel="alternate" hreflang="en" href="https://zakatcalc.info/">
+  <link rel="alternate" hreflang="ar" href="https://zakatcalc.info/ar/">
+
+<!-- Search engine directives -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+
+<!-- Google Search Console verification — replace content value with your code -->
+<meta name="google-site-verification" content="REPLACE_WITH_YOUR_GOOGLE_VERIFICATION_CODE">
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn previews) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.zakatcalc.info/">
+<meta property="og:title" content="ZakatCalc — Free Zakat Calculator with Live Prices">
+<meta property="og:description" content="Accurate Zakat calculation with live gold &amp; silver prices, per-carat gold purity, and support for all four schools of thought. Fully private — nothing leaves your browser.">
+<meta property="og:site_name" content="ZakatCalc">
+
+<!-- Twitter / X card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZakatCalc — Free Zakat Calculator">
+<meta name="twitter:description" content="Live gold &amp; silver prices. Karat-precise gold. All four madhabs. Free &amp; private.">
+
+<!-- Favicons (inline SVG as data URI — no external files needed) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMUMxQTE0Ii8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMzIiIGZpbGw9IiNCODk2MkUiLz4KICA8Y2lyY2xlIGN4PSI2MiIgY3k9IjQyIiByPSIyNiIgZmlsbD0iIzFDMUExNCIvPgogIDxjaXJjbGUgY3g9IjM4IiBjeT0iNjYiIHI9IjkiIGZpbGw9IiNCODk2MkUiLz4KICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjY2IiByPSI0IiBmaWxsPSIjMUMxQTE0Ii8+CiAgPHRleHQgeD0iNDgiIHk9IjU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIzMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0ZBRjNEQyI+WjwvdGV4dD4KPC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMUMxQTE0Ii8+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMzIiIGZpbGw9IiNCODk2MkUiLz4KICA8Y2lyY2xlIGN4PSI2MiIgY3k9IjQyIiByPSIyNiIgZmlsbD0iIzFDMUExNCIvPgogIDxjaXJjbGUgY3g9IjM4IiBjeT0iNjYiIHI9IjkiIGZpbGw9IiNCODk2MkUiLz4KICA8Y2lyY2xlIGN4PSIzOCIgY3k9IjY2IiByPSI0IiBmaWxsPSIjMUMxQTE0Ii8+CiAgPHRleHQgeD0iNDgiIHk9IjU4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIzMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0ZBRjNEQyI+WjwvdGV4dD4KPC9zdmc+">
+<meta name="msapplication-TileColor" content="#1C1A14">
+
+<!-- Performance -->
+<meta name="theme-color" content="#1C1A14">
+<meta name="color-scheme" content="light">
+<style>
+/*
+ * ZakatCalc Stylesheet
+ * 
+ * IMPORTANT MOBILE LAYOUT RULES — read before editing:
+ * 
+ * 1. Horizontal padding: controlled ONLY by .wrap, nav, .ticker-wrap, footer.
+ *    These all use 1.25rem horizontal padding with !important.
+ *    NEVER use padding shorthand (padding: X Y) on .sp or sections —
+ *    shorthand sets left/right to 0 and breaks screen-edge spacing.
+ *
+ * 2. Section vertical spacing: .sp uses padding-top + padding-bottom
+ *    individually (not shorthand). Currently 4.5rem each on mobile.
+ *
+ * 3. Reveal animation: translateY is 10px on mobile (not 26px).
+ *    Increasing it breaks section top-edge spacing.
+ *
+ * When adding new features: only add rules INSIDE existing @media blocks
+ * or add new ones AFTER the existing blocks. Never change the 3 rules above.
+ */
+:root {
+  --gold:#B8962E;--gold-lt:#D4AE4A;--gold-pale:#FAF3DC;--gold-dk:#8A6E1A;
+  --ink:#1C1A14;--ink-soft:#4A4637;--ink-muted:#7A7566;
+  --cream:#FAF8F2;--cream-d:#F2EDE0;--white:#FFFFFF;
+  --teal:#1E6B5A;--teal-pale:#DCF0EA;
+  --border:rgba(184,150,46,0.20);--border-soft:rgba(184,150,46,0.10);
+  --r:8px;--r-lg:14px;--nav:68px;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:17px}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:normal;line-height:1.1}
+.display{font-size:clamp(44px,8vw,90px);letter-spacing:-0.02em}
+.h1{font-size:clamp(32px,5vw,58px);letter-spacing:-0.01em}
+.h2{font-size:clamp(26px,4vw,44px);letter-spacing:-0.01em}
+.lead{font-size:clamp(17px,2.2vw,20px);line-height:1.75;color:var(--ink-soft)}
+.body-txt{font-size:clamp(15px,1.8vw,17px);line-height:1.8;color:var(--ink-soft)}
+.label{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)}
+.gold-i{font-style:italic;color:var(--gold)}
+.gold-rule{width:44px;height:2px;background:var(--gold);margin:1.25rem 0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(1rem,4vw,3rem)}
+.sp{padding:clamp(3.5rem,7vw,6.5rem) 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);align-items:start}
+/* == ZAKAT AL-FITR SECTION == */
+.fitr-hadith{background:rgba(184,150,46,.08);border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:.875rem 1.125rem;margin-bottom:.875rem}
+.fitr-hadith-text{font-family:var(--serif);font-size:15px;color:var(--ink);line-height:1.8;font-style:italic}
+.fitr-hadith-src{font-size:12px;color:var(--gold);margin-top:.375rem;font-weight:600;letter-spacing:.02em}
+.fitr-region-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem}
+.fitr-region-wrap{position:relative;margin-bottom:.875rem}
+.fitr-region-wrap select{width:100%;border:1.5px solid var(--gold);border-radius:var(--r);padding:11px 36px 11px 13px;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--ink);background:var(--white);cursor:pointer;-webkit-appearance:none;appearance:none;outline:none}
+.fitr-region-wrap::after{content:"\25BC";position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--gold);pointer-events:none}
+.fitr-placeholder{display:flex;align-items:center;gap:.875rem;border:1.5px dashed rgba(184,150,46,.3);border-radius:var(--r-lg);padding:1.125rem 1.25rem;margin-bottom:.875rem;color:var(--ink-muted)}
+.fitr-placeholder-icon{font-size:28px;flex-shrink:0}
+.fitr-placeholder strong{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.fitr-placeholder span{font-size:13px;line-height:1.5}
+.fitr-panel{border:0.5px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.875rem}
+.fitr-panel-hdr{background:var(--ink);padding:1rem 1.25rem;display:flex;align-items:flex-start;gap:.875rem}
+.fitr-pflag{font-size:28px;line-height:1;flex-shrink:0;margin-top:2px}
+.fitr-pinfo{flex:1;min-width:0}
+.fitr-pname{font-family:var(--serif);font-size:18px;color:var(--white);margin-bottom:2px}
+.fitr-prange{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:4px}
+.fitr-pbasis{font-size:12px;color:rgba(255,255,255,.35);line-height:1.55}
+.fitr-pbadge{background:var(--gold);color:var(--ink);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.03em}
+.fitr-panel-body{padding:.875rem 1.125rem;background:var(--white)}
+.fitr-orgs-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem}
+.fitr-org-row{display:flex;align-items:center;justify-content:space-between;padding:.35rem 0;border-bottom:0.5px solid var(--border-soft);gap:.5rem}
+.fitr-org-row:last-child{border-bottom:none}
+.fitr-org-name{font-size:13px;color:var(--ink-soft);flex:1;min-width:0}
+.fitr-org-amt{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
+.fitr-org-tag{font-size:9px;padding:2px 5px;border-radius:3px;font-weight:600;margin-left:5px;vertical-align:middle}
+.fitr-org-tag.conf{background:#E1F5EE;color:#085041}
+.fitr-org-tag.est{background:#FAF3DC;color:#6B5018}
+.fitr-panel-note{background:var(--cream-d);border-top:0.5px solid var(--border-soft);padding:.625rem 1.125rem;font-size:12px;color:var(--ink-muted);line-height:1.55}
+.fitr-verify{font-size:12px;color:var(--ink-muted);line-height:1.65;padding:.625rem .875rem;background:rgba(184,150,46,.08);border-radius:var(--r);border-left:2px solid var(--gold)}
+.fitr-lbl{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:.375rem}
+.fitr-hint{font-size:12px;color:var(--ink-muted);margin-top:.25rem;line-height:1.45}
+.fitr-sel{width:100%;background:var(--white);border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:11px 13px;font-family:var(--sans);font-size:15px;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none}
+.fitr-sel:focus{border-color:var(--gold)}
+
+/* == INVESTMENTS STEP == */
+.inv-asset-block{border:1.5px solid rgba(184,150,46,.18);border-radius:var(--r-lg);overflow:hidden;margin-bottom:1rem}
+.inv-asset-hdr{background:rgba(184,150,46,.06);padding:.625rem 1.125rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(184,150,46,.15);flex-wrap:wrap;gap:.25rem}
+.inv-asset-title{font-size:15px;font-weight:700;color:var(--ink)}
+.inv-asset-note{font-size:12px;color:var(--ink-muted)}
+.inv-row{padding:.875rem 1.125rem;border-bottom:1px solid rgba(184,150,46,.1);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.inv-row:last-child{border-bottom:none}
+.inv-row-info{flex:1;min-width:0}
+.inv-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:4px;letter-spacing:.02em}
+.inv-badge-st{background:#FEF3D8;color:#7B4F09}
+.inv-badge-lt{background:#E1F5EE;color:#085041}
+.inv-badge-fx{background:rgba(184,150,46,.15);color:#6B5018}
+.inv-breakdown-hdr{display:grid;grid-template-columns:1.6fr .4fr .6fr .6fr;gap:.25rem;padding:.5rem .875rem;background:var(--ink);border-radius:var(--r) var(--r) 0 0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.inv-breakdown-hdr span:first-child{color:rgba(255,255,255,.85)}
+.inv-bd-row{display:grid;grid-template-columns:1.6fr .4fr .6fr .6fr;gap:.25rem;padding:.4rem .875rem;font-size:13px;border-bottom:1px solid var(--border-soft)}
+.inv-bd-row:last-child{border-bottom:none}
+.inv-bd-asset{color:var(--ink-soft)}
+.inv-bd-pct{color:var(--ink-muted);font-size:12px}
+.inv-bd-zakatable{color:var(--ink);font-weight:600;text-align:right}
+.inv-bd-zakat{color:var(--teal);font-weight:600;text-align:right}
+.inv-breakdown-total{display:grid;grid-template-columns:1.6fr .4fr .6fr .6fr;gap:.25rem;padding:.625rem .875rem;font-size:13px;font-weight:700;background:rgba(184,150,46,.06);border-top:1.5px solid rgba(184,150,46,.2);border-radius:0 0 var(--r) var(--r)}
+.inv-breakdown-total span:first-child{color:var(--ink)}
+.inv-breakdown-total span:nth-child(3){color:var(--ink);text-align:right}
+.inv-breakdown-total span:nth-child(4){color:var(--teal);text-align:right}
+@media(max-width:600px){
+  .inv-asset-hdr{flex-direction:column;align-items:flex-start}
+  .inv-row{flex-direction:column;align-items:flex-start;gap:.625rem}
+  .inv-breakdown-hdr,.inv-bd-row,.inv-breakdown-total{grid-template-columns:1.4fr .3fr .6fr .55fr;font-size:11px}
+}
+
+/* ── HERO COUNTER + LIKE STATS ───────────────────────────────────────────── */
+.stat-calc,.stat-like{display:flex;flex-direction:column;align-items:center;gap:0}
+.stat-geo{font-size:11px;color:var(--gold);margin-top:3px;min-height:14px;letter-spacing:.02em}
+.like-btn{background:none;border:none;cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--sans)}
+.like-btn:focus{outline:none}
+.like-heart{color:var(--ink-muted);transition:color .2s,transform .2s}
+.like-btn:hover .like-heart{color:var(--gold)}
+.like-btn.liked .like-heart{color:#C45080;fill:#C45080;transform:scale(1.15)}
+.like-count{transition:color .2s}
+.like-btn.liked .like-count{color:#C45080}
+@keyframes heartPop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.9)}100%{transform:scale(1.15)}}
+.like-btn.liked .like-heart{animation:heartPop .35s ease forwards}
+@media(max-width:600px){
+  .stat-geo{font-size:10px}
+  .like-heart{width:16px;height:16px}
+}
+
+@media(max-width:780px){.two-col{grid-template-columns:1fr}}
+.bg-white{background:var(--white);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+.bg-cream-d{background:var(--cream-d);border-top:1px solid var(--border-soft)}
+.bg-ink{background:var(--ink);border-top:1px solid rgba(184,150,46,0.12)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,3rem);background:rgba(250,248,242,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft);animation:slideDown 0.6s 0.1s ease both}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+.logo{font-family:var(--serif);font-size:24px;color:var(--ink);text-decoration:none}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:1.75rem;list-style:none;align-items:center}
+.nav-links a{font-size:15px;color:var(--ink-soft);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--ink);color:var(--white)!important;padding:9px 20px;border-radius:var(--r);font-size:14px!important;font-weight:600!important}
+.nav-cta:hover{background:var(--gold)!important;color:var(--ink)!important}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px}
+.hbg span{display:block;width:24px;height:2px;background:var(--ink);border-radius:2px}
+.mob-nav{display:none;flex-direction:column;position:fixed;top:var(--nav);left:0;right:0;background:var(--cream);border-bottom:1px solid var(--border);z-index:199;padding:1.5rem;gap:0}
+.mob-nav.open{display:flex}
+.mob-nav a{font-size:18px;color:var(--ink-soft);text-decoration:none;padding:.875rem 0;border-bottom:1px solid var(--border-soft)}
+.mob-nav a:last-child{border:none;margin-top:1rem}
+@media(max-width:760px){.nav-links{display:none}.hbg{display:flex}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-weight:600;cursor:pointer;text-decoration:none;transition:all .22s;border:2px solid transparent;white-space:nowrap;border-radius:var(--r)}
+.btn-lg{font-size:17px;padding:14px 32px}.btn-md{font-size:15px;padding:11px 24px}
+.btn-ink{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.btn-ink:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);transform:translateY(-2px)}
+.btn-gold{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-dk);color:var(--white);border-color:var(--gold-dk);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--ink-soft);border-color:var(--border)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+
+/* HERO */
+.hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav) + 3rem) 1.5rem 4rem;position:relative;z-index:1}
+.hero-eyebrow{animation:fadeUp .7s .4s ease both}
+.hero-title{margin:1rem 0 1.5rem;animation:fadeUp .8s .55s ease both}
+.hero-lead{max-width:580px;margin:0 auto 2.5rem;animation:fadeUp .8s .7s ease both}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .85s ease both}
+.hero-stats{display:flex;gap:clamp(1.5rem,4vw,4rem);margin-top:4rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s 1s ease both}
+.stat-num{font-family:var(--serif);font-size:clamp(32px,5vw,48px);color:var(--ink);line-height:1}
+.stat-num span{color:var(--gold)}
+.stat-lbl{font-size:13px;color:var(--ink-muted);margin-top:4px}
+.scroll-wrap{margin-top:3rem;display:flex;flex-direction:column;align-items:center;gap:6px;animation:fadeIn 1s 1.4s ease both}
+.scroll-line{width:1px;height:46px;background:linear-gradient(to bottom,transparent,var(--gold));animation:spulse 2s ease-in-out infinite}
+.scroll-txt{font-size:10px;letter-spacing:.13em;color:var(--ink-muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spulse{0%,100%{opacity:.2}50%{opacity:1}}
+.geo{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.geo-c{position:absolute;border:1px solid var(--border-soft);border-radius:50%}
+.geo-c1{top:-20%;right:-10%;width:min(700px,90vw);height:min(700px,90vw);animation:rot 60s linear infinite}
+.geo-c2{bottom:-15%;left:-8%;width:min(500px,70vw);height:min(500px,70vw);animation:rot 80s linear infinite reverse}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* TICKER */
+.ticker-wrap{position:relative;z-index:1;padding:0 clamp(1rem,4vw,3rem);margin-bottom:clamp(3rem,6vw,6rem)}
+.ticker{max-width:1100px;margin:0 auto;background:var(--ink);border-radius:var(--r-lg);padding:clamp(1.25rem,3vw,1.75rem) clamp(1.25rem,2.5vw,2rem);display:flex;align-items:center;gap:clamp(.5rem,1.5vw,1.5rem);flex-wrap:nowrap;min-width:0}
+.ticker-badge{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);flex-shrink:0}
+.tick-sep{width:1px;height:34px;background:rgba(255,255,255,.08);flex-shrink:0}
+.tick-item{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.tick-metal{font-size:13px;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tick-val{font-family:var(--serif);font-size:clamp(14px,1.8vw,22px);color:var(--white);white-space:nowrap}
+.tick-status{margin-left:auto;font-size:12px;display:flex;align-items:center;gap:5px;flex-shrink:0;white-space:nowrap}
+.live-c{color:#5DCAA5}.est-c{color:var(--gold-lt)}.err-c{color:#E07070}
+.pdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5DCAA5;animation:pdot 2s ease-in-out infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+
+/* API STATUS BANNER */
+.api-banner{display:none;align-items:center;gap:.75rem;padding:.875rem 1.25rem;border-radius:var(--r);margin-bottom:1.25rem;font-size:14px;line-height:1.5}
+.api-banner.show{display:flex}
+.api-live{background:var(--teal-pale);border:1px solid rgba(30,107,90,.2);color:var(--teal)}
+.api-est{background:#FFF8E6;border:1px solid rgba(184,150,46,.3);color:#7A5F1A}
+.api-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.api-dot-live{background:#5DCAA5}
+.api-dot-est{background:var(--gold)}
+
+/* PILLAR GRID */
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border-soft);border:1px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden;margin-top:1.5rem}
+.pcard{background:var(--white);padding:clamp(1rem,2.5vw,1.75rem);transition:background .3s;cursor:default}
+.pcard:hover{background:var(--gold-pale)}
+.pcard-num{font-family:var(--serif);font-size:50px;color:var(--gold);opacity:.22;line-height:1;margin-bottom:.4rem}
+.pcard-ar{font-size:26px;color:var(--gold);margin-bottom:.4rem}
+.pcard-name{font-family:var(--serif);font-size:21px;color:var(--ink);margin-bottom:.35rem}
+.pcard-desc{font-size:15px;color:var(--ink-soft);line-height:1.65}
+.pcard-zakat{background:var(--ink)!important}
+.pcard-zakat .pcard-name{color:var(--white)}
+.pcard-zakat .pcard-desc{color:rgba(255,255,255,.55)}
+.pcard-zakat .pcard-num{color:var(--gold);opacity:1}
+.pcard-zakat .pcard-ar{color:var(--gold-lt)}
+.pcard-5{grid-column:1/-1;display:flex;gap:2rem;align-items:flex-start}
+@media(max-width:540px){.pillar-grid{grid-template-columns:1fr}.pcard-5{flex-direction:column;gap:0}}
+
+/* STEPS */
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:clamp(2rem,4vw,4rem)}
+@media(max-width:900px){.steps-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.steps-grid{grid-template-columns:1fr}}
+.sblk{padding:clamp(1.5rem,3vw,2.25rem);border-left:1px solid var(--border-soft)}
+.sblk:first-child{border-left:none}
+@media(max-width:900px){.sblk{border-left:1px solid var(--border-soft);border-top:1px solid var(--border-soft)}.sblk:first-child,.sblk:nth-child(3){border-left:none}.sblk:first-child,.sblk:nth-child(2){border-top:none}}
+@media(max-width:500px){.sblk{border-left:none;border-top:1px solid var(--border-soft)}.sblk:first-child{border-top:none}}
+.sblk-num{font-family:var(--serif);font-size:72px;color:var(--gold);opacity:.12;line-height:1;margin-bottom:.5rem}
+.sblk-title{font-family:var(--serif);font-size:23px;color:var(--ink);margin-bottom:.625rem}
+.sblk-desc{font-size:15px;color:var(--ink-soft);line-height:1.8}
+
+/* METALS */
+.metal-pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:1.75rem}
+@media(max-width:400px){.metal-pair{grid-template-columns:1fr}}
+.mcard{background:var(--white);padding:clamp(1.25rem,3vw,1.875rem);transition:background .3s}
+.mcard:hover{background:var(--gold-pale)}
+.mcard-icon{width:48px;height:48px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem}
+.mcard-g{font-family:var(--serif);font-size:clamp(28px,4vw,40px);color:var(--ink);line-height:1}
+.mcard-unit{font-size:15px;color:var(--ink-muted);margin-top:3px}
+.mcard-price{font-size:18px;font-weight:700;color:var(--teal);margin-top:.625rem}
+.mcard-school{font-size:13px;color:var(--ink-muted);margin-top:3px}
+.madhab-stack{display:flex;flex-direction:column;gap:.75rem;margin-top:1.75rem}
+.madhab-card{border:1.5px solid var(--border-soft);border-radius:var(--r-lg);padding:clamp(1rem,2vw,1.375rem);cursor:pointer;transition:all .22s;background:var(--white)}
+.madhab-card:hover,.madhab-card.sel{border-color:var(--gold);background:var(--gold-pale)}
+.mc-name{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.mc-nisab{font-size:14px;color:var(--gold-dk);font-weight:600;margin-bottom:5px}
+.mc-detail{font-size:14px;color:var(--ink-soft);line-height:1.65}
+
+/* ASSETS */
+.assets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border-soft);border:1px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden;margin-top:clamp(1.75rem,3vw,3rem)}
+@media(max-width:900px){.assets-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.assets-grid{grid-template-columns:1fr}}
+.acard{background:var(--cream-d);padding:clamp(1.25rem,2.5vw,1.875rem);transition:background .3s}
+.acard:hover{background:var(--white)}
+.arate{display:inline-flex;align-items:center;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 11px;border-radius:99px;margin-bottom:.875rem}
+.r-full{background:var(--teal-pale);color:var(--teal)}.r-proxy{background:var(--gold-pale);color:var(--gold-dk)}.r-exempt{background:#EDECEA;color:var(--ink-soft)}
+.acard-title{font-family:var(--serif);font-size:21px;color:var(--ink);margin-bottom:.4rem}
+.acard-desc{font-size:15px;color:var(--ink-soft);line-height:1.8}
+
+/* CARAT TABLE */
+.carat-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:1rem}
+.carat-table th{text-align:left;padding:.5rem .75rem;border-bottom:1.5px solid var(--border);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.carat-table td{padding:.625rem .75rem;border-bottom:1px solid var(--border-soft);color:var(--ink-soft)}
+.carat-table td:first-child{font-weight:700;color:var(--ink)}
+.carat-table td:last-child{font-family:var(--serif);font-size:16px;color:var(--teal);font-weight:600;text-align:right}
+.carat-table tr:last-child td{border-bottom:none}
+.carat-table tr:hover td{background:var(--gold-pale)}
+
+/* RECIPIENTS */
+.verse-block{font-family:var(--serif);font-size:clamp(17px,2.5vw,22px);font-style:italic;color:rgba(255,255,255,.7);line-height:1.78;border-left:3px solid var(--gold);padding-left:2rem;margin:2.25rem 0;max-width:700px}
+.verse-ref{font-size:14px;color:var(--gold);font-style:normal;margin-top:.75rem;letter-spacing:.05em}
+.recip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(184,150,46,.08);border:1px solid rgba(184,150,46,.08);border-radius:var(--r-lg);overflow:hidden;margin-top:clamp(1.75rem,3vw,3rem)}
+@media(max-width:900px){.recip-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.recip-grid{grid-template-columns:1fr}}
+.rcard{background:var(--ink);padding:clamp(1.25rem,2.5vw,1.875rem);transition:background .3s}
+.rcard:hover{background:rgba(184,150,46,.07)}
+.rcard-num{font-family:var(--serif);font-size:48px;color:var(--gold);opacity:.2;line-height:1;margin-bottom:.4rem}
+.rcard-ar{font-size:21px;color:var(--gold);opacity:.8;margin-bottom:.4rem}
+.rcard-name{font-family:var(--serif);font-size:19px;color:var(--white);margin-bottom:.4rem}
+.rcard-desc{font-size:15px;color:rgba(255,255,255,.44);line-height:1.7}
+
+/* CALCULATOR */
+.calc-outer{display:grid;grid-template-columns:1fr 1.5fr;gap:clamp(2.5rem,5vw,5rem);align-items:start}
+@media(max-width:900px){.calc-outer{grid-template-columns:1fr}}
+.cpoint{display:flex;gap:13px;align-items:flex-start;margin-bottom:.875rem}
+.cpoint-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:8px}
+.cpoint-txt{font-size:16px;color:var(--ink-soft);line-height:1.7}
+.info-callout{background:var(--teal-pale);border:1px solid rgba(30,107,90,.2);border-radius:var(--r);padding:.875rem 1.125rem;margin-top:2rem;font-size:15px;color:var(--teal);line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+
+/* CALC SHELL */
+.calc-shell{background:var(--cream);border:1.5px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden}
+.calc-top{background:var(--ink);padding:clamp(1.125rem,2.5vw,1.625rem) clamp(1.25rem,3vw,2rem)}
+.calc-top-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.125rem}
+.calc-ttl{font-family:var(--serif);font-size:22px;color:var(--white)}
+.calc-live{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gold)}
+.prog-track{background:rgba(255,255,255,.08);border-radius:99px;height:5px;overflow:hidden}
+.prog-fill{height:100%;background:var(--gold);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-labels{display:flex;margin-top:.75rem}
+.prog-lbl{font-size:11px;color:rgba(255,255,255,.35);text-align:center;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;display:flex;flex-direction:column;gap:2px}
+.prog-lbl-val{font-size:10px;color:var(--gold);font-family:var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-lbl.cur{color:var(--gold-lt);font-weight:700}.prog-lbl.done{color:rgba(255,255,255,.6)}
+.calc-body{padding:clamp(1.25rem,3vw,2rem)}
+.spanel{display:none}
+.spanel.active{display:block;animation:panIn .32s ease}
+@keyframes panIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sp-num{font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:.375rem}
+.sp-title{font-family:var(--serif);font-size:27px;color:var(--ink);margin-bottom:.5rem}
+.sp-desc{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:1.5rem}
+.tip-box{background:var(--gold-pale);border:1px solid rgba(184,150,46,.3);border-radius:var(--r-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:12px;align-items:flex-start}
+.tip-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.tip-title{font-size:13px;font-weight:700;color:var(--gold-dk);margin-bottom:3px}
+.tip-text{font-size:14px;color:var(--ink-soft);line-height:1.65}
+.callout{background:var(--teal-pale);border:1px solid rgba(30,107,90,.18);border-radius:var(--r);padding:.875rem 1.125rem;margin:1rem 0;font-size:14px;color:var(--teal);line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.settings-bar{background:var(--cream-d);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:14px;color:var(--ink-soft)}
+.sb-val{font-weight:700;color:var(--ink)}.sb-sep{color:var(--border)}
+
+/* FORM */
+.fg{margin-bottom:1.125rem}
+.fl{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:.3rem}
+.fh{font-size:13px;color:var(--ink-muted);margin-bottom:.5rem;line-height:1.5}
+.fr{display:flex;align-items:center;gap:.5rem}
+.fsym{font-size:16px;color:var(--ink-soft);flex-shrink:0;min-width:18px}
+input[type="number"],select{width:100%;background:var(--white);border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:12px 14px;font-family:var(--sans);font-size:16px;color:var(--ink);outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input[type="number"]:focus,select:focus{border-color:var(--gold)}
+input[type="number"]::placeholder{color:var(--ink-muted)}
+.inp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:460px){.inp-grid{grid-template-columns:1fr}}
+.tog-lbl{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:.5rem}
+.tog-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.125rem}
+.tog-btn{background:var(--white);border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:10px 16px;font-size:15px;font-family:var(--sans);color:var(--ink-soft);cursor:pointer;transition:all .2s}
+.tog-btn:hover{border-color:var(--gold);color:var(--gold)}
+.tog-btn.on{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.125rem}
+@media(max-width:460px){.sc-grid{grid-template-columns:1fr}}
+.sc{border:1.5px solid var(--border-soft);border-radius:var(--r-lg);padding:clamp(.875rem,2vw,1.25rem);cursor:pointer;transition:all .22s;background:var(--white)}
+.sc:hover,.sc.on{border-color:var(--gold);background:var(--gold-pale)}
+.sc-name{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.sc-nisab{font-size:14px;color:var(--gold-dk);font-weight:600;margin-bottom:5px}
+.sc-detail{font-size:13px;color:var(--ink-soft);line-height:1.6}
+.step-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.75rem;gap:1rem;flex-wrap:wrap}
+.back-btn{font-size:14px;color:var(--ink-muted);cursor:pointer;background:none;border:none;font-family:var(--sans);padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.back-btn:hover{color:var(--gold)}
+
+/* GOLD ITEMS BUILDER */
+.gold-items-wrap{margin-bottom:1.25rem}
+.gold-item-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.625rem;align-items:end;margin-bottom:.625rem}
+@media(max-width:500px){.gold-item-row{grid-template-columns:1fr 1fr;row-gap:.5rem}}
+.gold-item-row .fl{font-size:13px;margin-bottom:.25rem}
+.remove-btn{background:none;border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:11px 12px;cursor:pointer;color:var(--ink-muted);font-size:15px;transition:all .2s;height:46px;display:flex;align-items:center;justify-content:center;align-self:end}
+.remove-btn:hover{border-color:#E07070;color:#E07070;background:#FDE8E8}
+.add-item-btn{background:none;border:1.5px dashed rgba(184,150,46,.4);border-radius:var(--r);padding:.75rem 1rem;cursor:pointer;color:var(--gold-dk);font-size:14px;font-family:var(--sans);font-weight:600;transition:all .2s;width:100%;text-align:center;margin-bottom:1rem}
+.add-item-btn:hover{background:var(--gold-pale);border-color:var(--gold)}
+.gold-live-preview{background:var(--cream-d);border-radius:var(--r);padding:.75rem 1rem;font-size:14px;color:var(--ink-soft);margin-top:.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.gold-live-preview strong{color:var(--teal);font-size:16px;font-family:var(--serif)}
+
+/* RESULT */
+.result-wrap{display:none}
+.result-wrap.show{display:block;animation:panIn .4s ease}
+.r-div{height:1px;background:var(--border-soft);margin:2rem 0}
+.r-elig{font-size:15px;font-weight:600;padding:.75rem 1.125rem;border-radius:var(--r);margin-bottom:1.375rem;display:flex;align-items:center;gap:10px}
+.elig-y{background:var(--teal-pale);color:var(--teal)}.elig-n{background:#FDE8E8;color:#9B2020}
+.r-zakat-box{background:var(--ink);border-radius:var(--r-lg);padding:1.375rem;margin-bottom:1.375rem;text-align:center}
+.r-zakat-lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem;font-weight:600}
+.r-zakat-amt{font-family:var(--serif);font-size:clamp(40px,6vw,58px);color:var(--gold);line-height:1}
+.r-zakat-note{font-size:14px;color:rgba(255,255,255,.45);margin-top:.4rem}
+.r-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.375rem}
+@media(max-width:380px){.r-metrics{grid-template-columns:1fr}}
+.r-metric{background:var(--cream-d);border-radius:var(--r);padding:.875rem 1.125rem}
+.r-metric-lbl{font-size:13px;color:var(--ink-muted);margin-bottom:4px}
+.r-metric-val{font-family:var(--serif);font-size:28px;color:var(--ink)}
+.bk-table{margin-bottom:1rem}
+.bk-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-soft);font-size:15px;gap:1rem}
+.bk-row:last-child{border-bottom:none;font-weight:700;padding-top:10px}
+.bk-row:last-child .bk-l{color:var(--gold-dk)}.bk-row:last-child .bk-v{color:var(--gold-dk)}
+.bk-l{color:var(--ink-soft);flex:1}.bk-v{color:var(--ink);font-weight:600;text-align:right;flex-shrink:0}
+.r-settings{background:var(--cream-d);border-radius:var(--r);padding:.875rem 1.125rem;font-size:14px;color:var(--ink-soft);line-height:2}
+.recalc-btn{width:100%;background:var(--ink);color:var(--white);border:none;padding:14px;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;border-radius:var(--r);margin-top:1rem;transition:all .22s}
+.recalc-btn:hover{background:var(--gold);color:var(--ink)}
+
+/* FAQ */
+.faq-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:clamp(2.5rem,5vw,5rem);align-items:start}
+@media(max-width:780px){.faq-layout{grid-template-columns:1fr}}
+.faq-item{border-top:1px solid var(--border-soft)}
+.faq-item:last-child{border-bottom:1px solid var(--border-soft)}
+.faq-q{width:100%;text-align:left;background:none;border:none;padding:1.375rem 0;display:flex;justify-content:space-between;align-items:center;gap:1rem;cursor:pointer;font-family:var(--sans);font-size:17px;font-weight:600;color:var(--ink);line-height:1.4}
+.faq-q:hover{color:var(--gold)}
+.faq-icon{font-size:24px;color:var(--gold);flex-shrink:0;transition:transform .3s;font-weight:300;line-height:1}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{font-size:16px;color:var(--ink-soft);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .45s ease,padding-bottom .3s}
+.faq-item.open .faq-a{max-height:600px;padding-bottom:1.5rem}
+
+/* SOURCES */
+.sources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.04);border-radius:var(--r-lg);overflow:hidden;margin-top:clamp(1.75rem,3vw,3rem)}
+@media(max-width:780px){.sources-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.sources-grid{grid-template-columns:1fr}}
+.scard{background:var(--ink);padding:clamp(1.25rem,2.5vw,1.875rem);transition:background .3s}
+.sources-region-lbl{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:2.5rem 0 .875rem;display:block}
+.scard:hover{background:rgba(184,150,46,.06)}
+.scard-type{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.scard-name{font-family:var(--serif);font-size:21px;color:var(--white);margin-bottom:.35rem}
+.scard-desc{font-size:15px;color:rgba(255,255,255,.4);line-height:1.7}
+
+footer{background:#0F0D09;padding:clamp(2.5rem,5vw,4rem) clamp(1rem,4vw,3rem);text-align:center}
+.feedback-section{max-width:580px;margin:0 auto 3rem;text-align:left}
+.feedback-title{font-family:var(--serif);font-size:22px;color:var(--white);margin-bottom:.375rem}
+.feedback-sub{font-size:14px;color:rgba(255,255,255,.35);margin-bottom:1.5rem}
+.feedback-form{display:flex;flex-direction:column;gap:.875rem}
+.feedback-field{display:flex;flex-direction:column;gap:.375rem}
+.feedback-label{font-size:13px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.04em;text-transform:uppercase}
+.feedback-input,.feedback-textarea,.feedback-select{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r);padding:12px 14px;font-family:var(--sans);font-size:15px;color:var(--white);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.feedback-input::placeholder,.feedback-textarea::placeholder{color:rgba(255,255,255,.25)}
+.feedback-input:focus,.feedback-textarea:focus,.feedback-select:focus{border-color:var(--gold)}
+.feedback-select option{background:#1C1A14;color:var(--white)}
+.feedback-textarea{resize:vertical;min-height:110px;line-height:1.6}
+.feedback-row{display:grid;grid-template-columns:1fr 1fr;gap:.875rem}
+.feedback-btn{background:var(--gold);color:var(--ink);border:none;border-radius:var(--r);padding:13px 28px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.feedback-btn:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.feedback-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.feedback-success{display:none;background:rgba(93,202,165,.12);border:1.5px solid rgba(93,202,165,.3);border-radius:var(--r-lg);padding:1.25rem 1.5rem;text-align:center}
+.feedback-success.show{display:block}
+.feedback-success-icon{font-size:32px;margin-bottom:.625rem}
+.feedback-success-title{font-family:var(--serif);font-size:18px;color:#5DCAA5;margin-bottom:.375rem}
+.feedback-success-msg{font-size:14px;color:rgba(255,255,255,.45);line-height:1.65}
+.feedback-error{display:none;background:rgba(220,80,80,.12);border:1px solid rgba(220,80,80,.25);border-radius:var(--r);padding:.75rem 1rem;font-size:14px;color:#E07070;margin-top:-.25rem}
+.feedback-error.show{display:block}
+.foot-divider{width:100%;height:1px;background:rgba(255,255,255,.07);margin:0 auto 2.5rem;max-width:580px}
+@media(max-width:500px){.feedback-row{grid-template-columns:1fr}}
+.foot-logo{font-family:var(--serif);font-size:28px;color:var(--white);margin-bottom:.875rem}
+.foot-logo span{color:var(--gold)}
+.foot-disc{font-size:15px;color:rgba(255,255,255,.35);max-width:680px;margin:0 auto 1.25rem;line-height:1.8}
+.foot-copy{font-size:13px;color:rgba(255,255,255,.2);letter-spacing:.04em}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+.cr{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.cr.vis{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE TICKER — card grid replaces horizontal strip
+   ═══════════════════════════════════════════════════════ */
+
+.ticker-mobile { display: none; background: var(--ink); border-radius: var(--r-lg); max-width: 1100px; margin: 0 auto; overflow: hidden }
+.tmob-hdr { display: flex; align-items: center; justify-content: space-between; padding: .875rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,.07) }
+.tmob-badge { font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--gold) }
+.tmob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,.06) }
+.tmob-card { background: var(--ink); padding: .875rem 1.25rem; display: flex; flex-direction: column; gap: 5px }
+.tmob-hi { background: rgba(255,255,255,.03) }
+.tmob-lbl { font-size: 11px; color: rgba(255,255,255,.42) }
+.tmob-val { font-family: var(--serif); font-size: 20px; color: var(--white); line-height: 1 }
+.tmob-gold { color: var(--gold-lt) }
+
+/* ═══════════════════════════════════════════════════════
+   SINGLE RESPONSIVE RULE — everything at ≤ 600px
+   All horizontal padding = 1.25rem (matches ticker card)
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE LAYOUT — PROTECTED RULES — DO NOT MODIFY WITHOUT READING THIS
+   ═══════════════════════════════════════════════════════════════════════
+
+   RULE 1 — HORIZONTAL PADDING (screen edges):
+   All horizontal spacing is controlled by .wrap { padding: 0 1.25rem !important }
+   and nav/ticker-wrap/footer matching. This is 1.25rem (20px) from screen edge.
+   NEVER use padding shorthand on .sp — it will set left/right to 0 and remove
+   the edge gap. Always use padding-top and padding-bottom separately.
+   
+   RULE 2 — VERTICAL SECTION SPACING:
+   .sp uses padding-top and padding-bottom individually (NOT shorthand).
+   Current value: 4.5rem top+bottom. The global .sp uses clamp() which already
+   evaluates to 3.5rem at mobile widths, so !important is needed to go higher.
+   
+   RULE 3 — REVEAL ANIMATION:
+   The .reveal class translateY is reduced to 10px on mobile (was 26px).
+   This prevents the animation from eating into section top padding and making
+   section headings appear too close to their background top edge.
+   Do not increase translateY above 10px in mobile, or section spacing breaks.
+   
+   RULE 4 — SOURCES SECTION:
+   #sources has extra bottom padding so the dark bg-ink background extends
+   below the sources grid. Uses !important to beat the .sp shorthand.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+
+  /* --- Core spacing --- */
+  html, body { overflow-x: hidden }
+  * { min-width: 0 }
+
+  /* THE reference value: 1.25rem from screen edge, same as ticker card interior */
+  .wrap        { padding: 0 1.25rem !important }
+  nav          { padding: 0 1.25rem !important }
+  .ticker-wrap { padding: 0 1.25rem !important; margin-bottom: 2rem }
+  .mob-nav     { padding: 1.25rem 1.25rem }
+  .mob-nav a   { font-size: 16px; padding: .75rem 0 }
+  footer       { padding: 2.5rem 1.25rem }
+
+  /* Hero — inline style override */
+  #top { padding-left: 1.25rem !important; padding-right: 1.25rem !important }
+
+  /* --- Ticker --- */
+  .ticker-desktop { display: none }
+  .ticker-mobile  { display: block }
+
+  /* --- Section vertical spacing --- */
+  .sp { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important }
+  .reveal { transform: translateY(10px) }
+  .reveal.vis { transform: translateY(0) }
+
+  /* --- Typography --- */
+  .display { font-size: clamp(32px, 9vw, 48px) }
+  .h1 { font-size: clamp(24px, 6.5vw, 36px) }
+  .h2 { font-size: clamp(21px, 5.5vw, 30px) }
+  .lead { font-size: 15px; line-height: 1.65 }
+  .body-txt { font-size: 14px }
+  .label { font-size: 10px }
+  .gold-rule { margin: .75rem 0 }
+
+  /* --- Layout --- */
+  .two-col { grid-template-columns: 1fr; gap: 2rem }
+  .calc-outer { grid-template-columns: 1fr; gap: 2rem }
+  .faq-layout { grid-template-columns: 1fr }
+  .sources-grid { grid-template-columns: 1fr 1fr }
+
+  /* --- Hero stats --- */
+  .hero-stats { gap: 1.25rem; margin-top: 2.5rem }
+  .stat-num { font-size: 26px }
+  .stat-lbl { font-size: 11px }
+
+  /* --- Grids: collapsed + rounded --- */
+  .pillar-grid  { grid-template-columns: 1fr; gap: 1px; border-radius: var(--r-lg); overflow: hidden }
+  .steps-grid   { grid-template-columns: 1fr; border-radius: var(--r-lg); overflow: hidden }
+  .metal-pair   { grid-template-columns: 1fr; gap: 1px; border-radius: var(--r-lg); overflow: hidden }
+  .assets-grid  { grid-template-columns: 1fr 1fr; border-radius: var(--r-lg); overflow: hidden }
+  .recip-grid   { grid-template-columns: 1fr 1fr; border-radius: var(--r-lg); overflow: hidden }
+  .madhab-stack { gap: .5rem }
+
+  /* --- Card inner padding --- */
+  .pcard { padding: 1rem 1.125rem }
+  .sblk  { padding: 1rem 1.125rem }
+  .mcard { padding: 1rem 1.125rem }
+  .acard { padding: 1rem 1.125rem }
+  .rcard { padding: 1rem 1.125rem }
+  .scard { padding: 1rem 1.125rem }
+
+  /* --- Calculator --- */
+  .calc-shell    { border-radius: var(--r) }
+  .calc-top      { padding: 1rem 1.125rem }
+  .calc-body     { padding: 1rem 1.125rem }
+  .prog-lbl      { font-size: 9px; padding: 0 1px }
+  .sp-num        { font-size: 11px }
+  .sp-title      { font-size: 20px }
+  .sp-desc       { font-size: 13px }
+  .tip-box       { padding: .75rem 1rem; gap: 8px }
+  .tip-title     { font-size: 13px }
+  .tip-text      { font-size: 12px }
+  .callout       { padding: .75rem 1rem; font-size: 13px }
+  .settings-bar  { padding: .625rem 1rem; font-size: 12px }
+  .inp-grid      { grid-template-columns: 1fr }
+  .fg            { margin-bottom: .875rem }
+  .fl            { font-size: 14px }
+  .fh            { font-size: 12px }
+  input[type="number"], input[type="text"], input[type="date"], select { padding: 11px 12px; font-size: 15px }
+  .sc-grid       { grid-template-columns: 1fr }
+  .sc            { padding: .75rem 1rem }
+  .sc-name       { font-size: 15px }
+  .sc-detail     { font-size: 12px }
+  .tog-row       { gap: .375rem }
+  .tog-btn       { padding: 9px 12px; font-size: 14px }
+  .gold-item-row { grid-template-columns: 1fr 1fr; row-gap: .5rem }
+  .step-nav      { flex-direction: column-reverse; gap: .5rem }
+  .step-nav > *  { width: 100% }
+  .btn-lg        { font-size: 15px; padding: 13px 20px; width: 100%; justify-content: center }
+  .back-btn      { text-align: center; width: 100% }
+
+  /* --- Results --- */
+  .r-zakat-amt  { font-size: 32px }
+  .r-metric-val { font-size: 20px }
+  .r-metric     { padding: .75rem 1rem }
+  .bk-row       { font-size: 13px }
+  .recalc-btn   { font-size: 14px; padding: 11px }
+  .r-elig       { font-size: 14px; padding: .625rem 1rem }
+
+  /* --- FAQ --- */
+  .faq-q { font-size: 15px; padding: 1rem 0 }
+  .faq-a { font-size: 14px }
+
+  /* --- Sources --- */
+  .sources-grid { border-radius: var(--r-lg); overflow: hidden }
+
+  /* Sources section — extend dark background below grid */
+  #sources { padding-bottom: 4.5rem !important }
+  #sources .sp { padding-bottom: 0 !important }
+}
+
+/* ≤ 460px: tighter column collapse */
+@media (max-width: 460px) {
+  .assets-grid  { grid-template-columns: 1fr }
+  .recip-grid   { grid-template-columns: 1fr }
+  .sources-grid { grid-template-columns: 1fr }
+  .r-metrics    { grid-template-columns: 1fr }
+}
+
+/* ≤ 380px: smallest phones */
+@media (max-width: 380px) {
+  .wrap        { padding: 0 1rem !important }
+  nav          { padding: 0 1rem !important }
+  .ticker-wrap { padding: 0 1rem !important }
+  footer       { padding: 2rem 1rem }
+  .calc-body   { padding: .875rem 1rem }
+  .calc-top    { padding: .875rem 1rem }
+  #top         { padding-left: 1rem !important; padding-right: 1rem !important }
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════ */
+@page { margin: 1.5cm }
+@media print {
+  nav, .geo, .scroll-wrap, .hbg, .mob-nav, .ticker-wrap,
+  #live-panel, #fitr, #hawl, #faq, footer,
+  section#pillars, section#nisab, section#assets, section#recipients,
+  section.bg-ink, .step-nav, .back-btn, #copy-btn { display: none !important }
+  body { background: #fff; font-size: 12pt }
+  .calc-shell { border: none }
+  .calc-top { background: #1C1A14 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact }
+  .spanel { display: none !important }
+  .result-wrap { display: block !important }
+  .r-zakat-box { background: #1C1A14 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact }
+  .calc-outer { grid-template-columns: 1fr !important }
+}
+
+
+/* == RESEARCH NOTES (footer expandable) == */
+.rn-row{display:grid;grid-template-columns:180px 1fr;gap:.5rem 1rem;padding:.375rem 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:baseline}
+.rn-row:last-child{border-bottom:none}
+.rn-item{font-size:12px;font-weight:600;color:var(--white)}
+.rn-note{font-size:12px;color:rgba(255,255,255,.4);line-height:1.55}
+.rn-ok .rn-item{color:#5DCAA5}
+.rn-conflict{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
+.rn-conflict-hdr{padding:.625rem .875rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07)}
+.rn-conflict-title{font-size:13px;font-weight:600;color:var(--white)}
+.rn-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+.rn-badge-mod{background:rgba(184,150,46,.25);color:var(--gold)}
+.rn-badge-min{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
+.rn-conflict-body{padding:.75rem .875rem;display:grid;gap:.375rem}
+.rn-agree,.rn-disagree,.rn-resolution{font-size:12px;line-height:1.6;padding:.25rem 0}
+.rn-agree{color:rgba(93,202,165,.7)}
+.rn-disagree{color:rgba(255,170,100,.7)}
+.rn-resolution{color:rgba(255,255,255,.4)}
+.rn-agree strong,.rn-disagree strong,.rn-resolution strong{color:var(--white)}
+@media(max-width:600px){.rn-row{grid-template-columns:1fr;gap:.125rem}}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "ZakatCalc",
+      "url": "https://zakatcalc.info",
+      "description": "Free Islamic Zakat calculator with live gold and silver spot prices, karat-precise gold calculations (9ct to 24ct), and support for all four schools of thought. Includes Zakat al-Fitr calculator and hawl date tracker.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      },
+      "featureList": [
+        "Live gold and silver spot prices",
+        "Karat-precise gold calculations (9ct to 24ct)",
+        "Hanafi, Maliki, Shafi'i, and Hanbali madhab support",
+        "Zakat al-Fitr calculator",
+        "Hawl date tracker",
+        "9 currencies supported",
+        "WhatsApp result sharing",
+        "Fully private — no data leaves your browser"
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How is Zakat calculated on gold?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Zakat on gold is calculated using the karat purity formula: pure gold grams = total weight × (karat ÷ 24). The value is then calculated using the live 24ct spot price. Zakat is 2.5% of the total zakatable wealth above the nisab threshold. Source: IslamQA Fatwa 214221."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the nisab threshold for Zakat?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The nisab is the minimum wealth threshold for Zakat to be obligatory. The silver nisab is 612.36g of silver, and the gold nisab is 87.48g of pure gold. Most scholars recommend the silver nisab as it is lower, meaning more people qualify to give Zakat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Zakat al-Fitr?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Zakat al-Fitr (Fitrana) is a separate compulsory payment due before Eid al-Fitr prayers at the end of Ramadan. It is a fixed per-person amount paid for every Muslim in your household, including infants. The NZF UK rate for 2025 is £5 per person."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the Zakat calculator use live gold prices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. ZakatCalc fetches real-time gold (XAU) and silver (XAG) spot prices from the Fawazahmed0 Currency API on every page load. If the API is unavailable, recent market estimates are used and clearly labelled."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my financial data private when using ZakatCalc?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, completely. All calculations happen entirely in your browser. No values are sent to any server. Nothing is stored or logged. Your financial information never leaves your device."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "ZakatCalc",
+      "url": "https://zakatcalc.info",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@zakatcalc.info",
+        "contactType": "customer support"
+      }
+    }
+  ]
+}
+</script>
+<!-- Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: 'ZakatCalc — Free Zakat Calculator',
+    page_location: 'https://zakatcalc.info'
+  });
+</script>
+</head>
+<noscript><div style="background:#9B2020;color:#fff;padding:.875rem 1.25rem;text-align:center;font-size:15px;font-weight:600;position:fixed;top:0;left:0;right:0;z-index:9999">Please enable JavaScript to use this calculator.</div></noscript>
+<body>
+
+<div class="geo">
+  <div class="geo-c geo-c1"></div>
+  <div class="geo-c geo-c2"></div>
+</div>
+
+<nav>
+  <a href="#top" class="logo">Zakat<span>Calc</span></a>
+  <ul class="nav-links">
+    <li><a href="#pillars">What is Zakat</a></li>
+    <li><a href="#nisab">Nisab</a></li>
+    <li><a href="#assets">Assets</a></li>
+    <li><a href="#recipients">Recipients</a></li>
+    <li><a href="#fitr">Al-Fitr</a></li>
+    <li><a href="#hawl">Hawl</a></li>
+    <li><a href="#calculator" class="nav-cta">Calculate now</a></li>
+    <li><a href="/ar/" style="font-size:13px;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:4px 10px;text-decoration:none;transition:all .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">عربي &#x2190;</a></li>
+  </ul>
+  <button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-nav" id="mobnav">
+  <a href="#pillars">What is Zakat</a>
+  <a href="#nisab">Nisab</a>
+  <a href="#assets">Assets</a>
+  <a href="#recipients">Recipients</a>
+  <a href="#fitr">Zakat al-Fitr</a>
+  <a href="#hawl">Hawl tracker</a>
+  <a href="#calculator" class="btn btn-gold btn-md">Calculate now</a>
+</div>
+
+<!-- HERO -->
+<section id="top" style="min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav) + 3rem) 1.5rem 4rem;position:relative;z-index:1">
+  <p class="label hero-eyebrow" style="margin-bottom:1rem">The Third Pillar of Islam</p>
+  <h1 class="display hero-title">Calculate your<br><em class="gold-i">Zakat</em><br>with confidence</h1>
+  <p class="lead hero-lead">A scholarly-grounded calculator with live precious metals prices, per-carat gold purity calculation, and personalisation for your school of thought.</p>
+  <div class="hero-actions">
+    <a href="#calculator" class="btn btn-ink btn-lg">Calculate my Zakat</a>
+    <a href="#pillars" class="btn btn-outline btn-lg">Learn the principles</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">2<span>.5%</span></div><div class="stat-lbl">Annual rate &middot; 8 recipients</div></div>
+    <div><div class="stat-num">6</div><div class="stat-lbl">Gold carat options</div></div>
+    <div><div class="stat-num"><span id="hero-nisab">&#8212;</span></div><div class="stat-lbl">Silver nisab today</div></div>
+    <div class="stat-calc">
+      <div class="stat-num" id="hero-calc-count">&#8212;</div>
+      <div class="stat-lbl">calculations served</div>
+      <div class="stat-geo" id="hero-geo"></div>
+    </div>
+    <div class="stat-like">
+      <button class="like-btn" id="like-btn" onclick="handleLike()" aria-label="Mark as helpful">
+        <svg class="like-heart" id="like-heart" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 15.5S2 11.2 2 6.5A3.5 3.5 0 018.5 4.8 3.5 3.5 0 0116 6.5C16 11.2 9 15.5 9 15.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="stat-num like-count" id="hero-like-count">&#8212;</span>
+      </button>
+      <div class="stat-lbl">found this helpful</div>
+    </div>
+  </div>
+  <div class="scroll-wrap">
+    <div class="scroll-line"></div>
+    <div class="scroll-txt">SCROLL</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker ticker-desktop">
+    <span class="ticker-badge">Live Market Prices</span>
+    <div class="tick-sep"></div>
+    <div class="tick-item"><span class="tick-metal">Gold nisab (87.48g)</span><span class="tick-val" id="tk-gold">Loading&hellip;</span></div>
+    <div class="tick-sep"></div>
+    <div class="tick-item"><span class="tick-metal">Silver nisab (612.36g)</span><span class="tick-val" id="tk-silver">Loading&hellip;</span></div>
+    <div class="tick-sep"></div>
+    <div class="tick-item"><span class="tick-metal">24ct gold / gram</span><span class="tick-val" id="tk-gG">&mdash;</span></div>
+    <div class="tick-sep"></div>
+    <div class="tick-item"><span class="tick-metal">22ct gold / gram</span><span class="tick-val" id="tk-g22">&mdash;</span></div>
+    <div class="tick-sep"></div>
+    <div class="tick-item"><span class="tick-metal">Silver / gram</span><span class="tick-val" id="tk-sG">&mdash;</span></div>
+    <span class="tick-status live-c" id="tk-st"><span class="pdot"></span> Fetching&hellip;</span>
+  </div>
+  <div class="ticker-mobile">
+    <div class="tmob-hdr"><span class="tmob-badge">Live Market Prices</span><span class="tick-status live-c" id="tk-st-mob"><span class="pdot"></span> Fetching&hellip;</span></div>
+    <div class="tmob-grid">
+      <div class="tmob-card tmob-hi"><span class="tmob-lbl">Gold nisab (87.48g)</span><span class="tmob-val" id="tk-gold-mob">Loading&hellip;</span></div>
+      <div class="tmob-card tmob-hi"><span class="tmob-lbl">Silver nisab (612.36g)</span><span class="tmob-val" id="tk-silver-mob">Loading&hellip;</span></div>
+      <div class="tmob-card"><span class="tmob-lbl">24ct / gram</span><span class="tmob-val tmob-gold" id="tk-gG-mob">&mdash;</span></div>
+      <div class="tmob-card"><span class="tmob-lbl">22ct / gram</span><span class="tmob-val tmob-gold" id="tk-g22-mob">&mdash;</span></div>
+      <div class="tmob-card"><span class="tmob-lbl">18ct / gram</span><span class="tmob-val tmob-gold" id="tk-g18-mob">&mdash;</span></div>
+      <div class="tmob-card"><span class="tmob-lbl">Silver / gram</span><span class="tmob-val" id="tk-sG-mob">&mdash;</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PILLARS -->
+<section id="pillars" class="bg-white">
+  <div class="wrap sp">
+    <div class="two-col">
+      <div>
+        <p class="label reveal">The five pillars</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Zakat &mdash; the <em class="gold-i">pillar</em> of giving</h2>
+        <div class="gold-rule reveal d2"></div>
+        <p class="lead reveal d2">Zakat is the Third Pillar of Islam &mdash; an obligatory annual charitable contribution for every eligible Muslim. The word means both &ldquo;purification&rdquo; and &ldquo;growth.&rdquo;</p>
+        <p class="body-txt reveal d3" style="margin-top:1rem">It is not optional charity. Zakat is a divinely mandated right of the poor within the wealth of those who have more than enough &mdash; with precise rules about who pays, how much, and who receives.</p>
+      </div>
+      <div class="reveal d2">
+        <div class="pillar-grid">
+          <div class="pcard"><div class="pcard-num">01</div><div class="pcard-ar">&#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577;</div><div class="pcard-name">Shahada</div><div class="pcard-desc">Declaration of faith</div></div>
+          <div class="pcard"><div class="pcard-num">02</div><div class="pcard-ar">&#1575;&#1604;&#1589;&#1604;&#1575;&#1577;</div><div class="pcard-name">Salah</div><div class="pcard-desc">Five daily prayers</div></div>
+          <div class="pcard pcard-zakat"><div class="pcard-num">03</div><div class="pcard-ar">&#1575;&#1604;&#1586;&#1603;&#1575;&#1577;</div><div class="pcard-name">Zakat</div><div class="pcard-desc">2.5% of net wealth above nisab, held for one lunar year</div></div>
+          <div class="pcard"><div class="pcard-num">04</div><div class="pcard-ar">&#1575;&#1604;&#1589;&#1608;&#1605;</div><div class="pcard-name">Sawm</div><div class="pcard-desc">Fasting during Ramadan</div></div>
+          <div class="pcard pcard-5"><div><div class="pcard-num">05</div></div><div><div class="pcard-ar">&#1575;&#1604;&#1581;&#1580;</div><div class="pcard-name">Hajj</div><div class="pcard-desc">Pilgrimage to Mecca once in a lifetime for those who are able</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="bg-cream-d">
+  <div class="wrap sp">
+    <div class="reveal"><p class="label">How Zakat works</p><h2 class="h1" style="margin:.75rem 0 1rem">Four conditions for <em class="gold-i">obligation</em></h2><p class="lead">Zakat becomes obligatory only when all four conditions are met simultaneously.</p></div>
+    <div class="steps-grid">
+      <div class="sblk cr"><div class="sblk-num">01</div><div class="sblk-title">Be Muslim</div><div class="sblk-desc">Zakat is a religious duty for Muslims only. Non-Muslims are not required to pay, though voluntary charity (Sadaqah) is open to everyone.</div></div>
+      <div class="sblk cr"><div class="sblk-num">02</div><div class="sblk-title">Reach nisab</div><div class="sblk-desc">Your zakatable wealth must meet or exceed the nisab threshold &mdash; the minimum based on the live value of 87.48g of gold or 612.36g of silver.</div></div>
+      <div class="sblk cr"><div class="sblk-num">03</div><div class="sblk-title">Complete the hawl</div><div class="sblk-desc">Your wealth must remain at or above nisab for one full lunar year (hawl &mdash; 354&ndash;355 days, the length of a lunar year). If it drops below, the clock restarts. Each person&rsquo;s date is individual.</div></div>
+      <div class="sblk cr"><div class="sblk-num">04</div><div class="sblk-title">Pay 2.5%</div><div class="sblk-desc">Once all conditions are met, pay 2.5% of total net zakatable assets &mdash; accumulated wealth above nisab after deducting all legitimate debts.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NISAB + GOLD PURITY -->
+<section id="nisab" class="bg-white">
+  <div class="wrap sp">
+    <div class="two-col">
+      <div>
+        <p class="label reveal">The threshold</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Understanding <em class="gold-i">nisab</em></h2>
+        <div class="gold-rule reveal d2"></div>
+        <p class="lead reveal d2">Nisab is the minimum wealth a Muslim must possess before Zakat becomes obligatory. It changes daily with gold and silver market prices.</p>
+        <p class="body-txt reveal d3" style="margin-top:1rem">Most scholars recommend the <strong>silver standard</strong> &mdash; a lower threshold meaning more people qualify and more reaches those in need.</p>
+        <div class="metal-pair reveal d2">
+          <div class="mcard"><div class="mcard-icon" style="background:var(--gold-pale)">&#9670;</div><div class="mcard-g">87.48g</div><div class="mcard-unit">Pure gold (24ct)</div><div class="mcard-price" id="n-gold">Loading&hellip;</div><div class="mcard-school">Maliki &middot; Shafi&rsquo;i &middot; Hanbali</div></div>
+          <div class="mcard"><div class="mcard-icon" style="background:#F0F0EE">&#9671;</div><div class="mcard-g">612.36g</div><div class="mcard-unit">Pure silver</div><div class="mcard-price" id="n-silver">Loading&hellip;</div><div class="mcard-school">Hanafi &mdash; recommended</div></div>
+        </div>
+      </div>
+      <div>
+        <p class="label reveal">Gold carat purity guide</p>
+        <h2 class="h2 reveal d1" style="margin:.75rem 0 1rem">Today&rsquo;s price by <em class="gold-i">carat</em></h2>
+        <p class="body-txt reveal d2" style="margin-bottom:1.25rem">The API returns 24ct (pure gold) spot price. Our calculator converts each item automatically based on your carat selection. You enter the <strong>total weight</strong> of the item &mdash; we handle the purity conversion.</p>
+        <div class="reveal d2">
+          <table class="carat-table">
+            <thead><tr><th>Carat</th><th>Purity</th><th>% pure gold</th><th id="carat-hdr">Price / gram</th></tr></thead>
+            <tbody>
+              <tr><td>24ct</td><td>999/1000</td><td>100%</td><td id="p-24">Loading&hellip;</td></tr>
+              <tr><td>22ct</td><td>916/1000</td><td>91.67%</td><td id="p-22">Loading&hellip;</td></tr>
+              <tr><td>21ct</td><td>875/1000</td><td>87.5%</td><td id="p-21">Loading&hellip;</td></tr>
+              <tr><td>18ct</td><td>750/1000</td><td>75%</td><td id="p-18">Loading&hellip;</td></tr>
+              <tr><td>14ct</td><td>585/1000</td><td>58.5%</td><td id="p-14">Loading&hellip;</td></tr>
+              <tr><td>9ct</td><td>375/1000</td><td>37.5%</td><td id="p-9">Loading&hellip;</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top:1rem"><span style="font-size:17px;flex-shrink:0">i</span><div>The live price fetched is always for <strong>24ct pure gold</strong>. Items of lower carat purity are converted to their pure gold equivalent for valuation &mdash; for example, a 10g 22ct piece is treated as 9.17g of pure gold at the current spot price. Your <strong>nisab standard</strong> (gold or silver) is set separately in Step 1 and is unaffected by this conversion.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASSETS -->
+<section id="assets" class="bg-cream-d">
+  <div class="wrap sp">
+    <div class="reveal"><p class="label">What to include</p><h2 class="h1" style="margin:.75rem 0 1rem">Zakatable <em class="gold-i">assets</em></h2><p class="lead">Different types of wealth have different Zakat rules. Here is what to include &mdash; and what is always exempt.</p></div>
+    <div class="assets-grid">
+      <div class="acard cr"><div class="arate r-full">2.5% full value</div><div class="acard-title">Cash &amp; savings</div><div class="acard-desc">All cash at home, bank accounts, digital wallets, and money owed to you. Deduct money you owe to others.</div></div>
+      <div class="acard cr"><div class="arate r-full">2.5% on value</div><div class="acard-title">Gold &amp; silver</div><div class="acard-desc">Calculated per item with your chosen carat (9ct to 24ct). The calculator converts each item to pure gold equivalent using live spot prices. Hanafi: all jewellery included. Other schools: worn jewellery exempt.</div></div>
+      <div class="acard cr"><div class="arate r-full">2.5% full value</div><div class="acard-title">Stocks &mdash; active trading</div><div class="acard-desc">Shares held for short-term profit are trade goods. Pay 2.5% on full market value. Endorsed by FCNA and AAOIFI.</div></div>
+      <div class="acard cr"><div class="arate r-proxy">30% proxy method</div><div class="acard-title">Stocks &mdash; long-term</div><div class="acard-desc">Long-term investors pay on the company&rsquo;s zakatable assets. AAOIFI proxy: 30% of market value &times; 2.5%.</div></div>
+      <div class="acard cr"><div class="arate r-proxy">25% proxy method</div><div class="acard-title">Mutual funds &amp; ETFs</div><div class="acard-desc">Take 25% of the total fund value and pay 2.5%. Precious metal ETFs are 100% zakatable.</div></div>
+      <div class="acard cr"><div class="arate r-full">2.5% full value</div><div class="acard-title">Cryptocurrency</div><div class="acard-desc">All crypto is zakatable at 2.5% of current market value on your zakat date. Treated as cash equivalent.</div></div>
+      <div class="acard cr"><div class="arate r-proxy">Net income only</div><div class="acard-title">Rental property</div><div class="acard-desc">The property itself is exempt. Zakat is 2.5% on net rental income after all expenses.</div></div>
+      <div class="acard cr"><div class="arate r-full">2.5% market value</div><div class="acard-title">Property for resale</div><div class="acard-desc">If purchased with intent to sell, the full current market value is zakatable at 2.5%.</div></div>
+      <div class="acard cr"><div class="arate r-proxy">Accessible portion</div><div class="acard-title">Pensions &amp; ISAs</div><div class="acard-desc">AMJA formula: (Withdrawal amount &minus; penalty &minus; tax) &times; 2.5%. Locked pensions: pay on receipt.</div></div>
+      <div class="acard cr"><div class="arate r-full">2.5% on trade goods</div><div class="acard-title">Business assets</div><div class="acard-desc">Trade stock (wholesale value) and business cash are zakatable. Machinery, vehicles, and buildings are always exempt.</div></div>
+      <div class="acard cr"><div class="arate r-exempt">Deductible</div><div class="acard-title">Debts &amp; liabilities</div><div class="acard-desc">Debts reduce zakatable wealth. Deduct annual installments or full outstanding balance depending on your madhab.</div></div>
+      <div class="acard cr"><div class="arate r-exempt">Always exempt</div><div class="acard-title">Exempt assets</div><div class="acard-desc">Primary home, personal vehicles, furniture, clothing, tools of trade, fixed business assets, worn jewellery (non-Hanafi), inaccessible pensions.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- RECIPIENTS -->
+<section id="recipients" class="bg-ink">
+  <div class="wrap sp">
+    <p class="label reveal" style="color:var(--gold)">Who receives Zakat</p>
+    <h2 class="h1 reveal d1" style="color:var(--white);margin:.75rem 0 0">Eight <em class="gold-i">recipients</em></h2>
+    <div class="verse-block reveal d2">&ldquo;Zakah expenditures are only for the poor and for the needy and for those employed for it, and for bringing hearts together [for Islam] and for freeing captives [or slaves], and for those in debt and for the cause of Allah and for the [stranded] traveler &mdash; an obligation imposed by Allah.&rdquo;<div class="verse-ref">&mdash; Al-Qur&rsquo;an, Surah At-Tawbah 9:60</div></div>
+    <div class="recip-grid">
+      <div class="rcard cr"><div class="rcard-num">01</div><div class="rcard-ar">&#1575;&#1604;&#1601;&#1602;&#1585;&#1575;&#1569;</div><div class="rcard-name">Al-Fuqara &mdash; The poor</div><div class="rcard-desc">Those with little to nothing; cannot meet basic daily needs.</div></div>
+      <div class="rcard cr"><div class="rcard-num">02</div><div class="rcard-ar">&#1575;&#1604;&#1605;&#1587;&#1575;&#1603;&#1610;&#1606;</div><div class="rcard-name">Al-Masakin &mdash; The needy</div><div class="rcard-desc">Have some income but insufficient to cover essential needs.</div></div>
+      <div class="rcard cr"><div class="rcard-num">03</div><div class="rcard-ar">&#1575;&#1604;&#1593;&#1575;&#1605;&#1604;&#1608;&#1606;</div><div class="rcard-name">Al-Amileen &mdash; Administrators</div><div class="rcard-desc">Those appointed to collect, manage, and distribute Zakat.</div></div>
+      <div class="rcard cr"><div class="rcard-num">04</div><div class="rcard-ar">&#1575;&#1604;&#1605;&#1572;&#1604;&#1601;&#1577;</div><div class="rcard-name">Al-Mu&rsquo;allafah &mdash; Reconciled hearts</div><div class="rcard-desc">New Muslims and those inclined toward Islam.</div></div>
+      <div class="rcard cr"><div class="rcard-num">05</div><div class="rcard-ar">&#1575;&#1604;&#1585;&#1602;&#1575;&#1576;</div><div class="rcard-name">Ar-Riqab &mdash; The enslaved</div><div class="rcard-desc">Today includes human trafficking victims seeking freedom.</div></div>
+      <div class="rcard cr"><div class="rcard-num">06</div><div class="rcard-ar">&#1575;&#1604;&#1594;&#1575;&#1585;&#1605;&#1608;&#1606;</div><div class="rcard-name">Al-Gharimin &mdash; The debt-ridden</div><div class="rcard-desc">Those overwhelmed by legitimate halal debt they cannot repay.</div></div>
+      <div class="rcard cr"><div class="rcard-num">07</div><div class="rcard-ar">&#1601;&#1610; &#1587;&#1576;&#1610;&#1604; &#1575;&#1604;&#1604;&#1607;</div><div class="rcard-name">Fi Sabilillah &mdash; Cause of God</div><div class="rcard-desc">Humanitarian relief, education, and community projects.</div></div>
+      <div class="rcard cr"><div class="rcard-num">08</div><div class="rcard-ar">&#1575;&#1576;&#1606; &#1575;&#1604;&#1587;&#1576;&#1610;&#1604;</div><div class="rcard-name">Ibn As-Sabil &mdash; The wayfarer</div><div class="rcard-desc">Stranded travellers; today includes refugees without means.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator" class="bg-white">
+  <div class="wrap sp">
+    <div class="calc-outer">
+      <div class="calc-intro-col">
+        <p class="label reveal">Live calculator</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Calculate your <em class="gold-i">Zakat</em></h2>
+        <div class="gold-rule reveal d2"></div>
+        <p class="lead reveal d2">6 focused steps with scholarly tips, per-carat gold pricing, and live precious metals data.</p>
+        <div class="reveal d3" style="margin-top:1.5rem">
+          <div class="cpoint"><div class="cpoint-dot"></div><div class="cpoint-txt">Add multiple gold items, each with its own carat selection (9ct through 24ct)</div></div>
+          <div class="cpoint"><div class="cpoint-dot"></div><div class="cpoint-txt">Enter total item weight &mdash; purity conversion is automatic using live 24ct spot price</div></div>
+          <div class="cpoint"><div class="cpoint-dot"></div><div class="cpoint-txt">Adapts to your school of thought: Hanafi includes jewellery; other schools exempt worn pieces</div></div>
+          <div class="cpoint"><div class="cpoint-dot"></div><div class="cpoint-txt">Live gold and silver prices fetched from a public metals API on page load</div></div>
+          <div class="cpoint"><div class="cpoint-dot"></div><div class="cpoint-txt">Fully private &mdash; all calculations happen in your browser, nothing is sent anywhere</div></div>
+        </div>
+        <div class="info-callout reveal d3">
+          <span style="font-size:17px;flex-shrink:0">&#9670;</span>
+          <div>Silver nisab: <strong id="c-nisab-s" style="color:var(--teal);font-size:18px">Loading&hellip;</strong> &nbsp;&middot;&nbsp; Gold nisab: <strong id="c-nisab-g" style="color:var(--teal);font-size:18px">Loading&hellip;</strong></div>
+        </div>
+
+        <div id="live-panel" style="display:none;margin-top:1.5rem;background:var(--ink);border-radius:var(--r-lg);padding:1.25rem 1.25rem">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:.875rem;display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#5DCAA5;animation:pdot 2s ease-in-out infinite"></span>Running total</div>
+          <div id="lt-rows" style="margin-bottom:.875rem"></div>
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:.875rem;display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:rgba(255,255,255,.5)">Est. Zakat due</span><span style="font-family:var(--serif);font-size:28px;color:var(--gold)" id="lt-zakat">&mdash;</span></div>
+        </div>
+      </div>
+
+      <div class="calc-shell">
+        <div class="calc-top">
+          <div class="calc-top-row">
+            <span class="calc-ttl">Zakat Calculator</span>
+            <span class="calc-live" id="calc-live-lbl"><span class="pdot"></span> Live prices</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="prog" style="width:16.67%"></div></div>
+          <div class="prog-labels">
+            <span class="prog-lbl cur" data-s="0">Settings</span>
+            <span class="prog-lbl" data-s="1">Cash<span class="prog-lbl-val" id="step1-total"></span></span>
+            <span class="prog-lbl" data-s="2">Metals<span class="prog-lbl-val" id="step2-total"></span></span>
+            <span class="prog-lbl" data-s="3">Invest<span class="prog-lbl-val" id="step3-total"></span></span>
+            <span class="prog-lbl" data-s="4">Property<span class="prog-lbl-val" id="step4-total"></span></span>
+            <span class="prog-lbl" data-s="5">Debts<span class="prog-lbl-val" id="step5-total"></span></span>
+          </div>
+        </div>
+        <div class="calc-body">
+
+          <!-- STEP 0: SETTINGS -->
+          <div class="spanel active" id="sp0">
+            <div class="sp-num">Step 1 of 6</div>
+            <div class="sp-title">Your settings</div>
+            <div class="sp-desc">These choices shape every calculation. Set your currency, school of thought, and preferences first.</div>
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title">Why does school of thought matter?</div><div class="tip-text">The Hanafi school uses the silver nisab and includes all gold/silver jewellery in Zakat calculations. The other three schools use the gold nisab and exempt daily-worn jewellery. This can significantly change your result. Our calculator adapts every field automatically.</div></div></div>
+            <div class="api-banner" id="api-banner"><span class="api-dot" id="api-dot"></span><span id="api-msg">Checking live prices&hellip;</span></div>
+            <div class="fg">
+              <label class="fl" for="scur">Currency</label>
+              <div class="fh">All values displayed and calculated in this currency</div>
+              <select id="scur"><option value="GBP" data-sym="&#163;" data-code="gbp">GBP &mdash; British pound (&#163;)</option><option value="USD" data-sym="$" data-code="usd">USD &mdash; US dollar ($)</option><option value="EUR" data-sym="&#8364;" data-code="eur">EUR &mdash; Euro (&#8364;)</option><option value="CAD" data-sym="CA$" data-code="cad">CAD &mdash; Canadian dollar</option><option value="AUD" data-sym="A$" data-code="aud">AUD &mdash; Australian dollar</option><option value="SAR" data-sym="&#65020;" data-code="sar">SAR &mdash; Saudi riyal</option><option value="AED" data-sym="AED" data-code="aed">AED &mdash; UAE dirham</option><option value="PKR" data-sym="&#8360;" data-code="pkr">PKR &mdash; Pakistani rupee</option><option value="MYR" data-sym="RM" data-code="myr">MYR &mdash; Malaysian ringgit</option></select>
+            </div>
+            <div class="fg">
+              <span class="tog-lbl">School of thought (madhab)</span>
+              <div class="fh">Select your school. If unsure, Hanafi is the most widely followed globally.</div>
+              <div class="sc-grid">
+                <div class="sc on" onclick="setMadhab('hanafi',this)"><div class="sc-name">Hanafi</div><div class="sc-nisab">Silver nisab &middot; All jewellery zakatable</div><div class="sc-detail">South Asia, Turkey. Hawl: start and end of year.</div></div>
+                <div class="sc" onclick="setMadhab('maliki',this)"><div class="sc-name">Maliki</div><div class="sc-nisab">Gold nisab &middot; Worn jewellery exempt</div><div class="sc-detail">N and W Africa, Gulf. Full hawl required.</div></div>
+                <div class="sc" onclick="setMadhab('shafii',this)"><div class="sc-name">Shafi&rsquo;i</div><div class="sc-nisab">Gold nisab &middot; Worn jewellery exempt</div><div class="sc-detail">SE Asia, E Africa. Full hawl required.</div></div>
+                <div class="sc" onclick="setMadhab('hanbali',this)"><div class="sc-name">Hanbali</div><div class="sc-nisab">Gold nisab &middot; Worn jewellery exempt</div><div class="sc-detail">Saudi Arabia, Gulf. Full hawl required.</div></div>
+              </div>
+            </div>
+            <div class="fg">
+              <span class="tog-lbl">Nisab standard</span>
+              <div class="fh" id="nisab-hint">Hanafi uses silver. Most charities recommend silver as it means more people can contribute.</div>
+              <div class="tog-row">
+                <button class="tog-btn on" onclick="setNisab('silver',this)">Silver (recommended)</button>
+                <button class="tog-btn" onclick="setNisab('gold',this)">Gold</button>
+              </div>
+            </div>
+            <div class="fg">
+              <span class="tog-lbl">Debt deduction method</span>
+              <div class="fh">How much of your debts to subtract from your zakatable wealth.</div>
+              <div class="tog-row">
+                <button class="tog-btn on" onclick="setDebt('annual',this)">Annual installments only</button>
+                <button class="tog-btn" onclick="setDebt('full',this)">Full outstanding balance</button>
+              </div>
+            </div>
+            <div class="step-nav"><span></span><button class="btn btn-gold btn-lg" onclick="goStep(1)">Next: Cash &amp; savings &#8594;</button></div>
+          </div>
+
+          <!-- STEP 1: CASH -->
+          <div class="spanel" id="sp1">
+            <div class="settings-bar" id="sb1"></div>
+            <div class="sp-num">Step 2 of 6</div>
+            <div class="sp-title">Cash &amp; savings</div>
+            <div class="sp-desc">Include all liquid cash you control. If you can spend it today, include it.</div>
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title">What counts as cash?</div><div class="tip-text">Physical cash, current accounts, savings accounts, cash ISAs, digital wallets (PayPal, Wise, CashApp), and money others owe you that you realistically expect to collect. Do not include salary received after your personal zakat anniversary date.</div></div></div>
+            <div class="callout"><span style="font-size:17px;flex-shrink:0">i</span><div>Enter the principal of savings accounts only. Any interest earned is impermissible (riba) and should be donated to charity separately &mdash; do not include it as zakatable wealth.</div></div>
+            <div class="inp-grid">
+              <div class="fg"><label class="fl">Cash at home</label><div class="fh">Physical notes and coins</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="c0" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Bank accounts</label><div class="fh">Current and savings combined</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="c1" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Money owed to you</label><div class="fh">Debts you expect to be repaid</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="c2" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Digital wallets</label><div class="fh">PayPal, Wise, CashApp etc.</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="c3" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+            </div>
+            <div class="fg"><label class="fl">Cash ISA / fixed-term savings</label><div class="fh">Principal amount only (not interest)</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="c4" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+            <div class="step-nav"><button class="back-btn" onclick="goStep(0)">&#8592; Back</button><button class="btn btn-gold btn-lg" onclick="goStep(2)">Next: Gold &amp; silver &#8594;</button></div>
+          </div>
+
+          <!-- STEP 2: GOLD & SILVER -->
+          <div class="spanel" id="sp2">
+            <div class="settings-bar" id="sb2"></div>
+            <div class="sp-num">Step 3 of 6</div>
+            <div class="sp-title">Gold &amp; silver</div>
+            <div class="sp-desc" id="sp2-desc">Enter each gold item separately with its carat. Enter total weight of the piece &mdash; the calculator converts to pure gold value automatically using live prices.</div>
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title" id="j-tip-t">How to enter gold correctly</div><div class="tip-text" id="j-tip-x">Enter the total weight of each piece and select its carat. The calculator multiplies by the live 24ct price and the carat purity factor. Example: a 22ct ring weighing 10g contains 9.17g of pure gold. You enter 10g + select 22ct &mdash; the conversion is automatic.</div></div></div>
+
+            <div id="jewel-note-wrap" class="callout" style="margin-bottom:1.25rem"><span style="font-size:17px;flex-shrink:0" id="jewel-callout-icon">i</span><div id="jewel-callout-txt">Hanafi school: enter all gold and silver items including jewellery you wear daily.</div></div>
+
+            <!-- GOLD ITEMS -->
+            <div class="fg">
+              <span class="tog-lbl">Gold items</span>
+              <div class="fh">Add each piece separately. Enter the total physical weight (not just the gold content).</div>
+            </div>
+            <div class="gold-items-wrap" id="gold-items"></div>
+            <button class="add-item-btn" onclick="addGoldItem()">+ Add another gold item</button>
+            <div class="gold-live-preview" id="gold-total-preview">Total gold value: <strong id="gold-total-val">&mdash;</strong></div>
+
+            <!-- SILVER -->
+            <div class="fg" style="margin-top:1.5rem">
+              <span class="tog-lbl">Silver</span>
+              <div class="fh">Enter total weight of all silver items combined. Silver purity is generally uniform so no per-item carat entry is needed.</div>
+            </div>
+            <div class="inp-grid" id="silver-section">
+              <div class="fg" id="silver-j-field"><label class="fl" id="silver-j-lbl">Silver jewellery (grams)</label><div class="fh" id="silver-j-hint">Worn or stored</div><div class="fr"><span class="fsym">g</span><input type="number" id="sj" min="0" step="0.1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Silver bullion / coins (grams)</label><div class="fh">Bars, coins, stored silver</div><div class="fr"><span class="fsym">g</span><input type="number" id="sb" min="0" step="0.1" placeholder="0" oninput="liveUpdate()"></div></div>
+            </div>
+            <div class="gold-live-preview" id="silver-total-preview">Total silver value: <strong id="silver-total-val">&mdash;</strong></div>
+            <div class="gold-live-preview" style="margin-top:.5rem">Combined gold + silver value: <strong id="metals-total-val">&mdash;</strong></div>
+
+            <div class="step-nav"><button class="back-btn" onclick="goStep(1)">&#8592; Back</button><button class="btn btn-gold btn-lg" onclick="goStep(3)">Next: Investments &#8594;</button></div>
+          </div>
+
+          <!-- STEP 3: INVESTMENTS -->
+          <div class="spanel" id="sp3">
+            <div class="settings-bar" id="sb3"></div>
+            <div class="sp-num">Step 4 of 6</div>
+            <div class="sp-title">Investments</div>
+            <div class="sp-desc">Enter each holding type separately — short-term and long-term amounts are calculated independently and both contribute to your total.</div>
+
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title">Short-term vs. long-term — why it matters</div><div class="tip-text">If you actively buy and sell for profit, the <strong>full value</strong> is zakatable (100%). If you hold for years for growth or dividends, only <strong>30% of the value</strong> is zakatable (AAOIFI Standard 35 proxy). Enter both amounts separately if you do both &mdash; each is calculated independently. When in doubt, use short-term (it&rsquo;s the more cautious, safer choice).</div></div></div>
+
+            <!-- STOCKS & SHARES -->
+            <div class="inv-asset-block">
+              <div class="inv-asset-hdr">
+                <span class="inv-asset-title">Stocks &amp; shares</span>
+                <span class="inv-asset-note">Enter separately for each holding method you use</span>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-st">Short-term / active trader &mdash; 100%</span>
+                  <div class="fh">You actively buy &amp; sell for profit &mdash; full market value is zakatable</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv0a" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-lt">Long-term investor &mdash; 30%</span>
+                  <div class="fh">Held for years for growth or dividends &mdash; 30% of value is zakatable</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv0b" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+            </div>
+
+            <!-- SHARES ISA -->
+            <div class="inv-asset-block">
+              <div class="inv-asset-hdr">
+                <span class="inv-asset-title">Shares ISA</span>
+                <span class="inv-asset-note">Most ISAs are long-term &mdash; only use short-term if you actively trade within the ISA</span>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-st">Short-term / active trader &mdash; 100%</span>
+                  <div class="fh">Actively trading within your ISA &mdash; full value zakatable</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv1a" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-lt">Long-term investor &mdash; 30%</span>
+                  <div class="fh">Buy-and-hold ISA &mdash; 30% of value is zakatable</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv1b" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+            </div>
+
+            <!-- MUTUAL FUNDS & ETFs -->
+            <div class="inv-asset-block">
+              <div class="inv-asset-hdr">
+                <span class="inv-asset-title">Mutual funds &amp; ETFs</span>
+                <span class="inv-asset-note">Long-term uses 25% AAOIFI proxy; short-term uses 100%</span>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-st">Short-term / active trader &mdash; 100%</span>
+                  <div class="fh">Actively traded funds &mdash; full value zakatable</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv2a" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-lt">Long-term investor &mdash; 25%</span>
+                  <div class="fh">Long-term held funds &mdash; 25% proxy for zakatable liquid portion (AAOIFI)</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv2b" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+            </div>
+
+            <!-- CRYPTOCURRENCY -->
+            <div class="inv-asset-block">
+              <div class="inv-asset-hdr">
+                <span class="inv-asset-title">Cryptocurrency</span>
+                <span class="inv-asset-note">Full value always applies &mdash; no split needed</span>
+              </div>
+              <div class="inv-row">
+                <div class="inv-row-info">
+                  <span class="inv-badge inv-badge-fx">Always 100%</span>
+                  <div class="fh">All crypto is treated as a liquid zakatable asset &mdash; full market value applies</div>
+                </div>
+                <div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv3" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div>
+              </div>
+            </div>
+
+            <!-- PENSION -->
+            <div class="tip-box" style="background:var(--teal-pale);border-color:rgba(30,107,90,.2)"><span class="tip-icon" style="color:var(--teal)">&#9675;</span><div><div class="tip-title" style="color:var(--teal)">Pension and retirement accounts</div><div class="tip-text" style="color:var(--ink-soft)">AMJA formula: enter the total value and the percentage you can actually withdraw today after penalties and tax. <strong style="color:var(--ink)">Under 55 in the UK?</strong> Your pension is likely locked &mdash; enter 0%. <strong style="color:var(--ink)">Over 55?</strong> You can typically access 25% tax-free, or more with tax deducted. Zakat is only due on the accessible portion.</div></div></div>
+            <div class="inp-grid">
+              <div class="fg"><label class="fl">Pension / retirement fund value</label><div class="fh">Total balance (workplace pension, SIPP, 401k etc.)</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="inv4" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Accessible % after penalties &amp; tax</label><div class="fh">Under 55: enter 0 (locked). Over 55: typically 25% tax-free, or higher if you accept tax on the rest</div><div class="fr"><span class="fsym">%</span><input type="number" id="inv5" min="0" max="100" step="1" value="25" placeholder="25" oninput="liveUpdate()"></div></div>
+            </div>
+
+            <!-- LIVE INVESTMENT BREAKDOWN -->
+            <div id="inv-breakdown" style="display:none;margin-top:1rem">
+              <div class="inv-breakdown-hdr">
+                <span>Asset &amp; method</span><span>Rate</span><span>Zakatable</span><span>Zakat (2.5%)</span>
+              </div>
+              <div id="inv-breakdown-rows"></div>
+              <div class="inv-breakdown-total">
+                <span>Total investments zakatable</span><span></span><span id="inv-tot-z"></span><span id="inv-tot-zakat"></span>
+              </div>
+            </div>
+
+            <div class="step-nav"><button class="back-btn" onclick="goStep(2)">&#8592; Back</button><button class="btn btn-gold btn-lg" onclick="goStep(4)">Next: Property &#8594;</button></div>
+          </div>
+
+          <!-- STEP 4: PROPERTY -->
+          <div class="spanel" id="sp4">
+            <div class="settings-bar" id="sb4"></div>
+            <div class="sp-num">Step 5 of 6</div>
+            <div class="sp-title">Property &amp; business</div>
+            <div class="sp-desc">Rental income, property held for resale, and business trade assets. Your primary home is always exempt.</div>
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title">What is exempt vs. zakatable in property?</div><div class="tip-text">Your primary home is always exempt, no matter what it is worth. A buy-to-let property itself is also exempt, but the net rental income it generates is zakatable at 2.5%. Only property bought specifically to sell carries Zakat on its full market value. Business machinery, equipment, and buildings are always exempt &mdash; only trade stock and business cash are zakatable.</div></div></div>
+            <div class="inp-grid">
+              <div class="fg"><label class="fl">Net rental income (annual)</label><div class="fh">Gross rent minus mortgage, maintenance, and agency fees</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="pr0" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Property held for resale</label><div class="fh">Current market value &mdash; buy-to-sell and developers only</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="pr1" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Business stock / inventory</label><div class="fh">Trade goods at wholesale value</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="pr2" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Business cash &amp; receivables</label><div class="fh">Business bank balance plus debts owed to the business</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="pr3" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+            </div>
+            <div class="step-nav"><button class="back-btn" onclick="goStep(3)">&#8592; Back</button><button class="btn btn-gold btn-lg" onclick="goStep(5)">Next: Debts &#8594;</button></div>
+          </div>
+
+          <!-- STEP 5: DEBTS -->
+          <div class="spanel" id="sp5">
+            <div class="settings-bar" id="sb5"></div>
+            <div class="sp-num">Step 6 of 6</div>
+            <div class="sp-title">Debts &amp; liabilities</div>
+            <div class="sp-desc">Debts reduce your net zakatable wealth. Enter what you owe &mdash; these will be deducted before calculating Zakat.</div>
+            <div class="tip-box"><span class="tip-icon">&#10022;</span><div><div class="tip-title" id="debt-tip-t">Annual installments method selected</div><div class="tip-text" id="debt-tip-x">Only deduct debt payments actually due within your current zakat year. This is the more cautious scholarly approach. To deduct the full balance, go back to Step 1 and change your debt setting.</div></div></div>
+            <div class="inp-grid">
+              <div class="fg"><label class="fl" id="mort-lbl">Mortgage payments due</label><div class="fh" id="mort-hint">Annual installment for this zakat year</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d0" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Credit card balance</label><div class="fh">Total outstanding balance</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d1" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Personal loans</label><div class="fh">Car finance, personal loans outstanding</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d2" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Student loans</label><div class="fh">Outstanding balance</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d3" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Business debts</label><div class="fh">Outstanding business liabilities</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d4" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+              <div class="fg"><label class="fl">Other debts</label><div class="fh">Any other legitimate debts owed</div><div class="fr"><span class="fsym sym">&#163;</span><input type="number" id="d5" min="0" step="1" placeholder="0" oninput="liveUpdate()"></div></div>
+            </div>
+            <div class="step-nav"><button class="back-btn" onclick="goStep(4)">&#8592; Back</button><button class="btn btn-gold btn-lg" onclick="doCalc()">Calculate my Zakat &#10022;</button></div>
+
+            <div class="result-wrap" id="rwrap">
+              <div class="r-div"></div>
+              <div class="sp-num" style="margin-bottom:.625rem">Your Zakat result</div>
+              <div class="api-banner show" id="r-api-banner"><span class="api-dot" id="r-api-dot"></span><span id="r-api-msg">Using live API prices</span></div>
+              <div class="r-elig" id="relig"></div>
+              <div class="r-zakat-box"><div class="r-zakat-lbl">Zakat due</div><div class="r-zakat-amt" id="rzakat">&#8212;</div><div class="r-zakat-note">2.5% of net zakatable wealth</div></div>
+              <div class="r-metrics">
+                <div class="r-metric"><div class="r-metric-lbl">Gross zakatable assets</div><div class="r-metric-val" id="rgross">&#8212;</div></div>
+                <div class="r-metric"><div class="r-metric-lbl">Total liabilities</div><div class="r-metric-val" id="rliab">&#8212;</div></div>
+                <div class="r-metric"><div class="r-metric-lbl">Net zakatable wealth</div><div class="r-metric-val" id="rnet">&#8212;</div></div>
+                <div class="r-metric"><div class="r-metric-lbl">Nisab threshold</div><div class="r-metric-val" id="rnisab">&#8212;</div></div>
+              </div>
+              <div class="bk-table" id="rbk"></div>
+              <div class="r-settings" id="rset"></div>
+              <div style="display:flex;gap:.625rem;flex-wrap:wrap;margin-top:1rem"><button class="recalc-btn" style="flex:1;min-width:100px;margin-top:0" onclick="doReset()">&#8592; Start again</button><button class="recalc-btn" style="flex:1;min-width:100px;margin-top:0;background:var(--teal);border-color:var(--teal)" onclick="window.print()">&#128438; Print / PDF</button></div>
+              <button id="copy-btn" onclick="copyResult()" style="width:100%;margin-top:.625rem;background:transparent;color:var(--ink-soft);border:1.5px solid var(--border);border-radius:var(--r);padding:11px;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s">&#128203; Copy result</button>
+              <div style="margin-top:.875rem;padding:.875rem 1rem;background:var(--cream-d);border-radius:var(--r)"><div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem">Share via WhatsApp</div><div style="display:flex;gap:.5rem;flex-wrap:wrap"><button onclick="shareWhatsApp()" style="flex:1;min-width:130px;background:#25D366;color:#fff;border:none;border-radius:var(--r);padding:11px 12px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Send to contact</button><button onclick="shareWhatsAppSelf()" style="flex:1;min-width:130px;background:transparent;color:#25D366;border:2px solid #25D366;border-radius:var(--r);padding:11px 12px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Send to myself</button></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZAKAT AL-FITR -->
+<section id="fitr" class="bg-cream-d">
+  <div class="wrap sp">
+    <div class="two-col">
+
+      <!-- LEFT -->
+      <div>
+        <p class="label reveal">Separate obligation</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Zakat <em class="gold-i">al-Fitr</em></h2>
+        <div class="gold-rule reveal d2"></div>
+
+        <div class="fitr-hadith reveal d2">
+          <p class="fitr-hadith-text">&#8220;The Messenger of Allah &#65010; ordained Zakat al-Fitr to purify the fasting person from indecent words or actions, and to provide food for the needy. It is accepted as Zakat for the person who gives it before the Eid prayer; but it is a mere Sadaqah for the one who gives it after.&#8221;</p>
+          <p class="fitr-hadith-src">Ibn Abbas (RA) &mdash; Sunan Abi Dawud &amp; Ibn Majah</p>
+        </div>
+        <div class="fitr-hadith reveal d3">
+          <p class="fitr-hadith-text">&#8220;The Messenger of Allah &#65010; made Zakat al-Fitr obligatory &mdash; one sa&#699; of dates or one sa&#699; of barley &mdash; upon every Muslim, free or slave, male or female, young or old.&#8221;</p>
+          <p class="fitr-hadith-src">Ibn Umar (RA) &mdash; Sahih al-Bukhari &amp; Sahih Muslim</p>
+        </div>
+
+        <p class="body-txt reveal d3" style="margin:.875rem 0 1.25rem">One <em>sa&#699;</em> &asymp; 2.5&ndash;3 kg of staple food (wheat, rice, barley, dates). Most contemporary scholars permit the cash equivalent, set annually by local scholars and Islamic bodies based on current food prices.</p>
+
+        <div class="reveal d3">
+          <p class="fitr-region-lbl">2026 rates by region</p>
+
+          <div class="fitr-region-wrap">
+            <select id="fitr-region-sel" onchange="showFitrPanel(this.value)">
+              <option value="">&#127758; Select your region to view 2026 rates</option>
+              <option value="uk">&#127468;&#127463; United Kingdom</option>
+              <option value="us">&#127482;&#127480; United States</option>
+              <option value="ca">&#127464;&#127462; Canada</option>
+              <option value="au">&#127462;&#127482; Australia</option>
+              <option value="eu">&#127466;&#127482; Europe</option>
+              <option value="sa">&#127480;&#127462; Saudi Arabia</option>
+              <option value="ae">&#127462;&#127466; UAE</option>
+              <option value="id">&#127470;&#127465; Indonesia</option>
+              <option value="my">&#127474;&#127486; Malaysia</option>
+              <option value="pk">&#127477;&#127472; Pakistan</option>
+              <option value="in">&#127470;&#127475; India</option>
+              <option value="bd">&#127463;&#127465; Bangladesh</option>
+              <option value="af">&#127758; Africa</option>
+              <option value="sam">&#127758; South America</option>
+            </select>
+          </div>
+
+          <div id="fitr-region-placeholder" class="fitr-placeholder">
+            <span class="fitr-placeholder-icon">&#127758;</span>
+            <div>
+              <strong>Select your region above</strong>
+              <span>2026 confirmed rates, organisations, and scholarly basis will appear here</span>
+            </div>
+          </div>
+
+          <div id="fitr-region-panel" class="fitr-panel" style="display:none">
+            <div class="fitr-panel-hdr">
+              <span class="fitr-pflag" id="fitr-pflag"></span>
+              <div class="fitr-pinfo">
+                <div class="fitr-pname" id="fitr-pname"></div>
+                <div class="fitr-prange" id="fitr-prange"></div>
+                <div class="fitr-pbasis" id="fitr-pbasis"></div>
+              </div>
+              <span class="fitr-pbadge" id="fitr-pbadge"></span>
+            </div>
+            <div class="fitr-panel-body">
+              <p class="fitr-orgs-lbl">Organisations &amp; confirmed rates</p>
+              <div id="fitr-prows"></div>
+            </div>
+            <div class="fitr-panel-note" id="fitr-pnote"></div>
+          </div>
+
+          <p class="fitr-verify">Rates are updated annually before Ramadan. Always confirm with your local mosque or Islamic centre before paying.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: calculator -->
+      <div class="reveal d2">
+        <div style="background:var(--white);border:1.5px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden">
+          <div style="background:var(--ink);padding:1.25rem 1.5rem">
+            <div style="font-family:var(--serif);font-size:20px;color:var(--white);margin-bottom:.25rem">Zakat al-Fitr calculator</div>
+            <div style="font-size:14px;color:rgba(255,255,255,.5)">Fixed per-person &mdash; separate from annual Zakat</div>
+          </div>
+          <div style="padding:1.5rem">
+
+            <div style="margin-bottom:1rem">
+              <label class="fitr-lbl">Your region</label>
+              <div class="fitr-region-wrap">
+                <select id="fitr-calc-region" onchange="calcUpdateRegion(this.value)" class="fitr-sel">
+                  <option value="">&#127758; Select region&hellip;</option>
+                  <option value="uk">&#127468;&#127463; United Kingdom</option>
+                  <option value="us">&#127482;&#127480; United States</option>
+                  <option value="ca">&#127464;&#127462; Canada</option>
+                  <option value="au">&#127462;&#127482; Australia</option>
+                  <option value="eu">&#127466;&#127482; Europe</option>
+                  <option value="sa">&#127480;&#127462; Saudi Arabia</option>
+                  <option value="ae">&#127462;&#127466; UAE</option>
+                  <option value="id">&#127470;&#127465; Indonesia</option>
+                  <option value="my">&#127474;&#127486; Malaysia</option>
+                  <option value="pk">&#127477;&#127472; Pakistan</option>
+                  <option value="in">&#127470;&#127475; India</option>
+                  <option value="bd">&#127463;&#127465; Bangladesh</option>
+                  <option value="af">&#127758; Africa</option>
+                  <option value="sam">&#127758; South America</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1rem">
+              <label class="fitr-lbl">Organisation / rate source</label>
+              <select id="fitr-org-sel" onchange="calcUpdateOrg(this)" class="fitr-sel">
+                <option value="custom||0">&mdash; Custom / enter your local mosque rate</option>
+              </select>
+              <p class="fitr-hint">Select your region to populate this list</p>
+            </div>
+
+            <div style="margin-bottom:1rem">
+              <label class="fitr-lbl">Rate per person</label>
+              <div style="display:flex;align-items:center;gap:.5rem">
+                <span id="fitr-sym" style="font-size:16px;color:var(--ink-soft);flex-shrink:0;min-width:22px">&pound;</span>
+                <input type="number" id="fitr-rate" min="0" step="0.50" placeholder="Enter rate" oninput="calcFitr()" class="fitr-sel" style="flex:1">
+              </div>
+              <p class="fitr-hint">Override with your local mosque&rsquo;s announced amount</p>
+            </div>
+
+            <div style="margin-bottom:1.25rem">
+              <label class="fitr-lbl">People in household</label>
+              <input type="number" id="fitr-people" min="1" step="1" value="1" oninput="calcFitr()" class="fitr-sel" style="max-width:120px">
+              <p class="fitr-hint">Include yourself, spouse, children, and all dependants</p>
+            </div>
+
+            <div style="background:var(--ink);border-radius:var(--r-lg);padding:1.375rem;text-align:center">
+              <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem;font-weight:600">Total Zakat al-Fitr due</div>
+              <div style="font-family:var(--serif);font-size:clamp(32px,5vw,48px);color:var(--gold);line-height:1" id="fitr-total">&mdash;</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:.5rem" id="fitr-note">Select your region and enter a rate above</div>
+            </div>
+
+            <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.375rem">
+              <div style="display:flex;gap:.5rem;font-size:13px;color:var(--ink-soft);line-height:1.55">
+                <span style="color:var(--gold);flex-shrink:0">!</span>
+                <span>Must be paid <strong>before</strong> the Eid prayer. Paying after counts only as voluntary Sadaqah.</span>
+              </div>
+              <div style="display:flex;gap:.5rem;font-size:13px;color:var(--ink-soft);line-height:1.55">
+                <span style="color:var(--gold);flex-shrink:0">i</span>
+                <span>Rates are set annually &mdash; verify with your local mosque before each Ramadan.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HAWL TRACKER -->
+<section id="hawl" class="bg-white">
+  <div class="wrap sp">
+    <div class="two-col">
+      <div>
+        <p class="label reveal">Zakat anniversary</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Track your <em class="gold-i">hawl</em></h2>
+        <div class="gold-rule reveal d2"></div>
+        <p class="lead reveal d2">Your hawl is your personal Zakat anniversary. A lunar year is <strong>354 days</strong> &mdash; enter when you first reached nisab to find your next due date.</p>
+        <div class="callout reveal d3" style="margin-top:1.5rem"><span style="font-size:17px;flex-shrink:0">&#9432;</span><div>Paying during Ramadan is permissible as early payment regardless of your hawl date.</div></div>
+      </div>
+      <div class="reveal d2">
+        <div style="background:var(--white);border:1.5px solid var(--border-soft);border-radius:var(--r-lg);overflow:hidden">
+          <div style="background:var(--teal);padding:1.25rem 1.5rem"><div style="font-family:var(--serif);font-size:20px;color:var(--white);margin-bottom:.25rem">Hawl date calculator</div><div style="font-size:14px;color:rgba(255,255,255,.6)">Find your next Zakat due date</div></div>
+          <div style="padding:1.5rem">
+            <div style="margin-bottom:1.25rem"><label style="display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:.375rem">Date you first reached nisab</label><input type="date" id="hawl-start" oninput="calcHawl()" style="width:100%;background:var(--white);border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:11px 13px;font-family:var(--sans);font-size:15px;color:var(--ink);outline:none"></div>
+            <div id="hawl-result" style="display:none">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem">
+                <div style="background:var(--cream-d);border-radius:var(--r);padding:.875rem"><div style="font-size:12px;color:var(--ink-muted);margin-bottom:4px">Hawl started</div><div style="font-family:var(--serif);font-size:16px;color:var(--ink)" id="hawl-from">&mdash;</div></div>
+                <div style="background:var(--cream-d);border-radius:var(--r);padding:.875rem"><div style="font-size:12px;color:var(--ink-muted);margin-bottom:4px">Duration</div><div style="font-family:var(--serif);font-size:16px;color:var(--ink)">354 days</div></div>
+              </div>
+              <div style="background:var(--ink);border-radius:var(--r-lg);padding:1.25rem;text-align:center;margin-bottom:1rem"><div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem;font-weight:600">Next Zakat due date</div><div style="font-family:var(--serif);font-size:clamp(17px,3vw,24px);color:var(--gold);line-height:1.2" id="hawl-next">&mdash;</div><div style="font-size:13px;color:rgba(255,255,255,.45);margin-top:.5rem" id="hawl-countdown">&mdash;</div></div>
+              <div style="background:var(--teal-pale);border:1px solid rgba(30,107,90,.2);border-radius:var(--r);padding:.875rem;font-size:14px;color:var(--teal);line-height:1.65" id="hawl-msg"></div>
+            </div>
+            <div style="background:var(--cream-d);border-radius:var(--r);padding:.875rem;margin-top:1rem;font-size:13px;color:var(--ink-muted);line-height:1.65"><strong style="color:var(--ink)">Note:</strong> Uses 354.367 days per lunar year.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FAQ -->
+<section id="faq" class="bg-cream-d">
+  <div class="wrap sp">
+    <div class="faq-layout">
+      <div>
+        <p class="label reveal">Common questions</p>
+        <h2 class="h1 reveal d1" style="margin:.75rem 0 1.125rem">Understanding your <em class="gold-i">obligation</em></h2>
+        <div class="gold-rule reveal d2"></div>
+        <p class="lead reveal d2">Zakat rules can seem complex, but the core principles are clear. For unusual financial situations, consult a qualified Islamic scholar.</p>
+      </div>
+      <div class="reveal d2">
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">How does the gold carat calculation work? <span class="faq-icon">+</span></button><div class="faq-a">The API returns the spot price for 24ct (pure) gold. For other carats, we multiply by the purity factor: 22ct = 91.67%, 18ct = 75%, 9ct = 37.5%, and so on. So a 22ct ring weighing 10g is worth the same as 9.167g of pure gold at the current spot price. You always enter the total physical weight of the item, and the calculator handles the conversion. This matches how major Zakat institutions and scholars approach gold valuation.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Are these truly live gold and silver prices? <span class="faq-icon">+</span></button><div class="faq-a">Yes. The calculator fetches real-time XAU (gold) and XAG (silver) spot prices from the fawazahmed0 currency API (cdn.jsdelivr.net) on every page load. This is a free, open-source API that aggregates forex and metals data. If the live API is unreachable (e.g. no internet connection), the calculator falls back to recent estimates and clearly labels these as estimated values rather than live prices. The API status is shown at the top of the calculator and in your result summary.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">When exactly should I pay my Zakat? <span class="faq-icon">+</span></button><div class="faq-a">Zakat is due on your personal zakat anniversary &mdash; the Islamic (Hijri) date on which you first came into possession of the nisab amount. You pay on this same date each year. Many Muslims pay during Ramadan for extra reward, which is permissible as early payment. Each person&rsquo;s hawl date is individual.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Is my primary home zakatable? <span class="faq-icon">+</span></button><div class="faq-a">No. Your primary home is always exempt from Zakat regardless of its value. You can also deduct mortgage payments from your other zakatable wealth. Only property purchased specifically for resale is zakatable on its full market value. Additionally, net annual rental income from investment properties is zakatable &mdash; enter it in Step 5 (Property) as it constitutes income above your needs. The rental property itself is not zakatable unless held specifically for resale.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Is my gold jewellery zakatable? <span class="faq-icon">+</span></button><div class="faq-a">This depends on your school of thought. The Hanafi madhab holds that all gold and silver including jewellery worn daily is zakatable. The Maliki, Shafi&rsquo;i and Hanbali schools exempt jewellery worn for personal use. Our calculator adjusts automatically based on your madhab selection in Step 1.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Do I pay Zakat on stocks and shares ISAs? <span class="faq-icon">+</span></button><div class="faq-a">Yes. All stocks and shares are zakatable regardless of whether they are held in an ISA or a direct account &mdash; the ISA tax wrapper has no effect on the Islamic Zakat obligation. The calculator now handles each holding type separately: enter your short-term (active trading) and long-term (buy-and-hold) amounts in separate rows. Short-term holdings: 2.5% on the full market value. Long-term holdings: 2.5% on 30% of the value (AAOIFI Standard 35 proxy). If you hold both, both amounts are calculated independently and summed.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Can I give Zakat to my own family? <span class="faq-icon">+</span></button><div class="faq-a">Zakat cannot be given to your direct dependents &mdash; spouse, parents, grandparents, children, or grandchildren. You are already financially responsible for them. You can give Zakat to siblings, cousins, aunts, uncles and other relatives if they are genuinely eligible &mdash; below nisab and in need.</div></div>
+        <div class="faq-item"><button class="faq-q" onclick="doFaq(this)">Which nisab standard should I use? <span class="faq-icon">+</span></button><div class="faq-a">Most scholars and major Islamic charities recommend the silver standard (612.36g silver) because it is a lower threshold, meaning more people qualify. The Hanafi school uses silver. If you follow the other schools, the gold standard (87.48g gold) is your school&rsquo;s technical position, though using silver is always permissible and more inclusive.<br><br><strong>Note on weight standards:</strong> This calculator uses 87.48g gold / 612.36g silver (FCNA, NZF UK, and OIC Fiqh Academy standard). Some Middle Eastern authorities (ZATCA Saudi Arabia, Dar al-Ifta Egypt, and al-Qaradawi&rsquo;s Fiqh az-Zakat) use 85g gold / 595g silver. Both are valid scholarly positions &mdash; see Research Notes in the footer for full detail.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources" class="bg-ink">
+  <div class="wrap sp">
+    <p class="label reveal" style="color:var(--gold)">Scholarship &amp; sources</p>
+    <h2 class="h1 reveal d1" style="color:var(--white);margin:.75rem 0 1rem">Grounded in <em class="gold-i">global authority</em></h2>
+    <p class="lead reveal d2" style="color:rgba(255,255,255,0.5)">Built on verified scholarly consensus from the leading Islamic jurisprudence bodies across the Middle East, Europe, Asia, Africa, and the Americas.</p>
+
+    <p class="sources-region-lbl reveal d2">Primary scripture &amp; classical texts</p>
+    <div class="sources-grid reveal d2">
+      <div class="scard cr">
+        <div class="scard-type">Primary scripture</div>
+        <div class="scard-name">Al-Qur&rsquo;an 9:60</div>
+        <div class="scard-desc">The definitive Quranic verse establishing the eight categories of Zakat recipients and the obligation of Zakat itself. Universal foundation across all schools of thought.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Hadith &mdash; Bukhari &amp; Muslim</div>
+        <div class="scard-name">Sahih al-Bukhari &amp; Sahih Muslim</div>
+        <div class="scard-desc">Ibn Umar (RA): &ldquo;The Prophet ﷺ made Zakat al-Fitr obligatory&hellip;&rdquo; Establishes the amount (one sa&rsquo;) and universality (every Muslim). Agreed upon (mutafaqun &lsquo;alayh).</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Classical reference</div>
+        <div class="scard-name">Fiqh az-Zakat</div>
+        <div class="scard-desc">Dr. Yusuf al-Qaradawi (Egypt/Qatar). The definitive modern scholarly text on Zakat jurisprudence &mdash; endorsed by Islamic scholars globally across all four madhabs.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Hadith &mdash; Abu Dawud &amp; Ibn Majah</div>
+        <div class="scard-name">Ibn Abbas (RA) narration</div>
+        <div class="scard-desc">&ldquo;The Prophet ﷺ ordained Zakat al-Fitr to purify the fasting person&hellip; accepted as Zakat before the Eid prayer.&rdquo; Source for Zakat al-Fitr purpose and deadline.</div>
+      </div>
+    </div>
+
+    <p class="sources-region-lbl reveal d3">Middle East &amp; international bodies</p>
+    <div class="sources-grid reveal d3">
+      <div class="scard cr">
+        <div class="scard-type">International standard &mdash; Bahrain</div>
+        <div class="scard-name">AAOIFI Standard No. 35</div>
+        <div class="scard-desc">Accounting &amp; Auditing Organisation for Islamic Financial Institutions (Bahrain, est. 1991). Governs Zakat on stocks, ETFs and modern instruments. The 30% investor and 25% fund proxies are AAOIFI-endorsed and adopted by 45+ countries.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Global fiqh academy &mdash; Jeddah</div>
+        <div class="scard-name">OIC International Islamic Fiqh Academy</div>
+        <div class="scard-desc">Established 1981 under the Organisation of Islamic Cooperation (57 member states). Resolutions 28 and 121 on Zakat obligations for investments. The world&rsquo;s foremost collective Islamic jurisprudential authority.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Saudi Arabia &mdash; official ruling</div>
+        <div class="scard-name">Council of Senior Scholars (KSA)</div>
+        <div class="scard-desc">The Kingdom of Saudi Arabia&rsquo;s highest scholarly authority. Sets the official Zakat al-Fitr rate (SAR 30 for 2026) and issues binding fatawa on nisab, gold purity, and wealth thresholds.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Egypt &mdash; est. 1895</div>
+        <div class="scard-name">Dar al-Ifta al-Misriyyah</div>
+        <div class="scard-desc">Egypt&rsquo;s Grand Mufti institution, established 1895. Authority on Zakat on gold (using 85g nisab), silver, bank deposits, and debt methodology. Note: Dar al-Ifta applies full market value to trade company shares; this calculator follows the AAOIFI Standard 35 proxy method for long-term investment stocks instead.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Saudi Arabia &mdash; individual Zakat</div>
+        <div class="scard-name">ZATCA (Zakat, Tax &amp; Customs Authority)</div>
+        <div class="scard-desc">Kingdom of Saudi Arabia&rsquo;s official Zakat regulatory authority. Guidelines based on fatwas from the Permanent Committee for Scholarly Research and Ifta. Note: ZATCA uses 85g gold / 595g silver for nisab &mdash; this calculator uses 87.48g / 612.36g (FCNA/OIC standard). Both are valid scholarly positions.</div>
+      </div>
+    </div>
+
+    <p class="sources-region-lbl reveal d3">Europe &amp; United Kingdom</p>
+    <div class="sources-grid reveal d3">
+      <div class="scard cr">
+        <div class="scard-type">European authority &mdash; Dublin</div>
+        <div class="scard-name">European Council for Fatwa &amp; Research (ECFR)</div>
+        <div class="scard-desc">Founded 1997 in London, headquartered in Dublin. Composed of over 40 Islamic scholars from across Europe and the Muslim world. Issues fatawa for Muslims living in Europe including Zakat al-Fitr cash equivalents and nisab methodology for Western contexts.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">UK &mdash; Zakat institution</div>
+        <div class="scard-name">National Zakat Foundation (NZF)</div>
+        <div class="scard-desc">UK registered charity (No. 1153719). The UK&rsquo;s leading Zakat body, providing scholarly-grounded guidance on Zakat calculation for Muslims in Britain. Confirms annual Zakat al-Fitr rates and publishes detailed calculation guidance.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">UK &amp; global &mdash; charitable institution</div>
+        <div class="scard-name">Islamic Relief Worldwide</div>
+        <div class="scard-desc">UK registered charity (No. 328158). Guidance on nisab calculation, zakatable asset categories, and Zakat al-Fitr. Operates across 40+ countries with Shari&rsquo;ah-compliant Zakat collection and distribution.</div>
+      </div>
+    </div>
+
+    <p class="sources-region-lbl reveal d3">Asia &amp; South-East Asia</p>
+    <div class="sources-grid reveal d3">
+      <div class="scard cr">
+        <div class="scard-type">Indonesia &mdash; national authority</div>
+        <div class="scard-name">BAZNAS (Badan Amil Zakat Nasional)</div>
+        <div class="scard-desc">Indonesia&rsquo;s National Amil Zakat Agency, established by Presidential Decree (No. 8/2001) and Law No. 23/2011. Manages Zakat for the world&rsquo;s largest Muslim-majority country. Sets Zakat al-Fitr rates (Rp 50,000 in 2026) based on local staple food costs.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Malaysia &mdash; government authority</div>
+        <div class="scard-name">JAWHAR (Jabatan Wakaf, Zakat &amp; Haji)</div>
+        <div class="scard-desc">Malaysia&rsquo;s Department of Awqaf, Zakat and Hajj under the Prime Minister&rsquo;s Department. Coordinates Zakat standards across Malaysia&rsquo;s 14 state Islamic Religious Councils, setting rates and distributing guidance nationally.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Singapore &mdash; Islamic authority</div>
+        <div class="scard-name">MUIS (Majlis Ugama Islam Singapura)</div>
+        <div class="scard-desc">Islamic Religious Council of Singapore, established under the Administration of Muslim Law Act (AMLA). Manages centralised Zakat collection and distribution for Singapore&rsquo;s Muslim community. Cited internationally as a model for structured Zakat governance.</div>
+      </div>
+    </div>
+
+    <p class="sources-region-lbl reveal d3">Americas</p>
+    <div class="sources-grid reveal d3">
+      <div class="scard cr">
+        <div class="scard-type">North American authority</div>
+        <div class="scard-name">Fiqh Council of North America (FCNA)</div>
+        <div class="scard-desc">The authoritative scholarly body for Islamic jurisprudence in North America. Shaykh Umer Khan&rsquo;s treatment distinguishing active trading from long-term investment. Annual Zakat al-Fitr recommendations based on USDA/BLS food price data.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">North American jurists</div>
+        <div class="scard-name">AMJA (Assembly of Muslim Jurists)</div>
+        <div class="scard-desc">Assembly of Muslim Jurists of America. Dr. Salah Al-Sawy&rsquo;s formula for Zakat on pension and retirement accounts &mdash; the accessible-percentage method used in this calculator. Resolutions on Zakat for contemporary financial products.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">North American institution</div>
+        <div class="scard-name">Zakat Foundation of America</div>
+        <div class="scard-desc">Leading contemporary scholarly Zakat resource for the Americas. Endorses the active trader method (full portfolio value) and provides educational guidance on Zakat calculation methodology. zakat.org</div>
+      </div>
+    </div>
+
+    <p class="sources-region-lbl reveal d3">Gold &amp; silver price data</p>
+    <div class="sources-grid reveal d3">
+      <div class="scard cr">
+        <div class="scard-type">Carat purity formula</div>
+        <div class="scard-name">IslamQA Fatwa 214221</div>
+        <div class="scard-desc">Establishes the scholarly-endorsed formula for converting gold jewellery weight to pure gold equivalent: pure grams = weight &times; (karat &divide; 24). Endorsed by Shaykh Muhammad al-Munajjid and widely applied across all contemporary Zakat calculators.</div>
+      </div>
+      <div class="scard cr">
+        <div class="scard-type">Live market data</div>
+        <div class="scard-name">Fawazahmed0 Currency API</div>
+        <div class="scard-desc">Open-source real-time XAU (gold) and XAG (silver) spot prices in 170+ currencies via cdn.jsdelivr.net. Fetched fresh on every page load. Used to calculate live nisab thresholds and per-gram gold and silver values.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">Zakat<span>Calc</span></div>
+  <p class="foot-disc">This calculator provides estimates based on scholarly consensus and is a guide only. For complex financial situations, consult a qualified Islamic scholar or Zakat institution. No data leaves your browser.</p>
+
+  <div class="foot-divider"></div>
+
+  <!-- FEEDBACK FORM -->
+  
+<!-- RESEARCH NOTES (expandable footer section) -->
+<div id="research-notes-wrap" style="max-width:760px;margin:0 auto 2.5rem">
+  <button id="rn-toggle" onclick="toggleResearchNotes()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:var(--sans);color:var(--white);font-size:14px;font-weight:600;letter-spacing:.02em;transition:background .2s">
+    <span style="display:flex;align-items:center;gap:.625rem">
+      <span style="font-size:15px;color:var(--gold)">&#9432;</span>
+      Research notes &amp; scholarly divergences
+    </span>
+    <span id="rn-chev" style="font-size:11px;color:rgba(255,255,255,.4);transition:transform .25s">&#9660;</span>
+  </button>
+
+  <div id="rn-body" style="display:none;margin-top:1px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:0 0 10px 10px;padding:1.5rem 1.25rem">
+
+    <p style="font-size:12px;color:rgba(255,255,255,.35);margin-bottom:1.25rem;line-height:1.6">Cross-reference audit of every calculator value against all 20 cited authority sources. Conducted April 2026. Identifies where sources agree, where they diverge, and how this calculator resolves each divergence.</p>
+
+    <!-- CONFIRMED CONSISTENT -->
+    <div style="margin-bottom:1.5rem">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5DCAA5;margin-bottom:.75rem">&#10003; Confirmed consistent across all sources</p>
+      <div style="display:grid;gap:6px">
+        <div class="rn-row rn-ok"><span class="rn-item">Zakat rate 2.5%</span><span class="rn-note">Universal across all four madhabs and every authority cited. Al-Qur'an 9:103; established Sunnah of the Prophet ﷺ.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Carat purity formula</span><span class="rn-note">pure grams = weight &times; (karat &divide; 24). IslamQA Fatwa 214221. Consistent with Dar al-Ifta Egypt and all contemporary Zakat calculators.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Pension accessible-% method</span><span class="rn-note">Only accessible portion zakatable. AMJA (Dr. Salah Al-Sawy), ECFR, and OIC Fiqh Academy all align on this principle.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Mutual funds 25% proxy</span><span class="rn-note">AAOIFI Standard 35 estimate for the zakatable liquid portion of mixed funds. No cited authority contradicts this.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Debt deduction (both methods)</span><span class="rn-note">Annual installment and full balance deduction are both valid scholarly positions. Endorsed by OIC Fiqh Academy and AAOIFI.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Gold jewellery by madhab</span><span class="rn-note">Hanafi: all gold incl. jewellery zakatable. Maliki/Shafi'i/Hanbali: commonly worn jewellery exempt. Consistent across all cited sources.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Silver jewellery (Hanafi)</span><span class="rn-note">Silver jewellery counts for Hanafi school only. Silver bullion always counts for all schools. Consistent across all sources.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Eight Zakat recipients</span><span class="rn-note">Al-Qur'an 9:60 &mdash; definitive and universally agreed upon across all schools and authorities.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Primary home exempt</span><span class="rn-note">All four schools and every cited authority agree: primary residence is never zakatable.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Net rental income zakatable</span><span class="rn-note">Annual net rental income from investment properties is zakatable income. Consistent across FCNA, AAOIFI, NZF UK, and Islamic Relief guidance.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Zakat al-Fitr cash equivalent</span><span class="rn-note">ECFR (Europe), BAZNAS (Indonesia), MUIS (Singapore), and Council of Senior Scholars (KSA) all permit cash equivalent of one sa' of staple food.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">ISA Zakat obligation</span><span class="rn-note">The ISA tax wrapper has no effect on Islamic Zakat obligation. FCNA, NZF UK, and Islamic Relief all confirm ISA holdings are zakatable.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Hawl duration</span><span class="rn-note">354&ndash;355 days (one mean lunar year = 354.367 days). Used in Hawl calculator. Consistent across all sources.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Cryptocurrency full value</span><span class="rn-note">Contemporary scholarly consensus (FCNA, AMJA, NZF UK): crypto is treated as a liquid zakatable asset. Full market value applies.</span></div>
+        <div class="rn-row rn-ok"><span class="rn-item">Silver nisab recommended</span><span class="rn-note">All cited authorities prefer the silver nisab standard as it is lower, meaning more people qualify and more reaches those in need.</span></div>
+      </div>
+    </div>
+
+    <!-- DIVERGENCES -->
+    <div style="margin-bottom:1.25rem">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem">&#9888; Scholarly divergences &mdash; how this calculator resolves each</p>
+      <div style="display:grid;gap:10px">
+
+        <div class="rn-conflict">
+          <div class="rn-conflict-hdr">
+            <span class="rn-conflict-title">Nisab gold weight: 87.48g vs 85g</span>
+            <span class="rn-badge rn-badge-mod">moderate</span>
+          </div>
+          <div class="rn-conflict-body">
+            <div class="rn-agree"><strong>Using 87.48g:</strong> FCNA, NZF UK, OIC Fiqh Academy, IslamQA Fatwa 214221</div>
+            <div class="rn-disagree"><strong>Using 85g:</strong> ZATCA (Saudi Arabia), Dar al-Ifta Egypt, Al-Qaradawi&rsquo;s Fiqh az-Zakat</div>
+            <div class="rn-resolution"><strong>Root cause:</strong> Both derive from &ldquo;20 mithqals&rdquo; but use different mithqal weight conventions (4.374g vs 4.25g). This calculator uses 87.48g (the FCNA/OIC/NZF UK standard, most widely used in Western Muslim communities). Users following Middle Eastern scholarly guidance may use 85g, which gives a slightly lower nisab threshold.</div>
+          </div>
+        </div>
+
+        <div class="rn-conflict">
+          <div class="rn-conflict-hdr">
+            <span class="rn-conflict-title">Nisab silver weight: 612.36g vs 595g</span>
+            <span class="rn-badge rn-badge-min">minor</span>
+          </div>
+          <div class="rn-conflict-body">
+            <div class="rn-agree"><strong>Using 612.36g:</strong> FCNA, NZF UK, OIC Fiqh Academy, most contemporary global bodies</div>
+            <div class="rn-disagree"><strong>Using 595g:</strong> Al-Qaradawi&rsquo;s Fiqh az-Zakat, some Dar al-Ifta Egypt fatwas, classical dirham weight tradition</div>
+            <div class="rn-resolution"><strong>Resolution:</strong> This calculator uses 612.36g (200 dirhams at the FCNA/OIC weight standard). The difference is small &mdash; at current silver prices (April 2026 ~&pound;0.85/g) this is approximately &pound;14 difference in threshold.</div>
+          </div>
+        </div>
+
+        <div class="rn-conflict">
+          <div class="rn-conflict-hdr">
+            <span class="rn-conflict-title">Long-term stocks: AAOIFI 30% proxy vs Dar al-Ifta full value</span>
+            <span class="rn-badge rn-badge-mod">moderate</span>
+          </div>
+          <div class="rn-conflict-body">
+            <div class="rn-agree"><strong>AAOIFI 30% proxy:</strong> AAOIFI Standard 35, FCNA, NZF UK, Zakat Foundation of America, OIC Resolution 28</div>
+            <div class="rn-disagree"><strong>Full market value:</strong> Dar al-Ifta Egypt &mdash; treats trade company shares like merchandise (full value at year-end)</div>
+            <div class="rn-resolution"><strong>Resolution:</strong> This calculator follows AAOIFI Standard 35 for long-term investors (30% proxy). The Dar al-Ifta Egypt ruling applies primarily to shares in companies that deal in trade goods &mdash; where stocks represent merchandise inventory. AAOIFI&rsquo;s 30% is a proxy for the estimated liquid zakatable assets within a mixed investment portfolio. Users who follow Dar al-Ifta Egypt should use the &ldquo;short-term / active trader&rdquo; row (100%) for their stock holdings instead.</div>
+          </div>
+        </div>
+
+        <div class="rn-conflict">
+          <div class="rn-conflict-hdr">
+            <span class="rn-conflict-title">9ct gold: Zakat status for non-Hanafi schools</span>
+            <span class="rn-badge rn-badge-min">minor</span>
+          </div>
+          <div class="rn-conflict-body">
+            <div class="rn-agree"><strong>Hanafi:</strong> All gold including 9ct jewellery is zakatable using the 9/24 purity formula</div>
+            <div class="rn-disagree"><strong>Non-Hanafi practical note:</strong> For Maliki/Shafi'i/Hanbali schools, jewellery is exempt anyway &mdash; so 9ct gold rarely becomes an issue. Some contemporary scholars question whether 9ct (37.5% pure, primarily base metal alloy) truly constitutes &ldquo;gold&rdquo; for Zakat purposes in Hanafi fiqh.</div>
+            <div class="rn-resolution"><strong>Resolution:</strong> This calculator includes 9ct gold at 37.5% purity for Hanafi users, following the standard IslamQA/NZF UK approach. If you are Hanafi and uncertain about 9ct, consult your local scholar.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:rgba(255,255,255,.25);line-height:1.6;margin-top:.5rem">This audit was last updated April 2026. Islamic jurisprudence evolves &mdash; if you identify an error or a more recent scholarly ruling, please use the feedback form above. We aim to review and update this section annually.</p>
+
+  </div>
+</div>
+
+  <div class="feedback-section">
+    <div class="feedback-title">Share your feedback</div>
+    <div class="feedback-sub">Help us improve ZakatCalc. All feedback is read and appreciated.</div>
+
+    <div class="feedback-success" id="fb-success">
+      <div class="feedback-success-icon">&#10003;</div>
+      <div class="feedback-success-title">Jazakallah khayran</div>
+      <div class="feedback-success-msg">Your feedback has been received. We read every message and will use it to improve ZakatCalc.</div>
+    </div>
+
+    <form class="feedback-form" id="fb-form" onsubmit="submitFeedback(event)">
+      <!-- Web3Forms access key - routes to info@zakatcalc.info -->
+      <input type="hidden" name="access_key" value="REPLACE_WITH_YOUR_WEB3FORMS_KEY">
+      <input type="hidden" name="subject" value="ZakatCalc Feedback">
+      <input type="hidden" name="from_name" value="ZakatCalc Feedback Form">
+      <input type="hidden" name="redirect" value="false">
+      <input type="checkbox" name="botcheck" style="display:none">
+
+      <div class="feedback-row">
+        <div class="feedback-field">
+          <label class="feedback-label" for="fb-name">Your name <span style="color:rgba(255,255,255,.25);font-weight:400">(optional)</span></label>
+          <input class="feedback-input" type="text" id="fb-name" name="name" placeholder="e.g. Ahmed">
+        </div>
+        <div class="feedback-field">
+          <label class="feedback-label" for="fb-email">Email <span style="color:rgba(255,255,255,.25);font-weight:400">(optional, for reply)</span></label>
+          <input class="feedback-input" type="email" id="fb-email" name="email" placeholder="your@email.com">
+        </div>
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="fb-type">Type of feedback</label>
+        <select class="feedback-select" id="fb-type" name="feedback_type">
+          <option value="General">General feedback</option>
+          <option value="Bug report">Bug report &mdash; something is not working</option>
+          <option value="Calculation query">Calculation query &mdash; scholarly question</option>
+          <option value="Feature request">Feature request &mdash; suggestion to add</option>
+          <option value="Mobile issue">Mobile / display issue</option>
+          <option value="Price issue">Gold / silver price issue</option>
+        </select>
+      </div>
+
+      <div class="feedback-field">
+        <label class="feedback-label" for="fb-msg">Your message <span style="color:#E07070">*</span></label>
+        <textarea class="feedback-textarea" id="fb-msg" name="message" placeholder="Tell us what you think, what could be improved, or any issue you experienced&hellip;" required></textarea>
+      </div>
+
+      <div class="feedback-error" id="fb-error">Something went wrong. Please try again or email us directly at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e070008012e140f050f1a0d0f020d4007000801">[email&#160;protected]</a></div>
+
+      <button class="feedback-btn" type="submit" id="fb-btn">
+        <span id="fb-btn-txt">Send feedback</span>
+      </button>
+    </form>
+  </div>
+
+  <div class="foot-divider"></div>
+
+  <p class="foot-copy" style="margin-bottom:.5rem">&copy; <span id="yr"></span> ZakatCalc &mdash; All calculations are estimates. Consult a scholar for complex situations.</p>
+  <p class="foot-copy" style="margin-bottom:.5rem">Contact: <a href="/cdn-cgi/l/email-protection#d0b9beb6bf90aab1bbb1a4b3b1bcb3feb9beb6bf" style="color:rgba(255,255,255,.3);text-decoration:none"><span class="__cf_email__" data-cfemail="9bf2f5fdf4dbe1faf0faeff8faf7f8b5f2f5fdf4">[email&#160;protected]</span></a></p>
+  <p class="foot-copy">Sources: Al-Qur&rsquo;an 9:60 &middot; AAOIFI &middot; FCNA &middot; OIC Fiqh Academy &middot; AMJA &middot; Islamic Relief &middot; Zakat Foundation of America &middot; fawazahmed0 API</p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ── STATS COUNTER (Cloudflare Worker) ─────────────────────────────────────── */
+var WORKER_URL = 'https://zakatcalc-stats.ach-80a.workers.dev';
+var LIKED_KEY = 'zc_liked_v1';
+
+function fmtCount(n){
+  if(n>=1000) return (n/1000).toFixed(1).replace(/\.0$/,'')+'k';
+  return n.toString();
+}
+
+function loadStats(){
+  var liked = localStorage.getItem(LIKED_KEY) === '1';
+  if(liked){
+    var btn = document.getElementById('like-btn');
+    if(btn) btn.classList.add('liked');
+  }
+  fetch(WORKER_URL+'/stats',{method:'GET',cache:'no-store'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var cc = document.getElementById('hero-calc-count');
+      var lc = document.getElementById('hero-like-count');
+      var gc = document.getElementById('hero-geo');
+      if(cc && d.calculations !== undefined){
+        animStatCount(cc, d.calculations);
+      }
+      if(lc && d.likes !== undefined){
+        animStatCount(lc, d.likes);
+      }
+      if(gc && d.topCountries && d.topCountries.length){
+        gc.textContent = d.topCountries.slice(0,3).join(' ') + (d.countryCount ? ' +'+d.countryCount+' countries' : '');
+      }
+    })
+    .catch(function(){ /* silently degrade — show dashes */ });
+}
+
+function animStatCount(el, target){
+  var start = 0, steps = 50;
+  var inc = target / steps;
+  var i = 0;
+  var t = setInterval(function(){
+    i++;
+    start += inc;
+    el.textContent = fmtCount(Math.round(Math.min(start, target)));
+    if(i >= steps){ clearInterval(t); el.textContent = fmtCount(target); }
+  }, 20);
+}
+
+function handleLike(){
+  var btn = document.getElementById('like-btn');
+  var lc = document.getElementById('hero-like-count');
+  if(!btn || !lc) return;
+  var alreadyLiked = btn.classList.contains('liked');
+  var current = parseInt((lc.textContent||'0').replace(/[^0-9]/g,''))||0;
+  if(alreadyLiked){
+    btn.classList.remove('liked');
+    localStorage.removeItem(LIKED_KEY);
+    lc.textContent = fmtCount(Math.max(0, current-1));
+    fetch(WORKER_URL+'/unlike',{method:'POST'}).catch(function(){});
+  } else {
+    btn.classList.add('liked');
+    localStorage.setItem(LIKED_KEY,'1');
+    lc.textContent = fmtCount(current+1);
+    fetch(WORKER_URL+'/like',{method:'POST'}).catch(function(){});
+  }
+}
+
+function recordCalculation(){
+  fetch(WORKER_URL+'/calculate',{method:'POST'}).catch(function(){});
+}
+
+
+// ── CARAT PURITY FACTORS (international standard) ──
+var CARATS = {
+  "24": 1.0,
+  "22": 22/24,
+  "21": 21/24,
+  "18": 18/24,
+  "14": 14/24,
+  "9":  9/24
+};
+
+var CARAT_LABELS = ["24ct (pure)", "22ct", "21ct", "18ct", "14ct", "9ct"];
+var CARAT_VALS   = ["24", "22", "21", "18", "14", "9"];
+
+// ── FALLBACK PRICES (if API unavailable) ──
+var FB = {
+  // Fallback prices per gram (April 2026): Gold ~$4750/oz, Silver ~$33.5/oz
+  GBP:{g:120.2,s:0.848}, USD:{g:152.7,s:1.077}, EUR:{g:140.0,s:0.988},
+  CAD:{g:211.5,s:1.492}, AUD:{g:240.5,s:1.696}, SAR:{g:572.7,s:4.039},
+  AED:{g:560.5,s:3.953}, PKR:{g:42531,s:299.96}, MYR:{g:714.7,s:5.041}
+};
+
+// ── STATE ──
+var S = {
+  madhab:"hanafi", nisabStd:"silver", stockMethod:"trader", debtMethod:"annual",
+  currency:"GBP", sym:"\u00a3", fxCode:"gbp",
+  gG:null, sG:null, fx:{},
+  priceSource:"loading"  // "live", "fallback", "loading"
+};
+var GOLD_USD = null, SILVER_USD = null;
+var goldItemCounter = 0;
+
+// ── HELPERS ──
+function G(id){ return document.getElementById(id); }
+function T(id,t){ var e=G(id); if(e) e.textContent=t; }
+function V(id){ return parseFloat(G(id).value)||0; }
+function fmt(n){ if(n===null||isNaN(n)) return "\u2014"; return S.sym+n.toLocaleString("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function allSym(){ var a=document.querySelectorAll(".sym"); for(var i=0;i<a.length;i++) a[i].textContent=S.sym; }
+
+// ── NAV ──
+G("hbg").onclick = function(){ G("mobnav").classList.toggle("open"); };
+var mls = G("mobnav").querySelectorAll("a");
+for(var mi=0;mi<mls.length;mi++) mls[mi].onclick = function(){ G("mobnav").classList.remove("open"); };
+
+// ── API FETCH ──
+function fetchPrices(){
+  setApiStatus("loading");
+  var baseURL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/";
+  fetch(baseURL+"xau.json")
+    .then(function(r){
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return r.json();
+    })
+    .then(function(d){
+      // XAU rate: units of currency per 1 XAU (1 troy oz of gold)
+      GOLD_USD = d.xau.usd / 31.1035;
+      return fetch(baseURL+"xag.json");
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      SILVER_USD = d.xag.usd / 31.1035;
+      return fetch(baseURL+"usd.json");
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      S.fx = d.usd;
+      S.priceSource = "live";
+      applyFX();
+      setApiStatus("live");
+    })
+    .catch(function(err){
+      console.warn("Price API unavailable, using fallback:", err);
+      S.priceSource = "fallback";
+      useFallback();
+      setApiStatus("fallback");
+    });
+}
+
+function applyFX(){
+  var fx = S.fx[S.fxCode] || 1;
+  S.gG = GOLD_USD * fx;
+  S.sG = SILVER_USD * fx;
+  refreshAll();
+}
+
+function useFallback(){
+  var r = FB[S.currency] || FB.GBP;
+  S.gG = r.g; S.sG = r.s;
+  refreshAll();
+}
+
+// ── PRICE STATUS DISPLAY ──
+function setApiStatus(status){
+  S.priceSource = status;
+  var banner = G("api-banner");
+  var dot = G("api-dot");
+  var msg = G("api-msg");
+  var rBanner = G("r-api-banner");
+  var rDot = G("r-api-dot");
+  var rMsg = G("r-api-msg");
+  var tkSt = G("tk-st");
+  var calcLbl = G("calc-live-lbl");
+
+  if(status === "live"){
+    if(banner){ banner.className="api-banner show api-live"; dot.className="api-dot api-dot-live"; msg.textContent="Live prices from API \u2014 XAU/XAG spot rates fetched successfully"; }
+    if(rBanner){ rBanner.className="api-banner show api-live"; rDot.className="api-dot api-dot-live"; rMsg.textContent="Result calculated using live API spot prices"; }
+    if(tkSt){ tkSt.innerHTML='<span class="pdot"></span> Live prices'; tkSt.className="tick-status live-c"; }
+    var tkM=G("tk-st-mob"); if(tkM){ tkM.innerHTML='<span class="pdot"></span> Live'; tkM.className="tick-status live-c"; }
+    if(calcLbl){ calcLbl.innerHTML='<span class="pdot"></span> Live prices'; }
+  } else if(status === "fallback"){
+    if(banner){ banner.className="api-banner show api-est"; dot.className="api-dot api-dot-est"; msg.textContent="API unreachable \u2014 using recent estimated prices. Connect to the internet for live values."; }
+    if(rBanner){ rBanner.className="api-banner show api-est"; rDot.className="api-dot api-dot-est"; rMsg.textContent="Result calculated using estimated prices (API unavailable)"; }
+    if(tkSt){ tkSt.textContent="Estimated prices"; tkSt.className="tick-status est-c"; }
+    var tkM2=G("tk-st-mob"); if(tkM2){ tkM2.textContent="Est."; tkM2.className="tick-status est-c"; }
+    if(calcLbl){ calcLbl.innerHTML='<span style="font-size:8px;color:var(--gold-lt)">&#9679;</span> Estimated'; }
+  } else {
+    if(tkSt){ tkSt.innerHTML='<span class="pdot"></span> Fetching\u2026'; tkSt.className="tick-status live-c"; }
+  }
+}
+
+// ── REFRESH ALL PRICE DISPLAYS ──
+function refreshAll(){
+  if(!S.gG) return;
+  var gn = 87.48*S.gG, sn = 612.36*S.sG;
+  // Ticker
+  T("tk-gold",   fmt(gn));
+  T("tk-silver", fmt(sn));
+  T("tk-gG",     S.sym+S.gG.toFixed(2)+"/g");
+  T("tk-g22",    S.sym+(S.gG*(22/24)).toFixed(2)+"/g");
+  T("tk-sG",     S.sym+S.sG.toFixed(4)+"/g");
+  T("tk-gold-mob",   fmt(gn));
+  T("tk-silver-mob", fmt(sn));
+  T("tk-gG-mob",     S.sym+S.gG.toFixed(2)+"/g");
+  T("tk-g22-mob",    S.sym+(S.gG*(22/24)).toFixed(2)+"/g");
+  T("tk-g18-mob",    S.sym+(S.gG*(18/24)).toFixed(2)+"/g");
+  T("tk-sG-mob",     S.sym+S.sG.toFixed(4)+"/g");
+  // Nisab page
+  T("n-gold",    fmt(gn));
+  T("n-silver",  fmt(sn));
+  // Carat table
+  T("carat-hdr", "Price / gram ("+S.currency+")");
+  T("p-24", S.sym+(S.gG*1.0).toFixed(2)+"/g");
+  T("p-22", S.sym+(S.gG*(22/24)).toFixed(2)+"/g");
+  T("p-21", S.sym+(S.gG*(21/24)).toFixed(2)+"/g");
+  T("p-18", S.sym+(S.gG*(18/24)).toFixed(2)+"/g");
+  T("p-14", S.sym+(S.gG*(14/24)).toFixed(2)+"/g");
+  T("p-9",  S.sym+(S.gG*(9/24)).toFixed(2)+"/g");
+  // Hero and calc intro
+  T("hero-nisab", S.sym+Math.round(sn).toLocaleString("en-GB"));
+  T("c-nisab-s",  fmt(sn));
+  T("c-nisab-g",  fmt(gn));
+  // Live preview on metals step
+  updateMetalsPreviews();
+  allSym();
+  refreshBars();
+}
+
+// ── CURRENCY CHANGE ──
+G("scur").onchange = function(){
+  var opt = this.options[this.selectedIndex];
+  S.currency = this.value;
+  S.sym = opt.getAttribute("data-sym");
+  S.fxCode = opt.getAttribute("data-code");
+  if(GOLD_USD) applyFX(); else useFallback();
+};
+
+// ── MADHAB ──
+function setMadhab(val, card){
+  S.madhab = val;
+  var cs = document.querySelectorAll(".sc");
+  for(var i=0;i<cs.length;i++) cs[i].classList.remove("on");
+  card.classList.add("on");
+  if(val !== "hanafi" && S.nisabStd === "silver"){
+    S.nisabStd = "gold";
+    var tbs = document.querySelectorAll(".tog-btn");
+    for(var j=0;j<tbs.length;j++){
+      var oc = tbs[j].getAttribute("onclick")||"";
+      if(oc.indexOf("setNisab") > -1){
+        tbs[j].classList.remove("on");
+        if(oc.indexOf("gold") > -1) tbs[j].classList.add("on");
+      }
+    }
+  }
+  updateJewUI();
+  refreshBars();
+}
+function landMadhab(el){ var cs=document.querySelectorAll(".madhab-card"); for(var i=0;i<cs.length;i++) cs[i].classList.remove("sel"); el.classList.add("sel"); }
+function setNisab(val,btn){ S.nisabStd=val; togSwap(btn); refreshBars(); }
+function setDebt(val,btn){
+  S.debtMethod=val; togSwap(btn);
+  var isA=val==="annual";
+  T("debt-tip-t", isA ? "Annual installments method selected" : "Full balance method selected");
+  T("debt-tip-x", isA ? "Only deduct debt payments actually due within your current zakat year. This is the more cautious scholarly approach." : "You are deducting the full outstanding balance of all debts. A valid scholarly position that may significantly reduce your zakatable wealth.");
+  var ml=G("mort-lbl"), mh=G("mort-hint");
+  if(ml) ml.textContent = isA ? "Mortgage payments due" : "Mortgage (full outstanding balance)";
+  if(mh) mh.textContent = isA ? "Annual installment for this zakat year" : "Total remaining mortgage balance";
+  refreshBars();
+}
+function setStocks(val,btn){ /* legacy no-op — kept for any cached calls */ }
+
+function calcInvZakatable(){
+  // Returns object with per-asset zakatable amounts and total
+  var s0a = V("inv0a"), s0b = V("inv0b");  // stocks short/long
+  var s1a = V("inv1a"), s1b = V("inv1b");  // ISA short/long
+  var s2a = V("inv2a"), s2b = V("inv2b");  // funds short/long
+  var s3  = V("inv3");                      // crypto always 100%
+  var pen = V("inv4") * (V("inv5")/100);   // pension accessible portion
+
+  var z0a = s0a * 1.00,  z0b = s0b * 0.30;
+  var z1a = s1a * 1.00,  z1b = s1b * 0.30;
+  var z2a = s2a * 1.00,  z2b = s2b * 0.25;
+  var z3  = s3  * 1.00;
+
+  var invTotal = z0a+z0b + z1a+z1b + z2a+z2b + z3 + pen;
+  return {
+    rows:[
+      {l:"Stocks — short-term (100%)", v:s0a, z:z0a, pct:"100%"},
+      {l:"Stocks — long-term (30%)",   v:s0b, z:z0b, pct:"30%"},
+      {l:"ISA — short-term (100%)",    v:s1a, z:z1a, pct:"100%"},
+      {l:"ISA — long-term (30%)",      v:s1b, z:z1b, pct:"30%"},
+      {l:"Funds — short-term (100%)",  v:s2a, z:z2a, pct:"100%"},
+      {l:"Funds — long-term (25%)",    v:s2b, z:z2b, pct:"25%"},
+      {l:"Cryptocurrency (100%)",      v:s3,  z:z3,  pct:"100%"},
+      {l:"Pension (accessible)",       v:pen, z:pen, pct:((V("inv5")||0)+"%")}
+    ],
+    total: invTotal,
+    pen: pen
+  };
+}
+
+function updateInvBreakdown(){
+  var bd = G("inv-breakdown");
+  var rows = G("inv-breakdown-rows");
+  if(!bd||!rows) return;
+  var calc = calcInvZakatable();
+  var visRows = calc.rows.filter(function(r){ return r.z > 0; });
+  if(visRows.length === 0){ bd.style.display="none"; return; }
+  bd.style.display = "block";
+  var html = "";
+  visRows.forEach(function(r){
+    html += '<div class="inv-bd-row">'
+      + '<span class="inv-bd-asset">'+r.l+'</span>'
+      + '<span class="inv-bd-pct">'+r.pct+'</span>'
+      + '<span class="inv-bd-zakatable">'+fmt(r.z)+'</span>'
+      + '<span class="inv-bd-zakat">'+fmt(r.z*0.025)+'</span>'
+      + '</div>';
+  });
+  rows.innerHTML = html;
+  T("inv-tot-z",    fmt(calc.total));
+  T("inv-tot-zakat",fmt(calc.total*0.025));
+}
+
+function togSwap(btn){ var p=btn.parentElement; var ts=p.querySelectorAll(".tog-btn"); for(var i=0;i<ts.length;i++) ts[i].classList.remove("on"); btn.classList.add("on"); }
+
+// ── JEWELLERY UI ──
+function updateJewUI(){
+  var isH = S.madhab==="hanafi";
+  T("sp2-desc", isH
+    ? "Enter each gold item separately with its carat. Enter total weight of the piece \u2014 the calculator converts to pure gold value automatically using live prices."
+    : "Enter investment gold items only \u2014 your school ("+cap(S.madhab)+") exempts daily-worn jewellery. Bullion and coins are always zakatable.");
+  T("jewel-callout-txt", isH
+    ? "Hanafi school: enter all gold and silver items including jewellery you wear daily."
+    : cap(S.madhab)+" school: only enter investment gold and silver (bullion, coins, bars). Worn jewellery is exempt for your school.");
+  T("j-tip-t", isH ? "How to enter gold correctly" : "Investment gold only for your school");
+  T("j-tip-x", isH
+    ? "Enter the total weight of each piece and select its carat. The calculator multiplies by the live 24ct price and the carat purity factor. Example: a 22ct ring weighing 10g contains 9.17g of pure gold. You enter 10g + select 22ct \u2014 the conversion is automatic."
+    : "For "+cap(S.madhab)+" school, enter only gold held as investment or trade stock. If you are unsure whether a piece counts as worn jewellery, consult your local scholar.");
+  // Dim silver jewellery field for non-Hanafi
+  var sjf = G("silver-j-field");
+  if(sjf) sjf.style.opacity = isH ? "1" : "0.4";
+  var sjl = G("silver-j-lbl");
+  if(sjl) sjl.textContent = isH ? "Silver jewellery (grams)" : "Silver jewellery (grams, investment only)";
+  var sjh = G("silver-j-hint");
+  if(sjh) sjh.textContent = isH ? "Worn or stored" : "Investment silver only \u2014 worn jewellery exempt";
+}
+
+// ── GOLD ITEMS BUILDER ──
+function makeCaratOptions(selected){
+  var html = "";
+  for(var i=0;i<CARAT_VALS.length;i++){
+    html += "<option value=\""+CARAT_VALS[i]+"\""+(CARAT_VALS[i]===selected?" selected":"")+">"
+           +CARAT_LABELS[i]+"</option>";
+  }
+  return html;
+}
+
+function addGoldItem(defaultCarat){
+  defaultCarat = defaultCarat || "22";
+  goldItemCounter++;
+  var id = "gi-"+goldItemCounter;
+  var wrap = G("gold-items");
+  var div = document.createElement("div");
+  div.className = "gold-item-row";
+  div.id = "row-"+id;
+  div.innerHTML =
+    "<div><label class=\"fl\">Description (optional)</label>"
+    +"<input type=\"text\" id=\"desc-"+id+"\" placeholder=\"e.g. wedding ring, bangle\" style=\"background:var(--white);border:1.5px solid rgba(184,150,46,.22);border-radius:var(--r);padding:11px 14px;font-family:var(--sans);font-size:15px;color:var(--ink);width:100%;outline:none\"></div>"
+    +"<div><label class=\"fl\">Carat</label>"
+    +"<select id=\"ct-"+id+"\" onchange=\"updateMetalsPreviews()\">"+makeCaratOptions(defaultCarat)+"</select></div>"
+    +"<div><label class=\"fl\">Weight (grams)</label>"
+    +"<input type=\"number\" id=\"wt-"+id+"\" min=\"0\" step=\"0.1\" placeholder=\"0\" oninput=\"updateMetalsPreviews()\"></div>"
+    +"<button class=\"remove-btn\" onclick=\"removeGoldItem('row-"+id+"')\" title=\"Remove this item\">&#10005;</button>";
+  wrap.appendChild(div);
+  updateMetalsPreviews();
+}
+
+function removeGoldItem(rowId){
+  var row = G(rowId);
+  if(row) row.parentNode.removeChild(row);
+  updateMetalsPreviews();
+}
+
+function calcGoldTotal(){
+  var total = 0;
+  var rows = document.querySelectorAll(".gold-item-row");
+  for(var i=0;i<rows.length;i++){
+    var id = rows[i].id.replace("row-","");
+    var ct = G("ct-"+id);
+    var wt = G("wt-"+id);
+    if(ct && wt){
+      var weight = parseFloat(wt.value)||0;
+      var carat = ct.value;
+      var purity = CARATS[carat] || 1.0;
+      total += weight * purity * (S.gG||0);
+    }
+  }
+  return total;
+}
+
+function calcGoldTotalGrams(){
+  var total = 0;
+  var rows = document.querySelectorAll(".gold-item-row");
+  for(var i=0;i<rows.length;i++){
+    var id = rows[i].id.replace("row-","");
+    var ct = G("ct-"+id);
+    var wt = G("wt-"+id);
+    if(ct && wt){
+      var weight = parseFloat(wt.value)||0;
+      var carat = ct.value;
+      var purity = CARATS[carat] || 1.0;
+      total += weight * purity;
+    }
+  }
+  return total;
+}
+
+function updateMetalsPreviews(){
+  liveUpdate();
+}
+
+// ── SETTINGS BARS ──
+function refreshBars(){
+  if(!S.gG) return;
+  var gn=87.48*S.gG, sn=612.36*S.sG;
+  var nv = S.nisabStd==="silver" ? sn : gn;
+  var h = cap(S.madhab)
+    +"<span class=\"sb-sep\">&middot;</span>"
+    +cap(S.nisabStd)+" nisab: <strong class=\"sb-val\">"+fmt(nv)+"</strong>"
+    +"<span class=\"sb-sep\">&middot;</span>"
+    +"Debts: <strong class=\"sb-val\">"+(S.debtMethod==="annual"?"Annual":"Full balance")+"</strong>";
+  for(var i=1;i<=5;i++){ var e=G("sb"+i); if(e) e.innerHTML=h; }
+}
+
+// ── STEP NAVIGATION ──
+function goStep(n){
+  var panels = document.querySelectorAll(".spanel");
+  for(var i=0;i<panels.length;i++) panels[i].classList.remove("active");
+  var t = G("sp"+n);
+  if(t) t.classList.add("active");
+  var pf = G("prog");
+  if(pf) pf.style.width = ((n+1)/6*100).toFixed(1)+"%";
+  var lbls = document.querySelectorAll(".prog-lbl");
+  for(var j=0;j<lbls.length;j++){
+    lbls[j].classList.remove("cur","done");
+    var s = parseInt(lbls[j].getAttribute("data-s"),10);
+    if(s<n) lbls[j].classList.add("done");
+    else if(s===n) lbls[j].classList.add("cur");
+  }
+  updateJewUI();
+  refreshBars();
+  updateMetalsPreviews();
+  // Show API banner on settings step
+  var banner = G("api-banner");
+  if(banner) banner.classList.add("show");
+  var shell = document.querySelector(".calc-shell");
+  if(shell){
+    var top = shell.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({top:top, behavior:"smooth"});
+  }
+}
+
+// ── CALCULATE ──
+function doCalc(){
+  var g = S.gG||83, s = S.sG||0.92;
+  var isH = S.madhab==="hanafi";
+
+  // Cash
+  var cash = V("c0")+V("c1")+V("c2")+V("c3")+V("c4");
+
+  // Gold: sum all item rows, apply carat purity, multiply by 24ct spot price
+  var goldTotalGrams = calcGoldTotalGrams();
+  var gVal = goldTotalGrams * g;
+
+  // Silver
+  var silverGrams = (isH ? V("sj") : 0) + V("sb");
+  var sVal = silverGrams * s;
+
+  // Investments — per-asset short/long term split
+  var _inv = calcInvZakatable();
+  var stocksZ = _inv.rows[0].z + _inv.rows[1].z + _inv.rows[2].z + _inv.rows[3].z;
+  var fundsZ  = _inv.rows[4].z + _inv.rows[5].z;
+  var crypto  = _inv.rows[6].z;
+  var penZ    = _inv.pen;
+
+  // Property & business
+  var rental=V("pr0"), prop=V("pr1"), bizZ=V("pr2")+V("pr3");
+
+  // Debts
+  var debts=V("d0")+V("d1")+V("d2")+V("d3")+V("d4")+V("d5");
+
+  var gross = cash+gVal+sVal+stocksZ+fundsZ+crypto+penZ+rental+prop+bizZ;
+  var net = gross>debts ? gross-debts : 0;
+  var gn=87.48*g, sn=612.36*s;
+  var nv = S.nisabStd==="silver" ? sn : gn;
+  var elig = net>=nv;
+  var zakat = elig ? net*0.025 : 0;
+
+  // Show result
+  G("rwrap").classList.add("show");
+
+  // Update result API banner
+  setApiStatus(S.priceSource);
+
+  var re = G("relig");
+  re.textContent = elig
+    ? "Zakat is obligatory \u2014 your wealth exceeds the nisab threshold"
+    : "Your wealth is below the nisab \u2014 Zakat is not currently obligatory";
+  re.className = "r-elig "+(elig?"elig-y":"elig-n");
+
+  T("rzakat", fmt(zakat));
+  T("rgross", fmt(gross));
+  T("rliab",  fmt(debts));
+  T("rnet",   fmt(net));
+  T("rnisab", fmt(nv));
+
+  // Breakdown
+  var rows=[
+    ["Cash and savings", cash],
+    ["Gold ("+goldTotalGrams.toFixed(2)+"g pure equiv. at "+S.sym+g.toFixed(2)+"/g 24ct)", gVal],
+    ["Silver ("+silverGrams.toFixed(1)+"g)", sVal],
+    ["Stocks & ISA (blended)", stocksZ],
+    ["Mutual funds and ETFs (25% proxy)", fundsZ],
+    ["Cryptocurrency", crypto],
+    ["Pension/retirement (accessible)", penZ],
+    ["Net rental income", rental],
+    ["Property held for resale", prop],
+    ["Business stock and cash", bizZ],
+    ["Less: liabilities", debts>0 ? -debts : 0]
+  ];
+  var html="";
+  for(var i=0;i<rows.length;i++){
+    if(!rows[i][1]) continue;
+    var v=rows[i][1];
+    html+="<div class=\"bk-row\"><span class=\"bk-l\">"+rows[i][0]+"</span><span class=\"bk-v\">"+(v<0?"-"+fmt(-v):fmt(v))+"</span></div>";
+  }
+  html+="<div class=\"bk-row\"><span class=\"bk-l\">Zakat due (2.5%)</span><span class=\"bk-v\">"+fmt(zakat)+"</span></div>";
+  G("rbk").innerHTML=html;
+
+  var madh={hanafi:"Hanafi",maliki:"Maliki",shafii:"Shafi\u2018i",hanbali:"Hanbali"};
+  var src = S.priceSource==="live" ? "Live API (XAU/XAG spot)" : "Estimated (API unavailable)";
+  G("rset").innerHTML="<strong>School:</strong> "+madh[S.madhab]
+    +" &nbsp;&middot;&nbsp; <strong>Nisab:</strong> "+cap(S.nisabStd)+" ("+fmt(nv)+")"
+    +" &nbsp;&middot;&nbsp; <strong>Stocks:</strong> "+(S.stockMethod==="trader"?"Active (full)":"Long-term (30%)")
+    +" &nbsp;&middot;&nbsp; <strong>Debts:</strong> "+(S.debtMethod==="annual"?"Annual":"Full balance")
+    +" &nbsp;&middot;&nbsp; <strong>Currency:</strong> "+S.currency
+    +" &nbsp;&middot;&nbsp; <strong>Price data:</strong> "+src;
+
+  setTimeout(function(){ var r=G("rwrap"); if(r) r.scrollIntoView({behavior:"smooth",block:"start"}); },120);
+  recordCalculation();
+}
+
+function doReset(){ G("rwrap").classList.remove("show"); goStep(0); }
+
+function liveUpdate(){
+  if(!S.gG || typeof calcGoldTotalGrams !== "function") return;
+  var g=S.gG, s=S.sG, isH=S.madhab==="hanafi";
+
+  // Step 3 previews — update gold/silver totals in real time
+  var gv = calcGoldTotal();
+  var sjV = (parseFloat((G("sj")||{}).value)||0) * s;
+  var sbV = (parseFloat((G("sb")||{}).value)||0) * s;
+  var sv = sjV + sbV;
+  T("gold-total-val",   fmt(gv));
+  T("silver-total-val", fmt(sv));
+  T("metals-total-val", fmt(gv + sv));
+
+  // Calculate all totals
+  var cash = V("c0")+V("c1")+V("c2")+V("c3")+V("c4");
+  var goldG = calcGoldTotalGrams(), gVal = goldG * g;
+  var silverG = (isH ? V("sj") : 0) + V("sb"), sVal = silverG * s;
+  var _invL = calcInvZakatable();
+  var stocksZ = _invL.rows[0].z + _invL.rows[1].z + _invL.rows[2].z + _invL.rows[3].z;
+  var fundsZ  = _invL.rows[4].z + _invL.rows[5].z;
+  var crypto  = _invL.rows[6].z;
+  var penZ    = _invL.pen;
+  updateInvBreakdown();
+  var rental=V("pr0"), prop=V("pr1"), bizZ=V("pr2")+V("pr3");
+  var debts = V("d0")+V("d1")+V("d2")+V("d3")+V("d4")+V("d5");
+  var gross = cash+gVal+sVal+stocksZ+fundsZ+crypto+penZ+rental+prop+bizZ;
+  var net = gross > debts ? gross - debts : 0;
+  var nv = S.nisabStd==="silver" ? 612.36*s : 87.48*g;
+  var elig = net >= nv && net > 0;
+  var zEst = elig ? net*0.025 : 0;
+
+  // Progress bar step subtotals
+  T("step1-total", cash > 0 ? fmt(cash) : "");
+  T("step2-total", (gVal+sVal) > 0 ? fmt(gVal+sVal) : "");
+  var _invTot=stocksZ+fundsZ+crypto+penZ; T("step3-total", _invTot > 0 ? fmt(_invTot) : "");
+  T("step4-total", (rental+prop+bizZ) > 0 ? fmt(rental+prop+bizZ) : "");
+  T("step5-total", debts > 0 ? fmt(debts) : "");
+
+  // Running total panel
+  var panel = G("live-panel");
+  if(!panel) return;
+  if(gross===0 && debts===0){ panel.style.display="none"; return; }
+  panel.style.display = "block";
+
+  var rd = [
+    {l:"Cash & savings",                    v:cash},
+    {l:"Gold ("+goldG.toFixed(2)+"g pure)", v:gVal},
+    {l:"Silver ("+silverG.toFixed(1)+"g)",  v:sVal},
+    {l:"Stocks & ISA (blended)",             v:stocksZ},
+    {l:"Funds & crypto",                    v:fundsZ+crypto},
+    {l:"Pension",                           v:penZ},
+    {l:"Property & business",               v:rental+prop+bizZ},
+    {l:"Less: debts",                       v:debts > 0 ? -debts : 0}
+  ];
+  var rh = "";
+  for(var ri=0; ri<rd.length; ri++){
+    if(!rd[ri].v) continue;
+    var neg = rd[ri].v < 0;
+    rh += '<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)">'
+        + '<span style="color:rgba(255,255,255,.5)">'+rd[ri].l+'</span>'
+        + '<span style="color:var(--white);font-weight:600">'+(neg?"-"+fmt(-rd[ri].v):fmt(rd[ri].v))+'</span></div>';
+  }
+  var ec = elig ? "color:#5DCAA5" : "color:#E07070";
+  var eligTxt = elig ? "Above nisab \u2014 est. Zakat: "+fmt(zEst) : net>0 ? "Below nisab threshold" : "Enter values above";
+  rh += '<div style="margin-top:.875rem;font-size:12px;font-weight:700;'+ec+'">'+eligTxt+'</div>';
+  var ltRows = G("lt-rows"); if(ltRows) ltRows.innerHTML = rh;
+  T("lt-zakat", zEst > 0 ? fmt(zEst) : "\u2014");
+}
+
+var FITR_DATA={
+  uk:{flag:"🇬🇧",name:"United Kingdom",range:"£5–£7 per person",badge:"2026 Confirmed",basis:"Based on cost of 2.5kg staple grain. Rates set annually by major UK Islamic charities.",note:"Action For Humanity sets £7 — always check with your preferred organisation.",sym:"£",defRate:"5.00",orgs:[{n:"NZF (National Zakat Foundation)",a:"5.00",t:"conf"},{n:"Islamic Relief UK",a:"5.00",t:"conf"},{n:"Muslim Aid",a:"5.00",t:"conf"},{n:"Human Appeal",a:"5.00",t:"conf"},{n:"Action For Humanity",a:"7.00",t:"conf"},{n:"Mayfair Islamic Centre (London)",a:"8.50",t:"est"}]},
+  us:{flag:"🇺🇸",name:"United States",range:"$10–$15 per person",badge:"2026 Confirmed",basis:"FCNA calculated using US Bureau of Labor Statistics CPI data for rice and flour, with precautionary buffer.",note:"Most US mosques recommend $12–$15. Confirm with your local mosque.",sym:"$",defRate:"10.00",orgs:[{n:"Fiqh Council of North America (FCNA)",a:"10.00",t:"conf"},{n:"IMAM-US",a:"10.00",t:"conf"},{n:"Mosque recommended minimum",a:"12.00",t:"est"}]},
+  ca:{flag:"🇨🇦",name:"Canada",range:"CA$10–$15 per person",badge:"2026 Est.",basis:"Based on cost of 3kg rice/flour from major retailers. Varies by city and province.",note:"Confirm with your local mosque — amounts vary by province and city.",sym:"CA$",defRate:"10.00",orgs:[{n:"Human Concern International",a:"10.00",t:"conf"},{n:"ISNA Canada",a:"12.00",t:"est"}]},
+  au:{flag:"🇦🇺",name:"Australia",range:"A$20 per person",badge:"2026 Confirmed",basis:"Islamic Relief Australia confirmed A$20 for 2026. Set annually by local scholars.",note:"Check with your local mosque for any variation in your state.",sym:"A$",defRate:"20.00",orgs:[{n:"Islamic Relief Australia",a:"20.00",t:"conf"}]},
+  eu:{flag:"🇪🇺",name:"Europe",range:"€5–€10 per person",badge:"2026 Est.",basis:"Varies significantly by country. Based on local staple food prices per national Islamic body.",note:"Check your country's national Islamic organisation — amounts differ across Europe.",sym:"€",defRate:"6.00",orgs:[{n:"Islamic Relief Germany / France",a:"6.00",t:"est"},{n:"Mosque councils (typical)",a:"8.00",t:"est"}]},
+  sa:{flag:"🇸🇦",name:"Saudi Arabia",range:"SAR 25–30 per person",badge:"2026 Official",basis:"Council of Senior Scholars issued official fatwa setting SAR 30 as cash equivalent for 2026.",note:"Can also be given in kind: 2.3kg rice, 2.04kg wheat, 2.1kg flour, or 1.64kg raisins.",sym:"SAR ",defRate:"30",orgs:[{n:"Council of Senior Scholars (official)",a:"30",t:"conf"},{n:"Or in food: 2.3kg rice / 2.04kg wheat",a:"In kind",t:""}]},
+  ae:{flag:"🇦🇪",name:"UAE",range:"AED 20–25 per person",badge:"2026 Est.",basis:"Set annually by the UAE General Authority of Islamic Affairs and Endowments.",note:"Confirm with your local mosque closer to Ramadan for the latest confirmed figure.",sym:"AED ",defRate:"22",orgs:[{n:"UAE General Authority of Islamic Affairs",a:"AED 20–25",t:"est"}]},
+  id:{flag:"🇮🇩",name:"Indonesia",range:"Rp 40,000–60,000 per person",badge:"2026 Confirmed",basis:"BAZNAS (National Zakat Agency) sets rate based on 2.5kg rice or 3.5 litres of staple food.",note:"Amount varies by region and city. Can also be paid in kind as 2.5kg rice.",sym:"Rp ",defRate:"50000",orgs:[{n:"BAZNAS (National Zakat Agency)",a:"Rp ~50,000",t:"conf"},{n:"Or in kind: 2.5kg rice",a:"In kind",t:""}]},
+  my:{flag:"🇲🇾",name:"Malaysia",range:"RM 7–22 per person",badge:"Varies by State",basis:"Set by each state's Islamic Religious Department (Jabatan Agama Islam Negeri). Wide variation.",note:"Wide variation by state. Check your state's official religious authority.",sym:"RM ",defRate:"12",orgs:[{n:"State Islamic Religious Dept (typical range)",a:"RM 7–22",t:"est"}]},
+  pk:{flag:"🇵🇰",name:"Pakistan",range:"PKR 300–500 per person",badge:"2026 Est.",basis:"Based on local wheat and rice prices. Set by mosques and welfare foundations per region.",note:"Varies by region. Confirm with your local mosque before Eid.",sym:"PKR ",defRate:"400",orgs:[{n:"Mosques & welfare foundations (typical)",a:"PKR 300–500",t:"est"}]},
+  in:{flag:"🇮🇳",name:"India",range:"₹150–₹250 per person",badge:"2026 Est.",basis:"Based on 1.63kg wheat equivalent. Using dates or raisins results in a higher amount.",note:"Varies by city and state. Check with your local mosque or Islamic centre.",sym:"₹",defRate:"200",orgs:[{n:"Wheat basis (typical)",a:"₹150–200",t:"est"},{n:"Dates / raisins basis (higher)",a:"₹200–250",t:"est"}]},
+  bd:{flag:"🇧🇩",name:"Bangladesh",range:"BDT 90–120 per person",badge:"2026 Est.",basis:"Based on local rice prices as set by the Islamic Foundation Bangladesh.",note:"Confirm with your local mosque for the current year's announced rate.",sym:"BDT ",defRate:"100",orgs:[{n:"Islamic Foundation Bangladesh",a:"BDT 90–120",t:"est"}]},
+  af:{flag:"🌍",name:"Africa",range:"Varies widely by country",badge:"Regional",basis:"Vast variation across the continent. Each country's scholars set rates based on local staple food costs.",note:"Always check with your national Islamic body or local mosque for the confirmed rate in your country.",sym:"",defRate:"",orgs:[{n:"Egypt — Al-Azhar guidance (EGP)",a:"EGP 10–20",t:"est"},{n:"Nigeria — mosque rate (₦)",a:"₦500–1,000",t:"est"},{n:"South Africa — Muslim Judicial Council (R)",a:"R25–R35",t:"est"}]},
+  sam:{flag:"🌎",name:"South America",range:"Varies by country",badge:"Regional",basis:"Based on local staple food cost. High inflation means rates change frequently.",note:"Check with your local mosque annually — amounts can change significantly year to year.",sym:"",defRate:"",orgs:[{n:"Brazil — Islamic centres (R$)",a:"R$15–25",t:"est"},{n:"Argentina — local mosques (ARS)",a:"ARS 1,500–3,000",t:"est"}]}
+};
+function showFitrPanel(key){var ph=G("fitr-region-placeholder"),panel=G("fitr-region-panel");if(!ph||!panel)return;if(!key||!FITR_DATA[key]){ph.style.display="flex";panel.style.display="none";return;}ph.style.display="none";panel.style.display="block";var d=FITR_DATA[key];T("fitr-pflag",d.flag);T("fitr-pname",d.name);T("fitr-prange",d.range);T("fitr-pbasis",d.basis);T("fitr-pbadge",d.badge);T("fitr-pnote",d.note);var rows=G("fitr-prows");if(!rows)return;rows.innerHTML="";d.orgs.forEach(function(o){var row=document.createElement("div");row.className="fitr-org-row";var tag=o.t==="conf"?'<span class="fitr-org-tag conf">confirmed</span>':o.t==="est"?'<span class="fitr-org-tag est">est.</span>':"";row.innerHTML='<span class="fitr-org-name">'+o.n+tag+'</span><span class="fitr-org-amt">'+o.a+"</span>";rows.appendChild(row);});}
+function calcUpdateRegion(key){var orgSel=G("fitr-org-sel"),sym=G("fitr-sym"),rateInp=G("fitr-rate");if(!orgSel)return;orgSel.innerHTML="";if(!key||!FITR_DATA[key]){var opt=document.createElement("option");opt.value="custom||0";opt.textContent="— Custom / enter your local mosque rate";orgSel.appendChild(opt);if(sym)sym.textContent="£";if(rateInp){rateInp.value="";rateInp.placeholder="Enter rate";}calcFitr();return;}var d=FITR_DATA[key];if(sym)sym.textContent=d.sym||"";d.orgs.forEach(function(o){if(o.t==="")return;var opt=document.createElement("option");opt.value="org|"+d.sym+"|"+o.a;opt.textContent=o.n+" — "+o.a+"/person";orgSel.appendChild(opt);});var custom=document.createElement("option");custom.value="custom|"+d.sym+"|0";custom.textContent="Custom / local mosque rate";orgSel.appendChild(custom);var firstRate=d.defRate||"";if(rateInp){rateInp.value=firstRate;rateInp.placeholder="Enter rate";}calcFitr();}
+function calcUpdateOrg(sel){var parts=sel.value.split("|");var sym=G("fitr-sym"),inp=G("fitr-rate");if(sym)sym.textContent=parts[1]||"£";if(parts[0]==="custom"){if(inp){inp.value="";inp.placeholder="Enter your local rate";inp.focus();}}else{var numeric=parseFloat((parts[2]||"").replace(/[^0-9.]/g,""));if(inp)inp.value=isNaN(numeric)?"":numeric.toFixed(2);}calcFitr();}
+function calcFitr(){var rate=parseFloat((G("fitr-rate")||{}).value)||0;var people=parseInt((G("fitr-people")||{}).value,10)||1;var sym=(G("fitr-sym")||{}).textContent||"£";if(rate<=0){T("fitr-total","—");T("fitr-note","Select your region and enter a rate above");return;}var total=rate*people;var fmt=function(n){return n>=1000?n.toLocaleString("en-GB",{minimumFractionDigits:0,maximumFractionDigits:0}):n.toFixed(2);};T("fitr-total",sym+fmt(total));var orgSel=G("fitr-org-sel");var orgName=orgSel&&orgSel.options[orgSel.selectedIndex]?orgSel.options[orgSel.selectedIndex].text.split(" — ")[0]:"custom rate";T("fitr-note",people+" person"+(people!==1?"s":"")+" × "+sym+fmt(rate)+" ("+orgName+")");}
+
+
+function calcHawl(){
+  var el=G("hawl-start"); if(!el||!el.value) return;
+  var start=new Date(el.value); if(isNaN(start.getTime())) return;
+  var LUNAR=354.367, today=new Date(), ms=86400000;
+  var cycles=Math.floor((today-start)/ms/LUNAR);
+  var nextDue=new Date(start.getTime()+(cycles+1)*LUNAR*ms);
+  var daysUntil=Math.ceil((nextDue-today)/ms);
+  var opts={year:"numeric",month:"long",day:"numeric"};
+  T("hawl-from",start.toLocaleDateString("en-GB",opts));
+  T("hawl-next",nextDue.toLocaleDateString("en-GB",opts));
+  var cdTxt,msgTxt;
+  if(daysUntil<0){cdTxt="Overdue by "+Math.abs(daysUntil)+" days";msgTxt="Your Zakat was due "+Math.abs(daysUntil)+" days ago. Please pay as soon as possible.";}
+  else if(daysUntil===0){cdTxt="Due today";msgTxt="Your Zakat is due today.";}
+  else if(daysUntil<=30){cdTxt="Due in "+daysUntil+" days";msgTxt="Your Zakat is due soon. Begin calculating your assets now.";}
+  else{var mo=Math.floor(daysUntil/30);cdTxt=daysUntil+" days remaining";msgTxt="Approximately "+mo+" month"+(mo!==1?"s":"")+" until your next Zakat. You may pay early during Ramadan.";}
+  T("hawl-countdown",cdTxt); T("hawl-msg",msgTxt);
+  var hr=G("hawl-result"); if(hr) hr.style.display="block";
+}
+
+function copyResult(){
+  var zakat=G("rzakat")?G("rzakat").textContent:"?";
+  var net=G("rnet")?G("rnet").textContent:"?";
+  var nisab=G("rnisab")?G("rnisab").textContent:"?";
+  var elig=G("relig")?G("relig").textContent:"";
+  var date=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  var madh={hanafi:"Hanafi",maliki:"Maliki",shafii:"Shafi'i",hanbali:"Hanbali"};
+  var src=S.priceSource==="live"?"Live API prices":"Estimated prices";
+  var txt="ZakatCalc Result -- "+date+"\n\n"+elig+"\n\nZakat due: "+zakat+"\nNet zakatable wealth: "+net+"\nNisab: "+nisab+"\n\nSchool: "+madh[S.madhab]+" | Nisab: "+cap(S.nisabStd)+" | "+S.currency+"\nPrices: "+src;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      var btn=G("copy-btn"); if(btn){btn.textContent="Copied!";btn.style.color="var(--teal)";}
+      setTimeout(function(){var b=G("copy-btn");if(b){b.textContent="Copy result summary";b.style.color="";}},3000);
+    });
+  }
+}
+
+function buildWAMsg(){
+  var zakat=G("rzakat")?G("rzakat").textContent:"?";
+  var net=G("rnet")?G("rnet").textContent:"?";
+  var gross=G("rgross")?G("rgross").textContent:"?";
+  var liab=G("rliab")?G("rliab").textContent:"?";
+  var nisab=G("rnisab")?G("rnisab").textContent:"?";
+  var elig=G("relig")?G("relig").textContent:"";
+  var date=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  var madh={hanafi:"Hanafi",maliki:"Maliki",shafii:"Shafi'i",hanbali:"Hanbali"};
+  var src=S.priceSource==="live"?"Live API spot prices":"Estimated prices";
+  var isOblig=elig.toLowerCase().indexOf("obligatory")>-1;
+  var tick=isOblig?"\u2705":"\u2139\ufe0f";
+  var msg="*ZakatCalc Result* - "+date+"\n\n";
+  msg+=tick+" *"+elig+"*\n\n";
+  msg+="*Zakat Due:* "+zakat+"\n";
+  msg+="------------------------\n";
+  msg+="Total zakatable assets: "+gross+"\n";
+  msg+="Less liabilities: "+liab+"\n";
+  msg+="*Net zakatable wealth:* "+net+"\n";
+  msg+="Nisab threshold: "+nisab+"\n\n";
+  msg+="*Settings:* "+madh[S.madhab]+" school | "+cap(S.nisabStd)+" nisab\n";
+  msg+="Currency: "+S.currency+" | Prices: "+src+"\n\n";
+  msg+="_Calculated using ZakatCalc_\n";
+  msg+="_Sources: AAOIFI, FCNA, OIC Fiqh Academy_\n";
+  msg+="_Please verify with your local scholar for complex situations._";
+  return msg;
+}
+
+function shareWhatsApp(){
+  var phone=prompt("Enter WhatsApp number with country code (digits only):\nExample: 447700900000 for a UK number.\nLeave blank to open your chat list.","");
+  if(phone===null) return;
+  phone=phone.replace(/[^0-9]/g,"");
+  var msg=buildWAMsg();
+  var url=phone.length>6?"https://api.whatsapp.com/send?phone="+phone+"&text="+encodeURIComponent(msg):"https://api.whatsapp.com/send?text="+encodeURIComponent(msg);
+  window.open(url,"_blank","noopener,noreferrer");
+}
+
+function shareWhatsAppSelf(){
+  var url="https://api.whatsapp.com/send?text="+encodeURIComponent(buildWAMsg());
+  window.open(url,"_blank","noopener,noreferrer");
+}
+
+
+// ── FAQ ──
+function doFaq(btn){ var item=btn.parentElement; var was=item.classList.contains("open"); var items=document.querySelectorAll(".faq-item"); for(var i=0;i<items.length;i++) items[i].classList.remove("open"); if(!was) item.classList.add("open"); }
+
+// ── SCROLL REVEAL ──
+var obs=new IntersectionObserver(function(entries){
+  for(var i=0;i<entries.length;i++){
+    if(entries[i].isIntersecting){ entries[i].target.classList.add("vis"); obs.unobserve(entries[i].target); }
+  }
+},{threshold:0.08,rootMargin:"0px 0px -40px 0px"});
+var revs=document.querySelectorAll(".reveal,.cr");
+for(var ri=0;ri<revs.length;ri++) obs.observe(revs[ri]);
+var crs=document.querySelectorAll(".cr");
+for(var ci=0;ci<crs.length;ci++) crs[ci].style.transitionDelay=((ci%4)*0.08)+"s";
+
+// ── BOOT ──
+
+function toggleResearchNotes(){
+  var body=G("rn-body"), chev=G("rn-chev"), btn=G("rn-toggle");
+  if(!body) return;
+  var open = body.style.display !== "none";
+  body.style.display = open ? "none" : "block";
+  if(chev) chev.style.transform = open ? "rotate(0deg)" : "rotate(180deg)";
+  if(btn) btn.style.background = open ? "rgba(255,255,255,.05)" : "rgba(255,255,255,.08)";
+}
+addGoldItem("22");
+  loadStats();
+fetchPrices();
+allSym();
+calcFitr();
+var yrEl=G("yr"); if(yrEl) yrEl.textContent=new Date().getFullYear();
+
+// ── FEEDBACK FORM ──
+function submitFeedback(e){
+  e.preventDefault();
+  var btn=G("fb-btn"), btnTxt=G("fb-btn-txt"), errEl=G("fb-error"), form=G("fb-form");
+  if(!btn||!form) return;
+
+  // Validate message
+  var msg=G("fb-msg"); if(!msg||!msg.value.trim()){msg.focus();return;}
+
+  // UI: loading state
+  btn.disabled=true;
+  btnTxt.textContent="Sending…";
+  if(errEl) errEl.classList.remove("show");
+
+  var data={};
+  var fd=new FormData(form);
+  fd.forEach(function(v,k){ data[k]=v; });
+
+  fetch("https://api.web3forms.com/submit",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify(data)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    if(res.success){
+      form.style.display="none";
+      var suc=G("fb-success"); if(suc) suc.classList.add("show");
+    } else {
+      throw new Error(res.message||"Submission failed");
+    }
+  })
+  .catch(function(){
+    btn.disabled=false;
+    btnTxt.textContent="Send feedback";
+    if(errEl) errEl.classList.add("show");
+  });
+}
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"3f0343781f94470fb5d11d9bb2f2e436","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

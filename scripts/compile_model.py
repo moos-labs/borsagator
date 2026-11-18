@@ -37,6 +37,7 @@ Usage:
     compile_model.py <sweep_dir> [--repo-root PATH]
                      [--archive-sha SHA] [--compiler-sha SHA]
                      [--profiles-dir PATH] [--out PATH]
+                     [--sharia-standards AAOIFI,EGX33]
     compile_model.py --check-model <report-model.json>
 
 The compiler never re-reads the ledger to "correct" a sweep: the
@@ -46,6 +47,25 @@ SHA plus whether they match). It never dedups corporate actions, never
 recomputes a forecast, and never invents a field an input lacks --
 absent input fields normalise to ``null`` and are recorded in
 ``ensemble_shape``.
+
+Sharia section (issue #170): every model carries a ``sharia`` block
+projected from the Sharia engine's stored verdict tables
+(``<repo-root>/sharia/verdicts-<standard>.json``, issue #168) for
+the standards named by ``--sharia-standards`` (default: all
+implemented standards). The compiler consumes the engine's tables
+and API only -- it re-implements no screening logic. An unknown or
+unimplemented standard refuses the compile: the job errors clearly
+rather than silently dropping it. A selected standard with no
+stored row for the ticker renders as ``insufficient-data`` with the
+gap named -- never a blank or silently partial section. Standards
+that define no purification rule (EGX33) are excluded from the
+block's average purification ratio, and the exclusion is shown in
+the block itself, never hidden. The block is additive, so the
+schema stays ``borsagator-report-model/1``: every existing
+consumer reads named fields only (``delta.model_to_view`` carries
+the block through for the renderer, unread by the diff core). A
+change to an existing field's meaning still bumps the version
+under D-7.
 """
 import argparse
 import csv
@@ -75,9 +95,13 @@ DEGRADED_REASONS = ("keyless", "partial-fleet", "no-base-price",
 # (the 25% anchor ``realized_sigma`` uses, ensemble.py:311-315).
 SANITY_PCT = 0.25
 # A credential key is an exact known name, an ``_API_KEY`` suffix,
-# or a TOKEN / SECRET / PASSWORD-style underscore component. A bare
-# ``KEY`` component alone is NOT enough: tools legitimately emit
-# ``*_stat_key`` metrics (bt), which are data, not credentials.
+# or a TOKEN / SECRET / PASSWORD-style component. The component test
+# is a SUBSTRING test, not a whole-part test: concatenated /
+# camelCase spellings (apiKey, accessToken, clientSecret, secretKey)
+# split to a single part and would otherwise match nothing (#150).
+# A bare ``KEY`` alone is NOT enough: tools legitimately emit
+# ``*_stat_key`` metrics (bt), which are data, not credentials —
+# ``KEY`` only counts together with ``API``.
 SECRET_PATTERNS = ("TOKEN", "SECRET", "PASSWORD", "PRIVATE",
                    "BEARER", "SESSION", "COOKIE", "CREDENTIAL", "AUTH")
 KNOWN_SECRET_NAMES = ("COHERE_API_KEY", "SIMFIN_API_KEY",
@@ -146,6 +170,35 @@ def _replace_nonfinite(obj):
     return obj
 
 
+def _null_nonfinite(obj, path, coercion_failed, source="ensemble"):
+    """Walk a structure, replacing _NonFinite sentinels and
+    non-finite floats with None and recording each nulled field in
+    ``coercion_failed`` (issue #155). Same entry shape as
+    :func:`sanitize_summary` -- ``tool`` names the source section,
+    ``field`` is the dotted path within it -- so a reader can see
+    exactly which field was nulled and why. ``path`` is the dotted
+    path of ``obj`` itself."""
+    if isinstance(obj, _NonFinite):
+        coercion_failed.append(
+            {"tool": source, "field": path,
+             "raw_value": obj.token, "reason": "non-finite value"})
+        return None
+    if isinstance(obj, dict):
+        return {key: _null_nonfinite(
+            value, f"{path}.{key}" if path else str(key),
+            coercion_failed, source) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [_null_nonfinite(value, f"{path}[{i}]",
+                                coercion_failed, source)
+                for i, value in enumerate(obj)]
+    if isinstance(obj, float) and not math.isfinite(obj):
+        coercion_failed.append(
+            {"tool": source, "field": path,
+             "raw_value": repr(obj), "reason": "non-finite value"})
+        return None
+    return obj
+
+
 def _canonical_bytes(obj):
     """The byte form the Actions EMITTER / orchestrator writes:
     ``json.dumps(obj, indent=2)``, no trailing newline."""
@@ -210,15 +263,21 @@ def _git_rev_parse(repo_dir, rev):
 def _is_secret_key(key):
     """A metric/summary key that names a credential (R-12). Exact
     known names, an ``_API_KEY`` suffix, or a TOKEN / SECRET /
-    PASSWORD-style underscore component. A bare ``KEY`` component
-    (``total_return_stat_key``) is a tool metric, not a credential,
-    and is kept."""
+    PASSWORD-style component. The component test is a SUBSTRING
+    test on the upper-cased key, so concatenated / camelCase
+    spellings (``apiKey``, ``accessToken``, ``clientSecret``,
+    ``secretKey``) are caught too (#150). A bare ``KEY`` alone
+    (``total_return_stat_key``, ``monkey``) is a tool metric, not
+    a credential, and is kept — ``KEY`` only counts together with
+    ``API``."""
     upper = str(key).upper()
     if upper in KNOWN_SECRET_NAMES:
         return True
-    parts = re.split(r"[^A-Z0-9]+", upper)
-    if "API" in parts and "KEY" in parts:
+    if any(p in upper for p in ("TOKEN", "SECRET", "PASSWORD")):
         return True
+    if "API" in upper and "KEY" in upper:
+        return True
+    parts = re.split(r"[^A-Z0-9]+", upper)
     return any(p in SECRET_PATTERNS for p in parts)
 
 
@@ -590,23 +649,41 @@ def read_news_items(sweep_dir, filename):
 
 def ex_date_adjustment(last_date, base_date, corporate_actions):
     """Mechanical adjustment for a series whose last close predates
-    an ex-date inside (last_date, base_date]: the first dated action
-    in that window, as a fraction (mechanical_pct / 100), or None
-    when no dated action applies."""
+    an ex-date inside (last_date, base_date]: the COMPOUNDED
+    fraction of EVERY dated action in that window, or None when no
+    dated action applies.
+
+    Each action's mechanical_pct is ``-dps / base * 100`` against
+    the same ensemble base (ensemble.py), so two in-window actions
+    drop the price by dps1 + dps2 off that one base -- the
+    compounded fraction is the SUM of the fractions. (Multiplicative
+    compounding would understate the drop by the m1*m2 cross-term
+    and is wrong for this definition.) In-window actions are summed
+    in (ex_date, mechanical_pct) order so the result never depends
+    on disclosure-item order. An unparseable mechanical_pct on any
+    in-window action returns None (fail closed, as before: the
+    tripwire then compares the unadjusted close and can only
+    false-flag, never false-pass)."""
     if not last_date or not base_date:
         return None
-    actions = corporate_actions or []
-    for action in actions:
+    in_window = []
+    for action in corporate_actions or []:
         ex_date = action.get("ex_date")
         mech = action.get("mechanical_pct")
         if not ex_date or mech is None:
             continue
         if last_date < ex_date <= base_date:
-            try:
-                return float(mech) / 100.0
-            except (TypeError, ValueError):
-                return None
-    return None
+            in_window.append((ex_date, mech))
+    if not in_window:
+        return None
+    total = 0.0
+    for _ex_date, mech in sorted(in_window, key=lambda pair: (
+            pair[0], str(pair[1]))):
+        try:
+            total += float(mech) / 100.0
+        except (TypeError, ValueError):
+            return None
+    return total
 
 
 def tripwire(digest, ensemble, series, base_source):
@@ -773,6 +850,217 @@ def build_benchmark(sweep_dir):
     return out
 
 
+# ---------------------------------------------------------------- sharia
+
+# The average is labelled as exactly what it is -- an average of
+# per-standard ratios -- never as a standard's own figure (#170).
+AVG_PURIFICATION_LABEL_EN = (
+    "Average purification ratio across the selected standards that "
+    "define a purification rule (an average of per-standard ratios; "
+    "not a figure of any single standard)")
+AVG_PURIFICATION_LABEL_AR = (
+    "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير "
+    "(متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)")
+
+
+def _load_sharia_engine():
+    """Import the sibling Sharia engine (issue #168). The compiler
+    consumes its API only -- the implemented-standard list and the
+    framing lines -- and its stored verdict tables; no screening
+    logic is re-implemented here."""
+    scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    try:
+        import sharia_engine
+    except Exception as exc:
+        raise CompileError(f"sharia engine unavailable: {exc}")
+    return sharia_engine
+
+
+def resolve_sharia_standards(requested):
+    """Validate the ``sharia_standards`` job parameter (issue #170).
+
+    ``None`` selects all implemented standards. Any unknown or
+    unimplemented id refuses the compile (fail loudly): the job
+    errors clearly rather than silently dropping the standard.
+    Returns (resolved_ids, engine_module)."""
+    engine = _load_sharia_engine()
+    implemented = engine.available_standards()
+    if requested is None:
+        return list(implemented), engine
+    resolved = []
+    for raw in requested:
+        std = str(raw).strip().upper()
+        if not std:
+            continue
+        if std not in implemented:
+            raise CompileError(
+                f"unknown sharia standard {raw!r} in "
+                f"sharia_standards: implemented standards are "
+                f"{', '.join(implemented)}")
+        if std not in resolved:
+            resolved.append(std)
+    if not resolved:
+        raise CompileError(
+            "sharia_standards parameter names no standard")
+    return resolved, engine
+
+
+def load_sharia_table(repo_root, standard):
+    """Load the engine's stored verdict table
+    ``<repo-root>/sharia/verdicts-<standard>.json``; ``None`` when
+    the table file is absent or unreadable (the section renders
+    that as insufficient-data, never as a silent skip)."""
+    path = os.path.join(repo_root, "sharia",
+                        f"verdicts-{standard.lower()}.json")
+    if not os.path.isfile(path):
+        return None
+    try:
+        doc = _load_json_lenient(path)
+    except Exception:
+        return None
+    return doc if isinstance(doc, dict) else None
+
+
+def build_sharia_section(ticker, requested, standards, tables,
+                         engine):
+    """Assemble the model's ``sharia`` block (issue #170) from the
+    engine's stored verdict tables. Pure projection of the rows the
+    engine emitted: verdict, ratio table, purification, statement
+    period, rule-set version, the denominator variant where the
+    rule set has one, and the not-a-fatwa framing -- in both
+    languages, at section level and on every per-standard entry.
+
+    A selected standard whose table is missing, or which has no
+    row for the ticker, renders as ``insufficient-data`` with the
+    gap named in ``missing_inputs``. The average purification
+    ratio covers only the selected standards that define a
+    purification rule AND produced a ratio; every other selected
+    standard is listed under ``excluded`` with its reason.
+    Returns (section, flags)."""
+    entries = []
+    flags = []
+    included = []
+    excluded = []
+    for std in standards:
+        table = tables.get(std)
+        meta = (table or {}).get("standard") or {}
+        entry = {
+            "standard": std,
+            "name_en": meta.get("name_en"),
+            "name_ar": meta.get("name_ar"),
+            "ruleset_version": meta.get("ruleset_version"),
+            "engine_version": (table or {}).get("engine_version"),
+            "source_table": f"sharia/verdicts-{std.lower()}.json",
+            "table_generated_at": (table or {}).get("generated_at"),
+            "verdict": "insufficient-data",
+            "statement_period": None,
+            "screening_date": None,
+            "parameters": {},
+            "denominator_variant": None,
+            "activity": {"classification": None,
+                         "evidence_source": None},
+            "ratios": [],
+            "purification": {"defined": False, "ratio": None,
+                             "per_share": None},
+            "missing_inputs": [],
+            "framing_en": engine.FRAMING_EN,
+            "framing_ar": engine.FRAMING_AR,
+        }
+        row = None
+        if table is None:
+            entry["missing_inputs"] = [
+                f"stored verdict table "
+                f"sharia/verdicts-{std.lower()}.json"]
+            flags.append(f"sharia-table-missing: {std}")
+        else:
+            row = next((r for r in table.get("rows") or []
+                        if r.get("ticker") == ticker), None)
+            if row is None:
+                entry["missing_inputs"] = [
+                    f"verdict row for {ticker} in "
+                    f"sharia/verdicts-{std.lower()}.json"]
+                flags.append(f"sharia-row-missing: {std} {ticker}")
+        if row is not None:
+            entry.update({
+                "ruleset_version": row.get("ruleset_version"),
+                "engine_version": row.get("engine_version"),
+                "verdict": row.get("verdict"),
+                "statement_period": row.get("statement_period"),
+                "screening_date": row.get("screening_date"),
+                "parameters": row.get("parameters") or {},
+                "denominator_variant":
+                    (row.get("parameters") or {}).get(
+                        "denominator_variant"),
+                "activity": row.get("activity") or entry["activity"],
+                "ratios": row.get("ratios") or [],
+                "purification": row.get("purification")
+                or entry["purification"],
+                "missing_inputs": row.get("missing_inputs") or [],
+                "framing_en": row.get("framing_en")
+                or engine.FRAMING_EN,
+                "framing_ar": row.get("framing_ar")
+                or engine.FRAMING_AR,
+            })
+            if entry["verdict"] == "insufficient-data":
+                flags.append(f"sharia-insufficient-data: {std}")
+        entries.append(entry)
+
+        # Average-purification membership is decided here, where
+        # row presence is known, so the exclusion reason is exact.
+        purification = entry["purification"] or {}
+        if row is None:
+            excluded.append({
+                "standard": std,
+                "reason": "no verdict row (insufficient-data)"})
+        elif not purification.get("defined"):
+            excluded.append({
+                "standard": std,
+                "reason": "standard defines no purification rule"})
+        elif purification.get("ratio") is None:
+            excluded.append({
+                "standard": std,
+                "reason": "purification ratio unavailable "
+                          "(insufficient-data)"})
+        else:
+            included.append({"standard": std,
+                             "ratio": purification["ratio"]})
+
+    # Disagreement is judged on determinate verdicts only: an
+    # insufficient-data entry is an absence of a verdict, not a
+    # dissenting one.
+    determinate = [e["verdict"] for e in entries
+                   if e["verdict"] != "insufficient-data"]
+    disagreement = len(set(determinate)) > 1
+
+    average = None
+    if included:
+        average = round(
+            sum(item["ratio"] for item in included)
+            / len(included), 6)
+
+    section = {
+        "requested": list(requested) if requested is not None
+        else None,
+        "selection": "parameter" if requested is not None
+        else "default-all-implemented",
+        "standards": entries,
+        "verdicts": {e["standard"]: e["verdict"] for e in entries},
+        "disagreement": disagreement,
+        "average_purification": {
+            "value": average,
+            "label_en": AVG_PURIFICATION_LABEL_EN,
+            "label_ar": AVG_PURIFICATION_LABEL_AR,
+            "included": included,
+            "excluded": excluded,
+        },
+        "framing_en": engine.FRAMING_EN,
+        "framing_ar": engine.FRAMING_AR,
+    }
+    return section, flags
+
+
 # ---------------------------------------------------------------- compile
 
 def _sweep_rel_path(sweep_dir):
@@ -795,7 +1083,8 @@ def _run_id_from(sweep_dir, manifest):
 
 
 def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
-                  compiler_sha=None, profiles_dir=None):
+                  compiler_sha=None, profiles_dir=None,
+                  sharia_standards=None):
     """Compile one sweep dir into a Report Model dict. Raises
     CompileError on a fail-loudly refusal (F-1 / F-5 / F-9 / F-6 /
     F-10). Degraded models are returned with their flags."""
@@ -858,6 +1147,16 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
     if not finished:
         flags.append("finished-missing")
 
+    # ---- sharia parameter (issue #170): validate FIRST, so an
+    # ---- unknown standard refuses before any heavy verification.
+    sharia_resolved, sharia_engine_mod = resolve_sharia_standards(
+        sharia_standards)
+
+    # ---- ensemble: loaded leniently, then normalised (#155).
+    # ---- The coercion lists live here, before the ensemble load,
+    # ---- because the normalisation records into coercion_failed.
+    coercion_failed = []
+    secret_dropped = []
     ensemble = None
     ensemble_absent = not os.path.isfile(ensemble_path)
     if not ensemble_absent:
@@ -869,6 +1168,17 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         if not isinstance(ensemble, dict):
             raise CompileError(f"ensemble.json is not an object in "
                                f"{sweep_dir}")
+        # Issue #155: the raw ensemble is copied verbatim into the
+        # model ("ensemble": ensemble), and price / family_scores /
+        # horizons / risk / weights / corporate_actions are
+        # extracted from it -- so a NaN anywhere in it used to
+        # raise in dump_model (allow_nan=False) and lose the whole
+        # model, with no coercion flag. Null each non-finite value
+        # here, with a coercion_failed entry recording its field
+        # path, so every section derived from the ensemble is clean
+        # before construction.
+        ensemble = _null_nonfinite(ensemble, "ensemble",
+                                   coercion_failed)
     if ensemble_absent and sweep_shape:
         digest_md = ""
         md_path = os.path.join(sweep_dir, "digest.md")
@@ -892,8 +1202,6 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
 
     # ---- tools: verify embedded vs collected (F-5), coerce (F-3),
     # ---- unknown status (F-9), base-tool summary (F-2).
-    coercion_failed = []
-    secret_dropped = []
     tools = []
     tools_failed = []
     ticker_mismatch = []
@@ -1324,6 +1632,15 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
     llm, llm_flags = build_llm(tools, family_scores)
     flags.extend(llm_flags)
 
+    # ---- sharia section (issue #170): projection of the engine's
+    # ---- stored verdict tables from the main checkout.
+    sharia_tables = {std: load_sharia_table(repo_root, std)
+                     for std in sharia_resolved}
+    sharia, sharia_flags = build_sharia_section(
+        ticker, sharia_standards, sharia_resolved, sharia_tables,
+        sharia_engine_mod)
+    flags.extend(sharia_flags)
+
     model = {
         "model_version": MODEL_VERSION,
         "schema": SCHEMA,
@@ -1390,6 +1707,7 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         "reaction_profile": reaction_profile,
         "llm": llm,
         "benchmark": build_benchmark(sweep_dir),
+        "sharia": sharia,
         "flags": flags,
         "metrics_schema": "untyped-flat",
     }
@@ -1399,14 +1717,61 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
 def dump_model(model, out_path):
     """Write the model deterministically (sorted keys, fixed float
     formatting, no wall-clock timestamps) and verify it parses
-    under strict JSON before the write lands."""
+    under strict JSON before the write lands. The write is atomic
+    (#161): the text goes to a temp file in the same directory and
+    is moved into place, so a crash or write failure can never
+    leave a truncated report-model.json behind."""
     text = json.dumps(model, indent=2, ensure_ascii=False,
                       sort_keys=True, allow_nan=False) + "\n"
     json.loads(text, parse_constant=lambda c: (_ for _ in ()).throw(
         ValueError(f"non-finite constant {c!r} in model")))
-    with open(out_path, "w", encoding="utf-8") as handle:
-        handle.write(text)
+    tmp_path = out_path + ".tmp"
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        os.replace(tmp_path, out_path)
+    except Exception:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        raise
     return text
+
+
+def _quarantine_previous_model(out_path):
+    """#161: invalidate the previous model before a recompile is
+    attempted. A refused/failed recompile must not leave an older
+    report-model.json in place for a file-presence consumer to use
+    as current, so the old file is moved aside (kept for
+    inspection under ``.quarantined``) before compile_sweep runs.
+    Returns True when there was nothing to quarantine or the move
+    succeeded; False when the move failed -- in that case the
+    caller must not proceed, or the stale model would survive a
+    refusal exactly as before."""
+    if not os.path.isfile(out_path):
+        return True
+    try:
+        os.replace(out_path, out_path + ".quarantined")
+    except OSError as exc:
+        print(f"compile failed quarantining previous model "
+              f"{out_path}: {exc}", file=sys.stderr)
+        return False
+    return True
+
+
+def _clear_error_marker(error_path):
+    """#161: remove a stale compile_error.txt after a successful
+    compile, so a good model never sits next to an old error
+    marker. Best-effort with a warning: the model is already
+    written, so a removal failure must not fail the compile."""
+    if not os.path.isfile(error_path):
+        return
+    try:
+        os.remove(error_path)
+    except OSError as exc:
+        print(f"compile warning: could not clear stale error "
+              f"marker {error_path}: {exc}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------- consumer check
@@ -1463,6 +1828,13 @@ def main(argv=None):
     ap.add_argument("--out", default=None,
                     help="model output path (default: "
                          "<sweep_dir>/report-model.json)")
+    ap.add_argument("--sharia-standards", default=None,
+                    action="append",
+                    help="Sharia standards for the model's sharia "
+                         "section (issue #170): comma-separated "
+                         "and/or repeatable; default: all "
+                         "implemented standards. An unknown "
+                         "standard refuses the compile.")
     ap.add_argument("--check-model", default=None,
                     help="consumer schema check for a model file "
                          "(exits 2 when unsupported)")
@@ -1488,12 +1860,24 @@ def main(argv=None):
         os.path.normpath(args.sweep_dir), "report-model.json")
     error_path = os.path.join(
         os.path.dirname(out_path), "compile_error.txt")
+    # #161: invalidate the previous model BEFORE compiling, so a
+    # refusal, crash, or write failure can never leave it in place
+    # as if it were the current compile's result. Fail closed when
+    # the quarantine itself fails.
+    if not _quarantine_previous_model(out_path):
+        return 1
+    sharia_standards = None
+    if args.sharia_standards:
+        sharia_standards = [
+            part.strip() for chunk in args.sharia_standards
+            for part in chunk.split(",") if part.strip()]
     try:
         model = compile_sweep(
             args.sweep_dir, repo_root=args.repo_root,
             archive_sha=args.archive_sha,
             compiler_sha=args.compiler_sha,
-            profiles_dir=args.profiles_dir)
+            profiles_dir=args.profiles_dir,
+            sharia_standards=sharia_standards)
     except CompileError as exc:
         message = f"compile refused: {exc}\n"
         print(message, end="", file=sys.stderr)
@@ -1509,6 +1893,9 @@ def main(argv=None):
         print(f"compile failed writing {out_path}: {exc}",
               file=sys.stderr)
         return 1
+    # #161: a successful compile clears any stale error marker, so
+    # a good model never sits next to an old refusal.
+    _clear_error_marker(error_path)
     degraded = "degraded" if model["flags"] else "clean"
     print(f"compile_model: {model['sweep_dir']} -> {out_path} "
           f"({degraded}, {len(model['flags'])} flags, "

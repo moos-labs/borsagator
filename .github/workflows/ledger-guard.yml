@@ -16,6 +16,13 @@ name: Ledger guard
 # 23:47Z-05:47Z missed (seven consecutive). The #128/#126 edits
 # followed the #115 recreate; this registration is left undisturbed.
 # Evidence point: the 06:47Z tick.
+# Issue #142 (2026-11-18): PR-merge re-registration — the 06:08Z
+# 17 Nov delete+re-create restored only two late schedule runs
+# (08:32:28Z, 17:55:16Z); 22+ consecutive :47 ticks missed after
+# that, and 03:47Z/04:47Z/05:47Z 18 Nov missed while manual
+# dispatch still works. This comment-only touch goes through a
+# normal PR merge (not a Contents-API commit) to force a fresh
+# schedule registration by another path. Evidence point: 06:47Z.
 # Issue #128: every completed run also writes a timestamped
 # heartbeat (ledger/guard-heartbeat.json) — the watchdog notices a
 # dead guard within 2h, so a missed schedule can never again go

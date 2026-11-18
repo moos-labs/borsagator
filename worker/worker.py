@@ -6,6 +6,9 @@ The worker's control bus is the borsagator repo itself:
   {"id": "...", "job": "run yahooquery POUL.CA", "added": "<iso>"}
 - The worker claims a job by committing queue/claims/<id>.json and
   pushing; a push conflict means another worker won — skip.
+- A job that publishes successfully is recorded in
+  queue/done/<id>.json (archive commit); done jobs are never
+  re-claimed, even after the 6 h claim reclamation (issue #149).
 - Results are committed to the `archive` branch under
   worker-runs/<ts>__<job-slug>/ (same tree shape as Actions sweeps).
 - queue/heartbeat.json on the `queue` branch is rewritten every cycle
@@ -24,6 +27,7 @@ every poll cycle the worker checks it and enqueues a deterministic
 only a fallback (staggered to 06:45 UTC, with a skip-check on today's
 claim) until the worker schedule has fired correctly twice.
 """
+import hashlib
 import json
 import os
 import re
@@ -51,6 +55,31 @@ UPDATE_BRANCH = os.environ.get("GATOR_UPDATE_BRANCH", "worker-release")
 UPDATE_PIN = os.environ.get("GATOR_PIN_SHA", "")
 CODE = ROOT / "release"      # release-branch checkout (was ROOT/"main")
 UPDATE_ERROR = None          # last self-update refusal, in heartbeat
+
+
+def _sha256_file(path):
+    try:
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    except Exception:
+        return ""
+
+
+# Issue #160: the code the RUNNING process loaded, hashed once at
+# import. The heartbeat used to report update_checkout_sha() — the
+# /opt/gator/release checkout's HEAD — so after a checkout of the new
+# tip a failed me.write_bytes / os.execv (swallowed by
+# `except Exception: pass`) left the heartbeat claiming the new SHA
+# while old code ran. Hashing the file at heartbeat time would still
+# lie in that window (a successful write + failed execv leaves new
+# bytes on disk under an old process); the import-time hash is the
+# bytes this process actually loaded, and a successful execv re-imports
+# (and re-hashes) in the new process.
+RUNNING_CODE_SHA = _sha256_file(Path(__file__).resolve())
+
+
+def running_code_sha():
+    """SHA-256 of the running worker.py bytes (issue #160)."""
+    return RUNNING_CODE_SHA
 # Panel round 2 (Gemini review, 2026-11-14): the bus credential must
 # never reach a tool's process environment — tools have dumped env in
 # debug logs before, and results are pushed to a public archive.
@@ -61,10 +90,35 @@ STALE_CLAIM_HOURS = 6
 OUT_RETENTION_DAYS = 7
 
 
+def _assert_no_denied(env):
+    """Final subprocess-boundary guard (issue #146): a supplied env
+    must never carry a denied credential. Fail closed — a caller
+    that built the env wrong is a bug, and the leak it would cause
+    lands in a publicly archived tool log."""
+    leaked = sorted(set(env) & ENV_DENY_FOR_TOOLS)
+    if leaked:
+        raise AssertionError(
+            "refusing to spawn a subprocess with denied env keys: "
+            + ", ".join(leaked))
+
+
 def sh(cmd, cwd=None, env=None, timeout=3600):
-    e = dict(os.environ)
-    if env:
-        e.update(env)
+    if env is None:
+        # Worker-internal calls (git/bus plumbing): the worker's own
+        # process env, bus credential included — this is the worker,
+        # not a tool.
+        e = dict(os.environ)
+    else:
+        # Issue #146: a supplied env is the COMPLETE subprocess env.
+        # The old `e = dict(os.environ); e.update(env)` merged the
+        # caller's filtered env back into the full parent env, so the
+        # ENV_DENY_FOR_TOOLS filtering in run_tool (which strips
+        # GATOR_BUS_URL) was undone at this final boundary and the bus
+        # write-credential reached every tool process. Callers that
+        # supply env (run_tool, the EGX harvest) already pass a full
+        # filtered copy of os.environ, so nothing is lost here.
+        _assert_no_denied(env)
+        e = dict(env)
     return subprocess.run(cmd, shell=True, cwd=cwd, env=e,
                           capture_output=True, text=True, timeout=timeout)
 
@@ -113,7 +167,13 @@ def heartbeat():
     (BUS / "queue").mkdir(exist_ok=True)
     payload = {"worker": os.uname().nodename, "at": now(),
                "version": "worker-v1",
-               "code_sha": update_checkout_sha(),
+               # Issue #160: code_sha is the hash of the RUNNING code,
+               # not the release checkout's HEAD (update_checkout_sha
+               # lies after a failed adopt). checkout_sha keeps the
+               # checkout HEAD visible for diagnostics.
+               "code_sha": running_code_sha(),
+               "code_sha_kind": "sha256-running-bytes",
+               "checkout_sha": update_checkout_sha(),
                "update_branch": UPDATE_BRANCH}
     if QUEUE_ERROR:
         # A malformed queue.json must not idle the fleet behind a
@@ -147,7 +207,35 @@ def claimed(job_id):
     return (BUS / "queue" / "claims" / f"{job_id}.json").exists()
 
 
+def done(job_id):
+    """Issue #149: durable completion state. A job is done only when
+    its done record exists — written after a successful publish, and
+    never reclaimed. Claims are the mutex, not the done-state."""
+    return (BUS / "queue" / "done" / f"{job_id}.json").exists()
+
+
+def _mark_done(job, archive_sha):
+    """Issue #149: persist the done record (archive commit) after a
+    successful publish. Returns True when the record reached the
+    bus; on failure the job stays re-runnable after reclamation
+    (the pre-fix behaviour) and the failure is loud on stderr."""
+    d = BUS / "queue" / "done"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{job['id']}.json").write_text(json.dumps(
+        {"worker": os.uname().nodename, "at": now(), "job": job["job"],
+         "archive": archive_sha}))
+    if push_bus(f"done {job['id']}"):
+        return True
+    print(f"_mark_done: push failed for {job['id']}; done record "
+          f"is local-only and will be lost on the next sync_bus",
+          file=sys.stderr, flush=True)
+    return False
+
+
 def claim(job):
+    if done(job["id"]):
+        # Issue #149: a completed job is never claimed again.
+        return False
     c = BUS / "queue" / "claims"
     c.mkdir(parents=True, exist_ok=True)
     (c / f"{job['id']}.json").write_text(json.dumps(
@@ -396,9 +484,18 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
     # registry, not the tool id (financial-roberta's repo is
     # roberta-sentiment-runner; the old id-derived URL could never
     # clone it).
+    repo = RUNNERS / tool
+    # Issue #147: clear the previous run's results BEFORE any early
+    # return. A ref failure (ref-unpinned / clone-failed /
+    # ref-unavailable) used to return while the old results/ was
+    # still in place, and _execute then archived those stale files
+    # as the current run's (probe 003: byte-identical CSV/log/
+    # summary under a ref-unavailable manifest). The clear is a
+    # no-op when the repo/results do not exist yet.
+    results = repo / "results"
+    sh(f"rm -rf {results}", timeout=60)
     if not ref or not re.fullmatch(r"[0-9a-f]{40}", ref):
         return "ref-unpinned", ""
-    repo = RUNNERS / tool
     url = f"https://github.com/{ORG}/{repo_name or tool + '-runner'}"
     if not repo.exists():
         if sh(f"git clone --depth 1 {url} {repo}",
@@ -414,15 +511,42 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
     if sh(f"git -C {repo} checkout {ref}",
           timeout=120).returncode != 0:
         return "ref-unavailable", ""
+    # Issue #158: the venv must match the PINNED ref's requirements,
+    # not whatever it contained when it was first created. Deps used
+    # to install only inside `if not py.exists()`, so a promoted ref
+    # that changed requirements.txt reused stale deps, and the
+    # venv/pip return codes were unchecked — a failed install still
+    # ran the tool against wrong/missing deps. The venv now records
+    # the sha256 of the requirements it was built from; any change
+    # recreates the venv and reinstalls (a full recreate, so a dep
+    # REMOVED from requirements.txt disappears too), and a venv/pip
+    # failure fails the tool loudly (venv-failed / deps-failed) with
+    # the tool never run. A failed install leaves no marker, so the
+    # next run retries. A venv built by the old code has no marker,
+    # so it is rebuilt on its next run.
     venv = VENVS / tool
     py = venv / "bin" / "python"
-    if not py.exists():
-        sh(f"python3 -m venv {venv}", timeout=300)
-        req = repo / "requirements.txt"
+    req = repo / "requirements.txt"
+    req_sha = _sha256_file(req) if req.exists() else ""
+    marker = venv / ".gator-requirements-sha"
+    installed_sha = marker.read_text().strip() if marker.is_file() else ""
+    if not py.exists() or installed_sha != req_sha:
+        if venv.exists():
+            sh(f"rm -rf {venv}", timeout=60)
+        if sh(f"python3 -m venv {venv}",
+              timeout=300).returncode != 0:
+            return "venv-failed", "python3 -m venv failed"
+        if not py.exists():
+            # A zero rc that produced no interpreter is a failed
+            # venv all the same — never run the tool against the
+            # system python with the venv's PATH prefix missing.
+            return "venv-failed", ("python3 -m venv returned 0 but "
+                                   "no interpreter at " + str(py))
         if req.exists():
-            sh(f"{venv}/bin/pip install -q -r {req}", timeout=1800)
-    results = repo / "results"
-    sh(f"rm -rf {results}", timeout=60)
+            r = sh(f"{venv}/bin/pip install -q -r {req}", timeout=1800)
+            if r.returncode != 0:
+                return "deps-failed", (r.stdout + r.stderr)[-4000:]
+        marker.write_text(req_sha)
     cmd = template.replace("{ticker}", ticker).replace(
         "{date}", datetime.now(timezone.utc).date().isoformat())
     env = {k: v for k, v in os.environ.items()
@@ -528,7 +652,13 @@ def publish(job, results_dir, manifest):
     sh(f"git -C {arch} add -A && git -C {arch} commit -F {msg_file}",
        timeout=120)
     msg_file.unlink(missing_ok=True)
-    return push_archive(arch)
+    # Issue #149: success returns the archive commit SHA (the done
+    # record's target); failure returns False. Callers use truthiness.
+    if not push_archive(arch):
+        return False
+    rev = sh(f"git -C {arch} rev-parse HEAD",
+             timeout=30).stdout.strip()
+    return rev if rev else "unknown"
 
 
 def run_harvest(job, workdir):
@@ -634,6 +764,17 @@ def execute(job):
         stop.set()
 
 
+def _write_manifest_atomic(workdir, manifest):
+    """Write manifest.json into the workdir atomically (temp file in
+    the same dir + os.replace) so a reader never sees a partial
+    manifest. Issue #148: merge.py refuses a run dir without
+    manifest.json, and publish() writes it only into the archive
+    dest — so a fresh worker sweep's merge always refused."""
+    tmp = Path(workdir) / ".manifest.json.tmp"
+    tmp.write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+    os.replace(tmp, Path(workdir) / "manifest.json")
+
+
 def maybe_merge(job, workdir, manifest, plan):
     """Issue #67: post-sweep merge hook. Runs scripts/merge.py
     (shared module, stdlib-only) on the just-finished sweep's local
@@ -670,6 +811,9 @@ def maybe_merge(job, workdir, manifest, plan):
         if scheduled:
             cmd += ["--job-scheduled", scheduled,
                     "--job-scheduled-checked"]
+        # Issue #146: maybe_merge calls subprocess.run directly, not
+        # sh() — apply the same final-boundary guard here.
+        _assert_no_denied(env)
         proc = subprocess.run(cmd, env=env, capture_output=True,
                               text=True, timeout=3600)
         if proc.stdout.strip():
@@ -719,7 +863,8 @@ def _execute(job):
     if job["job"].startswith("harvest-egx"):
         manifest["tools"] = run_harvest(job, workdir)
         manifest["finished"] = now()
-        if not publish(job, workdir, manifest):
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
             try:
                 err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
                 err.write_text(json.dumps(
@@ -728,6 +873,9 @@ def _execute(job):
                 push_bus(f"publish failed {job['id']}")
             except Exception:
                 pass
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
     templates = {t["id"]: t["command"] for t in reg["tools"]}
@@ -740,8 +888,21 @@ def _execute(job):
                                refs.get(tool), repos.get(tool))
         dest = workdir / tool
         src = RUNNERS / tool / "results"
-        if src.exists():
-            sh(f"mkdir -p {dest} && cp -r {src}/. {dest}/", timeout=120)
+        if status == "ok":
+            if src.exists():
+                sh(f"mkdir -p {dest} && cp -r {src}/. {dest}/",
+                   timeout=120)
+        else:
+            # Issue #147: a failed tool archives an EMPTY results
+            # dir — never another run's outputs as this run's.
+            # run_tool already cleared results/ before the run, so
+            # anything left in src is at most this run's partial
+            # output; it stays on the worker (the next run clears
+            # it) and is never copied into the run dir, where the
+            # merge would scan it into digest metrics and the
+            # ensemble would read it as data. The failure itself is
+            # recorded in the manifest and in <tool>.log.
+            dest.mkdir(parents=True, exist_ok=True)
         (workdir / f"{tool}.log").write_text(log)
         manifest["tools"][tool] = status
         if tool == "news-disclosure" and ticker.upper().endswith(".CA"):
@@ -755,11 +916,22 @@ def _execute(job):
                 stash.mkdir(parents=True, exist_ok=True)
                 (stash / f"{code}.json").write_bytes(cache.read_bytes())
     manifest["finished"] = now()
+    # Issue #148: merge.py requires manifest.json in the run dir,
+    # and publish() writes it only into the archive dest — so a
+    # fresh worker sweep's merge always refused ("no manifest.json
+    # in run dir"). Write the current run manifest into the workdir
+    # before the merge hook reads it.
+    _write_manifest_atomic(workdir, manifest)
     # Issue #67: post-sweep merge hook — fleet + merge publish in
     # one commit. A merge failure never loses the fleet (see
     # maybe_merge): publish() below still runs.
     maybe_merge(job, workdir, manifest, plan)
-    if not publish(job, workdir, manifest):
+    # The merge records its outcome in the in-memory manifest; refresh
+    # the workdir copy so it stays truthful (publish() writes the
+    # same final manifest into the archive dest).
+    _write_manifest_atomic(workdir, manifest)
+    archive_sha = publish(job, workdir, manifest)
+    if not archive_sha:
         # Failures must be observable on the bus, not just local.
         try:
             err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
@@ -769,6 +941,9 @@ def _execute(job):
             push_bus(f"publish failed {job['id']}")
         except Exception:
             pass
+    else:
+        # Issue #149: only a successful publish marks the job done.
+        _mark_done(job, archive_sha)
 
 
 def prune_out():
@@ -780,7 +955,11 @@ def prune_out():
 
 def reclaim_stale_claims():
     """A claim whose push succeeded but whose result never published
-    (worker died mid-job) must not block the job forever."""
+    (worker died mid-job) must not block the job forever.
+    Issue #149: only UNFINISHED attempts are reclaimed for re-run.
+    A stale claim on a job with a done record is just a redundant
+    file — it is removed, but the job stays done (the main loop and
+    claim() both skip done jobs), so it can never execute again."""
     claims = BUS / "queue" / "claims"
     if not claims.exists():
         return
@@ -793,6 +972,10 @@ def reclaim_stale_claims():
         except Exception:
             continue  # unparseable claim: leave it, a human looks
         if claimed_ts < cutoff:
+            # A done job's claim is redundant once stale; an
+            # unfinished attempt is reclaimed for re-run. Either way
+            # the file goes — done() is what keeps a completed job
+            # from executing again, not the claim.
             f.unlink()
             changed = True
     if changed:
@@ -810,7 +993,13 @@ def self_update():
     worker keeps running the old, reviewed code. Fixes still reach
     the worker over the bus with no relaunch; what changes is that
     only reviewed, promoted code can arrive.
-    (Replaces the old pull-from-main-tip hook.)"""
+    (Replaces the old pull-from-main-tip hook.)
+    Promotion PRs must come from a frozen `promote/<sha>` branch
+    pinned to the exact reviewed SHA — never from live `main` —
+    and are gated by scripts/promote.py + docs/promotion.md
+    (issue #145). This guard alone cannot tell a reviewed
+    descendant from an unreviewed one; the frozen candidate is
+    what makes the descendant reviewed."""
     global UPDATE_ERROR
     _ensure_update_checkout()
     if not CODE.exists():
@@ -849,8 +1038,17 @@ def self_update():
         if src.exists() and src.read_bytes() != me.read_bytes():
             me.write_bytes(src.read_bytes())
             os.execv(sys.executable, [sys.executable, str(me)])
-    except Exception:
-        pass
+    except Exception as e:
+        # Issue #160: a failed write/execv must NOT be silent. The old
+        # `except Exception: pass` left UPDATE_ERROR None, so the next
+        # heartbeat claimed the new SHA while this (old) process kept
+        # running. Record the failure; the heartbeat carries it.
+        # (os.execv never returns on success, so reaching here after a
+        # successful write means the exec failed and old code runs
+        # under new bytes on disk — the import-time RUNNING_CODE_SHA
+        # still reports the old code, correctly.)
+        UPDATE_ERROR = (f"self-update failed to adopt {tip[:12]}: "
+                        f"{type(e).__name__}: {e}; running old code")
 
 
 def main():
@@ -872,6 +1070,10 @@ def main():
             for job in read_queue():
                 if not JOB_ID_RE.match(str(job.get("id", ""))):
                     continue  # panel round 2: ids reach file paths
+                if done(job["id"]):
+                    # Issue #149: a completed job never runs again,
+                    # even after its claim was reclaimed.
+                    continue
                 if not claimed(job["id"]):
                     if claim(job):
                         execute(job)

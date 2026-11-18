@@ -827,19 +827,30 @@ def case11_determinism_secret(archive_root):
     check("11d every 40-hex run is a labelled SHA value",
           not bad_hex, f"{bad_hex[:3]}")
     # Fake-key injection: the compiler must drop the field.
+    # #150: camelCase / concatenated spellings (apiKey,
+    # accessToken, clientSecret, secretKey) must drop too — the
+    # pre-fix whole-part test let them through.
     staged = stage_sweep(archive_root, "141124", "case11-key")
     digest = load_json(os.path.join(staged, "digest.json"))
     for result in digest["results"]:
         if result["tool"] == "finbert":
             result["summary"]["metrics"]["COHERE_API_KEY"] = \
                 "fake-key-value-for-harness"
+            for camel in ("apiKey", "accessToken", "clientSecret",
+                          "secretKey"):
+                result["summary"]["metrics"][camel] = \
+                    "fake-key-value-for-harness"
             result["summary"]["metrics"]["total_return_stat_key"] = \
                 "kept"
+            result["summary"]["metrics"]["monkey"] = "kept"
     write_json(os.path.join(staged, "digest.json"), digest)
     collected = load_json(os.path.join(
         staged, "collected", "finbert", "summary.json"))
     collected["metrics"]["COHERE_API_KEY"] = "fake-key-value-for-harness"
+    for camel in ("apiKey", "accessToken", "clientSecret", "secretKey"):
+        collected["metrics"][camel] = "fake-key-value-for-harness"
     collected["metrics"]["total_return_stat_key"] = "kept"
+    collected["metrics"]["monkey"] = "kept"
     write_json(os.path.join(staged, "collected", "finbert",
                             "summary.json"), collected)
     code, out, m = run_compiler(staged)
@@ -850,10 +861,18 @@ def case11_determinism_secret(archive_root):
           code == 0 and finbert is not None
           and "COHERE_API_KEY"
           not in finbert["summary"]["metrics"]
+          and all(camel not in finbert["summary"]["metrics"]
+                  for camel in ("apiKey", "accessToken",
+                                "clientSecret", "secretKey"))
           and finbert["summary"]["metrics"].get(
               "total_return_stat_key") == "kept"
+          and finbert["summary"]["metrics"].get("monkey") == "kept"
           and {"tool": "finbert", "field": "COHERE_API_KEY"}
           in m["secret_fields_dropped"]
+          and all({"tool": "finbert", "field": camel}
+                  in m["secret_fields_dropped"]
+                  for camel in ("apiKey", "accessToken",
+                                "clientSecret", "secretKey"))
           and "fake-key-value-for-harness" not in
           json.dumps(m),
           f"exit={code} {out[:200]}")

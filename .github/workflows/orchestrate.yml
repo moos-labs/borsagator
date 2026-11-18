@@ -59,7 +59,8 @@ jobs:
           TODAY=$(TZ=Africa/Cairo date +%F)
           SKIP=$(python3 scripts/fallback_skip_check.py --date "$TODAY" \
             --claims-dir queue-branch/queue/claims \
-            --archive-dir archive-branch/worker-runs)
+            --archive-dir archive-branch/worker-runs \
+            --done-dir queue-branch/queue/done)
           echo "skip=$SKIP" >> "$GITHUB_OUTPUT"
           echo "Worker-fired check for $TODAY: skip=$SKIP"
 

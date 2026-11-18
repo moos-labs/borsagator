@@ -14,8 +14,8 @@ Usage:
         [--claims-dir DIR] [--sweeps-dir DIR]
 
 Exit codes: 0 = archived or merged (manifest present); 1 = missing,
-partial, still running, merging, or merge-failed (see the status
-line); 2 = usage error.
+partial, still running, merging, merge-failed, or claims-unavailable
+(see the status line); 2 = usage error.
 Stdout is one machine-readable line:
     status=archived tools=<n> dir=<name>
     status=merged dir=<name>            (worker sweep merged into sweeps/)
@@ -24,6 +24,8 @@ Stdout is one machine-readable line:
     status=running claim=sched-<date>      (trigger confirmed, no archive yet)
     status=partial dir=<name>              (dir present, manifest missing/unreadable)
     status=missing                         (no claim, no archive — page)
+    status=claims-unavailable error=<...>  (claims dir could not be
+        inspected — a checker outage, not a missed sweep; page)
 A `running` or `merging` result means re-check later, not a page: a
 sequential worker sweep is still running at 08:55, and a merge lands
 after the fleet. A `merge-failed` result is a page: the fleet is
@@ -128,10 +130,19 @@ def check(date, archive_dir, claims_dir=None, sweeps_dir=None):
     if claims_dir is not None:
         claim = Path(claims_dir) / f"sched-{date}.json"
         try:
+            # stat() (unlike is_file()) raises on an I/O failure, so
+            # an unreadable claims dir is distinguishable from an
+            # absent claim. Issue #163: the old `except OSError:
+            # pass` fell through to status=missing, so a checker
+            # outage read as a missed sweep.
+            claim.stat()
+        except FileNotFoundError:
+            pass  # no claim file: fall through to missing
+        except OSError as e:
+            return 1, f"status=claims-unavailable error={e}"
+        else:
             if claim.is_file():
                 return 1, f"status=running claim=sched-{date}"
-        except OSError:
-            pass
     return 1, "status=missing"
 
 
