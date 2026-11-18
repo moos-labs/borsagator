@@ -1,6 +1,6 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 482f9d25, commit 482f9d25). Sweeps archived: 47 (26 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree ffa2c5f4, commit ffa2c5f4). Sweeps archived: 47 (26 with an ensemble).
 
 **Forecasts found: 72 · matured: 22 · pending: 44 · invalid: 6 · dividend-adjusted: 4 · excluded from skill: 8 gap-flagged row(s) (issue #79)**
 
