@@ -11,11 +11,15 @@ carrying the archive commit) only after a successful publish;
 reclaim_stale_claims reclaims only unfinished attempts; the main
 loop and claim() skip done jobs.
 
-This test exercises the REAL reclaim_stale_claims / claim / done /
-_execute / publish path — push_bus is stubbed (no network), and
-run_tool / run_harvest are stubbed only where a runner clone would
-be needed. The publish() SHA contract is tested against a real
-local git repo (file URL, no network).
+Issue #216 changed HOW the done record reaches the bus: _mark_done
+no longer writes into BUS/queue/done/ via push_bus (single-shot,
+lost in a queue-push race, swallowed by the next sync_bus reset).
+It stages a crash-durable receipt in ROOT/pending-done and publishes
+it through a DEDICATED clone (BUS_PUB) against a fresh queue base
+with bounded retries, verified on origin/queue. So this test sets
+up a real local bare bus repo (GATOR_BUS_URL), makes BUS a real
+clone of it, and asserts the marker lands on origin/queue — the
+stubbed push_bus no longer carries done markers.
 
 Run: python3 worker/test_worker_149.py   (stdlib only, no network)
 Fails on unmodified main: done/_mark_done do not exist, and the
@@ -25,6 +29,7 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -40,6 +45,38 @@ spec = importlib.util.spec_from_file_location(
 worker = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(worker)
 worker.CODE = REPO
+
+# --- Issue #216: the bus is a real local git remote ------------------
+# _publish_done clones BUS_PUB from GATOR_BUS_URL, so the bus needs a
+# real bare repo; BUS itself is a real clone so sync_bus() can pull a
+# published marker into the worktree. push_bus stays stubbed (claim /
+# reclaim / publish-failure paths still use it; done markers do not).
+BUS_BARE = TMP / "bus.git"
+subprocess.run(["git", "init", "-q", "--bare", str(BUS_BARE)], check=True)
+_seed = TMP / "seed-bus-queue"
+subprocess.run(["git", "clone", "-q", str(BUS_BARE), str(_seed)],
+               check=True)
+subprocess.run(["git", "-C", str(_seed), "checkout", "-q", "-b", "queue"],
+               check=True)
+(_seed / "queue").mkdir(parents=True, exist_ok=True)
+(_seed / "queue" / "queue.json").write_text("[]")
+for _args in (["add", "-A"], ["commit", "-qm", "seed"]):
+    subprocess.run(["git", "-C", str(_seed),
+                    "-c", "user.email=test@borsagator.local",
+                    "-c", "user.name=test"] + _args, check=True)
+subprocess.run(["git", "-C", str(_seed), "push", "-q", "origin", "queue"],
+               check=True)
+BUS_URL = str(BUS_BARE)
+os.environ["GATOR_BUS_URL"] = BUS_URL
+worker.sync_bus()
+
+
+def origin_done(job_id):
+    """The done record as it stands on origin/queue (None if absent)."""
+    r = subprocess.run(["git", "--git-dir", str(BUS_BARE), "show",
+                        f"queue:queue/done/{job_id}.json"],
+                       capture_output=True, text=True)
+    return json.loads(r.stdout) if r.returncode == 0 else None
 
 CSV = ("Date,Open,High,Low,Close,Volume\n"
        "2026-11-09,9.80,9.90,9.70,9.85,1000\n"
@@ -171,17 +208,30 @@ REAL_PUBLISH = worker.publish
 job_sweep = {"id": "test-149-sweep", "job": "sweep-lite POUL.CA market=EGX"}
 worker.publish = fake_publish_ok
 worker._execute(job_sweep)
-rec = done_dir() / f"{job_sweep['id']}.json"
-check("sweep-lite publish success: done record written",
-      rec.is_file())
-if rec.is_file():
-    data = json.loads(rec.read_text())
+# Issue #216: _mark_done no longer writes into BUS/queue/done/ via the
+# stubbed push_bus — it stages a receipt in the outbox and publishes it
+# through the dedicated BUS_PUB clone, so the marker lands on
+# origin/queue and the outbox drains.
+data = origin_done(job_sweep["id"])
+check("sweep-lite publish success: done record on origin/queue",
+      data is not None)
+if data is not None:
     check("sweep-lite done record carries the archive commit + job",
           data.get("archive") == SHA and data.get("job") == job_sweep["job"]
           and data.get("at"),
           f"record={data}")
-check("sweep-lite publish success: 'done <id>' pushed to the bus",
-      f"done {job_sweep['id']}" in PUSHED)
+check("sweep-lite publish success: outbox drained",
+      not list(worker.PENDING_DONE.glob("*.json")))
+check("sweep-lite publish success: done marker does NOT go through push_bus",
+      f"done {job_sweep['id']}" not in PUSHED)
+# The worker sees the job as done only after a sync pulls the marker
+# into BUS. sync_bus() resets the worktree, which drops the stamped
+# claims/done files from sections 1-7 — re-stamp the one section 13
+# still needs (its claims are re-stamped there).
+worker.sync_bus()
+check("sweep-lite publish success: done() True after sync_bus",
+      worker.done(job_sweep["id"]))
+stamp_done(job_done["id"], job_done["job"], archive="deadbeef")
 
 
 def fake_run_harvest(job, workdir):
@@ -191,9 +241,9 @@ def fake_run_harvest(job, workdir):
 worker.run_harvest = fake_run_harvest
 job_harvest = {"id": "test-149-harvest", "job": "harvest-egx POUL"}
 worker._execute(job_harvest)
-rec_h = done_dir() / f"{job_harvest['id']}.json"
-check("harvest publish success: done record written with archive sha",
-      rec_h.is_file() and json.loads(rec_h.read_text()).get("archive") == SHA)
+data_h = origin_done(job_harvest["id"])
+check("harvest publish success: done record on origin with archive sha",
+      data_h is not None and data_h.get("archive") == SHA)
 
 job_fail = {"id": "test-149-fail", "job": "run yahooquery POUL.CA"}
 worker.publish = fake_publish_fail
@@ -206,11 +256,24 @@ check("failed publish: error file written, job stays reclaimable",
       (claims_dir() / f"{job_fail['id']}.error.json").is_file()
       and not worker.done(job_fail["id"]))
 
-# --- 11. A failed done-push is loud and returns False ---------------
-FAIL_NEXT_PUSH.append(True)
-check("_mark_done returns False when the bus push fails",
+# --- 11. A failed done-publication is loud, returns False, and the ---
+# receipt is retained + gates local re-execution (#216) ------------
+# Break publication deterministically: point the bus URL at a path that
+# does not exist and drop the publication clone, so _ensure_pub_clone
+# cannot establish BUS_PUB. (FAIL_NEXT_PUSH no longer reaches
+# _mark_done — done markers do not go through push_bus anymore.
+# The 5 bounded retries take ~30 s of backoff; that is the cost of
+# the retry budget, not a hang.)
+os.environ["GATOR_BUS_URL"] = str(TMP / "no-such-bus.git")
+shutil.rmtree(worker.BUS_PUB, ignore_errors=True)
+check("_mark_done returns False when publication fails",
       worker._mark_done({"id": "test-149-pushfail",
                          "job": "run yahooquery POUL.CA"}, SHA) is False)
+check("failed _mark_done retains the receipt in the outbox",
+      (worker.PENDING_DONE / "test-149-pushfail.json").is_file())
+check("failed _mark_done gates local re-execution",
+      worker._done_or_pending("test-149-pushfail"))
+os.environ["GATOR_BUS_URL"] = BUS_URL
 
 # --- 12. The real publish() returns the archive commit SHA ---------
 seed = TMP / "seed-bus"
@@ -239,6 +302,7 @@ check("real publish() returns the archive commit SHA",
       isinstance(sha, str) and re.fullmatch(r"[0-9a-f]{40}", sha or "")
       and sha == tip,
       f"publish returned {sha!r}, archive tip {tip[:12]}")
+os.environ["GATOR_BUS_URL"] = BUS_URL  # section 12 borrowed the var
 
 # --- 13. Full cycle: done job skipped, abandoned job picked up ------
 q = [{"id": job_done["id"], "job": job_done["job"]},
