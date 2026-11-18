@@ -76,8 +76,8 @@ CANCELLED_COMMENT = (
 )
 GATE_COMMENT = (
     "**Verification gate:** this issue's card reached **Released** "
-    "without the `verified` label, so the move was reverted to **Doing** "
-    "and the issue stays open. Cards go to Released only after all "
+    "without the `verified` label, so the issue was reopened and the "
+    "card was taken off Released. Cards go to Released only after all "
     "verification is complete (evidence comment + `verified` label, via "
     "the verified close-out procedure). Auto-close itself stays on \u2014 it "
     "now only ever closes verified work."
