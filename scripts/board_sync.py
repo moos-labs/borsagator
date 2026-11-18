@@ -13,15 +13,39 @@ Released (this script then adds the label + comment from the resulting
 `issues.closed` event), and a scheduled reconcile pass closes any still-open
 issue whose card sits on Released or Cancelled.
 
+VERIFICATION GATE (Muhammad, 2026-11-18 12:54 Cairo — board-fix issue #205):
+the built-in Auto-close workflow STAYS ON, exactly as before. What changed
+is that a card may sit on Released only after full verification for its
+issue is complete. Verification is signalled by the 'verified' label, which
+only the verified close-out procedure (scripts/verified_closeout.py:
+evidence comment first, then the label, then close/move) may add. This
+script enforces the gate on every path it controls:
+
+  - An issue that arrives closed with its card on Released WITHOUT the
+    'verified' label is an unverified auto-close: the gate reopens the
+    issue, reverts the card to Doing, removes the 'released' label and
+    posts the gate comment instead of the released label + comment.
+  - The reconcile pass no longer closes an open issue whose card sits on
+    Released unless it carries 'verified'; unverified Released cards are
+    reverted to Doing with the gate comment.
+  - Label-driven moves to Released (closed with / labelled 'released')
+    only happen for 'verified' issues.
+  - For promotion-type work, verification means: promotion merged +
+    worker heartbeat on the new code (checkout_sha matches the merge) +
+    live proof where the issue requires it (e.g. a sweep digest). The
+    evidence comment posted by the close-out procedure records which of
+    these were checked; this script checks only the resulting label.
+
 Rules:
-  - Card moved to Released -> issue closed (built-in), then 'released'
-    label + comment added here.
+  - VERIFIED card on Released -> issue closed (built-in), then 'released'
+    label + comment added here. UNVERIFIED -> gate above.
   - Card moved to Cancelled -> reconcile closes the issue as not_planned
     with the 'cancelled' label + comment.
   - Issue closed as not_planned, or closed with the 'cancelled' label
     -> card to Cancelled (the built-in Item-closed workflow sends every
     close to Released, so this corrects the cancelled branch).
-  - Closed issue labeled 'released'/'cancelled' afterwards -> card follows.
+  - Closed VERIFIED issue labeled 'released' afterwards -> card follows;
+    'cancelled' labelling is unchanged.
   - New issue whose body carries WSJF >= 6.0 -> card to Next. Fires on
     `opened` only: a later deliberate move by a human or the cycle is never
     overridden.
@@ -49,6 +73,14 @@ RELEASED_COMMENT = (
 CANCELLED_COMMENT = (
     "Closed automatically as **cancelled** \u2014 this issue's card was "
     "moved to **Cancelled** on the Borsagator board."
+)
+GATE_COMMENT = (
+    "**Verification gate:** this issue's card reached **Released** "
+    "without the `verified` label, so the move was reverted to **Doing** "
+    "and the issue stays open. Cards go to Released only after all "
+    "verification is complete (evidence comment + `verified` label, via "
+    "the verified close-out procedure). Auto-close itself stays on \u2014 it "
+    "now only ever closes verified work."
 )
 
 
@@ -105,7 +137,7 @@ query($p:ID!,$cursor:String){ node(id:$p){ ... on ProjectV2 {
   items(first:100, after:$cursor){ pageInfo { hasNextPage endCursor }
     nodes { id fieldValueByName(name:"Status"){
       ... on ProjectV2ItemFieldSingleSelectValue { name } }
-      content { ... on Issue { id number state title } } } } } } }
+      content { ... on Issue { id number state title labels(first:20){ nodes { name } } } } } } } } }
 """
 
 
@@ -171,8 +203,25 @@ def close_issue(number, reason):
         {"state": "closed", "state_reason": reason})
 
 
+def reopen_issue(number):
+    req("PATCH", f"/repos/{ORG}/{REPO}/issues/{number}", {"state": "open"})
+
+
+def remove_label(number, label):
+    try:
+        req("DELETE", f"/repos/{ORG}/{REPO}/issues/{number}/labels/{label}")
+    except Exception:  # noqa: BLE001 - label may already be absent
+        pass
+
+
+def issue_labels(content):
+    return {n["name"] for n in ((content.get("labels") or {}).get("nodes") or [])}
+
+
 def reconcile(board):
-    """Close any OPEN issue whose card sits on Released or Cancelled."""
+    """Close any OPEN issue whose card sits on Cancelled, or on Released
+    WITH the 'verified' label. An unverified Released card is reverted to
+    Doing by the verification gate instead of being closed."""
     cursor = None
     acted = 0
     while True:
@@ -193,15 +242,21 @@ def reconcile(board):
                 acted += 1
                 print(f"reconcile: #{number} card Cancelled -> closed not_planned")
             elif status == "Released":
-                add_label(number, "released")
-                add_comment(number, RELEASED_COMMENT)
-                close_issue(number, "completed")
-                acted += 1
-                print(f"reconcile: #{number} card Released -> closed completed")
+                if "verified" in issue_labels(content):
+                    add_label(number, "released")
+                    add_comment(number, RELEASED_COMMENT)
+                    close_issue(number, "completed")
+                    acted += 1
+                    print(f"reconcile: #{number} verified card Released -> closed completed")
+                else:
+                    board.set_status(node["id"], "Doing")
+                    add_comment(number, GATE_COMMENT)
+                    acted += 1
+                    print(f"reconcile: #{number} UNVERIFIED card Released -> gate reverted to Doing")
         if not items["pageInfo"]["hasNextPage"]:
             break
         cursor = items["pageInfo"]["endCursor"]
-    print(f"reconcile done, {acted} issue(s) closed")
+    print(f"reconcile done, {acted} issue(s) acted on")
 
 
 def main():
@@ -252,17 +307,28 @@ def main():
                 if "cancelled" not in labels:
                     add_label(number, "cancelled")
                 print(f"#{number}: closed as cancelled -> card Cancelled")
-            elif "released" in labels and status != "Released":
-                board.set_status(item_id, "Released")
-                print(f"#{number}: closed with 'released' label -> card Released")
             elif status == "Released":
-                # Closed by the built-in Auto-close after a card move to
-                # Released (or closed while the card already sat there):
-                # attach the label + comment the built-in cannot add.
-                if "released" not in labels:
-                    add_label(number, "released")
-                add_comment(number, RELEASED_COMMENT)
-                print(f"#{number}: closed with card on Released -> labeled + commented")
+                # Closed while the card sits on Released \u2014 in practice
+                # the built-in Auto-close firing on a card move (it closes
+                # as the user who moved the card, seconds after the move).
+                # VERIFICATION GATE: only a 'verified' issue may stay here.
+                if "verified" in labels:
+                    if "released" not in labels:
+                        add_label(number, "released")
+                    add_comment(number, RELEASED_COMMENT)
+                    print(f"#{number}: verified, closed with card on Released -> labeled + commented")
+                else:
+                    remove_label(number, "released")
+                    board.set_status(item_id, "Doing")
+                    reopen_issue(number)
+                    add_comment(number, GATE_COMMENT)
+                    print(f"#{number}: UNVERIFIED close on Released -> gate reopened + card reverted to Doing")
+            elif "released" in labels and status != "Released":
+                if "verified" in labels:
+                    board.set_status(item_id, "Released")
+                    print(f"#{number}: verified, closed with 'released' label -> card Released")
+                else:
+                    print(f"#{number}: 'released' label but NOT verified -> gate: card NOT moved to Released")
             elif status == "Cancelled":
                 if "cancelled" not in labels:
                     add_label(number, "cancelled")
@@ -272,11 +338,15 @@ def main():
         elif action == "labeled":
             label = (event.get("label") or {}).get("name")
             if issue.get("state") == "closed" and label in ("released", "cancelled"):
-                item_id, status = board.issue_item(issue["node_id"])
-                target = "Released" if label == "released" else "Cancelled"
-                if item_id and status != target:
-                    board.set_status(item_id, target)
-                    print(f"#{number}: labeled {label} after close -> card {target}")
+                labels_now = {l["name"] for l in issue.get("labels", [])}
+                if label == "released" and "verified" not in labels_now:
+                    print(f"#{number}: labeled released after close but NOT verified -> gate: card NOT moved")
+                else:
+                    item_id, status = board.issue_item(issue["node_id"])
+                    target = "Released" if label == "released" else "Cancelled"
+                    if item_id and status != target:
+                        board.set_status(item_id, target)
+                        print(f"#{number}: labeled {label} after close -> card {target}")
 
     else:
         print(f"unhandled event {event_name}")
