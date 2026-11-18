@@ -100,10 +100,18 @@ HORIZONS, RISK_MULT, CONSTANTS_SOURCE = _load_constants()
 
 
 def fnum(v):
+    """Finite non-boolean number, or None. A bare float() accepts
+    NaN/Infinity (including the string "nan") and bools
+    (True -> 1.0); either would let corrupt values into frozen
+    data (#152), so both are rejected here. Every caller already
+    treats None as missing/unusable."""
+    if isinstance(v, bool):
+        return None
     try:
-        return float(v)
+        x = float(v)
     except Exception:
         return None
+    return x if math.isfinite(x) else None
 
 
 def load_json(path):
@@ -275,8 +283,17 @@ def base_header(ens, digest, entrant, inputs, derivation, extra=None):
 def write_json(name, doc):
     os.makedirs(BENCH_DIR, exist_ok=True)
     path = os.path.join(BENCH_DIR, name)
+    # Strict JSON (#152): allow_nan=False raises ValueError on any
+    # NaN/Infinity in the doc instead of writing a bare NaN token
+    # that breaks strict-JSON consumers downstream. Serialize to a
+    # string FIRST so a rejected doc leaves no partial file behind;
+    # the freeze's main() catches the error and records
+    # freeze_error.txt, so corrupt data fails loudly rather than
+    # freezing.
+    text = json.dumps(doc, indent=1, ensure_ascii=False, sort_keys=True,
+                      allow_nan=False)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(doc, f, indent=1, ensure_ascii=False, sort_keys=True)
+        f.write(text)
     return path
 
 
@@ -560,8 +577,10 @@ def call_llm(prompt, api_key, url=None):
 
 def _parse_llm_response(resp):
     """Strict parse of a Cohere chat response. Any missing key,
-    non-numeric value, or direction outside {up, down, flat} ->
-    absent / llm-response-unparseable. Pure and testable."""
+    non-numeric value, nonfinite value, inverted interval
+    (low > expected or expected > high), or direction outside
+    {up, down, flat} -> absent / llm-response-unparseable. Pure
+    and testable."""
     try:
         content = (resp.get("message") or {}).get("content")
         text = None
@@ -592,6 +611,12 @@ def _parse_llm_response(resp):
             if v is None:
                 return None, "llm-response-unparseable"
             vals[k] = v
+        # Ordered interval (#152): the expected move must lie
+        # inside [low, high]; an inverted interval is corrupt data,
+        # not a forecast.
+        if not (vals["range_low_pct"] <= vals["expected_move_pct"]
+                <= vals["range_high_pct"]):
+            return None, "llm-response-unparseable"
         conf = hb.get("confidence")
         if conf is not None:
             conf = fnum(conf)
