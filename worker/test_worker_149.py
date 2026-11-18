@@ -26,6 +26,7 @@ Fails on unmodified main: done/_mark_done do not exist, and the
 completed-job checks fail (a done job is re-runnable after reclaim).
 """
 import importlib.util
+import io
 import json
 import os
 import re
@@ -33,6 +34,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -137,13 +139,92 @@ def stamp_done(job_id, job_text, archive="abc123"):
 
 def main_loop_runnable(job):
     """The main loop's exact per-job decision (worker.py main()):
-    done jobs are skipped; an unclaimed, unfinished job is claimed
-    and executed."""
-    if worker.done(job["id"]):
+    a job with ANY local completion evidence - done record, pending
+    or corrupt receipt - is skipped; an unclaimed, unfinished job
+    is claimed and executed. Mirrors worker.py:1934-1943."""
+    if worker._done_or_pending(job["id"]):
         return False
     if not worker.claimed(job["id"]):
         return True
     return False
+
+
+# --- Issue #236: publication-clone URL selection is observable ------
+# Isolate BOTH paths: do not remove/reconfigure the suite's real BUS
+# or BUS_PUB. This also keeps the #235 drain tests independent.
+def test_pub_clone_sources():
+    saved_bus, saved_pub = worker.BUS, worker.BUS_PUB
+    saved_url = os.environ.get("GATOR_BUS_URL")
+    warning = ("_ensure_pub_clone: WARNING: GATOR_BUS_URL unset or empty; "
+               "using BUS origin remote for publication clone\n")
+    missing = ("_ensure_pub_clone: no bus URL (GATOR_BUS_URL unset "
+               "and BUS has no origin remote)\n")
+
+    def attempt():
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            result = worker._ensure_pub_clone()
+        return result, stderr.getvalue()
+
+    def pub_origin():
+        r = subprocess.run(
+            ["git", "-C", str(worker.BUS_PUB), "remote", "get-url", "origin"],
+            capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else None
+
+    try:
+        worker.BUS = TMP / "bus-236"
+        subprocess.run(["git", "init", "-q", str(worker.BUS)], check=True)
+        wrong_origin = str(TMP / "must-not-be-used.git")
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "add",
+                        "origin", wrong_origin], check=True)
+        worker.BUS_PUB = TMP / "pub-236-explicit"
+        os.environ["GATOR_BUS_URL"] = BUS_URL
+        result, stderr = attempt()
+        check("URL explicit: clone succeeds despite differing BUS origin",
+              result is True)
+        check("URL explicit: clone origin is env URL, not BUS origin",
+              pub_origin() == BUS_URL and BUS_URL != wrong_origin)
+        check("URL explicit: no fallback warning", stderr == "", repr(stderr))
+
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "set-url",
+                        "origin", BUS_URL], check=True)
+        for mode in ("unset", "empty"):
+            worker.BUS_PUB = TMP / f"pub-236-{mode}"
+            os.environ.pop("GATOR_BUS_URL", None)
+            if mode == "empty":
+                os.environ["GATOR_BUS_URL"] = ""
+            result, stderr = attempt()
+            check(f"URL {mode}: fallback clone succeeds", result is True)
+            check(f"URL {mode}: clone origin is BUS origin",
+                  pub_origin() == BUS_URL)
+            check(f"URL {mode}: exact URL-free warning on stderr",
+                  stderr == warning, repr(stderr))
+            result, stderr = attempt()
+            check(f"URL {mode}: existing clone reused without warning",
+                  result is True and stderr == "", repr(stderr))
+
+        worker.BUS_PUB = TMP / "pub-236-missing"
+        os.environ.pop("GATOR_BUS_URL", None)
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "remove",
+                        "origin"], check=True)
+        result, stderr = attempt()
+        check("URL missing: initialization returns False", result is False)
+        check("URL missing: exact existing diagnostic, no fallback warning",
+              stderr == missing, repr(stderr))
+        check("URL missing: no publication clone or staging clone created",
+              not worker.BUS_PUB.exists()
+              and not worker.BUS_PUB.with_name(
+                  worker.BUS_PUB.name + ".tmp-clone").exists())
+    finally:
+        worker.BUS, worker.BUS_PUB = saved_bus, saved_pub
+        if saved_url is None:
+            os.environ.pop("GATOR_BUS_URL", None)
+        else:
+            os.environ["GATOR_BUS_URL"] = saved_url
+
+
+test_pub_clone_sources()
 
 
 # --- 1-3. A completed job (done record + 7 h-old claim) -------------
@@ -273,6 +354,9 @@ check("failed _mark_done retains the receipt in the outbox",
       (worker.PENDING_DONE / "test-149-pushfail.json").is_file())
 check("failed _mark_done gates local re-execution",
       worker._done_or_pending("test-149-pushfail"))
+check("pending receipt: main-loop replica does NOT re-run it",
+      not main_loop_runnable({"id": "test-149-pushfail",
+                              "job": "run yahooquery POUL.CA"}))
 os.environ["GATOR_BUS_URL"] = BUS_URL
 
 # --- 12. The real publish() returns the archive commit SHA ---------
@@ -316,6 +400,211 @@ runnable = [j["id"] for j in worker.read_queue()
 check("full cycle: only the abandoned job is runnable after reclaim",
       runnable == [job_abandoned["id"]],
       f"runnable={runnable}")
+
+# --- 14. The REAL main() loop gates on _done_or_pending ----------
+# Sections 1-13 exercise a local REPLICA of the loop decision; a
+# future edit removing the _done_or_pending gate from main() would
+# leave them green. Here we drive ONE ACTUAL CYCLE of worker.main():
+# cycle helpers are stubbed to no-ops, read_queue() is real, and
+# time.sleep raises a sentinel to stop after one pass (sleep sits
+# outside the loop's try/except, so the sentinel escapes main()).
+# Deterministic regression: a job with ONLY a pending receipt (no
+# done record, no claim) is queued ahead of a clean job. The old
+# replica and an ungated main() both call it runnable; the gate
+# must skip it and run the clean job instead.
+class _CycleDone(Exception):
+    pass
+
+
+def _stop_after_one_cycle(_seconds):
+    raise _CycleDone()
+
+
+job_pending = {"id": "test-149-loop-pending",
+               "job": "run yahooquery POUL.CA"}
+job_clean = {"id": "test-149-loop-clean",
+             "job": "run yahooquery POUL.CA"}
+(worker.PENDING_DONE / f"{job_pending['id']}.json").write_text(
+    json.dumps({"id": job_pending["id"], "job": job_pending["job"],
+                "archive": SHA, "at": worker.now()}))
+(worker.BUS / "queue" / "queue.json").write_text(
+    json.dumps([job_pending, job_clean], indent=1))
+LOOP_CALLS = {"claim": [], "execute": []}
+
+
+def loop_claim(job):
+    LOOP_CALLS["claim"].append(job["id"])
+    return True
+
+
+def loop_execute(job):
+    LOOP_CALLS["execute"].append(job["id"])
+
+
+_SAVED = {n: getattr(worker, n) for n in (
+    "self_update", "sync_bus", "flush_pending_done",
+    "run_schedule_check", "reclaim_stale_claims", "prune_out",
+    "heartbeat", "claim", "execute")}
+_REAL_SLEEP = worker.time.sleep
+for _n in ("self_update", "sync_bus", "flush_pending_done",
+           "run_schedule_check", "reclaim_stale_claims",
+           "prune_out", "heartbeat"):
+    setattr(worker, _n, lambda *a, **k: None)
+worker.claim = loop_claim
+worker.execute = loop_execute
+worker.time.sleep = _stop_after_one_cycle
+try:
+    worker.main()
+except _CycleDone:
+    pass
+finally:
+    worker.time.sleep = _REAL_SLEEP
+    for _n, _f in _SAVED.items():
+        setattr(worker, _n, _f)
+
+check("real main(): pending-receipt job neither claimed nor run",
+      job_pending["id"] not in LOOP_CALLS["claim"]
+      and job_pending["id"] not in LOOP_CALLS["execute"])
+check("real main(): the clean job behind it runs",
+      LOOP_CALLS["execute"] == [job_clean["id"]],
+      f"executed={LOOP_CALLS['execute']}")
+(worker.PENDING_DONE / f"{job_pending['id']}.json").unlink()
+
+
+# --- 15. The drain delivers a staged receipt; the outbox empties ---
+# Section 11 proved a failed _mark_done RETAINS its receipt; the
+# recovery half - a later per-cycle flush_pending_done delivering
+# it - was never asserted (flush_pending_done had 0 hits in the
+# suite). Stage a fresh receipt (the crash-recovery shape: a file
+# in the outbox, no in-memory state), run ONE real drain, and
+# verify the marker lands on origin/queue and the outbox empties.
+# The receipt section 11 retained must drain in the same pass.
+receipt_drain = worker.PENDING_DONE / "test-149-drain.json"
+receipt_drain.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": "run yahooquery <http://POUL.CA|POUL.CA", "archive": SHA}))
+worker.flush_pending_done()
+data_drain = origin_done("test-149-drain")
+check("drain: staged receipt published to origin/queue",
+      data_drain is not None and data_drain.get("archive") == SHA,
+      f"record={data_drain}")
+check("drain: the receipt section 11 retained drains too",
+      origin_done("test-149-pushfail") is not None)
+check("drain: outbox empty after verified delivery",
+      not list(worker.PENDING_DONE.glob("*.json")))
+worker.sync_bus()
+check("drain: done() True once sync_bus pulls the marker",
+      worker.done("test-149-drain"))
+
+# --- 16. A competing bus record is never overwritten by the drain -
+# When origin/queue already carries a DIFFERENT done record for the
+# job (a manual reconcile or another writer), the drain must keep
+# the local receipt pending and leave the remote bytes untouched -
+# never force-push over them. Plant the competing record directly
+# on origin/queue, stage a conflicting receipt, run ONE drain.
+job_conflict = {"id": "test-149-conflict",
+                "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+competing = {"worker": "borsagator-worker-6", "at": worker.now(),
+             "job": job_conflict["job"], "archive": "0" * 40}
+subprocess.run(["git", "-C", str(_seed), "fetch", "-q", "origin"],
+               check=True)
+subprocess.run(["git", "-C", str(_seed), "reset", "-q", "--hard",
+                "origin/queue"], check=True)
+(_seed / "queue" / "done").mkdir(parents=True, exist_ok=True)
+(_seed / "queue" / "done"
+ / f"{job_conflict['id']}.json").write_text(json.dumps(competing))
+subprocess.run(["git", "-C", str(_seed), "add", "-A"], check=True)
+subprocess.run(["git", "-C", str(_seed),
+                "-c", "user.email=test@borsagator.local",
+                "-c", "user.name=test",
+                "commit", "-qm", "competing done"], check=True)
+subprocess.run(["git", "-C", str(_seed), "push", "-q", "origin",
+                "queue"], check=True)
+receipt_conflict = (worker.PENDING_DONE
+                    / f"{job_conflict['id']}.json")
+receipt_conflict.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": job_conflict["job"], "archive": SHA}))
+worker.flush_pending_done()
+check("conflict: competing bus record NOT overwritten",
+      origin_done(job_conflict["id"]) == competing,
+      f"record={origin_done(job_conflict['id'])}")
+check("conflict: differing receipt retained pending",
+      receipt_conflict.is_file())
+check("conflict: retained receipt still gates re-execution",
+      worker._done_or_pending(job_conflict["id"]))
+receipt_conflict.unlink()
+
+# --- 17. A corrupt receipt is quarantined, never published, still --
+# gating, and surfaced in the heartbeat --------------------------
+# A receipt failing validation (here it PARSES, but archive is not
+# a string - a parse-only validator would wave it through) is
+# quarantined to *.corrupt: never published, never dropped, still
+# blocking local re-execution, and visible in corrupt_done.
+job_corrupt = {"id": "test-149-corrupt",
+               "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+receipt_corrupt = worker.PENDING_DONE / f"{job_corrupt['id']}.json"
+receipt_corrupt.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": job_corrupt["job"], "archive": 123}))
+worker.flush_pending_done()
+check("corrupt receipt quarantined to *.corrupt",
+      (worker.PENDING_DONE / f"{job_corrupt['id']}.json.corrupt")
+      .is_file() and not receipt_corrupt.exists())
+check("corrupt receipt NOT published to origin/queue",
+      origin_done(job_corrupt["id"]) is None)
+check("corrupt receipt still gates local re-execution",
+      worker._done_or_pending(job_corrupt["id"])
+      and not main_loop_runnable(job_corrupt))
+worker.heartbeat()
+payload = json.loads(
+    (worker.BUS / "queue" / "heartbeat.json").read_text())
+check("quarantine surfaced in heartbeat corrupt_done",
+      job_corrupt["id"] in payload.get("corrupt_done", []),
+      f"corrupt_done={payload.get('corrupt_done')}")
+(worker.PENDING_DONE / f"{job_corrupt['id']}.json.corrupt").unlink()
+
+# --- 18. _mark_done stages BEFORE publication; a failed publication -
+# leaves the receipt content-intact ------------------------------
+# Section 11 ended at the post-failure STATE (returns False, a
+# receipt file exists, the gate is set) with publication impossible
+# from the start (a bus URL that does not exist, BUS_PUB deleted -
+# _publish_done never ran an attempt against a live remote). Still unasserted:
+# ORDERING (the crash-durable receipt must exist BEFORE
+# _publish_done runs, or a crash mid-publication loses the
+# completion) and CONTENT (failed attempts must not mangle the
+# staged record). Intercept _publish_done: observe the receipt at
+# attempt time, then fail.
+job_order = {"id": "test-149-order",
+             "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+receipt_order = worker.PENDING_DONE / f"{job_order['id']}.json"
+OBSERVED = {}
+REAL_PUBLISH_DONE = worker._publish_done
+
+
+def observing_publish_done(job_id, record, attempts=5):
+    OBSERVED["staged"] = receipt_order.is_file()
+    OBSERVED["bytes"] = (receipt_order.read_text()
+                         if OBSERVED["staged"] else None)
+    return False
+
+
+worker._publish_done = observing_publish_done
+try:
+    rc = worker._mark_done(job_order, SHA)
+finally:
+    worker._publish_done = REAL_PUBLISH_DONE
+check("ordering: _mark_done False when publication fails",
+      rc is False)
+check("ordering: receipt staged BEFORE publication runs",
+      OBSERVED.get("staged") is True)
+order_record = json.loads(receipt_order.read_text())
+check("ordering: failed publication retains the receipt intact",
+      OBSERVED.get("bytes") == receipt_order.read_text()
+      and order_record.get("job") == job_order["job"]
+      and order_record.get("archive") == SHA,
+      f"record={order_record}")
+receipt_order.unlink()
 
 failed = [c for c in CHECKS if not c[1]]
 print(f"\n{len(CHECKS) - len(failed)}/{len(CHECKS)} passed")
