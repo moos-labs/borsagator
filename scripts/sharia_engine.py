@@ -39,6 +39,7 @@ DATA MODEL -- one snapshot per ticker per statement period::
       "market": {
         # any subset; explicit aggregates win over series-derived ones
         "spot_market_cap": ..., "avg_market_value_36m": ...,
+        "avg_market_value_24m": ...,
         "avg_market_value_review_period": ...,
         "market_cap_series": [{"date": "2026-11-16", "market_cap": ...}, ...]
       },
@@ -61,6 +62,9 @@ Market aggregates derived from ``market_cap_series``:
                     screening date
   avg36m          = mean of points in the 36 calendar months ending
                     on the screening date
+  avg24m          = mean of points in the 24 calendar months ending
+                    on the screening date (DJIM's trailing window,
+                    issue #169)
   review-period   = mean of points inside the statement period
 
 Verdicts: ``compliant`` / ``compliant-with-purification`` (only for
@@ -108,6 +112,7 @@ VERDICTS = ("compliant", "compliant-with-purification",
             "non-compliant", "insufficient-data")
 ACTIVITY_VALUES = ("permissible", "prohibited")
 MARKET_AGGREGATES = ("spot_market_cap", "avg_market_value_36m",
+                     "avg_market_value_24m",
                      "avg_market_value_review_period")
 
 
@@ -175,7 +180,7 @@ def _resolve_parameters(ruleset, params):
 # ---------------------------------------------------------------- inputs
 
 def _market_aggregates(snapshot):
-    """Resolve the three market aggregates.
+    """Resolve the market aggregates.
 
     Returns {name: (value, source)} with source "market" (explicit
     field) or "series" (derived from market_cap_series). Explicit
@@ -213,6 +218,11 @@ def _market_aggregates(snapshot):
         val = mean(lambda d: lo <= d <= screening)
         if val is not None:
             out["avg_market_value_36m"] = (val, "series")
+    if "avg_market_value_24m" not in out and screening is not None:
+        lo = _months_back(screening, 24)
+        val = mean(lambda d: lo <= d <= screening)
+        if val is not None:
+            out["avg_market_value_24m"] = (val, "series")
     if "avg_market_value_review_period" not in out \
             and p_start is not None and p_end is not None:
         val = mean(lambda d: p_start <= d <= p_end)

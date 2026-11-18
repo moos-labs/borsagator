@@ -17,13 +17,28 @@ published criteria in the rule-set files --
                   Leverage section's < 30% cash figure is the
                   operative one; the 33% figure in its Cash
                   section is the documented conflict).
+  SP_SHARIAH    : S&P Shariah Indices Methodology, November
+                  2026 (S&P Dow Jones Indices), as revised
+                  effective 2026-09-18: leverage and cash each
+                  < 30% of the 36-month average market value of
+                  equity; non-permissible income (incl. ALL
+                  interest income) < 5%. The pre-2023 receivables
+                  screen (< 49%) is abolished and NOT encoded.
+  DJIM          : Dow Jones Islamic Market Indices Methodology,
+                  November 2026 (S&P Dow Jones Indices),
+                  Appendix A screens as revised effective
+                  2026-09-18: total interest-bearing debt and
+                  cash + interest-bearing securities each < 30%
+                  of the trailing 24-month average market
+                  capitalisation; non-permissible revenue < 5%.
 
-S&P Shariah and DJIM ship as DRAFT-DISABLED files under
-scripts/sharia_rules_draft/ (issue #169 pin gate: S&P DJI's own
-current methodology could not be fetched -- spglobal.com is
-blocked in the build environment -- and secondary summaries
-conflict on the receivables screen after the September 2026
-revision). The tests below prove the engine cannot see them.
+S&P Shariah and DJIM were pinned once S&P DJI's own current
+methodology documents reached the build environment (supplied
+2026-11-18; spglobal.com itself is blocked there). They shipped
+as draft-disabled files under scripts/sharia_rules_draft/ until
+then; the drafts are gone and the tests below prove the pinned
+packs are live, with the buffer/hysteresis rule recorded as
+methodology metadata, never applied to a point-in-time verdict.
 
 Usage: python3 scripts/test_sharia_packs.py
 Exit 0 only when every test passes.
@@ -59,6 +74,8 @@ FTSE = se.load_ruleset("FTSE")
 ISLAMICLY = se.load_ruleset("ISLAMICLY")
 AAOIFI = se.load_ruleset("AAOIFI")
 EGX33 = se.load_ruleset("EGX33")
+SP = se.load_ruleset("SP_SHARIAH")
+DJIM = se.load_ruleset("DJIM")
 
 PERIOD = {"label": "FY2025", "start": "2025-01-01",
           "end": "2025-12-31"}
@@ -373,28 +390,205 @@ def test_islamicly_missing_average_named():
     assert "avg_market_value_36m" in row["missing_inputs"]
 
 
-# ------------------------------------------------------------ drafts
+# ------------------------------------------------------------ S&P
+# Denominator: 36-month average market value of equity 10,000, so
+# the printed 30% lines sit at 3,000. Every comparison in the
+# November 2026 methodology is strict ("<"): exactly at a line
+# FAILS. There is NO receivables screen (abolished pre-2023).
 
-def test_drafts_disabled_and_invisible_to_the_engine():
+def _sp_fin(**over):
+    fin = {"total_revenue": 10000, "non_compliant_revenue": 400,
+           "interest_bearing_debt": 2000,
+           "interest_bearing_assets": 1000,
+           "cash_and_liquid_assets": 1500,
+           "accounts_receivable": 4000, "total_assets": 10000}
+    fin.update(over)
+    return fin
+
+
+def _sp_snap(**over):
+    return snap(financials=_sp_fin(**over),
+                market={"avg_market_value_36m": 10000})
+
+
+def test_sp_compliant_with_purification():
+    # income 400/10000 = 0.04 < 0.05 pass
+    # leverage 2000/10000 = 0.20 < 0.30 pass
+    # cash composite (1500 + 1000)/10000 = 0.25 < 0.30 pass
+    # S&P publishes dividend purification -> the verdict is
+    # compliant-with-purification, ratio 0.04, per-share null
+    # (the methodology's purification is a dividend share only).
+    row = se.screen(_sp_snap(), SP)
+    assert row["verdict"] == "compliant-with-purification", row
+    assert row["missing_inputs"] == [], row["missing_inputs"]
+    assert row["purification"]["defined"] is True
+    assert row["purification"]["ratio"] == 0.04
+    assert row["purification"]["per_share"] is None
+
+
+def test_sp_boundaries_are_strict():
+    # leverage exactly at the line: 3000/10000 = 0.30 -> FAIL (lt)
+    row = se.screen(_sp_snap(interest_bearing_debt=3000), SP)
+    r = ratio(row, "leverage")
+    assert r["value"] == 0.3 and r["passed"] is False
+    assert row["verdict"] == "non-compliant"
+    # one unit under: 0.2999 -> pass
+    row = se.screen(_sp_snap(interest_bearing_debt=2999), SP)
+    assert ratio(row, "leverage")["passed"] is True
+    # cash composite exactly 0.30: (1500 + 1500)/10000 -> FAIL
+    row = se.screen(_sp_snap(interest_bearing_assets=1500), SP)
+    r = ratio(row, "cash_and_interest_bearing_securities")
+    assert r["value"] == 0.3 and r["passed"] is False
+    # income exactly 0.05: 500/10000 -> FAIL (the tolerance is
+    # "below 5%", strictly)
+    row = se.screen(_sp_snap(non_compliant_revenue=500), SP)
+    assert ratio(row, "non_compliant_income")["passed"] is False
+    assert row["verdict"] == "non-compliant"
+
+
+def test_sp_no_receivables_screen():
+    # The pre-2023 receivables screen (< 49%) does NOT exist in
+    # the November 2026 methodology: a snapshot with NO
+    # accounts_receivable at all is fully determinate under
+    # SP_SHARIAH, and even a huge receivables figure cannot fail
+    # any ratio (there is no ratio that reads it).
+    fin = _sp_fin()
+    del fin["accounts_receivable"]
+    row = se.screen(snap(financials=fin,
+                         market={"avg_market_value_36m": 10000}), SP)
+    assert row["verdict"] == "compliant-with-purification", row
+    assert row["missing_inputs"] == []
+    row = se.screen(_sp_snap(accounts_receivable=999999), SP)
+    assert row["verdict"] == "compliant-with-purification", row
+    assert {r["id"] for r in row["ratios"]} == {
+        "non_compliant_income", "leverage",
+        "cash_and_interest_bearing_securities"}
+
+
+def test_sp_buffer_is_metadata_not_threshold():
+    # The 2pp / 3-consecutive-period buffer is index-membership
+    # hysteresis: recorded per ratio under 'buffers', while the
+    # encoded threshold stays the raw 30% and a point-in-time
+    # breach at 0.31 FAILS (index practice would hold a prior
+    # constituent compliant inside the buffer).
+    by_id = {r["id"]: r for r in SP["ratios"]}
+    for rid in ("leverage", "cash_and_interest_bearing_securities"):
+        assert by_id[rid]["buffers"] == {
+            "consecutive_periods": 3, "hysteresis_pp": 0.02}
+        assert by_id[rid]["threshold"] == 0.3
+    row = se.screen(_sp_snap(interest_bearing_debt=3100), SP)
+    assert ratio(row, "leverage")["value"] == 0.31
+    assert ratio(row, "leverage")["passed"] is False
+
+
+def test_sp_missing_average_named():
+    row = se.screen(snap(financials=_sp_fin()), SP)
+    assert row["verdict"] == "insufficient-data"
+    assert "avg_market_value_36m" in row["missing_inputs"]
+
+
+# ------------------------------------------------------------ DJIM
+# Denominator: trailing 24-month average market capitalisation
+# 10,000, so the printed 30% lines sit at 3,000. Every comparison
+# is strict ("<"), as in the S&P pack -- but the WINDOW differs
+# (24 months, not 36), which the flip test below pins.
+
+def _djim_snap(fin_over=None, market=None):
+    fin = _sp_fin()
+    fin.update(fin_over or {})
+    if market is None:
+        market = {"avg_market_value_24m": 10000}
+    return snap(financials=fin, market=market)
+
+
+def test_djim_compliant_with_purification():
+    # income 0.04 < 0.05; leverage 2000/10000 = 0.20 < 0.30;
+    # cash composite (1500 + 1000)/10000 = 0.25 < 0.30.
+    row = se.screen(_djim_snap(), DJIM)
+    assert row["verdict"] == "compliant-with-purification", row
+    assert row["missing_inputs"] == [], row["missing_inputs"]
+    assert row["purification"]["ratio"] == 0.04
+    assert row["purification"]["per_share"] is None
+    r = ratio(row, "leverage")
+    assert r["denominator"] == 10000
+    assert r["denominator_base"] == "avg_market_value_24m"
+
+
+def test_djim_boundaries_are_strict():
+    # leverage exactly 0.30 -> FAIL (lt); 0.2999 -> pass
+    row = se.screen(_djim_snap({"interest_bearing_debt": 3000}),
+                    DJIM)
+    assert ratio(row, "leverage")["passed"] is False
+    assert row["verdict"] == "non-compliant"
+    row = se.screen(_djim_snap({"interest_bearing_debt": 2999}),
+                    DJIM)
+    assert ratio(row, "leverage")["passed"] is True
+    # income exactly 0.05 -> FAIL
+    row = se.screen(_djim_snap({"non_compliant_revenue": 500}),
+                    DJIM)
+    assert ratio(row, "non_compliant_income")["passed"] is False
+
+
+def test_djim_window_differs_from_sp():
+    # Identical financials, two averages: avg24m 10,000 vs
+    # avg36m 20,000. Debt 3,500: DJIM leverage 0.35 FAILS while
+    # S&P leverage 0.175 passes; cash composite 2,500 passes both
+    # (0.25 vs 0.125); income passes both. The 24-vs-36-month
+    # window is the ONLY difference -- the canonical SP/DJIM
+    # disagreement.
+    s = _djim_snap({"interest_bearing_debt": 3500},
+                   market={"avg_market_value_24m": 10000,
+                           "avg_market_value_36m": 20000})
+    row_djim = se.screen(s, DJIM)
+    row_sp = se.screen(s, SP)
+    assert row_djim["verdict"] == "non-compliant"
+    assert row_sp["verdict"] == "compliant-with-purification"
+    assert sd.flipping_ratios(row_djim, row_sp) == ["leverage"]
+
+
+def test_djim_series_derived_24m_average():
+    # No explicit aggregate: the engine derives avg24m from the
+    # market-cap series. Points inside the 24-month window
+    # (screening 2026-11-17, window from 2024-11-17): 10,000,
+    # 12,000, 14,000 -> mean 12,000. The 2024-01-15 point (999,999)
+    # is outside the window and must not count.
+    series = [{"date": "2024-01-15", "market_cap": 999999},
+              {"date": "2025-01-31", "market_cap": 10000},
+              {"date": "2025-12-31", "market_cap": 12000},
+              {"date": "2026-11-16", "market_cap": 14000}]
+    s = _djim_snap(market={"market_cap_series": series})
+    row = se.screen(s, DJIM)
+    r = ratio(row, "leverage")
+    assert r["denominator"] == 12000.0, r
+    assert r["denominator_base"] == "avg_market_value_24m"
+    assert row["verdict"] == "compliant-with-purification", row
+
+
+def test_djim_missing_24m_average_named():
+    # A snapshot carrying only the 36-month average cannot be
+    # screened under DJIM: the 24-month aggregate is named.
+    row = se.screen(_djim_snap(market={"avg_market_value_36m":
+                                       10000}), DJIM)
+    assert row["verdict"] == "insufficient-data"
+    assert "avg_market_value_24m" in row["missing_inputs"]
+
+
+# ------------------------------------------------------- pinned live
+
+def test_sp_djim_pinned_and_live():
     assert se.available_standards() == [
-        "AAOIFI", "EGX33", "FTSE", "ISLAMICLY", "MSCI", "MSCI_M"]
-    for std in ("SP_SHARIAH", "DJIM"):
-        try:
-            se.load_ruleset(std)
-        except ValueError:
-            pass
-        else:
-            raise AssertionError("%s must not be loadable" % std)
-        path = os.path.join(
-            SCRIPTS, "sharia_rules_draft", std.lower() + ".json")
-        with open(path, encoding="utf-8") as fh:
-            draft = json.load(fh)
-        assert draft["status"] == "draft-disabled"
-        assert draft["enabled"] is False
-        assert draft["ratios"] == []
-        assert draft["reason_en"] and draft["reason_ar"]
-        assert draft["pin_requirements"]
-        assert draft["secondary_reports_unpinned"]
+        "AAOIFI", "DJIM", "EGX33", "FTSE", "ISLAMICLY", "MSCI",
+        "MSCI_M", "SP_SHARIAH"]
+    for ruleset in (SP, DJIM):
+        assert len(ruleset["ratios"]) == 3
+        assert ruleset["ruleset_version"] == "1.0.0"
+        assert ruleset["sources"], ruleset["standard_id"]
+        assert ruleset["activity_screen"]["required"] is True
+        # the disabled drafts are gone: the pin replaced them
+        draft = os.path.join(
+            SCRIPTS, "sharia_rules_draft",
+            ruleset["family"] + ".json")
+        assert not os.path.exists(draft), draft
 
 
 # ------------------------------------------------------------ POUL
@@ -404,7 +598,7 @@ def test_poul_insufficient_data_under_every_new_pack():
                         "covered_universe.json")
     with open(path, encoding="utf-8") as fh:
         poul = json.load(fh)[0]
-    for ruleset in (MSCI, MSCI_M, FTSE, ISLAMICLY):
+    for ruleset in (MSCI, MSCI_M, FTSE, ISLAMICLY, SP, DJIM):
         row = se.screen(poul, ruleset)
         assert row["verdict"] == "insufficient-data", row
         assert "total_revenue" in row["missing_inputs"]
@@ -432,7 +626,7 @@ def test_report_parameter_selects_msci():
     assert section["average_purification"]["included"] == [
         {"standard": "MSCI", "ratio": 0.04}]
     # Case-insensitive resolution, and the default now spans all
-    # six implemented standards.
+    # eight implemented standards.
     resolved, _ = compile_model.resolve_sharia_standards(["msci"])
     assert resolved == ["MSCI"]
     resolved_all, _ = compile_model.resolve_sharia_standards(None)
@@ -544,8 +738,8 @@ def test_diff_covered_universe_is_honestly_indeterminate():
     report = sd.build_diff(tables,
                            generated_at="2026-11-17T00:00:00Z")
     assert report["disagreements"] == []
-    # 4 non-baseline standards x 2 baselines = 8 indeterminate
-    assert len(report["indeterminate"]) == 8
+    # 6 non-baseline standards x 2 baselines = 12 indeterminate
+    assert len(report["indeterminate"]) == 12
     assert set(report["verdicts"]["POUL.CA"].values()) == \
         {"insufficient-data"}
     md = sd.render_md(report)
@@ -590,8 +784,28 @@ def main():
          test_islamicly_cash_conflict_documented_and_operative),
         ("Islamicly missing 36m average named",
          test_islamicly_missing_average_named),
-        ("S&P / DJIM drafts disabled and invisible",
-         test_drafts_disabled_and_invisible_to_the_engine),
+        ("S&P compliant-with-purification, ratio-only "
+         "purification", test_sp_compliant_with_purification),
+        ("S&P boundaries are strict (lt)",
+         test_sp_boundaries_are_strict),
+        ("S&P has NO receivables screen (abolished)",
+         test_sp_no_receivables_screen),
+        ("S&P buffer is metadata, threshold stays 30%",
+         test_sp_buffer_is_metadata_not_threshold),
+        ("S&P missing 36m average named",
+         test_sp_missing_average_named),
+        ("DJIM compliant-with-purification on the 24m window",
+         test_djim_compliant_with_purification),
+        ("DJIM boundaries are strict (lt)",
+         test_djim_boundaries_are_strict),
+        ("DJIM 24m window flips vs S&P 36m on identical "
+         "financials", test_djim_window_differs_from_sp),
+        ("DJIM 24m average derived from the series",
+         test_djim_series_derived_24m_average),
+        ("DJIM missing 24m average named",
+         test_djim_missing_24m_average_named),
+        ("S&P / DJIM pinned and live, drafts gone",
+         test_sp_djim_pinned_and_live),
         ("POUL insufficient-data under every new pack",
          test_poul_insufficient_data_under_every_new_pack),
         ("Report Model parameter selects MSCI unchanged",
