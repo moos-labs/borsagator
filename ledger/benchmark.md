@@ -1,8 +1,8 @@
 # 🐊 Borsagator — forward quality benchmark (issue #79)
 
-Source: `moos-labs/borsagator` branch `archive` (tree ffa2c5f4, commit ffa2c5f4). Sweeps archived: 47 (3 with a benchmark freeze).
+Source: `moos-labs/borsagator` branch `archive` (tree 6406cf71, commit 6406cf71). Sweeps archived: 48 (4 with a benchmark freeze).
 
-**Benchmark rows: 54 · matured: 0 · pending: 54 · invalid: 0 · excluded gap-flagged: 0**
+**Benchmark rows: 72 · matured: 0 · pending: 72 · invalid: 0 · excluded gap-flagged: 0**
 
 Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 10 matured forecasts — such cells show their count and the gate wording only. Public accuracy claims need n ≥ 30 matured forecasts (D4).
 
@@ -56,5 +56,7 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 - sweeps/2026-11-18/140522__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-18-001: raw-llm-cohere absent (llm-key-absent) — no rows
 - sweeps/2026-11-18/202544__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-18-001: family-agent absent (family-did-not-vote) — no rows
 - sweeps/2026-11-18/202544__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-18-001: raw-llm-cohere absent (llm-key-absent) — no rows
+- sweeps/2026-11-18/222037__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-001: family-agent absent (family-did-not-vote) — no rows
+- sweeps/2026-11-18/222037__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-001: raw-llm-cohere absent (llm-key-absent) — no rows
 
 _The ensemble is the reference row: the table is symmetric and fixed-order, and every cell is published as scored._
