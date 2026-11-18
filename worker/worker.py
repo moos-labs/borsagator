@@ -64,6 +64,9 @@ BUS = ROOT / "bus"            # borsagator clone (token remote), queue branch
 # fetch/reset/write/add/commit/push transaction - so marker
 # publication must not share that clone.
 PENDING_DONE = ROOT / "pending-done"
+# #231: pre-effect intents and fallback completion receipts. This is
+# outside both resettable clones, NOT an independent failure domain.
+JOB_STATE = ROOT / "job-state"
 BUS_PUB = ROOT / "bus-pub"      # dedicated done-marker publication clone
 PUSH_ATTEMPTS = 5        # reconcile-and-retry budget at mark time
 DRAIN_ATTEMPTS = 3       # smaller budget for the per-cycle drain
@@ -172,10 +175,14 @@ def git_bus(*args, timeout=120):
 def sync_bus():
     if not BUS.exists():
         url = os.environ["GATOR_BUS_URL"]
-        sh(f"git clone --branch queue --single-branch {url} {BUS}",
-           timeout=300)
-    git_bus("fetch origin queue", timeout=120)
-    git_bus("reset --hard origin/queue", timeout=60)
+        if sh(f"git clone --branch queue --single-branch {url} {BUS}",
+              timeout=300).returncode != 0:
+            raise RuntimeError("sync_bus: clone failed; refusing stale queue")
+    for command, timeout in (("fetch origin queue", 120),
+                             ("reset --hard origin/queue", 60)):
+        if git_bus(command, timeout=timeout).returncode != 0:
+            raise RuntimeError(f"sync_bus: {command} failed; "
+                               "refusing stale queue")
     git_bus("config user.email worker@borsagator.local", timeout=30)
     git_bus("config user.name borsagator-worker", timeout=30)
 
@@ -311,14 +318,67 @@ def _write_receipt(path, text):
 
 RECEIPT_KEYS = {"worker", "at", "job", "archive"}
 
-# Job ids whose completion could NOT be staged durably AND whose
-# delivery failed. In-memory only, with no receipt payload: it gates
-# local re-execution while this process lives and is surfaced in the
-# heartbeat, but there is nothing to republish automatically and the
-# gate does not survive a restart. The per-cycle drain clears an
-# entry once its marker is verified on the bus (e.g. after a hand
-# reconcile); recovery of the compound failure itself is manual.
+# Last-resort diagnostics only. Production execution first persists an
+# intent, so a restart still gates an ambiguous effect if all subsequent
+# writes and bus delivery fail. This set alone is not durable.
 _UNDELIVERED = set()
+# A drain runs after sync_bus, so BUS may not yet contain a marker
+# verified during this cycle. Keep that delivery gated until restart;
+# the durable bus marker is recovered by startup sync then.
+_VERIFIED_DONE = set()
+
+
+def _intent_path(job_id):
+    return JOB_STATE / f"{job_id}.intent"
+
+
+def _completion_dirs():
+    return (PENDING_DONE, JOB_STATE)
+
+
+def _forget_completion(path, job_id):
+    """Only after exact remote verification. Keep the completed receipt
+    until intent deletion is durable, so interrupted cleanup can retry."""
+    _VERIFIED_DONE.add(job_id)
+    try:
+        intent = _intent_path(job_id)
+        if JOB_STATE.exists():
+            intent.unlink(missing_ok=True)
+            _fsync_dir(JOB_STATE)
+        path.unlink()
+        _fsync_dir(path.parent)
+    except OSError:
+        pass  # durable residue remains safe to replay
+
+
+def _ensure_durable_dir(path):
+    """Persist each newly created ancestor, not just the leaf entry."""
+    if not path.exists():
+        _ensure_durable_dir(path.parent)
+        path.mkdir(exist_ok=True)
+    _fsync_dir(path.parent)
+
+
+def _begin_execution(job):
+    """Write-ahead uncertainty gate, NEVER a done record. Failure to
+    establish durability refuses execution. Existing evidence refuses
+    re-entry, including direct _execute callers. One worker process per
+    ROOT is required, as for the existing fixed receipt temp names."""
+    job_id = str(job.get("id", ""))
+    if not JOB_ID_RE.fullmatch(job_id):
+        return False
+    if _done_or_pending(job_id):
+        return False
+    try:
+        _ensure_durable_dir(JOB_STATE)
+        _write_receipt(_intent_path(job_id), json.dumps(
+            {"job": job["job"], "started": now()}))
+        return True
+    except Exception as e:  # noqa: BLE001 - fail closed before effects
+        print(f"_begin_execution {job_id}: intent not durable; "
+              f"REFUSING execution ({type(e).__name__}: {e})",
+              file=sys.stderr, flush=True)
+        return False
 
 
 def _valid_receipt(text, job_id):
@@ -425,14 +485,15 @@ def _receipt_paths(job_id):
     receipt OR a quarantined corrupt one. A corrupt receipt is still
     evidence the job RAN TO COMPLETION here: it must keep blocking
     local re-execution until a human resolves it (issue #216)."""
-    if not PENDING_DONE.exists():
-        return []
-    return [f for f in PENDING_DONE.glob(f"{job_id}.json*")
+    return [f for directory in _completion_dirs()
+            for f in directory.glob(f"{job_id}.json*")
             if f.suffix in (".json", ".corrupt")]
 
 
 def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
-    """Issue #216: drain the done-receipt outbox after every sync_bus.
+    """#216/#231: drain BOTH completion stores after every sync_bus.
+    Intents alone are never published. Replay uses the saved completion
+    bytes only, never _execute or ledger_publish.py.
     A receipt whose job already has a bus record is deleted only when
     the records are verified identical (a hand-reconcile with the same
     bytes, df1b557f); a differing bus record keeps the receipt pending
@@ -452,10 +513,10 @@ def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
     # (e.g. a hand reconcile); the durable done() gate remains.
     for j in [j for j in _UNDELIVERED if done(j)]:
         _UNDELIVERED.discard(j)
-    if not PENDING_DONE.exists():
-        return
     deadline = time.monotonic() + budget_seconds
-    for f in sorted(PENDING_DONE.glob("*.json")):
+    receipts = sorted(f for directory in _completion_dirs()
+                      for f in directory.glob("*.json"))
+    for f in receipts:
         if time.monotonic() > deadline:
             print("flush_pending_done: soft drain budget reached; "
                   "remaining receipts retry next cycle",
@@ -475,7 +536,7 @@ def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
                   f"local re-execution)", file=sys.stderr, flush=True)
             try:
                 os.replace(f, f.with_suffix(f.suffix + ".corrupt"))
-                _fsync_dir(PENDING_DONE)
+                _fsync_dir(f.parent)
             except OSError:
                 pass
             continue
@@ -491,11 +552,8 @@ def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
             continue  # cannot prove absence: never risk overwrite
         if bus_record is not None:
             if bus_record == record:
-                try:
-                    f.unlink()
-                    _fsync_dir(PENDING_DONE)
-                except OSError:
-                    pass  # a re-found identical receipt is cleaned next cycle
+                _UNDELIVERED.discard(job_id)
+                _forget_completion(f, job_id)
             else:
                 print(f"flush_pending_done {job_id}: bus record differs "
                       f"from the pending receipt; keeping the receipt "
@@ -504,11 +562,7 @@ def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
             continue
         if _publish_done(job_id, record, attempts=attempts):
             _UNDELIVERED.discard(job_id)
-            try:
-                f.unlink()
-                _fsync_dir(PENDING_DONE)
-            except OSError:
-                pass
+            _forget_completion(f, job_id)
 
 
 QUEUE_ERROR = None  # last queue.json parse error (panel round 3, R3-09)
@@ -534,23 +588,24 @@ def heartbeat():
         # D2: a refused update must be visible on the bus — stale
         # code is safe code, but silent staleness is not.
         payload["update_error"] = UPDATE_ERROR
-    if PENDING_DONE.exists():
-        pending = sorted(f.stem for f in PENDING_DONE.glob("*.json"))
-        corrupt = sorted(f.name[:-len(".json.corrupt")]
-                         for f in PENDING_DONE.glob("*.json.corrupt"))
-        # Issue #216: undelivered/corrupt done receipts are surfaced
-        # on the bus (the heartbeat is the worker's regular bus
-        # write). Best-effort only: if pushes are failing the
-        # heartbeat itself does not land - the outbox is the durable
-        # record, and _done_or_pending is what protects this host.
-        if pending:
-            payload["pending_done"] = pending
-        if corrupt:
-            payload["corrupt_done"] = corrupt
+    pending = sorted({f.stem for directory in _completion_dirs()
+                      for f in directory.glob("*.json")})
+    corrupt = sorted({f.name[:-len(".json.corrupt")]
+                      for directory in _completion_dirs()
+                      for f in directory.glob("*.json.corrupt")})
+    if pending:
+        payload["pending_done"] = pending
+    if corrupt:
+        payload["corrupt_done"] = corrupt
+    # An intent is not completion evidence. It means an attempt may
+    # have caused effects. Only completed receipts are auto-replayed.
+    uncertain = sorted(f.stem for f in JOB_STATE.glob("*.intent")
+                       if f.stem not in pending and f.stem not in corrupt)
+    if uncertain:
+        payload["uncertain_jobs"] = uncertain
     if _UNDELIVERED:
-        # Issue #216: completions with no durable receipt and no
-        # confirmed delivery - gated in this process only, lost on
-        # restart. Best-effort surfacing, like pending_done.
+        # Diagnostic set only; durable intents gate production attempts.
+        # Heartbeat delivery itself remains best-effort.
         payload["undelivered_done"] = sorted(_UNDELIVERED)
     (BUS / "queue" / "heartbeat.json").write_text(json.dumps(payload))
     push_bus("heartbeat")
@@ -584,90 +639,80 @@ def done(job_id):
 
 
 def _done_or_pending(job_id):
-    """Issue #216: a job with ANY local completion evidence - a valid
-    pending receipt OR a quarantined corrupt one - already RAN TO
-    COMPLETION on this host; it must not be re-executed here after
+    """#216/#231: local completion evidence OR a pre-effect intent
+    blocks re-entry. An intent can be an interrupted/failed attempt,
+    NOT proof of completion; it needs reconciliation, never replay
+    as done. Such a job must not be re-executed here after
     claim reclamation while that evidence awaits delivery or
     human resolution. Other hosts cannot see this host's outbox:
     while the marker stays undelivered, a peer may still re-run
     after claim reclamation whether or not this host survives - the
     gate protects this host only."""
     return (done(job_id) or job_id in _UNDELIVERED
+            or job_id in _VERIFIED_DONE
+            or _intent_path(job_id).exists()
             or bool(_receipt_paths(job_id)))
 
 
 def _mark_done(job, archive_sha):
-    """Issue #149 + #216: persist the done record (archive commit)
-    after a successful publish. Handling of failure is CENTRALIZED
-    here, so callers deliberately do not branch on the return:
-    the receipt is staged FIRST in the crash-durable local outbox
-    (outside the resettable bus clones), then published against a
-    fresh queue base with bounded conflict retries. Returns True
-    only when delivery is VERIFIED on origin/queue. On False the
-    receipt is retained, retried every cycle by
-    flush_pending_done(), surfaced in the heartbeat's pending_done
-    field, and blocks re-execution of this job on this host (see
-    _done_or_pending). If even the outbox write fails there is no
-    local evidence to retain: publication is still attempted, and a
-    failure there is loud on stderr with the job left re-runnable
-    after reclamation (pre-#216 semantics). Guarantees hold only
-    when a receipt was successfully staged AND local storage
-    survives AND publication eventually succeeds. Honest residual
-    windows: (1) a crash between the job's side effect and the
-    receipt write still loses the marker - a receipt cannot be
-    staged before the side effect exists without violating issue
-    #149; (2) while a marker stays undelivered, a PEER may re-run
-    after claim reclamation even though this host is alive - the
-    outbox is only visible locally; (3) an outbox-write failure
-    compounded with a delivery failure leaves only the in-memory
-    _UNDELIVERED gate: no receipt exists to republish, so recovery
-    is manual; the job stays gated on this host until the marker
-    reaches the bus (cleared by the next drain) or the process
-    restarts. Re-run absorption is proven only for the
-    archive publish (issue #216: byte-identical reruns commit
-    nothing); for ledger-guard/watchdog the duplicate side effect
-    is a ledger_publish.py re-run, whose idempotency this change
-    does not establish."""
+    """#149/#216/#231: mark completion only AFTER a successful effect.
+    First stage exact completion bytes in the primary outbox. If that
+    write fails, try JOB_STATE with the same crash-durable write, then
+    attempt bus publication regardless. A confirmed staged receipt is
+    replayable on restart; it never re-executes the job or publisher.
+
+    Production _execute first persists a write-ahead intent. If BOTH
+    completion writes and delivery fail, restart retains that intent:
+    the outcome is uncertain, NOT done, and requires reconciliation.
+    This deliberately trades automatic retries of interrupted/failed
+    attempts for local at-most-once admission. It is not exactly-once
+    delivery: loss of local storage, older workers without intents,
+    concurrent workers sharing ROOT, and peer-host claim reclamation
+    remain outside this local gate's guarantee. JOB_STATE is on the
+    same filesystem by default, so fallback writes are NOT assumed
+    independent. Never turn an intent alone into a done marker."""
     record = json.dumps(
         {"worker": os.uname().nodename, "at": now(), "job": job["job"],
          "archive": archive_sha})
-    receipt = PENDING_DONE / f"{job['id']}.json"
-    staged = False
-    try:
-        PENDING_DONE.mkdir(parents=True, exist_ok=True)
-        _fsync_dir(PENDING_DONE.parent)
-        _write_receipt(receipt, record)
-        staged = True
-    except Exception as e:  # noqa: BLE001 - publish anyway, loudly
-        print(f"_mark_done: OUTBOX WRITE FAILED for {job['id']} "
-              f"({type(e).__name__}: {e}); attempting publication "
-              f"without a durable local receipt",
-              file=sys.stderr, flush=True)
+    receipt = None
+    for directory in _completion_dirs():
+        try:
+            _ensure_durable_dir(directory)
+            candidate = directory / f"{job['id']}.json"
+            _write_receipt(candidate, record)
+            receipt = candidate
+            break
+        except Exception as e:  # noqa: BLE001 - try fallback, then bus
+            print(f"_mark_done: RECEIPT WRITE FAILED in {directory} "
+                  f"for {job['id']} ({type(e).__name__}: {e})",
+                  file=sys.stderr, flush=True)
     if _publish_done(job["id"], record):
+        _VERIFIED_DONE.add(job["id"])
         _UNDELIVERED.discard(job["id"])
-        if staged:
+        if receipt is not None:
+            _forget_completion(receipt, job["id"])
+        else:
+            # No replayable receipt exists, but delivery was verified.
             try:
-                receipt.unlink()
-                _fsync_dir(PENDING_DONE)
+                _intent_path(job["id"]).unlink(missing_ok=True)
+                if JOB_STATE.exists():
+                    _fsync_dir(JOB_STATE)
             except OSError:
-                pass  # verified on the bus; residue cleaned next cycle
+                pass
         return True
-    if not staged:
-        # No durable receipt exists to republish or gate on across a
-        # restart: gate re-execution in THIS process only.
+    if receipt is None:
         _UNDELIVERED.add(job["id"])
     print(f"_mark_done: delivery not confirmed for {job['id']}; "
-          + (f"the receipt is retained in {PENDING_DONE}, retried "
-             f"every cycle, and surfaced in heartbeat pending_done"
-             if staged else
-             f"NO durable local receipt could be staged; gated "
-             f"in-process only (undelivered_done)"),
+          + (f"receipt retained at {receipt}; replayed each cycle"
+             if receipt is not None else
+             "NO durable completion receipt; any pre-effect intent "
+             "is retained, outcome UNCERTAIN; manual reconciliation"),
           file=sys.stderr, flush=True)
     return False
 
 
 def claim(job):
-    if done(job["id"]):
+    if _done_or_pending(job["id"]):
         # Issue #149: a completed job is never claimed again.
         return False
     c = BUS / "queue" / "claims"
@@ -1703,6 +1748,14 @@ def maybe_merge(job, workdir, manifest, plan):
 
 
 def _execute(job):
+    # #231: an intent precedes ALL effects, including ledger publish.
+    # Never clear it just because the body returned/raised: failures
+    # can follow partial effects. Only verified completion clears it.
+    if _begin_execution(job):
+        _execute_body(job)
+
+
+def _execute_body(job):
     # Issue #66 extension: first-party schedule jobs — no tools, no
     # archive publish; their outputs are ledger commits on main and
     # bus markers. Done is marked only when the attempt completed
