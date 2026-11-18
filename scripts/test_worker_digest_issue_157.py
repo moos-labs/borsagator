@@ -56,12 +56,14 @@ with the fix, every test passes.
 Usage: python3 scripts/test_worker_digest_issue_157.py
 Exit 0 only when every test passes.
 """
+import io
 import json
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import redirect_stderr
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "scripts")
@@ -105,6 +107,18 @@ class FakeGh:
         # #223: extra rows a listing returns that the store does not
         # hold (a phantom / refuted listing). {label: [{"number": n}]}
         self.list_override = {}
+        # #230: after a create records an issue, the next
+        # `lag_after_create` listings return nothing (index lag).
+        # `hide_after_view` hides every listing after the first
+        # successful fetch (a skipped sweep that goes missing).
+        self.lag_after_create = 0
+        self.lag_remaining = 0
+        self.hide_after_view = False
+        # one-shot read fault armed by a create: "list_rc",
+        # "list_garbage" (next listing) or "view_fail" (next fetch)
+        self.fault_after_create = None
+        self.armed_fault = None
+        self.sleeps = []
 
     def _next_number(self):
         return len(self.issues) + 1
@@ -114,6 +128,14 @@ class FakeGh:
         if args[:2] == ["issue", "list"]:
             label = args[args.index("--label") + 1]
             state = args[args.index("--state") + 1]
+            if self.armed_fault in ("list_rc", "list_garbage"):
+                fault, self.armed_fault = self.armed_fault, None
+                if fault == "list_rc":
+                    return Proc(1, "", "HTTP 502 (simulated)")
+                return Proc(0, "not json")
+            if self.lag_remaining != 0:
+                self.lag_remaining -= 1
+                return Proc(0, "[]")
             rows = [{"number": i["number"]} for i in self.issues
                     if label in i["labels"] and
                     (state == "all" or i["state"] == state)]
@@ -134,6 +156,11 @@ class FakeGh:
                 raise AssertionError(f"fake gh: bad view args {args!r}")
             for i in self.issues:
                 if i["number"] == n:
+                    if self.armed_fault == "view_fail":
+                        self.armed_fault = None
+                        return Proc(1, "", "HTTP 502 (simulated)")
+                    if self.hide_after_view:
+                        self.lag_remaining = 1000
                     return Proc(0, json.dumps(
                         {"number": n,
                          "labels": [{"name": lb} for lb in i["labels"]]}))
@@ -164,7 +191,12 @@ class FakeGh:
                             "deadline exceeded (simulated)")
             if fail == "clean":
                 return Proc(1, "", "HTTP 500 (simulated)")
+            if fail == "phantom_success":
+                # #230: reports success, files nothing.
+                return Proc(0, "created (simulated, not stored)")
             self.issues.append(rec)
+            self.lag_remaining = self.lag_after_create
+            self.armed_fault = self.fault_after_create
             return Proc(
                 0, f"https://github.com/moos-labs/borsagator/issues/"
                    f"{rec['number']}")
@@ -227,12 +259,21 @@ def make_repo(n_sweeps, digest_titles=None):
 def with_fake(fn):
     """Run fn(fake) with wdi.run_gh patched; restore afterwards."""
     fake = FakeGh()
-    old = wdi.run_gh
+    old, old_sleep = wdi.run_gh, wdi._sleep
     wdi.run_gh = fake.run
+    wdi._sleep = fake.sleeps.append  # never really sleep (#230)
     try:
         fn(fake)
     finally:
-        wdi.run_gh = old
+        wdi.run_gh, wdi._sleep = old, old_sleep
+
+
+def run_quiet(call):
+    """(call(), captured stderr) - to assert diagnostics (#230)."""
+    err = io.StringIO()
+    with redirect_stderr(err):
+        result = call()
+    return result, err.getvalue()
 
 
 def main():
@@ -568,6 +609,141 @@ def main():
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)
+
+    # --- T15-T17 (#230): the post-create reconciliation retries a
+    # lagging listing with a bounded backoff. Sleeps are recorded by
+    # the fake, never real. `want` is (rc, sleeps, issues, creates,
+    # lists, views); stderr is checked too, so an internal exception
+    # (e.g. an index error on the last round) can never pass as the
+    # expected red run.
+    def lag_case(name, lag, mode, sweeps, want):
+        tmp = None
+        try:
+            tmp, base, head, dirs = make_repo(sweeps)
+            def run(fake):
+                fake.lag_after_create = lag
+                fake.fail_create = mode
+                rc, err = run_quiet(
+                    lambda: wdi.file_issues(base, head, tmp))
+                def n(verb):
+                    return len([c for c in fake.calls
+                                if c[:2] == ["issue", verb]])
+                got = (rc, fake.sleeps, len(fake.issues), n("create"),
+                       n("list"), n("view"))
+                red = want[0] == 1
+                check(name,
+                      got == want and
+                      ("refusing to exit green" in err) == red and
+                      err.count("waiting") == len(fake.sleeps)
+                      and "could not complete" not in err and
+                      "Traceback" not in err and "Error" not in err,
+                      f"got={got} want={want} stderr={err!r}")
+            with_fake(run)
+        except Exception as e:
+            check(name, False, f"{type(e).__name__}: {e}")
+        finally:
+            if tmp:
+                shutil.rmtree(tmp, ignore_errors=True)
+
+    lag_case("T15 lagging listing, found in round 3: green, one "
+             "create, waits 2+4, no duplicate",
+             2, None, 1, (0, [2, 4], 1, 1, 4, 1))
+    lag_case("T15b lag fits the budget exactly (found in the last "
+             "round 5): green",
+             4, None, 1, (0, [2, 4, 8, 16], 1, 1, 6, 1))
+    lag_case("T15c two just-created sweeps share ONE wait budget: "
+             "green, waits 2 only",
+             2, None, 2, (0, [2], 2, 2, 6, 2))
+    lag_case("T16 filing genuinely absent (create reported success, "
+             "stored nothing): red after exactly 5 rounds",
+             0, "phantom_success", 1, (1, [2, 4, 8, 16], 0, 1, 6, 0))
+    lag_case("T16b two absent sweeps: red, still only 30 s of waits",
+             0, "phantom_success", 2, (1, [2, 4, 8, 16], 0, 2, 12, 0))
+    lag_case("T17 budget exhausted (listing never catches up in 5 "
+             "rounds): red, one create, no duplicate",
+             5, None, 1, (1, [2, 4, 8, 16], 1, 1, 6, 0))
+
+    # --- T18 (#230): only a sweep created in this run is retried.
+    # Each case is one check with no waiting.
+    tmp = None
+    try:
+        tmp, base, head, dirs = make_repo(1)
+        lab = wdi.identity_label(dirs[0])
+        def t18(fake):
+            fake.issues.append({"number": 1, "title": TITLE,
+                                "labels": ["borsagator", lab],
+                                "state": "open"})
+            rc, err = run_quiet(
+                lambda: wdi.file_issues(base, head, tmp))
+            check("T18 skipped sweep: green, no waiting",
+                  rc == 0 and fake.sleeps == [] and err == "",
+                  f"rc={rc} sleeps={fake.sleeps} stderr={err!r}")
+        with_fake(t18)
+        def t18b(fake):
+            fake.list_override[lab] = [{"number": 424242}]
+            rc, err = run_quiet(
+                lambda: wdi.file_issues(base, head, tmp))
+            check("T18b indeterminate fetch: red, no waiting",
+                  rc == 1 and fake.sleeps == [],
+                  f"rc={rc} sleeps={fake.sleeps}")
+        with_fake(t18b)
+        def t18c(fake):
+            fake.hide_after_view = True
+            fake.issues.append({"number": 1, "title": TITLE,
+                                "labels": ["borsagator", lab],
+                                "state": "open"})
+            rc, err = run_quiet(
+                lambda: wdi.file_issues(base, head, tmp))
+            lists = [c for c in fake.calls if c[:2] == ["issue", "list"]]
+            check("T18c skipped sweep missing at reconciliation: red "
+                  "at once, no waiting, no create",
+                  rc == 1 and fake.sleeps == [] and len(lists) == 2
+                  and "refusing to exit green" in err
+                  and not [c for c in fake.calls
+                           if c[:2] == ["issue", "create"]],
+                  f"rc={rc} sleeps={fake.sleeps} lists={len(lists)}")
+        with_fake(t18c)
+    except Exception as e:
+        check("T18 no retry outside a created sweep", False,
+              f"{type(e).__name__}: {e}")
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    # --- T19 (#230): a verification ERROR on a just-created sweep
+    # is final at once. The fault is one-shot, so a wrongful retry
+    # would succeed on the next read and turn the run green.
+    def fault_case(name, fault, views_want):
+        tmp = None
+        try:
+            tmp, base, head, dirs = make_repo(1)
+            def run(fake):
+                fake.fault_after_create = fault
+                rc, err = run_quiet(
+                    lambda: wdi.file_issues(base, head, tmp))
+                n = lambda verb: len([c for c in fake.calls
+                                      if c[:2] == ["issue", verb]])
+                got = (rc, fake.sleeps, len(fake.issues), n("create"),
+                       n("list"), n("view"))
+                check(name,
+                      got == (1, [], 1, 1, 2, views_want) and
+                      "could not complete" in err and
+                      "refusing to exit green" in err and
+                      "waiting" not in err and "Traceback" not in err,
+                      f"got={got} stderr={err!r}")
+            with_fake(run)
+        except Exception as e:
+            check(name, False, f"{type(e).__name__}: {e}")
+        finally:
+            if tmp:
+                shutil.rmtree(tmp, ignore_errors=True)
+
+    fault_case("T19 list failure after create: one attempt, red, "
+               "no wait", "list_rc", 0)
+    fault_case("T19b malformed listing after create: one attempt, "
+               "red, no wait", "list_garbage", 0)
+    fault_case("T19c failed fetch after create: one attempt, red, "
+               "no wait", "view_fail", 1)
 
     failed = [r for r in RESULTS if not r[1]]
     print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} passed")
