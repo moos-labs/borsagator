@@ -8,7 +8,19 @@ name: promotion-gate
 # longer equals the reviewed SHA. See docs/promotion.md and
 # scripts/promote.py. This check is advisory until it is added to
 # worker-release's required status checks (see the #145 fix notes);
-# a red X here means "do not merge".
+# a red X here means "do not merge". It is a REQUIRED status check
+# on worker-release (since 2026-11-17), so a false red blocks every
+# promotion.
+#
+# Issue #198 (2026-11-18): this gate failed 4/4 runs (opened, edited,
+# reopened, plus a re-run) on promotion PR #200, a valid frozen
+# candidate whose API state passes the identical checks locally.
+# The event payload is therefore NOT trusted as the source of truth:
+# the step re-fetches the PR from the API and checks THOSE facts,
+# falling back to the event only if the API call fails. Failures
+# print ::error:: annotations naming the exact mismatch and the
+# compared values, so a future red is diagnosable from the check-run
+# annotations API without downloading run logs.
 on:
   pull_request:
     branches: [worker-release]
@@ -24,22 +36,48 @@ jobs:
       - name: Check head is the frozen reviewed SHA
         env:
           EVENT_PATH: ${{ github.event_path }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
           python3 - <<'PY'
-          import json, os, re, sys
+          import json, os, re, subprocess, sys
           with open(os.environ["EVENT_PATH"]) as f:
               event = json.load(f)
           pr = event["pull_request"]
           head_ref = pr["head"]["ref"]
           head_sha = pr["head"]["sha"]
           body = pr.get("body") or ""
+          source = "event"
+          # Issue #198: the event payload proved unreliable -- re-fetch
+          # the PR from the API and check those facts instead.
+          try:
+              out = subprocess.run(
+                  ["gh", "api",
+                   "repos/%s/pulls/%s" % (os.environ["REPO"],
+                                          pr.get("number"))],
+                  capture_output=True, text=True, timeout=60)
+              if out.returncode == 0:
+                  api = json.loads(out.stdout)
+                  head_ref = api["head"]["ref"]
+                  head_sha = api["head"]["sha"]
+                  body = api.get("body") or ""
+                  source = "api"
+              else:
+                  print("API re-fetch failed (rc=%s); using event payload"
+                        % out.returncode)
+          except Exception as e:  # noqa: BLE001 - gh missing etc.
+              print("API re-fetch error (%s); using event payload" % e)
+          print("gate source=%s head_ref=%s head_sha=%s"
+                % (source, head_ref, head_sha))
           m = re.search(r"^Reviewed-SHA:\s*([0-9a-f]{40})\s*$", body, re.M)
+          print("trailer found=%s" % bool(m))
           errors = []
           if head_ref == "main":
               errors.append("head branch is live main; promotion PRs must "
                             "come from a frozen promote/<sha> branch (#145)")
           if not m:
-              errors.append("PR body has no Reviewed-SHA: <40-hex> trailer")
+              errors.append("PR body has no Reviewed-SHA: <40-hex> trailer "
+                            "(source=%s)" % source)
           elif m.group(1) != head_sha:
               errors.append("head SHA %s != reviewed SHA %s; candidate "
                             "drifted, re-freeze" % (head_sha, m.group(1)))
@@ -50,6 +88,10 @@ jobs:
               print("PROMOTION GATE FAILED:")
               for e in errors:
                   print("  -", e)
+                  print("::error::PROMOTION GATE FAILED: %s "
+                        "(head_ref=%s head_sha=%s source=%s)"
+                        % (e, head_ref, head_sha, source))
               sys.exit(1)
-          print("PROMOTION GATE PASSED: head %s == reviewed SHA" % head_sha)
+          print("PROMOTION GATE PASSED: head %s == reviewed SHA "
+                "(source=%s)" % (head_sha, source))
           PY
