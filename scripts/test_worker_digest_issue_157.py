@@ -28,6 +28,22 @@ blind retry (one create; a failed create re-checks the label once
 to tell a lost response from a real failure, and a real failure
 fails the step loudly).
 
+Issue #223 (amendment 2026-11-18): the #220 burst test showed a
+first attempt staying green, creating its identity label and filing
+NO issue — the helper trusted a bare `gh issue list --label` result
+in the skip branch and the lost-create recheck, and an unverified
+rc==0 create could exit green with nothing filed. The helper now
+fetch-confirms every listed issue before trusting it (CONFIRMED /
+REFUTED / INDETERMINATE — see the helper docstring) and reconciles
+every sweep once after the filing pass, so a create that reported
+success without landing fails loudly instead of exiting 0. This
+harness was amended for that behaviour: the fake `gh` answers
+`issue view` from the in-memory store (a fetch of an unknown number
+fails 404, i.e. INDETERMINATE), T6's list count grows by the
+reconciliation pass, and T13/T14 pin the new contract (a listing
+that names an unresolvable issue fails red with no create; a listed
+issue that no longer carries the label is filed in the same run).
+
 The `gh` CLI is faked in-process (in-memory issue store, no
 network, no real repo touched) by monkeypatching the module's
 `run_gh`. Listing tests use throwaway git repos, as in
@@ -86,6 +102,9 @@ class FakeGh:
         self.fail_create = None
         self.fail_titles = None
         self.label_create_fails = False
+        # #223: extra rows a listing returns that the store does not
+        # hold (a phantom / refuted listing). {label: [{"number": n}]}
+        self.list_override = {}
 
     def _next_number(self):
         return len(self.issues) + 1
@@ -98,7 +117,27 @@ class FakeGh:
             rows = [{"number": i["number"]} for i in self.issues
                     if label in i["labels"] and
                     (state == "all" or i["state"] == state)]
+            # #223: a listing may name numbers the store does not
+            # hold (phantom / refuted). They ride the rows so the
+            # helper's fetch-confirmation sees them.
+            for r in self.list_override.get(label, []):
+                if r not in rows:
+                    rows.append(dict(r))
             return Proc(0, json.dumps(rows))
+        if args[:2] == ["issue", "view"]:
+            # #223: fetch-confirmation for one listed number. A
+            # stored issue answers with its labels; anything else
+            # is a failed fetch (INDETERMINATE), never "absent".
+            try:
+                n = int(args[2])
+            except (ValueError, IndexError):
+                raise AssertionError(f"fake gh: bad view args {args!r}")
+            for i in self.issues:
+                if i["number"] == n:
+                    return Proc(0, json.dumps(
+                        {"number": n,
+                         "labels": [{"name": lb} for lb in i["labels"]]}))
+            return Proc(1, "", "HTTP 404: Not Found")
         if args[:2] == ["label", "create"]:
             if self.label_create_fails:
                 return Proc(1, "", "already exists")
@@ -298,6 +337,9 @@ def main():
 
     # --- T6: create fails AFTER the issue landed: re-check finds it,
     # no second create, exit 0 (the old blind retry double-created).
+    # #223: the filing pass now fetches to confirm (1 view) and the
+    # post-run reconciliation lists + fetches once more, so the
+    # call counts are 3 lists / 2 views, not 2 lists / 0 views.
     try:
         tmp, base, head, dirs = make_repo(1)
         def t6(fake):
@@ -307,15 +349,19 @@ def main():
                        if c[:2] == ["issue", "create"]]
             lists = [c for c in fake.calls
                      if c[:2] == ["issue", "list"]]
+            views = [c for c in fake.calls
+                     if c[:2] == ["issue", "view"]]
             check("T6 lost create response: one issue, one create "
                   "attempt, label re-checked after the failure, "
                   "exit 0",
                   rc == 0 and len(fake.issues) == 1 and
-                  len(creates) == 1 and len(lists) == 2 and
+                  len(creates) == 1 and len(lists) == 3 and
+                  len(views) == 2 and
                   fake.issues[0]["labels"] == ["borsagator",
                                                 wdi.identity_label(dirs[0])],
                   f"rc={rc} issues={len(fake.issues)} "
-                  f"creates={len(creates)} lists={len(lists)}")
+                  f"creates={len(creates)} lists={len(lists)} "
+                  f"views={len(views)}")
         with_fake(t6)
     except Exception as e:
         check("T6 lost create response is recognised", False,
@@ -468,6 +514,56 @@ def main():
         with_fake(t12)
     except Exception as e:
         check("T12 missing digest.md files nothing", False,
+              f"{type(e).__name__}: {e}")
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    # --- T13 (#223): a listing that names an unresolvable issue
+    # fails red with NO create — the incident shape. The old code
+    # silently skipped (exit 0, no issue); the patched helper treats
+    # the failed fetch as INDETERMINATE and fails the step loudly.
+    try:
+        tmp, base, head, dirs = make_repo(1)
+        def t13(fake):
+            lab = wdi.identity_label(dirs[0])
+            fake.list_override[lab] = [{"number": 424242}]
+            rc = wdi.file_issues(base, head, tmp)
+            creates = [c for c in fake.calls
+                       if c[:2] == ["issue", "create"]]
+            check("T13 phantom listing: unresolvable issue fails "
+                  "red, no create",
+                  rc == 1 and not creates and not fake.issues,
+                  f"rc={rc} creates={len(creates)} "
+                  f"issues={len(fake.issues)}")
+        with_fake(t13)
+    except Exception as e:
+        check("T13 phantom listing fails red", False,
+              f"{type(e).__name__}: {e}")
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    # --- T14 (#223): a listed issue that no longer carries the
+    # identity label is REFUTED — the sweep is filed in the same
+    # run instead of silently skipped.
+    try:
+        tmp, base, head, dirs = make_repo(1)
+        def t14(fake):
+            lab = wdi.identity_label(dirs[0])
+            fake.issues.append({"number": 1, "title": TITLE,
+                                "labels": ["borsagator"],
+                                "state": "open"})
+            fake.list_override[lab] = [{"number": 1}]
+            rc = wdi.file_issues(base, head, tmp)
+            check("T14 refuted listing: issue without the identity "
+                  "label is filed in the same run",
+                  rc == 0 and len(fake.issues) == 2 and
+                  fake.issues[1]["labels"] == ["borsagator", lab],
+                  f"rc={rc} issues={fake.issues}")
+        with_fake(t14)
+    except Exception as e:
+        check("T14 refuted listing files in-run", False,
               f"{type(e).__name__}: {e}")
     finally:
         if tmp:
