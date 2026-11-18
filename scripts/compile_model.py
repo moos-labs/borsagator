@@ -170,6 +170,35 @@ def _replace_nonfinite(obj):
     return obj
 
 
+def _null_nonfinite(obj, path, coercion_failed, source="ensemble"):
+    """Walk a structure, replacing _NonFinite sentinels and
+    non-finite floats with None and recording each nulled field in
+    ``coercion_failed`` (issue #155). Same entry shape as
+    :func:`sanitize_summary` -- ``tool`` names the source section,
+    ``field`` is the dotted path within it -- so a reader can see
+    exactly which field was nulled and why. ``path`` is the dotted
+    path of ``obj`` itself."""
+    if isinstance(obj, _NonFinite):
+        coercion_failed.append(
+            {"tool": source, "field": path,
+             "raw_value": obj.token, "reason": "non-finite value"})
+        return None
+    if isinstance(obj, dict):
+        return {key: _null_nonfinite(
+            value, f"{path}.{key}" if path else str(key),
+            coercion_failed, source) for key, value in obj.items()}
+    if isinstance(obj, list):
+        return [_null_nonfinite(value, f"{path}[{i}]",
+                                coercion_failed, source)
+                for i, value in enumerate(obj)]
+    if isinstance(obj, float) and not math.isfinite(obj):
+        coercion_failed.append(
+            {"tool": source, "field": path,
+             "raw_value": repr(obj), "reason": "non-finite value"})
+        return None
+    return obj
+
+
 def _canonical_bytes(obj):
     """The byte form the Actions EMITTER / orchestrator writes:
     ``json.dumps(obj, indent=2)``, no trailing newline."""
@@ -1123,6 +1152,11 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
     sharia_resolved, sharia_engine_mod = resolve_sharia_standards(
         sharia_standards)
 
+    # ---- ensemble: loaded leniently, then normalised (#155).
+    # ---- The coercion lists live here, before the ensemble load,
+    # ---- because the normalisation records into coercion_failed.
+    coercion_failed = []
+    secret_dropped = []
     ensemble = None
     ensemble_absent = not os.path.isfile(ensemble_path)
     if not ensemble_absent:
@@ -1134,6 +1168,17 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         if not isinstance(ensemble, dict):
             raise CompileError(f"ensemble.json is not an object in "
                                f"{sweep_dir}")
+        # Issue #155: the raw ensemble is copied verbatim into the
+        # model ("ensemble": ensemble), and price / family_scores /
+        # horizons / risk / weights / corporate_actions are
+        # extracted from it -- so a NaN anywhere in it used to
+        # raise in dump_model (allow_nan=False) and lose the whole
+        # model, with no coercion flag. Null each non-finite value
+        # here, with a coercion_failed entry recording its field
+        # path, so every section derived from the ensemble is clean
+        # before construction.
+        ensemble = _null_nonfinite(ensemble, "ensemble",
+                                   coercion_failed)
     if ensemble_absent and sweep_shape:
         digest_md = ""
         md_path = os.path.join(sweep_dir, "digest.md")
@@ -1157,8 +1202,6 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
 
     # ---- tools: verify embedded vs collected (F-5), coerce (F-3),
     # ---- unknown status (F-9), base-tool summary (F-2).
-    coercion_failed = []
-    secret_dropped = []
     tools = []
     tools_failed = []
     ticker_mismatch = []
