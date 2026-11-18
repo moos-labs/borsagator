@@ -14,6 +14,13 @@ name: Ledger guard watchdog
 # the guard is the retry path for failed publishes, so the watchdog
 # is load-bearing here, not a nicety.
 #
+#
+# RETIRED 2026-11-18 (issue #66): the `*/30` schedule above is
+# removed — the watchdog now runs on worker-5 (systemd timers),
+# verified 2/2 on the bus (watch-2026-11-18T1130Z +
+# watch-2026-11-18T1200Z). `workflow_dispatch:` is kept for
+# manual runs. The worker watchdog mirrors pages to
+# queue/guard-alert.json on the bus instead of filing issues.
 # Issue #156: the watchdog asks the Actions API whether a
 # ledger-guard run is queued / waiting / in progress before paging.
 # The guard shares the borsagator-ledger-publish concurrency group
@@ -26,8 +33,6 @@ name: Ledger guard watchdog
 # needs `actions: read` on the token below.
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
