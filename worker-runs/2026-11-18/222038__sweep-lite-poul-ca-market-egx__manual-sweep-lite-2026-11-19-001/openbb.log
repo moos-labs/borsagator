@@ -1,0 +1,48 @@
+POUL.CA: OK: provider returned data for this ticker rows=484 provider_used=yfinance error=
+{
+  "tool": "openbb",
+  "provider": "yahoo",
+  "start_date": "2024-11-18",
+  "end_date": "2026-11-18",
+  "tickers": {
+    "POUL.CA": {
+      "symbol": "POUL.CA",
+      "provider_requested": "yahoo",
+      "attempts": [
+        {
+          "provider": "yahoo",
+          "error": "OpenBBError: \n[Error] -> 1 validations error(s)\n[Arg] provider -> input: yahoo -> Input should be 'fmp', 'intrinio', 'tiingo' or 'yfinance'",
+          "traceback_tail": [
+            "    res = self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(args, kwargs))",
+            "          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "openbb_core.app.model.abstract.error.OpenBBError: ",
+            "[Error] -> 1 validations error(s)",
+            "[Arg] provider -> input: yahoo -> Input should be 'fmp', 'intrinio', 'tiingo' or 'yfinance'"
+          ]
+        },
+        {
+          "provider": "yfinance",
+          "rows": 484
+        }
+      ],
+      "rows": 484,
+      "verdict": "OK: provider returned data for this ticker",
+      "provider_used": "yfinance",
+      "first_date": "2024-11-18",
+      "last_date": "2026-11-17",
+      "first_close": 14.989999771118164,
+      "last_close": 7.570000171661377,
+      "csv": "POUL_CA.csv"
+    }
+  },
+  "openbb_version": "unknown",
+  "provider_requested": "yahoo",
+  "provider_chain_tried": [
+    "yahoo",
+    "yfinance"
+  ],
+  "coverage_verdict": {
+    "POUL.CA": "YES \u2014 484 rows, 2024-11-18 to 2026-11-17"
+  },
+  "poul_ca_reached_by_yahoo_provider": true
+}
