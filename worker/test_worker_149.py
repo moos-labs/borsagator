@@ -390,6 +390,142 @@ check("real main(): the clean job behind it runs",
       f"executed={LOOP_CALLS['execute']}")
 (worker.PENDING_DONE / f"{job_pending['id']}.json").unlink()
 
+
+# --- 15. The drain delivers a staged receipt; the outbox empties ---
+# Section 11 proved a failed _mark_done RETAINS its receipt; the
+# recovery half - a later per-cycle flush_pending_done delivering
+# it - was never asserted (flush_pending_done had 0 hits in the
+# suite). Stage a fresh receipt (the crash-recovery shape: a file
+# in the outbox, no in-memory state), run ONE real drain, and
+# verify the marker lands on origin/queue and the outbox empties.
+# The receipt section 11 retained must drain in the same pass.
+receipt_drain = worker.PENDING_DONE / "test-149-drain.json"
+receipt_drain.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": "run yahooquery <http://POUL.CA|POUL.CA", "archive": SHA}))
+worker.flush_pending_done()
+data_drain = origin_done("test-149-drain")
+check("drain: staged receipt published to origin/queue",
+      data_drain is not None and data_drain.get("archive") == SHA,
+      f"record={data_drain}")
+check("drain: the receipt section 11 retained drains too",
+      origin_done("test-149-pushfail") is not None)
+check("drain: outbox empty after verified delivery",
+      not list(worker.PENDING_DONE.glob("*.json")))
+worker.sync_bus()
+check("drain: done() True once sync_bus pulls the marker",
+      worker.done("test-149-drain"))
+
+# --- 16. A competing bus record is never overwritten by the drain -
+# When origin/queue already carries a DIFFERENT done record for the
+# job (a manual reconcile or another writer), the drain must keep
+# the local receipt pending and leave the remote bytes untouched -
+# never force-push over them. Plant the competing record directly
+# on origin/queue, stage a conflicting receipt, run ONE drain.
+job_conflict = {"id": "test-149-conflict",
+                "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+competing = {"worker": "borsagator-worker-6", "at": worker.now(),
+             "job": job_conflict["job"], "archive": "0" * 40}
+subprocess.run(["git", "-C", str(_seed), "fetch", "-q", "origin"],
+               check=True)
+subprocess.run(["git", "-C", str(_seed), "reset", "-q", "--hard",
+                "origin/queue"], check=True)
+(_seed / "queue" / "done").mkdir(parents=True, exist_ok=True)
+(_seed / "queue" / "done"
+ / f"{job_conflict['id']}.json").write_text(json.dumps(competing))
+subprocess.run(["git", "-C", str(_seed), "add", "-A"], check=True)
+subprocess.run(["git", "-C", str(_seed),
+                "-c", "user.email=test@borsagator.local",
+                "-c", "user.name=test",
+                "commit", "-qm", "competing done"], check=True)
+subprocess.run(["git", "-C", str(_seed), "push", "-q", "origin",
+                "queue"], check=True)
+receipt_conflict = (worker.PENDING_DONE
+                    / f"{job_conflict['id']}.json")
+receipt_conflict.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": job_conflict["job"], "archive": SHA}))
+worker.flush_pending_done()
+check("conflict: competing bus record NOT overwritten",
+      origin_done(job_conflict["id"]) == competing,
+      f"record={origin_done(job_conflict['id'])}")
+check("conflict: differing receipt retained pending",
+      receipt_conflict.is_file())
+check("conflict: retained receipt still gates re-execution",
+      worker._done_or_pending(job_conflict["id"]))
+receipt_conflict.unlink()
+
+# --- 17. A corrupt receipt is quarantined, never published, still --
+# gating, and surfaced in the heartbeat --------------------------
+# A receipt failing validation (here it PARSES, but archive is not
+# a string - a parse-only validator would wave it through) is
+# quarantined to *.corrupt: never published, never dropped, still
+# blocking local re-execution, and visible in corrupt_done.
+job_corrupt = {"id": "test-149-corrupt",
+               "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+receipt_corrupt = worker.PENDING_DONE / f"{job_corrupt['id']}.json"
+receipt_corrupt.write_text(json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": job_corrupt["job"], "archive": 123}))
+worker.flush_pending_done()
+check("corrupt receipt quarantined to *.corrupt",
+      (worker.PENDING_DONE / f"{job_corrupt['id']}.json.corrupt")
+      .is_file() and not receipt_corrupt.exists())
+check("corrupt receipt NOT published to origin/queue",
+      origin_done(job_corrupt["id"]) is None)
+check("corrupt receipt still gates local re-execution",
+      worker._done_or_pending(job_corrupt["id"])
+      and not main_loop_runnable(job_corrupt))
+worker.heartbeat()
+payload = json.loads(
+    (worker.BUS / "queue" / "heartbeat.json").read_text())
+check("quarantine surfaced in heartbeat corrupt_done",
+      job_corrupt["id"] in payload.get("corrupt_done", []),
+      f"corrupt_done={payload.get('corrupt_done')}")
+(worker.PENDING_DONE / f"{job_corrupt['id']}.json.corrupt").unlink()
+
+# --- 18. _mark_done stages BEFORE publication; a failed publication -
+# leaves the receipt content-intact ------------------------------
+# Section 11 ended at the post-failure STATE (returns False, a
+# receipt file exists, the gate is set) with publication impossible
+# from the start (a bus URL that does not exist, BUS_PUB deleted -
+# _publish_done never ran an attempt against a live remote). Still unasserted:
+# ORDERING (the crash-durable receipt must exist BEFORE
+# _publish_done runs, or a crash mid-publication loses the
+# completion) and CONTENT (failed attempts must not mangle the
+# staged record). Intercept _publish_done: observe the receipt at
+# attempt time, then fail.
+job_order = {"id": "test-149-order",
+             "job": "run yahooquery <http://POUL.CA|POUL.CA"}
+receipt_order = worker.PENDING_DONE / f"{job_order['id']}.json"
+OBSERVED = {}
+REAL_PUBLISH_DONE = worker._publish_done
+
+
+def observing_publish_done(job_id, record, attempts=5):
+    OBSERVED["staged"] = receipt_order.is_file()
+    OBSERVED["bytes"] = (receipt_order.read_text()
+                         if OBSERVED["staged"] else None)
+    return False
+
+
+worker._publish_done = observing_publish_done
+try:
+    rc = worker._mark_done(job_order, SHA)
+finally:
+    worker._publish_done = REAL_PUBLISH_DONE
+check("ordering: _mark_done False when publication fails",
+      rc is False)
+check("ordering: receipt staged BEFORE publication runs",
+      OBSERVED.get("staged") is True)
+order_record = json.loads(receipt_order.read_text())
+check("ordering: failed publication retains the receipt intact",
+      OBSERVED.get("bytes") == receipt_order.read_text()
+      and order_record.get("job") == job_order["job"]
+      and order_record.get("archive") == SHA,
+      f"record={order_record}")
+receipt_order.unlink()
+
 failed = [c for c in CHECKS if not c[1]]
 print(f"\n{len(CHECKS) - len(failed)}/{len(CHECKS)} passed")
 sys.exit(1 if failed else 0)
