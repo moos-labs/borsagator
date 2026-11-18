@@ -220,11 +220,15 @@ def _ensure_pub_clone():
     configured; every git operation status is checked (the temp-dir
     cleanup is best-effort: a failed cleanup makes the next clone
     attempt fail loudly rather than silently). Uses the SAME
-    credential
-    mechanism as the general bus clone (GATOR_BUS_URL in the worker's
-    own environment; the credential URL is stored in this clone's
-    config just like in BUS, and the clone must be protected the same
-    way). The clone is created atomically - cloned into a sibling temp
+    credential mechanism as the general bus clone: GATOR_BUS_URL in
+    the worker's own environment takes precedence. When unset or
+    empty, BUS's origin remote is used with a warning on stderr (the
+    URL is never logged). If neither source is available, returns
+    False with a diagnostic. Source selection happens only when
+    creating BUS_PUB; an existing clone is checked and reused. The
+    credential URL is stored in this clone's config just like in BUS,
+    and the clone must be protected the same way. The clone is
+    created atomically - cloned into a sibling temp
     dir, then renamed - so a failed clone never leaves a half-created
     BUS_PUB. An existing BUS_PUB that fails a git check is retained
     and reported, never auto-deleted: a transient read/permission
@@ -250,6 +254,10 @@ def _ensure_pub_clone():
             # exactly as the env-var path stores it in BUS_PUB's config).
             r = git_bus("remote get-url origin", timeout=30)
             url = r.stdout.strip() if r.returncode == 0 else ""
+            if url:
+                print("_ensure_pub_clone: WARNING: GATOR_BUS_URL unset or "
+                      "empty; using BUS origin remote for publication clone",
+                      file=sys.stderr, flush=True)
         if not url:
             print("_ensure_pub_clone: no bus URL (GATOR_BUS_URL unset "
                   "and BUS has no origin remote)",

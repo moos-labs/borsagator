@@ -26,6 +26,7 @@ Fails on unmodified main: done/_mark_done do not exist, and the
 completed-job checks fail (a done job is re-runnable after reclaim).
 """
 import importlib.util
+import io
 import json
 import os
 import re
@@ -33,6 +34,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -145,6 +147,84 @@ def main_loop_runnable(job):
     if not worker.claimed(job["id"]):
         return True
     return False
+
+
+# --- Issue #236: publication-clone URL selection is observable ------
+# Isolate BOTH paths: do not remove/reconfigure the suite's real BUS
+# or BUS_PUB. This also keeps the #235 drain tests independent.
+def test_pub_clone_sources():
+    saved_bus, saved_pub = worker.BUS, worker.BUS_PUB
+    saved_url = os.environ.get("GATOR_BUS_URL")
+    warning = ("_ensure_pub_clone: WARNING: GATOR_BUS_URL unset or empty; "
+               "using BUS origin remote for publication clone\n")
+    missing = ("_ensure_pub_clone: no bus URL (GATOR_BUS_URL unset "
+               "and BUS has no origin remote)\n")
+
+    def attempt():
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            result = worker._ensure_pub_clone()
+        return result, stderr.getvalue()
+
+    def pub_origin():
+        r = subprocess.run(
+            ["git", "-C", str(worker.BUS_PUB), "remote", "get-url", "origin"],
+            capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else None
+
+    try:
+        worker.BUS = TMP / "bus-236"
+        subprocess.run(["git", "init", "-q", str(worker.BUS)], check=True)
+        wrong_origin = str(TMP / "must-not-be-used.git")
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "add",
+                        "origin", wrong_origin], check=True)
+        worker.BUS_PUB = TMP / "pub-236-explicit"
+        os.environ["GATOR_BUS_URL"] = BUS_URL
+        result, stderr = attempt()
+        check("URL explicit: clone succeeds despite differing BUS origin",
+              result is True)
+        check("URL explicit: clone origin is env URL, not BUS origin",
+              pub_origin() == BUS_URL and BUS_URL != wrong_origin)
+        check("URL explicit: no fallback warning", stderr == "", repr(stderr))
+
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "set-url",
+                        "origin", BUS_URL], check=True)
+        for mode in ("unset", "empty"):
+            worker.BUS_PUB = TMP / f"pub-236-{mode}"
+            os.environ.pop("GATOR_BUS_URL", None)
+            if mode == "empty":
+                os.environ["GATOR_BUS_URL"] = ""
+            result, stderr = attempt()
+            check(f"URL {mode}: fallback clone succeeds", result is True)
+            check(f"URL {mode}: clone origin is BUS origin",
+                  pub_origin() == BUS_URL)
+            check(f"URL {mode}: exact URL-free warning on stderr",
+                  stderr == warning, repr(stderr))
+            result, stderr = attempt()
+            check(f"URL {mode}: existing clone reused without warning",
+                  result is True and stderr == "", repr(stderr))
+
+        worker.BUS_PUB = TMP / "pub-236-missing"
+        os.environ.pop("GATOR_BUS_URL", None)
+        subprocess.run(["git", "-C", str(worker.BUS), "remote", "remove",
+                        "origin"], check=True)
+        result, stderr = attempt()
+        check("URL missing: initialization returns False", result is False)
+        check("URL missing: exact existing diagnostic, no fallback warning",
+              stderr == missing, repr(stderr))
+        check("URL missing: no publication clone or staging clone created",
+              not worker.BUS_PUB.exists()
+              and not worker.BUS_PUB.with_name(
+                  worker.BUS_PUB.name + ".tmp-clone").exists())
+    finally:
+        worker.BUS, worker.BUS_PUB = saved_bus, saved_pub
+        if saved_url is None:
+            os.environ.pop("GATOR_BUS_URL", None)
+        else:
+            os.environ["GATOR_BUS_URL"] = saved_url
+
+
+test_pub_clone_sources()
 
 
 # --- 1-3. A completed job (done record + 7 h-old claim) -------------
