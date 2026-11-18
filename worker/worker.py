@@ -45,6 +45,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -54,6 +55,18 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(os.environ.get("GATOR_ROOT", "/opt/gator"))
 BUS = ROOT / "bus"            # borsagator clone (token remote), queue branch
+# Issue #216: the done-receipt outbox lives OUTSIDE the resettable bus
+# checkout, so a receipt survives sync_bus (reset --hard) and restarts
+# until its delivery to the bus is VERIFIED. BUS_PUB is a DEDICATED
+# publication clone used only for done markers: the general bus clone
+# has a live claim-refresh thread during job execution, and git's
+# index lock serializes individual commands, not a whole
+# fetch/reset/write/add/commit/push transaction - so marker
+# publication must not share that clone.
+PENDING_DONE = ROOT / "pending-done"
+BUS_PUB = ROOT / "bus-pub"      # dedicated done-marker publication clone
+PUSH_ATTEMPTS = 5        # reconcile-and-retry budget at mark time
+DRAIN_ATTEMPTS = 3       # smaller budget for the per-cycle drain
 RUNNERS = ROOT / "runners"    # public runner clones (anonymous HTTPS)
 VENVS = ROOT / "venvs"
 OUT = ROOT / "out"
@@ -174,6 +187,322 @@ def push_bus(message):
     return git_bus("push origin queue", timeout=120).returncode == 0
 
 
+# --- Issue #216: durable done-marker publication ----------------------
+# All publication goes through the dedicated BUS_PUB clone (never the
+# general BUS clone, whose claim-refresh thread is live during job
+# execution), and a receipt is deleted ONLY after its content is
+# verified on origin/queue. _mark_done, flush_pending_done and the
+# claim-refresh thread never touch PENDING_DONE or BUS_PUB from more
+# than one thread: both callers run on the main loop thread, and the
+# refresh thread touches only BUS - that is what makes the fixed
+# .tmp name and the fetch/reset/write/add/commit/push sequence safe.
+
+
+def _fsync_dir(path):
+    dfd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(dfd)
+    finally:
+        os.close(dfd)
+
+
+def _pub_git(*args, timeout=120):
+    return sh(f"git -C {shlex.quote(str(BUS_PUB))} " + " ".join(args),
+              timeout=timeout)
+
+
+def _pub_ok(*args, timeout=120):
+    return _pub_git(*args, timeout=timeout).returncode == 0
+
+
+def _ensure_pub_clone():
+    """True only when the dedicated publication clone exists and is
+    configured; every git operation status is checked (the temp-dir
+    cleanup is best-effort: a failed cleanup makes the next clone
+    attempt fail loudly rather than silently). Uses the SAME
+    credential
+    mechanism as the general bus clone (GATOR_BUS_URL in the worker's
+    own environment; the credential URL is stored in this clone's
+    config just like in BUS, and the clone must be protected the same
+    way). The clone is created atomically - cloned into a sibling temp
+    dir, then renamed - so a failed clone never leaves a half-created
+    BUS_PUB. An existing BUS_PUB that fails a git check is retained
+    and reported, never auto-deleted: a transient read/permission
+    error is not proof of disposable corruption. Assumes the existing
+    deployment invariant of ONE worker process per GATOR_ROOT (the
+    general BUS clone already relies on it)."""
+    if BUS_PUB.exists():
+        if not _pub_ok("rev-parse --git-dir", timeout=30):
+            print(f"_ensure_pub_clone: {BUS_PUB} exists but is not a "
+                  f"readable git clone; left in place for a human",
+                  file=sys.stderr, flush=True)
+            return False
+    else:
+        tmp = BUS_PUB.parent / (BUS_PUB.name + ".tmp-clone")
+        if tmp.exists():
+            sh(f"rm -rf {shlex.quote(str(tmp))}", timeout=60)
+        url = os.environ.get("GATOR_BUS_URL")
+        if not url:
+            # Follow-up (found by the repo's own test_worker_149): do not
+            # fail closed merely because the env var is unset when the
+            # bus clone already exists — BUS was cloned from this same
+            # URL, so its origin remote is the bus URL (token included,
+            # exactly as the env-var path stores it in BUS_PUB's config).
+            r = git_bus("remote get-url origin", timeout=30)
+            url = r.stdout.strip() if r.returncode == 0 else ""
+        if not url:
+            print("_ensure_pub_clone: no bus URL (GATOR_BUS_URL unset "
+                  "and BUS has no origin remote)",
+                  file=sys.stderr, flush=True)
+            return False
+        if sh(f"git clone --branch queue --single-branch "
+              f"{shlex.quote(url)} {shlex.quote(str(tmp))}",
+              timeout=300).returncode != 0:
+            if tmp.exists():
+                sh(f"rm -rf {shlex.quote(str(tmp))}", timeout=60)
+            return False
+        os.replace(tmp, BUS_PUB)
+    if not _pub_ok("config user.email worker@borsagator.local", timeout=30):
+        return False
+    return _pub_ok("config user.name borsagator-worker", timeout=30)
+
+
+def _pub_remote_record(rel):
+    """Tri-state read of the marker on origin/queue in the publication
+    clone (after a successful fetch): (True, content) when present,
+    (True, None) when VERIFIED absent, (False, None) when the read
+    itself failed. Absence must be proven, never inferred from an
+    error: an unreadable existing marker must not authorize an
+    overwrite or a receipt deletion (issue #216)."""
+    r = _pub_git("ls-tree origin/queue -- " + shlex.quote(rel), timeout=60)
+    if r.returncode != 0:
+        return (False, None)
+    if not r.stdout.strip():
+        return (True, None)
+    r = _pub_git("show " + shlex.quote(f"origin/queue:{rel}"), timeout=60)
+    if r.returncode != 0:
+        return (False, None)
+    return (True, r.stdout)
+
+
+def _write_receipt(path, text):
+    """Crash-durable receipt write: temp file in the same directory,
+    fsync, atomic os.replace, then fsync the directory so the rename
+    itself is durable. A crash leaves either the old receipt or the
+    new one, never a partial file. The fixed .tmp name is safe
+    because receipts are only ever written from the main loop
+    thread (see the section header)."""
+    tmp = path.parent / (path.name + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, path)
+    _fsync_dir(path.parent)
+
+
+RECEIPT_KEYS = {"worker", "at", "job", "archive"}
+
+# Job ids whose completion could NOT be staged durably AND whose
+# delivery failed. In-memory only, with no receipt payload: it gates
+# local re-execution while this process lives and is surfaced in the
+# heartbeat, but there is nothing to republish automatically and the
+# gate does not survive a restart. The per-cycle drain clears an
+# entry once its marker is verified on the bus (e.g. after a hand
+# reconcile); recovery of the compound failure itself is manual.
+_UNDELIVERED = set()
+
+
+def _valid_receipt(text, job_id):
+    """A receipt is publishable only as a JSON object with string
+    worker/at/job/archive values under a job-id-safe filename (the
+    filename becomes a git path)."""
+    if not JOB_ID_RE.match(job_id):
+        return False
+    try:
+        d = json.loads(text)
+    except Exception:
+        return False
+    return isinstance(d, dict) and all(
+        isinstance(d.get(k), str) for k in RECEIPT_KEYS)
+
+
+def _publish_done(job_id, record, attempts=PUSH_ATTEMPTS):
+    """Issue #216: publish a done marker against a FRESH queue base.
+    Every attempt re-fetches and hard-resets the dedicated
+    publication clone to origin/queue, and every git exit status is
+    checked. A marker already on origin with identical content IS
+    successful delivery (a push whose reply was lost, or a manual
+    reconcile with the same bytes); a marker with DIFFERENT content
+    (manual reconcile, another writer) is never overwritten and the
+    receipt never deleted - it stays pending and loud for a human.
+    An empty staged diff (diff --cached --quiet exit 0) is
+    distinguished from a diff ERROR (exit > 1) and from a real
+    staged change (exit 1); only a verified-identical remote record
+    closes an empty diff. After a push, delivery is accepted only
+    when a fresh fetch shows OUR bytes on origin/queue. Never
+    force-pushes. claim() deliberately fails closed on ANY push
+    conflict (a competing claim or an unrelated queue write):
+    reconcile-retrying there could steal a claim another worker
+    legitimately holds, so bounded reconcile-retry belongs only
+    here, in done-marker publication."""
+    rel = f"queue/done/{job_id}.json"
+    for attempt in range(attempts):
+        try:
+            if attempt:
+                time.sleep(min(2 ** attempt, 30))
+            if not _ensure_pub_clone():
+                continue
+            if not _pub_ok("fetch origin queue", timeout=120):
+                continue
+            if not _pub_ok("reset --hard origin/queue", timeout=60):
+                continue
+            ok_read, remote = _pub_remote_record(rel)
+            if not ok_read:
+                continue  # cannot prove absence: never risk overwrite
+            if remote == record:
+                return True  # verified identical on origin
+            if remote is not None:
+                print(f"_publish_done {job_id}: CONFLICT - the bus "
+                      f"already carries a DIFFERENT done record; the "
+                      f"receipt stays pending for manual "
+                      f"reconciliation", file=sys.stderr, flush=True)
+                return False
+            p = BUS_PUB / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(record)
+            if not _pub_ok("add " + shlex.quote(rel), timeout=60):
+                continue
+            d = _pub_git("diff --cached --quiet -- " + shlex.quote(rel),
+                         timeout=60)
+            if d.returncode == 0:
+                # Nothing staged although the file was absent from
+                # origin: only explainable as an identical marker
+                # having landed in the meantime. Verify, never assume.
+                if _pub_ok("fetch origin queue", timeout=120):
+                    ok_read, remote = _pub_remote_record(rel)
+                    if ok_read and remote == record:
+                        return True
+                continue
+            if d.returncode != 1:
+                continue  # diff ERROR: retry fresh
+            if not _pub_ok("commit -m " + shlex.quote(f"done {job_id}"),
+                           timeout=60):
+                continue  # commit ERROR (hook/identity/disk): retry
+            if not _pub_ok("push origin queue", timeout=120):
+                continue  # non-fast-forward or transport: retry fresh
+            # Delivery is claimed only after a fresh fetch shows OUR
+            # bytes on origin/queue.
+            if not _pub_ok("fetch origin queue", timeout=120):
+                continue
+            ok_read, remote = _pub_remote_record(rel)
+            if not ok_read:
+                continue  # cannot verify delivery: keep the receipt
+            if remote == record:
+                return True
+            if remote is not None:
+                print(f"_publish_done {job_id}: post-push verification "
+                      f"found DIFFERENT remote content; the receipt "
+                      f"stays pending for manual reconciliation",
+                      file=sys.stderr, flush=True)
+                return False
+        except Exception as e:  # noqa: BLE001 - retry within budget
+            print(f"_publish_done {job_id} attempt {attempt + 1}: "
+                  f"{type(e).__name__}: {e}", file=sys.stderr, flush=True)
+    return False
+
+
+def _receipt_paths(job_id):
+    """Any local completion evidence for job_id - a valid pending
+    receipt OR a quarantined corrupt one. A corrupt receipt is still
+    evidence the job RAN TO COMPLETION here: it must keep blocking
+    local re-execution until a human resolves it (issue #216)."""
+    if not PENDING_DONE.exists():
+        return []
+    return [f for f in PENDING_DONE.glob(f"{job_id}.json*")
+            if f.suffix in (".json", ".corrupt")]
+
+
+def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
+    """Issue #216: drain the done-receipt outbox after every sync_bus.
+    A receipt whose job already has a bus record is deleted only when
+    the records are verified identical (a hand-reconcile with the same
+    bytes, df1b557f); a differing bus record keeps the receipt pending
+    and loud. A receipt that fails validation (unparseable, wrong
+    value types, unsafe filename) is quarantined to *.corrupt - never
+    published, never silently dropped, and it KEEPS blocking local
+    re-execution (see _done_or_pending). A remote read that cannot
+    prove absence (git error) skips the receipt this cycle rather
+    than risk an overwrite. The drain budget is SOFT: it is checked
+    between receipts on a monotonic clock, and one in-flight publish
+    can overrun it by its own bounded worst case (attempts x git
+    timeouts + backoff, potentially several minutes). Under a
+    permanent outage or an unresolved conflict, receipts stay pending
+    and surfaced indefinitely - they are never silently dropped, but
+    delivery is not guaranteed."""
+    # Clear in-memory gates whose marker has since reached the bus
+    # (e.g. a hand reconcile); the durable done() gate remains.
+    for j in [j for j in _UNDELIVERED if done(j)]:
+        _UNDELIVERED.discard(j)
+    if not PENDING_DONE.exists():
+        return
+    deadline = time.monotonic() + budget_seconds
+    for f in sorted(PENDING_DONE.glob("*.json")):
+        if time.monotonic() > deadline:
+            print("flush_pending_done: soft drain budget reached; "
+                  "remaining receipts retry next cycle",
+                  file=sys.stderr, flush=True)
+            break
+        job_id = f.stem
+        try:
+            record = f.read_text()
+        except Exception:  # noqa: BLE001 - left in place, still gates
+            print(f"flush_pending_done {job_id}: receipt unreadable; "
+                  f"left in place (still blocks local re-execution)",
+                  file=sys.stderr, flush=True)
+            continue
+        if not _valid_receipt(record, job_id):
+            print(f"flush_pending_done {job_id}: INVALID receipt "
+                  f"quarantined as {f.name}.corrupt (still blocks "
+                  f"local re-execution)", file=sys.stderr, flush=True)
+            try:
+                os.replace(f, f.with_suffix(f.suffix + ".corrupt"))
+                _fsync_dir(PENDING_DONE)
+            except OSError:
+                pass
+            continue
+        try:
+            if not (_ensure_pub_clone()
+                    and _pub_ok("fetch origin queue", timeout=120)):
+                continue  # no remote verdict this cycle
+            found, bus_record = _pub_remote_record(
+                f"queue/done/{job_id}.json")
+        except Exception:  # noqa: BLE001 - no verdict this cycle
+            continue
+        if not found:
+            continue  # cannot prove absence: never risk overwrite
+        if bus_record is not None:
+            if bus_record == record:
+                try:
+                    f.unlink()
+                    _fsync_dir(PENDING_DONE)
+                except OSError:
+                    pass  # a re-found identical receipt is cleaned next cycle
+            else:
+                print(f"flush_pending_done {job_id}: bus record differs "
+                      f"from the pending receipt; keeping the receipt "
+                      f"for manual reconciliation",
+                      file=sys.stderr, flush=True)
+            continue
+        if _publish_done(job_id, record, attempts=attempts):
+            _UNDELIVERED.discard(job_id)
+            try:
+                f.unlink()
+                _fsync_dir(PENDING_DONE)
+            except OSError:
+                pass
+
+
 QUEUE_ERROR = None  # last queue.json parse error (panel round 3, R3-09)
 
 
@@ -197,6 +526,24 @@ def heartbeat():
         # D2: a refused update must be visible on the bus — stale
         # code is safe code, but silent staleness is not.
         payload["update_error"] = UPDATE_ERROR
+    if PENDING_DONE.exists():
+        pending = sorted(f.stem for f in PENDING_DONE.glob("*.json"))
+        corrupt = sorted(f.name[:-len(".json.corrupt")]
+                         for f in PENDING_DONE.glob("*.json.corrupt"))
+        # Issue #216: undelivered/corrupt done receipts are surfaced
+        # on the bus (the heartbeat is the worker's regular bus
+        # write). Best-effort only: if pushes are failing the
+        # heartbeat itself does not land - the outbox is the durable
+        # record, and _done_or_pending is what protects this host.
+        if pending:
+            payload["pending_done"] = pending
+        if corrupt:
+            payload["corrupt_done"] = corrupt
+    if _UNDELIVERED:
+        # Issue #216: completions with no durable receipt and no
+        # confirmed delivery - gated in this process only, lost on
+        # restart. Best-effort surfacing, like pending_done.
+        payload["undelivered_done"] = sorted(_UNDELIVERED)
     (BUS / "queue" / "heartbeat.json").write_text(json.dumps(payload))
     push_bus("heartbeat")
 
@@ -228,20 +575,85 @@ def done(job_id):
     return (BUS / "queue" / "done" / f"{job_id}.json").exists()
 
 
+def _done_or_pending(job_id):
+    """Issue #216: a job with ANY local completion evidence - a valid
+    pending receipt OR a quarantined corrupt one - already RAN TO
+    COMPLETION on this host; it must not be re-executed here after
+    claim reclamation while that evidence awaits delivery or
+    human resolution. Other hosts cannot see this host's outbox:
+    while the marker stays undelivered, a peer may still re-run
+    after claim reclamation whether or not this host survives - the
+    gate protects this host only."""
+    return (done(job_id) or job_id in _UNDELIVERED
+            or bool(_receipt_paths(job_id)))
+
+
 def _mark_done(job, archive_sha):
-    """Issue #149: persist the done record (archive commit) after a
-    successful publish. Returns True when the record reached the
-    bus; on failure the job stays re-runnable after reclamation
-    (the pre-fix behaviour) and the failure is loud on stderr."""
-    d = BUS / "queue" / "done"
-    d.mkdir(parents=True, exist_ok=True)
-    (d / f"{job['id']}.json").write_text(json.dumps(
+    """Issue #149 + #216: persist the done record (archive commit)
+    after a successful publish. Handling of failure is CENTRALIZED
+    here, so callers deliberately do not branch on the return:
+    the receipt is staged FIRST in the crash-durable local outbox
+    (outside the resettable bus clones), then published against a
+    fresh queue base with bounded conflict retries. Returns True
+    only when delivery is VERIFIED on origin/queue. On False the
+    receipt is retained, retried every cycle by
+    flush_pending_done(), surfaced in the heartbeat's pending_done
+    field, and blocks re-execution of this job on this host (see
+    _done_or_pending). If even the outbox write fails there is no
+    local evidence to retain: publication is still attempted, and a
+    failure there is loud on stderr with the job left re-runnable
+    after reclamation (pre-#216 semantics). Guarantees hold only
+    when a receipt was successfully staged AND local storage
+    survives AND publication eventually succeeds. Honest residual
+    windows: (1) a crash between the job's side effect and the
+    receipt write still loses the marker - a receipt cannot be
+    staged before the side effect exists without violating issue
+    #149; (2) while a marker stays undelivered, a PEER may re-run
+    after claim reclamation even though this host is alive - the
+    outbox is only visible locally; (3) an outbox-write failure
+    compounded with a delivery failure leaves only the in-memory
+    _UNDELIVERED gate: no receipt exists to republish, so recovery
+    is manual; the job stays gated on this host until the marker
+    reaches the bus (cleared by the next drain) or the process
+    restarts. Re-run absorption is proven only for the
+    archive publish (issue #216: byte-identical reruns commit
+    nothing); for ledger-guard/watchdog the duplicate side effect
+    is a ledger_publish.py re-run, whose idempotency this change
+    does not establish."""
+    record = json.dumps(
         {"worker": os.uname().nodename, "at": now(), "job": job["job"],
-         "archive": archive_sha}))
-    if push_bus(f"done {job['id']}"):
+         "archive": archive_sha})
+    receipt = PENDING_DONE / f"{job['id']}.json"
+    staged = False
+    try:
+        PENDING_DONE.mkdir(parents=True, exist_ok=True)
+        _fsync_dir(PENDING_DONE.parent)
+        _write_receipt(receipt, record)
+        staged = True
+    except Exception as e:  # noqa: BLE001 - publish anyway, loudly
+        print(f"_mark_done: OUTBOX WRITE FAILED for {job['id']} "
+              f"({type(e).__name__}: {e}); attempting publication "
+              f"without a durable local receipt",
+              file=sys.stderr, flush=True)
+    if _publish_done(job["id"], record):
+        _UNDELIVERED.discard(job["id"])
+        if staged:
+            try:
+                receipt.unlink()
+                _fsync_dir(PENDING_DONE)
+            except OSError:
+                pass  # verified on the bus; residue cleaned next cycle
         return True
-    print(f"_mark_done: push failed for {job['id']}; done record "
-          f"is local-only and will be lost on the next sync_bus",
+    if not staged:
+        # No durable receipt exists to republish or gate on across a
+        # restart: gate re-execution in THIS process only.
+        _UNDELIVERED.add(job["id"])
+    print(f"_mark_done: delivery not confirmed for {job['id']}; "
+          + (f"the receipt is retained in {PENDING_DONE}, retried "
+             f"every cycle, and surfaced in heartbeat pending_done"
+             if staged else
+             f"NO durable local receipt could be staged; gated "
+             f"in-process only (undelivered_done)"),
           file=sys.stderr, flush=True)
     return False
 
@@ -1289,11 +1701,15 @@ def _execute(job):
     # (see run_ledger_guard / run_ledger_watchdog).
     if job["job"] == "ledger-guard":
         if run_ledger_guard(job):
+            # Issue #216: failure handling is centralized in
+            # _mark_done (outbox retention, per-cycle drain,
+            # heartbeat surfacing, local re-execution gate); callers
+            # deliberately do not branch on its return.
             _mark_done(job, "ledger-guard")
         return
     if job["job"] == "ledger-watchdog":
         if run_ledger_watchdog(job):
-            _mark_done(job, "ledger-watchdog")
+            _mark_done(job, "ledger-watchdog")  # centralized #216 handling
         return
     reg = registry()
     workdir = OUT / job["id"]
@@ -1315,6 +1731,7 @@ def _execute(job):
                 pass
         else:
             # Issue #149: only a successful publish marks the job done.
+            # Issue #216: failure handling is centralized in _mark_done.
             _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
@@ -1383,6 +1800,7 @@ def _execute(job):
             pass
     else:
         # Issue #149: only a successful publish marks the job done.
+        # Issue #216: failure handling is centralized in _mark_done.
         _mark_done(job, archive_sha)
 
 
@@ -1499,6 +1917,9 @@ def main():
         try:
             self_update()
             sync_bus()
+            # Issue #216: re-publish any done receipts that a push
+            # race, crash or restart left pending, before new work.
+            flush_pending_done()
             # Issue #66: the worker owns the clock — check the
             # schedule every cycle, before claiming, so a due
             # firing is enqueued even on a cycle that then claims
@@ -1510,9 +1931,12 @@ def main():
             for job in read_queue():
                 if not JOB_ID_RE.match(str(job.get("id", ""))):
                     continue  # panel round 2: ids reach file paths
-                if done(job["id"]):
+                if _done_or_pending(job["id"]):
                     # Issue #149: a completed job never runs again,
-                    # even after its claim was reclaimed.
+                    # even after its claim was reclaimed. Issue #216:
+                    # any local completion evidence (valid or
+                    # quarantined-corrupt receipt) also blocks
+                    # re-execution on this host.
                     continue
                 if not claimed(job["id"]):
                     if claim(job):
