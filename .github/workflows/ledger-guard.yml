@@ -1,5 +1,13 @@
 name: Ledger guard
 
+#
+# RETIRED 2026-11-18 (issue #66): the hourly `47 * * * *` schedule
+# is removed — the ledger guard now runs on worker-5 (worker-owned
+# scheduler). Retirement criterion met by the first ON-TIME :47
+# firing: guard-2026-11-18T1347Z claimed 13:50:30Z (inside the
+# 10-minute grace, no missed marker) after a day of late catch-ups
+# (1047Z +57m, 1147Z +11m, 1247Z +11m). `workflow_dispatch:` is
+# kept for manual runs.
 # Issue #64 backstop: worker-archived sweeps never fire an Actions
 # run, so the orchestrate.yml ledger step cannot see them. This guard
 # runs the same publisher hourly; every run revalidates the ledger
@@ -29,14 +37,6 @@ name: Ledger guard
 # unnoticed in-repo.
 
 on:
-  schedule:
-    # Issue #126: staggered off :23 (was "23 * * * *") so the guard
-    # cannot collide with a sweep ledger step by schedule design —
-    # the sweep starts at :15 and its ledger step lands ~2.5h later
-    # at a varying minute, so no minute is collision-proof; the
-    # shared concurrency group below is the real serialization, this
-    # stagger is belt-and-braces.
-    - cron: "47 * * * *"
   workflow_dispatch:
 
 permissions:
