@@ -511,13 +511,42 @@ def run_tool(tool, ticker, template, ref=None, repo_name=None):
     if sh(f"git -C {repo} checkout {ref}",
           timeout=120).returncode != 0:
         return "ref-unavailable", ""
+    # Issue #158: the venv must match the PINNED ref's requirements,
+    # not whatever it contained when it was first created. Deps used
+    # to install only inside `if not py.exists()`, so a promoted ref
+    # that changed requirements.txt reused stale deps, and the
+    # venv/pip return codes were unchecked — a failed install still
+    # ran the tool against wrong/missing deps. The venv now records
+    # the sha256 of the requirements it was built from; any change
+    # recreates the venv and reinstalls (a full recreate, so a dep
+    # REMOVED from requirements.txt disappears too), and a venv/pip
+    # failure fails the tool loudly (venv-failed / deps-failed) with
+    # the tool never run. A failed install leaves no marker, so the
+    # next run retries. A venv built by the old code has no marker,
+    # so it is rebuilt on its next run.
     venv = VENVS / tool
     py = venv / "bin" / "python"
-    if not py.exists():
-        sh(f"python3 -m venv {venv}", timeout=300)
-        req = repo / "requirements.txt"
+    req = repo / "requirements.txt"
+    req_sha = _sha256_file(req) if req.exists() else ""
+    marker = venv / ".gator-requirements-sha"
+    installed_sha = marker.read_text().strip() if marker.is_file() else ""
+    if not py.exists() or installed_sha != req_sha:
+        if venv.exists():
+            sh(f"rm -rf {venv}", timeout=60)
+        if sh(f"python3 -m venv {venv}",
+              timeout=300).returncode != 0:
+            return "venv-failed", "python3 -m venv failed"
+        if not py.exists():
+            # A zero rc that produced no interpreter is a failed
+            # venv all the same — never run the tool against the
+            # system python with the venv's PATH prefix missing.
+            return "venv-failed", ("python3 -m venv returned 0 but "
+                                   "no interpreter at " + str(py))
         if req.exists():
-            sh(f"{venv}/bin/pip install -q -r {req}", timeout=1800)
+            r = sh(f"{venv}/bin/pip install -q -r {req}", timeout=1800)
+            if r.returncode != 0:
+                return "deps-failed", (r.stdout + r.stderr)[-4000:]
+        marker.write_text(req_sha)
     cmd = template.replace("{ticker}", ticker).replace(
         "{date}", datetime.now(timezone.utc).date().isoformat())
     env = {k: v for k, v in os.environ.items()

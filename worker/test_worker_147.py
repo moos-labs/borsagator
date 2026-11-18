@@ -79,6 +79,14 @@ def fake_sh_factory(fetch_rc=0, clone_rc=0):
             shutil.rmtree(cmd[len("rm -rf "):].strip(),
                           ignore_errors=True)
             return FakeResult(0)
+        if cmd.startswith("python3 -m venv "):
+            # Issue #158: run_tool now relies on the venv actually
+            # existing (interpreter + requirements-hash marker), so
+            # the stub must create it like the real command does.
+            venv = Path(cmd[len("python3 -m venv "):].strip())
+            (venv / "bin").mkdir(parents=True, exist_ok=True)
+            (venv / "bin" / "python").write_text("#!/bin/sh\n")
+            return FakeResult(0)
         if "git -C" in cmd and "fetch" in cmd:
             return FakeResult(fetch_rc, "",
                               "fatal: couldn't find remote ref")
