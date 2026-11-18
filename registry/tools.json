@@ -187,7 +187,7 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
    "id": "kronos",
    "repo": "kronos-runner",
-   "ref": "a4b4b1180346b80684ec0a120a93a1bb7e2df007",
+   "ref": "584ac365f281ceb9c03cd502bfee651eb91f0a9e",
    "status": "active",
    "markets": [
     "EGX",
