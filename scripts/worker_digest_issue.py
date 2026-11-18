@@ -59,7 +59,11 @@ nonexistent issue produces a red run rather than self-healing,
 which is the fail-loud alternative #223 sanctions. After the
 filing pass, every sweep in the event range is reconciled once
 against a confirmed issue, so a create that reported success
-without landing fails loudly instead of exiting 0. In --file
+without landing fails loudly instead of exiting 0. #230: a check
+right after a create can miss the new issue (suspected index lag,
+not proven), so a just-created sweep is re-checked with a bounded
+backoff (see reconcile_sweeps); creates and errors are never
+retried. In --file
 mode an unexpected helper exception now exits 1 for the same
 reason. Guarantees are as observed by this run at verification
 time; there is no cross-writer atomicity with other actors.
@@ -86,11 +90,17 @@ import json
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 # Green, matching the repo's other automation labels.
 IDENTITY_LABEL_COLOR = "0E8A16"
 IDENTITY_LABEL_PREFIX = "digest-"
+
+# #230: waits between post-create reconciliation rounds: 1 +
+# len(delays) = 5 rounds and at most 2+4+8+16 = 30 s of sleep per
+# run, shared by all sweeps (network calls are extra).
+RECONCILE_RETRY_DELAYS = (2, 4, 8, 16)
 
 
 def digest_title_status(text, fallback_job=""):
@@ -283,6 +293,59 @@ def ensure_identity_label(label, sweep_dir):
             IDENTITY_LABEL_COLOR, "--description", desc])
 
 
+def _sleep(seconds):
+    """time.sleep, module-level so tests can monkeypatch it."""
+    time.sleep(seconds)
+
+
+def reconcile_sweeps(sweeps, created):
+    """Sweep dirs with NO fetch-confirmed issue after retries (#230).
+
+    Rounds run over all pending sweeps, then one shared wait, so the
+    sleep total does not grow with the sweep count. Only a sweep in
+    `created` (filed by this run) is re-checked after an EMPTY
+    result: a check right after a create can miss it (suspected
+    index lag, not proven). A raised error (failed list,
+    indeterminate fetch, malformed payload) is final at once for
+    every sweep, never waited on. The round count is fixed, so a
+    genuinely absent filing is returned for the caller to fail
+    red. No create is retried, so no duplicate can be filed."""
+    rounds = len(RECONCILE_RETRY_DELAYS) + 1
+    unverified = []
+    pending = list(sweeps)
+    for rnd in range(1, rounds + 1):
+        retry = []
+        for sweep_dir in pending:
+            try:
+                ok = bool(verify_listed_issues(
+                    identity_label(sweep_dir)))
+            except Exception as e:  # noqa: BLE001 - final, no retry
+                print(f"worker_digest_issue: reconciliation for "
+                      f"{sweep_dir} could not complete: {e}",
+                      file=sys.stderr)
+                unverified.append(sweep_dir)
+                continue
+            if ok:
+                if rnd != 1 and sweep_dir in created:
+                    print(f"worker_digest_issue: {sweep_dir} "
+                          f"confirmed on retry in reconciliation "
+                          f"round {rnd}/{rounds}", file=sys.stderr)
+                continue
+            if sweep_dir in created and rnd != rounds:
+                retry.append(sweep_dir)
+            else:
+                unverified.append(sweep_dir)
+        pending = retry
+        if not pending:
+            break
+        delay = RECONCILE_RETRY_DELAYS[rnd - 1]
+        print(f"worker_digest_issue: {len(pending)} just-created "
+              f"sweep(s) not listed yet (round {rnd}/{rounds}); "
+              f"waiting {delay}s", file=sys.stderr)
+        _sleep(delay)
+    return unverified
+
+
 def file_issue(sweep_dir, title, repo_dir):
     """File (or skip) the digest issue for one merged sweep.
 
@@ -334,11 +397,16 @@ def file_issues(before, after, repo_dir):
     fetch-confirmed issue (#223): a create that reported success
     without landing, an indeterminate verification, or any
     remaining silent-skip path is aggregated into the failures
-    instead of exiting 0. Costs one extra list plus one fetch per
-    listed issue per sweep; a list that lags a just-created issue
-    fails the step loudly and a re-run then confirms and skips."""
+    instead of exiting 0. Sweeps created in THIS run are re-checked
+    (#230, reconcile_sweeps): an empty result is retried in up to 5
+    rounds with one shared wait between rounds (2, 4, 8, 16 s, at
+    most 30 s of sleep per run, whatever the sweep count) before it
+    fails red. Skipped sweeps and any raised error get one check.
+    Each round costs one list plus one fetch per listed issue per
+    pending sweep."""
     sweeps = added_merge_manifests(before, after, repo_dir)
     failures = []
+    created = set()
     for sweep_dir in sweeps:
         md = Path(repo_dir) / sweep_dir / "digest.md"
         try:
@@ -347,7 +415,8 @@ def file_issues(before, after, repo_dir):
             text = ""
         title, _status = digest_title_status(text)
         try:
-            file_issue(sweep_dir, title, repo_dir)
+            if file_issue(sweep_dir, title, repo_dir) == "created":
+                created.add(sweep_dir)
         except Exception as e:  # noqa: BLE001 - one sweep must not
             # block the rest; the failure is reported at the end.
             failures.append((sweep_dir, e))
@@ -358,26 +427,15 @@ def file_issues(before, after, repo_dir):
     # its identity label. Each check is isolated so one bad sweep
     # never stops the others from being verified.
     failed_dirs = {d for d, _ in failures}
-    for sweep_dir in sweeps:
-        if sweep_dir in failed_dirs:
-            continue
-        label = identity_label(sweep_dir)
-        try:
-            verified = bool(verify_listed_issues(label))
-        except Exception as e:  # noqa: BLE001 - aggregate, and keep
-            # checking the remaining sweeps
-            verified = False
-            print(f"worker_digest_issue: reconciliation for "
-                  f"{sweep_dir} could not complete: {e}",
-                  file=sys.stderr)
-        if not verified:
-            e = RuntimeError(
-                f"{sweep_dir}: no fetch-confirmed issue carries "
-                f"{label} after the filing pass - refusing to "
-                f"exit green")
-            failures.append((sweep_dir, e))
-            print(f"worker_digest_issue: FAILED {sweep_dir}: {e}",
-                  file=sys.stderr)
+    to_check = [d for d in sweeps if d not in failed_dirs]
+    for sweep_dir in reconcile_sweeps(to_check, created):
+        e = RuntimeError(
+            f"{sweep_dir}: no fetch-confirmed issue carries "
+            f"{identity_label(sweep_dir)} after the filing pass - "
+            f"refusing to exit green")
+        failures.append((sweep_dir, e))
+        print(f"worker_digest_issue: FAILED {sweep_dir}: {e}",
+              file=sys.stderr)
     if failures:
         print(f"worker_digest_issue: {len(failures)} sweep(s) failed "
               f"to file; re-run the workflow to retry (a re-run's "
