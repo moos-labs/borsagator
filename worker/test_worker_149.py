@@ -137,9 +137,10 @@ def stamp_done(job_id, job_text, archive="abc123"):
 
 def main_loop_runnable(job):
     """The main loop's exact per-job decision (worker.py main()):
-    done jobs are skipped; an unclaimed, unfinished job is claimed
-    and executed."""
-    if worker.done(job["id"]):
+    a job with ANY local completion evidence - done record, pending
+    or corrupt receipt - is skipped; an unclaimed, unfinished job
+    is claimed and executed. Mirrors worker.py:1934-1943."""
+    if worker._done_or_pending(job["id"]):
         return False
     if not worker.claimed(job["id"]):
         return True
@@ -273,6 +274,9 @@ check("failed _mark_done retains the receipt in the outbox",
       (worker.PENDING_DONE / "test-149-pushfail.json").is_file())
 check("failed _mark_done gates local re-execution",
       worker._done_or_pending("test-149-pushfail"))
+check("pending receipt: main-loop replica does NOT re-run it",
+      not main_loop_runnable({"id": "test-149-pushfail",
+                              "job": "run yahooquery POUL.CA"}))
 os.environ["GATOR_BUS_URL"] = BUS_URL
 
 # --- 12. The real publish() returns the archive commit SHA ---------
@@ -316,6 +320,75 @@ runnable = [j["id"] for j in worker.read_queue()
 check("full cycle: only the abandoned job is runnable after reclaim",
       runnable == [job_abandoned["id"]],
       f"runnable={runnable}")
+
+# --- 14. The REAL main() loop gates on _done_or_pending ----------
+# Sections 1-13 exercise a local REPLICA of the loop decision; a
+# future edit removing the _done_or_pending gate from main() would
+# leave them green. Here we drive ONE ACTUAL CYCLE of worker.main():
+# cycle helpers are stubbed to no-ops, read_queue() is real, and
+# time.sleep raises a sentinel to stop after one pass (sleep sits
+# outside the loop's try/except, so the sentinel escapes main()).
+# Deterministic regression: a job with ONLY a pending receipt (no
+# done record, no claim) is queued ahead of a clean job. The old
+# replica and an ungated main() both call it runnable; the gate
+# must skip it and run the clean job instead.
+class _CycleDone(Exception):
+    pass
+
+
+def _stop_after_one_cycle(_seconds):
+    raise _CycleDone()
+
+
+job_pending = {"id": "test-149-loop-pending",
+               "job": "run yahooquery POUL.CA"}
+job_clean = {"id": "test-149-loop-clean",
+             "job": "run yahooquery POUL.CA"}
+(worker.PENDING_DONE / f"{job_pending['id']}.json").write_text(
+    json.dumps({"id": job_pending["id"], "job": job_pending["job"],
+                "archive": SHA, "at": worker.now()}))
+(worker.BUS / "queue" / "queue.json").write_text(
+    json.dumps([job_pending, job_clean], indent=1))
+LOOP_CALLS = {"claim": [], "execute": []}
+
+
+def loop_claim(job):
+    LOOP_CALLS["claim"].append(job["id"])
+    return True
+
+
+def loop_execute(job):
+    LOOP_CALLS["execute"].append(job["id"])
+
+
+_SAVED = {n: getattr(worker, n) for n in (
+    "self_update", "sync_bus", "flush_pending_done",
+    "run_schedule_check", "reclaim_stale_claims", "prune_out",
+    "heartbeat", "claim", "execute")}
+_REAL_SLEEP = worker.time.sleep
+for _n in ("self_update", "sync_bus", "flush_pending_done",
+           "run_schedule_check", "reclaim_stale_claims",
+           "prune_out", "heartbeat"):
+    setattr(worker, _n, lambda *a, **k: None)
+worker.claim = loop_claim
+worker.execute = loop_execute
+worker.time.sleep = _stop_after_one_cycle
+try:
+    worker.main()
+except _CycleDone:
+    pass
+finally:
+    worker.time.sleep = _REAL_SLEEP
+    for _n, _f in _SAVED.items():
+        setattr(worker, _n, _f)
+
+check("real main(): pending-receipt job neither claimed nor run",
+      job_pending["id"] not in LOOP_CALLS["claim"]
+      and job_pending["id"] not in LOOP_CALLS["execute"])
+check("real main(): the clean job behind it runs",
+      LOOP_CALLS["execute"] == [job_clean["id"]],
+      f"executed={LOOP_CALLS['execute']}")
+(worker.PENDING_DONE / f"{job_pending['id']}.json").unlink()
 
 failed = [c for c in CHECKS if not c[1]]
 print(f"\n{len(CHECKS) - len(failed)}/{len(CHECKS)} passed")
