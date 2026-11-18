@@ -1,0 +1,49 @@
+name: Worker digest issue
+
+# Issue #67 §4d (route 1, split merge): the worker archives a merged
+# sweep on the `archive` branch; this workflow opens the digest issue
+# from the archived digest.md, with the workflow token — the same
+# credential and the same #113/#120 title/status handling as the
+# Actions issue step. Only a sweep dir carrying merge-manifest.json
+# may open an issue; a raw worker-run archive push must never do so.
+# Idempotency (#157): the sweep DIR is the identity, not the title —
+# titles repeat for every sweep of a job, and the old fuzzy
+# open-only title search both re-filed closed sweeps and false-
+# skipped live ones. Each sweep gets a unique `digest-<hash>`
+# identity label (see scripts/worker_digest_issue.py); a sweep is
+# skipped whenever ANY issue, open or closed, already carries its
+# label. Creation is serialized by the concurrency group below (a
+# per-sweep group is not expressible before the job runs, so whole
+# runs are serialized — which strictly includes per-sweep
+# serialization). There is no blind retry: one create attempt, then
+# a label re-check distinguishes a lost create response from a
+# real failure, and a real failure fails the step loudly.
+on:
+  push:
+    branches: [archive]
+    paths: ["sweeps/**"]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  file-worker-digests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: worker-digest-issue
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: archive
+          fetch-depth: 0
+
+      - name: Open digest issues for newly merged sweeps
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/worker_digest_issue.py \
+            --before "${{ github.event.before }}" \
+            --after "${{ github.sha }}" --repo-dir . --file
