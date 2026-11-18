@@ -333,7 +333,7 @@ worker._execute(job_fail)
 check("failed publish: NO done record written",
       not (done_dir() / f"{job_fail['id']}.json").exists()
       and f"done {job_fail['id']}" not in PUSHED)
-check("failed publish: error file written, job stays reclaimable",
+check("failed publish: error file written, no done record",
       (claims_dir() / f"{job_fail['id']}.error.json").is_file()
       and not worker.done(job_fail["id"]))
 
@@ -605,6 +605,387 @@ check("ordering: failed publication retains the receipt intact",
       and order_record.get("archive") == SHA,
       f"record={order_record}")
 receipt_order.unlink()
+
+# --- 19. #231: actual fresh-interpreter restart, no network ---------
+# The child runs one REAL main cycle with a real local git bus/drain.
+# Only update/scheduling/housekeeping and claim transport are stubbed.
+# A ledger-body spy appends to a file, so a duplicate survives restart
+# and cannot hide behind the new process's empty Python globals.
+RESTART_CODE = r'''
+import importlib.util, json, os, sys
+from pathlib import Path
+repo, job_file, effects_file, report_file = map(Path, sys.argv[1:])
+spec = importlib.util.spec_from_file_location("restart231", repo / "worker/worker.py")
+w = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(w)
+job = json.loads(job_file.read_text())
+claims = []
+def effect(job):
+    with effects_file.open("a") as f:
+        f.write(job["id"] + "\n")
+    return True
+w.run_ledger_guard = effect
+w.run_ledger_watchdog = effect
+w.self_update = w.run_schedule_check = w.reclaim_stale_claims = w.prune_out = lambda: None
+w.read_queue = lambda: [job]
+w.claim = lambda j: claims.append(j["id"]) or True
+w.push_bus = lambda *a: True
+class StopCycle(Exception): pass
+# Do not replace time.sleep on the shared stdlib module: subprocess
+# timeout waits can call it too. Replace ONLY worker's clock reference.
+real_time = w.time
+class CycleClock:
+    def __getattr__(self, name):
+        return getattr(real_time, name)
+    def sleep(self, seconds):
+        if seconds == w.POLL_SECONDS:
+            raise StopCycle()
+        # No real backoff waits in this offline harness.
+w.time = CycleClock()
+try:
+    w.main()
+except StopCycle:
+    pass
+Path(report_file).write_text(json.dumps({
+    "claims": claims, "gated": w._done_or_pending(job["id"]),
+    "intent": w._intent_path(job["id"]).exists(),
+    "receipts": [str(p) for p in w._receipt_paths(job["id"])],
+    "undelivered": sorted(w._UNDELIVERED),
+    "verified": sorted(w._VERIFIED_DONE),
+    "heartbeat": json.loads((w.BUS / "queue/heartbeat.json").read_text())}))
+'''
+
+
+def bus_tip():
+    return subprocess.run(
+        ["git", "--git-dir", str(BUS_BARE), "rev-parse", "queue"],
+        capture_output=True, text=True, check=True).stdout.strip()
+
+
+def origin_bytes(job_id):
+    r = subprocess.run(
+        ["git", "--git-dir", str(BUS_BARE), "show",
+         f"queue:queue/done/{job_id}.json"], capture_output=True, text=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def restart231(job, effects):
+    job_file = TMP / "restart231-job.json"
+    report = TMP / "restart231-report.json"
+    job_file.write_text(json.dumps(job))
+    report.unlink(missing_ok=True)
+    r = subprocess.run(
+        [sys.executable, "-c", RESTART_CODE, str(REPO), str(job_file),
+         str(effects), str(report)], env=os.environ.copy(),
+        capture_output=True, text=True, timeout=30)
+    if r.returncode != 0 or not report.exists():
+        raise RuntimeError(f"restart failed rc={r.returncode}: {r.stderr}")
+    result = json.loads(report.read_text())
+    result["stderr"] = r.stderr
+    (TMP / f"restart231-{job['id']}.json").write_text(json.dumps(result))
+    return result
+
+
+def test_restart231(name, fault, kind="ledger-guard"):
+    job = {"id": f"test-231-{name}", "job": kind}
+    effects = TMP / f"effects-{name}"
+    primary = worker.PENDING_DONE / f"{job['id']}.json"
+    fallback = worker.JOB_STATE / primary.name
+    real_write, real_pub = worker._write_receipt, worker._publish_done
+    real_guard, real_watch = worker.run_ledger_guard, worker.run_ledger_watchdog
+    observed = []
+
+    def effect(j):
+        observed.append(("effect", worker._intent_path(j["id"]).is_file()))
+        with effects.open("a") as f:
+            f.write(j["id"] + "\n")
+        return True
+
+    def write(path, text):
+        if fault in ("primary", "partial", "both") and path == primary:
+            if fault == "partial":
+                real_write(path, text)  # rename occurred; durability reply lost
+            raise OSError("injected primary write failure")
+        if fault == "both" and path == fallback:
+            raise OSError("injected recovery write failure")
+        real_write(path, text)
+
+    def publication(job_id, record, attempts=5):
+        observed.append(("delivery", record,
+                         primary.read_text() if primary.exists() else None,
+                         fallback.read_text() if fallback.exists() else None))
+        if fault == "lost-reply":
+            assert real_pub(job_id, record, attempts=attempts)
+            return False
+        if fault == "happy":
+            return real_pub(job_id, record, attempts=attempts)
+        return False
+
+    worker._write_receipt, worker._publish_done = write, publication
+    worker.run_ledger_guard = worker.run_ledger_watchdog = effect
+    try:
+        worker._execute(job)  # real intent -> real body -> real _mark_done
+    finally:
+        worker._write_receipt, worker._publish_done = real_write, real_pub
+        worker.run_ledger_guard, worker.run_ledger_watchdog = real_guard, real_watch
+    check(f"{name}: durable intent exists at effect admission",
+          observed[0] == ("effect", True))
+    delivery = observed[1]
+    record = delivery[1]
+    if fault != "both":
+        check(f"{name}: exact completion staged BEFORE delivery",
+              record in delivery[2:])
+    else:
+        check(f"{name}: both completion writes failed, intent retained",
+              delivery[2:] == (None, None)
+              and worker._intent_path(job["id"]).is_file())
+    if fault in ("primary", "partial"):
+        check(f"{name}: fallback is replayable exact completion bytes",
+              fallback.is_file() and fallback.read_text() == record
+              and worker._valid_receipt(record, job["id"]))
+    if fault == "happy":
+        check("happy: normal delivery cleans receipt and intent",
+              origin_bytes(job["id"]) == record and not primary.exists()
+              and not fallback.exists()
+              and not worker._intent_path(job["id"]).exists())
+        worker._execute(job)  # BUS has not synced the new done record yet
+        check("happy: same-process direct re-entry does not repeat effect",
+              effects.read_text().splitlines() == [job["id"]])
+    before = bus_tip()
+    result = restart231(job, effects)
+    after = bus_tip()
+    check(f"{name}: fresh interpreter neither claims nor repeats body",
+          result["claims"] == []
+          and effects.read_text().splitlines() == [job["id"]])
+    check(f"{name}: fresh interpreter retains a re-entry gate", result["gated"])
+    if fault == "both":
+        check("both: restart does NOT invent a done record",
+              origin_bytes(job["id"]) is None and before == after)
+        check("both: intent alone survives without in-memory gate",
+              result["intent"] and not result["receipts"]
+              and result["undelivered"] == [])
+        check("both: uncertain attempt is surfaced separately from done",
+              job["id"] in result["heartbeat"].get("uncertain_jobs", [])
+              and job["id"] not in result["heartbeat"].get("pending_done", []))
+    else:
+        check(f"{name}: restart recovers EXACT done bytes",
+              origin_bytes(job["id"]) == record)
+        check(f"{name}: verified recovery clears receipts and intent",
+              not result["receipts"] and not result["intent"], repr(result))
+        if fault in ("happy", "lost-reply"):
+            check(f"{name}: already-delivered replay creates NO commit",
+                  before == after)
+        else:
+            count = subprocess.run(
+                ["git", "--git-dir", str(BUS_BARE), "rev-list", "--count",
+                 f"{before}..{after}"], capture_output=True, text=True,
+                check=True).stdout.strip()
+            check(f"{name}: recovery adds exactly ONE marker commit", count == "1")
+            check(f"{name}: same-cycle post-drain gate covers stale BUS",
+                  job["id"] in result["verified"])
+
+
+for _name, _fault, _kind in (
+        ("fallback", "primary", "ledger-guard"),
+        ("delivery", "delivery", "ledger-watchdog"),
+        ("partial", "partial", "ledger-guard"),
+        ("lost-reply", "lost-reply", "ledger-guard"),
+        ("both", "both", "ledger-guard"),
+        ("happy", "happy", "ledger-guard")):
+    test_restart231(_name, _fault, _kind)
+
+# A failed intent fsync AFTER rename must still refuse the body.
+# Disk presence alone is not confirmation of crash durability.
+_job_refuse = {"id": "test-231-refuse", "job": "ledger-guard"}
+_real_sync, _real_body = worker._fsync_dir, worker._execute_body
+_refused_calls = []
+def refuse_intent_sync(path):
+    if path == worker.JOB_STATE:
+        raise OSError("injected intent directory fsync failure")
+    _real_sync(path)
+worker._fsync_dir = refuse_intent_sync
+worker._execute_body = lambda j: _refused_calls.append(j["id"])
+try:
+    worker._execute(_job_refuse)
+finally:
+    worker._fsync_dir, worker._execute_body = _real_sync, _real_body
+check("intent fsync failure: body NOT entered despite renamed intent",
+      _refused_calls == [] and worker._intent_path(_job_refuse["id"]).exists()
+      and origin_done(_job_refuse["id"]) is None)
+
+# Check actual durability primitive ordering, not just final files.
+import stat
+_events = []
+_real_fsync, _real_replace = worker.os.fsync, worker.os.replace
+def trace_fsync(fd):
+    _events.append("dir-sync" if stat.S_ISDIR(os.fstat(fd).st_mode)
+                   else "file-sync")
+    return _real_fsync(fd)
+def trace_replace(src, dest):
+    _events.append("replace")
+    return _real_replace(src, dest)
+worker.os.fsync, worker.os.replace = trace_fsync, trace_replace
+_probe = worker.JOB_STATE / "ordering-probe"
+try:
+    worker._write_receipt(_probe, "probe")
+finally:
+    worker.os.fsync, worker.os.replace = _real_fsync, _real_replace
+check("durable write: file fsync, atomic rename, directory fsync",
+      _events == ["file-sync", "replace", "dir-sync"], repr(_events))
+_probe.unlink()
+
+# Recovery-store corruption/conflicts inherit the existing no-overwrite
+# contract, including fail-closed gating and heartbeat visibility.
+for _mode in ("corrupt", "conflict"):
+    _j = {"id": f"test-231-{_mode}", "job": "ledger-guard"}
+    _f = worker.JOB_STATE / f"{_j['id']}.json"
+    worker._write_receipt(worker._intent_path(_j["id"]), json.dumps(_j))
+    _record = json.dumps({"worker": "test", "at": worker.now(),
+                          "job": _j["job"], "archive": "ledger-guard"})
+    if _mode == "conflict":
+        assert REAL_PUBLISH_DONE(_j["id"], _record)
+        _before = origin_bytes(_j["id"])
+        _record = _record.replace("ledger-guard", "different-completion")
+    else:
+        _before = None
+        _record = "{}"  # parses, but is not a completion receipt
+    worker._write_receipt(_f, _record)
+    _result = restart231(_j, TMP / f"effects-{_mode}")
+    check(f"recovery {_mode}: never claims, never overwrites origin",
+          _result["claims"] == [] and origin_bytes(_j["id"]) == _before)
+    check(f"recovery {_mode}: intent and local gate retained",
+          _result["intent"] and _result["gated"])
+    _field = "corrupt_done" if _mode == "corrupt" else "pending_done"
+    check(f"recovery {_mode}: heartbeat keeps evidence visible",
+          _j["id"] in _result["heartbeat"].get(_field, []))
+    check(f"recovery {_mode}: correct durable evidence retained",
+          (_f.with_suffix(".json.corrupt").is_file() and not _f.exists())
+          if _mode == "corrupt" else _f.read_text() == _record)
+
+# A reported publish failure can follow partial effects. Keep its
+# intent; a human decides whether re-execution is safe.
+check("failed publish: existing attempt now requires reconciliation",
+      worker._intent_path(job_fail["id"]).is_file()
+      and worker._done_or_pending(job_fail["id"]))
+
+# --- 20. #231: failed attempts are UNCERTAIN, never auto-retried ---
+for _mode in ("return", "exception", "timeout"):
+    _j = {"id": f"test-231-body-{_mode}", "job": "ledger-guard"}
+    _saved_guard = worker.run_ledger_guard
+    def failed_body(j):
+        if _mode == "timeout":
+            raise subprocess.TimeoutExpired("ledger-publisher", 1800)
+        if _mode == "exception":
+            raise RuntimeError("injected after possible partial effects")
+        return False
+    worker.run_ledger_guard = failed_body
+    try:
+        try:
+            worker._execute(_j)
+        except (RuntimeError, subprocess.TimeoutExpired):
+            pass
+    finally:
+        worker.run_ledger_guard = _saved_guard
+    _result = restart231(_j, TMP / f"effects-body-{_mode}")
+    check(f"body {_mode}: restart blocks ambiguous attempt, not done",
+          _result["claims"] == [] and _result["intent"]
+          and _result["gated"] and origin_done(_j["id"]) is None
+          and _j["id"] in _result["heartbeat"].get("uncertain_jobs", []))
+
+# Abrupt death after an effect, before _mark_done: intent alone must
+# block the next process, never masquerade as completed work.
+_crash_job = {"id": "test-231-abrupt", "job": "ledger-guard"}
+_crash_effects = TMP / "effects-abrupt"
+_crash_code = r'''
+import importlib.util, json, os, sys
+from pathlib import Path
+spec = importlib.util.spec_from_file_location("crash231", sys.argv[1])
+w = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(w)
+def effect(job):
+    with open(sys.argv[2], "a") as f:
+        f.write(job["id"] + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+    os._exit(77)
+w.run_ledger_guard = effect
+w._execute(json.loads(sys.argv[3]))
+'''
+_crashed = subprocess.run(
+    [sys.executable, "-c", _crash_code, str(REPO / "worker/worker.py"),
+     str(_crash_effects), json.dumps(_crash_job)],
+    env=os.environ.copy(), capture_output=True, text=True, timeout=30)
+check("abrupt death: effect reached, process exits before completion",
+      _crashed.returncode == 77 and _crash_effects.is_file()
+      and origin_done(_crash_job["id"]) is None)
+_crash_result = restart231(_crash_job, _crash_effects)
+check("abrupt death: restart neither re-executes nor invents completion",
+      _crash_result["claims"] == [] and _crash_result["intent"]
+      and _crash_effects.read_text().splitlines() == [_crash_job["id"]]
+      and origin_done(_crash_job["id"]) is None)
+
+# Remote confirmation is only sufficient after a successful startup
+# sync. A stale local BUS must not authorize work after receipt cleanup.
+_real_git, _real_sh, _real_bus = worker.git_bus, worker.sh, worker.BUS
+for _stage in ("clone", "fetch", "reset"):
+    _commands = []
+    def sync_git(command, timeout=120):
+        _commands.append(command)
+        return subprocess.CompletedProcess([], int(command.startswith(_stage)))
+    worker.BUS = TMP / "missing-sync231" if _stage == "clone" else _real_bus
+    worker.sh = lambda *a, **k: subprocess.CompletedProcess([], 1)
+    worker.git_bus = sync_git
+    _refused = False
+    try:
+        worker.sync_bus()
+    except RuntimeError:
+        _refused = True
+    finally:
+        worker.git_bus, worker.sh, worker.BUS = _real_git, _real_sh, _real_bus
+    check(f"startup {_stage} failure: sync refuses stale queue",
+          _refused and (_stage != "fetch" or _commands == ["fetch origin queue"]))
+
+# The actual loop must stop the cycle at sync, not merely log and run.
+_loop_saved = {n: getattr(worker, n) for n in
+               ("self_update", "sync_bus", "flush_pending_done", "read_queue")}
+_after_sync = []
+def broken_sync():
+    raise RuntimeError("injected startup sync failure")
+worker.self_update = lambda: None
+worker.sync_bus = broken_sync
+worker.flush_pending_done = lambda: _after_sync.append("drain")
+worker.read_queue = lambda: _after_sync.append("queue") or []
+worker.time.sleep = _stop_after_one_cycle
+try:
+    worker.main()
+except _CycleDone:
+    pass
+finally:
+    worker.time.sleep = _REAL_SLEEP
+    for _n, _f in _loop_saved.items():
+        setattr(worker, _n, _f)
+check("real main: failed startup sync admits NO work or drain", _after_sync == [])
+
+# Same-host claim entry points must honor intent even with no receipts.
+_j = {"id": "test-231-body-return", "job": "ledger-guard"}
+check("claim: uncertain intent refuses a new claim",
+      worker.claim(_j) is False and not worker.claimed(_j["id"]))
+
+# Interrupted cleanup must leave replayable evidence until intent
+# deletion has been durably confirmed. Inject its directory fsync.
+_jid = "test-231-cleanup"
+_cf = worker.PENDING_DONE / f"{_jid}.json"
+_cf.write_text("completion-evidence")
+worker._write_receipt(worker._intent_path(_jid), "intent-evidence")
+_real_sync = worker._fsync_dir
+worker._fsync_dir = lambda path: (_ for _ in ()).throw(OSError("sync failed"))
+try:
+    worker._forget_completion(_cf, _jid)
+finally:
+    worker._fsync_dir = _real_sync
+check("cleanup: intent-sync failure retains completion evidence",
+      _cf.exists() and worker._done_or_pending(_jid))
+_cf.unlink(missing_ok=True)
 
 failed = [c for c in CHECKS if not c[1]]
 print(f"\n{len(CHECKS) - len(failed)}/{len(CHECKS)} passed")
