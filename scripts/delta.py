@@ -46,7 +46,7 @@ import math
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
 DELTA_VERSION = 1
@@ -632,6 +632,96 @@ def _iter_sweep_dirs(archive_root):
                     yield path, branch
 
 
+# Earliest sortable timestamp: undated candidates sort here, i.e.
+# as oldest (issue #154).
+_MIN_TS = datetime.min.replace(tzinfo=timezone.utc)
+
+
+def _sort_ts(value):
+    """Sort-key timestamp: None -> oldest; naive -> UTC-aware so a
+    mixed archive never raises on comparison."""
+    if value is None:
+        return _MIN_TS
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
+
+
+def _run_identity(view, path):
+    """Claim / source-run id shared by a merged sweep and its raw
+    worker-run twin (issue #154). The merged sweep's manifest
+    carries claim_id / run_id; the raw twin's run manifest carries
+    job.id. Falls back to the dir-name suffix (__run<id> on merged
+    sweeps, __<id> on raw worker runs), so legacy Actions sweeps
+    without a manifest still identify by their __run<github-run-id>
+    suffix. None only when nothing identifies the run."""
+    manifest = (view or {}).get("manifest") or {}
+    for key in ("claim_id", "run_id"):
+        value = manifest.get(key)
+        if value:
+            return str(value)
+    job = manifest.get("job")
+    if isinstance(job, dict) and job.get("id"):
+        return str(job["id"])
+    tail = os.path.basename(os.path.normpath(path)).split("__")[-1]
+    if tail.startswith("run"):
+        tail = tail[3:]
+    return tail or None
+
+
+def _dedupe_twins(candidates, archive_root):
+    """Drop manifest-only worker-run twins of merged sweeps (issue
+    #154). A merged worker sweep and its raw twin are the SAME
+    execution: the merged sweep's manifest names the twin in
+    ``source_runs`` (merge.py: ``worker-runs/<date>/<run-dir>``),
+    and both carry the same claim id and the same finished
+    timestamp. The twin must not shadow the merged representation
+    in latest-selection -- with equal finished times the
+    enumeration order (sweeps/ before worker-runs/) otherwise
+    leaves the twin last and resolve_pair reports
+    delta_unavailable despite an available merged ensemble.
+
+    An unmerged worker run (no merged sweep names it, different
+    claim/finished) is kept: as the latest sweep it still means
+    delta_unavailable. A same-claim re-run at a different finished
+    time is a different execution and is likewise kept. Returns
+    (kept, dropped) with dropped as [(merged_path, twin_path)]."""
+    twin_of = {}  # archive-relative twin path -> merged sweep path
+    for _fin, _branch, path, view in candidates:
+        if view.get("kind") != "sweep":
+            continue
+        for src in ((view.get("manifest") or {}).get("source_runs")
+                    or []):
+            if isinstance(src, str) and src:
+                twin_of[src] = path
+    kept = []
+    dropped = []
+    for cand in candidates:
+        finished, branch, path, view = cand
+        if view.get("kind") != "worker-run":
+            kept.append(cand)
+            continue
+        rel = os.path.relpath(path, archive_root).replace(os.sep, "/")
+        merged = twin_of.get(rel)
+        if merged is None:
+            # No source_runs link: fall back to the claim identity,
+            # but only at the SAME finished time -- a re-run at a
+            # later time is a different execution, not a twin.
+            ident = _run_identity(view, path)
+            if ident is not None and finished is not None:
+                for fin2, _b2, path2, view2 in candidates:
+                    if (view2.get("kind") == "sweep"
+                            and fin2 == finished
+                            and _run_identity(view2, path2) == ident):
+                        merged = path2
+                        break
+        if merged is not None:
+            dropped.append((merged, path))
+            continue
+        kept.append(cand)
+    return kept, dropped
+
+
 def resolve_pair(archive_root, ticker, job_shape, current_dir,
                  archive_sha=None):
     """Resolve the previous sweep for a current sweep dir (scoping
@@ -651,6 +741,11 @@ def resolve_pair(archive_root, ticker, job_shape, current_dir,
     Worker sweeps are checked first: a manifest-only worker sweep is
     the latest same-shape sweep, so the report says "delta
     unavailable", never "first sweep".
+
+    Issue #154: an undated sweep (finished None) sorts as OLDEST,
+    never as most recent; and a merged worker sweep's manifest-only
+    raw twin is deduplicated (same execution, same claim id) so the
+    merged representation decides, never the twin.
     """
     current_dir = os.path.normpath(current_dir)
     try:
@@ -675,7 +770,12 @@ def resolve_pair(archive_root, ticker, job_shape, current_dir,
         if current_finished and finished and finished >= current_finished:
             continue
         candidates.append((finished, branch, path, view))
-    candidates.sort(key=lambda c: (c[0] is None, c[0]))
+    # Issue #154: deduplicate merged-sweep / raw-twin pairs (same
+    # execution) before latest-selection, and sort undated sweeps
+    # as oldest -- the old key (c[0] is None, c[0]) sorted
+    # finished=None LAST, so an undated sweep became "most recent".
+    candidates, dropped_twins = _dedupe_twins(candidates, archive_root)
+    candidates.sort(key=lambda c: (c[0] is not None, _sort_ts(c[0])))
     if not candidates:
         return None, "first_sweep", (
             f"no previous sweep of {ticker} + job shape "
@@ -707,6 +807,12 @@ def resolve_pair(archive_root, ticker, job_shape, current_dir,
         note += ("; skipped "
                  + ", ".join(os.path.basename(c[2]) for c in skipped)
                  + " (no ensemble.json)")
+    for merged, twin in dropped_twins:
+        if os.path.normpath(merged) == os.path.normpath(previous):
+            note += (f"; merged {os.path.basename(merged)} preferred "
+                     f"over its manifest-only worker-run twin "
+                     f"{os.path.basename(twin)} (same execution, "
+                     f"issue #154)")
     return previous, "paired", note
 
 
