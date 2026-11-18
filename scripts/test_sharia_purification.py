@@ -401,10 +401,10 @@ def test_validation_fails_loudly():
         return False
     base = dict(snapshot=AAOIFI_SNAPSHOT, shares=SHARES,
                 buy_date="2026-11-02", sell_date="2026-11-20")
-    # DJIM is draft-disabled (issue #169 pin gate), hence an
-    # unknown standard for the calculator, like any unimplemented
-    # id. (MSCI itself became implemented in #169.)
-    assert refused(**{**base, "standards": ["DJIM"]})
+    # An unimplemented id is an unknown standard for the
+    # calculator. (MSCI and DJIM both became implemented in
+    # issue #169, so a bogus id stands in for one here.)
+    assert refused(**{**base, "standards": ["UNIMPLEMENTED"]})
     assert refused(**{**base, "standards": []})
     assert refused(**{**base, "shares": 0})
     assert refused(**{**base, "shares": -5})
