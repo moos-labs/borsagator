@@ -1,0 +1,26 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep POUL.CA market=EGX",
+  "job_shape": "sweep POUL.CA market=EGX",
+  "claim_id": "manual-sweep-2026-11-18-001",
+  "source_runs": [
+    "worker-runs/2026-11-18/manual-sweep-2026-11-18-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-18/140522__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-18-001",
+  "finished": "2026-11-18T14:05:22.363054+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "agent"
+    ],
+    "absent_tools": [
+      "tradingagents"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

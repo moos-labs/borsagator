@@ -1,0 +1,147 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 7.7,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_date": "2026-11-18",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_poul.csv": 8.02,
+   "openbb/poul_ca.csv": 8.020000457763672,
+   "pandas-ta/indicators.csv": 8.020000457763672,
+   "talib/indicators.csv": 8.020000457763672,
+   "yahooquery/poul.ca.csv": 8.020000457763672
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-16",
+  "base_used": 7.7,
+  "base_source_used": "egx-data/egxpy_poul.csv",
+  "base_date": "2026-11-18",
+  "latest_collected_date": "2026-11-18",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "entitlement_end": "2026-11-15",
+   "date_basis": "entitlement+1",
+   "mechanical_pct": -24.68,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي"
+  }
+ ],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.068,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0367, σ10=0.0680)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-18",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+   }
+  ],
+  "move_z": {
+   "last": 0.25,
+   "max3": 3.24
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "0b4830e811c0cf2348c5beb67e77ef916152ca9e564a815505a5ddeb4b602a4c",
+  "factors": {
+   "price-forecast": 0.993,
+   "technicals": 0.742,
+   "sentiment": 1.024,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.993,
+    "n": 5,
+    "skill": -0.007
+   },
+   "technicals": {
+    "factor": 0.742,
+    "n": 5,
+    "skill": -0.258
+   },
+   "sentiment": {
+    "factor": 1.024,
+    "n": 5,
+    "skill": 0.024
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.397,
+  "sentiment": -0.033,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.402
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 7.08,
+   "range_low_pct": -7.84,
+   "range_high_pct": 22.0,
+   "confidence": 0.3,
+   "net_score": 0.399,
+   "families": {
+    "technicals": 0.397,
+    "sentiment": -0.033,
+    "price-forecast": 0.697
+   },
+   "horizon_short": false,
+   "trading_sessions": 1
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 14.61,
+   "range_low_pct": -12.15,
+   "range_high_pct": 41.38,
+   "confidence": 0.3,
+   "net_score": 0.443,
+   "families": {
+    "technicals": 0.397,
+    "sentiment": -0.033,
+    "price-forecast": 0.845
+   },
+   "horizon_short": false,
+   "trading_sessions": 3
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 16.94,
+   "range_low_pct": -35.08,
+   "range_high_pct": 68.96,
+   "confidence": 0.3,
+   "net_score": 0.358,
+   "families": {
+    "technicals": 0.397,
+    "sentiment": -0.033,
+    "fundamentals": 0.4,
+    "price-forecast": 0.402
+   },
+   "horizon_short": false,
+   "trading_sessions": 14
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

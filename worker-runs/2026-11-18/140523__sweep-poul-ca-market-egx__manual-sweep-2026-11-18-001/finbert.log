@@ -1,0 +1,6 @@
+headlines: 5 English scored-input, 1 Arabic skipped, window 30d, ticker POUL.CA
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4840.64it/s]
+Scored 5 texts | counts={'neutral': 3, 'negative': 2} | means=positive=0.0519, negative=0.3504, neutral=0.5977
+WARN gnews failed (POUL.CA): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA+when:30d&hl=en-US&gl=US&ceid=US:en

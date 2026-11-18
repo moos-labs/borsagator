@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "POUL.CA",
+    "fetched_at": "2026-11-18T14:05:21Z",
+    "tool": "news-disclosure",
+    "news_count": 26,
+    "disclosure_count": 10,
+    "arabic_headlines": 36,
+    "latest_news_date": "Tue, 17 Nov 2026 23:36:33 GMT",
+    "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT",
+    "llm_provider": "extractive",
+    "multilingual_positive": 0.474,
+    "multilingual_negative": 0.043,
+    "multilingual_neutral": 0.482,
+    "multilingual_scored": 36,
+    "bodies_fetched": 9,
+    "egx_bodies_attached": 1,
+    "egx_disclosures_added": 9,
+    "egx_harvest_source": "local-file",
+    "translation_provider": "nllb",
+    "translated_positive": 0.141,
+    "translated_negative": 0.24,
+    "translated_neutral": 0.619,
+    "translated_scored": 36
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

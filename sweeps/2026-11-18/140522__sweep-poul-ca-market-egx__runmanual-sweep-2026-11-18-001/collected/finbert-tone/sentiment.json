@@ -1,0 +1,302 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 11,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 9
+  },
+  "label_counts_raw": {
+    "neutral": 9,
+    "negative": 1,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.09102884557263219,
+    "negative": 0.09299869805871905,
+    "neutral": 0.8159724194133147
+  },
+  "items": [
+    {
+      "text": "Russian House in Cairo Opens Agricultural Innovation Festival for 100 Egyptian Students - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00021865715098101646,
+        "negative": 4.72275132779032e-06,
+        "neutral": 0.9997765421867371
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997765421867371
+        },
+        {
+          "label": "Positive",
+          "score": 0.00021865715098101646
+        },
+        {
+          "label": "Negative",
+          "score": 4.72275132779032e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.014869948849081993,
+        "negative": 0.9803638458251953,
+        "neutral": 0.004766206722706556
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9803638458251953
+        },
+        {
+          "label": "Positive",
+          "score": 0.014869948849081993
+        },
+        {
+          "label": "Neutral",
+          "score": 0.004766206722706556
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.985231876373291,
+        "negative": 8.181282464647666e-05,
+        "neutral": 0.01468629576265812
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.985231876373291
+        },
+        {
+          "label": "Neutral",
+          "score": 0.01468629576265812
+        },
+        {
+          "label": "Negative",
+          "score": 8.181282464647666e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "St. Paul High School (Santa Fe Springs, CA) Flag Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6861197593698307e-07,
+        "negative": 5.4582137636316475e-06,
+        "neutral": 0.9999943971633911
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999943971633911
+        },
+        {
+          "label": "Negative",
+          "score": 5.4582137636316475e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.6861197593698307e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.489368075155653e-05,
+        "negative": 0.0007036477327346802,
+        "neutral": 0.9992514252662659
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9992514252662659
+        },
+        {
+          "label": "Negative",
+          "score": 0.0007036477327346802
+        },
+        {
+          "label": "Positive",
+          "score": 4.489368075155653e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Videos - Croatan Cougars (Newport, NC) Basketball - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.4569477470067795e-06,
+        "negative": 3.27483685396146e-05,
+        "neutral": 0.9999617338180542
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999617338180542
+        },
+        {
+          "label": "Negative",
+          "score": 3.27483685396146e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.4569477470067795e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.49382731251535e-06,
+        "negative": 2.0036950445501134e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.0036950445501134e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.49382731251535e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Paul Kagame | Biography, Education, & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1985006494796835e-05,
+        "negative": 8.641302702017128e-05,
+        "neutral": 0.999901533126831
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999901533126831
+        },
+        {
+          "label": "Negative",
+          "score": 8.641302702017128e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.1985006494796835e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.91699494079512e-07,
+        "negative": 2.6575180527288467e-05,
+        "neutral": 0.9999724626541138
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999724626541138
+        },
+        {
+          "label": "Negative",
+          "score": 2.6575180527288467e-05
+        },
+        {
+          "label": "Positive",
+          "score": 9.91699494079512e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.1233824415721756e-07,
+        "negative": 2.0366187527542934e-05,
+        "neutral": 0.9999792575836182
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999792575836182
+        },
+        {
+          "label": "Negative",
+          "score": 2.0366187527542934e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.1233824415721756e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0009315168135799468,
+        "negative": 0.04165808483958244,
+        "neutral": 0.9574103355407715
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9574103355407715
+        },
+        {
+          "label": "Negative",
+          "score": 0.04165808483958244
+        },
+        {
+          "label": "Positive",
+          "score": 0.0009315168135799468
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

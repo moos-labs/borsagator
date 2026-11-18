@@ -1,0 +1,89 @@
+{
+ "as_of": "2026-11-18",
+ "base_date": "2026-11-18",
+ "base_price": 7.7,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": "entitlement+1",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -24.68,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-18T14:05:22.715044+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 9.48,
+   "families": {
+    "price-forecast": 0.697
+   },
+   "horizon_short": false,
+   "net_score": 0.697,
+   "range_high_pct": 13.62,
+   "range_low_pct": 4.14,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 20.46,
+   "families": {
+    "price-forecast": 0.402
+   },
+   "horizon_short": false,
+   "net_score": 0.402,
+   "range_high_pct": 23.53,
+   "range_low_pct": 18.95,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 19.91,
+   "families": {
+    "price-forecast": 0.845
+   },
+   "horizon_short": false,
+   "net_score": 0.845,
+   "range_high_pct": 23.47,
+   "range_low_pct": 16.74,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "95c09d3f0e26d7dd181ff5c6c802e911d45b670cf64005395ecd854c484aceb5",
+  "digest.json": "167bb323b99443268e89a3e0e4c7ad89958ae8672ae913002606a354a8199e86",
+  "ensemble.json": "7714d170b96b12ef2d1fd695828d6350f2ab6fee35fe2455eee6ce55cd9ceef8"
+ },
+ "kronos_first_row_date": "2026-11-17",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.66,
+ "sigma_daily": 0.068,
+ "status": "present",
+ "sweep": "sweeps/2026-11-18/140522__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-18-001",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-18",
+ "base_date": "2026-11-18",
+ "base_price": 7.7,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": "entitlement+1",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -24.68,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-18T14:05:22.714209+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.11,
+   "families": {
+    "sentiment": -0.033
+   },
+   "horizon_short": false,
+   "net_score": -0.033,
+   "range_high_pct": 12.94,
+   "range_low_pct": -13.17,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.43,
+   "families": {
+    "sentiment": -0.033
+   },
+   "horizon_short": false,
+   "net_score": -0.033,
+   "range_high_pct": 48.42,
+   "range_low_pct": -49.28,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.2,
+   "families": {
+    "sentiment": -0.033
+   },
+   "horizon_short": false,
+   "net_score": -0.033,
+   "range_high_pct": 22.41,
+   "range_low_pct": -22.81,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "167bb323b99443268e89a3e0e4c7ad89958ae8672ae913002606a354a8199e86",
+  "ensemble.json": "7714d170b96b12ef2d1fd695828d6350f2ab6fee35fe2455eee6ce55cd9ceef8"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.66,
+ "sigma_daily": 0.068,
+ "status": "present",
+ "sweep": "sweeps/2026-11-18/140522__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-18-001",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

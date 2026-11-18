@@ -1,0 +1,31 @@
+{
+ "job": {
+  "id": "manual-sweep-2026-11-18-001",
+  "job": "sweep POUL.CA market=EGX",
+  "added": "2026-11-18T13:52:49.724948+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-18T13:58:59.084966+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "tradingagents": "exit-2",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "finished": "2026-11-18T14:05:22.363054+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-18/140522__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-18-001"
+ }
+}
