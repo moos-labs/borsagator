@@ -25,7 +25,8 @@ Rules that matter:
   exactly (bar rows, clamped), never a calendar-date lookup, never
   the CSV's first row as the base.
 - Raw-LLM uses the FROZEN prompt scripts/benchmark_prompt_v1.txt,
-  model command-r-08-2024, temperature 0, one call, no retry, no
+  model command-r-08-2024, temperature 0, bounded retry (3
+  attempts with backoff) on transient failures (#153), no
   fallback model. Key absent / call failed / response unparseable
   all produce an absent record, never a failure.
 - Buy-and-hold is flat 0% with a pure ±1.28σ√h_eff range.
@@ -47,6 +48,7 @@ import math
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -68,6 +70,12 @@ ENTRANTS = ("family-price-forecast", "family-technicals",
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
 LLM_MODEL = "command-r-08-2024"
+# Bounded retry for the raw-LLM call (#153): at most 3 attempts,
+# sleeping 1s then 2s between attempts, only on transient
+# failures (timeout / 429 / 5xx). Permanent failures (e.g. 401/403
+# auth) fail fast with no retry.
+LLM_MAX_ATTEMPTS = 3
+LLM_BACKOFF_S = (1.0, 2.0)
 # v2 endpoint: the request body ({messages, response_format}) and
 # the response parse (message.content) are the v2 contract — v1
 # uses `message`/`text` and rejects this model with "this model is
@@ -546,11 +554,32 @@ def _build_llm_prompt(ens, digest):
     return prompt, prompt_sha, price_rel, price_sha
 
 
-def call_llm(prompt, api_key, url=None):
-    """ONE Cohere call, no retry. Returns (parsed_json, error_reason)
-    with error_reason None on success. `url` is an env override for
-    the harness stub server only; production always uses the
-    default api.cohere.com endpoint."""
+def _llm_error_is_transient(exc):
+    """Transient (worth a bounded retry) vs permanent (fail fast).
+
+    HTTP 429 and 5xx are transient; any other HTTP status — in
+    particular 401/403 auth failures — is permanent and must not
+    be retried. Transport errors (timeout, refused/dropped
+    connection, DNS) are transient: they say nothing about the
+    request itself. (#153)
+    """
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code == 429 or exc.code >= 500
+    return True
+
+
+def call_llm(prompt, api_key, url=None, max_attempts=LLM_MAX_ATTEMPTS,
+             backoff_s=LLM_BACKOFF_S, timeout=120, sleep=time.sleep):
+    """Cohere call with bounded retry on transient failures (#153).
+    Returns (parsed_json, error_reason) with error_reason None on
+    success. `url` is an env override for the harness stub server
+    only; production always uses the default api.cohere.com
+    endpoint. `max_attempts` / `backoff_s` / `timeout` / `sleep`
+    exist for the harness: production uses the defaults (3
+    attempts, 1s then 2s backoff, 120s timeout). A failure reason
+    always carries str(e) after the "llm-call-failed" prefix, so a
+    persistent auth failure is distinguishable from a transient
+    failure that exhausted its retries."""
     target = url or os.environ.get("COHERE_API_URL") or LLM_URL_DEFAULT
     body = json.dumps({
         "model": LLM_MODEL, "temperature": 0,
@@ -563,11 +592,20 @@ def call_llm(prompt, api_key, url=None):
                  "Content-Type": "application/json",
                  "User-Agent": "borsagator-benchmark-freeze"},
         method="POST")
-    try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            raw = r.read().decode("utf-8", "replace")
-    except Exception as e:
-        return None, "llm-call-failed"
+    attempts = max(1, int(max_attempts))
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                raw = r.read().decode("utf-8", "replace")
+            break
+        except Exception as e:
+            if (not _llm_error_is_transient(e)
+                    or attempt == attempts - 1):
+                return None, f"llm-call-failed: {e}"
+            delay = backoff_s[min(attempt, len(backoff_s) - 1)] \
+                if backoff_s else 0
+            if delay:
+                sleep(delay)
     try:
         resp = json.loads(raw)
     except Exception:
@@ -631,7 +669,8 @@ def _parse_llm_response(resp):
 
 def freeze_raw_llm(ens, digest, inputs):
     """Frozen prompt v1, command-r-08-2024, temp 0. Key absent ->
-    absent / llm-key-absent. Never a fallback model, never a retry."""
+    absent / llm-key-absent. Never a fallback model; bounded retry
+    (3 attempts, backoff) on transient call failures (#153)."""
     entrant = "raw-llm-cohere"
     prompt, prompt_sha, price_rel, price_sha = _build_llm_prompt(ens, digest)
     if prompt is None:
@@ -651,7 +690,7 @@ def freeze_raw_llm(ens, digest, inputs):
     if err:
         return absent_file(
             ens, digest, entrant, err, llm_inputs,
-            "raw-llm-cohere-v1: single call, no retry")
+            "raw-llm-cohere-v1: bounded retry (3 attempts) exhausted")
     horizons = {}
     for hname, bar in HORIZONS.items():
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
@@ -669,7 +708,8 @@ def freeze_raw_llm(ens, digest, inputs):
             "raw-llm-cohere-v1: no ensemble horizon to anchor on")
     derivation = (
         "raw-llm-cohere-v1: frozen prompt v1, model "
-        "command-r-08-2024, temperature 0, single call; inputs "
+        "command-r-08-2024, temperature 0, bounded retry "
+        "(3 attempts, backoff) on transient failures; inputs "
         "ticker/as_of/base/sigma/corporate actions/last 10 closes "
         "only — no family scores, no news, no Kronos path")
     doc = base_header(ens, digest, entrant, llm_inputs, derivation,
