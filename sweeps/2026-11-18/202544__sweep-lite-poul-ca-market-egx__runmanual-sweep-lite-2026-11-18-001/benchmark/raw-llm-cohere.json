@@ -1,0 +1,39 @@
+{
+ "as_of": "2026-11-18",
+ "base_date": "2026-11-18",
+ "base_price": 7.7,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": "entitlement+1",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -24.68,
+   "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-18T20:25:44.412264+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_poul.csv": "feb447f3f5babf2390e13c88361f219491390a751f03754b18815dd3fa35e273",
+  "digest.json": "8c5e35099d6bc24135e59b48a4da11f26eeaf4ffa752306b4b3ba9c8916000b5",
+  "ensemble.json": "e7b9eed95f4882afa58f68eac533cbc9c8d8e53890c9d1f2fa9ffe2733847db8",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-18/202544__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-18-001",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

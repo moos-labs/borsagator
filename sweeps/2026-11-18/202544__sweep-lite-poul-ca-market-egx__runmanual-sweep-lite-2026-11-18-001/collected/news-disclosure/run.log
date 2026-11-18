@@ -1,0 +1,20 @@
+WARN body http 404: https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://www.wataninet.com/2026/11/%D8%B3%D9%8A%D8%B3%D8%A7%D9%83%D9%88-%D9%88%D8%A8%D9%88%
+bodies: 10/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6365.95it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16266.72it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 14736.35it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5884.05it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 31, "disclosure_count": 10, "arabic_headlines": 37, "latest_news_date": "Tue, 17 Nov 2026 23:36:33 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.035, "finbert_negative": 0.433, "finbert_neutral": 0.532, "finbert_scored": 4, "multilingual_positive": 0.487, "multilingual_negative": 0.042, "multilingual_neutral": 0.47, "multilingual_scored": 37, "bodies_fetched": 10, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.13, "translated_negative": 0.259, "translated_neutral": 0.611, "translated_scored": 37}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 17 Nov 2026 23:36:33 GMT] (جريدة البلاد) مهندس الصوت بول ديفيز يكشف أسرار كسر القواعد في القاهرة السينمائي - جريدة البلاد
+- [Tue, 17 Nov 2026 23:17:37 GMT] (شبكة تواصل الإخبارية) مهرجان القاهرة السينمائي ينظم جلسة حوارية لمصمم الصوت بول ديفيز - شبكة تواصل الإخبارية
+- [Tue, 17 Nov 2026 17:53:26 GMT] (وطنى) “سيساكو” و”بول ديفيز” يتصدران فعاليات أيام القاهرة لصناعة السينما - وطنى
+- [Tue, 17 Nov 2026 16:16:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: استخدمت صرخات جمهور حفل روك للتعبير عن مشهد مذبحة مدرسية - اليوم السابع
+- [Tue, 17 Nov 2026 15:11:00 GMT] (اليوم السابع) بول ديفيز بالقاهرة السينمائى: اكتشفت شغفى بتصميم الصوت فى سن الـ15 - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: تصميم الصوت ساعد في إقناع المنتجين برؤية مخرجة We Need to Talk About Kevin - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: ديفيد لينش مصدر إلهامي وأستعين باللوحات الفنية - اليوم السابع
+- [Tue, 17 Nov 2026 09:45:37 GMT] (أهل مصر) بول ديفيس في ندوة بمهرجان القاهرة السينمائي.. مهندس الصوت البريطاني يكشف كيفية توظيف المؤثرات - أهل مصر
