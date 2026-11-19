@@ -68,6 +68,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import unittest.mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_DEFAULT = os.path.dirname(HERE)
@@ -505,6 +506,163 @@ def main(argv=None):
               os.path.isfile(os.path.join(ssweep,
                                           "render_error.txt")))
         shutil.rmtree(sroot, ignore_errors=True)
+
+    section("sweep-index append fault (issue #256)")
+    # The #69 review found _append_sweep_files rewrote the sweep
+    # manifest in place and the caller recorded "rendered" even
+    # when the append failed — a truncated index published beside
+    # a manifest entry saying "rendered". Two fault cases:
+    #   A. the atomic replace itself fails on a VALID index (the
+    #      write fault Ins reproduced with a file-size limit): the
+    #      index must survive byte-identical, the render must end
+    #      "error" (never "rendered"), the twins must be
+    #      suppressed, and the fleet must still publish with the
+    #      pre-render index in the archive.
+    #   B. the index on disk is ALREADY truncated when the append
+    #      runs: the caller must not record "rendered" for twins
+    #      the index cannot list, and the failed append must not
+    #      rewrite — or extend — the corruption.
+    # Seam for A: os.replace patched to raise inside the
+    # maybe_render call only (the render subprocess runs before
+    # the append, so the fault lands exactly on the index update).
+    froot, fworkdir, fsweep = build_root(
+        repo, args.archive_root, "h69-256-")
+    fworker = import_worker(os.path.join(repo, "worker", "worker.py"),
+                            froot)
+    fm = make_manifest(SWEEP)
+    fcompiled = fworker.maybe_compile(JOB, fworkdir, fm, plan)
+    check("index-fault A: fixture compiled first", fcompiled)
+    fmanifest_path = os.path.join(fsweep, "manifest.json")
+    pre_bytes = open(fmanifest_path, "rb").read()
+    pre_index = json.loads(pre_bytes)
+    check("index-fault A: pre-render index parses with a files[] "
+          "list", isinstance(pre_index.get("files"), list))
+
+    def _boom_replace(*_a, **_k):
+        raise OSError("simulated sweep-index write fault (#256)")
+
+    with unittest.mock.patch.object(fworker.os, "replace",
+                                    side_effect=_boom_replace):
+        fok = fworker.maybe_render(JOB, fworkdir, fm, plan)
+    frec = fm.get("render") or {}
+    check("index-fault A: returns False, status 'error', detail "
+          "names the index append",
+          not fok and frec.get("status") == "error"
+          and "sweep index append failed" in frec.get("detail", ""),
+          frec.get("detail", "")[:120])
+    check("index-fault A: no twins left in place",
+          not os.path.isfile(os.path.join(fsweep, "report.html"))
+          and not os.path.isfile(os.path.join(fsweep, "report.md")))
+    check("index-fault A: render_error.txt marker written",
+          os.path.isfile(os.path.join(fsweep, "render_error.txt")))
+    check("index-fault A: sweep index bytes unchanged "
+          "(valid index preserved, no truncation)",
+          open(fmanifest_path, "rb").read() == pre_bytes)
+    check("index-fault A: no temp file left in the sweep dir",
+          not os.path.isfile(os.path.join(
+              fsweep, ".manifest.json.tmp")))
+    fbare = os.path.join(froot, "bus.git")
+    rc, out = run(["git", "clone", "--quiet", "--bare",
+                   args.archive_root, fbare])
+    assert rc == 0, out
+    os.environ["GATOR_BUS_URL"] = fbare
+    # build_root pre-creates archive-push from the archive root
+    # (origin = a non-bare checkout, which refuses pushes); a
+    # fresh worker has no archive-push, so drop it and let
+    # publish() clone it from the bare bus remote instead — the
+    # same shape run_publish_case uses.
+    shutil.rmtree(os.path.join(froot, "archive-push"),
+                  ignore_errors=True)
+    fworker._write_manifest_atomic(Path(fworkdir), fm)
+    fsha = fworker.publish(JOB, Path(fworkdir), fm)
+    check("index-fault A: publish STILL returns a SHA (fleet "
+          "intact)", bool(fsha))
+    if fsha:
+        rc, out = run(["git", "--git-dir", fbare, "show",
+                       f"{fsha}:{SWEEP}/manifest.json"])
+        archived = json.loads(out) if rc == 0 else None
+        check("index-fault A: archived sweep index parses and "
+              "equals the pre-render index (no twin entries, no "
+              "truncated bytes)",
+              archived is not None and archived == pre_index)
+        rc_h, _ = run(["git", "--git-dir", fbare, "cat-file", "-e",
+                       f"{fsha}:{SWEEP}/report.html"])
+        rc_m, _ = run(["git", "--git-dir", fbare, "cat-file", "-e",
+                       f"{fsha}:{SWEEP}/report.md"])
+        rc_e, _ = run(["git", "--git-dir", fbare, "cat-file", "-e",
+                       f"{fsha}:{SWEEP}/render_error.txt"])
+        rc_f, _ = run(["git", "--git-dir", fbare, "cat-file", "-e",
+                       f"{fsha}:{SWEEP}/digest.json"])
+        check("index-fault A: archived tree has no twins, marker "
+              "+ fleet present",
+              rc_h != 0 and rc_m != 0 and rc_e == 0 and rc_f == 0,
+              detail=f"html-rc={rc_h} md-rc={rc_m} "
+                     f"marker-rc={rc_e} digest-rc={rc_f}")
+    os.environ["GATOR_BUS_URL"] = SENTINEL
+    shutil.rmtree(froot, ignore_errors=True)
+
+    broot, bworkdir, bsweep = build_root(
+        repo, args.archive_root, "h69-256b-")
+    bworker = import_worker(os.path.join(repo, "worker", "worker.py"),
+                            broot)
+    bm = make_manifest(SWEEP)
+    bcompiled = bworker.maybe_compile(JOB, bworkdir, bm, plan)
+    check("index-fault B: fixture compiled first", bcompiled)
+    bmanifest_path = os.path.join(bsweep, "manifest.json")
+    bfull = open(bmanifest_path, "rb").read()
+    truncated = bfull[: max(1, len(bfull) // 2)]
+    with open(bmanifest_path, "wb") as handle:
+        handle.write(truncated)
+    bok = bworker.maybe_render(JOB, bworkdir, bm, plan)
+    brec = bm.get("render") or {}
+    check("index-fault B: returns False, status 'error' (never "
+          "'rendered')",
+          not bok and brec.get("status") == "error",
+          str(brec)[:120])
+    check("index-fault B: detail names the index append",
+          "sweep index append failed" in brec.get("detail", ""),
+          brec.get("detail", "")[:120])
+    check("index-fault B: no twins left in place",
+          not os.path.isfile(os.path.join(bsweep, "report.html"))
+          and not os.path.isfile(os.path.join(bsweep, "report.md")))
+    check("index-fault B: render_error.txt marker written",
+          os.path.isfile(os.path.join(bsweep, "render_error.txt")))
+    check("index-fault B: truncated index untouched by the failed "
+          "append (bytes identical — no new corruption)",
+          open(bmanifest_path, "rb").read() == truncated)
+    check("index-fault B: no temp file left in the sweep dir",
+          not os.path.isfile(os.path.join(
+              bsweep, ".manifest.json.tmp")))
+    bbare = os.path.join(broot, "bus.git")
+    rc, out = run(["git", "clone", "--quiet", "--bare",
+                   args.archive_root, bbare])
+    assert rc == 0, out
+    os.environ["GATOR_BUS_URL"] = bbare
+    # Same as case A: drop build_root's archive-push (origin =
+    # the non-bare archive root) so publish() clones it from the
+    # bare bus remote.
+    shutil.rmtree(os.path.join(broot, "archive-push"),
+                  ignore_errors=True)
+    bworker._write_manifest_atomic(Path(bworkdir), bm)
+    bsha = bworker.publish(JOB, Path(bworkdir), bm)
+    check("index-fault B: publish STILL returns a SHA (fleet "
+          "intact)", bool(bsha))
+    if bsha:
+        rc, out = run(["git", "--git-dir", bbare, "show",
+                       f"{bsha}:{SWEEP}/manifest.json"])
+        check("index-fault B: archived index is byte-identical to "
+              "the pre-run truncated bytes (the run created no new "
+              "corruption)",
+              rc == 0 and out.encode() == truncated)
+        rc_f, _ = run(["git", "--git-dir", bbare, "cat-file", "-e",
+                       f"{bsha}:{SWEEP}/digest.json"])
+        rc_h, _ = run(["git", "--git-dir", bbare, "cat-file", "-e",
+                       f"{bsha}:{SWEEP}/report.html"])
+        check("index-fault B: archived tree has the fleet, no "
+              "twins", rc_f == 0 and rc_h != 0,
+              detail=f"digest-rc={rc_f} html-rc={rc_h}")
+    os.environ["GATOR_BUS_URL"] = SENTINEL
+    shutil.rmtree(broot, ignore_errors=True)
 
     section("gates (skip / error, never crash)")
     m = make_manifest(SWEEP, merge_status="complete")

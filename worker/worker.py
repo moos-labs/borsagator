@@ -2258,12 +2258,22 @@ def _append_sweep_files(sweep_dir, entries):
     """Append (path, bytes, sha256) entries to the sweep dir's
     manifest.json files[], replacing any same-path entry, so the
     listing stays truthful (same shape archive.py writes). Returns
-    True on success, False otherwise; never raises. The twins ride
-    publish() through the wholesale _merge_out copy either way —
-    this only keeps the manifest's index honest."""
+    True on success, False otherwise; never raises. Issue #256:
+    the update is a same-directory temp write + atomic os.replace
+    (mirroring _write_manifest_atomic), then the file on disk is
+    re-read and the appended entries re-validated (path, bytes,
+    sha256) before True is returned — a failed or partial write
+    leaves the previous valid index in place, never a truncated
+    one; a validation failure restores the previous bytes the
+    same way. The temp file is removed on every handled failure
+    path so it never rides publish()'s wholesale _merge_out copy.
+    The twins ride publish() through the wholesale _merge_out
+    copy either way — this only keeps the manifest's index honest."""
+    mpath = sweep_dir / "manifest.json"
+    tmp = sweep_dir / ".manifest.json.tmp"
     try:
-        mpath = sweep_dir / "manifest.json"
-        m = json.loads(mpath.read_text(encoding="utf-8"))
+        original = mpath.read_bytes()
+        m = json.loads(original.decode("utf-8"))
         files = m.get("files")
         if not isinstance(files, list):
             return False
@@ -2272,11 +2282,51 @@ def _append_sweep_files(sweep_dir, entries):
                         if not (isinstance(f, dict)
                                 and f.get("path") == e["path"])]
             files.append(e)
-        mpath.write_text(json.dumps(m, indent=2) + "\n",
-                         encoding="utf-8")
-        return True
+        new_bytes = (json.dumps(m, indent=2) + "\n").encode("utf-8")
+        with open(tmp, "wb") as handle:
+            handle.write(new_bytes)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, mpath)
+        _fsync_dir(sweep_dir)
     except Exception:  # noqa: BLE001 - index append is best-effort
+        try:
+            if tmp.is_file():
+                os.remove(tmp)
+        except OSError:
+            pass
         return False
+    # Validate what actually landed on disk BEFORE reporting
+    # success: the index must parse and every appended entry must
+    # be present with matching bytes and sha256. On failure the
+    # previous valid index is restored atomically (best effort).
+    try:
+        landed = json.loads(mpath.read_text(encoding="utf-8"))
+        landed_files = landed.get("files")
+        if not isinstance(landed_files, list):
+            raise ValueError("landed manifest has no files[] list")
+        by_path = {f.get("path"): f for f in landed_files
+                   if isinstance(f, dict)}
+        for e in entries:
+            got = by_path.get(e["path"])
+            if not isinstance(got, dict) \
+                    or got.get("bytes") != e["bytes"] \
+                    or got.get("sha256") != e["sha256"]:
+                raise ValueError(
+                    "landed index missing/corrupt entry "
+                    f"{e['path']!r}")
+    except Exception:  # noqa: BLE001 - restore the valid index
+        try:
+            with open(tmp, "wb") as handle:
+                handle.write(original)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(tmp, mpath)
+            _fsync_dir(sweep_dir)
+        except OSError:
+            pass
+        return False
+    return True
 
 
 def maybe_render(job, workdir, manifest, plan):
@@ -2317,7 +2367,10 @@ def maybe_render(job, workdir, manifest, plan):
     schema refusal, i18n parity), trusted here because the pinned
     renderer itself produced the twins — the harness verifies
     bands, chart mode and twin SHAs behaviorally on the golden
-    sweep rather than the hook re-deriving them."""
+    sweep rather than the hook re-deriving them. Issue #256: the
+    sweep-index append is atomic + re-validated, and an append
+    failure is an "error" (twins removed, marker written) — never
+    a "rendered" beside an index that does not list the twins."""
     sweep_dir = None
     sweep_rel = None
     status, detail = "error", "render hook aborted before running"
@@ -2451,16 +2504,29 @@ def maybe_render(job, workdir, manifest, plan):
                             ]
                             appended = _append_sweep_files(
                                 sweep_dir, files)
-                            _record_render(manifest, {
-                                "status": "rendered",
-                                "sweep_dir": sweep_rel,
-                                "files": files,
-                                "files_appended": appended,
-                                "chart": chart,
-                                "sweep_dir_fallback": True,
-                                "ticker": ticker,
-                            })
-                            return True
+                            if not appended:
+                                # Issue #256: the sweep index could
+                                # not be updated and validated — never
+                                # record "rendered" with an index that
+                                # does not list the twins. Fall through
+                                # to the fail-closed tail: twins
+                                # removed, marker written, status
+                                # "error" recorded.
+                                detail = ("sweep index append failed "
+                                          "(manifest.json not updated "
+                                          "or not validated)")
+                                status = "error"
+                            else:
+                                _record_render(manifest, {
+                                    "status": "rendered",
+                                    "sweep_dir": sweep_rel,
+                                    "files": files,
+                                    "files_appended": appended,
+                                    "chart": chart,
+                                    "sweep_dir_fallback": True,
+                                    "ticker": ticker,
+                                })
+                                return True
                     elif proc.returncode == 0:
                         detail = ("render exited 0 but report.html / "
                                   "report.md missing")
