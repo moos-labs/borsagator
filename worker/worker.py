@@ -1893,6 +1893,395 @@ def ensure_harvest(code):
     return None
 
 
+# --- Issue #278: live disclosure-events feed (option A, sweep-live) ---
+# The #109 pilot proved extraction on archived harvests; this wires
+# the feed live, worker-side, in two phases around the sweep's tool
+# loop in _execute_body:
+#   phase 1 (pre-sweep refresh): force a fresh official EGX harvest
+#     for every in-scope ticker in the plan (POUL/COMI, v1) BEFORE
+#     any tool runs, so the news-disclosure tool's ensure_harvest
+#     serves the just-refreshed cache;
+#   phase 2 (extraction): after the tool loop, BEFORE maybe_merge
+#     (extraction-before-ensemble), run scripts/disclosure_events.py
+#     over each refreshed harvest and write per-ticker events files
+#     into the run dir, all under this sweep's job id.
+# "Live" means sweep-live only: a disclosure published after market
+# close is picked up by the NEXT sweep's refresh — no intraday
+# alerting is promised or built in v1.
+# Freshness / failure policy (defined here, enforced by the code):
+#   refreshed — the refresh ran inside this sweep (harvested_at >=
+#     sweep start); extraction runs.
+#   cached    — the refresh failed but the on-box cache is still
+#     within DISCLOSURE_FRESH_HOURS; extraction runs, flagged
+#     cached with its age recorded.
+#   failed    — the refresh failed and there is no usable cache
+#     (absent, or older than DISCLOSURE_FRESH_HOURS); extraction is
+#     SKIPPED for that ticker — the sweep never extracts from stale
+#     input. The failure is recorded in manifest["disclosure_feed"]
+#     AND in disclosure_feed_error.txt in the run dir (both ride
+#     the archive); the sweep itself still runs (fleet + ensemble
+#     are unaffected in v1 — nothing consumes events yet; #280/#281
+#     own consumption) so a dead feed never loses a sweep.
+#   extraction-failed / stale-input — the extractor errored, its
+#     output failed validation, or the harvest changed / aged past
+#     the bound between the phases; no events file is kept for that
+#     ticker, the failure is recorded the same way, the sweep
+#     still runs.
+# The extraction gate re-verifies the harvest file phase 1 recorded
+# (same harvested_at, still within the freshness bound): a harvest
+# that changed under us, or aged past the bound between the phases,
+# is refused as stale-input rather than extracted. A later refresh
+# by the news tool's own ensure_harvest does NOT rescue a failed
+# phase 1 — the feed consumes only what the pre-sweep refresh
+# produced or validated; the next sweep re-extracts the full
+# 45-day window, so skipping loses no disclosure.
+DISCLOSURE_TICKERS = ("POUL", "COMI")
+DISCLOSURE_FRESH_HOURS = 12  # same bound as HARVEST_TTL_HOURS
+DISCLOSURE_EXTRACT_TIMEOUT = 300
+
+
+def _harvest_meta(path):
+    """(harvested_at, n_items, age_hours) for a disclosures.json
+    file, or None when it is missing or unparseable. Age is from the
+    file mtime (robust when harvested_at is absent); harvested_at is
+    the provenance the refresh recorded."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    items = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(items, list):
+        return None
+    try:
+        age_h = (time.time() - Path(path).stat().st_mtime) / 3600
+    except OSError:
+        return None
+    return (data.get("harvested_at") or "", len(items), age_h)
+
+
+def _egx_tickers_in_plan(plan):
+    """In-scope EGX codes for the disclosure feed, in plan order:
+    news-disclosure entries with a .CA ticker in DISCLOSURE_TICKERS.
+    Out-of-scope .CA tickers are reported separately (skipped with
+    a reason), never silently dropped."""
+    in_scope, out = [], []
+    for tool, ticker in plan or []:
+        if tool != "news-disclosure":
+            continue
+        tk = (ticker or "").upper()
+        if not tk.endswith(".CA"):
+            continue
+        code = tk.split(".")[0]
+        if code in DISCLOSURE_TICKERS:
+            if code not in in_scope:
+                in_scope.append(code)
+        elif code not in out:
+            out.append(code)
+    return in_scope, out
+
+
+def refresh_harvest(code, workdir):
+    """Force a fresh EGX harvest for `code` (#278 phase 1). Always
+    runs run_harvest (no 12 h TTL shortcut — the point is a harvest
+    inside this sweep's window); on success the on-box cache is
+    updated and ("refreshed", cache_path, detail) is returned. On a
+    failed refresh the cache still serves when it is within
+    DISCLOSURE_FRESH_HOURS ("cached", ...); otherwise ("failed",
+    None, detail). Never raises: a harvester crash is a failed
+    refresh, not a dead sweep."""
+    cache_dir = ROOT / "harvest"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache = cache_dir / f"{code}.json"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    fake_job = {"id": f"disclosure-refresh-{code}-{stamp}",
+                "job": f"harvest-egx {code}", "added": now()}
+    wd = Path(workdir) / "disclosure-refresh" / code
+    wd.mkdir(parents=True, exist_ok=True)
+    try:
+        res = run_harvest(fake_job, wd)
+        src = wd / "egx-harvest" / "results" / "disclosures.json"
+        if res.get("egx-harvest") == "ok" and src.exists():
+            meta = _harvest_meta(src)
+            if meta is not None and meta[1] > 0:
+                cache.write_bytes(src.read_bytes())
+                return ("refreshed", cache,
+                        f"harvested_at={meta[0]} items={meta[1]}")
+            return ("failed", None,
+                    "harvest succeeded but produced no usable items")
+        detail = f"run_harvest returned {res.get('egx-harvest')}"
+    except Exception as e:  # noqa: BLE001 - failed refresh, not a crash
+        detail = f"run_harvest raised {type(e).__name__}: {e}"
+    meta = _harvest_meta(cache)
+    if meta is not None and meta[2] <= DISCLOSURE_FRESH_HOURS:
+        return ("cached", cache,
+                f"{detail}; serving cache harvested_at={meta[0]} "
+                f"age={meta[2]:.1f}h items={meta[1]}")
+    if meta is not None:
+        return ("failed", None,
+                f"{detail}; cache too old ({meta[2]:.1f}h > "
+                f"{DISCLOSURE_FRESH_HOURS}h)")
+    return ("failed", None, f"{detail}; no cache on the box")
+
+
+def _record_disclosure_feed(manifest, entry):
+    """Best-effort manifest record: the feed outcome must be
+    recorded whenever the manifest is the dict _execute_body built,
+    and a malformed manifest must still never raise into the sweep
+    path."""
+    try:
+        manifest["disclosure_feed"] = entry
+    except Exception:  # noqa: BLE001 - recording must never raise
+        print(f"disclosure feed: manifest not writable, outcome: "
+              f"{entry}", flush=True)
+
+
+def _write_disclosure_feed_files(workdir, record):
+    """Mirror the feed record into the run dir so it rides the
+    archive as its own file (disclosure_feed.json), plus a
+    human-readable error file whenever the feed is not ok. Never
+    raises: a failed write is recorded in the record, and the
+    manifest copy (written by _write_manifest_atomic) survives."""
+    try:
+        tmp = Path(workdir) / ".disclosure_feed.json.tmp"
+        tmp.write_text(json.dumps(record, indent=1, ensure_ascii=False),
+                       encoding="utf-8")
+        os.replace(tmp, Path(workdir) / "disclosure_feed.json")
+    except Exception as e:  # noqa: BLE001 - file mirror is evidence
+        record["feed_file_write_failed"] = (
+            f"{type(e).__name__}: {e}")[:200]
+    if record.get("status") != "ok":
+        try:
+            lines = [f"disclosure feed: status={record.get('status')}",
+                     f"sweep_id={record.get('sweep_id')} "
+                     f"origin={record.get('origin')} "
+                     f"mode={record.get('mode')}"]
+            for code, tick in (record.get("tickers") or {}).items():
+                lines.append(f"{code}: refresh={tick.get('refresh')} "
+                             f"{tick.get('detail', '')}")
+            for code, ext in (record.get("extraction") or {}).items():
+                if ext.get("status") != "extracted":
+                    lines.append(f"{code}: extraction="
+                                 f"{ext.get('status')} "
+                                 f"{ext.get('detail', '')}")
+            (Path(workdir) / "disclosure_feed_error.txt").write_text(
+                "\n".join(lines) + "\n", encoding="utf-8")
+        except Exception:  # noqa: BLE001 - error file is evidence
+            pass
+
+
+def refresh_disclosure_feed(job, workdir, manifest, plan):
+    """#278 phase 1 — pre-sweep refresh of the official EGX
+    disclosure feed. Runs only for sweep / sweep-lite jobs with a
+    plan, before any tool runs. Returns the feed record dict (also
+    stored in manifest["disclosure_feed"]), or None for a job the
+    feed does not cover. Never raises: a harvester failure is a
+    recorded feed failure, not a dead sweep."""
+    try:
+        kind = (job.get("job") or "").split()
+        if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
+            return None
+        job_id = str(job.get("id", ""))
+        record = {
+            "sweep_id": job_id,
+            "origin": ("scheduled"
+                       if job_id.startswith(SCHEDULED_JOB_PREFIX)
+                       else "on-demand"),
+            "mode": "sweep-live",
+            "intraday_alerting": False,
+            "started": manifest.get("started") or now(),
+            "tickers": {},
+            "status": "skipped",
+        }
+        in_scope, out_of_scope = _egx_tickers_in_plan(plan)
+        if out_of_scope:
+            record["out_of_scope"] = out_of_scope
+        if not in_scope:
+            record["detail"] = (
+                "no in-scope EGX tickers in plan (POUL/COMI); "
+                f"out of scope: {out_of_scope}")
+            _record_disclosure_feed(manifest, record)
+            return record
+        for code in in_scope:
+            status, path, detail = refresh_harvest(code, workdir)
+            meta = _harvest_meta(path) if path is not None else None
+            record["tickers"][code] = {
+                "refresh": status,
+                "detail": detail,
+                **({"harvested_at": meta[0], "items": meta[1],
+                    "cache_age_hours": round(meta[2], 2)}
+                   if meta is not None else {}),
+            }
+        usable = [c for c, t in record["tickers"].items()
+                  if t["refresh"] in ("refreshed", "cached")]
+        record["refresh_status"] = (
+            "ok" if len(usable) == len(in_scope)
+            else "partial" if usable else "failed")
+        record["status"] = record["refresh_status"]
+        _record_disclosure_feed(manifest, record)
+        return record
+    except Exception as e:  # noqa: BLE001 - feed must never kill a sweep
+        print(f"refresh_disclosure_feed failed: "
+              f"{type(e).__name__}: {e}", file=sys.stderr, flush=True)
+        return None
+
+
+def _quarter_window(started_iso):
+    """Extractor quarter window for a sweep: 90 days ending on the
+    sweep's date, so a disclosure announced after the previous
+    market close is inside the window (and not flagged stale)."""
+    from datetime import timedelta
+    try:
+        day = datetime.fromisoformat(started_iso).date()
+    except Exception:
+        day = datetime.now(timezone.utc).date()
+    return day - timedelta(days=90), day
+
+
+def extract_disclosure_events(job, workdir, manifest, plan):
+    """#278 phase 2 — extraction before the ensemble. Runs only for
+    sweep / sweep-lite jobs, after the tool loop and before
+    maybe_merge. Extracts events from each harvest phase 1 produced
+    or validated, writes per-ticker events files into the run dir
+    (disclosure-events/<CODE>-events.json), and records the outcome
+    — including ordering/provenance (sweep id, origin, harvest
+    timestamp, quarter window) — in manifest["disclosure_feed"] and
+    disclosure_feed.json. A failed or stale feed is recorded, never
+    silent, and the sweep still runs. Never raises."""
+    try:
+        kind = (job.get("job") or "").split()
+        if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
+            return None
+        record = manifest.get("disclosure_feed")
+        if not isinstance(record, dict):
+            return None
+        job_id = str(job.get("id", ""))
+        if record.get("sweep_id") != job_id:
+            # A feed record from another sweep must never be consumed.
+            record["status"] = "failed"
+            record["extraction_detail"] = (
+                "sweep_id mismatch: refusing to extract")
+            _record_disclosure_feed(manifest, record)
+            _write_disclosure_feed_files(workdir, record)
+            return record
+        script = CODE / "scripts" / "disclosure_events.py"
+        qs, qe = _quarter_window(record.get("started") or "")
+        out_dir = Path(workdir) / "disclosure-events"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        extraction = {}
+        tickers = record.get("tickers") or {}
+        for code, tick in tickers.items():
+            if tick.get("refresh") not in ("refreshed", "cached"):
+                extraction[code] = {
+                    "status": "skipped",
+                    "detail": ("no usable harvest (refresh: "
+                               f"{tick.get('refresh')}); extraction "
+                               "refused rather than run on stale input")}
+                continue
+            cache = ROOT / "harvest" / f"{code}.json"
+            meta = _harvest_meta(cache)
+            if meta is None:
+                extraction[code] = {
+                    "status": "failed",
+                    "detail": ("harvest cache unreadable at "
+                               "extraction time")}
+                continue
+            if meta[0] != tick.get("harvested_at"):
+                extraction[code] = {
+                    "status": "stale-input",
+                    "detail": (f"harvest changed between refresh and "
+                               f"extraction (refresh harvested_at="
+                               f"{tick.get('harvested_at')!r}, now "
+                               f"{meta[0]!r}); refusing to extract")}
+                continue
+            if meta[2] > DISCLOSURE_FRESH_HOURS:
+                extraction[code] = {
+                    "status": "stale-input",
+                    "detail": (f"harvest aged past the freshness bound "
+                               f"between refresh and extraction "
+                               f"({meta[2]:.1f}h > "
+                               f"{DISCLOSURE_FRESH_HOURS}h); refusing")}
+                continue
+            events_path = out_dir / f"{code}-events.json"
+            if not script.is_file():
+                extraction[code] = {
+                    "status": "extraction-failed",
+                    "detail": f"extractor script missing: {script}"}
+                continue
+            try:
+                proc = subprocess.run(
+                    [sys.executable, str(script), "extract", str(cache),
+                     "--out", str(events_path),
+                     "--quarter-start", qs.isoformat(),
+                     "--quarter-end", qe.isoformat()],
+                    capture_output=True, text=True,
+                    timeout=DISCLOSURE_EXTRACT_TIMEOUT)
+            except Exception as e:  # noqa: BLE001 - extraction failure
+                extraction[code] = {
+                    "status": "extraction-failed",
+                    "detail": (f"extractor raised "
+                               f"{type(e).__name__}: {e}")}
+                continue
+            if proc.returncode != 0:
+                extraction[code] = {
+                    "status": "extraction-failed",
+                    "detail": ("extractor exited "
+                               f"{proc.returncode}: "
+                               f"{(proc.stdout + proc.stderr).strip()[-300:]}")}
+                if events_path.is_file():
+                    events_path.unlink(missing_ok=True)
+                continue
+            try:
+                out = json.loads(
+                    events_path.read_text(encoding="utf-8"))
+                rep = out.get("report") or {}
+                if out.get("schema_version") != 1 \
+                        or not isinstance(out.get("events"), list) \
+                        or rep.get("documents") != meta[1]:
+                    raise ValueError(
+                        "output failed validation (schema_version / "
+                        "events / document count)")
+            except Exception as e:  # noqa: BLE001 - invalid output
+                extraction[code] = {
+                    "status": "extraction-failed",
+                    "detail": f"extractor output invalid: {e}"}
+                if events_path.is_file():
+                    events_path.unlink(missing_ok=True)
+                continue
+            evs = out["events"]
+            extraction[code] = {
+                "status": "extracted",
+                "events_file": f"disclosure-events/{code}-events.json",
+                "events": len(evs),
+                "verified": sum(
+                    1 for e in evs
+                    if e.get("verification_status") == "verified"),
+                "candidates": sum(
+                    1 for e in evs
+                    if e.get("extraction_status") == "candidate"),
+                "by_type": rep.get("by_type") or {},
+                "harvested_at": meta[0],
+                "quarter": {"start": qs.isoformat(),
+                            "end": qe.isoformat()},
+                "sweep_id": job_id,
+            }
+        record["extraction"] = extraction
+        done = [c for c, e in extraction.items()
+                if e["status"] == "extracted"]
+        if not tickers:
+            record["status"] = "skipped"
+        else:
+            record["status"] = (
+                "ok" if done and len(done) == len(tickers)
+                else "partial" if done else "failed")
+        _record_disclosure_feed(manifest, record)
+        _write_disclosure_feed_files(workdir, record)
+        return record
+    except Exception as e:  # noqa: BLE001 - feed must never kill a sweep
+        print(f"extract_disclosure_events failed: "
+              f"{type(e).__name__}: {e}", file=sys.stderr, flush=True)
+        return None
+
+
 CLAIM_REFRESH_SECONDS = 1200  # 20 min (INS-R3-03)
 
 
@@ -2637,6 +3026,10 @@ def _execute_body(job):
     refs = {t["id"]: t.get("ref") for t in reg["tools"]}
     repos = {t["id"]: t.get("repo", f"{t['id']}-runner")
              for t in reg["tools"]}
+    # Issue #278 phase 1: pre-sweep refresh of the official EGX
+    # disclosure feed (POUL/COMI) — before any tool runs, so the
+    # news-disclosure tool serves the just-refreshed harvest.
+    refresh_disclosure_feed(job, workdir, manifest, plan)
     for tool, ticker in plan:
         status, log = run_tool(tool, ticker, templates.get(tool, ""),
                                refs.get(tool), repos.get(tool))
@@ -2670,6 +3063,10 @@ def _execute_body(job):
                 stash.mkdir(parents=True, exist_ok=True)
                 (stash / f"{code}.json").write_bytes(cache.read_bytes())
     manifest["finished"] = now()
+    # Issue #278 phase 2: extraction BEFORE the ensemble
+    # (maybe_merge) — events from this sweep's refresh, under this
+    # sweep's id; a failed/stale feed is recorded, never silent.
+    extract_disclosure_events(job, workdir, manifest, plan)
     # Issue #148: merge.py requires manifest.json in the run dir,
     # and publish() writes it only into the archive dest — so a
     # fresh worker sweep's merge always refused ("no manifest.json

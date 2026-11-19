@@ -102,12 +102,80 @@ attach (clipped to 6,000 chars) or the #91 outright-add path.
 
 ## What this change does NOT do (follow-ups, not in this PR)
 
-- No live-feed decision, no consumer switch, no `#26` feeding.
-  Extraction-before-ensemble for same-cycle effect needs worker-side
-  ordering — repo side only here; worker wiring is an explicit
-  follow-up, no promotion was run.
+- No consumer switch, no `#26` feeding: the feed is recorded per
+  sweep but nothing in the ensemble or the report consumes events
+  yet — that is #281 / #280. The worker wiring itself landed in
+  #278 (see "Live wiring" below); it changes no `#68` model field.
 - No `#68` surfacing (that needs a strict D-7 version bump).
 - No harvester fix for the `iso_date` bug; no attachment capture.
 - No top-30 coverage until more tickers are harvested.
-- `#109` stays OPEN: close needs the pilot accuracy numbers reviewed
-  and the live-feed decision taken.
+- `#109` is CLOSED (2026-11-19, on the live-feed decision alone —
+  option A sweep-live); its follow-ups are #278 (this wiring),
+  #279 (attachments), #280 (#68 surfacing), #281 (#26 feeding),
+  #282 (#32 adapter) and #283 (top-30 coverage).
+
+## Live wiring (#278, option A sweep-live)
+
+The feed is live worker-side (`worker/worker.py`, two phases around
+the sweep's tool loop in `_execute_body`):
+
+- **Phase 1 — pre-sweep refresh.** Before any tool runs,
+  `refresh_disclosure_feed` force-refreshes the official EGX harvest
+  for every in-scope ticker in the plan (POUL/COMI, v1) via
+  `refresh_harvest`, so the news-disclosure tool's `ensure_harvest`
+  serves the just-refreshed cache. Runs for scheduled (`sched-*`)
+  and on-demand sweeps alike.
+- **Phase 2 — extraction before the ensemble.** After the tool loop
+  and before `maybe_merge`, `extract_disclosure_events` runs
+  `scripts/disclosure_events.py extract` over each refreshed harvest
+  (quarter window: 90 days ending on the sweep date) and writes
+  `disclosure-events/<CODE>-events.json` into the run dir. Ordering
+  and provenance are tied to one sweep id: the run manifest's
+  `disclosure_feed` section and the run dir's `disclosure_feed.json`
+  record sweep id, origin (`scheduled` / `on-demand`), mode
+  (`sweep-live`), harvest timestamp, quarter window and per-ticker
+  event counts. Both files ride the archive via `publish`.
+- **"Live" means sweep-live only.** A disclosure published after
+  market close is picked up by the next sweep's refresh, not pushed
+  intraday. No intraday alerting is promised or built in v1
+  (`intraday_alerting: false` in the feed record).
+
+### Freshness / failure policy (defined, not silent)
+
+- `refreshed` — harvest ran inside this sweep; extraction runs.
+- `cached` — refresh failed but the on-box cache is still within 12 h
+  (`DISCLOSURE_FRESH_HOURS`, same bound as `HARVEST_TTL_HOURS`);
+  extraction runs, flagged cached with its age recorded.
+- `failed` — refresh failed and there is no usable cache (absent or
+  older than 12 h); extraction is **skipped** for that ticker — the
+  sweep never extracts from stale input. Recorded in
+  `manifest["disclosure_feed"]` and in `disclosure_feed_error.txt`
+  in the run dir; the sweep itself still runs (fleet + ensemble are
+  unaffected in v1 — nothing consumes events yet; #280/#281 own
+  consumption), so a dead feed never loses a sweep.
+- `extraction-failed` / `stale-input` — the extractor errored, its
+  output failed validation (schema version, events list, document
+  count vs the harvest), or the harvest changed / aged past the bound
+  between the phases; no events file is kept for that ticker, the
+  failure is recorded the same way, the sweep still runs.
+- The extraction gate re-verifies the harvest phase 1 recorded (same
+  `harvested_at`, still within the bound). A later refresh by the news
+  tool's own `ensure_harvest` does **not** rescue a failed phase 1 —
+  the feed consumes only what the pre-sweep refresh produced or
+  validated; the next sweep re-extracts the full 45-day window, so
+  skipping loses no disclosure. Note the bounds differ by design:
+  the news tool still serves a cache up to 72 h (its matching is
+  content-based); the disclosure feed refuses anything past 12 h.
+
+### Deterministic replay proof
+
+`worker/test_worker_278.py` (26 checks, stdlib only, no network)
+replays the path on fixtures built from the #109 goldens: the POUL
+coupon-42 document re-dated to a 19/11/2026 after-close publication
+appears in the next sweep's events with announced `2026-11-19`
+(standalone-date-line basis), and the COMI 297291 earnings document
+(item date wrongly `2026-01-01`) extracts with announced
+`2026-11-10`. The scheduled and the on-demand sweeps both prove the
+`refresh → extract → merge → compile → render` order in the real
+`_execute_body`. The same file fails on pristine main (the wiring
+does not exist there).
