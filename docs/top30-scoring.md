@@ -227,6 +227,65 @@ Plus, evaluation-wide:
   completion; it is never resolved by dropping the case;
 - **candidates reported separately from verified TPs** in every report.
 
+### Completion is separate from acceptance (issue #314, INS-314)
+
+`accepted` is a per-cell threshold result only — True/False/None,
+provisional before completion, never final acceptance. Completion is
+separate state, computed by `scripts/top30_completion.py` on top of
+the unchanged scorer (`evaluate_completion`):
+
+- **`complete`**: required enumeration/capture and gold/adjudication
+  finished, no unresolved in-scope cases. Missing or unknown gate
+  inputs fail closed (incomplete, never a pass).
+- **Final outcome**: `incomplete` / `complete-pass` / `complete-fail`
+  / `complete-N/A`. A fully adjudicated evaluation can be complete
+  even when quality fails (complete-fail). An entirely N/A evaluation
+  is complete-N/A, never a quality pass. A final pass requires
+  completion plus every assessable required cell passing.
+- **Collection** (`collection` state: `enumerated` / `archived` /
+  `missing` (named) / `enumeration_closed` / `pagination_complete`):
+  a ratio of archived/enumerated = 100% is insufficient unless
+  enumeration itself is closed and evidenced complete across the
+  frozen universe/window — otherwise an unfinished enumerator could
+  declare success over its current subset. Partial collection names
+  missing documents and blocks completion; event FNs are never
+  invented for a missing document whose gold events are unknown
+  (collection and event denominators differ).
+- **Unresolved ledger**: built from the scorer's matching records
+  (every `ambiguous` entry, including `oversize_group` and
+  sometimes-unmatched records) PLUS unresolved candidate/source-gold
+  decisions, relevant field uncertainty, and collection/enumeration
+  failures — never from `ambiguous == []` alone (a candidate sits in
+  `unmatched_predicted`). Ledger entries carry stable IDs tied to the
+  frozen run/input digests, never array position or a gold-ID list.
+- **Scope**: an out-of-scope ambiguity blocks only until an
+  evidence-backed scope decision exists; the entry is retained with
+  the exclusion reason. Scope is the frozen roster +
+  date/document/event rules + adjudications, not an arbitrary
+  caller-supplied `in_scope=False`. Unknown scope blocks.
+- **Fields**: a resolved wrong field contributes its FP/FN and
+  threshold failure (complete-fail), not perpetual incompleteness. An
+  unresolved required gold/source-field interpretation blocks
+  completion. A documented absent/N/A field follows the frozen N/A
+  policy (named per cell, e.g. `record_date` where the EGX body
+  never states it).
+- **Adjudication**: decisions persist evidence, affected stable IDs,
+  run/input revisions and superseded decisions. Count-changing
+  decisions (pairing) apply only through the explicit adjudication
+  adapter (`apply_adjudication`) and a re-score; merely marking an
+  entry resolved, a stale/wrong-run decision, conflicting decisions,
+  or an unresolved supersession all fail closed. Frozen predictions
+  are never edited into correct answers: a resolved candidate cannot
+  gain a TP by status rewriting.
+- **No report runner exists at this pin**: collection state and
+  adjudication records have the schemas/interfaces defined here and
+  in `top30_completion.py`, and `cell_report` builds the §8 per-cell
+  report (collection, counts, verified vs candidate counts,
+  unresolved ledger, `complete` + outcome) for the future runner to
+  call. The gate itself is fully testable without live collection —
+  the gate cannot invent missing evidence, so unknown inputs stay
+  incomplete.
+
 Arithmetic rules:
 
 - Comparisons use **exact fractions** (`fractions.Fraction` in the
@@ -248,9 +307,14 @@ Each cell reports: collection status (enumerated / archived / missing,
 named); event TP/FP/FN + P/R; field TP/FP/FN + P/R per scored field;
 verified vs candidate counts; unresolved ledger (ambiguous pairings,
 unresolved candidates, collection gaps — must be empty to complete);
-and, where the §2 limit bit, the count of gold events unmatchable
-because of it. Roll-ups (per issuer, per type, overall) are summaries
-only — acceptance is per cell, never on a roll-up.
+the separate completion state (`complete` + final outcome
+`incomplete` / `complete-pass` / `complete-fail` / `complete-N/A`,
+alongside the scorer's provisional `accepted` — a threshold pass is
+never reported as a completed evaluation); and, where the §2 limit
+bit, the count of gold events unmatchable because of it. Roll-ups
+(per issuer, per type, overall) are summaries only — acceptance is
+per cell, never on a roll-up, and a roll-up cannot rescue a failed,
+blocked or unproven cell.
 
 ## 9. Reference implementation
 
@@ -273,8 +337,19 @@ permutation tests, issuer/schema/currency/scale controls, plus the
 #313 controls: the forced-pair counterexample, the forced-pair-holds
 case, the 8-event exact-beats-greedy case, the oversize-group
 adjudication case, and the random-group matching property test) and are
-wired into `scripts/harness_issue109.py` (`--scorer`). If the spec and
-the scorer ever disagree, **the spec wins** and the scorer is fixed.
+wired into `scripts/harness_issue109.py` (`--scorer`). The completion
+gate lives in `scripts/top30_completion.py` (separate `complete` +
+final outcome over the unchanged scorer; unresolved ledger from
+matching records + candidates + field/collection inputs; frozen
+collection/ledger/adjudication schemas; fail-closed adjudication
+adapter) and its negative controls live in
+`scripts/test_top30_completion_314.py` (Ins's 8 required regression
+cases: contested group, candidate / sometimes-unmatched / oversize,
+collection gaps, out-of-scope, fields, adjudication applied vs
+merely marked, roll-ups, empty cells — plus the
+`accepted`-unchanged and §8-report-shape controls), also wired into
+`scripts/harness_issue109.py` (`--scorer`). If the spec and the
+scorer ever disagree, **the spec wins** and the scorer is fixed.
 
 ## 10. Input boundaries
 
