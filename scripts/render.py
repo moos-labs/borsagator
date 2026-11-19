@@ -379,13 +379,30 @@ def read_price_tail(sweep_dir, allowed_sources=None):
             date_k = [k for k in rows[0].keys() if k and k.lower() == "date"][0]
             close_k = [k for k in rows[0].keys() if k and k.lower() == "close"][0]
             series = []
+            prev_date = None
+            bad_order = False
             for row in rows:
                 try:
                     close = float(str(row[close_k]).replace(",", ""))
                 except (TypeError, ValueError):
                     continue
-                series.append((str(row[date_k])[:10], close))
-            if series:
+                # Issue #258: float() accepts NaN/Infinity — a
+                # non-finite close is not a price, skip the row.
+                if not math.isfinite(close):
+                    continue
+                date = str(row[date_k])[:10]
+                if not date:
+                    continue
+                # Issue #258: no date-order validation let a
+                # misordered file plot backwards. Dates must be
+                # strictly increasing; a violation drops the whole
+                # series rather than a silently wrong chart.
+                if prev_date is not None and date <= prev_date:
+                    bad_order = True
+                    break
+                prev_date = date
+                series.append((date, close))
+            if series and not bad_order:
                 tails["%s/%s" % (tool, fname)] = series[-30:]
     return tails
 
@@ -920,9 +937,21 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     forecast = read_kronos_forecast(sweep_dir) if sweep_dir else None
     base_src = (model.get("price") or {}).get("base_source")
     chart_tails = {base_src: tails[base_src]} if base_src in tails else {}
+    # Issue #258: history source, usable-point count and forecast
+    # presence are separate facts. A forecast-only SVG used to
+    # carry the same "price tail + forecast cone" caption and the
+    # same chart flag as a real price chart, hiding absent history
+    # from any check on the chart flag alone.
+    history_points = sum(len(rows) for rows in chart_tails.values())
     if chart_tails or forecast:
         c_html.append(_svg_chart(chart_tails, forecast, price))
-        c_md.append("Chart: %s price tail + Kronos forecast cone (see HTML)." % base_src)
+        if chart_tails:
+            c_md.append("Chart: %s price tail (%d points) + Kronos "
+                        "forecast cone (see HTML)."
+                        % (base_src, history_points))
+        else:
+            c_md.append("Chart: Kronos forecast cone only — no usable "
+                        "price history (see HTML).")
         for row in psl:
             close = row.get("last_close")
             cell = fmt_price(close) if close is not None else "no close"
@@ -1065,9 +1094,10 @@ def _svg_chart(tails, forecast, price):
         pts = " ".join("%.1f,%.1f" % xy(idx + j, c) for j, (_, c) in enumerate(forecast))
         lines.append('<polyline points="%s" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4"/>' % pts)
     return ('<svg viewBox="0 0 %d %d" xmlns="http://www.w3.org/2000/svg" role="img" '
-            'aria-label="Price chart">%s</svg>'
+            'aria-label="Price chart%s">%s</svg>'
             '<p class="dim">Solid: recorded closes; dashed: Kronos forecast.</p>'
-            % (width, height, "".join(lines)))
+            % (width, height, " (forecast only)" if not tails else "",
+               "".join(lines)))
 
 
 # --- emitters ---------------------------------------------------------------
@@ -1093,9 +1123,13 @@ document.getElementById('copyJson').addEventListener('click',function(){var s=do
 
 def render_html(model, raw_model, sections, slot_html, i18n, log):
     t = model.get("ticker")
-    # The data island is the model file's exact bytes; </script> escaped
-    # at embed time only (§2e).
-    island = raw_model.decode("utf-8").replace("</script>", "\\u003c/script>")
+    # The data island is the model file's exact bytes; every "<" is
+    # escaped at embed time only (§2e). Issue #258: escaping only the
+    # exact lowercase "</script>" left mixed-case ("</ScRiPt>") and
+    # whitespace ("</script >", "</ script>") closers able to
+    # terminate the island. "\u003c" is a valid JSON escape, so the
+    # island still parses to the identical model.
+    island = raw_model.decode("utf-8").replace("<", "\\u003c")
     i18n_json = json.dumps({"en": {k: v["en"] for k, v in i18n.items()},
                             "ar": {k: v["ar"] for k, v in i18n.items()}},
                            ensure_ascii=False, sort_keys=True)

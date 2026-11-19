@@ -618,6 +618,40 @@ def case14_data_island(ctx, out):
     check("14 title escaped in visible html",
           "&lt;/script&gt;" in h2
           and "<script>alert(1)</script>" not in h2)
+    # Issue #258: the old island escape matched only the exact
+    # lowercase "</script>". Mixed-case and whitespace closers must
+    # be neutralised too — the fix escapes EVERY "<", so no literal
+    # "<" can survive in the island at all.
+    for variant in ("</ScRiPt><script>alert(1)</script>",
+                    "</script ><script>alert(1)</script>",
+                    "</ script><script>alert(1)</script>",
+                    "</SCRIPT><script>alert(1)</script>"):
+        base_v = load_json(os.path.join(ctx["stage"],
+                                        "model-141124.json"))
+        base_v["news"]["news_items"][0]["title"] = variant
+        mut_v = os.path.join(ctx["stage"], "model-script-var.json")
+        write_json(mut_v, base_v)
+        out_v = os.path.join(ctx["stage"], "out-script-var")
+        shutil.rmtree(out_v, ignore_errors=True)
+        proc_v = render(ctx["repo"], mut_v, out_v)
+        check("14 variant %r renders" % variant[:12],
+              proc_v.returncode == 0, proc_v.stderr[:200])
+        if proc_v.returncode != 0:
+            continue
+        h_v = open(os.path.join(out_v, "report.html"),
+                   encoding="utf-8").read()
+        island_v = re.search(
+            r'<script type="application/json" id="report-model">(.*?)</script>',
+            h_v, re.S).group(1)
+        check("14 variant %r island parses to the mutated model"
+              % variant[:12],
+              json.loads(island_v) == base_v)
+        check("14 variant %r island holds no literal '<'"
+              % variant[:12],
+              "<" not in island_v)
+        check("14 variant %r cannot terminate the island"
+              % variant[:12],
+              h_v.count("<script") == 2)  # island + toggle only
 
 
 def case15_private_path(ctx):
@@ -730,6 +764,84 @@ def case18_escaping(ctx):
     check("18 bold renders as text", "&lt;b&gt;bold&lt;/b&gt;" in h)
 
 
+def case20_price_tail(ctx):
+    """Issue #258: read_price_tail rejects NaN/Infinity closes and
+    out-of-order dates; a forecast-only render labels itself as
+    such instead of borrowing the price-chart flag."""
+    print("case 20: price-tail contract + forecast-only chart")
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "render_under_test",
+        os.path.join(ctx["repo"], "scripts", "render.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    tail_dir = os.path.join(ctx["stage"], "tail-sweep")
+    shutil.rmtree(tail_dir, ignore_errors=True)
+    tool_dir = os.path.join(tail_dir, "collected", "yahooquery")
+    os.makedirs(tool_dir, exist_ok=True)
+    with open(os.path.join(tool_dir, "prices.csv"), "w",
+              encoding="utf-8") as fh:
+        fh.write("date,close\n"
+                 "2026-11-10,9.50\n"
+                 "2026-11-11,NaN\n"
+                 "2026-11-12,Infinity\n"
+                 "2026-11-13,9.70\n"
+                 "2026-11-14,9.80\n")
+    with open(os.path.join(tool_dir, "bad-order.csv"), "w",
+              encoding="utf-8") as fh:
+        fh.write("date,close\n"
+                 "2026-11-12,9.60\n"
+                 "2026-11-11,9.50\n")
+    tails = module.read_price_tail(tail_dir)
+    check("20 NaN/Infinity closes skipped, valid rows kept",
+          tails.get("yahooquery/prices.csv")
+          == [("2026-11-10", 9.5), ("2026-11-13", 9.7),
+              ("2026-11-14", 9.8)])
+    check("20 out-of-order series dropped whole",
+          "yahooquery/bad-order.csv" not in tails)
+    # Forecast-only end-to-end: mini sweep with real per-tool
+    # reports + a real Kronos forecast, but no price CSVs at all.
+    mini = os.path.join(ctx["stage"], "mini-forecast-only")
+    shutil.rmtree(mini, ignore_errors=True)
+    real = os.path.join(ctx["archive"], SWEEPS["141124"], "collected")
+    for tool in sorted(os.listdir(real)):
+        src = os.path.join(real, tool, "report.md")
+        if os.path.isfile(src):
+            dest_dir = os.path.join(mini, "collected", tool)
+            os.makedirs(dest_dir, exist_ok=True)
+            shutil.copyfile(src, os.path.join(dest_dir, "report.md"))
+    shutil.copyfile(
+        os.path.join(real, "kronos", "forecast.csv"),
+        os.path.join(mini, "collected", "kronos", "forecast.csv"))
+    # The forecast file itself is a CSV with date/close columns,
+    # so the no-price-CSV check must use the model's own
+    # price_series_last sources (as the renderer does) — the
+    # forecast file is not a price source.
+    model20 = load_json(os.path.join(ctx["stage"],
+                                     "model-141124.json"))
+    psl20 = {r.get("source") for r in
+             model20.get("price_series_last") or []}
+    check("20 forecast-only sweep carries no price CSV",
+          module.read_price_tail(mini, psl20) == {})
+    out = os.path.join(ctx["stage"], "out-forecast-only")
+    proc = render(ctx["repo"],
+                  os.path.join(ctx["stage"], "model-141124.json"),
+                  out, ["--sweep-dir", mini])
+    check("20 forecast-only render exit 0", proc.returncode == 0,
+          proc.stderr[:200])
+    if proc.returncode != 0:
+        return
+    h = open(os.path.join(out, "report.html"), encoding="utf-8").read()
+    m = open(os.path.join(out, "report.md"), encoding="utf-8").read()
+    check("20 forecast-only SVG is labelled forecast-only",
+          'aria-label="Price chart (forecast only)"' in h)
+    check("20 forecast-only SVG is not labelled a price chart",
+          'aria-label="Price chart"' not in h)
+    check("20 forecast-only MD caption says so",
+          "forecast cone only" in m
+          and "price tail" not in m)
+
+
 def case19_pristine(ctx):
     print("case 19: pristine control (aggregate)")
     check("19 render.py exists on the fixed tree",
@@ -748,9 +860,10 @@ def naive_control(ctx):
     title = "</script><script>alert(1)</script>"
     naive = ("<html><body><h1>%s</h1>"
              "<p>HOLD · buy at/below 9.5 · sell/trim at/above 10.59</p>"
-             "<p>base %s</p><p>%s</p><p>%s</p><p>%s</p></body></html>" % (
+             "<p>base %s</p><p>%s</p><p>%s</p><p>%s</p><p>%s</p></body></html>" % (
                  model["ticker"], model["price"]["base_price"], slot, title,
-                 json.dumps(model["family_scores"])))
+                 json.dumps(model["family_scores"]),
+                 "</ScRiPt><script>alert(1)</script>"))
     fails = []
     if "report-model" not in naive:
         fails.append("14 (no data island)")
@@ -758,6 +871,8 @@ def naive_control(ctx):
         fails.append("12 (no i18n table)")
     if "<script>alert(1)</script>" in naive:
         fails.append("18 (no escaping)")
+    if "</ScRiPt>" in naive:
+        fails.append("14-variant (mixed-case closer survives)")
     if forbidden_hits(naive):
         fails.append("9 (forbidden wording: %s)" % forbidden_hits(naive))
     if "+19%" in naive:
@@ -818,6 +933,7 @@ def main(argv=None):
     case17_twin_parity(ctx, out)
     case18_escaping(ctx)
     case19_pristine(ctx)
+    case20_price_tail(ctx)
 
     print("\nharness_issue69: %d pass, %d fail" % (CHECKS["pass"], CHECKS["fail"]))
     if FAILURES:
