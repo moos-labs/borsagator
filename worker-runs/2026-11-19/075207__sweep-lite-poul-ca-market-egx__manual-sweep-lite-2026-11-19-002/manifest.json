@@ -1,0 +1,72 @@
+{
+ "job": {
+  "id": "manual-sweep-lite-2026-11-19-002",
+  "job": "sweep-lite POUL.CA market=EGX",
+  "added": "2026-11-19T07:43:37.941453+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-19T07:46:42.786716+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "finished": "2026-11-19T07:52:06.348276+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002",
+  "model": "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002/report-model.json",
+  "model_sha256": "b0d915af4f84e0e224e697157537f12502a7c6e1c522fd6e0dd0270e55a4a4fc",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-16 vs base_date 2026-11-18",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-stale: profile as_of 2026-11-13 base 10.15 != sweep 2026-11-19 base 7.7",
+   "sharia-insufficient-data: AAOIFI",
+   "sharia-table-missing: DJIM",
+   "sharia-insufficient-data: EGX33",
+   "sharia-insufficient-data: FTSE",
+   "sharia-insufficient-data: ISLAMICLY",
+   "sharia-insufficient-data: MSCI",
+   "sharia-insufficient-data: MSCI_M",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "a66cee2f02914f27f2d36fcb67cfb32cacfe9b80"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 150272,
+    "sha256": "2cd525c44fc3dca509fc9f74537098c243db9780cdd56c11b04155319421b40e"
+   },
+   {
+    "path": "report.md",
+    "bytes": 37003,
+    "sha256": "c972451846b044d3ce164677424ee102bd2e4f3cae4db2649e766973a2237dac"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "POUL.CA"
+ }
+}
