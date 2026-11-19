@@ -43,6 +43,13 @@ REAL ``scripts/render.py``:
      ``e41c22b``, the renderer merge); the control must show
      ``maybe_render`` absent and the render sequence failing,
      then exits 1 — the control discriminates.
+  7. Issues #257/#258 (2026-11-19): publish() enforces copy/add/
+     commit success and verifies the candidate SHA + run/sweep
+     files and hashes in the remote archive tree (index-lock +
+     push-up-to-date mutation; already-published retry proves exact
+     existing content); a marker-write failure can never skip
+     publish(); a forecast-only render records chart
+     "svg-forecast-only", never "svg".
 
 Local only, stdlib only. No network beyond the one-time ``archive``
 branch clone, no GitHub API, no live worker, no real bus.
@@ -545,12 +552,21 @@ def main(argv=None):
     os.environ["GATOR_BUS_URL"] = bare
 
     def run_publish_case(tag, tamper_compile=False,
-                         tamper_render=False):
+                         tamper_render=False, tamper_index_lock=False):
         proot = tempfile.mkdtemp(prefix=f"h69-pub-{tag}-")
         shutil.copytree(repo, os.path.join(proot, "release"))
         rc, out = run(["git", "clone", "--quiet", bare,
                        os.path.join(proot, "archive-push")])
         assert rc == 0, out
+        if tamper_index_lock:
+            # Issue #257 mutation (Ins's local repro): a stale
+            # .git/index.lock makes git add/commit fail while the
+            # push would succeed as up-to-date — the old code then
+            # returned the OLD HEAD as if the run had published.
+            lock = os.path.join(proot, "archive-push", ".git",
+                                "index.lock")
+            with open(lock, "w", encoding="utf-8") as h:
+                h.write("stale lock (harness fault)\n")
         pw = import_worker(os.path.join(repo, "worker", "worker.py"),
                            proot)
         workdir = os.path.join(proot, "out", JOB["id"])
@@ -694,6 +710,212 @@ def main(argv=None):
     shutil.rmtree(proot3, ignore_errors=True)
     shutil.rmtree(proot4, ignore_errors=True)
 
+    section("publish false-green closed (issue #257)")
+    bare_head_before = run(["git", "--git-dir", bare, "rev-parse",
+                            "refs/heads/archive"])[1].strip()
+    proot5, sw5, pmanifest5, compiled5, rendered5, sha5 = \
+        run_publish_case("index-lock", tamper_index_lock=True)
+    check("index-lock: compile True, render True, publish FAILS "
+          "(falsy, no done record possible)",
+          compiled5 and rendered5 and not sha5,
+          detail=f"sha={sha5}")
+    bare_head_after = run(["git", "--git-dir", bare, "rev-parse",
+                           "refs/heads/archive"])[1].strip()
+    check("index-lock: remote archive HEAD unchanged (the "
+          "up-to-date push filed nothing)",
+          bare_head_after == bare_head_before,
+          detail=f"before={bare_head_before[:12]} "
+                 f"after={bare_head_after[:12]}")
+    check("index-lock: stale lock was in place during publish",
+          os.path.isfile(os.path.join(proot5, "archive-push",
+                                      ".git", "index.lock")))
+    shutil.rmtree(proot5, ignore_errors=True)
+
+    def run_publish_retry_case(tag):
+        """Two publishes of the same job in the same second (frozen
+        clock): the second commit is nothing-to-commit — the
+        legitimate already-published retry. The fix must prove the
+        exact content in the remote tree and return the SAME SHA,
+        not fail and not mint a new commit."""
+        rroot = tempfile.mkdtemp(prefix=f"h69-pub-{tag}-")
+        shutil.copytree(repo, os.path.join(rroot, "release"))
+        rc, out = run(["git", "clone", "--quiet", bare,
+                       os.path.join(rroot, "archive-push")])
+        assert rc == 0, out
+        rw = import_worker(os.path.join(repo, "worker", "worker.py"),
+                           rroot)
+        rworkdir = os.path.join(rroot, "out", JOB["id"])
+        rsw = os.path.join(rworkdir, "_merge_out", SWEEP)
+        copy_golden_sweep(args.archive_root, rsw)
+        os.makedirs(os.path.join(rworkdir, "yahooquery"),
+                    exist_ok=True)
+        with open(os.path.join(rworkdir, "yahooquery",
+                               "summary.json"), "w") as h:
+            h.write("{}")
+        rmanifest = make_manifest(SWEEP)
+        rworkdir = Path(rworkdir)
+        rw._write_manifest_atomic(rworkdir, rmanifest)
+        rcompiled = rw.maybe_compile(JOB, rworkdir, rmanifest, plan)
+        rrendered = rw.maybe_render(JOB, rworkdir, rmanifest, plan)
+        rw._write_manifest_atomic(rworkdir, rmanifest)
+        real_datetime = rw.datetime
+
+        class Frozen(real_datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return real_datetime(2026, 11, 19, 8, 0, 0,
+                                     tzinfo=tz)
+
+        rw.datetime = Frozen
+        try:
+            sha_a = rw.publish(JOB, rworkdir, rmanifest)
+            sha_b = rw.publish(JOB, rworkdir, rmanifest)
+        finally:
+            rw.datetime = real_datetime
+        return rroot, rmanifest, rcompiled, rrendered, sha_a, sha_b
+
+    rroot, rmanifest, rcompiled, rrendered, sha_a, sha_b = \
+        run_publish_retry_case("retry")
+    check("already-published retry: compile True, render True, "
+          "both publishes return a SHA",
+          rcompiled and rrendered and bool(sha_a) and bool(sha_b))
+    check("already-published retry: second publish returns the "
+          "SAME verified SHA (no new commit, no failure)",
+          bool(sha_a) and sha_a == sha_b,
+          detail=f"a={str(sha_a)[:12]} b={str(sha_b)[:12]}")
+    if sha_a:
+        rc, out = run(["git", "--git-dir", bare, "rev-parse",
+                       "refs/heads/archive"])
+        check("already-published retry: remote archive HEAD is "
+              "that SHA",
+              out.strip() == sha_a)
+        rc, out = run(["git", "--git-dir", bare, "show",
+                       "--name-only", "--format=", sha_a])
+        names = out.split()
+        check("already-published retry: the commit carries model + "
+              "twins + fleet",
+              f"{SWEEP}/report-model.json" in names
+              and f"{SWEEP}/report.html" in names
+              and f"{SWEEP}/report.md" in names
+              and any(n.startswith("worker-runs/") for n in names))
+    shutil.rmtree(rroot, ignore_errors=True)
+
+    section("marker-write failure cannot skip publish (#258)")
+    # The fail-closed tail writes render_error.txt; on a non-UTF-8
+    # host locale + non-ASCII detail the old locale-default write
+    # raised UnicodeEncodeError, which escaped maybe_render (the
+    # tail sits outside the generic except) so publish() never ran.
+    # Fault the marker write and prove the fleet still publishes.
+    import pathlib
+    orig_write_text = pathlib.Path.write_text
+
+    def failing_write_text(self, data, encoding=None, errors=None,
+                           newline=None):
+        if str(self).endswith("render_error.txt"):
+            raise UnicodeEncodeError(
+                "utf-8", "\ufffd", 0, 1, "simulated non-UTF-8 locale")
+        return orig_write_text(self, data, encoding=encoding,
+                               errors=errors, newline=newline)
+
+    mroot = tempfile.mkdtemp(prefix="h69-marker-")
+    shutil.copytree(repo, os.path.join(mroot, "release"))
+    rc, out = run(["git", "clone", "--quiet", bare,
+                   os.path.join(mroot, "archive-push")])
+    assert rc == 0, out
+    mw = import_worker(os.path.join(repo, "worker", "worker.py"),
+                       mroot)
+    mworkdir = os.path.join(mroot, "out", JOB["id"])
+    msw = os.path.join(mworkdir, "_merge_out", SWEEP)
+    copy_golden_sweep(args.archive_root, msw)
+    os.makedirs(os.path.join(mworkdir, "yahooquery"), exist_ok=True)
+    with open(os.path.join(mworkdir, "yahooquery",
+                           "summary.json"), "w") as h:
+        h.write("{}")
+    mman = make_manifest(SWEEP)
+    mworkdir = Path(mworkdir)
+    mw._write_manifest_atomic(mworkdir, mman)
+    mcompiled = mw.maybe_compile(JOB, mworkdir, mman, plan)
+    check("marker fault: fixture compiled first", mcompiled)
+    bad = load_json(os.path.join(msw, "report-model.json"))
+    bad["schema"] = "borsagator-report-model/99"
+    with open(os.path.join(msw, "report-model.json"), "w",
+              encoding="utf-8") as h:
+        json.dump(bad, h)
+    pathlib.Path.write_text = failing_write_text
+    raised = None
+    try:
+        mok = mw.maybe_render(JOB, mworkdir, mman, plan)
+    except Exception as e:  # noqa: BLE001 - old code escapes here
+        mok, raised = None, e
+    finally:
+        pathlib.Path.write_text = orig_write_text
+    mrec = mman.get("render") or {}
+    check("marker fault: maybe_render returns False, no exception "
+          "escapes",
+          raised is None and not mok
+          and mrec.get("status") == "refused",
+          detail=f"raised={raised!r}")
+    check("marker fault: marker_write_failed evidence recorded",
+          "marker_write_failed" in mrec
+          and "UnicodeEncodeError" in mrec["marker_write_failed"])
+    check("marker fault: no render_error.txt on disk (write "
+          "failed)",
+          not os.path.isfile(os.path.join(msw, "render_error.txt")))
+    mw._write_manifest_atomic(mworkdir, mman)
+    msha = mw.publish(JOB, mworkdir, mman)
+    check("marker fault: publish STILL returns a SHA (fleet not "
+          "lost)", bool(msha))
+    if msha:
+        rc_h, _ = run(["git", "--git-dir", bare, "cat-file", "-e",
+                       f"{msha}:{SWEEP}/report.html"])
+        rc_m, _ = run(["git", "--git-dir", bare, "cat-file", "-e",
+                       f"{msha}:{SWEEP}/report.md"])
+        rc_f, _ = run(["git", "--git-dir", bare, "cat-file", "-e",
+                       f"{msha}:{SWEEP}/digest.json"])
+        check("marker fault: commit tree carries the fleet, no "
+              "twins",
+              rc_h != 0 and rc_m != 0 and rc_f == 0,
+              detail=f"html-rc={rc_h} md-rc={rc_m} digest-rc={rc_f}")
+    shutil.rmtree(mroot, ignore_errors=True)
+    os.environ["GATOR_BUS_URL"] = SENTINEL
+
+    section("forecast-only chart flag (#258)")
+    froot, fworkdir, fsweep = build_root(repo, args.archive_root,
+                                         "h69-forecast-")
+    fw = import_worker(os.path.join(repo, "worker", "worker.py"),
+                       froot)
+    fm = make_manifest(SWEEP)
+    fcompiled = fw.maybe_compile(JOB, fworkdir, fm, plan)
+    check("forecast-only: fixture compiled first", fcompiled)
+    # Drop every price CSV; keep the Kronos forecast. The render
+    # then has a forecast cone but no usable price history.
+    collected = os.path.join(fsweep, "collected")
+    for tool in sorted(os.listdir(collected)):
+        tdir = os.path.join(collected, tool)
+        if not os.path.isdir(tdir):
+            continue
+        for fname in sorted(os.listdir(tdir)):
+            if fname.endswith(".csv") and not (
+                    tool == "kronos" and fname == "forecast.csv"):
+                os.remove(os.path.join(tdir, fname))
+    fok = fw.maybe_render(JOB, fworkdir, fm, plan)
+    frec = fm.get("render") or {}
+    check("forecast-only: render True (forecast cone renders)",
+          fok and frec.get("status") == "rendered")
+    check("forecast-only: chart flag is 'svg-forecast-only', "
+          "never 'svg'",
+          frec.get("chart") == "svg-forecast-only",
+          detail=str(frec.get("chart")))
+    fhtml = open(os.path.join(fsweep, "report.html"), "rb").read() \
+        if os.path.isfile(os.path.join(fsweep, "report.html")) else b""
+    check("forecast-only: HTML labels the SVG forecast-only",
+          b'aria-label="Price chart (forecast only)"' in fhtml)
+    fmd = open(os.path.join(fsweep, "report.md"), "rb").read() \
+        if os.path.isfile(os.path.join(fsweep, "report.md")) else b""
+    check("forecast-only: MD caption says forecast cone only",
+          b"forecast cone only" in fmd)
+    shutil.rmtree(froot, ignore_errors=True)
+
     section("end-to-end _execute_body (real orchestration)")
     # Seams, clearly identified: run_tool (external tool execution:
     # network, runner repos, venvs) serves the golden sweep's
@@ -833,10 +1055,12 @@ def main(argv=None):
           'drop.append(f"{render_rel}/report.html")' in src
           and "suppress_render" in src)
     check("fail-closed tail removes surviving twins and writes "
-          "the marker",
+          "the marker UTF-8 with contained failure (#258)",
           'os.remove(p)' in src
-          and 'marker.write_text(f"render {status}: {detail}\\n")'
-          in src)
+          and 'marker.write_text(f"render {status}: {detail}\\n"'
+          in src
+          and 'encoding="utf-8")' in src
+          and 'entry["marker_write_failed"]' in src)
 
     failed = [c for c in CHECKS if not c[2]]
     print(f"harness_issue69_worker_wire: {len(CHECKS) - len(failed)}"

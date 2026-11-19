@@ -1487,12 +1487,52 @@ def push_archive(arch, attempts=3):
     return False
 
 
+def _archive_tree_has(arch, sha, expected):
+    """Verify the tree at ``sha`` in the archive checkout holds every
+    (relpath, local_path) pair at the exact content: the blob SHA
+    recorded in the tree must equal ``git hash-object`` of the local
+    file. A changed HEAD alone proves nothing (issue #257) — this
+    proves the run's bytes are in the commit. Returns True only
+    when every expected file matches."""
+    for rel, local in expected:
+        tree = sh(f"git -C {arch} ls-tree {sha} -- {rel}",
+                  timeout=60)
+        if tree.returncode != 0:
+            print(f"publish: verify: ls-tree failed for {rel}",
+                  flush=True)
+            return False
+        parts = tree.stdout.split()
+        if len(parts) < 3:
+            print(f"publish: verify: {rel} absent from tree "
+                  f"{sha[:12]}", flush=True)
+            return False
+        blob = parts[2]
+        hashed = sh(f"git -C {arch} hash-object {local}",
+                    timeout=60)
+        if hashed.returncode != 0:
+            print(f"publish: verify: hash-object failed for "
+                  f"{local}", flush=True)
+            return False
+        if hashed.stdout.strip() != blob:
+            print(f"publish: verify: {rel} blob mismatch "
+                  f"(tree {blob[:12]} != local "
+                  f"{hashed.stdout.strip()[:12]})", flush=True)
+            return False
+    return True
+
+
 def publish(job, results_dir, manifest):
     arch = ROOT / "archive-push"
     if not arch.exists():
         url = os.environ["GATOR_BUS_URL"]
-        sh(f"git clone --branch archive --single-branch {url} {arch}",
-           timeout=900)
+        # Issue #257: sh() never raises — an unchecked clone failure
+        # used to fall through and commit against whatever was on
+        # disk. Every copy/add/commit step below is enforced the
+        # same way; any failure is a publish failure, loud on the bus.
+        if sh(f"git clone --branch archive --single-branch {url} {arch}",
+              timeout=900).returncode != 0:
+            print("publish: archive clone failed", flush=True)
+            return False
         # The bus clone gets its identity in sync_bus; this clone needs
         # its own — without it every commit fails silently (found by
         # the w2 self-test, 2026-11-14: claimed, ran, never published).
@@ -1517,17 +1557,27 @@ def publish(job, results_dir, manifest):
     slug = re.sub(r"[^a-z0-9]+", "-", job["job"].lower()).strip("-")[:60]
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d/%H%M%S")
     dest = arch / "worker-runs" / f"{ts}__{slug}__{job['id']}"
-    sh(f"mkdir -p {dest} && cp -r {results_dir}/. {dest}/", timeout=300)
+    # Issue #257: copy failures used to ride on silently (sh() never
+    # raises) and the commit then archived a partial run.
+    if sh(f"mkdir -p {dest} && cp -r {results_dir}/. {dest}/",
+          timeout=300).returncode != 0:
+        print(f"publish: fleet copy to {dest} failed", flush=True)
+        return False
     # Issue #67: the merge stages under results_dir/_merge_out — it
     # is not a fleet result and must not ride into worker-runs/.
-    sh(f"rm -rf {dest}/_merge_out", timeout=60)
+    if sh(f"rm -rf {dest}/_merge_out", timeout=60).returncode != 0:
+        print("publish: _merge_out strip failed", flush=True)
+        return False
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=1))
     # Issue #67: a merged sweep rides the SAME commit as its fleet
     # (one commit, one push): copy the merge's sweeps/ tree to the
     # archive root alongside worker-runs/.
     merge_out = Path(results_dir) / "_merge_out"
     if merge_out.is_dir():
-        sh(f"cp -r {merge_out}/. {arch}/", timeout=300)
+        if sh(f"cp -r {merge_out}/. {arch}/",
+              timeout=300).returncode != 0:
+            print("publish: merge_out copy failed", flush=True)
+            return False
     # maybe_compile fail-closed handoff: an unvalidated model that
     # could neither be quarantined nor removed locally (read-only
     # tree) must NOT publish; the hook recorded the path to drop
@@ -1691,16 +1741,83 @@ def publish(job, results_dir, manifest):
     # Commit message via a file: job text never enters a shell string.
     msg_file = arch / ".commit-msg"
     msg_file.write_text(f"worker run {job['id']}: {job['job']}\n")
-    sh(f"git -C {arch} add -A && git -C {arch} commit -F {msg_file}",
-       timeout=120)
+    # Issue #257: add and commit are enforced separately (sh() never
+    # raises). A commit failure is a publish failure — except the
+    # legitimate already-published retry: "nothing to commit" with a
+    # clean tree means this exact run is already committed, and the
+    # verification below must prove its bytes in the remote tree
+    # rather than accepting an arbitrary unchanged HEAD.
+    already_published = False
+    if sh(f"git -C {arch} add -A", timeout=120).returncode != 0:
+        print("publish: git add failed", flush=True)
+        msg_file.unlink(missing_ok=True)
+        return False
+    if sh(f"git -C {arch} commit -F {msg_file}",
+          timeout=120).returncode != 0:
+        st = sh(f"git -C {arch} status --porcelain", timeout=60)
+        if st.returncode != 0 or st.stdout.strip():
+            print("publish: git commit failed (tree not clean)",
+                  flush=True)
+            msg_file.unlink(missing_ok=True)
+            return False
+        print("publish: nothing to commit — verifying the run is "
+              "already published", flush=True)
+        already_published = True
     msg_file.unlink(missing_ok=True)
     # Issue #149: success returns the archive commit SHA (the done
     # record's target); failure returns False. Callers use truthiness.
     if not push_archive(arch):
         return False
+    # Issue #257: resolve the candidate SHA AFTER the push (a rebase
+    # retry replays the commit under a new SHA), confirm it reached
+    # the remote archive branch, and verify the expected run/sweep
+    # files AND hashes in that commit's tree. An unresolved SHA, a
+    # remote HEAD that is not the candidate, or any tree mismatch is
+    # a publish failure — a commit failure + up-to-date push can
+    # never again file a done record naming a commit without the run.
     rev = sh(f"git -C {arch} rev-parse HEAD",
              timeout=30).stdout.strip()
-    return rev if rev else "unknown"
+    if not rev:
+        print("publish: could not resolve candidate SHA", flush=True)
+        return False
+    remote = sh(f"git -C {arch} ls-remote origin archive",
+                timeout=60)
+    if remote.returncode != 0:
+        print("publish: ls-remote failed", flush=True)
+        return False
+    remote_sha = remote.stdout.split()[0] if remote.stdout.split() \
+        else ""
+    if remote_sha != rev:
+        print(f"publish: remote archive HEAD {remote_sha[:12]} != "
+              f"candidate {rev[:12]}", flush=True)
+        return False
+    expected = [(f"{dest.relative_to(arch)}/manifest.json",
+                 dest / "manifest.json")]
+    if isinstance(manifest, dict):
+        render_block = manifest.get("render") or {}
+        render_rel = render_block.get("sweep_dir") \
+            if isinstance(render_block, dict) else None
+        if isinstance(render_block, dict) \
+                and render_block.get("status") == "rendered" \
+                and isinstance(render_rel, str) and render_rel:
+            for f in render_block.get("files") or []:
+                if not isinstance(f, dict) or "path" not in f:
+                    continue
+                expected.append((
+                    f"{render_rel}/{f['path']}",
+                    Path(results_dir) / "_merge_out" / render_rel
+                    / f["path"]))
+            expected.append((
+                f"{render_rel}/manifest.json",
+                Path(results_dir) / "_merge_out" / render_rel
+                / "manifest.json"))
+    if not _archive_tree_has(arch, rev, expected):
+        print("publish: remote tree verification failed", flush=True)
+        return False
+    if already_published:
+        print(f"publish: already-published retry verified at "
+              f"{rev[:12]}", flush=True)
+    return rev
 
 
 def run_harvest(job, workdir):
@@ -2310,7 +2427,17 @@ def maybe_render(job, workdir, manifest, plan):
                             detail = ("report twins changed during "
                                       "validation")
                         else:
-                            chart = ("svg" if b'aria-label="Price chart"'
+                            # Issue #258: the chart flag separates
+                            # history from forecast — a forecast-only
+                            # SVG records "svg-forecast-only", never
+                            # "svg", so a monitoring check on
+                            # chart=svg cannot mistake it for a real
+                            # price chart.
+                            chart = ("svg-forecast-only"
+                                     if b'aria-label="Price chart '
+                                        b'(forecast only)"' in html_blob
+                                     else "svg"
+                                     if b'aria-label="Price chart"'
                                      in html_blob else "table")
                             files = [
                                 {"path": "report.html",
@@ -2374,8 +2501,16 @@ def maybe_render(job, workdir, manifest, plan):
                 f"{sweep_rel}/{t}" for t in ("report.html", "report.md")]
         marker = sweep_dir / "render_error.txt"
         try:
-            marker.write_text(f"render {status}: {detail}\n")
-        except OSError as exc:
+            # Issue #258: explicit UTF-8 — the old locale-default
+            # write raised UnicodeEncodeError on a non-UTF-8 host
+            # locale + non-ASCII detail, and that exception escaped
+            # maybe_render (the tail sits outside the generic
+            # except above) so publish() never ran. Any marker-write
+            # failure is recorded as evidence and the fleet still
+            # publishes; it can never skip publish().
+            marker.write_text(f"render {status}: {detail}\n",
+                              encoding="utf-8")
+        except Exception as exc:  # noqa: BLE001 - marker is evidence
             entry["marker_write_failed"] = (
                 f"{type(exc).__name__}: {exc}")[:300]
     _record_render(manifest, entry)
