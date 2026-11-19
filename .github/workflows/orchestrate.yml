@@ -7,29 +7,31 @@ on:
         description: "Job, e.g. 'sweep POUL.CA' or 'run tradingagents POUL.CA' (empty = use the JOB variable)"
         required: false
         default: ""
-  schedule:
-    # Issue #66: the worker owns the 08:15 Cairo trigger now; this
-    # cron is only the FALLBACK, staggered to 06:45 UTC = 08:45 Cairo
-    # (winter) / 09:45 (summer DST) — still before the EGX 10:00
-    # open. The fallback-check job below stands the run down when
-    # the worker already claimed today's sched-<date> job.
-    # Scheduled runs use the JOB_SCHEDULED variable (default
-    # 'sweep-lite POUL.CA').
-    - cron: "45 6 * * 0,1,2,3,4"
+  # Issue #66 — FALLBACK SCHEDULE RETIRED 2026-11-19: the Actions
+  # cron ("45 6 * * 0,1,2,3,4", 06:45 UTC) was removed. The worker
+  # scheduler is proven: the guard fired on time twice in a row
+  # (08:47Z and 09:47Z, both claimed +18s) and the worker-fired
+  # scheduled sweep on 2026-11-19 (claimed 06:17:54Z, done
+  # 06:22:59Z) archived at a66cee2f with digest issue #259 filed
+  # 06:23:09Z. The fallback-check job below is now inert — it only
+  # runs on schedule events, which no longer exist — and is kept so
+  # re-enabling the fallback is a one-line change.
 
 permissions:
   contents: write
   issues: write
 
 jobs:
-  # Issue #66: the worker fires the scheduled sweep at 08:15 Cairo;
-  # this job stands the Actions fallback down when the worker already
-  # claimed today's job (queue/claims/sched-<date>.json on the queue
-  # branch) or already archived it (worker-runs/<date>/ on the
-  # archive branch). The claim is the single mutex. Scheduled runs
-  # only — manual dispatches always run. If this job fails or is
-  # skipped, the sweep job runs anyway (a failed check must never
-  # silently cancel the morning's only sweep).
+  # Issue #66 (retired 2026-11-19): the worker fires the scheduled
+  # sweep at 08:15 Cairo and the Actions fallback schedule is gone,
+  # so this job is now inert — its `if:` only matches schedule
+  # events, which no longer occur. It is kept (with the orchestrate
+  # job's `needs:` + `if:` wiring untouched) so the fallback can be
+  # restored by re-adding one cron line. Original behaviour, for
+  # the record: the job stood the Actions fallback down when the
+  # worker already claimed today's job (queue/claims/sched-<date>.json
+  # on the queue branch) or already archived it (worker-runs/<date>/
+  # on the archive branch); the claim was the single mutex.
   fallback-check:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
