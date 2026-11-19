@@ -45,6 +45,29 @@ Scope/adjudication rules (INS-314 3/4):
 Pure stdlib, no I/O, no network. Fail closed throughout: unknown or
 missing gate inputs mean incomplete; malformed inputs raise
 ValueError (same convention as the scorer).
+
+Issue #322 (INS-314-POSTMERGE-REVIEW) hardened the gate further:
+- The mandatory ambiguity/candidate/collection ledger is DERIVED
+  inside :func:`evaluate_completion` from the scorer outputs and
+  the collection state; a caller-supplied ledger that omits any
+  derived entry (omitted, empty or truncated) never passes while
+  such cases exist. A frozen required-cell set is required whenever
+  cells are present — without it, omitted universe members are
+  undetectable.
+- Ledger IDs are distinct per frozen prediction OCCURRENCE: N
+  identical predictions yield N distinct IDs, so one decision over
+  one ID can never clear N entries.
+- Pairing adjudications require the same source document, issuer
+  and event type on both sides (the frozen same-document rule).
+- A decision resolves only a ledger entry of a compatible kind
+  (see ``DECISION_ENTRY_COMPAT``); collection entries are closed
+  only by collection evidence, never by a decision.
+- Collection counts must be non-negative; a cell's ``accepted``
+  must be exactly True/False/None (by identity).
+- ``per_cell.blocked`` reflects global collection failures, not
+  only unresolved ledger entries; ``cell_report`` derives
+  ``unresolved_candidates`` from the effective ledger and keeps the
+  raw candidate-output count separately as ``candidate_outputs``.
 """
 import hashlib
 import json
@@ -58,6 +81,22 @@ LEDGER_KINDS = ("ambiguity", "candidate", "collection", "field",
                 "scope", "gold")
 DECISION_KINDS = ("pairing", "reject_event", "duplicate", "scope",
                   "field")
+# Permitted decision/entry-kind combinations (issue #322 finding 5).
+# A decision resolves only a ledger entry whose kind it is listed
+# under; a kind-mismatched decision leaves the entry unresolved.
+# Collection entries are closed only by collection evidence (the
+# document showing archived), never by any decision. An ambiguous or
+# candidate case argued out of scope is recorded as its own
+# kind="scope" ledger entry and resolved by a scope decision there,
+# not by re-kinding a decision over the ambiguity/candidate entry.
+DECISION_ENTRY_COMPAT = {
+    "ambiguity": ("pairing", "reject_event", "duplicate"),
+    "candidate": ("reject_event", "duplicate"),
+    "field": ("field",),
+    "scope": ("scope",),
+    "gold": ("field", "scope"),
+    "collection": (),
+}
 # N/A policy: documented-absent fields are named per cell by the
 # frozen policy the caller passes in (dict {(issuer, event_type):
 # set(fields)}). No field is absent by default.
@@ -88,8 +127,9 @@ def stable_entry_id(run_digest, input_digest, kind, cell, doc,
     The ID is a sha256 over the digests + kind + cell + document +
     a canonical detail key (e.g. the predicted event's canonical
     field values + tied gold IDs) — never array position, never a
-    bare gold-ID list, so repeated identical predictions stay
-    distinguishable where multiplicity matters.
+    bare gold-ID list. Identical predictions still need an occurrence
+    discriminator to stay distinct (see :func:`_distinct_entry_id`);
+    this function alone does NOT distinguish them.
     """
     payload = {"run": run_digest, "input": input_digest, "kind": kind,
                "cell": list(_cell_key(cell)) if cell is not None else None,
@@ -97,6 +137,30 @@ def stable_entry_id(run_digest, input_digest, kind, cell, doc,
     blob = json.dumps(payload, sort_keys=True, ensure_ascii=False,
                       default=repr)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:32]
+
+
+def _distinct_entry_id(run_digest, input_digest, kind, cell, doc,
+                       detail, seen):
+    """Stable ID for one ledger entry, distinct per occurrence.
+
+    ``seen`` counts prior entries with the same canonical base
+    detail (same kind/cell/document/detail); the occurrence index
+    (0-based among identical entries) is folded into the hashed
+    detail and stored on the entry, so N identical predictions yield
+    N distinct IDs (issue #322 finding 2: one decision over one ID
+    can never clear N entries). Reordering identical entries leaves
+    the ID multiset unchanged, because identical entries are
+    interchangeable. Returns (id, detail-with-occurrence).
+    """
+    key = (kind, repr(_cell_key(cell)) if cell is not None else None,
+           doc, json.dumps(detail, sort_keys=True, ensure_ascii=False,
+                           default=repr))
+    occurrence = seen.get(key, 0)
+    seen[key] = occurrence + 1
+    detail = dict(detail)
+    detail["occurrence"] = occurrence
+    return stable_entry_id(run_digest, input_digest, kind, cell, doc,
+                           detail), detail
 
 
 def _canonical_event_key(ev):
@@ -129,6 +193,7 @@ def build_ledger(cell_results, *, run_digest, input_digest,
     if not run_digest or not input_digest:
         raise ValueError("run_digest and input_digest are required")
     ledger = []
+    seen = {}
     for cell, result in (cell_results or {}).items():
         key = _cell_key(cell)
         if not isinstance(result, dict) or "ambiguous" not in result:
@@ -140,10 +205,11 @@ def build_ledger(cell_results, *, run_digest, input_digest,
                       "oversize_group": bool(entry.get("oversize_group")),
                       "unmatched_in_an_optimum": bool(
                           entry.get("unmatched_in_an_optimum"))}
+            eid, detail = _distinct_entry_id(
+                run_digest, input_digest, "ambiguity", key,
+                entry.get("source_document_id"), detail, seen)
             ledger.append({
-                "id": stable_entry_id(
-                    run_digest, input_digest, "ambiguity", key,
-                    entry.get("source_document_id"), detail),
+                "id": eid,
                 "kind": "ambiguity", "cell": key,
                 "source_document_id": entry.get("source_document_id"),
                 "event_type": entry.get("event_type"),
@@ -156,10 +222,11 @@ def build_ledger(cell_results, *, run_digest, input_digest,
                           "extraction_status": pred.get("extraction_status"),
                           "verification_status": pred.get(
                               "verification_status")}
+                eid, detail = _distinct_entry_id(
+                    run_digest, input_digest, "candidate", key,
+                    pred.get("source_document_id"), detail, seen)
                 ledger.append({
-                    "id": stable_entry_id(
-                        run_digest, input_digest, "candidate", key,
-                        pred.get("source_document_id"), detail),
+                    "id": eid,
                     "kind": "candidate", "cell": key,
                     "source_document_id": pred.get("source_document_id"),
                     "event_type": pred.get("event_type"),
@@ -171,14 +238,15 @@ def build_ledger(cell_results, *, run_digest, input_digest,
             if not isinstance(missing, (list, tuple)):
                 raise ValueError("collection missing must be a list")
             for doc in missing:
+                eid, detail = _distinct_entry_id(
+                    run_digest, input_digest, "collection", None,
+                    doc, {"document": doc}, seen)
                 ledger.append({
-                    "id": stable_entry_id(
-                        run_digest, input_digest, "collection", None,
-                        doc, {"document": doc}),
+                    "id": eid,
                     "kind": "collection", "cell": None,
                     "source_document_id": doc, "event_type": None,
                     "issuer": None, "scope": "in_scope",
-                    "detail": {"document": doc}})
+                    "detail": detail})
     for entry in extra_entries or []:
         if not isinstance(entry, dict):
             raise ValueError("ledger entry is not a dict: %r" % (entry,))
@@ -391,6 +459,28 @@ def apply_adjudication(cell_result, decisions, *, run_digest,
             raise ValueError(
                 "pairing decision %s: gold event is not unmatched in "
                 "this cell result" % d["id"])
+        # Frozen same-document matching rule (issue #322 finding 4):
+        # a pairing may only join events from the same source
+        # document, issuer and event type. Membership in the
+        # unmatched lists plus field agreement is not enough — a
+        # cross-document pair would otherwise mint a TP across the
+        # document boundary the scorer never crosses.
+        if p.get("source_document_id") != g.get("source_document_id"):
+            raise ValueError(
+                "pairing decision %s: predicted and gold events are "
+                "from different source documents (%r vs %r)"
+                % (d["id"], p.get("source_document_id"),
+                   g.get("source_document_id")))
+        if p.get("issuer") != g.get("issuer"):
+            raise ValueError(
+                "pairing decision %s: predicted and gold events have "
+                "different issuers (%r vs %r)"
+                % (d["id"], p.get("issuer"), g.get("issuer")))
+        if p.get("event_type") != g.get("event_type"):
+            raise ValueError(
+                "pairing decision %s: predicted and gold events have "
+                "different event types (%r vs %r)"
+                % (d["id"], p.get("event_type"), g.get("event_type")))
         fields = S.SCORED_FIELDS.get(p.get("event_type"), ())
         if S._agreement(g, p, fields) < 1:
             raise ValueError(
@@ -437,6 +527,10 @@ def _validate_collection(collection):
     if not isinstance(missing, (list, tuple)) \
             or not all(isinstance(m, str) for m in missing):
         raise ValueError("collection missing must be a list of strings")
+    if enumerated < 0 or archived < 0:
+        raise ValueError(
+            "collection enumerated/archived must be non-negative: "
+            "enumerated=%r archived=%r" % (enumerated, archived))
     if not isinstance(collection["enumeration_closed"], bool) \
             or not isinstance(collection["pagination_complete"], bool):
         raise ValueError(
@@ -476,6 +570,17 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
     blocks; once complete it is ``complete-pass`` (every assessable
     cell accepted), ``complete-fail`` (any cell failed) or
     ``complete-N/A`` (every cell N/A — never a quality pass).
+
+    Fail-closed coverage (issue #322): the mandatory
+    ambiguity/candidate/collection ledger is derived internally
+    from the scorer outputs, so an omitted, empty or truncated
+    caller ledger never passes while such cases exist; a frozen
+    ``required_cells`` set must be supplied whenever cells are
+    present; each cell's ``accepted`` must be exactly True/False/
+    None; decisions resolve only compatible-kind entries
+    (``DECISION_ENTRY_COMPAT``); collection entries close only on
+    collection evidence; and ``per_cell.blocked`` reflects global
+    collection failures as well as unresolved ledger entries.
     """
     if not run_digest or not input_digest:
         raise ValueError("run_digest and input_digest are required")
@@ -501,11 +606,33 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
                 "adjudicated result for cell %s is stale/wrong-run"
                 % (key,))
         effective[key] = result
+    # 0. Threshold verdicts must be exactly in-domain (issue #322
+    # finding 7): True/False/None by identity. Identity (not ==)
+    # matters: 1 == True and 0 == False in Python, so an equality
+    # test would let 1/0 through as verdicts. A non-domain value
+    # raises instead of silently becoming a pass in the outcome
+    # branch below.
+    for key, result in effective.items():
+        acc = result.get("accepted")
+        if acc is not True and acc is not False and acc is not None:
+            raise ValueError(
+                "cell %s: accepted must be True, False or None, got "
+                "%r" % (_cell_label(key), acc))
+    supplied_ledger = list(ledger or [])
     # 1. Collection.
     coll_ok, coll_reasons = _validate_collection(collection)
     if coll_ok is not True:
         reasons.extend(coll_reasons)
-    # 2. Required cells present.
+    # 2. Required cells present. A frozen required-cell set is
+    # mandatory whenever cells are present (issue #322 finding 1):
+    # with an empty default, omitted universe members are
+    # undetectable, so an unverified universe fails closed. (An
+    # evaluation with no cells at all keeps the existing
+    # complete-N/A semantics — see the outcome branch below.)
+    if not required_cells and effective:
+        reasons.append(
+            "required-cell set not supplied: the frozen universe is "
+            "unverified, so omitted cells are undetectable")
     for cell in required_cells or []:
         key = _cell_key(cell)
         if key not in effective:
@@ -516,7 +643,29 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
     for did, d in check["valid"].items():
         for eid in d["entry_ids"]:
             covering.setdefault(eid, []).append(d)
-    for entry in ledger or []:
+    # 3a. Mandatory ledger derived internally (issue #322 finding 1):
+    # every ambiguity/candidate/collection entry the scorer outputs
+    # and the collection state imply MUST appear in the
+    # caller-supplied ledger. An omitted, empty or truncated ledger
+    # never passes while such cases exist — the caller forgetting
+    # build_ledger is not a pass. Extra caller entries (field /
+    # scope / gold) are not derivable and are judged on their own
+    # below; only the derivable minimum is enforced here.
+    derived = build_ledger(effective, run_digest=run_digest,
+                           input_digest=input_digest,
+                           collection=collection)
+    supplied_ids = {e["id"] for e in supplied_ledger
+                    if isinstance(e, dict) and e.get("id")}
+    for entry in derived:
+        if entry["id"] not in supplied_ids:
+            reasons.append(
+                "ledger incomplete: missing %s entry %s for cell %s "
+                "(caller ledger omits a case the scorer outputs imply)"
+                % (entry["kind"], entry["id"],
+                   _cell_label(entry["cell"])
+                   if entry.get("cell") is not None else "-"))
+            unresolved.append(entry)
+    for entry in supplied_ledger:
         if not isinstance(entry, dict) or not entry.get("id") \
                 or entry.get("kind") not in LEDGER_KINDS:
             raise ValueError("malformed ledger entry: %r" % (entry,))
@@ -532,6 +681,16 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
                 and collection is not None \
                 and entry.get("source_document_id") \
                 not in (collection.get("missing") or []):
+            continue
+        if entry["kind"] == "collection":
+            # Collection entries are closed ONLY by collection
+            # evidence (issue #322 finding 1/3): no decision of any
+            # kind can adjudicate a missing document away.
+            reasons.append(
+                "collection entry %s unresolved: document %s is not "
+                "shown archived by the collection state"
+                % (eid, entry.get("source_document_id")))
+            unresolved.append(entry)
             continue
         if scope == "unknown":
             reasons.append("entry %s has unknown scope" % eid)
@@ -559,14 +718,29 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
                 "evidence-backed scope decision" % eid)
             unresolved.append(entry)
             continue
-        # In-scope: needs a live, valid decision; a pairing decision
-        # additionally needs the re-scored result to have applied it.
+        # In-scope: needs a live, valid decision OF A COMPATIBLE
+        # KIND (issue #322 finding 5 — see DECISION_ENTRY_COMPAT);
+        # a kind-mismatched decision does not resolve the entry. A
+        # pairing decision additionally needs the re-scored result to
+        # have applied it.
         if not live:
             reasons.append("entry %s unresolved (no adjudication)" % eid)
             unresolved.append(entry)
             continue
-        blocked = False
+        permitted = DECISION_ENTRY_COMPAT.get(entry["kind"], ())
+        compatible = [d for d in live if d["kind"] in permitted]
         for d in live:
+            if d["kind"] not in permitted:
+                reasons.append(
+                    "decision %s (kind %s) cannot resolve %s entry "
+                    "%s (permitted: %s)"
+                    % (d["id"], d["kind"], entry["kind"], eid,
+                       ", ".join(permitted) or "none"))
+        if not compatible:
+            unresolved.append(entry)
+            continue
+        blocked = False
+        for d in compatible:
             if d["kind"] == "pairing":
                 adj = effective.get(key) if key is not None else None
                 applied = (adj or {}).get("adjudication_applied") or []
@@ -587,17 +761,26 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
     complete = not reasons
     # Per-cell blocking (a blocked cell prevents completion; a
     # roll-up never rescues a failed, blocked or unproven cell).
+    # Blocking reflects the GLOBAL collection state too (issue #322
+    # finding 3): an unknown, unfinished or partial collection
+    # blocks every cell, not only cells with an unresolved ledger
+    # entry — report truth must not depend on whether the caller
+    # remembered build_ledger.
+    global_blocking = [] if coll_ok is True \
+        else ["collection: " + r for r in coll_reasons]
     for key, result in effective.items():
         blocking = [e for e in unresolved
                     if e.get("cell") == key or e.get("cell") is None]
         per_cell[_cell_label(key)] = {
-            "accepted": result.get("accepted"), "blocked": bool(blocking),
-            "blocking": [e["id"] for e in blocking]}
+            "accepted": result.get("accepted"),
+            "blocked": bool(blocking) or bool(global_blocking),
+            "blocking": [e["id"] for e in blocking] + global_blocking}
     for cell in required_cells or []:
         label = _cell_label(cell)
         if label not in per_cell:
             per_cell[label] = {"accepted": None, "blocked": True,
-                               "blocking": ["required cell omitted"]}
+                               "blocking": ["required cell omitted"]
+                               + global_blocking}
     if not complete:
         outcome = "incomplete"
     else:
@@ -640,6 +823,13 @@ def cell_report(cell_result, cell, *, run_digest, input_digest,
         1 for p in result.get("unmatched_predicted") or []
         if p.get("extraction_status") == "candidate"
         or p.get("verification_status") != "verified")
+    # unresolved_candidates is derived from the EFFECTIVE ledger
+    # (issue #322 finding 8): a candidate resolved by a valid
+    # decision is no longer unresolved, even though it remains a
+    # candidate output. The raw output count is kept separately as
+    # candidate_outputs so the report never overclaims resolution.
+    unresolved_candidates = sum(
+        1 for e in gate["unresolved"] if e.get("kind") == "candidate")
     return {"cell": _cell_label(key),
             "collection": collection,
             "tp": result["tp"], "fp": result["fp"], "fn": result["fn"],
@@ -648,7 +838,8 @@ def cell_report(cell_result, cell, *, run_digest, input_digest,
             "field_verdicts": result["field_verdicts"],
             "accepted": result["accepted"],
             "verified_matches": verified,
-            "unresolved_candidates": candidates,
+            "unresolved_candidates": unresolved_candidates,
+            "candidate_outputs": candidates,
             "unresolved_ledger": gate["unresolved"],
             "excluded": gate["excluded"],
             "complete": gate["complete"], "outcome": gate["outcome"],
