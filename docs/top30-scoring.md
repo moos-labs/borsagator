@@ -20,6 +20,11 @@ frozen revision — scores are never recomputed silently under changed rules.
 - A cell with no gold events and no predicted events is reported as
   **zero-denominator N/A with the raw counts shown** (0/0/0) — never as a
   pass, never as a failure, never omitted.
+- Quarter date eligibility is frozen in the manifest
+  (`evaluation/top30_manifest.json`, `$.quarter.date_eligibility`):
+  source-adjudicated announced date, start 2026-08-19 inclusive, end
+  2026-11-19 inclusive — an extraction error cannot choose its own
+  recall denominator.
 
 ## 2. Frozen event granularity (current implementation limit)
 
@@ -59,23 +64,35 @@ board-decision dispatch). This is a limit of extractor revision
 
 ## 4. Matching (event level)
 
-1. Group gold and predicted events by **same source document id** and
-   **same event type**. Nothing matches across documents or across types.
+1. Group gold and predicted events by **same source document id**,
+   **same event type** and **same issuer**. Nothing matches across
+   documents, across types, or across issuers. Issuer is part of the
+   grouping key, not assumed from prepartitioning.
 2. Within a group, pair predicted events to gold events **one-to-one**:
    each gold event is used at most once. **Duplicates cannot reuse the
    same gold event** — a second predicted event paired to an already-used
    gold event is an FP (see the `duplicate-reuse` fixture).
-3. Where a group holds more than one gold event of the same type,
-   disambiguation uses coupon / period / meeting details (whichever the
-   type carries). Disambiguation **must not require every predicted field
-   correct** — a wrong date or NPAT is a field error on an identifiable
-   event (§6), not a matching failure.
+3. Matching is **order-independent**: within a group the scorer takes a
+   **maximum-total-agreement** one-to-one assignment, where agreement is
+   the count of scored fields equal after §6 normalisation, and a pair
+   is eligible only with agreement ≥ 1 (the event must be identifiable
+   by coupon / period / meeting details, whichever the type carries).
+   Disambiguation **must not require every predicted field correct** —
+   a wrong date or NPAT is a field error on an identifiable event (§6),
+   not a matching failure. A predicted event is matched only when it is
+   paired to the **same** gold event in **every** maximum-agreement
+   assignment (a forced pair); identical duplicate predicted events are
+   interchangeable, so one of them takes the gold and the rest are FPs.
+   The result depends only on the event multisets, never on predicted
+   input order (see the `order-permutation` fixtures).
 4. **Ambiguous pairings need adjudication, not a favourable automatic
-   match.** If two or more gold events tie as the best match for one
-   predicted event, the scorer leaves the predicted event unmatched (FP),
-   leaves the tied gold events unmatched (FN), and flags the group
-   `ambiguous` in the per-cell report for human adjudication. The scorer
-   never breaks a tie in the direction that raises the score.
+   match.** If a predicted event is paired to two or more different
+   gold events across maximum-agreement assignments, or if two or more
+   differing predicted events tie for one gold event, the scorer leaves
+   the predicted event(s) unmatched (FP), leaves the gold events
+   unmatched (FN), and flags the group `ambiguous` in the per-cell
+   report for human adjudication. The scorer never breaks a tie in the
+   direction that raises the score.
 5. Issuer mismatch is a matching failure, not a field error: a predicted
    event attributed to the wrong issuer (title/body ticker disagreement,
    downgraded to candidate by the extractor) cannot match that issuer's
@@ -117,14 +134,41 @@ Precision and recall per cell, exact fractions (see §7):
   - predicted value present, gold missing/null → **FP**
     (an unsupported extra).
 - **Normalisation before comparison** (dates, units, tolerance first):
-  dates to ISO `YYYY-MM-DD`; amounts as decimal strings
-  (`Decimal`, never float); Arabic-Indic digits normalised; currency
-  and scale (`one` / `thousand` / `million`) compared as part of the
-  value. A sign is part of the value: predicted NPAT `100` against gold
-  NPAT `-100` (a loss) is a **wrong value (1 FP + 1 FN)**, never a match
-  on magnitude (see the `sign` fixture). A swapped pair of dates is two
-  wrong values (see the `swapped-date` fixture): ex-date wrong and
-  payout-date wrong, each 1 FP + 1 FN.
+  the typed canonicalisation contract below. Dates to ISO `YYYY-MM-DD`;
+  amounts as decimal strings (`Decimal`, never float); Arabic-Indic
+  digits normalised; currency and scale (`one` / `thousand` / `million`
+  / `billion`) compared as part of the value. A sign is part of the
+  value: predicted NPAT `100` against gold NPAT `-100` (a loss) is a
+  **wrong value (1 FP + 1 FN)**, never a match on magnitude (see the
+  `sign` fixture). A swapped pair of dates is two wrong values (see the
+  `swapped-date` fixture): ex-date wrong and payout-date wrong, each
+  1 FP + 1 FN.
+
+### Canonicalisation contract (typed, per field)
+
+| Field(s) | Canonical form | Tolerance |
+|---|---|---|
+| `ex_date`, `entitlement_end`, `payout_date`, `record_date`, `announced`, `period_start`, `period_end`, `meeting_date`, `assembly_date` | ISO `YYYY-MM-DD`. Accepts ISO, `D/M/YYYY`, `D-M-YYYY`, `YYYY/MM/DD`; Arabic-Indic digits (U+0660–0669, U+06F0–06F9) normalised to ASCII; validated as a real calendar date | exact (0) |
+| `amount_per_share`, `npat`, `npat_comparative`, `revenue` | `(Decimal in base units, CURRENCY)`: value × scale factor (`one` 1, `thousand` 10³, `million` 10⁶, `billion` 10⁹); bare numbers read as EGP; currency compared as part of the value, so EGP never equals USD | exact (0) |
+| `yoy_npat_pct` | `Decimal` (sign preserved; parentheses mean negative, Arabic loss reporting) | exact (0) |
+| `assembly_time` | `HH:MM` (24h); accepts `HH:MM`, `HH:MM:SS`, `HH:MM AM/PM` | exact (0) |
+| `subtype`, `state`, `npat_scale` | lowercased, whitespace-collapsed string | exact (0) |
+| `coupon` and all other fields | stripped string | exact (0) |
+
+Tolerances are **zero for every field by design**: exact equality after
+canonicalisation. Any future non-zero tolerance is a spec change, not a
+scorer change — the reference scorer records the table above and
+implements it exactly.
+
+**Extractor adapter.** The extractor's native date/money values are
+nested objects (`scripts/disclosure_events.py` `_date_field` /
+`_money_field`: `{"value", "basis", "evidence", ...}` and
+`{"value", "currency", "scale", "raw", "evidence"}`); the scorer
+flattens them explicitly: a date object contributes its `value`
+(a `None` value stays `None` — a derived candidate is never a value),
+a money object contributes `(value × scale, currency)`. Flat scalars
+(gold, or flat predicted values) use the same canonical forms with
+scale `one` and currency defaulting to EGP.
 - The **record date is not in the EGX body** (pilot finding 1,
   `docs/disclosure-events.md`): the extractor records `record_date: null`
   with `derived_candidate` and the rule named `UNVALIDATED — candidate
@@ -147,6 +191,13 @@ Per cell, **all four** must hold (event and field, precision and recall):
 
 - event precision `P >= 0.95`, event recall `R >= 0.90`;
 - field precision `P >= 0.95`, field recall `R >= 0.90`, per scored field.
+
+The reference scorer implements this full verdict: `accepted` in
+`score_cell` requires the event verdict AND every assessable scored
+field's verdict (a field whose denominators are both zero in the cell
+is N/A for that field and does not gate acceptance); `field_verdicts`
+reports the per-field verdicts. A cell whose event P/R pass but any
+scored field fails is NOT accepted.
 
 Plus, evaluation-wide:
 
@@ -184,11 +235,29 @@ only — acceptance is per cell, never on a roll-up.
 
 ## 9. Reference implementation
 
-`scripts/top30_scorer.py` implements §4–§7 exactly (one-to-one matching
-within same source document and type, candidate-never-TP, duplicate
-reuse as FP, ambiguous tie as unmatched + flagged, wrong value as
-1 FP + 1 FN, end-to-end field denominators, exact-fraction acceptance).
-Its negative controls live in `scripts/test_top30_scorer_283.py`
-(swapped-date, sign, duplicate-reuse, candidate-only) and are wired
+`scripts/top30_scorer.py` implements §4–§7 exactly (order-independent
+maximum-agreement matching within same source document, type and
+issuer; candidate-never-TP; duplicate reuse as FP; ambiguous tie as
+unmatched + flagged; wrong value as 1 FP + 1 FN; end-to-end field
+denominators; exact-fraction full acceptance; typed canonicalisation
+contract with the extractor adapter). Its negative controls live in
+`scripts/test_top30_scorer_283.py`
+(swapped-date, sign, duplicate-reuse, candidate-only, plus the #305
+controls: full-verdict assertions, separated candidate/extracted
+status controls, missing/unknown-status rejection, multi-event
+permutation tests, issuer/schema/currency/scale controls) and are wired
 into `scripts/harness_issue109.py` (`--scorer`). If the spec and the
 scorer ever disagree, **the spec wins** and the scorer is fixed.
+
+## 10. Input boundaries
+
+Scoring inputs fail closed, never fail open:
+
+- A predicted event with a missing or unknown `extraction_status`
+  (`extracted` / `candidate`) or `verification_status` (`verified` /
+  `unverified`) is rejected with `ValueError` — there is no default
+  status.
+- An event with a missing or unknown `event_type`, a missing
+  `source_document_id` or a missing `issuer` is rejected.
+- A gold event carrying a prediction-only status is rejected: gold
+  never carries `extraction_status` / `verification_status`.
