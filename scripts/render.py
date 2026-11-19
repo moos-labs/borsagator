@@ -129,8 +129,14 @@ def validate_model(model):
     empty events set."""
     problems = report_model.validate_model(model)
     if problems:
-        raise RenderError(
-            "model_schema_unsupported: " + "; ".join(problems))
+        # One prefix, once (#294): the tuple-refusal problem
+        # already carries "model_schema_unsupported: " — strip it
+        # before joining under the single prefix here.
+        joined = "; ".join(
+            p[len("model_schema_unsupported: "):]
+            if p.startswith("model_schema_unsupported: ") else p
+            for p in problems)
+        raise RenderError("model_schema_unsupported: " + joined)
     if model.get("metrics_schema") != METRICS_SCHEMA:
         raise RenderError(
             "model_schema_unsupported: metrics_schema %r, expected %r"

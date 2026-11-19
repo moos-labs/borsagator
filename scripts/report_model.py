@@ -391,7 +391,11 @@ def validate_model(model):
     consumer: the validator (``--check-model``), the renderer and
     the delta adapter. Refuses, with a problem per violation:
       * a version tuple that is not exactly (1, /1) or (2, /2) —
-        mixed markers and unknown future versions alike;
+        mixed markers and unknown future versions alike. The
+        markers are type-strict: ``model_version`` must be an
+        ``int`` (``2.0`` is not 2, ``True`` is not 1) and ``schema``
+        must be a ``str`` — Python ``==``/hash would otherwise
+        coerce floats, bools and numeric strings into a version;
       * a missing required field for the declared version;
       * a top-level field the declared version does not define —
         the no-bump schema-diff check: a contract-field change
@@ -404,6 +408,17 @@ def validate_model(model):
         return ["model is not an object"]
     version = model.get("model_version")
     schema = model.get("schema")
+    # Type-strict markers (#294): 2.0 is not 2, True is not 1, "2"
+    # is not 2 — (version, schema) == against SUPPORTED_VERSIONS
+    # would coerce all three. Refuse before the tuple check so no
+    # consumer can ever see a coerced version as valid.
+    if type(version) is not int or type(schema) is not str:
+        problems.append(
+            f"model_schema_unsupported: expected (1, "
+            f"'borsagator-report-model/1') or (2, "
+            f"'borsagator-report-model/2'), found "
+            f"({version!r}, {schema!r})")
+        return problems
     if (version, schema) not in SUPPORTED_VERSIONS:
         problems.append(
             f"model_schema_unsupported: expected (1, "
