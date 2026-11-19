@@ -1501,6 +1501,15 @@ def publish(job, results_dir, manifest):
         sh(f"git -C {arch} config user.name borsagator-worker", timeout=30)
     else:
         sh(f"git -C {arch} pull --ff-only", timeout=180)
+    # Identity is needed for the commit below however this checkout
+    # was created. publish() set it only on its own clone, so a
+    # checkout made by anything else (a harness clone, a fresh worker
+    # image, a manual clone) committed nothing — and because sh()
+    # never raises, publish still returned the old HEAD as if it had
+    # published. Ensure it here, every run; git config is idempotent.
+    sh(f"git -C {arch} config user.email worker@borsagator.local",
+       timeout=30)
+    sh(f"git -C {arch} config user.name borsagator-worker", timeout=30)
     # INS-R3-01: the slug reaches shell strings below — reduce it to
     # a safe alphabet so a crafted job string cannot inject commands
     # ($(…), backticks, ;) into the publish step, which runs even
@@ -1519,6 +1528,91 @@ def publish(job, results_dir, manifest):
     merge_out = Path(results_dir) / "_merge_out"
     if merge_out.is_dir():
         sh(f"cp -r {merge_out}/. {arch}/", timeout=300)
+    # maybe_compile fail-closed handoff: an unvalidated model that
+    # could neither be quarantined nor removed locally (read-only
+    # tree) must NOT publish; the hook recorded the path to drop
+    # plus cleanup_failed evidence in the run manifest. The
+    # compiler's own #161 ".quarantined" artifact is a local
+    # inspection file — the Actions wiring archives only
+    # report-model.json / compile_error.txt — so it is excluded here
+    # too: unvalidated model bytes never ride the archive under a
+    # renamed file. Independently of the handoff, EVERY non-compiled
+    # outcome (refused/error) with a valid sweep_dir drops that
+    # sweep's exact report-model.json — the wholesale copy never
+    # deletes, so a previous commit's model at the same path would
+    # otherwise survive a refusal (false green) — and a compiled
+    # outcome drops a previous commit's stale compile_error.txt.
+    # Removal is direct pathlib, never a shell string;
+    # the only removable paths are the recorded sweep's
+    # report-model.json (when the hook recorded suppress_model) and
+    # its .quarantined sibling; and a removal that cannot be verified
+    # REFUSES the publish (truthful False, fleet held for the cycle
+    # report) rather than letting an unchecked model ride a green
+    # commit.
+    compile_block = manifest.get("compile") \
+        if isinstance(manifest, dict) else None
+    if not isinstance(compile_block, dict):
+        compile_block = {}
+    sweep_rel = compile_block.get("sweep_dir")
+    suppress = compile_block.get("suppress_model")
+    status = compile_block.get("status")
+    valid_sweep = isinstance(sweep_rel, str) and sweep_rel \
+        and not sweep_rel.startswith("/") \
+        and all(part not in ("", ".", "..")
+                for part in sweep_rel.split("/"))
+    if suppress is not None and not valid_sweep:
+        print(f"publish: refusing: suppress_model {suppress!r} "
+              f"recorded without a valid sweep_dir", flush=True)
+        return False
+    if suppress is not None and status == "compiled":
+        # contradictory evidence: a compiled outcome never records
+        # suppress_model — refusing beats guessing which to trust.
+        print(f"publish: refusing: status 'compiled' with "
+              f"suppress_model {suppress!r} recorded", flush=True)
+        return False
+    drop = []
+    if valid_sweep:
+        drop.append(f"{sweep_rel}/report-model.json.quarantined")
+        if status == "compiled":
+            # the compiler clears the LOCAL stale marker on success
+            # (#161 _clear_error_marker); the archive side is ours:
+            # a previous commit's refusal marker at this path must
+            # not sit next to the new model.
+            drop.append(f"{sweep_rel}/compile_error.txt")
+        elif status in ("refused", "error"):
+            # cp never deletes: without this drop, a PREVIOUS
+            # commit's report-model.json at the same sweep path
+            # survives the wholesale _merge_out copy and the tree
+            # keeps a model the compiler refused or never produced
+            # — a false green. Every non-compiled outcome drops the
+            # exact model path, not only cleanup-failure handoffs.
+            drop.append(f"{sweep_rel}/report-model.json")
+    if suppress is not None:
+        if suppress != f"{sweep_rel}/report-model.json":
+            print(f"publish: refusing: suppress_model {suppress!r} "
+                  f"is not the recorded sweep's report-model.json",
+                  flush=True)
+            return False
+        if suppress not in drop:
+            drop.append(suppress)
+    arch_resolved = arch.resolve()
+    for rel in drop:
+        target = arch / rel
+        try:
+            if arch_resolved not in target.resolve().parents:
+                print(f"publish: refusing: {rel} escapes the "
+                      f"archive checkout", flush=True)
+                return False
+            if target.is_symlink() or target.is_file():
+                target.unlink()
+            if target.exists():
+                print(f"publish: refusing: could not remove {rel} "
+                      f"from the archive checkout", flush=True)
+                return False
+        except OSError as exc:
+            print(f"publish: refusing: cannot exclude {rel}: "
+                  f"{exc}", flush=True)
+            return False
     # Issue #91: keep a stable pointer to the newest harvest per EGX
     # code at harvest/<CODE>.json on this branch. GitHub Actions
     # runs have no local harvest, so fetch_feed.py fetches the
@@ -1754,6 +1848,233 @@ def maybe_merge(job, workdir, manifest, plan):
         return False
 
 
+COMPILE_TIMEOUT = 1800
+
+
+def _record_compile(manifest, entry):
+    """Best-effort manifest record: the compile outcome must be
+    recorded whenever the manifest is the dict _execute_body built,
+    and a malformed manifest must still never raise into the publish
+    path."""
+    try:
+        manifest["compile"] = entry
+    except Exception:  # noqa: BLE001 - recording must never raise
+        print(f"maybe_compile: manifest not writable, outcome: "
+              f"{entry}", flush=True)
+
+
+def maybe_compile(job, workdir, manifest, plan):
+    """Issue #68: post-merge Report Model compile hook. Runs
+    scripts/compile_model.py on the just-merged sweep dir
+    (workdir/_merge_out/<sweep_dir>) after maybe_merge succeeds and
+    before the second _write_manifest_atomic / publish, so
+    report-model.json — or compile_error.txt on a fail-loudly
+    refusal — rides the SAME archive commit as fleet + merge,
+    atomic with its sweep (#68 D-2). Mirrors maybe_merge: fires
+    only for sweep / sweep-lite plans; a compile refusal or crash
+    never loses the fleet — it records manifest["compile"] and
+    returns False so _execute still publishes. The whole body is
+    guarded: a malformed manifest or a dead compiler ends in a
+    recorded "error", never an exception into _execute_body. Every
+    non-compiled outcome is fail-closed: with a writable sweep dir,
+    a surviving report-model.json is moved aside (.quarantined, the
+    #161 convention) and compile_error.txt names the CURRENT cause
+    — the compiler handles its own expected refusals, the hook
+    covers everything else (timeout, crash, missing/invalid model).
+    If the model file can neither be quarantined nor removed
+    (read-only tree), the hook records cleanup_failed + a
+    suppress_model path and publish() excludes that exact file
+    (validated pathlib removal, publish refused on failure) — an
+    unvalidated model never publishes, not even renamed
+    (.quarantined artifacts are excluded too, matching the Actions
+    wiring's selective copy).
+    Concurrency invariant: the local run dir is single-writer (this
+    worker process) between compile and publish; the recorded
+    sha256 covers the exact bytes validated, and the hook re-reads
+    once after validation to prove the file did not change.
+    Validation scope: --check-model is the compiler's own consumer
+    validator (v1 schema); semantic correctness (ticker/digest
+    linkage, source SHAs) is the compiler's compile-time contract
+    (F-1/F-5/F-9, D-7), trusted here because the pinned compiler
+    itself produced the model — the harness verifies ticker,
+    archive_commit and compiler_sha behaviorally on the golden
+    sweep rather than the hook re-deriving them."""
+    sweep_dir = None
+    sweep_rel = None
+    status, detail = "error", "compile hook aborted before running"
+    try:
+        kind = (job.get("job") or "").split()
+        if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
+            return False
+        merge_info = manifest.get("merge")
+        if not isinstance(merge_info, dict):
+            merge_info = {}
+        merge_status = merge_info.get("status")
+        sweep_rel = merge_info.get("sweep_dir")
+        # merge.py records merge status "complete" / "no-ensemble" on
+        # success; maybe_merge records "failed" otherwise. Gate on
+        # BOTH a successful status and a usable sweep_dir, so a
+        # stale sweep_dir beside a failed merge can never compile.
+        if (merge_status not in ("complete", "no-ensemble")
+                or not isinstance(sweep_rel, str)
+                or not sweep_rel.strip()):
+            _record_compile(manifest, {
+                "status": "skipped",
+                "detail": ("no successful merged sweep (merge "
+                           f"status: {merge_status})")})
+            return False
+        if os.path.isabs(sweep_rel):
+            _record_compile(manifest, {
+                "status": "error",
+                "detail": (f"absolute sweep_dir from merge: "
+                           f"{sweep_rel!r}")[:500]})
+            return False
+        # sweep_rel is the local merge's own merge-manifest value;
+        # resolve containment (incl. symlinks) under _merge_out all
+        # the same — the resolved dir must be STRICTLY below it:
+        # ".", the base itself, absolute paths and symlink escapes
+        # are errors, never followed.
+        base = (Path(workdir) / "_merge_out").resolve()
+        sweep_dir = (base / sweep_rel).resolve()
+        if base not in sweep_dir.parents:
+            _record_compile(manifest, {
+                "status": "error",
+                "detail": (f"sweep_dir escapes _merge_out: "
+                           f"{sweep_rel!r}")[:500]})
+            return False
+        if not sweep_dir.is_dir():
+            _record_compile(manifest, {
+                "status": "error",
+                "detail": (f"merged sweep dir missing on disk: "
+                           f"{sweep_rel}")[:500]})
+            return False
+        compile_script = CODE / "scripts" / "compile_model.py"
+        env = {k: v for k, v in os.environ.items()
+               if k not in ENV_DENY_FOR_TOOLS}
+        # Issue #146: one filtered env for every subprocess this
+        # hook spawns, asserted at the boundary before the first.
+        _assert_no_denied(env)
+        cmd = [sys.executable, str(compile_script), str(sweep_dir),
+               "--repo-root", str(CODE),
+               "--compiler-sha", update_checkout_sha()]
+        # Pin the archive HEAD the worker can see (the publish
+        # clone's tip) at compile time: the sweep's own archive
+        # commit does not exist yet — the same ambiguity the
+        # Actions wiring records in archive_commit. With no local
+        # clone yet, omit the flag and let the compiler record
+        # archive-sha-unavailable rather than guess. Direct argv,
+        # no shell interpolation of paths.
+        arch = ROOT / "archive-push"
+        if arch.is_dir():
+            head = subprocess.run(
+                ["git", "-C", str(arch), "rev-parse", "HEAD"],
+                env=env, capture_output=True, text=True, timeout=30)
+            if head.returncode == 0 and head.stdout.strip():
+                cmd += ["--archive-sha", head.stdout.strip()]
+        proc = subprocess.run(cmd, env=env, capture_output=True,
+                              text=True, timeout=COMPILE_TIMEOUT)
+        if proc.stdout.strip():
+            print(proc.stdout, end="", flush=True)
+        if proc.stderr.strip():
+            print(proc.stderr, end="", file=sys.stderr, flush=True)
+        model_path = sweep_dir / "report-model.json"
+        err_path = sweep_dir / "compile_error.txt"
+        if proc.returncode == 0 and model_path.is_file():
+            # One read: the same bytes feed the hash and the parse,
+            # so the recorded sha256 covers exactly what was
+            # validated and archived; a second read after the
+            # consumer check proves the file did not change
+            # underneath us (single-writer invariant).
+            blob = model_path.read_bytes()
+            try:
+                model = json.loads(blob.decode("utf-8"))
+            except Exception as e:
+                detail = f"compile wrote an unreadable model: {e}"
+            else:
+                # D-7 / F-8: the compiler's own consumer-side schema
+                # check must pass before the run manifest calls this
+                # sweep compiled.
+                chk = subprocess.run(
+                    [sys.executable, str(compile_script),
+                     "--check-model", str(model_path)],
+                    env=env, capture_output=True, text=True,
+                    timeout=COMPILE_TIMEOUT)
+                if chk.returncode != 0:
+                    detail = ("model failed consumer schema check: "
+                              + (chk.stdout + chk.stderr).strip())
+                elif model_path.read_bytes() != blob:
+                    detail = ("report-model.json changed during "
+                              "validation")
+                else:
+                    _record_compile(manifest, {
+                        "status": "compiled",
+                        "sweep_dir": sweep_rel,
+                        "model": f"{sweep_rel}/report-model.json",
+                        "model_sha256": hashlib.sha256(
+                            blob).hexdigest(),
+                        "degraded": model.get("degraded"),
+                        "flags": model.get("flags") or [],
+                        "tools": len(model.get("tools") or []),
+                        "archive_commit": model.get("archive_commit"),
+                    })
+                    return True
+        elif proc.returncode == 0:
+            detail = "compile exited 0 but no report-model.json found"
+        elif proc.returncode == 2:
+            # Fail-loudly refusal (F-1 / F-5 / F-9 / F-6 / F-10):
+            # no model; compile_error.txt is the compiler's own.
+            detail = (err_path.read_text(
+                encoding="utf-8", errors="replace").strip()
+                if err_path.is_file() else
+                "compile_model.py refused (exit 2): "
+                + proc.stderr.strip())
+            status = "refused"
+        else:
+            detail = (f"compile_model.py exited {proc.returncode}: "
+                      f"{proc.stderr.strip()}")
+    except subprocess.TimeoutExpired:
+        status = "error"
+        detail = f"compile timed out after {COMPILE_TIMEOUT}s"
+    except Exception as e:  # noqa: BLE001 - the fleet must publish
+        status = "error"
+        detail = f"compile hook failed: {type(e).__name__}: {e}"
+    # Fail-closed tail for every non-compiled outcome: never leave a
+    # report-model.json in place that this run did not validate, and
+    # make compile_error.txt name the CURRENT cause (a marker the
+    # compiler wrote this run — the refusal case — is already
+    # current and is kept; anything older is replaced).
+    entry = {"status": status, "detail": detail[:500]}
+    if isinstance(sweep_rel, str) and sweep_rel:
+        entry["sweep_dir"] = sweep_rel
+        entry["error_file"] = f"{sweep_rel}/compile_error.txt"
+    if sweep_dir is not None:
+        stale = sweep_dir / "report-model.json"
+        if stale.is_file():
+            try:
+                os.replace(stale, str(stale) + ".quarantined")
+            except OSError:
+                try:
+                    os.remove(stale)
+                except OSError as exc:
+                    # Absolute removal is impossible here (read-only
+                    # tree): do NOT pretend fail-closed held — record
+                    # the evidence and suppress the file at publish.
+                    entry["cleanup_failed"] = (
+                        f"{type(exc).__name__}: {exc}")[:300]
+                    entry["suppress_model"] = (
+                        f"{sweep_rel}/report-model.json")
+        marker = sweep_dir / "compile_error.txt"
+        if status != "refused" or not marker.is_file():
+            try:
+                marker.write_text(f"compile {status}: {detail}\n")
+            except OSError as exc:
+                entry["marker_write_failed"] = (
+                    f"{type(exc).__name__}: {exc}")[:300]
+    _record_compile(manifest, entry)
+    return False
+
+
+
 def _execute(job):
     # #231: an intent precedes ALL effects, including ledger publish.
     # Never clear it just because the body returned/raised: failures
@@ -1851,9 +2172,16 @@ def _execute_body(job):
     # one commit. A merge failure never loses the fleet (see
     # maybe_merge): publish() below still runs.
     maybe_merge(job, workdir, manifest, plan)
-    # The merge records its outcome in the in-memory manifest; refresh
-    # the workdir copy so it stays truthful (publish() writes the
-    # same final manifest into the archive dest).
+    # Issue #68: post-merge Report Model compile hook — the compiled
+    # model (or its fail-loudly refusal marker) rides the SAME
+    # archive commit as fleet + merge. A compile refusal or crash
+    # never loses the fleet (see maybe_compile): publish() below
+    # still runs.
+    maybe_compile(job, workdir, manifest, plan)
+    # The merge and compile hooks record their outcomes in the
+    # in-memory manifest; refresh the workdir copy so it stays
+    # truthful (publish() writes the same final manifest into the
+    # archive dest).
     _write_manifest_atomic(workdir, manifest)
     archive_sha = publish(job, workdir, manifest)
     if not archive_sha:
