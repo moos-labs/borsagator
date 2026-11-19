@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Deterministic report renderer (issue #69).
 
-Renders one Report Model (``borsagator-report-model/1``, issue #68)
-into one self-contained HTML file with the model embedded as a JSON
-data island, plus an MD twin. Stdlib only, no network, no LLM.
+Renders one Report Model (``borsagator-report-model/2``, issue #68;
+v1 models still render — see ``scripts/report_model.py``) into one
+self-contained HTML file with the model embedded as a JSON data
+island, plus an MD twin. Stdlib only, no network, no LLM.
 
 Usage:
     python3 scripts/render.py <report-model.json>
@@ -30,8 +31,17 @@ import os
 import re
 import sys
 
-SCHEMA = "borsagator-report-model/1"
-MODEL_VERSION = 1
+try:
+    import report_model
+except ImportError:  # imported from a checkout without scripts/ on path
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import report_model
+
+# The Report Model contract (versions, field sets, no-bump
+# schema-diff check) lives in scripts/report_model.py — the single
+# pinned authority. This module never re-states a version marker.
+SCHEMA = report_model.SCHEMA
+MODEL_VERSION = report_model.MODEL_VERSION
 METRICS_SCHEMA = "untyped-flat"
 
 # --- #77 framing v2, §6 forbidden claims (renderer prose-audit) --------
@@ -107,13 +117,20 @@ def load_model_bytes(path):
 
 
 def validate_model(model):
-    """Refusal rule (§3): schema + envelope. Raises RenderError."""
-    schema = model.get("schema")
-    if schema != SCHEMA or model.get("model_version") != MODEL_VERSION:
+    """Refusal rule (§3): schema + envelope. Raises RenderError.
+
+    The version check is the shared contract
+    (``scripts/report_model.py``): exactly (1, /1) or (2, /2),
+    mixed markers and unknown versions refused, and a field the
+    declared version does not define refused by the schema-diff
+    check — the same verdict the validator and the delta adapter
+    give. A v1 model renders with its events section saying "not
+    recorded"; it is never relabelled as v2 and never shown an
+    empty events set."""
+    problems = report_model.validate_model(model)
+    if problems:
         raise RenderError(
-            "model_schema_unsupported: expected %s (model_version %s), "
-            "found %r (model_version %r)"
-            % (SCHEMA, MODEL_VERSION, schema, model.get("model_version")))
+            "model_schema_unsupported: " + "; ".join(problems))
     if model.get("metrics_schema") != METRICS_SCHEMA:
         raise RenderError(
             "model_schema_unsupported: metrics_schema %r, expected %r"
@@ -297,6 +314,10 @@ _FLAG_RES = [
      "flag.sharia-table-missing", ("std",), None),
     (re.compile(r"^sharia-insufficient-data: (\S+)$"),
      "flag.sharia-insufficient-data", ("std",), None),
+    (re.compile(r"^disclosure-events-unavailable: (\S+): (.+)$"),
+     "flag.disclosure-events-unavailable", ("file", "reason"), None),
+    (re.compile(r"^disclosure-events-stale: (.+)$"),
+     "flag.disclosure-events-stale", ("reason",), None),
 ]
 
 # Risk-flag patterns (ensemble.py): "{type} event: {title}" plus the
@@ -1204,6 +1225,109 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
                       else "<p>%s</p>" % body)
         n_md.append("- %s" % title)
     sections.append(("news", "sec.news", "\n".join(n_html), "\n".join(n_md)))
+
+    # §8b disclosure events (#280, v2 only). A v1 model carries no
+    # block: the section says events were NOT RECORDED by that
+    # contract — never an empty events set. A v2 block renders its
+    # events verbatim (summaries are deterministic extractor
+    # templates over structured facts, like news titles); the
+    # verification wording avoids the prose-audit's forbidden
+    # "verified" ("confirmed" / "not confirmed" instead).
+    ev_block = model.get("disclosure_events")
+    e_html, e_md = [], ["## Disclosure events"]
+    if ev_block is None:
+        e_html.append('<p data-i18n="events.not-recorded">%s</p>'
+                      % esc(i18n["events.not-recorded"]["en"]))
+        e_md.append(i18n["events.not-recorded"]["en"])
+    else:
+        counts = ev_block.get("counts") or {}
+        e_html.append('<p %s>%s</p>' % (
+            tpl_attrs("events.line", {
+                "events": counts.get("events"),
+                "confirmed": counts.get("verified"),
+                "candidates": counts.get("candidates"),
+                "status": ev_block.get("status") or ""},
+                {"status": "events-status"}),
+            tpl_text(i18n, "events.line", {
+                "events": counts.get("events"),
+                "confirmed": counts.get("verified"),
+                "candidates": counts.get("candidates"),
+                "status": ev_block.get("status") or ""})))
+        e_md.append("Disclosure events: %s (%s confirmed, %s "
+                    "candidates) · status: %s"
+                    % (counts.get("events"), counts.get("verified"),
+                       counts.get("candidates"),
+                       ev_block.get("status")))
+        if ev_block.get("reason"):
+            e_html.append('<p %s>%s</p>' % (
+                tpl_attrs("events.reason", {
+                    "reason": ev_block.get("reason")}),
+                tpl_text(i18n, "events.reason", {
+                    "reason": ev_block.get("reason")})))
+            e_md.append("Reason: %s" % ev_block.get("reason"))
+        if ev_block.get("status") == "valid" \
+                and not (ev_block.get("events") or []):
+            e_html.append('<p data-i18n="events.empty">%s</p>'
+                          % esc(i18n["events.empty"]["en"]))
+            e_md.append(i18n["events.empty"]["en"])
+        for event in (ev_block.get("events") or [])[:22]:
+            etype = event.get("event_type") or ""
+            type_span = display_span(i18n, "event-type", etype, log)
+            announced = (event.get("announced") or {}).get("value")
+            verified = event.get("verification_status") == "verified"
+            status_key = "events.confirmed" if verified \
+                else "events.not-confirmed"
+            status_en = i18n[status_key]["en"]
+            status_span = ('<span data-i18n="%s">%s</span>'
+                           % (esc(status_key), esc(status_en)))
+            doc_id = event.get("source_document_id") or ""
+            url = event.get("source_url") or ""
+            rev = (event.get("document_revision_id") or "")
+            meta_en = "Announced %s · %s · Source: %s · %s" % (
+                announced or "?", status_en, doc_id,
+                rev.replace("clipped-body-sha256:", "doc-sha256:")[:28])
+            summary_en = event.get("summary_en") or ""
+            summary_ar = event.get("summary_ar") or ""
+            head = "%s %s" % (type_span, esc(summary_en)) \
+                if summary_en else "%s %s" % (type_span, esc(doc_id))
+            e_html.append("<p>%s</p>" % head)
+            if summary_ar:
+                e_html.append('<p lang="ar" dir="rtl">%s</p>'
+                              % esc(summary_ar))
+            if url:
+                source_text = tpl_text(i18n, "events.source", {
+                    "doc": doc_id}).replace(
+                        esc(doc_id),
+                        '<a href="%s">%s</a>' % (esc(url), esc(doc_id)))
+                meta_html = ('<span %s>%s</span> · %s · <span %s>%s</span> · %s'
+                             % (tpl_attrs("events.announced", {
+                                 "date": announced or "?"}),
+                                tpl_text(i18n, "events.announced", {
+                                    "date": announced or "?"}),
+                                status_span,
+                                tpl_attrs("events.source", {
+                                    "doc": doc_id}),
+                                source_text,
+                                esc(rev.replace(
+                                    "clipped-body-sha256:",
+                                    "doc-sha256:")[:28])))
+            else:
+                meta_html = esc(meta_en)
+            e_html.append("<p>%s</p>" % meta_html)
+            e_md.append("- [%s] %s" % (etype, summary_en or doc_id))
+            if summary_ar:
+                e_md.append("  - %s" % summary_ar)
+            e_md.append("  - %s" % meta_en)
+            reasons = event.get("candidate_reasons") or []
+            if reasons:
+                # Label toggles EN/AR; the reasons are extractor
+                # data and render verbatim, like news titles.
+                e_html.append('<p><span data-i18n="events.candidate-label">%s</span> — %s</p>'
+                              % (esc(i18n["events.candidate-label"]["en"]),
+                                 esc("; ".join(reasons))))
+                e_md.append("  - candidate: %s" % "; ".join(reasons))
+    sections.append(("events", "sec.events", "\n".join(e_html),
+                     "\n".join(e_md)))
 
     # §9 sentiment + fundamentals.
     s_html, s_md = [], ["## Sentiment + fundamentals"]

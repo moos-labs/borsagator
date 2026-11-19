@@ -395,14 +395,24 @@ def test_framing_bilingual_everywhere():
 
 
 def test_schema_unchanged_additive_block():
-    # Design decision (issue #170): the sharia block is additive
-    # and the schema stays borsagator-report-model/1 -- every
-    # existing consumer reads named fields only.
+    # Historical v1 exception (issue #170), BOUNDED by #280: the
+    # sharia block was added under v1 without a bump. A v1 model
+    # carrying it still validates -- but the exception is frozen,
+    # not a general override: the current compiler emits v2, and
+    # no further field may be added to v1 silently (strict D-7
+    # from v2 on; see scripts/report_model.py).
     _tmp, repo, sweep, profiles = fixture_env()
     model = compile_fixture(repo, sweep, profiles, ["AAOIFI"])
-    assert model["schema"] == "borsagator-report-model/1"
-    assert model["model_version"] == 1
+    assert model["schema"] == "borsagator-report-model/2"
+    assert model["model_version"] == 2
     assert compile_model.validate_model_schema(model) == []
+    # Frozen v1 + sharia still validates (the bounded exception):
+    # the same model relabelled (1, /1) without the v2-only block.
+    v1 = dict(model)
+    v1["schema"] = "borsagator-report-model/1"
+    v1["model_version"] = 1
+    del v1["disclosure_events"]
+    assert compile_model.validate_model_schema(v1) == []
 
 
 def test_view_carries_section():
@@ -464,9 +474,8 @@ def main():
     check("not-a-fatwa framing present in Arabic and English, "
           "section-wide and per standard",
           test_framing_bilingual_everywhere)
-    check("schema stays borsagator-report-model/1 (additive "
-          "block) and the model validates",
-          test_schema_unchanged_additive_block)
+    check("v2 emission; frozen v1+sharia still validates (bounded "
+          "additive exception)", test_schema_unchanged_additive_block)
     check("delta.model_to_view carries the section for the "
           "renderer", test_view_carries_section)
     check("CLI: --sharia-standards compiles; an unknown standard "

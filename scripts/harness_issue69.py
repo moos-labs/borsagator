@@ -347,7 +347,8 @@ def case1_golden(ctx):
     h = open(os.path.join(out, "report.html"), encoding="utf-8").read()
     m = open(os.path.join(out, "report.md"), encoding="utf-8").read()
     vis = visible_text(h)
-    check("1 14 sections + header (§2d §0–§15)", len(re.findall(r'<section id="', h)) == 14,
+    check("1 15 sections + header (§2d §0–§15 + events §8b)",
+          len(re.findall(r'<section id="', h)) == 15,
           "sections found: %d" % len(re.findall(r'<section id="', h)))
     check("1 header ticker/date", "POUL.CA" in vis and "2026-11-16" in vis)
     check("1 base 8.02", "8.02" in vis)

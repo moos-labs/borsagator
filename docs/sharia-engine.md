@@ -205,8 +205,11 @@ the selection as `--sharia-standards AAOIFI,EGX33`; no selection
 means all implemented standards, and an unknown or unimplemented
 standard refuses the compile instead of being silently dropped.
 `delta.model_to_view` carries the block through to the renderer
-unread by the diff core (the `levels` pattern). The block is
-additive, so the model schema stays `borsagator-report-model/1`.
+unread by the diff core (the `levels` pattern). The block was added
+under v1 as a HISTORICAL exception (issue #170, frozen by #280):
+v1 models may carry it, but no further field may be added to v1
+silently — strict D-7 governs from v2 on (see
+`scripts/report_model.py`).
 Tests: `scripts/test_compile_model_sharia.py`.
 
 ## Purification calculator (issue #171)

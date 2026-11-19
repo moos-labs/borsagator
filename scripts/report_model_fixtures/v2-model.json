@@ -1,0 +1,2402 @@
+{
+  "archive_commit": "6406cf714e4d8fcde63f285bad60bb98a2646e49",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "d94aa6e9533e62718b10a656d021c13cdfd78ee035e31aa568172c60f82229c0",
+      "family-agent.json": "a57ae87454b889320432654b02c50154fb17a5caa8ee443dd2d18cb528c215ee",
+      "family-fundamentals.json": "fef87ec0d0db62cbe46d3fcb86b5e2a60118dcda8b11bf9075a4eff5324fd4b9",
+      "family-price-forecast.json": "e580e56adc17391cc4b3177b88b65f65f5e474ad7317f00f3980b8c31a521e43",
+      "family-sentiment.json": "d2278216a54d49e32ab4c2c685c7aa36ce2b12e2692593f5645e188cae941d3f",
+      "family-technicals.json": "75c5f58cfde337f7aecb8abdab37a781a81acc68b147c8ce31056a2f581a66bb",
+      "kronos-alone.json": "5903424ee184e13cddc91e44a4bac285f0691c77d989328d549f149fcf416c58",
+      "raw-llm-cohere.json": "ae6e58bac9140d911913cde355c6652db74d9a4d1e94cbd75e68b07b9ce91c16"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [
+    {
+      "date_basis": "entitlement+1",
+      "dps": 1.8999999998,
+      "entitlement_end": "2026-11-15",
+      "ex_date": "2026-11-16",
+      "mechanical_pct": -24.68,
+      "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+      "type": "dividend"
+    }
+  ],
+  "date": "2026-11-19",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": "05efef83ce166443",
+    "counts": {
+      "by_type": {
+        "board_decision": 1,
+        "dividend": 1
+      },
+      "by_verification": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "candidates": 1,
+      "events": 2,
+      "stale": 0,
+      "verified": 1
+    },
+    "events": [
+      {
+        "announced": {
+          "basis": "standalone-date-line",
+          "derived_candidate": null,
+          "derived_rule": null,
+          "evidence": {
+            "end": 118,
+            "field": "announced",
+            "kind": "verbatim",
+            "span": "02/11/2026",
+            "start": 108
+          },
+          "value": "2026-11-02"
+        },
+        "candidate_reasons": [],
+        "config_hash": "05efef83ce166443",
+        "document_revision_id": "clipped-body-sha256:c16e023a5befec5a7ae9ead33ced15895e8554ab1c82cc060bef11aa8b353fad",
+        "duplicate_links": [],
+        "event_id": "ev_bf7532c5c9185f9f113d",
+        "event_revision_id": "rev_b50059412c729279acb5",
+        "event_type": "dividend",
+        "evidence": [
+          {
+            "end": 118,
+            "field": "announced",
+            "kind": "verbatim",
+            "span": "02/11/2026",
+            "start": 108
+          },
+          {
+            "end": 236,
+            "field": "payload.coupon_number",
+            "kind": "verbatim",
+            "span": "42",
+            "start": 234
+          },
+          {
+            "end": 264,
+            "field": "payload.amount_per_share",
+            "kind": "verbatim",
+            "span": "1.8999999998",
+            "start": 252
+          },
+          {
+            "end": 296,
+            "field": "payload.payout_date",
+            "kind": "verbatim",
+            "span": "18/11/2026",
+            "start": 286
+          },
+          {
+            "end": 326,
+            "field": "payload.entitlement_end",
+            "kind": "verbatim",
+            "span": "15/11/2026",
+            "start": 316
+          },
+          {
+            "end": 366,
+            "field": "payload.ex_date",
+            "kind": "verbatim",
+            "span": "16/11/2026",
+            "start": 356
+          }
+        ],
+        "extraction_status": "extracted",
+        "extractor_version": "disclosure-events/1.0.0",
+        "issuer": {
+          "isin": "EGS02051C018",
+          "name_ar": "القاهرة للدواجن",
+          "name_en": null,
+          "ticker": "POUL.CA"
+        },
+        "payload": {
+          "amount_per_share": {
+            "currency": "EGP",
+            "evidence": {
+              "end": 264,
+              "field": "payload.amount_per_share",
+              "kind": "verbatim",
+              "span": "1.8999999998",
+              "start": 252
+            },
+            "raw": "قيمة الكوبون : 1.8999999998 جنيه",
+            "scale": "one",
+            "value": "1.8999999998"
+          },
+          "coupon_number": "42",
+          "currency": "EGP",
+          "entitlement_end": {
+            "basis": "verbatim:تاريخ نهاية الحق",
+            "derived_candidate": null,
+            "derived_rule": null,
+            "evidence": {
+              "end": 326,
+              "field": "payload.entitlement_end",
+              "kind": "verbatim",
+              "span": "15/11/2026",
+              "start": 316
+            },
+            "value": "2026-11-15"
+          },
+          "ex_date": {
+            "basis": "verbatim:تاريخ تحريك الحدود السعرية",
+            "derived_candidate": null,
+            "derived_rule": null,
+            "evidence": {
+              "end": 366,
+              "field": "payload.ex_date",
+              "kind": "verbatim",
+              "span": "16/11/2026",
+              "start": 356
+            },
+            "value": "2026-11-16"
+          },
+          "payout_date": {
+            "basis": "verbatim:تاريخ التوزيع",
+            "derived_candidate": null,
+            "derived_rule": null,
+            "evidence": {
+              "end": 296,
+              "field": "payload.payout_date",
+              "kind": "verbatim",
+              "span": "18/11/2026",
+              "start": 286
+            },
+            "value": "2026-11-18"
+          },
+          "record_date": {
+            "basis": "not-stated-in-source",
+            "derived_candidate": "2026-11-17",
+            "derived_rule": "T+2 settlement from entitlement_end (UNVALIDATED — candidate only, not a fact)",
+            "evidence": null,
+            "value": null
+          }
+        },
+        "schema_version": 1,
+        "source_document_id": "egx:296893",
+        "source_kind": "primary",
+        "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+        "stale": false,
+        "subtype": "cash_dividend",
+        "summary_ar": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+        "summary_en": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15; ex-date 2026-11-16; payout 2026-11-18.",
+        "summary_meta": {
+          "generator": "template-v1",
+          "language": "en",
+          "origin": "derived-from-facts"
+        },
+        "verification_status": "verified"
+      },
+      {
+        "announced": {
+          "basis": "standalone-date-line",
+          "derived_candidate": null,
+          "derived_rule": null,
+          "evidence": {
+            "end": 134,
+            "field": "announced",
+            "kind": "verbatim",
+            "span": "12/11/2026",
+            "start": 124
+          },
+          "value": "2026-11-12"
+        },
+        "candidate_reasons": [
+          "decision details in attachment, not harvested"
+        ],
+        "config_hash": "05efef83ce166443",
+        "document_revision_id": "clipped-body-sha256:e6f338a960961346ac3ffcabd11fc2e5873a31026c0aa018e37ce46f12306e78",
+        "duplicate_links": [],
+        "event_id": "ev_a44eee4eb988411805a4",
+        "event_revision_id": "rev_87f6a02fd55966677f5f",
+        "event_type": "board_decision",
+        "evidence": [
+          {
+            "end": 134,
+            "field": "announced",
+            "kind": "verbatim",
+            "span": "12/11/2026",
+            "start": 124
+          },
+          {
+            "end": 290,
+            "field": "payload.meeting_date",
+            "kind": "verbatim",
+            "span": "11/11/2026",
+            "start": 280
+          }
+        ],
+        "extraction_status": "candidate",
+        "extractor_version": "disclosure-events/1.0.0",
+        "issuer": {
+          "isin": "EGS02051C018",
+          "name_ar": "القاهرة للدواجن",
+          "name_en": null,
+          "ticker": "POUL.CA"
+        },
+        "payload": {
+          "assembly_date": {
+            "basis": "not-stated",
+            "derived_candidate": null,
+            "derived_rule": null,
+            "evidence": null,
+            "value": null
+          },
+          "assembly_time": null,
+          "decision_subtype": "board_decisions",
+          "meeting_date": {
+            "basis": "verbatim:بجلسته المنعقدة بتاريخ",
+            "derived_candidate": null,
+            "derived_rule": null,
+            "evidence": null,
+            "value": "2026-11-11"
+          },
+          "state": "unknown",
+          "subject_ar": null,
+          "subject_en": null
+        },
+        "schema_version": 1,
+        "source_document_id": "egx:297436",
+        "source_kind": "primary",
+        "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297436",
+        "stale": false,
+        "subtype": "board_decisions",
+        "summary_ar": "القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة",
+        "summary_en": null,
+        "summary_meta": {
+          "generator": "template-v1",
+          "language": "en",
+          "origin": "derived-from-facts"
+        },
+        "verification_status": "unverified"
+      }
+    ],
+    "extractor_version": "disclosure-events/1.0.0",
+    "feed_report": {
+      "by_extraction_status": {
+        "candidate": 1,
+        "extracted": 1
+      },
+      "by_type": {
+        "board_decision": 1,
+        "dividend": 1
+      },
+      "by_verification_status": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "candidates": 1,
+      "documents": 2,
+      "duplicate_documents": 0,
+      "duplicate_links": 0,
+      "events": 2,
+      "stale": 0,
+      "with_reasons": 1
+    },
+    "feed_schema_version": 1,
+    "quarter": {
+      "end": "2026-11-19",
+      "start": "2026-08-19"
+    },
+    "reason": null,
+    "source": "disclosure-events/POUL-events.json",
+    "status": "valid"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.503,
+          "n": 13,
+          "skill": -0.497
+        },
+        "sentiment": {
+          "factor": 1.069,
+          "n": 14,
+          "skill": 0.069
+        },
+        "technicals": {
+          "factor": 0.717,
+          "n": 14,
+          "skill": -0.283
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.503,
+        "sentiment": 1.069,
+        "technicals": 0.717
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "66aa7dc61d55e677b090ff077915da1a93077bad91785a74303aa03b63babe59",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-18",
+    "base_price": 7.7,
+    "base_source": "egx-data/egxpy_poul.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [
+      {
+        "date_basis": "entitlement+1",
+        "dps": 1.8999999998,
+        "entitlement_end": "2026-11-15",
+        "ex_date": "2026-11-16",
+        "mechanical_pct": -24.68,
+        "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+        "type": "dividend"
+      }
+    ],
+    "date": "2026-11-19",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.402,
+      "sentiment": -0.051,
+      "technicals": 0.397
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 6.8,
+        "families": {
+          "price-forecast": 0.697,
+          "sentiment": -0.051,
+          "technicals": 0.397
+        },
+        "horizon_short": false,
+        "net_score": 0.319,
+        "range_high_pct": 21.72,
+        "range_low_pct": -8.12,
+        "trading_sessions": 1
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 16.79,
+        "families": {
+          "fundamentals": 0.4,
+          "price-forecast": 0.402,
+          "sentiment": -0.051,
+          "technicals": 0.397
+        },
+        "horizon_short": false,
+        "net_score": 0.346,
+        "range_high_pct": 69.24,
+        "range_low_pct": -35.65,
+        "trading_sessions": 14
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 13.94,
+        "families": {
+          "price-forecast": 0.845,
+          "sentiment": -0.051,
+          "technicals": 0.397
+        },
+        "horizon_short": false,
+        "net_score": 0.331,
+        "range_high_pct": 40.57,
+        "range_low_pct": -12.69,
+        "trading_sessions": 3
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-18",
+      "base_source_used": "egx-data/egxpy_poul.csv",
+      "base_stale": false,
+      "base_used": 7.7,
+      "common_date": "2026-11-16",
+      "latest_collected_date": "2026-11-18",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_poul.csv": 8.02,
+        "openbb/poul_ca.csv": 8.020000457763672,
+        "pandas-ta/indicators.csv": 8.020000457763672,
+        "talib/indicators.csv": 8.020000457763672,
+        "yahooquery/poul.ca.csv": 8.020000457763672
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.25,
+        "max3": 3.24
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.66,
+    "sigma_daily": 0.068,
+    "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0367, σ10=0.0680)",
+    "ticker": "POUL.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.402,
+    "sentiment": -0.051,
+    "technicals": 0.397
+  },
+  "finished": "2026-11-19T06:22:55.030036+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-16 vs base_date 2026-11-18",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-stale: profile as_of 2026-11-13 base 10.15 != sweep 2026-11-19 base 7.7",
+    "sharia-insufficient-data: AAOIFI",
+    "sharia-table-missing: DJIM",
+    "sharia-insufficient-data: EGX33",
+    "sharia-insufficient-data: FTSE",
+    "sharia-insufficient-data: ISLAMICLY",
+    "sharia-insufficient-data: MSCI",
+    "sharia-insufficient-data: MSCI_M",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 6.8,
+      "families": {
+        "price-forecast": 0.697,
+        "sentiment": -0.051,
+        "technicals": 0.397
+      },
+      "horizon_short": false,
+      "net_score": 0.319,
+      "range_high_pct": 21.72,
+      "range_low_pct": -8.12,
+      "trading_sessions": 1
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 16.79,
+      "families": {
+        "fundamentals": 0.4,
+        "price-forecast": 0.402,
+        "sentiment": -0.051,
+        "technicals": 0.397
+      },
+      "horizon_short": false,
+      "net_score": 0.346,
+      "range_high_pct": 69.24,
+      "range_low_pct": -35.65,
+      "trading_sessions": 14
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 13.94,
+      "families": {
+        "price-forecast": 0.845,
+        "sentiment": -0.051,
+        "technicals": 0.397
+      },
+      "horizon_short": false,
+      "net_score": 0.331,
+      "range_high_pct": 40.57,
+      "range_low_pct": -12.69,
+      "trading_sessions": 3
+    }
+  },
+  "job": "sweep-lite POUL.CA market=EGX",
+  "job_shape": "sweep-lite POUL.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 4,
+      "excluded_flagged": 8,
+      "forecasts": 75,
+      "invalid": 6,
+      "matured": 22,
+      "pending": 47,
+      "sweeps": 48,
+      "sweeps_with_ensemble": 27
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "66aa7dc61d55e677b090ff077915da1a93077bad91785a74303aa03b63babe59",
+    "weights_file_sha256_at_compile": "66aa7dc61d55e677b090ff077915da1a93077bad91785a74303aa03b63babe59",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "descriptive-conditional levels (D2); not a buy/sell instruction",
+    "resistance": 10.8239,
+    "support": 6.7229
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 10,
+    "disclosure_items": [
+      {
+        "date": "Sun, 08 Nov 2026 06:51:05 GMT",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297135",
+        "key_type": "resolved_url",
+        "source": "معلومات مباشر",
+        "title": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297563",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297561",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297436",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة"
+      },
+      {
+        "date": "2026-11-05",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297092",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - بيان من الهيئة العامة للرقابة المالية"
+      },
+      {
+        "date": "2026-11-04",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297015",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (موثق)"
+      },
+      {
+        "date": "2026-11-02",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي"
+      },
+      {
+        "date": "2026-10-29",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296712",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - قرار لجنة القيد"
+      },
+      {
+        "date": "2026-10-29",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296706",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - قرار لجنة القيد"
+      },
+      {
+        "date": "2026-10-27",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296545",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (غير موثق)"
+      }
+    ],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": "2026-11-08T06:51:05Z",
+    "latest_disclosure_date_raw": "Sun, 08 Nov 2026 06:51:05 GMT",
+    "latest_news_date": "2026-11-18T07:04:00Z",
+    "latest_news_date_raw": "Wed, 18 Nov 2026 07:04:00 GMT",
+    "news_count": 29,
+    "news_items": [
+      {
+        "date": "Wed, 18 Nov 2026 07:04:00 GMT",
+        "identity_key": "https://www.maspero.eg/art-and-culture/2026/11/18/1006586/%D8%A7%D9%84%D9%85%D9%88%D8%B3%D9%8A%D9%82%D9%8A-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85%D9%8A-%D8%A8%D9%88%D9%84-%D8%AF%D9%8A%D9%81%D9%8A%D8%B3-%D9%81%D9%8A-%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D8%AC%D8%B2%D8%A1-%D9%85%D9%86-%D8%A7%D9%84%D8%AD%D9%83%D8%A7%D9%8A%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D9%86%D9%85%D8%A7%D8%A6%D9%8A%D8%A9",
+        "key_type": "resolved_url",
+        "source": "الهيئة الوطنية للإعلام",
+        "title": "الموسيقي العالمي بول ديفيس في مهرجان القاهرة: الصوت جزء من الحكاية السينمائية - الهيئة الوطنية للإعلام"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 17:53:26 GMT",
+        "identity_key": "d332e4dff502cd9a",
+        "key_type": "title-date-hash",
+        "source": "وطنى",
+        "title": "“سيساكو” و”بول ديفيز” يتصدران فعاليات أيام القاهرة لصناعة السينما - وطنى"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 15:11:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/17/%D8%A8%D9%88%D9%84-%D8%AF%D9%8A%D9%81%D9%8A%D8%B2-%D8%A8%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D9%86%D9%85%D8%A7%D8%A6%D9%89-%D8%A7%D9%83%D8%AA%D8%B4%D9%81%D8%AA-%D8%B4%D8%BA%D9%81%D9%89-%D8%A8%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D9%81%D9%89-%D8%B3%D9%86/7622536",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "بول ديفيز بالقاهرة السينمائى: اكتشفت شغفى بتصميم الصوت فى سن الـ15 - اليوم السابع"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 15:09:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/17/%D8%A8%D9%88%D9%84-%D8%AF%D9%8A%D9%81%D9%8A%D8%B2-%D8%A8%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D9%86%D9%85%D8%A7%D8%A6%D9%8A-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D8%B5%D9%88%D8%AA-%D8%B3%D8%A7%D8%B9%D8%AF-%D9%81%D9%8A-%D8%A5%D9%82%D9%86%D8%A7%D8%B9/7622535",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "بول ديفيز بمهرجان القاهرة السينمائي: تصميم الصوت ساعد في إقناع المنتجين برؤية مخرجة We Need to Talk About Kevin - اليوم السابع"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 15:09:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/17/%D8%A8%D9%88%D9%84-%D8%AF%D9%8A%D9%81%D9%8A%D8%B2-%D8%A8%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D9%86%D9%85%D8%A7%D8%A6%D9%8A-%D8%AF%D9%8A%D9%81%D9%8A%D8%AF-%D9%84%D9%8A%D9%86%D8%B4-%D9%85%D8%B5%D8%AF%D8%B1-%D8%A5%D9%84%D9%87%D8%A7%D9%85%D9%8A-%D9%88%D8%A3%D8%B3%D8%AA%D8%B9%D9%8A%D9%86/7622534",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "بول ديفيز بمهرجان القاهرة السينمائي: ديفيد لينش مصدر إلهامي وأستعين باللوحات الفنية - اليوم السابع"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 09:45:37 GMT",
+        "identity_key": "b0fd46081976841d",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "بول ديفيس في ندوة بمهرجان القاهرة السينمائي.. مهندس الصوت البريطاني يكشف كيفية توظيف المؤثرات - أهل مصر"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 14:51:18 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/7796841/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 13:18:04 GMT",
+        "identity_key": "https://www.youlyou.com/95817",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "القاهرة للدواجن تتصدر الأسهم الأكثر انخفاضا بالبورصة المصرية بنسبة 17% - https://www.youlyou.com/"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 10:32:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/16/%D8%B3%D9%82%D9%88%D8%B7-%D9%85%D9%81%D8%A7%D8%AC%D8%A6-%D9%84%D8%A3%D8%B3%D9%87%D9%85-%D8%A7%D9%84%D9%85%D8%B6%D8%A7%D8%B1%D8%A8%D8%A7%D8%AA-%D8%A8%D8%A3%D9%83%D8%AB%D8%B1-%D9%85%D9%86-2-%D9%88%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-%D8%AA%D9%82%D9%88%D8%AF/7620545",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "سقوط مفاجئ لأسهم المضاربات بأكثر من 2%.. والقاهرة للدواجن تقود التراجع بالبورصة - اليوم السابع"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 01:58:26 GMT",
+        "identity_key": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/cairo-poultry-stock-nine-month-profit-drops-38-3/70518654",
+        "key_type": "resolved_url",
+        "source": "ad-hoc-news.de",
+        "title": "Cairo Poultry stock: Nine-month profit drops 38.3% - ad-hoc-news.de"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 14:08:47 GMT",
+        "identity_key": "https://alboslanews.com/%D8%A3%D8%B3%D9%88%D8%A7%D9%82-%D9%85%D8%A7%D9%84/%D8%A7%D9%84%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D8%AA%D8%B3%D9%85%D8%AD-%D8%A8%D8%AA%D8%AD%D8%B1%D9%83-%D8%B3%D8%B9%D8%B1-%D8%B3%D9%87%D9%85-%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9-%D9%84%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86-3519-%D9%87%D8%A8%D9%88%D8%B7%D8%A7%D9%8B-%D9%88%D8%AA%D8%AD%D8%AF%D8%AF-2709-%D9%84%D9%84%D8%A5%D9%8A%D9%82%D8%A7%D9%81-%D8%A7%D9%84%D9%85%D8%A4%D9%82%D8%AA-430818",
+        "key_type": "resolved_url",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "البورصة تسمح بتحرك سعر سهم القاهرة للدواجن 35.19% هبوطاً وتحدد 27.09% للإيقاف المؤقت - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 10:42:05 GMT",
+        "identity_key": "8e82e7ca5875f020",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "بورصة مصر تعلن الحدود السعرية لتحركات سهم \"القاهرة للدواجن\" - Mubasher"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:51:39 GMT",
+        "identity_key": "c1c49246a2a73f0a",
+        "key_type": "title-date-hash",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "اليوم.. نهاية حق الحصول على التوزيع النقدي لـ القاهرة للدواجن - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 07:54:22 GMT",
+        "identity_key": "fcfee2a2b739bc59",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "اليوم.. نهاية حق توزيع 1.9 جنيه لسهم \"القاهرة للدواجن\" - جريدة البورصة"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 10:12:35 GMT",
+        "identity_key": "6a81d00f35bc7d0e",
+        "key_type": "title-date-hash",
+        "source": "https://www.youlyou.com/",
+        "title": "رغم ارتفاع الإيرادات.. أرباح القاهرة للدواجن تهبط 39% بأول 9 شهور من 2026 - https://www.youlyou.com/"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 09:07:35 GMT",
+        "identity_key": "064940ac115e3859",
+        "key_type": "title-date-hash",
+        "source": "عالم المال",
+        "title": "القاهرة للدواجن تسجل 1.43 مليار جنيه أرباحًا خلال 9 أشهر - عالم المال"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:55:38 GMT",
+        "identity_key": "6a8e84b2ad163990",
+        "key_type": "title-date-hash",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "أرباح القاهرة للدواجن تنخفض إلى 1.4 مليار جنيه في 9 أشهر - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:53:23 GMT",
+        "identity_key": "8cbb6dfba3f79e00",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "أرباح القاهرة للدواجن تهبط 39.1% خلال 9 أشهر رغم نمو الإيرادات إلى 12.6 مليار جنيه - جريدة المال"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:08:08 GMT",
+        "identity_key": "48ad775afada3db8",
+        "key_type": "title-date-hash",
+        "source": "TradingView",
+        "title": "Cairo Poultry Q3 Consol Profit EGP 152 Million - TradingView"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 04:39:22 GMT",
+        "identity_key": "5be2c8c19e1cf6a4",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "أرباح القاهرة للدواجن تتراجع 39% خلال 9 أشهر رغم نمو الإيرادات - Mubasher"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 14:28:33 GMT",
+        "identity_key": "fbab408da9869dfa",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "المنصورة للدواجن تقفز 7.28% وتتصدر ارتفاعات قطاع الأغذية بالبورصة - جريدة المال"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 13:40:05 GMT",
+        "identity_key": "437c9f2fe0c2981a",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "سهم المنصورة للدواجن يتصدر قائمة الأسهم المرتفعة بقطاع الأغذية والمشروبات والتبغ بالبورصة - جريدة المال"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 10:51:22 GMT",
+        "identity_key": "2a3fa4d431426b2c",
+        "key_type": "title-date-hash",
+        "source": "اخبارك نت",
+        "title": "الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» بشأن زيادة رأس المال المرخص إلى ملياري جنيه | أموال الغد - اخبارك نت"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "c6144588d025bcb3",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "لعبة المليارات في البورصة.. \"القاهرة للدواجن\" تقفز برأس المال إلى 2 مليار جنيه - اليوم السابع"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "52e6512d4077661c",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "الرقابة المالية تقر إجراءات زيادة رأسمال \"القاهرة للدواجن\" وإضافة أنشطة - Mubasher"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "3360407399cb02d6",
+        "key_type": "title-date-hash",
+        "source": "عالم المال",
+        "title": "الرقابة المالية توافق على نشر إفصاح «القاهرة للدواجن» لزيادة رأسمالها إلى ملياري جنيه - عالم المال"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "387fef5dec1b3fb2",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "البورصة تعلن نهاية حق وموعد توزيع كوبون \"القاهرة للدواجن\" - جريدة المال"
+      },
+      {
+        "date": "Sat, 31 Oct 2026 00:02:07 GMT",
+        "identity_key": "9d5b80c62c6ef3b1",
+        "key_type": "title-date-hash",
+        "source": "ad-hoc-news.de",
+        "title": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de"
+      },
+      {
+        "date": "Sat, 24 Oct 2026 07:00:00 GMT",
+        "identity_key": "71dc4142cd214065",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance",
+        "title": "Billionaire Paul Tudor Jones warns AI and IPOs could hit stocks hard in 2027. Protect your nest egg now - Yahoo Finance"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-18",
+    "base_price": 7.7,
+    "base_source": "egx-data/egxpy_poul.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-18",
+      "base_source_used": "egx-data/egxpy_poul.csv",
+      "base_stale": false,
+      "base_used": 7.7,
+      "common_date": "2026-11-16",
+      "latest_collected_date": "2026-11-18",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_poul.csv": 8.02,
+        "openbb/poul_ca.csv": 8.020000457763672,
+        "pandas-ta/indicators.csv": 8.020000457763672,
+        "talib/indicators.csv": 8.020000457763672,
+        "yahooquery/poul.ca.csv": 8.020000457763672
+      }
+    },
+    "sessions_per_calendar_day": 0.66,
+    "sigma_daily": 0.068,
+    "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0367, σ10=0.0680)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 7.7,
+      "last_date": "2026-11-18",
+      "last_high": 7.86,
+      "last_low": 7.57,
+      "last_open": 7.57,
+      "last_volume": 8356491.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_poul.csv",
+      "stale": false
+    },
+    {
+      "last_close": 7.570000171661377,
+      "last_date": "2026-11-17",
+      "last_high": 8.09000015258789,
+      "last_low": 7.510000228881836,
+      "last_open": 8.020000457763672,
+      "last_volume": 14097704.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/POUL_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 7.570000171661377,
+      "last_date": "2026-11-17",
+      "last_high": 8.09000015258789,
+      "last_low": 7.510000228881836,
+      "last_open": 8.020000457763672,
+      "last_volume": 14097704.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 7.570000171661377,
+      "last_date": "2026-11-17",
+      "last_high": 8.09000015258789,
+      "last_low": 7.510000228881836,
+      "last_open": 8.020000457763672,
+      "last_volume": 14097704.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 8.020000457763672,
+      "last_date": "2026-11-16",
+      "last_high": 8.390000343322754,
+      "last_low": 8.010000228881836,
+      "last_open": 10.0,
+      "last_volume": 32041362.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/POUL.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "sched-2026-11-19",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "c072263d95a0904b7994cd92883a0f9e8cae5185",
+    "merged_by": "worker",
+    "run_id": "sched-2026-11-19",
+    "source_runs": [
+      "worker-runs/2026-11-19/sched-2026-11-19"
+    ],
+    "worker_code_sha": "c072263d95a0904b7994cd92883a0f9e8cae5185",
+    "worker_release_sha": "c072263d95a0904b7994cd92883a0f9e8cae5185"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": "2026-11-14T23:44:23Z",
+    "fit": {
+      "dividend_shrunk": 3.46,
+      "global_median_r5_adj": 0.99,
+      "shrinkage_k": 5
+    },
+    "present": true,
+    "ticker": "POUL.CA",
+    "walk_forward": {
+      "baseline_hits": 0,
+      "hits": 0,
+      "purged": 4,
+      "test": 6,
+      "train": 3
+    }
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.25,
+      "max3": 3.24
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "purification ratio unavailable (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "standard defines no purification rule",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "purification ratio unavailable (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "purification ratio unavailable (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "purification ratio unavailable (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "purification ratio unavailable (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": "avg36m",
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "activity.classification",
+          "avg_market_value_36m",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_revenue"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {
+          "denominator_variant": "avg36m"
+        },
+        "purification": {
+          "defined": true,
+          "notes_ar": "التطهير واجب وفق أيوفي عن الجزء غير المتوافق من الدخل. النسبة هي حصة كل توزيع واجبة التطهير، وقيمة السهم هي الدخل غير المتوافق المنسوب لسهم واحد خلال الفترة المالية.",
+          "notes_en": "Purification is mandatory under AAOIFI for the non-permissible portion of income. The ratio is the share of each dividend that must be purified; the per-share figure is the non-permissible income attributable to one share over the statement period.",
+          "per_share": null,
+          "per_share_definition": "non_compliant_revenue / shares_outstanding",
+          "ratio": null,
+          "ratio_definition": "non_compliant_revenue / total_revenue"
+        },
+        "ratios": [
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "الدخل غير المتوافق / إجمالي الإيرادات",
+            "label_en": "Non-permissible income / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "market_value[avg36m]:avg_market_value_36m",
+            "error": null,
+            "id": "interest_bearing_debt",
+            "label_ar": "الديون ذات الفوائد / القيمة السوقية",
+            "label_en": "Interest-bearing debt / market value",
+            "missing": [
+              "interest_bearing_debt",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.3,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "market_value[avg36m]:avg_market_value_36m",
+            "error": null,
+            "id": "interest_bearing_assets",
+            "label_ar": "الأصول والودائع ذات الفوائد / القيمة السوقية",
+            "label_en": "Interest-bearing assets and deposits / market value",
+            "missing": [
+              "interest_bearing_assets",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.3,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "activity.classification",
+          "avg_market_value_review_period",
+          "cash_and_liquid_assets",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_assets",
+          "total_revenue"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "notes_ar": "لا تنشر البورصة المصرية قاعدة تطهير خاصة بمؤشر EGX33؛ التطهير متروك للمستثمر. لذلك لا يعرض هذا المعيار نسبة تطهير ولا قيمة تطهير للسهم.",
+          "notes_en": "EGX publishes no purification rule for EGX33; purification is left to the investor. This rule set therefore reports no purification ratio and no per-share purification figure.",
+          "per_share": null,
+          "per_share_definition": null,
+          "ratio": null,
+          "ratio_definition": null
+        },
+        "ratios": [
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "الدخل من أنشطة غير متوافقة / إجمالي الإيرادات",
+            "label_en": "Income from non-compliant activities / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "max(total_assets, avg_market_value_review_period)",
+            "error": null,
+            "id": "interest_bearing_borrowing",
+            "label_ar": "الاقتراض بفوائد / الأكبر من (إجمالي الأصول، متوسط القيمة السوقية في فترة المراجعة)",
+            "label_en": "Interest-bearing borrowing / greater of (total assets, average market value in the review period)",
+            "missing": [
+              "interest_bearing_debt",
+              "total_assets",
+              "avg_market_value_review_period"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.33,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "max(total_assets, avg_market_value_review_period)",
+            "error": null,
+            "id": "interest_bearing_investments",
+            "label_ar": "الاستثمارات ذات الفوائد / الأكبر من (إجمالي الأصول، متوسط القيمة السوقية في فترة المراجعة)",
+            "label_en": "Interest-bearing investments / greater of (total assets, average market value in the review period)",
+            "missing": [
+              "interest_bearing_assets",
+              "total_assets",
+              "avg_market_value_review_period"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.33,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "liquid_assets",
+            "label_ar": "الأصول السائلة / إجمالي الأصول",
+            "label_en": "Liquid assets / total assets",
+            "missing": [
+              "cash_and_liquid_assets",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "cash_and_liquid_assets",
+            "passed": null,
+            "threshold": 0.7,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "accounts_receivable",
+          "activity.classification",
+          "cash_and_liquid_assets",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_assets",
+          "total_revenue"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": true,
+          "notes_ar": "تحسب ياسار نسبة التوزيعات الموزعة المستمدة من دخل الفوائد أو الأنشطة المحظورة وتتيحها للمستخدمين النهائيين ليخصموها من دخل توزيعاتهم ويخرجوها صدقة؛ ولا تُجرى تعديلات التطهير داخل مؤشر العائد الكلي نفسه (الورقة البحثية لمنهجية FTSE الشرعية). لا ينشر FTSE قيمة تطهير للسهم الواحد.",
+          "notes_en": "Yasaar calculates the percentage of distributed dividends derived from interest income or prohibited activities and makes it available to end users, so investors can deduct that share of their dividend income and give it to charity; dividend cleansing adjustments are not made within the total return index itself (FTSE Shariah methodology white paper). FTSE publishes no per-share purification figure, so per_share_definition is null and no per-share figure is produced.",
+          "per_share": null,
+          "per_share_definition": null,
+          "ratio": null,
+          "ratio_definition": "non_compliant_revenue / total_revenue"
+        },
+        "ratios": [
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "إجمالي دخل الفوائد والأنشطة غير المتوافقة / إجمالي الإيرادات",
+            "label_en": "Total interest and non-compliant activities income / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "total_debt",
+            "label_ar": "الديون / إجمالي الأصول",
+            "label_en": "Debt / total assets",
+            "missing": [
+              "interest_bearing_debt",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.33333,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "cash_and_interest_bearing_items",
+            "label_ar": "النقد والبنود ذات الفوائد / إجمالي الأصول",
+            "label_en": "Cash and interest bearing items / total assets",
+            "missing": [
+              "cash_and_liquid_assets",
+              "interest_bearing_assets",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "cash_and_liquid_assets + interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.33333,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "receivables_and_cash",
+            "label_ar": "الذمم المدينة والنقد / إجمالي الأصول",
+            "label_en": "Accounts receivable and cash / total assets",
+            "missing": [
+              "accounts_receivable",
+              "cash_and_liquid_assets",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "accounts_receivable + cash_and_liquid_assets",
+            "passed": null,
+            "threshold": 0.5,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "accounts_receivable",
+          "activity.classification",
+          "avg_market_value_36m",
+          "cash_and_liquid_assets",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_revenue"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": true,
+          "notes_ar": "نسبة تطهير التوزيعات عند إسلاميكلي DP = الإيرادات غير المباحة شاملة دخل الفوائد / إجمالي الإيرادات، محسوبة من أحدث التقارير السنوية؛ فإذا كانت النسبة 0.10 وجب إخراج 10% من التوزيعات صدقة. لا تنشر إسلاميكلي قيمة تطهير للسهم الواحد.",
+          "notes_en": "Islamicly's dividend purification (DP) ratio = non-permissible revenue including interest income / total revenue, computed from the latest annual reports; a DP ratio of 0.10 means 10% of dividends received are given to charity. Islamicly publishes no per-share purification figure, so per_share_definition is null and no per-share figure is produced.",
+          "per_share": null,
+          "per_share_definition": null,
+          "ratio": null,
+          "ratio_definition": "non_compliant_revenue / total_revenue"
+        },
+        "ratios": [
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "الإيرادات غير المباحة (شاملة دخل الفوائد) / إجمالي الإيرادات",
+            "label_en": "Non-permissible revenue (incl. interest income) / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "interest_bearing_debt",
+            "label_ar": "الديون ذات الفوائد / متوسط القيمة السوقية للأسهم (36 شهرًا)",
+            "label_en": "Debt / market value of equity (36 month average)",
+            "missing": [
+              "interest_bearing_debt",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.3,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "cash_and_interest_bearing_securities",
+            "label_ar": "النقد والأوراق المالية ذات الفوائد / متوسط القيمة السوقية للأسهم (36 شهرًا)",
+            "label_en": "Cash + interest bearing securities / market value of equity (36 month average)",
+            "missing": [
+              "cash_and_liquid_assets",
+              "interest_bearing_assets",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "cash_and_liquid_assets + interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.3,
+            "value": null
+          },
+          {
+            "comparison": "lt",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "accounts_receivable",
+            "label_ar": "الذمم المدينة / متوسط القيمة السوقية للأسهم (36 شهرًا)",
+            "label_en": "Accounts receivables / market value of equity (36 month average)",
+            "missing": [
+              "accounts_receivable",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "accounts_receivable",
+            "passed": null,
+            "threshold": 0.49,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "accounts_receivable",
+          "activity.classification",
+          "cash_and_liquid_assets",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_assets",
+          "total_revenue"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": true,
+          "notes_ar": "تطبق MSCI «عامل تعديل التوزيعات» على التوزيعات المعاد استثمارها: العامل = (إجمالي الدخل − (إيرادات الأنشطة المحظورة + دخل الفوائد)) / إجمالي الدخل، ويُحدّث ربع سنويًا (القسم 2.3). حصة التوزيع الواجبة التطهير هي 1 − العامل، أي حصة الدخل غير المتوافق — وهي نسبة التطهير في هذا المعيار. لا تنشر MSCI قيمة تطهير للسهم الواحد.",
+          "notes_en": "MSCI applies a dividend adjustment factor (DAF) to reinvested dividends: DAF = (Total Income - (revenue from prohibited activities + interest income)) / Total Income, updated quarterly (methodology section 2.3). The share of a dividend to purify is 1 - DAF, i.e. the non-permissible share of income — this rule set's purification ratio. MSCI publishes no per-share purification figure, so per_share_definition is null and no per-share figure is produced.",
+          "per_share": null,
+          "per_share_definition": null,
+          "ratio": null,
+          "ratio_definition": "non_compliant_revenue / total_revenue"
+        },
+        "ratios": [
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "الدخل غير المتوافق / إجمالي الإيرادات",
+            "label_en": "Non-permissible income (incl. interest income) / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "total_debt",
+            "label_ar": "إجمالي الديون / إجمالي الأصول",
+            "label_en": "Total debt / total assets",
+            "missing": [
+              "interest_bearing_debt",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.3333,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "cash_and_interest_bearing_securities",
+            "label_ar": "النقد والأوراق المالية ذات الفوائد / إجمالي الأصول",
+            "label_en": "Cash and interest-bearing securities / total assets",
+            "missing": [
+              "cash_and_liquid_assets",
+              "interest_bearing_assets",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "cash_and_liquid_assets + interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.3333,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_assets",
+            "error": null,
+            "id": "receivables_and_cash",
+            "label_ar": "الذمم المدينة والنقد / إجمالي الأصول",
+            "label_en": "Accounts receivables and cash / total assets",
+            "missing": [
+              "accounts_receivable",
+              "cash_and_liquid_assets",
+              "total_assets"
+            ],
+            "numerator": null,
+            "numerator_field": "accounts_receivable + cash_and_liquid_assets",
+            "passed": null,
+            "threshold": 0.7,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "accounts_receivable",
+          "activity.classification",
+          "avg_market_value_36m",
+          "cash_and_liquid_assets",
+          "interest_bearing_assets",
+          "interest_bearing_debt",
+          "non_compliant_revenue",
+          "total_revenue"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": true,
+          "notes_ar": "نفس قاعدة سلسلة المؤشرات: عامل تعديل التوزيعات = (إجمالي الدخل − (إيرادات الأنشطة المحظورة + دخل الفوائد)) / إجمالي الدخل (القسم 2.3)، وحصة التوزيع الواجبة التطهير هي 1 − العامل. لا تنشر MSCI قيمة تطهير للسهم الواحد.",
+          "notes_en": "The Index Series rule: the dividend adjustment factor is (Total Income - (revenue from prohibited activities + interest income)) / Total Income (methodology section 2.3), and the share of a dividend to purify is 1 - DAF — this rule set's purification ratio. MSCI publishes no per-share purification figure, so per_share_definition is null and no per-share figure is produced.",
+          "per_share": null,
+          "per_share_definition": null,
+          "ratio": null,
+          "ratio_definition": "non_compliant_revenue / total_revenue"
+        },
+        "ratios": [
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "total_revenue",
+            "error": null,
+            "id": "non_compliant_income",
+            "label_ar": "الدخل غير المتوافق / إجمالي الإيرادات",
+            "label_en": "Non-permissible income (incl. interest income) / total revenue",
+            "missing": [
+              "non_compliant_revenue",
+              "total_revenue"
+            ],
+            "numerator": null,
+            "numerator_field": "non_compliant_revenue",
+            "passed": null,
+            "threshold": 0.05,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "total_debt",
+            "label_ar": "إجمالي الديون / متوسط القيمة السوقية لآخر 36 شهرًا",
+            "label_en": "Total debt / average issuer market capitalisation (36 months)",
+            "missing": [
+              "interest_bearing_debt",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "interest_bearing_debt",
+            "passed": null,
+            "threshold": 0.3333,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "cash_and_interest_bearing_securities",
+            "label_ar": "النقد والأوراق المالية ذات الفوائد / متوسط القيمة السوقية لآخر 36 شهرًا",
+            "label_en": "Cash and interest-bearing securities / average issuer market capitalisation (36 months)",
+            "missing": [
+              "cash_and_liquid_assets",
+              "interest_bearing_assets",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "cash_and_liquid_assets + interest_bearing_assets",
+            "passed": null,
+            "threshold": 0.3333,
+            "value": null
+          },
+          {
+            "comparison": "le",
+            "denominator": null,
+            "denominator_base": "avg_market_value_36m",
+            "error": null,
+            "id": "receivables_and_cash",
+            "label_ar": "الذمم المدينة والنقد / متوسط القيمة السوقية لآخر 36 شهرًا",
+            "label_en": "Accounts receivables and cash / average issuer market capitalisation (36 months)",
+            "missing": [
+              "accounts_receivable",
+              "cash_and_liquid_assets",
+              "avg_market_value_36m"
+            ],
+            "numerator": null,
+            "numerator_field": "accounts_receivable + cash_and_liquid_assets",
+            "passed": null,
+            "threshold": 0.49,
+            "value": null
+          }
+        ],
+        "ruleset_version": "1.0.0",
+        "screening_date": "2026-11-17",
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-19T06:17:56.802488+00:00",
+  "sweep_dir": "sweeps/2026-11-19/062255__sweep-lite-poul-ca-market-egx__runsched-2026-11-19",
+  "ticker": "POUL.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "POUL.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "POUL.CA.csv_last_close": 8.020000457763672,
+          "POUL.CA.csv_last_date": "2026-11-16",
+          "rows_POUL.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "bb2164f285fa4ae3c747f5ff9fe4907599fbedb14bbeef0cec0486bef7074b91",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "data",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "POUL_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "POUL_CA.csv_last_close": 7.570000171661377,
+          "POUL_CA.csv_last_date": "2026-11-17",
+          "rows_POUL_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "b388c7f5f142a473d137d216a494834000e0c0dd4fd6671936e27073396c9d29",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "data",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_poul.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_poul.csv_last_close": 7.7,
+          "egxpy_poul.csv_last_date": "2026-11-18",
+          "rows_egxpy_poul.csv": 3000,
+          "symbol": "POUL",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "4e20608ea464f042cedde43f7f9f0668047d08ff97c51407480e69b58b02a18d",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 53.6397,
+          "atr_14": 0.7019,
+          "bb_lower": 8.2333,
+          "bb_mid": 9.612,
+          "bb_pctb": -0.2405,
+          "bb_upper": 10.9907,
+          "close": 7.57,
+          "date": "2026-11-17",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.401,
+          "ema_200": 26.6439,
+          "ema_50": 16.7439,
+          "first_date_used": "2019-01-01",
+          "high": 8.09,
+          "indicators.csv_last_close": 7.570000171661377,
+          "indicators.csv_last_date": "2026-11-17",
+          "last_date": "2026-11-17",
+          "low": 7.51,
+          "macd": -2.0931,
+          "macd_hist": 0.5224,
+          "macd_signal": -2.6155,
+          "open": 8.02,
+          "rows_fetched": 6524,
+          "rows_indicators.csv": 250,
+          "rows_used": 1924,
+          "rsi_14": 17.2302,
+          "stoch_d": 58.3842,
+          "stoch_k": 28.9238,
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "b3a123739e4b27034beab2903f3b5962124e046623c1d2f2bda39dcd3e98f1c5",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "indicators.csv_last_close": 7.570000171661377,
+          "indicators.csv_last_date": "2026-11-17",
+          "last_close": 7.570000171661377,
+          "last_date": "2026-11-17",
+          "rows_fetched": 6524,
+          "rows_indicators.csv": 250,
+          "rows_used": 1924,
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "c8803b25dfd415ba1d62eb0512c5b0b1ee902ad67a5e2ad1d949ff5faaecc675",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "stats",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.570000171661377,
+          "rows": 2182,
+          "rows_ohlc.csv": 2182,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "066bc6bea9401a16c0fa14d32e6076bef61e3ff1e8fa42c6096475b01068243a",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.570000171661377,
+          "rows_poul_ohlc.csv": 2431
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "1fdda1c7b4fd2ee7ce1ebe45b7c3451cd541f60d59079e6fb5ff20a952e06586",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "company": "Cairo Poultry Company (EGX: POUL)",
+          "input_csv": "data/poul_statements.csv"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "c428227f37d1316872be5b1c4d37db4d6361cec602089a300753be158ad78065",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 13,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "86f4abaf7a19df58c91983c397acf6a3f5c34f68f57cd8181e5cf8f26fe27d35",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 12,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "e092908b1b2bb50cde1e0606aee61ca7bdd06eca0d1bf673006cac00dedeb8e7",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 13,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "739e7f9dc10c25e78d52cd3f3b417cde903a651fc9f145f153e4d758c69d595f",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 9.2756,
+          "forecast.csv_last_date": "2026-12-15",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "93c55f54afd22a792bacff7f5edf3b4e968e9d9441db5f064a0de2aabe5890cb",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "data",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "8296ba9fa070538d3b6d6e5658fd1cea2fa906fc66c62a7ae218ad3e4b097f21",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    },
+    {
+      "category": "news",
+      "claim_id": "sched-2026-11-19",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 35,
+          "bodies_fetched": 9,
+          "disclosure_count": 10,
+          "egx_bodies_attached": 1,
+          "egx_disclosures_added": 9,
+          "egx_harvest_source": "local-file",
+          "fetched_at": "2026-11-19T06:22:53Z",
+          "finbert_negative": 0.433,
+          "finbert_neutral": 0.532,
+          "finbert_positive": 0.035,
+          "finbert_scored": 4,
+          "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT",
+          "latest_news_date": "Wed, 18 Nov 2026 07:04:00 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.034,
+          "multilingual_neutral": 0.461,
+          "multilingual_positive": 0.505,
+          "multilingual_scored": 35,
+          "news_count": 29,
+          "ticker": "POUL.CA",
+          "tool": "news-disclosure",
+          "translated_negative": 0.256,
+          "translated_neutral": 0.605,
+          "translated_positive": 0.139,
+          "translated_scored": 35,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "POUL.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "5c876cbaa7e3c15228398da268b5d34ec394f0ecd7f1824332d2697210fc63f5",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.503,
+          "n": 13,
+          "skill": -0.497
+        },
+        "sentiment": {
+          "factor": 1.069,
+          "n": 14,
+          "skill": 0.069
+        },
+        "technicals": {
+          "factor": 0.717,
+          "n": 14,
+          "skill": -0.283
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.503,
+        "sentiment": 1.069,
+        "technicals": 0.717
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "66aa7dc61d55e677b090ff077915da1a93077bad91785a74303aa03b63babe59",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}
