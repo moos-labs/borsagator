@@ -194,6 +194,72 @@ jobs:
           cp "$STAGE_SWEEP/report-model.json" archive_stage/data/report-model.json 2>/dev/null || true
           cp "$STAGE_SWEEP/compile_error.txt" archive_stage/data/compile_error.txt 2>/dev/null || true
 
+      # Issue #69: render the deterministic report from the compiled
+      # model. Same placement logic as the compile step above: the
+      # model exists only after the compile step, and the archive
+      # stage has already run, so the render step sits here — after
+      # compile, before the archive commit — and the twins
+      # (report.html / report.md, or render_error.txt on a fail-loudly
+      # refusal) are written straight into archive_stage/data, which
+      # the commit step below archives unchanged. The renderer takes
+      # the staged sweep copy as --sweep-dir (chart CSVs + per-tool
+      # report.md, the I-5 fallback). Adapted to main's renderer CLI
+      # (ported from the render-69 build, 2026-11-19): --profile
+      # profiles/<TICKER>.json instead of --profiles-dir, passed only
+      # when the model's reaction_profile.present is true — mirroring
+      # worker.maybe_render, so a missing or mismatched profile fails
+      # the render, never a silent skip; and the step writes
+      # render_error.txt itself on a non-zero exit, because main's
+      # render.py only prints the refusal (on the worker path the
+      # hook writes the marker). Never fails the sweep: a refused or
+      # crashed render leaves the sweep archived without twins, with
+      # the refusal recorded. The manifest's file list (written by
+      # the archive stage above) does not cover the twins either —
+      # same #68 gap as the model.
+      # D-7: on a successful render, append the report link to the
+      # digest (the morning issue is what gets read); the link is the
+      # archive-branch path, which exists once the commit below lands.
+      - name: Render the Report
+        if: always()
+        run: |
+          if [ ! -f archive_stage/TARGET.txt ]; then
+            echo "No archive target staged — nothing to render."
+            exit 0
+          fi
+          TARGET=$(cat archive_stage/TARGET.txt)
+          STAGE_SWEEP="/tmp/borsagator-model/$TARGET"
+          if [ ! -f "$STAGE_SWEEP/report-model.json" ]; then
+            echo "No report-model.json staged — nothing to render."
+            exit 0
+          fi
+          PROFILE_ARG=$(python3 - "$STAGE_SWEEP/report-model.json" <<'PYEOF'
+          import json, re, sys
+          try:
+              with open(sys.argv[1], encoding="utf-8") as fh:
+                  model = json.load(fh)
+          except Exception:
+              model = {}
+          rp = model.get("reaction_profile") or {}
+          ticker = model.get("ticker") or ""
+          if rp.get("present") and re.fullmatch(r"[A-Za-z0-9.\-]{1,32}", ticker or ""):
+              print("profiles/%s.json" % ticker)
+          PYEOF
+          )
+          ARGS=(--sweep-dir "$STAGE_SWEEP" --out-dir archive_stage/data)
+          if [ -n "$PROFILE_ARG" ]; then
+            ARGS+=(--profile "$PROFILE_ARG")
+          fi
+          rm -f archive_stage/data/render_error.txt
+          rc=0
+          python3 scripts/render.py "$STAGE_SWEEP/report-model.json" "${ARGS[@]}" 2>render_stderr.txt || rc=$?
+          cat render_stderr.txt || true
+          if [ "$rc" -ne 0 ]; then
+            cp render_stderr.txt archive_stage/data/render_error.txt || true
+          fi
+          if [ -f archive_stage/data/report.html ] && [ -f archive_stage/data/report.md ]; then
+            printf '\n_Report: [report.html](https://github.com/moos-labs/borsagator/blob/archive/%s/report.html) ([report.md](https://github.com/moos-labs/borsagator/blob/archive/%s/report.md))._\n' "$TARGET" "$TARGET" >> digest/digest.md || true
+          fi
+
       - name: Commit the archive
         id: archive-commit
         if: always()
