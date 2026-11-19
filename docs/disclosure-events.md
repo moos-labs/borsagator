@@ -114,6 +114,45 @@ attach (clipped to 6,000 chars) or the #91 outright-add path.
   #279 (attachments), #280 (#68 surfacing), #281 (#26 feeding),
   #282 (#32 adapter) and #283 (top-30 coverage).
 
+## Attachment capture (#279, capture-only)
+
+The harvest now captures the disclosure PDF itself
+(`worker/attachment_capture.py`, wired into `worker/egx_harvest.py`,
+archived by `worker/worker.py` `publish()`):
+
+- Per disclosure, the detail page's anchors are scanned for
+  attachment links (href ending `.pdf`, or anchor text ending with a
+  size suffix like `(64 KB)` — the form real harvested bodies show);
+  detail/search pages and `javascript:`/`mailto:` links are never
+  followed. Each link is fetched in the same TSPD-trusted browser
+  session and stored as `results/attachments/<NewsID>.pdf`
+  (`<NewsID>_2.pdf`, … for further attachments, max 5 per item).
+- The item carries `"attachments": [pointer, ...]` — one record per
+  link, never an empty list: `{"status", "path", "sha256",
+  "size_bytes", "source_url", "reason"}` with status `captured` /
+  `no_attachment` / `fetch_failed` / `not_pdf` / `too_large` /
+  `link_scan_failed`. A capture failure is recorded on the item; it
+  never loses the harvested body and never fails the harvest.
+- `publish()` copies the PDFs to `harvest/attachments/` next to the
+  stable `harvest/<CODE>.json` pointer, so the pointer path
+  `attachments/<NewsID>.pdf` resolves inside the archive. The same
+  files also ride the wholesale results copy into `worker-runs/`.
+- Verification property: `verify_attachment()` re-reads the stored
+  file and checks its sha256 against the pointer;
+  `fields_present_in_pdf()` checks the extracted field strings are
+  present in the stored bytes. Tests
+  (`worker/test_attachment_capture_279.py`, 24 checks, deterministic
+  fixture PDF) prove this on the real COMI 297291 body: the extracted
+  NPAT `63079356` / announced `2026-11-10` trace to `63,079,356` /
+  `10/11/2026` in the stored PDF.
+- Out of scope, unchanged: PDF-only field extraction (revenue, board
+  details, record date from inside PDFs) — a separate follow-up if
+  wanted. The link rules were not verified against a live EGX detail
+  page (egx.com.eg sits behind TSPD; no live fetch from the VM) —
+  they are grounded in the harvested body text only, so the first
+  live harvest should be checked for `captured` vs `no_attachment`
+  rates before relying on coverage.
+
 ## Live wiring (#278, option A sweep-live)
 
 The feed is live worker-side (`worker/worker.py`, two phases around
