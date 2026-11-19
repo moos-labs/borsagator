@@ -267,14 +267,31 @@ the unchanged scorer (`evaluate_completion`):
   truncated caller ledger never passes while such cases exist, and
   a frozen required-cell set must be supplied whenever cells are
   present (without it, omitted universe members are undetectable).
+  Derivation reads the ORIGINAL (pre-adjudication) scorer results,
+  so an adjudicated overlay can never drop a case from the
+  denominator: a case leaves only through a live, compatible
+  adjudication decision. A caller-supplied entry reusing a derived
+  ID must match the derived record on kind, cell, source document,
+  event type, issuer and detail — the internally derived content is
+  authoritative; only the decision-backed in_scope -> out_of_scope
+  transition may differ. Extra field/scope/gold entries remain
+  necessary but must not replace a mandatory ambiguity/candidate
+  merely by borrowing its ID.
   Collection counts must be non-negative; a cell's `accepted` must
   be exactly True/False/None (by identity — `1`/`0` are not
   verdicts).
-- **Scope**: an out-of-scope ambiguity blocks only until an
-  evidence-backed scope decision exists; the entry is retained with
-  the exclusion reason. Scope is the frozen roster +
+- **Scope (exactly one policy, issue #327)**: an out-of-scope case
+  is excluded by marking its OWN original ledger entry out_of_scope
+  together with an evidence-backed scope decision over that entry;
+  the entry is retained in `excluded` with the exclusion reason, so
+  the original case is accounted for, never silently dropped. A
+  separate kind=`scope` entry records an out-of-scope case that has
+  no ambiguity/candidate entry of its own (e.g. a document outside
+  the frozen window) and never accounts for original ambiguity or
+  candidate entries. Scope is the frozen roster +
   date/document/event rules + adjudications, not an arbitrary
-  caller-supplied `in_scope=False`. Unknown scope blocks.
+  caller-supplied `in_scope=False`. Unknown scope blocks. A scope
+  decision over an in-scope entry does not exclude it.
 - **Fields**: a resolved wrong field contributes its FP/FN and
   threshold failure (complete-fail), not perpetual incompleteness. An
   unresolved required gold/source-field interpretation blocks
@@ -289,21 +306,32 @@ the unchanged scorer (`evaluate_completion`):
   or an unresolved supersession all fail closed. A pairing joins
   only events from the same source document, issuer and event type
   (the frozen same-document matching rule — membership in the
-  unmatched lists plus field agreement is not enough). A decision
-  resolves only a ledger entry of a compatible kind: ambiguity by
-  pairing / reject_event / duplicate; candidate by reject_event /
-  duplicate; field by field; scope by scope; gold by field / scope;
-  collection entries by no decision at all — they close only when
-  the collection state shows the document archived. An ambiguous or
-  candidate case argued out of scope is recorded as its own
-  kind=`scope` ledger entry and resolved by a scope decision there.
+  unmatched lists plus field agreement is not enough), and only
+  events that each carry a nonempty source document, issuer and
+  event type (the adapter refuses a document-less pair: `None ==
+  None` must not pass the same-document check). An adjudicated
+  overlay is verified by recomputation: its applied decision IDs
+  must reconcile with the live pairing decisions for the cell in
+  both directions (no ghost ID, no unapplied live decision), and
+  the overlay must equal the re-score of the original result under
+  exactly those decisions (counts, matches, unmatched lists,
+  ambiguities, verdicts) — a hand-stamped overlay with ghost
+  adjudication IDs, dropped cases or altered counts cannot pass.
+  A decision resolves only a ledger entry of a compatible kind:
+  ambiguity by pairing / reject_event / duplicate; candidate by
+  reject_event / duplicate; field by field; scope by scope; gold by
+  field / scope; collection entries by no decision at all — they
+  close only when the collection state shows the document archived.
   Frozen predictions are never edited into correct answers: a
   resolved candidate cannot gain a TP by status rewriting.
 - **Per-cell blocking**: `per_cell.blocked` reflects the global
   collection state as well as unresolved ledger entries — an
   unknown, unfinished or partial collection blocks every cell, so
   report truth never depends on whether the caller remembered to
-  build a ledger.
+  build a ledger. Blocking derives from the authoritative (derived)
+  ledger record, not from a caller-supplied replacement label: a
+  supplied entry relabelled to another cell cannot move blocking
+  away from the true owning cell.
 - **No report runner exists at this pin**: collection state and
   adjudication records have the schemas/interfaces defined here and
   in `top30_completion.py`, and `cell_report` builds the §8 per-cell
@@ -342,7 +370,9 @@ bit, the count of gold events unmatchable because of it. The report's
 `unresolved_candidates` counts unresolved candidate ledger entries
 for the cell (derived from the effective ledger, so a resolved
 candidate no longer counts); the raw candidate-output count is kept
-separately as `candidate_outputs`. Roll-ups
+separately as `candidate_outputs`. Per-cell blocking is derived
+from the authoritative (internally derived) ledger record, so a
+relabeled supplied entry cannot move a block to another cell. Roll-ups
 (per issuer, per type, overall) are summaries only — acceptance is
 per cell, never on a roll-up, and a roll-up cannot rescue a failed,
 blocked or unproven cell.
@@ -377,7 +407,12 @@ adapter; mandatory ledger derived internally and distinct IDs per
 prediction occurrence, same-document/issuer/type pairing,
 decision/entry-kind compatibility, non-negative collection counts,
 exact `accepted` domain, per-cell blocking from global collection
-failures — issue #322) and its negative controls live in
+failures — issue #322; mandatory ledger derived from the original
+results with content-authoritative derived records, overlay
+verification by recomputation, exactly one scope policy (the
+decision-backed scope transition on the original entry), and the
+adapter's nonempty-identity boundary — issue #327) and its negative
+controls live in
 `scripts/test_top30_completion_314.py` (Ins's 8 required regression
 cases: contested group, candidate / sometimes-unmatched / oversize,
 collection gaps, out-of-scope, fields, adjudication applied vs
@@ -387,7 +422,12 @@ regressions: omitted/empty/truncated ledger, mandatory required-cell
 set, multiplicity IDs, per-cell blocking, cross-document pairing,
 decision-kind compatibility, collection-entries-by-evidence-only,
 negative counts, malformed `accepted`, ledger-derived candidate
-reporting), also wired into
+reporting, plus the #327 regressions: same-ID re-kinding and
+detail changes refused, ghost/dropped/tampered overlays refused,
+relabelled entries keep the owning cell blocked, the scope
+transition end to end with original-entry accounting, a separate
+scope entry never accounting for originals, document-less pairing
+refused, and the honest adapter path still completing), also wired into
 `scripts/harness_issue109.py` (`--scorer`). If the spec and the
 scorer ever disagree, **the spec wins** and the scorer is fixed.
 

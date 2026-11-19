@@ -50,6 +50,23 @@ Issue #322 regressions (INS-314-POSTMERGE-REVIEW follow-up):
   14. negative collection counts and non-domain `accepted` values
       raise; cell_report derives unresolved_candidates from the
       effective ledger and keeps candidate_outputs separately.
+
+Issue #327 regressions (INS-322-POSTMERGE-REVIEW follow-up):
+  15. a supplied entry reusing a derived ID with a different kind
+      or detail is refused (the derived record stays unresolved);
+  16. a hand-stamped overlay with a ghost adjudication ID, dropped
+      ambiguities or tampered counts cannot pass (applied IDs
+      reconcile with live pairing decisions both ways and the
+      re-score is recomputed from the original result);
+  17. a relabelled supplied entry cannot move per-cell blocking
+      away from the true owning cell;
+  18. exactly one scope policy — the decision-backed scope
+      transition on the original entry excludes it end to end with
+      original-entry accounting, while a separate scope entry never
+      accounts for original ambiguity/candidate entries;
+  19. the pairing adapter refuses document/issuer/type-less pairs
+      (`None == None` no longer passes); the honest adapter path
+      (real pairing + reject_event) still completes correctly.
 """
 import inspect
 import os
@@ -748,7 +765,9 @@ def test_322_f5_kind_mismatch_refused():
         adapter_refused = False
     out_pair = gate({CELL: r}, ledger=ledger, decisions=[pair_dec])
     # A scope decision over an ambiguity entry is likewise not a
-    # resolution (out-of-scope goes through a scope ledger entry).
+    # resolution (issue #327: the single scope policy excludes by
+    # marking the entry itself out_of_scope with a scope decision,
+    # not by a scope decision over an in-scope entry).
     r_amb = _contested_322()
     ledger_amb = ledger_for({CELL: r_amb})
     scope_dec = _decision("d-322-scope", "scope",
@@ -878,6 +897,360 @@ def test_322_f8_report_candidates_from_ledger():
                    rep_open["unresolved_candidates"]))
 
 
+# --- issue #327 regressions --------------------------------------------
+# Each test is written from scratch against the fixed gate, with its
+# own fixtures (own docs/coupons/counts — no shared code with Ins's
+# probes or with the post-merge probe script). The BEFORE behaviour
+# is the hole issue #327 records; the test asserts the AFTER
+# behaviour. Failing-before was verified by running this file
+# against the pre-fix module in ~/workspace/scratch-327/before-check/.
+
+def _contested_327():
+    """Own contested construction: 40 clean + one tie. Two preds
+    claim one gold with equal agreement (each agrees on coupon +
+    one of amount/ex_date, differs on the other), so both stay
+    ambiguous and thresholds still pass (tp=40 fp=2 fn=1)."""
+    g, p = [], []
+    for i in range(40):
+        g.append(_gold(div("egx:clean327-%02d" % i, gold_id="g%d" % i,
+                           coupon=str(900 + i))))
+        p.append(div("egx:clean327-%02d" % i, gold_id="g%d" % i,
+                     coupon=str(900 + i)))
+    g.append(_gold(div("egx:tie327", gold_id="g-tie", coupon="33")))
+    p.append(div("egx:tie327", gold_id="p-a", coupon="33",
+                 amount_per_share="2.1"))
+    p.append(div("egx:tie327", gold_id="p-b", coupon="33",
+                 ex_date="2026-11-17"))
+    return S.score_cell(g, p)
+
+
+def test_327_f1_rekind_to_field_refused():
+    r = _contested_327()
+    if not ((r["tp"], r["fp"], r["fn"]) == (40, 2, 1)
+            and r["accepted"] is True and len(r["ambiguous"]) == 2):
+        return False, "327 contested fixture drifted: %s" % (r,)
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    # Keep each derived ambiguity ID, change kind to "field", supply
+    # valid field decisions: the derived ambiguity must stay
+    # unresolved — the supplied kind is not authoritative.
+    rekind_field = [dict(e, kind="field") for e in amb]
+    dec_field = [_decision("d-327-rf-%d" % i, "field", [e["id"]])
+                 for i, e in enumerate(rekind_field)]
+    out_field = gate({CELL: r}, ledger=rekind_field, decisions=dec_field)
+    # Same trick with kind="scope" + scope decisions.
+    rekind_scope = [dict(e, kind="scope") for e in amb]
+    dec_scope = [_decision("d-327-rs-%d" % i, "scope", [e["id"]])
+                 for i, e in enumerate(rekind_scope)]
+    out_scope = gate({CELL: r}, ledger=rekind_scope, decisions=dec_scope)
+    ok = (out_field["complete"] is False
+          and out_field["outcome"] == "incomplete"
+          and len(out_field["unresolved"]) == 2
+          and all(e["kind"] == "ambiguity"
+                  for e in out_field["unresolved"])
+          and any("does not match the derived" in reason
+                  for reason in out_field["reasons"])
+          and out_scope["complete"] is False
+          and len(out_scope["unresolved"]) == 2)
+    return ok, ("re-kinded field ledger -> %s (unresolved=%d, still "
+                "ambiguities); re-kinded scope ledger -> %s "
+                "(unresolved=%d)"
+                % (out_field["complete"], len(out_field["unresolved"]),
+                   out_scope["complete"], len(out_scope["unresolved"])))
+
+
+def test_327_f1_rekind_detail_change_refused():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    # Same IDs and kinds, but the detail is rewritten (the tied gold
+    # list is swapped for a gold that was never tied): the derived
+    # record must stay unresolved.
+    tampered = []
+    for e in amb:
+        e2 = dict(e)
+        detail = dict(e["detail"])
+        detail["tied_gold_ids"] = ["g-never-tied"]
+        e2["detail"] = detail
+        tampered.append(e2)
+    decs = [_decision("d-327-dt-%d" % i, "reject_event", [e["id"]])
+            for i, e in enumerate(tampered)]
+    out = gate({CELL: r}, ledger=tampered, decisions=decs)
+    # Control: the same reject_event decisions over the UNCHANGED
+    # derived entries do resolve them (thresholds pass on this
+    # fixture, so complete-pass — the decisions are genuine).
+    control = gate({CELL: r}, ledger=ledger, decisions=[
+        _decision("d-327-dc-%d" % i, "reject_event", [e["id"]])
+        for i, e in enumerate(amb)])
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 2
+          and all(e["kind"] == "ambiguity" for e in out["unresolved"])
+          and any("does not match the derived" in reason
+                  for reason in out["reasons"])
+          and control["complete"] is True
+          and control["outcome"] == "complete-pass")
+    return ok, ("detail-rewritten ledger -> %s (unresolved=%d, derived "
+                "records stand); unchanged ledger + same decisions -> "
+                "%s" % (out["complete"], len(out["unresolved"]),
+                        control["outcome"]))
+
+
+def test_327_f2_ghost_overlay_refused():
+    r = _contested_327()
+    # Hand-stamped overlay: same digests, ambiguities removed, counts
+    # boosted, and an applied ID for a decision that was never
+    # supplied; the caller ledger is omitted entirely.
+    overlay = dict(r)
+    overlay["ambiguous"] = []
+    overlay["tp"] = 42
+    overlay["fp"] = 0
+    overlay["fn"] = 0
+    overlay["accepted"] = True
+    overlay["adjudication_applied"] = ["ghost-decision-never-supplied"]
+    overlay["run_digest"] = RUN
+    overlay["input_digest"] = INP
+    out = gate({CELL: r}, adjudicated={CELL: overlay})
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 2
+          and all(e["kind"] == "ambiguity" for e in out["unresolved"])
+          and any("ghost" in reason for reason in out["reasons"]))
+    return ok, ("ghost overlay, ledger omitted -> %s (unresolved=%d, "
+                "ghost flagged: %r)"
+                % (out["complete"], len(out["unresolved"]),
+                   any("ghost" in reason for reason in out["reasons"])))
+
+
+def test_327_f2_dropped_ambiguity_overlay_refused():
+    r = _contested_327()
+    # Overlay drops one ambiguity and adjusts the counts as if it
+    # had been paired — but no pairing decision was ever supplied.
+    # The derived ledger (from the original result) still holds both
+    # cases, and the re-score cannot reproduce the overlay.
+    overlay = dict(r)
+    overlay["ambiguous"] = r["ambiguous"][:1]
+    overlay["tp"] = r["tp"] + 1
+    overlay["fp"] = r["fp"] - 1
+    overlay["fn"] = r["fn"] - 1
+    overlay["adjudication_applied"] = []
+    overlay["run_digest"] = RUN
+    overlay["input_digest"] = INP
+    out = gate({CELL: r}, adjudicated={CELL: overlay})
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 2
+          and any("does not match the re-score" in reason
+                  for reason in out["reasons"]))
+    return ok, ("dropped-ambiguity overlay -> %s (unresolved=%d, "
+                "re-score mismatch flagged: %r)"
+                % (out["complete"], len(out["unresolved"]),
+                   any("does not match the re-score" in reason
+                       for reason in out["reasons"])))
+
+
+def test_327_f2_tampered_counts_overlay_refused():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    p1 = [a["predicted"] for a in r["ambiguous"]
+          if a["predicted"]["gold_id"] == "p-a"][0]
+    g1 = [g for g in r["unmatched_gold"]
+          if g.get("gold_id") == "g-tie"][0]
+    e1 = _entry_for_pred(ledger, p1)["id"]
+    e2 = [e["id"] for e in amb if e["id"] != e1][0]
+    pair = _decision("d-327-tc-pair", "pairing", [e1],
+                     pairing={"predicted_event": p1, "gold_event": g1})
+    genuine = C.apply_adjudication(r, [pair], run_digest=RUN,
+                                   input_digest=INP)
+    # Take the genuine adapter output and hand-boost one count.
+    tampered = dict(genuine)
+    tampered["tp"] = genuine["tp"] + 1
+    rej = _decision("d-327-tc-rej", "reject_event", [e2],
+                    evidence="p-b is not the tie gold event per source")
+    out = gate({CELL: r}, ledger=ledger, decisions=[pair, rej],
+               adjudicated={CELL: tampered})
+    # Control: the untampered adapter output completes.
+    control = gate({CELL: r}, ledger=ledger, decisions=[pair, rej],
+                   adjudicated={CELL: genuine})
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and any("does not match the re-score" in reason
+                  for reason in out["reasons"])
+          and control["complete"] is True
+          and control["outcome"] == "complete-pass")
+    return ok, ("tampered counts (genuine decision applied) -> %s; "
+                "untampered adapter output -> %s"
+                % (out["complete"], control["outcome"]))
+
+
+def test_327_f2_relabel_keeps_owning_cell_blocked():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    # Supply the derived ambiguity IDs relabelled to another cell.
+    relabelled = [dict(e, cell=("COMI", "dividend")) for e in amb]
+    out = gate({CELL: r}, ledger=relabelled,
+               required=[CELL, ("COMI", "dividend")])
+    poul = out["per_cell"]["POUL|dividend"]
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 2
+          and all(e["cell"] == CELL for e in out["unresolved"])
+          and poul["blocked"] is True
+          and set(poul["blocking"]) >= {e["id"] for e in amb})
+    return ok, ("relabelled ledger -> gate %s; POUL blocked=%r "
+                "(blocking carries the derived IDs: %r); unresolved "
+                "cells stay POUL: %r"
+                % (out["complete"], poul["blocked"],
+                   set(poul["blocking"]) >= {e["id"] for e in amb},
+                   all(e["cell"] == CELL for e in out["unresolved"])))
+
+
+def test_327_f3_scope_transition_end_to_end():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    # The single scope policy: mark each original ambiguity entry
+    # out_of_scope and supply an evidence-backed scope decision over
+    # its own ID. The entries are retained in `excluded` — the
+    # original cases are accounted for, not dropped.
+    flagged = [dict(e, scope="out_of_scope") for e in amb]
+    decs = [_decision("d-327-sc-%d" % i, "scope", [e["id"]],
+                      evidence="tie document egx:tie327 is outside "
+                               "the frozen quarter window")
+            for i, e in enumerate(flagged)]
+    out = gate({CELL: r}, ledger=flagged, decisions=decs)
+    poul = out["per_cell"]["POUL|dividend"]
+    ok = (out["complete"] is True
+          and out["outcome"] == "complete-pass"
+          and len(out["excluded"]) == 2
+          and {e["id"] for e in out["excluded"]}
+          == {e["id"] for e in amb}
+          and all(e["kind"] == "ambiguity" for e in out["excluded"])
+          and out["unresolved"] == []
+          and poul["blocked"] is False)
+    return ok, ("scope transition end to end -> %s; excluded=%d "
+                "(the original ambiguity IDs, kinds kept); "
+                "unresolved=%d; POUL blocked=%r"
+                % (out["outcome"], len(out["excluded"]),
+                   len(out["unresolved"]), poul["blocked"]))
+
+
+def test_327_f3_separate_scope_entry_does_not_account_originals():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    # A separate kind="scope" entry plus a scope decision resolves
+    # only itself: the original ambiguities stay unresolved.
+    scope_entry = {"id": "scope-327-1", "kind": "scope", "cell": CELL,
+                   "source_document_id": "egx:tie327",
+                   "event_type": "dividend", "issuer": "POUL",
+                   "scope": "in_scope",
+                   "detail": {"reason": "tie outside frozen window"}}
+    dec = _decision("d-327-sep", "scope", ["scope-327-1"],
+                    evidence="manifest quarter window excludes "
+                             "egx:tie327")
+    out = gate({CELL: r}, ledger=ledger + [scope_entry], decisions=[dec])
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 2
+          and all(e["kind"] == "ambiguity" for e in out["unresolved"])
+          and "scope-327-1" not in [e["id"] for e in out["unresolved"]])
+    return ok, ("separate scope entry -> %s (unresolved=%d, both "
+                "original ambiguities; the scope entry itself "
+                "resolved and is not among them)"
+                % (out["complete"], len(out["unresolved"])))
+
+
+def test_327_f4_none_identity_pairing_refused():
+    import copy
+    r = _contested_327()
+    tie_gold = [g for g in r["unmatched_gold"]
+                if g.get("gold_id") == "g-tie"][0]
+    tie_pred = [p for p in r["unmatched_predicted"]
+                if p["fields"]["coupon"] == "33"
+                and p["fields"]["ex_date"] == "2026-11-17"][0]
+
+    def try_pair(field, value):
+        r2 = copy.deepcopy(r)
+        g2 = [g for g in r2["unmatched_gold"]
+              if g.get("gold_id") == "g-tie"][0]
+        p2 = [p for p in r2["unmatched_predicted"]
+              if p["fields"]["coupon"] == "33"
+              and p["fields"]["ex_date"] == "2026-11-17"][0]
+        g2[field] = value
+        p2[field] = value
+        dec = _decision("d-327-ni", "pairing", ["x"],
+                        pairing={"predicted_event": p2,
+                                 "gold_event": g2})
+        try:
+            C.apply_adjudication(r2, [dec], run_digest=RUN,
+                                 input_digest=INP)
+        except ValueError as e:
+            return field in str(e)
+        return False
+
+    refused = {name: try_pair(field, value) for name, field, value in [
+        ("document None", "source_document_id", None),
+        ("document empty", "source_document_id", ""),
+        ("issuer None", "issuer", None),
+        ("event type None", "event_type", None)]}
+    # Honest control: the same pair with all identities intact
+    # still applies through the adapter.
+    dec_ok = _decision("d-327-ni-ok", "pairing", ["x"],
+                       pairing={"predicted_event": tie_pred,
+                                "gold_event": tie_gold})
+    rescored = C.apply_adjudication(r, [dec_ok], run_digest=RUN,
+                                    input_digest=INP)
+    ok = (all(refused.values())
+          and (rescored["tp"], rescored["fp"], rescored["fn"])
+          == (41, 1, 0))
+    return ok, ("document/issuer/type identity stripped (None or "
+                "empty) refused: %s; honest same-document pairing "
+                "still applies: tp/fp/fn=%s"
+                % (refused, (rescored["tp"], rescored["fp"],
+                             rescored["fn"])))
+
+
+def test_327_honest_path_still_completes():
+    r = _contested_327()
+    ledger = ledger_for({CELL: r})
+    amb = [e for e in ledger if e["kind"] == "ambiguity"]
+    p1 = [a["predicted"] for a in r["ambiguous"]
+          if a["predicted"]["gold_id"] == "p-a"][0]
+    g1 = [g for g in r["unmatched_gold"]
+          if g.get("gold_id") == "g-tie"][0]
+    e1 = _entry_for_pred(ledger, p1)["id"]
+    pair = _decision("d-327-hp-pair", "pairing", [e1],
+                     pairing={"predicted_event": p1, "gold_event": g1})
+    adj = C.apply_adjudication(r, [pair], run_digest=RUN,
+                               input_digest=INP)
+    # The remaining ambiguity entry (p-b) is resolved by reject_event;
+    # its ID comes from the ledger built on the adjudicated result,
+    # which is stable for the surviving entry.
+    amb_after = [e for e in C.build_ledger({CELL: adj}, run_digest=RUN,
+                                           input_digest=INP)
+                 if e["kind"] == "ambiguity"]
+    if len(amb_after) != 1:
+        return False, "honest-path ledger drifted: %s" % (amb_after,)
+    decs = [pair, _decision("d-327-hp-rej", "reject_event",
+                            [amb_after[0]["id"]],
+                            evidence="p-b is not the tie gold event "
+                                     "per source")]
+    out = gate({CELL: r}, ledger=ledger, decisions=decs,
+               adjudicated={CELL: adj})
+    poul = out["per_cell"]["POUL|dividend"]
+    ok = (out["complete"] is True
+          and out["outcome"] == "complete-pass"
+          and out["reasons"] == []
+          and out["unresolved"] == []
+          and poul["blocked"] is False)
+    return ok, ("honest pairing + reject_event via the adapter -> %s "
+                "(no reasons, nothing unresolved, cell unblocked)"
+                % (out["outcome"],))
+
+
 # --- accepted semantics unchanged -----------------------------------------
 def test_accepted_unchanged():
     """The scorer's `accepted` is the pure threshold result at this
@@ -955,6 +1328,24 @@ CASES = [
     ("322-f7-bogus-accepted-raises", test_322_f7_bogus_accepted_raises),
     ("322-f8-report-candidates-from-ledger",
      test_322_f8_report_candidates_from_ledger),
+    ("327-f1-rekind-to-field-refused", test_327_f1_rekind_to_field_refused),
+    ("327-f1-rekind-detail-change-refused",
+     test_327_f1_rekind_detail_change_refused),
+    ("327-f2-ghost-overlay-refused", test_327_f2_ghost_overlay_refused),
+    ("327-f2-dropped-ambiguity-overlay-refused",
+     test_327_f2_dropped_ambiguity_overlay_refused),
+    ("327-f2-tampered-counts-overlay-refused",
+     test_327_f2_tampered_counts_overlay_refused),
+    ("327-f2-relabel-keeps-owning-cell-blocked",
+     test_327_f2_relabel_keeps_owning_cell_blocked),
+    ("327-f3-scope-transition-end-to-end",
+     test_327_f3_scope_transition_end_to_end),
+    ("327-f3-separate-scope-entry-does-not-account-originals",
+     test_327_f3_separate_scope_entry_does_not_account_originals),
+    ("327-f4-none-identity-pairing-refused",
+     test_327_f4_none_identity_pairing_refused),
+    ("327-honest-path-still-completes",
+     test_327_honest_path_still_completes),
 ]
 
 
