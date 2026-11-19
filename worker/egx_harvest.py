@@ -90,6 +90,40 @@ def collect_result_links(page):
     }""")
 
 
+def iso_date(body, row_text=""):
+    """Publish date of one harvested EGX disclosure (issue #274).
+
+    The date is the dd/mm/yyyy that stands alone on its own line
+    under the title — the same rule as scripts/disclosure_events.py
+    _announced (basis "standalone-date-line") and the downstream
+    news-disclosure-runner _harvest_publish_date. Never the first
+    date in the body, never a date inside a period range: for
+    earnings the title line itself carries the reporting period
+    ("... عن الفترة: من 01/01/2026 إلى 30/09/2026"), so a
+    first-date-wins rule stamps the period start as the publish
+    date (COMI 297291/297289 were stamped 2026-01-01 while the
+    real publish date sits on its own line just below, 10/11/2026).
+
+    First valid standalone line wins; an invalid standalone line
+    is skipped. No fallback to first-date-wins: an item with no
+    standalone date line is dateless (""), never silently stamped
+    with a period start. The search-row text is scanned the same
+    way (standalone lines only) — it is the same title, so it
+    cannot rescue a dateless item with a period date either.
+    Returns "YYYY-MM-DD" or "".
+    """
+    for hay in (body or "", row_text or ""):
+        for m in re.finditer(r"(?m)^\s*(\d{1,2})/(\d{1,2})/(\d{4})\s*$",
+                             hay):
+            try:
+                dt = datetime(int(m.group(3)), int(m.group(2)),
+                              int(m.group(1)))
+                return dt.strftime("%Y-%m-%d")
+            except ValueError:
+                continue  # invalid standalone line: keep looking
+    return ""
+
+
 def main():
     code = (sys.argv[1] if len(sys.argv) > 1 else "").upper().split(".")[0]
     days = int(sys.argv[2]) if len(sys.argv) > 2 else 45
@@ -203,20 +237,8 @@ def main():
         log("result links:", len(links))
         debug["links"] = len(links)
 
-        def iso_date(body, row_text):
-            # INS-R3-06: the publish date sits at the head of the
-            # EGX text (under the title) — search there first, then
-            # the search-row text; validate it is a real date.
-            for hay in ((body or "")[:400], row_text or ""):
-                dm = re.search(r"(\d{2})/(\d{2})/(\d{4})", hay)
-                if dm:
-                    try:
-                        dt = datetime(int(dm.group(3)), int(dm.group(2)),
-                                      int(dm.group(1)))
-                        return dt.strftime("%Y-%m-%d")
-                    except ValueError:
-                        continue
-            return ""
+        # iso_date is module-level (issue #274): the publish date
+        # is the standalone dd/mm/yyyy line, never first-date-wins.
 
         def write_out():
             out = {"ticker": f"{code}.CA", "company_ar": ar_name,
