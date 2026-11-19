@@ -1,0 +1,54 @@
+name: deploy-guard
+
+# Issue #232: fail when the digest-helper BLOB differs between main
+# and archive. Blob comparison, not ref comparison: archive takes
+# ordinary worker data commits from orchestrate.yml on top of deploy
+# commits, so its tip SHA legitimately differs from main even when
+# the helper content is identical.
+#
+# Red between a helper-landing merge on main and the next guarded
+# deploy (scripts/deploy_archive.py) is the intended alarm: it means
+# a deploy is pending. It goes green on the next main-side run after
+# the deploy lands (see the trigger note below). A red
+# with no pending helper change means the archive helper was edited
+# outside the deploy path, which is never legitimate. The
+# board-sync gate stays the Released blocker (scripts/board_sync.py
+# reverts unverified Released cards); this job is the drift alarm
+# next to it.
+#
+# The guard code always comes from MAIN: the checkout below pins
+# ref: main and fetches the archive tip only as DATA to compare, so
+# archive-controlled content is never executed as the guard.
+#
+# Trigger coverage, stated per the official GitHub event docs: a
+# push event runs the workflow file as it exists on the PUSHED ref
+# (GITHUB_SHA is the tip commit pushed to the ref, GITHUB_REF the
+# updated ref; runs "include workflows that are not merged into the
+# default branch"). This file exists only on main, so a push to
+# archive triggers NO run and none is promised: archive-push
+# coverage is the hourly schedule plus manual workflow_dispatch
+# below. Installing this file on archive is not planned; archive is
+# a data-only, deploy-controlled branch.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  helper-blob-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fetch the archive tip for comparison
+        run: git fetch origin "+refs/heads/archive:refs/remotes/origin/archive"
+      - name: Helper blob parity (main vs archive)
+        run: python3 scripts/check_helper_blob_parity.py --repo-dir .
