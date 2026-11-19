@@ -1139,8 +1139,11 @@ def case21_key_reorder(ctx):
 
 
 def _mutant_render(ctx, mut, label):
-    """A copy of render.py + its i18n table with one fault injected
-    (render-69 T8). Returns the mutant script path."""
+    """A copy of render.py + its i18n table + its contract module
+    with one fault injected (render-69 T8). Returns the mutant
+    script path. render.py imports scripts/report_model.py, so the
+    mutant dir must carry it too — without it the mutant dies on
+    ModuleNotFoundError before rendering anything (#280)."""
     mdir = os.path.join(ctx["stage"], "mutant-%s" % label)
     os.makedirs(mdir, exist_ok=True)
     src = open(os.path.join(ctx["repo"], "scripts", "render.py"),
@@ -1153,6 +1156,9 @@ def _mutant_render(ctx, mut, label):
     shutil.copy(os.path.join(ctx["repo"], "scripts",
                              "render_i18n.json"),
                 os.path.join(mdir, "render_i18n.json"))
+    shutil.copy(os.path.join(ctx["repo"], "scripts",
+                             "report_model.py"),
+                os.path.join(mdir, "report_model.py"))
     return script
 
 

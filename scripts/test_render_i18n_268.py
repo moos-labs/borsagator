@@ -272,6 +272,12 @@ def classify_ar_leftovers(ar_html, model, sweep_dir):
         for item in news.get(key) or []:
             if item.get("title"):
                 allowed.append(re.sub(r"\s+", " ", item["title"]))
+    # Disclosure-events string values are model data too (the v2
+    # block's event fields render verbatim as evidence): a DOM node
+    # that equals one of them verbatim is data, not chrome. Without
+    # this, extractor wording such as "decision details in
+    # attachment, not harvested" (candidate_reasons) is misflagged as
+    # chrome English (#280).
     # Tool-summary string values are model data too (company names,
     # source descriptions, method labels): a DOM node that equals
     # one of them verbatim is data, not chrome.
@@ -288,6 +294,9 @@ def classify_ar_leftovers(ar_html, model, sweep_dir):
         for leaf in _str_leaves(tool.get("summary")):
             if len(leaf) >= 2:
                 allowed.append(re.sub(r"\s+", " ", leaf))
+    for leaf in _str_leaves(model.get("disclosure_events")):
+        if len(leaf) >= 2:
+            allowed.append(re.sub(r"\s+", " ", leaf))
     allowed_norm = [re.sub(r"\s+", " ", re.sub(r"[*`#]", "", a))
                     for a in allowed]
 
