@@ -1937,6 +1937,19 @@ def ensure_harvest(code):
 #     (extraction-before-ensemble), run scripts/disclosure_events.py
 #     over each refreshed harvest and write per-ticker events files
 #     into the run dir, all under this sweep's job id.
+#   phase 3 (#308, inside phase 2 per ticker): run
+#     scripts/pdf_verify.py over the just-extracted events against
+#     the PDFs phase 1 captured (archive-root + hash-checked reads,
+#     per captured-attachment pointers). Recorded only, in
+#     extraction[code]["pdf_verification"] and
+#     disclosure-events/<CODE>-verification.json: it never changes
+#     an event or its verification_status, never changes the
+#     extraction outcome, and never fails a sweep — a ticker with
+#     no captured attachments verifies as no-coverage, a cached
+#     refresh (no PDFs on disk this sweep) as
+#     skipped-no-attachments, and a verifier failure as
+#     verification-failed. Verifier output must not feed #283
+#     acceptance until the #308 live run is checked.
 # "Live" means sweep-live only: a disclosure published after market
 # close is picked up by the NEXT sweep's refresh — no intraday
 # alerting is promised or built in v1.
@@ -1970,6 +1983,7 @@ def ensure_harvest(code):
 DISCLOSURE_TICKERS = ("POUL", "COMI")
 DISCLOSURE_FRESH_HOURS = 12  # same bound as HARVEST_TTL_HOURS
 DISCLOSURE_EXTRACT_TIMEOUT = 300
+PDF_VERIFY_TIMEOUT = 300  # #308: per-ticker pdf_verify subprocess bound
 
 
 def _harvest_meta(path):
@@ -2169,6 +2183,109 @@ def _quarter_window(started_iso):
     return day - timedelta(days=90), day
 
 
+def _refresh_results_dir(workdir, code):
+    """#308 — archive root for this sweep's phase-1 refresh of `code`:
+    the refresh workdir's results dir, under which the harvester's
+    attachment pointers ("attachments/<NewsID>.pdf", #279) resolve.
+    refresh_harvest() writes into exactly this path; a cached
+    refresh has no results dir this sweep, so verification skips."""
+    return Path(workdir) / "disclosure-refresh" / code \
+        / "egx-harvest" / "results"
+
+
+def verify_disclosure_events(code, events_path, cache, workdir):
+    """#308 — run scripts/pdf_verify.py over one ticker's extracted
+    events against the PDFs this sweep's phase-1 refresh captured
+    (per captured-attachment pointers, archive-root + hash-checked
+    reads exactly as the verifier does standalone). Returns the
+    pdf_verification record for extraction[code]; the caller stores
+    it and writes the verification JSON into the run dir
+    (disclosure-events/<CODE>-verification.json) so it rides the
+    archive. Never raises and never changes the extraction outcome:
+    a verifier failure is recorded, not fatal — the sweep runs
+    either way, and tickers without captured attachments verify as
+    no-coverage. Statuses: verified (exit 0), with-failures
+    (exit 1: partial / mismatch / missing / inconclusive recorded),
+    no-coverage (exit 2: zero events checked), verification-failed
+    (script missing / crash / timeout / bad output),
+    skipped-no-attachments (no refresh results dir on disk — a
+    cached refresh has no PDFs this sweep). Verifier output is
+    NEVER used to change an event or its verification_status here
+    (#283 acceptance must not consume it until the #308 live run
+    is checked)."""
+    base = {"status": "verification-failed", "summary": {},
+            "verification_file": None, "detail": ""}
+    try:
+        archive_root = _refresh_results_dir(workdir, code)
+        if not (archive_root / "attachments").is_dir():
+            base["status"] = "skipped-no-attachments"
+            base["detail"] = ("no attachments dir on disk for this "
+                              "sweep (refresh was cached, or the "
+                              "harvest captured none)")
+            return base
+        script = CODE / "scripts" / "pdf_verify.py"
+        if not script.is_file():
+            base["detail"] = "verifier script missing: %s" % script
+            return base
+        out_path = Path(workdir) / "disclosure-events" / (
+            "%s-verification.json" % code)
+        # The verifier writes --out itself and never creates the
+        # parent: extraction normally created disclosure-events/
+        # already, but guarantee it here so a missing dir can never
+        # turn a verification run into a crash (a verifier traceback
+        # also exits 1, which would otherwise masquerade as a
+        # checked-events failure).
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "verify", str(events_path),
+                 "--disclosures", str(cache),
+                 "--archive-root", str(archive_root),
+                 "--out", str(out_path)],
+                capture_output=True, text=True,
+                timeout=PDF_VERIFY_TIMEOUT)
+        except Exception as e:  # noqa: BLE001 - verifier failure
+            base["detail"] = ("verifier raised %s: %s"
+                              % (type(e).__name__, e))
+            return base
+        if proc.returncode not in (0, 1, 2):
+            base["detail"] = ("verifier exited %s: %s"
+                              % (proc.returncode,
+                                 (proc.stdout + proc.stderr).strip()[-300:]))
+            return base
+        try:
+            out = json.loads(out_path.read_text(encoding="utf-8"))
+            summary = out.get("summary") or {}
+        except Exception as e:  # noqa: BLE001 - bad verifier output
+            base["detail"] = "verifier output invalid: %s" % e
+            return base
+        base["summary"] = summary
+        base["verification_file"] = (
+            "disclosure-events/%s-verification.json" % code)
+        if proc.returncode == 0:
+            base["status"] = "verified"
+            base["detail"] = ("all checked events role-verified in "
+                              "the stored PDFs")
+        elif proc.returncode == 1:
+            base["status"] = "with-failures"
+            base["detail"] = ("checked events with failures: %s"
+                              % ", ".join(
+                                  "%s=%s" % (k, summary.get(k))
+                                  for k in ("verified", "partial",
+                                            "mismatch", "missing",
+                                            "inconclusive")
+                                  if summary.get(k)))
+        else:
+            base["status"] = "no-coverage"
+            base["detail"] = ("zero events checked (no captured "
+                              "attachment for any event)")
+        return base
+    except Exception as e:  # noqa: BLE001 - verification must not kill
+        base["detail"] = ("verification failed: %s: %s"
+                          % (type(e).__name__, e))
+        return base
+
+
 def extract_disclosure_events(job, workdir, manifest, plan):
     """#278 phase 2 — extraction before the ensemble. Runs only for
     sweep / sweep-lite jobs, after the tool loop and before
@@ -2296,6 +2413,13 @@ def extract_disclosure_events(job, workdir, manifest, plan):
                             "end": qe.isoformat()},
                 "sweep_id": job_id,
             }
+            # #308 — verify the just-extracted events against the
+            # PDFs this sweep's phase-1 refresh captured. Recorded
+            # only: it never changes the extraction outcome, and a
+            # verifier failure never fails the sweep.
+            extraction[code]["pdf_verification"] = \
+                verify_disclosure_events(code, events_path, cache,
+                                         workdir)
         record["extraction"] = extraction
         done = [c for c, e in extraction.items()
                 if e["status"] == "extracted"]
