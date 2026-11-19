@@ -690,6 +690,34 @@ def main(argv=None):
     check("sweep_dir with '..': refused as 'error'",
           not ok and (m.get("render") or {}).get("status")
           == "error")
+    # Ported from the render-69 wire harness: three more gate
+    # shapes main's hook already handles but the harness did not
+    # pin — no compile block at all, a non-string sweep_dir, and a
+    # symlink inside _merge_out resolving outside it.
+    m = make_manifest(SWEEP)
+    ok = worker.maybe_render(JOB, workdir, m, plan)
+    check("no compile block at all: render skipped",
+          not ok and (m.get("render") or {}).get("status")
+          == "skipped")
+    m = make_manifest(SWEEP)
+    m["compile"] = {"status": "compiled", "sweep_dir": 123}
+    ok = worker.maybe_render(JOB, workdir, m, plan)
+    check("non-string sweep_dir: error, no exception",
+          not ok and (m.get("render") or {}).get("status")
+          == "error")
+    esc_target = os.path.join(root, "escape-target")
+    os.makedirs(esc_target, exist_ok=True)
+    with open(os.path.join(esc_target, "report-model.json"), "w",
+              encoding="utf-8") as h:
+        h.write("{}")
+    os.symlink(esc_target, os.path.join(workdir, "_merge_out",
+                                        "link-escape"))
+    m = make_manifest(SWEEP)
+    m["compile"] = {"status": "compiled", "sweep_dir": "link-escape"}
+    ok = worker.maybe_render(JOB, workdir, m, plan)
+    check("sweep_dir symlink escaping _merge_out: refused as 'error'",
+          not ok and (m.get("render") or {}).get("status")
+          == "error")
     m = {"job": JOB}
     m["compile"] = ["not-a-dict"]
     ok = worker.maybe_render(JOB, workdir, m, plan)
