@@ -83,6 +83,16 @@ board-decision dispatch). This is a limit of extractor revision
    paired to the **same** gold event in **every** maximum-agreement
    assignment (a forced pair); identical duplicate predicted events are
    interchangeable, so one of them takes the gold and the rest are FPs.
+   Being paired to one gold in some optima and **unmatched in others
+   is not a forced pair either** — such an event is left unmatched
+   (FP) and flagged ambiguous, with `unmatched_in_an_optimum` recorded
+   so adjudication knows the event may equally be no event at all, not
+   just the other gold (issue #313). Groups of 8–15 events per side
+   use the same rule computed exactly, not greedily: the maximum total
+   agreement comes from the assignment problem (Hungarian algorithm),
+   and partner sets across all optima are recovered by re-solving the
+   reduced problems (a pair is in some optimum iff its agreement plus
+   the optimum without that pred and gold equals the full optimum).
    The result depends only on the event multisets, never on predicted
    input order (see the `order-permutation` fixtures).
 4. **Ambiguous pairings need adjudication, not a favourable automatic
@@ -93,7 +103,16 @@ board-decision dispatch). This is a limit of extractor revision
    unmatched (FN), and flags the group `ambiguous` in the per-cell
    report for human adjudication. The scorer never breaks a tie in the
    direction that raises the score.
-5. Issuer mismatch is a matching failure, not a field error: a predicted
+5. **Groups over 15 events per side are rejected into adjudication,
+   never approximated.** Realistic groups are 1–3 events (the
+   extractor emits at most one event per type per document, §2); a
+   group this large is a pathological input. No pair is matched, every
+   predicted event is an FP, every gold event an FN, and every
+   predicted event is flagged ambiguous with `oversize_group` set. The
+   former canonical-greedy large-group fallback
+   (`_match_group_greedy`) is deleted (issue #313): no greedy
+   approximation exists anywhere in the matcher.
+6. Issuer mismatch is a matching failure, not a field error: a predicted
    event attributed to the wrong issuer (title/body ticker disagreement,
    downgraded to candidate by the extractor) cannot match that issuer's
    gold.
@@ -238,16 +257,24 @@ only — acceptance is per cell, never on a roll-up.
 `scripts/top30_scorer.py` implements §4–§7 exactly (order-independent
 maximum-agreement matching within same source document, type and
 issuer; candidate-never-TP; duplicate reuse as FP; ambiguous tie as
-unmatched + flagged; wrong value as 1 FP + 1 FN; end-to-end field
-denominators; exact-fraction full acceptance; typed canonicalisation
-contract with the extractor adapter). Its negative controls live in
+unmatched + flagged; forced pair only when paired to the same gold in
+every optimum, including being matched (not unmatched) in every
+optimum; groups of 8–15 events per side solved exactly via the
+assignment problem, groups over 15 rejected into adjudication with
+`oversize_group` and no greedy fallback anywhere; wrong value as 1 FP
++ 1 FN; end-to-end field denominators; exact-fraction full acceptance;
+typed canonicalisation contract with the extractor adapter). Its
+negative controls live in
 `scripts/test_top30_scorer_283.py`
 (swapped-date, sign, duplicate-reuse, candidate-only, plus the #305
 controls: full-verdict assertions, separated candidate/extracted
 status controls, missing/unknown-status rejection, multi-event
-permutation tests, issuer/schema/currency/scale controls) and are wired
-into `scripts/harness_issue109.py` (`--scorer`). If the spec and the
-scorer ever disagree, **the spec wins** and the scorer is fixed.
+permutation tests, issuer/schema/currency/scale controls, plus the
+#313 controls: the forced-pair counterexample, the forced-pair-holds
+case, the 8-event exact-beats-greedy case, the oversize-group
+adjudication case, and the random-group matching property test) and are
+wired into `scripts/harness_issue109.py` (`--scorer`). If the spec and
+the scorer ever disagree, **the spec wins** and the scorer is fixed.
 
 ## 10. Input boundaries
 
