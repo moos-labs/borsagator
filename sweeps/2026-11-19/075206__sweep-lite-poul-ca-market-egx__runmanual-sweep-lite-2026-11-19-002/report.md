@@ -513,6 +513,11 @@ News: 32 · disclosures: 10 · identity scheme: resolved_url|title-date-hash
 - القاهرة للدواجن (POUL.CA) - قرار لجنة القيد
 - القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (غير موثق)
 
+## Disclosure events
+
+## Disclosure events
+Disclosure events were not recorded in this model (report-model v1 predates the events contract) — this is not an empty events set.
+
 ## Sentiment + fundamentals
 
 ## Sentiment + fundamentals
