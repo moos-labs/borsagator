@@ -28,6 +28,7 @@ Sharia standard. It never copies another site's verdicts.
 | Purification calculator (issue #171) | `scripts/sharia_purification.py` |
 | Calculator tests | `scripts/test_sharia_purification.py` |
 | Accuracy benchmark vs Musaffa / Faisal / Ostool / EGX33 (issue #172) | `scripts/sharia_benchmark.py`, `docs/sharia-benchmark.md` |
+| Snapshot extraction rule: interest-type income wherever presented (issue #330) | `scripts/sharia_snapshot.py`, `scripts/test_sharia_snapshot.py`, `sharia/snapshots/` |
 | Zakat calculator + benchmark vs published calculators (issue #173) | `scripts/sharia_zakat.py`, `scripts/sharia_zakat_methods/`, `docs/sharia-zakat.md` |
 
 ## Verdicts
@@ -180,6 +181,38 @@ just shares outstanding (1,789,351,397) plus the Nov 2026 dividend
 event — so the stored tables honestly read `insufficient-data` for
 every implemented standard, naming every missing input. That is the
 designed behaviour, not an error.
+
+## Snapshot extraction rule (issue #330)
+
+`non_compliant_revenue` is the sum of every interest-type income line
+in the statements, classified per line — implemented in
+`scripts/sharia_snapshot.py` (rule v1.0.0) and tested in
+`scripts/test_sharia_snapshot.py`. The finance-income line alone
+missed verdict-changing income (#326 run 1):
+
+- TMGH H1-2026: EGP 2,092,779,078 of amortised-cost investment income
+  in other income — 3.17% as harvested vs **10.11%** on substance.
+- PHDC H1-2026: EGP 523,193,960 of notes-receivable discount unwinding
+  in other revenues — 2.33% as harvested vs **5.01%** on substance.
+
+The rule: inside the finance-income line/note, count the interest
+components only (the pre-#330 treatment, unchanged); outside finance
+income, count every interest-type line (amortised-cost investment
+income in other income, discount unwinding on notes receivable in
+other revenues, any similar line with its basis recorded). Fair-value
+gains, sale gains and the present-value discount line inside a
+finance-income note are excluded, with the reason recorded. Every
+line's classification is stored on the snapshot as
+`non_compliant_revenue_breakdown` and written out in the snapshot
+provenance, so a reviewer can see which statement line contributed
+what; the as-harvested numerator is kept as
+`non_compliant_revenue_as_harvested` so both bases stay measurable.
+Rebuilt snapshots live in `sharia/snapshots/` (see its README). One
+documented asymmetry: TMGH's present-value discount (inside finance
+income, excluded) vs PHDC's discount unwinding (outside finance
+income, included) — the rule treats them differently by presentation,
+and the module docstring records this as an open note for a future
+harvest to revisit.
 
 ## Run it
 
