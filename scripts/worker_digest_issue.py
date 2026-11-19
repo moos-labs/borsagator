@@ -23,16 +23,57 @@ label (what the digest watch discovers) and its identity label,
 and a sweep is skipped whenever ANY issue — open or closed —
 already carries its identity label. The label filter is an exact
 API filter, not the lagged fuzzy search the old workflow used.
-Creation is serialized across workflow runs by the workflow's
-`concurrency` group (a per-sweep group is not expressible before
-the job runs — the sweep identity is computed inside the step —
-so the group serializes whole runs, which strictly includes
-per-sweep serialization). There is no blind retry: the issue is
-created once; if the create call fails, the identity label is
-re-checked once (a create that landed server-side but reported
-failure is then recognised as filed), and a genuine failure fails
-the step loudly so a re-run retries it — the re-run's label
-check then prevents any duplicate.
+Runs of THIS workflow are serialized by the workflow's
+`concurrency` group, but the group covers no other actor — the
+orchestrate.yml issue step, a manual filing, or a rerun outside
+the group race freely. Issue #229: a sweep is therefore CLAIMED
+before it is filed, via `gh label create <identity label>`.
+Safety rests on exactly two pillars, stated as the assumptions
+they are: (a) SERVER-SIDE LABEL-NAME UNIQUENESS — the REST
+"create a label" endpoint documents 201 Created / 422 Validation
+failed, and `gh label create` documents that updating an
+existing label requires --force, so a plain create is treated as
+failing when the name exists; exactly one concurrent creator
+wins. This is an API-contract assumption, to be verified against
+live GitHub under #219, not something these tests can prove.
+(b) NO AUTOMATIC RELEASE: a claim, once held, is never deleted
+by this script. A nonzero issue-create response plus an empty
+listing does NOT prove no issue landed (#230's lag), so the
+claim survives every ambiguous outcome; only a human, after
+reconciling (did a create land? is a holder still active?), may
+`gh label delete` and re-run. The confirming entity GET
+(`gh api repos/:owner/:repo/labels/<label>`) is advisory only:
+it can only ever BLOCK a run (a stale or wrong answer produces a
+red run or a bounded wait, never a duplicate), so no lag-free
+read guarantee is needed or claimed. A claim loser waits a
+bounded budget for the winner's issue — PER HELD SWEEP, not a
+shared per-run budget like #230's reconciliation (see
+RECONCILE_RETRY_DELAYS for the sleep-only worst case) —
+re-claiming each round, and skips only on a fetch-confirmed
+exactly-one.
+Reconciliation requires EXACTLY ONE fetch-confirmed issue per
+sweep — the old existence check let two racing runs both file
+and both exit 0 — and duplicates are DETECT-AND-RED: the run
+fails naming the pair and the repair (keep the lowest number;
+for each extra, close it AND remove its identity label — the
+label check lists --state all, and a closed issue still carries
+its labels, so a close alone leaves the pair visible). This
+helper never closes or edits issues: filing is its mandate. The
+claim closes the double-file hole only among runs of THIS code;
+a non-adopter (old workflow run, manual `gh issue create`)
+never claims, and its in-window duplicate can slip a lagged
+listing — caught red by the next run touching that sweep.
+MIGRATION: identity labels predate this protocol. A past
+successful filing (label + issue) is safe — the run skips on
+the confirmed issue. A past ORPHANED label (created by old code,
+issue never landed) now blocks filing with a red orphaned-claim
+run until a human reconciles and deletes it; an empty listing
+alone never justifies the deletion. There is no blind retry:
+the issue is created once; if the create call fails, the
+identity label is re-checked once (a create that landed
+server-side but reported failure is then recognised as filed),
+and a genuine failure fails the step loudly with the claim
+retained for manual reconciliation.
 
 Issue #223: twice in the #220 burst test a first attempt stayed
 green, created its identity label and filed NO issue, and the
@@ -66,7 +107,13 @@ backoff (see reconcile_sweeps); creates and errors are never
 retried. In --file
 mode an unexpected helper exception now exits 1 for the same
 reason. Guarantees are as observed by this run at verification
-time; there is no cross-writer atomicity with other actors.
+time; cross-writer atomicity holds only among actors that claim
+(#229), never against a non-adopter. Deployment prerequisites
+(per official GitHub docs, not verified live here): the filing
+token needs the "Issues" repository permission (write) — the
+documented requirement for both "Create a label" and "Create an
+issue"; the workflow's existing `issues: write` satisfies this
+on paper.
 
 Usage (listing, unchanged — exit 0 always):
     worker_digest_issue.py --before <sha> --after <sha>
@@ -99,7 +146,19 @@ IDENTITY_LABEL_PREFIX = "digest-"
 
 # #230: waits between post-create reconciliation rounds: 1 +
 # len(delays) = 5 rounds and at most 2+4+8+16 = 30 s of sleep per
-# run, shared by all sweeps (network calls are extra).
+# run, shared by all sweeps (network calls are extra). #229: the
+# same VALUES bound the claim wait, but with different sharing
+# semantics: the claim wait is PER HELD SWEEP inside file_issue
+# (up to 30 s of sleep for EACH sweep whose claim is held by
+# another run while this run waits), not one shared budget per
+# run. Worst-case SLEEP per run is therefore 30 s x held sweeps +
+# 30 s of shared reconciliation. These figures count sleep only:
+# every gh call adds up to its 120 s timeout on top, so "~19
+# fully-held sweeps risk the workflow's 10-minute timeout" is an
+# illustrative sleep-budget estimate, not a wall-clock bound
+# (typical pushes add a handful of sweeps, and a sweep whose
+# issue is confirmed early costs one round, never the full
+# budget).
 RECONCILE_RETRY_DELAYS = (2, 4, 8, 16)
 
 
@@ -281,16 +340,83 @@ def verify_listed_issues(label):
     return confirmed
 
 
-def ensure_identity_label(label, sweep_dir):
-    """Create the per-sweep identity label if it does not exist yet.
+def fetch_label_exists(label):
+    """True when the identity LABEL entity exists (#229).
 
-    A failure here is swallowed deliberately: the common case is
-    "already exists", and any other failure surfaces loudly one
-    call later, when `gh issue create --label <label>` refuses the
-    unknown label and the step goes red."""
+    Advisory ONLY: this GET can block a run, never unblock one —
+    a 200 means "claim held, do not file", and ANY failure is
+    indeterminate (#223): gh's not-found wording is
+    indistinguishable from DNS/auth failures, so an unknown answer
+    is never read as "no label", and a schema-mismatched payload
+    fails loudly instead of guessing. Safety does not depend on
+    this read being fresh or correct: a stale 200 costs a bounded
+    wait or a red run, never a duplicate. Uniqueness itself comes
+    from the label CREATE, not from this GET."""
+    proc = run_gh(["api", f"repos/:owner/:repo/labels/{label}"])
+    if proc.returncode != 0:
+        raise VerificationIndeterminate(
+            f"gh api labels/{label} failed: "
+            f"{(proc.stderr or proc.stdout or '').strip()[:200]}")
+    try:
+        data = json.loads(proc.stdout or "")
+    except ValueError as e:
+        raise VerificationIndeterminate(
+            f"gh api labels/{label} returned unparsable JSON: {e}"
+            ) from e
+    if not isinstance(data, dict) or data.get("name") != label:
+        raise VerificationIndeterminate(
+            f"gh api labels/{label} returned a payload that does "
+            f"not match the request")
+    return True
+
+
+def claim_sweep(sweep_dir):
+    """Claim the sweep for THIS run via its identity label (#229).
+
+    Label creation is the server-side compare-and-swap: GitHub
+    enforces label-name uniqueness (REST "create a label": 201 /
+    422; `gh label create` updates an existing name only with
+    --force), so exactly one concurrent run's create succeeds.
+    ATOMICITY UNDER SIMULTANEOUS CREATES is a deployment
+    ASSUMPTION from that contract, not an independently proven
+    guarantee — verify with two forced-concurrent runs under
+    #219's live proof before relying on it fleet-wide. Returns
+    "claimed" when this run created the label, "held" when it
+    already exists — the claim then belongs to another run
+    (past, in-flight or orphaned) and the caller decides on
+    fetch-confirmed ISSUES, never on the label alone. A create
+    that fails for any reason is confirmed by an entity GET:
+    200 means the claim is held; anything else raises
+    VerificationIndeterminate, because an unknown claim state
+    must fail loudly, never become a silent skip or a duplicate."""
+    label = identity_label(sweep_dir)
     desc = f"Digest issue for {sweep_dir}"[:100]
-    run_gh(["label", "create", label, "--color",
-            IDENTITY_LABEL_COLOR, "--description", desc])
+    proc = run_gh(["label", "create", label, "--color",
+                   IDENTITY_LABEL_COLOR, "--description", desc])
+    if proc.returncode == 0:
+        return "claimed"
+    if fetch_label_exists(label):
+        return "held"
+
+
+def duplicate_error(sweep_dir, label, confirmed):
+    """The RuntimeError for >=2 fetch-confirmed issues (#229).
+
+    Detect-and-red, never auto-repair: closing an extra alone
+    does NOT restore uniqueness, because the label check lists
+    --state all and a closed issue still carries its labels —
+    the repair must also REMOVE the identity label from every
+    extra. Keep-lowest is the deterministic tie-break any two
+    operators agree on."""
+    keep = min(confirmed)
+    extras = [n for n in sorted(confirmed) if n != keep]
+    return RuntimeError(
+        f"{sweep_dir}: duplicate digest issues {sorted(confirmed)} "
+        f"carry {label}. Keeping #{keep} (lowest); for each of "
+        f"{extras}: close it AND remove label {label} from it "
+        f"(a closed issue still carries its labels, so closing "
+        f"alone leaves the duplicate visible to --state all), "
+        f"then re-run")
 
 
 def _sleep(seconds):
@@ -299,26 +425,35 @@ def _sleep(seconds):
 
 
 def reconcile_sweeps(sweeps, created):
-    """Sweep dirs with NO fetch-confirmed issue after retries (#230).
+    """Sweep dirs without EXACTLY ONE confirmed issue (#230, #229).
 
-    Rounds run over all pending sweeps, then one shared wait, so the
-    sleep total does not grow with the sweep count. Only a sweep in
-    `created` (filed by this run) is re-checked after an EMPTY
-    result: a check right after a create can miss it (suspected
-    index lag, not proven). A raised error (failed list,
-    indeterminate fetch, malformed payload) is final at once for
-    every sweep, never waited on. The round count is fixed, so a
-    genuinely absent filing is returned for the caller to fail
-    red. No create is retried, so no duplicate can be filed."""
+    Rounds run over all pending sweeps, then one shared wait, so
+    the sleep total does not grow with the sweep count. Only a
+    sweep in `created` (filed by this run) is re-checked after an
+    EMPTY result: a check right after a create can miss it
+    (suspected index lag, not proven). A raised error (failed
+    list, indeterminate fetch, malformed payload, a duplicate)
+    is final at once for every sweep, never waited on. The round
+    count is fixed, so a genuinely absent filing is returned for
+    the caller to fail red. No create is retried, so no duplicate
+    can be filed. #229: EXISTENCE is not enough — two racing runs
+    could both file and both see >=1 confirmed issue, exiting 0
+    over a duplicated sweep. >=2 confirmed issues are
+    detect-and-red (duplicate_error), never silently passed and
+    never auto-repaired."""
     rounds = len(RECONCILE_RETRY_DELAYS) + 1
     unverified = []
     pending = list(sweeps)
     for rnd in range(1, rounds + 1):
         retry = []
         for sweep_dir in pending:
+            label = identity_label(sweep_dir)
             try:
-                ok = bool(verify_listed_issues(
-                    identity_label(sweep_dir)))
+                confirmed = verify_listed_issues(label)
+                if len(confirmed) >= 2:
+                    raise duplicate_error(sweep_dir, label,
+                                          confirmed)
+                ok = bool(confirmed)
             except Exception as e:  # noqa: BLE001 - final, no retry
                 print(f"worker_digest_issue: reconciliation for "
                       f"{sweep_dir} could not complete: {e}",
@@ -354,13 +489,57 @@ def file_issue(sweep_dir, title, repo_dir):
     A missing digest.md is a failure, never a body-less issue.
     "exists" requires a CONFIRMED issue (#223): a bare label-list
     hit that a fetch cannot corroborate never suppresses filing,
-    and an indeterminate fetch fails loudly instead of guessing."""
+    and an indeterminate fetch fails loudly instead of guessing.
+    #229: only the CLAIM WINNER may create — a run that does not
+    hold the claim waits a bounded budget for the winner's issue,
+    re-claiming each round, then skips on a fetch-confirmed
+    exactly-one or raises on an orphaned claim. NOTE: this wait
+    is PER HELD SWEEP (up to 30 s OF SLEEP each; gh call time is
+    extra), unlike the shared #230 reconciliation budget — see
+    the RECONCILE_RETRY_DELAYS comment for the sleep-only worst
+    case against the workflow timeout.
+    >=2 confirmed issues are detect-and-red (duplicate_error),
+    here and in reconciliation. The claim is NEVER released by
+    this script: a failed create with an empty listing may be a
+    lost response under #230 lag, so the claim is retained for
+    a human to reconcile. Behaviour change to state plainly: a
+    re-run after a genuinely failed create no longer retries
+    automatically — it blocks on the retained claim until the
+    operator reconciles and deletes the label."""
     label = identity_label(sweep_dir)
-    ensure_identity_label(label, sweep_dir)
-    if verify_listed_issues(label):
+    rounds = len(RECONCILE_RETRY_DELAYS) + 1
+    status = None
+    confirmed = []
+    for rnd in range(1, rounds + 1):
+        status = claim_sweep(sweep_dir)
+        confirmed = verify_listed_issues(label)
+        if confirmed or status == "claimed":
+            break
+        # Claim held, zero confirmed issues: the winner may still
+        # be creating (its create follows its claim by seconds).
+        # Wait, then re-claim; the loop never deletes anything.
+        if rnd != rounds:
+            delay = RECONCILE_RETRY_DELAYS[rnd - 1]
+            print(f"worker_digest_issue: {sweep_dir} is claimed by "
+                  f"another run, no issue yet (round {rnd}/{rounds}"
+                  f"); waiting {delay}s", file=sys.stderr)
+            _sleep(delay)
+    if len(confirmed) >= 2:
+        raise duplicate_error(sweep_dir, label, confirmed)
+    if len(confirmed) == 1:
         print(f"issue already exists for {sweep_dir} - skipping "
               f"(confirmed by fetch)")
         return "exists"
+    if status != "claimed":
+        raise RuntimeError(
+            f"{sweep_dir}: identity label {label} exists but after "
+            f"{rounds} rounds no fetch-confirmed issue carries it - "
+            f"an orphaned claim (a holder died between claiming and "
+            f"filing) or a delayed/partial create still in flight; "
+            f"refusing to file a possible duplicate. Do NOT delete "
+            f"the label on the empty listing alone: reconcile first "
+            f"(did a create land? is a holder still active?), then "
+            f"delete label {label} and re-run")
     body = Path(repo_dir) / sweep_dir / "digest.md"
     if not body.is_file():
         raise FileNotFoundError(
@@ -375,16 +554,27 @@ def file_issue(sweep_dir, title, repo_dir):
     # No blind retry (#157): the create may have landed server-side
     # while the CLI reported failure. Re-check the identity label
     # once — if the issue is there now, it was filed; only a real
-    # absence is a failure, and it fails loudly.
-    if verify_listed_issues(label):
+    # absence is a failure, and it fails loudly. The claim is
+    # RETAINED either way (#229): the empty re-check may be #230
+    # lag over a landed create, and releasing would let a second
+    # adopter file a duplicate.
+    confirmed = verify_listed_issues(label)
+    if len(confirmed) >= 2:
+        raise duplicate_error(sweep_dir, label, confirmed)
+    if len(confirmed) == 1:
         print(f"issue for {sweep_dir} exists after a failed create "
               f"- treating as filed (create response was lost; "
               f"confirmed by fetch)")
         return "exists"
     raise RuntimeError(
-        f"gh issue create for {sweep_dir} failed and no issue "
-        f"carries {label}: "
-        f"{(proc.stderr or proc.stdout or '').strip()[:200]}")
+        f"gh issue create for {sweep_dir} failed and no "
+        f"fetch-confirmed issue carries {label}: "
+        f"{(proc.stderr or proc.stdout or '').strip()[:200]} - "
+        f"claim RETAINED (the empty re-check may be listing lag "
+        f"over a landed create). Reconcile: if the issue exists, "
+        f"nothing to do; only after establishing that NO create "
+        f"landed and no holder is active, delete label {label} "
+        f"and re-run")
 
 
 def file_issues(before, after, repo_dir):
@@ -403,7 +593,9 @@ def file_issues(before, after, repo_dir):
     most 30 s of sleep per run, whatever the sweep count) before it
     fails red. Skipped sweeps and any raised error get one check.
     Each round costs one list plus one fetch per listed issue per
-    pending sweep."""
+    pending sweep. #229: reconciliation requires EXACTLY ONE
+    fetch-confirmed issue — a duplicated sweep fails red naming
+    the pair and its manual repair."""
     sweeps = added_merge_manifests(before, after, repo_dir)
     failures = []
     created = set()
