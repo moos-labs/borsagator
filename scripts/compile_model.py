@@ -60,12 +60,21 @@ stored row for the ticker renders as ``insufficient-data`` with the
 gap named -- never a blank or silently partial section. Standards
 that define no purification rule (EGX33) are excluded from the
 block's average purification ratio, and the exclusion is shown in
-the block itself, never hidden. The block is additive, so the
-schema stays ``borsagator-report-model/1``: every existing
-consumer reads named fields only (``delta.model_to_view`` carries
-the block through for the renderer, unread by the diff core). A
-change to an existing field's meaning still bumps the version
-under D-7.
+the block itself, never hidden. The block was added under v1 as a
+HISTORICAL exception (issue #170, frozen 2026-11-19): v1 models may
+carry it, but it is not a general override -- no further field may
+be added to v1 silently, and from v2 on every field change bumps
+the version under D-7 (see ``scripts/report_model.py``). A change
+to an existing field's meaning still bumps the version under D-7.
+
+Disclosure-events section (issue #280, v2): every model carries a
+``disclosure_events`` block (see ``scripts/report_model.py`` for the
+frozen contract) surfaced from the #109/#278 feed
+(``disclosure-events/<CODE>-events.json`` in the sweep dir). A v1
+input means events were not recorded by that contract, NOT an empty
+events set -- the block records missing / unavailable / stale /
+valid-empty as distinct states, never conflates them, and carries
+the feed's provenance and per-event evidence pointers.
 """
 import argparse
 import csv
@@ -80,8 +89,14 @@ import sys
 from datetime import datetime
 from email.utils import parsedate_to_datetime
 
-MODEL_VERSION = 1
-SCHEMA = "borsagator-report-model/1"
+try:
+    import report_model
+except ImportError:  # imported from a checkout without scripts/ on path
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import report_model
+
+MODEL_VERSION = report_model.MODEL_VERSION
+SCHEMA = report_model.SCHEMA
 COMPILER_PATH = "scripts/compile_model.py"
 
 VOTING_FAMILIES = ("price-forecast", "technicals", "sentiment",
@@ -850,6 +865,141 @@ def build_benchmark(sweep_dir):
     return out
 
 
+# ---------------------------------------------------------------- disclosure events
+
+def _empty_events_counts():
+    return {"events": 0, "verified": 0, "candidates": 0, "stale": 0,
+            "by_type": {}, "by_verification": {}}
+
+
+def _events_counts(events):
+    by_type = {}
+    by_verification = {}
+    for event in events:
+        by_type[event.get("event_type")] = \
+            by_type.get(event.get("event_type"), 0) + 1
+        by_verification[event.get("verification_status")] = \
+            by_verification.get(event.get("verification_status"), 0) + 1
+    return {"events": len(events),
+            "verified": sum(1 for e in events
+                            if e.get("verification_status") == "verified"),
+            "candidates": sum(1 for e in events
+                              if e.get("extraction_status")
+                              == "candidate"),
+            "stale": sum(1 for e in events if e.get("stale") is True),
+            "by_type": by_type,
+            "by_verification": by_verification}
+
+
+def _validate_events_feed(feed, ticker):
+    """Strict validation of a ``disclosure-events/<CODE>-events.json``
+    feed (the #109/#278 extractor output) before any of it enters
+    the model. Returns a list of problems (empty = valid). A feed
+    that fails here is never partially surfaced: the block goes
+    ``unavailable`` with the reason named."""
+    problems = []
+    if not isinstance(feed, dict):
+        return ["feed is not an object"]
+    if feed.get("schema_version") != report_model.FEED_SCHEMA_VERSION:
+        problems.append(f"feed schema_version "
+                        f"{feed.get('schema_version')!r}, expected "
+                        f"{report_model.FEED_SCHEMA_VERSION}")
+    if not isinstance(feed.get("extractor_version"), str):
+        problems.append("feed extractor_version is not a string")
+    if not isinstance(feed.get("config_hash"), str):
+        problems.append("feed config_hash is not a string")
+    quarter = feed.get("quarter")
+    if not isinstance(quarter, dict) or not report_model.ISO_DATE_RE.match(
+            str(quarter.get("start") or "")) \
+            or not report_model.ISO_DATE_RE.match(
+                str(quarter.get("end") or "")):
+        problems.append("feed quarter is not {start, end} ISO dates")
+    if not isinstance(feed.get("report"), dict):
+        problems.append("feed report is not an object")
+    events = feed.get("events")
+    if not isinstance(events, list):
+        problems.append("feed events is not a list")
+        return problems
+    seen_ids = set()
+    for event in events:
+        problems.extend(report_model.validate_event_record(event))
+        if isinstance(event, dict):
+            ev_id = event.get("event_id")
+            if ev_id in seen_ids:
+                problems.append(f"duplicate event_id {ev_id!r}")
+            seen_ids.add(ev_id)
+            issuer_ticker = (event.get("issuer") or {}).get("ticker")
+            if issuer_ticker is not None and issuer_ticker != ticker:
+                problems.append(
+                    f"event {ev_id!r} issuer {issuer_ticker!r} != "
+                    f"sweep ticker {ticker!r}")
+    return problems
+
+
+def build_disclosure_events_section(sweep_dir, ticker, sweep_date):
+    """Assemble the model's ``disclosure_events`` block (issue #280,
+    frozen contract in ``scripts/report_model.py``) from the #278
+    feed file ``disclosure-events/<CODE>-events.json`` in the sweep
+    dir. States, in order: missing (no file — a normal state, no
+    flag, recorded in the block), unavailable (file present but
+    failed validation — flagged, never partially surfaced), stale
+    (feed valid but its quarter window ends before the sweep date —
+    flagged, events still carried), valid (events verbatim, counts
+    derived from them). A malformed feed never refuses the compile:
+    the sweep's financial content is still valid; the block says so.
+    Returns (section, flags)."""
+    code = ticker.split(".")[0].upper()
+    rel = f"disclosure-events/{code}-events.json"
+    path = os.path.join(sweep_dir, rel)
+    if not os.path.isfile(path):
+        return {"status": "missing", "source": None,
+                "feed_schema_version": None,
+                "extractor_version": None, "config_hash": None,
+                "quarter": None, "feed_report": None, "events": [],
+                "counts": _empty_events_counts(),
+                "reason": f"no {rel} in sweep dir"}, []
+    try:
+        feed = _load_json_strict(path)
+    except Exception as exc:
+        return {"status": "unavailable", "source": rel,
+                "feed_schema_version": None,
+                "extractor_version": None, "config_hash": None,
+                "quarter": None, "feed_report": None, "events": [],
+                "counts": _empty_events_counts(),
+                "reason": f"{rel} unreadable: {exc}"}, \
+            [f"disclosure-events-unavailable: {rel} unreadable"]
+    problems = _validate_events_feed(feed, ticker)
+    if problems:
+        return {"status": "unavailable", "source": rel,
+                "feed_schema_version": None,
+                "extractor_version": None, "config_hash": None,
+                "quarter": None, "feed_report": None, "events": [],
+                "counts": _empty_events_counts(),
+                "reason": f"{rel} failed validation: "
+                          f"{problems[0]}"}, \
+            [f"disclosure-events-unavailable: {rel}: {problems[0]}"]
+    events = feed["events"]
+    quarter = feed["quarter"]
+    status = "valid"
+    flags = []
+    reason = None
+    if sweep_date and quarter["end"] < sweep_date:
+        status = "stale"
+        reason = (f"feed quarter ends {quarter['end']}, before sweep "
+                  f"date {sweep_date}")
+        flags.append(f"disclosure-events-stale: {reason}")
+    return {"status": status, "source": rel,
+            "feed_schema_version": feed["schema_version"],
+            "extractor_version": feed["extractor_version"],
+            "config_hash": feed["config_hash"],
+            "quarter": {"start": quarter["start"],
+                        "end": quarter["end"]},
+            "feed_report": feed["report"],
+            "events": events,
+            "counts": _events_counts(events),
+            "reason": reason}, flags
+
+
 # ---------------------------------------------------------------- sharia
 
 # The average is labelled as exactly what it is -- an average of
@@ -1562,6 +1712,14 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         flags.append("disclosures-file-missing: collected/"
                      "news-disclosure/disclosures.json")
 
+    # ---- disclosure events (#280, v2): the #278 feed file in the
+    # ---- sweep dir, surfaced verbatim when valid; missing /
+    # ---- unavailable / stale are recorded states, never silence.
+    disclosure_events, events_flags = \
+        build_disclosure_events_section(
+            sweep_dir, ticker, digest.get("date"))
+    flags.extend(events_flags)
+
     # ---- recommendation + reaction profile (main snapshots).
     recommendation = None
     rec_path = os.path.join(profiles_dir,
@@ -1708,6 +1866,7 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
         "llm": llm,
         "benchmark": build_benchmark(sweep_dir),
         "sharia": sharia,
+        "disclosure_events": disclosure_events,
         "flags": flags,
         "metrics_schema": "untyped-flat",
     }
@@ -1776,35 +1935,19 @@ def _clear_error_marker(error_path):
 
 # ---------------------------------------------------------------- consumer check
 
-MODEL_REQUIRED_FIELDS = (
-    "model_version", "schema", "ticker", "job", "job_shape", "date",
-    "finished", "sweep_dir", "archive_commit", "provenance",
-    "partial", "ensemble_absent", "ensemble_shape", "degraded",
-    "ticker_mismatch", "coercion_failed", "ensemble", "price",
-    "price_series_last", "family_scores", "horizons", "risk",
-    "corporate_actions", "kronos_ex_rescale", "weights", "ledger_pin",
-    "news", "tools", "tools_absent", "tools_failed", "recommendation",
-    "levels", "reaction_profile", "llm", "flags", "metrics_schema")
+# The canonical field sets live in scripts/report_model.py (the single
+# pinned authority); this alias keeps the pre-existing name working.
+MODEL_REQUIRED_FIELDS = report_model.V2_REQUIRED_FIELDS
 
 
 def validate_model_schema(model):
-    """Consumer-side schema check (F-8 / D-7): refuse a model whose
-    ``schema`` is not understood, listing the missing required
-    fields -- never silently degrade, never guess a default.
-    Returns a list of problems (empty = valid)."""
-    problems = []
-    if not isinstance(model, dict):
-        return ["model is not an object"]
-    schema = model.get("schema")
-    if schema != SCHEMA or model.get("model_version") != MODEL_VERSION:
-        problems.append(
-            f"model_schema_unsupported: expected {SCHEMA}, found "
-            f"{schema!r} (model_version "
-            f"{model.get('model_version')!r})")
-    for field in MODEL_REQUIRED_FIELDS:
-        if field not in model:
-            problems.append(f"missing required field: {field}")
-    return problems
+    """Consumer-side schema check (F-8 / D-7): the shared contract in
+    ``scripts/report_model.py`` — exact version tuple, required
+    fields for the declared version, and the no-bump schema-diff
+    check (a field the declared version does not define is refused
+    even when the markers agree). Returns a list of problems
+    (empty = valid)."""
+    return report_model.validate_model(model)
 
 
 # ---------------------------------------------------------------- CLI
@@ -1852,7 +1995,8 @@ def main(argv=None):
                 print(f"model_schema_unsupported: {problem}",
                       file=sys.stderr)
             return 2
-        print(f"model schema OK: {SCHEMA}")
+        print(f"model schema OK: {model.get('schema')} "
+              f"(model_version {model.get('model_version')})")
         return 0
     if not args.sweep_dir:
         ap.error("sweep_dir is required (or --check-model)")

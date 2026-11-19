@@ -165,7 +165,7 @@ def test_fail_then_success_leaves_no_stale_files():
         assert not os.path.isfile(error_path)
         second = json.load(open(model_path, encoding="utf-8"))
         assert second["ticker"] == "POUL.CA"
-        assert second["schema"] == "borsagator-report-model/1"
+        assert second["schema"] == "borsagator-report-model/2"
         # The recovered model is the current compile's result, not
         # a resurrected copy of the first one.
         assert second["provenance"]["compiler_sha"] == COMPILER_SHA
