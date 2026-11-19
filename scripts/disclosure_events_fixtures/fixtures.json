@@ -1,0 +1,413 @@
+{
+ "generated_by": "hidden_files/build_109_fixtures.py",
+ "sources": "harvest/POUL.json + harvest/COMI.json from archive checkout 9c955db (harvested 2026-11-18)",
+ "cases": [
+  {
+   "name": "golden_poul_dividend",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "dividend",
+    "coupon": "42",
+    "amount": "1.8999999998",
+    "ex_date": "2026-11-16",
+    "entitlement_end": "2026-11-15",
+    "payout_date": "2026-11-18",
+    "announced": "2026-11-02",
+    "record_date": null,
+    "record_derived_candidate": "2026-11-17",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 296893; record date NOT stated in source — null with T+2 derived candidate (see docs/disclosure-events.md)."
+  },
+  {
+   "name": "golden_poul_earnings_consolidated",
+   "kind": "single",
+   "doc": {
+    "id": "297563",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+    "date": "2026-11-12",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297563",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر\n12/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي : EGS02051C018\nالعملة : جنيه مصري\nالقوائم المالية المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026\nصافي الربح : 1,439,879,918\nارقام المقارنة المجمعة عن الفترة : من 01/01/2025 الى 30/09/2025\nصافي الربح لفترة المقارنة : 2,365,410,070\nتقرير الفحص المحدود : مرفق\nمع الاخذ فى الاعتبار حقوق الاقلية\nالمصدر : القاهرة للدواجن"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "basis": "consolidated",
+    "period_start": "2026-01-01",
+    "period_end": "2026-09-30",
+    "npat": "1439879918",
+    "npat_scale": "one",
+    "npat_comparative": "2365410070",
+    "yoy": "-39.13",
+    "revenue": null,
+    "announced": "2026-11-12",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 297563; revenue only in attachment."
+  },
+  {
+   "name": "golden_poul_earnings_standalone",
+   "kind": "single",
+   "doc": {
+    "id": "297561",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر",
+    "date": "2026-11-12",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297561",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر\n12/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي : EGS02051C018\nالعملة : جنيه مصري\nالقوائم المالية غير المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026\nصافي الربح : 291,445,617\nارقام المقارنة غير المجمعة عن الفترة : من 01/01/2025 الى 30/09/2025\nصافي الربح لفترة المقارنة : 113,879,501\nتقرير الفحص المحدود : مرفق\nالمصدر : القاهرة للدواجن"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "basis": "standalone",
+    "period_start": "2026-01-01",
+    "period_end": "2026-09-30",
+    "npat": "291445617",
+    "npat_comparative": "113879501",
+    "yoy": "155.92",
+    "announced": "2026-11-12",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 297561."
+  },
+  {
+   "name": "golden_comi_earnings_consolidated",
+   "kind": "single",
+   "doc": {
+    "id": "297291",
+    "title": "البنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) تعلن نتائج أعمالها المجمعة عن الفترة: من 01/01/2026 إلى 30/09/2026",
+    "date": "2026-01-01",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297291",
+    "body": "تفاصيل الأخبار\n\n\n\nالبنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) تعلن نتائج أعمالها المجمعة عن الفترة: من 01/01/2026 إلى 30/09/2026\n10/11/2026\nاسم البنك: البنك التجاري الدولي -مصر (سى اى بى )\nكود الترقيم الدولي: EGS60121C018\nالعملة: جنيه مصرى\nالقوائم المالية المجمعة عن الفترة: من 01/01/2026 إلى 30/09/2026\nصافي الربح: 63,079,356 (القيمة بالألف)\nأرقام المقارنة المجمعة عن الفترة: من 01/01/2025 إلى 30/09/2025\nصافي الربح لفترة المقارنة: 62,100,264 (القيمة بالألف)\nتقرير فحص محدود: مرفق\nالمصدر: البنك التجاري الدولي -مصر (سى اى بى )\n\nمع الأخذ في الإعتبار حقوق الأقلية\n تقرير ممارسة النشاط المجمعة (64 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "basis": "consolidated",
+    "period_start": "2026-01-01",
+    "period_end": "2026-09-30",
+    "npat": "63079356",
+    "npat_scale": "thousand",
+    "npat_comparative": "62100264",
+    "yoy": "1.58",
+    "announced": "2026-11-10",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 297291; item date is the harvester bug 2026-01-01 — announced must come from the body date line 10/11/2026; NPAT reported in thousands."
+  },
+  {
+   "name": "golden_comi_earnings_standalone",
+   "kind": "single",
+   "doc": {
+    "id": "297289",
+    "title": "البنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) تعلن نتائج أعمالها المستقلة عن الفترة: من 01/01/2026 إلى 30/09/2026",
+    "date": "2026-01-01",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297289",
+    "body": "تفاصيل الأخبار\n\n\n\nالبنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) تعلن نتائج أعمالها المستقلة عن الفترة: من 01/01/2026 إلى 30/09/2026\n10/11/2026\nاسم البنك: البنك التجاري الدولي -مصر (سى اى بى )\nكود الترقيم الدولي: EGS60121C018\nالعملة: جنيه مصرى\nالقوائم المالية المستقلة عن الفترة: من 01/01/2026 إلى 30/09/2026\nصافي الربح: 62,973,508 (القيمة بالألف)\nأرقام المقارنة المستقلة عن الفترة: من 01/01/2025 إلى 30/09/2025\nصافي الربح لفترة المقارنة: 62,207,506 (القيمة بالألف)\nتقرير فحص محدود: مرفق\nالمصدر: البنك التجاري الدولي -مصر (سى اى بى )\n تقرير ممارسة النشاط المستقل (63 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "basis": "standalone",
+    "npat": "62973508",
+    "npat_scale": "thousand",
+    "npat_comparative": "62207506",
+    "yoy": "1.23",
+    "announced": "2026-11-10",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 297289."
+  },
+  {
+   "name": "golden_poul_egm_call",
+   "kind": "single",
+   "doc": {
+    "id": "297135",
+    "title": "القاهرة للدواجن (POUL.CA) - دعوة الجمعية العامة غير العادية",
+    "date": "2026-11-08",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297135",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) - دعوة الجمعية العامة غير العادية\n08/11/2026\nاسم الشركة: القاهرة للدواجن\nكود الترقيم الدولي: EGS02051C018\nكود رويترز: POUL.CA\nمضمون الإعلان :\nتعلن شركة القاهرة للدواجن عن دعوة الجمعية العامة غير العادية المقرر انعقادها بتاريخ 30/11/2026 في تمام الساعة 03:00 مساءً.\n دعوة الجمعية العامة غير العادية باللغتين العربية والإنجليزية (534 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "board_decision",
+    "subtype": "egm_call",
+    "assembly_date": "2026-11-30",
+    "assembly_time": "03:00",
+    "state": "proposed",
+    "announced": "2026-11-08",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "EGX NewsID 297135."
+  },
+  {
+   "name": "candidate_poul_board",
+   "kind": "single",
+   "doc": {
+    "id": "297436",
+    "title": "القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة",
+    "date": "2026-11-12",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297436",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة\n12/11/2026\nاسم الشركة: القاهرة للدواجن\nكود الترقيم الدولي: EGS02051C018\nكود رويترز: POUL.CA\nمضمون الإعلان :\nقرارات مجلس إدارة الشركة بجلسته المنعقدة بتاريخ 11/11/2026.\n\n قرارات مجلس إدارة الشركة (280 KB)\n بيان نتائج الأعمال باللغة العربية (382 KB)\n بيان نتائج الأعمال باللغة الإنجليزية (221 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "board_decision",
+    "subtype": "board_decisions",
+    "state": "unknown",
+    "meeting_date": "2026-11-11",
+    "announced": "2026-11-12",
+    "status": "candidate",
+    "verification": "unverified"
+   },
+   "notes": "EGX NewsID 297436; decisions in attachment, not harvested."
+  },
+  {
+   "name": "candidate_comi_english_statement",
+   "kind": "single",
+   "doc": {
+    "id": "297292",
+    "title": "بيان من البنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) بخصوص نتائج أعمال البنك (باللغة الانجليزية)",
+    "date": "2026-11-10",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297292",
+    "body": "تفاصيل الأخبار\n\n\n\nبيان من البنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) بخصوص نتائج أعمال البنك (باللغة الانجليزية)\n10/11/2026\nاسم البنك: البنك التجاري الدولي -مصر (سى اى بى )\nكود الترقيم الدولي: EGS60121C018\nكود رويترز: COMI.CA\nمضمون الإعلان :\nبيان من البنك بخصوص نتائج الأعمال عن الفترة المالية المنتهية في 30/09/2026 (باللغة الانجليزية).\n بيان من البنك باللغة الإنجليزية (440 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "status": "candidate",
+    "verification": "unverified",
+    "announced": "2026-11-10"
+   },
+   "notes": "EGX NewsID 297292; figures in the English attachment."
+  },
+  {
+   "name": "nonevent_fra_statement",
+   "kind": "single",
+   "doc": {
+    "id": "297092",
+    "title": "القاهرة للدواجن (POUL.CA) - بيان من الهيئة العامة للرقابة المالية",
+    "date": "2026-11-05",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297092",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) - بيان من الهيئة العامة للرقابة المالية\n05/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي : EGS02051C018\nكود رويترز : POUL.CA\nمضمون الاعلان :\nبيان من الهيئة العامة للرقابة المالية تفيد فيه بعدم ممانعة الهيئة على نشر تقرير الافصاح المعد وفقًا لأحكام المادة (48) من قواعد القيد بالبورصة المصرية بشأن قرار مجلس إدارة الشركة المنعقد بتاريخ 18/10/2026.\n\n\n يان من الهيئة العامة للرقابة المالية (1,193 KB)"
+   },
+   "expected": {
+    "n_events": 0
+   },
+   "notes": "EGX NewsID 297092; regulator statement, not a board decision event (قرار مجلس singular)."
+  },
+  {
+   "name": "nonevent_agm_minutes",
+   "kind": "single",
+   "doc": {
+    "id": "297015",
+    "title": "القاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (موثق)",
+    "date": "2026-11-04",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297015",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) - محضر اجتماع الجمعية العامة العادية (موثق)\n04/11/2026\nاسم الشركة: القاهرة للدواجن\nكود الترقيم الدولي: EGS02051C018\nكود رويترز: POUL.CA\nمضمون الإعلان :\nمحضر اجتماع الجمعية العامة العادية التي انعقدت يوم 18/10/2026 (موثق).\n محضر اجتماع الجمعية العامة العادية (موثق) (1,921 KB)"
+   },
+   "expected": {
+    "n_events": 0
+   },
+   "notes": "EGX NewsID 297015; minutes of a past assembly, not a call."
+  },
+  {
+   "name": "duplicate_same_doc",
+   "kind": "feed",
+   "doc": [
+    {
+     "id": "296893",
+     "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+     "date": "2026-11-02",
+     "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+     "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+    },
+    {
+     "id": "296893",
+     "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+     "date": "2026-11-02",
+     "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+     "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+    }
+   ],
+   "expected": {
+    "n_events": 1,
+    "duplicate_documents": 1
+   },
+   "notes": "Same NewsID twice in one feed: one event."
+  },
+  {
+   "name": "dup_189_190",
+   "kind": "feed",
+   "doc": [
+    {
+     "id": "296893",
+     "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+     "date": "2026-11-02",
+     "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+     "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+    },
+    {
+     "id": "syn-repub-189",
+     "title": "القاهرة للدواجن توزع 1.89 جنيه للسهم",
+     "date": "2026-11-03",
+     "url": "https://www.mubasher.info/news/eg/123456",
+     "body": "القاهرة للدواجن تعلن عن توزيع نقدي\n03/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي : EGS02051C018\nكود رويترز : POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.89 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n"
+    }
+   ],
+   "expected": {
+    "n_events": 2,
+    "duplicate_links": 1
+   },
+   "notes": "Press figure 1.89 vs EGX 1.8999999998 (#131): linked, not merged."
+  },
+  {
+   "name": "stale_repost",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n01/08/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "stale": true,
+    "status": "extracted",
+    "announced": "2026-08-01"
+   },
+   "notes": "Announced 01/08/2026, before the quarter window: stale flag, still extracted (age is lifecycle, not invalidity)."
+  },
+  {
+   "name": "arabic_numerals",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n٠٢/١١/٢٠٢٦\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : ١.٩ جنيه\nتاريخ التوزيع : ١٨/١١/٢٠٢٦\nتاريخ نهاية الحق : ١٥/١١/٢٠٢٦\nتاريخ تحريك الحدود السعرية : ١٦/١١/٢٠٢٦\n\n مرفق الإعلان (214 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "amount": "1.9",
+    "ex_date": "2026-11-16",
+    "entitlement_end": "2026-11-15",
+    "payout_date": "2026-11-18",
+    "announced": "2026-11-02",
+    "status": "extracted"
+   },
+   "notes": "Arabic-Indic digits throughout; same event, normalised."
+  },
+  {
+   "name": "date_role_swap",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 16/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 18/11/2026\n\n مرفق الإعلان (214 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "payout_date": "2026-11-16",
+    "ex_date": "2026-11-18",
+    "status": "extracted"
+   },
+   "notes": "Labels swapped: role-based assignment must follow the wording, not the position."
+  },
+  {
+   "name": "revenue_only_earnings",
+   "kind": "single",
+   "doc": {
+    "id": "syn-rev-only",
+    "title": "شركة تجريبية تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+    "date": "2026-11-12",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=syn-rev-only",
+    "body": "تفاصيل الأخبار\n\nشركة تجريبية تعلن نتائج أعمالها المجمعة عن 9 أشهر\n12/11/2026\nاسم الشركة : شركة تجريبية\nكود الترقيم الدولي : EGS00000X000\nكود رويترز : TEST.CA\nالعملة : جنيه مصري\nالقوائم المالية المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026\nالإيرادات : 500,000,000\nالمصدر : شركة تجريبية\n"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "basis": "consolidated",
+    "npat": null,
+    "revenue": "500000000",
+    "status": "extracted",
+    "verification": "verified"
+   },
+   "notes": "Revenue-only does not require NPAT (Ins part 2)."
+  },
+  {
+   "name": "loss_earnings",
+   "kind": "single",
+   "doc": {
+    "id": "syn-loss",
+    "title": "شركة تجريبية تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+    "date": "2026-11-12",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=syn-loss",
+    "body": "تفاصيل الأخبار\n\nشركة تجريبية تعلن نتائج أعمالها المجمعة عن 9 أشهر\n12/11/2026\nاسم الشركة : شركة تجريبية\nكود الترقيم الدولي : EGS00000X000\nكود رويترز : TEST.CA\nالعملة : جنيه مصري\nالقوائم المالية المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026\nصافي الربح : (12,345,678)\nارقام المقارنة المجمعة عن الفترة : من 01/01/2025 الى 30/09/2025\nصافي الربح لفترة المقارنة : 10,000,000\nالمصدر : شركة تجريبية\n"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "earnings",
+    "npat": "-12345678",
+    "npat_comparative": "10000000",
+    "yoy": "-223.46",
+    "status": "extracted"
+   },
+   "notes": "Parenthesised loss keeps its sign."
+  },
+  {
+   "name": "clipped_amount",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالقاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : القاهرة للدواجن\nكود الترقيم الدولي :EGS02051C018\nكود رويترز :POUL.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون :"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "dividend",
+    "amount": null,
+    "status": "candidate",
+    "verification": "unverified"
+   },
+   "notes": "Body truncated before the amount: candidate, never verified."
+  },
+  {
+   "name": "wrong_issuer",
+   "kind": "single",
+   "doc": {
+    "id": "296893",
+    "title": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+    "date": "2026-11-02",
+    "url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+    "body": "تفاصيل الأخبار\n\n\n\nالبنك التجاري الدولي -مصر (سى اى بى ) (COMI.CA) تعلن عن توزيع نقدي\n02/11/2026\nاسم الشركة : البنك التجاري الدولي -مصر (سى اى بى )\nكود الترقيم الدولي :EGS60121C018\nكود رويترز :COMI.CA\nنوع التوزيع : نقدي\nرقم الكوبون : 42\nقيمة الكوبون : 1.8999999998 جنيه\nتاريخ التوزيع : 18/11/2026\nتاريخ نهاية الحق : 15/11/2026\nتاريخ تحريك الحدود السعرية : 16/11/2026\n\n مرفق الإعلان (214 KB)"
+   },
+   "expected": {
+    "n_events": 1,
+    "event_type": "dividend",
+    "status": "candidate",
+    "verification": "unverified"
+   },
+   "notes": "Title says POUL.CA, body says COMI.CA: issuer mismatch downgrade."
+  }
+ ]
+}
