@@ -1,0 +1,8 @@
+# Borsagator dependencies (installed into the worker venv per tool,
+# rebuilt when this file's sha256 changes — see worker/worker.py
+# #158). Keep this list minimal and pinned: every entry here is a
+# runtime import for a script the worker or a sweep step runs.
+# - pypdf: maintained PDF text engine for scripts/pdf_text.py /
+#   scripts/pdf_verify.py (#301). Pinned to the version the RTL
+#   layout-mode behaviour was verified against.
+pypdf==7.1.1
