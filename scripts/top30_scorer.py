@@ -45,15 +45,21 @@ Rules (spec sections in brackets):
   unmatched gold events contribute an FN per present field, unmatched
   predicted events an FP per present field.
 - Acceptance is the full §7 verdict: event P >= 0.95 / R >= 0.90 AND
-  field P >= 0.95 / R >= 0.90 per scored field. A field whose
+  field P >= 0.95 / R >= 0.90 per scored field, AND zero unresolved
+  in-scope ambiguities, AND zero unresolved candidates, AND
+  collection 100% when collection status is supplied. A field whose
   denominators are both zero in the cell is N/A for that field and
   does not gate acceptance; a fully empty cell (0/0/0) is N/A, never
-  a pass [§7].
+  a pass [§7, issue #314]. `accepted` is a threshold result only
+  when collection status is not supplied — the `completion`
+  breakdown records the collection gate as not assessed, and a
+  completion claim requires the report runner to supply it.
 - Input boundaries fail closed: a predicted event with a missing or
   unknown status, an event with a missing/unknown event type or a
   missing issuer, or a gold event carrying a prediction-only status
   is rejected with ValueError — never defaulted, never silently
-  scored [issue #305 §4].
+  scored [issue #305 §4]. Contradictory collection status is
+  likewise rejected [issue #314].
 - Canonicalisation is a typed contract [§6]: dates to ISO YYYY-MM-DD
   (ISO, D/M/YYYY, D-M-YYYY, YYYY/MM/DD; Arabic-Indic digits
   normalised); money as (Decimal in base units, currency) with scale
@@ -654,6 +660,60 @@ def _match_group_oversize(gold_list, pred_list):
     return [], list(pred_list), list(gold_list), ambiguous
 
 
+def _validate_collection(collection, gold_events, pred_events):
+    """Validate the optional collection status (spec §7/§8, issue
+    #314). Returns a normalised {"enumerated", "archived", "missing"}
+    dict, or None when collection was not supplied — the collection
+    gate is then not assessed (see score_cell). Raises ValueError on
+    contradictory input, fail closed: counts must be non-negative
+    ints with archived <= enumerated; `missing` must name exactly
+    enumerated - archived documents; a missing document cannot also
+    be a scored document, and the enumeration must cover every
+    distinct scored document (a document that produced a gold or
+    predicted event was necessarily archived, hence enumerated)."""
+    if collection is None:
+        return None
+    if not isinstance(collection, dict):
+        raise ValueError("collection must be a mapping or None: %r"
+                         % (collection,))
+    enumerated = collection.get("enumerated")
+    archived = collection.get("archived")
+    for name, value in (("enumerated", enumerated),
+                        ("archived", archived)):
+        if (isinstance(value, bool) or not isinstance(value, int)
+                or value < 0):
+            raise ValueError(
+                "collection %s must be a non-negative int: %r"
+                % (name, value))
+    if archived > enumerated:
+        raise ValueError("collection archived %d > enumerated %d"
+                         % (archived, enumerated))
+    missing = collection.get("missing", [])
+    if isinstance(missing, (str, bytes)) \
+            or not hasattr(missing, "__iter__"):
+        raise ValueError(
+            "collection missing must be an iterable of document ids: "
+            "%r" % (missing,))
+    missing = [str(m) for m in missing]
+    if len(missing) != enumerated - archived:
+        raise ValueError(
+            "collection missing names %d documents but "
+            "enumerated - archived is %d"
+            % (len(missing), enumerated - archived))
+    docs = {ev.get("source_document_id") for ev in gold_events} | \
+        {ev.get("source_document_id") for ev in pred_events}
+    if len(docs) > enumerated:
+        raise ValueError(
+            "collection enumerated %d but %d distinct scored documents"
+            % (enumerated, len(docs)))
+    if set(missing) & docs:
+        raise ValueError(
+            "collection missing names scored documents: %s"
+            % sorted(set(missing) & docs))
+    return {"enumerated": enumerated, "archived": archived,
+            "missing": missing}
+
+
 def _field_verdict(counts):
     """Full §7 verdict for one field's counts. None when the field is
     N/A in this cell (both denominators zero)."""
@@ -666,17 +726,33 @@ def _field_verdict(counts):
             and (recall is None or recall >= RECALL_MIN))
 
 
-def score_cell(gold_events, predicted_events):
+def score_cell(gold_events, predicted_events, collection=None):
     """Score one cell (one issuer x one event type).
 
     Returns {"tp","fp","fn","field_score","field_verdicts","matches",
     "unmatched_gold","unmatched_predicted","ambiguous","precision",
-    "recall","accepted"}.
+    "recall","accepted","completion"}.
     "accepted" is the full §7 verdict — True/False when assessable,
     None when every denominator is zero (N/A — spec §7): event P >=
     0.95 / R >= 0.90 AND field P >= 0.95 / R >= 0.90 per scored field
-    (fields N/A in this cell do not gate). A fully empty cell is N/A,
-    never a pass.
+    (fields N/A in this cell do not gate), AND zero unresolved
+    in-scope ambiguities (every entry in "ambiguous" blocks — issue
+    #314), AND zero unresolved candidates (a candidate that could be
+    an event blocks — spec §7), AND collection 100% when collection
+    status is supplied. A fully empty cell is N/A, never a pass.
+    "completion" breaks the verdict down: {"thresholds_pass",
+    "unresolved_ambiguities", "unresolved_candidates",
+    "collection_complete", "collection", "complete"} — "complete" is
+    the same value as "accepted". When `collection` is not supplied,
+    "collection_complete" is None (gate not assessed): the verdict
+    then covers thresholds + ambiguity + candidates only and is NOT
+    a completion claim — the report runner must supply collection
+    status for any completion claim (spec §8). There is no way to
+    waive an ambiguity or a candidate: resolution is by adjudication
+    plus re-scoring the adjudicated input, never by dropping the case
+    (spec §7).
+    `collection` is a mapping {"enumerated", "archived", "missing"}
+    (see _validate_collection); contradictory input raises ValueError.
     Raises ValueError on fail-closed input violations (see
     _validate_event).
     """
@@ -686,6 +762,7 @@ def score_cell(gold_events, predicted_events):
         _validate_event(ev, is_gold=True)
     for ev in pred:
         _validate_event(ev, is_gold=False)
+    collection = _validate_collection(collection, gold, pred)
     fields = set()
     for ev in gold + pred:
         fields |= set(SCORED_FIELDS.get(ev.get("event_type"), ()))
@@ -762,23 +839,49 @@ def score_cell(gold_events, predicted_events):
     recall = (Fraction(tp, tp + fn) if tp + fn else None)
     field_verdicts = {f: _field_verdict(c)
                       for f, c in field_score.items()}
+    # Evaluation-wide gates (spec §7, issue #314): an ambiguity or a
+    # candidate that remains in the scored input is unresolved — it
+    # blocks acceptance no matter how the thresholds come out — and a
+    # supplied collection status below 100% blocks it too. The
+    # completion breakdown keeps each gate visible so a report can
+    # never mistake a threshold pass for a completed evaluation.
+    unresolved_ambiguities = len(ambiguous)
+    unresolved_candidates = len(candidate_pred)
+    if collection is None:
+        collection_complete = None  # not assessed, not a completion claim
+    else:
+        collection_complete = (collection["archived"]
+                               == collection["enumerated"]
+                               and not collection["missing"])
     if precision is None and recall is None:
         accepted = None  # fully empty cell (0/0/0): N/A, never a pass
         # and never a fail (spec §7). A cell where one side is N/A
         # but the other is assessable is judged on the assessable
         # side: e.g. TP=0, FP=0, FN=1 fails on recall (R = 0/1).
+        thresholds_pass = None
     else:
         event_ok = ((precision is None or precision >= PRECISION_MIN)
                     and (recall is None or recall >= RECALL_MIN))
         # Full §7 verdict: every assessable scored field must pass too.
         fields_ok = all(v is not False for v in field_verdicts.values())
-        accepted = event_ok and fields_ok
+        thresholds_pass = event_ok and fields_ok
+        accepted = (thresholds_pass
+                    and unresolved_ambiguities == 0
+                    and unresolved_candidates == 0
+                    and collection_complete is not False)
+    completion = {"thresholds_pass": thresholds_pass,
+                  "unresolved_ambiguities": unresolved_ambiguities,
+                  "unresolved_candidates": unresolved_candidates,
+                  "collection_complete": collection_complete,
+                  "collection": collection,
+                  "complete": accepted}
     return {"tp": tp, "fp": fp, "fn": fn, "field_score": field_score,
             "field_verdicts": field_verdicts,
             "matches": matches, "unmatched_gold": unmatched_gold,
             "unmatched_predicted": unmatched_pred,
             "ambiguous": ambiguous, "precision": precision,
-            "recall": recall, "accepted": accepted}
+            "recall": recall, "accepted": accepted,
+            "completion": completion}
 
 
 def acceptance(tp, fp, fn):

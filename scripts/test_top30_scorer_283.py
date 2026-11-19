@@ -737,6 +737,214 @@ def test_313_matching_property():
     return True, "60 random groups: matched == forced, counts consistent"
 
 
+# --- #314: evaluation completion gate (accepted is not completion) -------
+
+def _ins_counterexample():
+    """The INS-283-ENUM-DESIGN Q2 proof case (issue #314): 40 clean
+    events plus one contested group — two differing predicted events
+    tie for one gold event. Returns (gold, pred)."""
+    gold, pred = [], []
+    for i in range(40):
+        doc = "egx:%d" % (1000 + i)
+        gold.append(_gold(div(doc, gold_id="c%02d" % i)))
+        pred.append(div(doc, gold_id="c%02d" % i))
+    # Contested group: one gold; pred A agrees on coupon only, pred B
+    # on amount only (every other scored field agrees with both), so
+    # the maximum total agreement is 5 either way — two optima, and
+    # neither pred is a forced pair. Both are left unmatched (FP) and
+    # flagged; the gold is an FN.
+    gold.append(_gold(div("egx:2000", gold_id="g1", coupon="41",
+                          amount_per_share="1")))
+    pred.append(div("egx:2000", gold_id="pA", coupon="41",
+                    amount_per_share="2"))
+    pred.append(div("egx:2000", gold_id="pB", coupon="42",
+                    amount_per_share="1"))
+    return gold, pred
+
+
+def test_314_ins_counterexample():
+    """Issue #314 regression (INS-283-ENUM-DESIGN Q2, verified by Moos
+    on main 8fa25edc): 40 clean events + one contested group ->
+    tp=40 fp=2 fn=1, P=20/21, R=40/41, every field verdict passes —
+    yet the cell must NOT be accepted, because 2 ambiguity entries
+    remain unresolved. `accepted` is a threshold result, not
+    evaluation completion (spec §7)."""
+    gold, pred = _ins_counterexample()
+    r = S.score_cell(gold, pred)
+    ok = ((r["tp"], r["fp"], r["fn"]) == (40, 2, 1)
+          and r["precision"] == Fraction(20, 21)
+          and r["recall"] == Fraction(40, 41)
+          and all(v is not False
+                  for v in r["field_verdicts"].values())
+          and len(r["ambiguous"]) == 2
+          and r["accepted"] is False
+          and r["completion"]["unresolved_ambiguities"] == 2
+          and r["completion"]["complete"] is False)
+    return ok, ("tp=%d fp=%d fn=%d P=%s R=%s ambiguous=%d accepted=%s"
+                % (r["tp"], r["fp"], r["fn"], r["precision"],
+                   r["recall"], len(r["ambiguous"]), r["accepted"]))
+
+
+def test_314_collection_gate():
+    """Spec §7 collection gate: a cell whose thresholds pass is still
+    not accepted while collection is <100%, and a complete collection
+    passes. A complete collection does NOT rescue an ambiguous cell.
+    When collection status is not supplied, the gate is recorded as
+    not assessed (collection_complete None) — the bare verdict covers
+    thresholds + ambiguity only and is not a completion claim (the
+    report runner must supply collection status; spec §8)."""
+    gold = [_gold(div("egx:296893"))]
+    pred = [div("egx:296893")]
+    partial = S.score_cell(
+        gold, pred, collection={"enumerated": 2, "archived": 1,
+                                "missing": ["egx:000002"]})
+    complete = S.score_cell(
+        gold, pred, collection={"enumerated": 1, "archived": 1})
+    bare = S.score_cell(gold, pred)
+    gold_a, pred_a = _ins_counterexample()
+    rescued = S.score_cell(
+        gold_a, pred_a, collection={"enumerated": 41, "archived": 41})
+    ok = (partial["accepted"] is False
+          and partial["completion"]["thresholds_pass"] is True
+          and partial["completion"]["collection_complete"] is False
+          and partial["completion"]["complete"] is False
+          and complete["accepted"] is True
+          and complete["completion"]["collection_complete"] is True
+          and bare["accepted"] is True
+          and bare["completion"]["collection_complete"] is None
+          and bare["completion"]["collection"] is None
+          and rescued["accepted"] is False
+          and rescued["completion"]["collection_complete"] is True)
+    return ok, ("partial accepted=%s complete accepted=%s bare "
+                "accepted=%s collection=%s rescued accepted=%s"
+                % (partial["accepted"], complete["accepted"],
+                   bare["accepted"],
+                   bare["completion"]["collection_complete"],
+                   rescued["accepted"]))
+
+
+def test_314_resolved_ambiguity_accepted():
+    """The INS counterexample, adjudicated: a human decision recorded
+    outside the scorer determined pred B is not an event and pred A
+    is the event (with a wrong amount); the re-scored input reflects
+    that adjudicated outcome — no ambiguity remains, collection is
+    100%, and the cell is accepted. Resolution is expressed by
+    re-scoring the adjudicated input; the scorer cannot verify that
+    an adjudication happened, only that its input no longer contains
+    the ambiguity (the adjudication decision itself lives in the §8
+    unresolved ledger / adjudication record, kept by the report
+    runner). Dropping the contested group without a decision is not
+    a resolution (spec §7)."""
+    gold, pred = [], []
+    for i in range(40):
+        doc = "egx:%d" % (1000 + i)
+        gold.append(_gold(div(doc, gold_id="c%02d" % i)))
+        pred.append(div(doc, gold_id="c%02d" % i))
+    gold.append(_gold(div("egx:2000", gold_id="g1", coupon="41",
+                          amount_per_share="1")))
+    pred.append(div("egx:2000", gold_id="pA", coupon="41",
+                    amount_per_share="2"))
+    r = S.score_cell(gold, pred,
+                     collection={"enumerated": 41, "archived": 41})
+    ok = ((r["tp"], r["fp"], r["fn"]) == (41, 0, 0)
+          and r["ambiguous"] == []
+          and r["accepted"] is True
+          and r["completion"]["unresolved_ambiguities"] == 0
+          and r["completion"]["collection_complete"] is True
+          and r["completion"]["complete"] is True)
+    return ok, ("tp=%d fp=%d fn=%d ambiguous=%d accepted=%s"
+                % (r["tp"], r["fp"], r["fn"], len(r["ambiguous"]),
+                   r["accepted"]))
+
+
+def test_314_candidate_blocks_completion():
+    """Spec §7: a candidate that could be an event blocks completion.
+    40 clean TPs plus one candidate (one field present, in its own
+    document): event P=40/41 and every field verdict pass, so the
+    thresholds alone would accept — but the unresolved candidate
+    blocks it. Candidates are deterministic FP/FN outcomes, not
+    unresolved ambiguities, so they are counted separately in the
+    completion breakdown."""
+    gold, pred = [], []
+    for i in range(40):
+        doc = "egx:%d" % (1000 + i)
+        gold.append(_gold(div(doc, gold_id="c%02d" % i)))
+        pred.append(div(doc, gold_id="c%02d" % i))
+    cand = div("egx:3000", gold_id="cand", coupon="99",
+               amount_per_share=None, ex_date=None,
+               entitlement_end=None, payout_date=None,
+               record_date=None, announced=None)
+    cand["extraction_status"] = "candidate"
+    cand["verification_status"] = "unverified"
+    pred.append(cand)
+    r = S.score_cell(gold, pred)
+    ok = ((r["tp"], r["fp"], r["fn"]) == (40, 1, 0)
+          and r["precision"] == Fraction(40, 41)
+          and r["recall"] == Fraction(1, 1)
+          and all(v is not False
+                  for v in r["field_verdicts"].values())
+          and r["accepted"] is False
+          and r["completion"]["unresolved_candidates"] == 1
+          and r["completion"]["complete"] is False)
+    return ok, ("tp=%d fp=%d fn=%d P=%s accepted=%s "
+                "unresolved_candidates=%d"
+                % (r["tp"], r["fp"], r["fn"], r["precision"],
+                   r["accepted"],
+                   r["completion"]["unresolved_candidates"]))
+
+
+def test_314_out_of_scope_ambiguity():
+    """Decision (spec §7): the spec does NOT distinguish out-of-scope
+    ambiguities — every entry in `ambiguous` is in-scope by
+    construction (the scorer only scores the frozen roster/quarter
+    input). Material outside the evaluation scope must be excluded
+    from the scored input, with the exclusion named in the report
+    (§8), never carried as a waived ambiguity; there is no parameter
+    to waive one. And acceptance is per cell (§8): an ambiguity in
+    one cell never affects another cell's verdict."""
+    clean_gold = [_gold(div("egx:296893"))]
+    clean_pred = [div("egx:296893")]
+    r_clean = S.score_cell(clean_gold, clean_pred)
+    gold, pred = _ins_counterexample()
+    r_amb = S.score_cell(gold, pred)
+    ok = (r_clean["accepted"] is True
+          and r_amb["accepted"] is False
+          and r_amb["completion"]["unresolved_ambiguities"] == 2)
+    return ok, ("clean accepted=%s ambiguous accepted=%s"
+                % (r_clean["accepted"], r_amb["accepted"]))
+
+
+def test_314_collection_validation():
+    """Collection status fails closed (spec §10): contradictory or
+    malformed collection input is rejected with ValueError, never
+    defaulted. A well-formed complete collection passes."""
+    gold = [_gold(div("egx:296893"))]
+    pred = [div("egx:296893")]
+    bad = [
+        {"enumerated": 1, "archived": 2},          # archived > enumerated
+        {"enumerated": 1, "archived": 0,
+         "missing": []},                           # missing != gap
+        {"enumerated": 2, "archived": 1,
+         "missing": ["egx:296893"]},               # missing doc is scored
+        {"enumerated": 0, "archived": 0},          # fewer than scored docs
+        {"enumerated": "1", "archived": 1},        # non-int count
+        {"enumerated": 1},                         # missing archived
+        "complete",                                # not a mapping
+    ]
+    rejected = 0
+    for c in bad:
+        try:
+            S.score_cell(gold, pred, collection=c)
+        except ValueError:
+            rejected += 1
+    good = S.score_cell(gold, pred, collection={"enumerated": 1,
+                                                "archived": 1,
+                                                "missing": []})
+    ok = (rejected == len(bad) and good["accepted"] is True)
+    return ok, ("rejected %d/%d, well-formed accepted=%s"
+                % (rejected, len(bad), good["accepted"]))
+
+
 CASES = [
     ("swapped-date", test_swapped_date),
     ("sign", test_sign),
@@ -776,6 +984,15 @@ CASES = [
     ("313-oversize-group-adjudication",
      test_313_oversize_group_adjudication),
     ("313-matching-property", test_313_matching_property),
+    # --- #314 ---
+    ("314-ins-counterexample", test_314_ins_counterexample),
+    ("314-collection-gate", test_314_collection_gate),
+    ("314-resolved-ambiguity-accepted",
+     test_314_resolved_ambiguity_accepted),
+    ("314-candidate-blocks-completion",
+     test_314_candidate_blocks_completion),
+    ("314-out-of-scope-ambiguity", test_314_out_of_scope_ambiguity),
+    ("314-collection-validation", test_314_collection_validation),
 ]
 
 

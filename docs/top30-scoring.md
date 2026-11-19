@@ -218,6 +218,46 @@ is N/A for that field and does not gate acceptance); `field_verdicts`
 reports the per-field verdicts. A cell whose event P/R pass but any
 scored field fails is NOT accepted.
 
+`accepted` is a threshold result, not evaluation completion (issue
+#314, INS-283-ENUM-DESIGN Q2): a cell whose thresholds all pass is
+still NOT accepted while any evaluation-wide gate is open. The
+reference scorer enforces the gates it can see in its input, and the
+report runner supplies the one it cannot:
+
+- **zero unresolved in-scope ambiguities** — every entry in the
+  scorer's `ambiguous` list blocks acceptance, including
+  `oversize_group` entries. An ambiguity is resolved only by
+  adjudication plus re-scoring the adjudicated input; it is never
+  resolved by dropping the case. There is no out-of-scope ambiguity
+  category: every ambiguity the scorer flags is in-scope by
+  construction (the scorer only scores the frozen roster/quarter
+  input), so material outside the evaluation scope must be excluded
+  from the scored input — with the exclusion named in the report
+  (§8) — never carried as a waived ambiguity;
+- **zero unresolved candidates** — any predicted event in the scored
+  input whose `extraction_status` is `candidate` (or whose
+  `verification_status` is anything other than `verified`) blocks
+  acceptance, even when the thresholds pass: a candidate that could
+  be an event is an open case, not a scored outcome. Resolution is
+  the same as for ambiguities: adjudication plus re-scoring;
+- **collection 100%** — the report runner passes the cell's
+  collection status (`enumerated` / `archived` / `missing`) to
+  `score_cell`; `accepted` is False while `archived < enumerated`
+  or `missing` is non-empty. When collection status is NOT supplied,
+  the scorer records the gate as not assessed (`completion`:
+  `collection_complete: null`) and the verdict covers thresholds +
+  ambiguity + candidates only — that verdict is **not** a completion
+  claim. A per-cell report claiming completion must show the
+  collection counts (§8), and the report runner must supply them.
+
+`score_cell` returns a `completion` breakdown alongside `accepted` —
+`thresholds_pass`, `unresolved_ambiguities`,
+`unresolved_candidates`, `collection_complete`, `collection`,
+`complete` (the same value as `accepted`) — so a report can never
+mistake a threshold pass for a completed evaluation. Acceptance is
+per cell; a roll-up cannot rescue a failed, blocked or unproven cell,
+and a complete collection cannot rescue an ambiguous one.
+
 Plus, evaluation-wide:
 
 - **collection 100%** — every enumerated expected document archived;
@@ -248,9 +288,12 @@ Each cell reports: collection status (enumerated / archived / missing,
 named); event TP/FP/FN + P/R; field TP/FP/FN + P/R per scored field;
 verified vs candidate counts; unresolved ledger (ambiguous pairings,
 unresolved candidates, collection gaps — must be empty to complete);
-and, where the §2 limit bit, the count of gold events unmatchable
-because of it. Roll-ups (per issuer, per type, overall) are summaries
-only — acceptance is per cell, never on a roll-up.
+the completion breakdown (`thresholds_pass`,
+`unresolved_ambiguities`, `unresolved_candidates`,
+`collection_complete`) behind the `accepted` verdict; and, where the
+§2 limit bit, the count of gold events unmatchable because of it.
+Roll-ups (per issuer, per type, overall) are summaries only —
+acceptance is per cell, never on a roll-up.
 
 ## 9. Reference implementation
 
@@ -262,7 +305,11 @@ every optimum, including being matched (not unmatched) in every
 optimum; groups of 8–15 events per side solved exactly via the
 assignment problem, groups over 15 rejected into adjudication with
 `oversize_group` and no greedy fallback anywhere; wrong value as 1 FP
-+ 1 FN; end-to-end field denominators; exact-fraction full acceptance;
++ 1 FN; end-to-end field denominators; exact-fraction full acceptance
+including the §7 completion gate — unresolved ambiguities,
+unresolved candidates, and a supplied collection status below 100%
+each force `accepted` to False, with the `completion` breakdown
+showing which gate is open; contradictory collection status rejected;
 typed canonicalisation contract with the extractor adapter). Its
 negative controls live in
 `scripts/test_top30_scorer_283.py`
@@ -272,7 +319,12 @@ status controls, missing/unknown-status rejection, multi-event
 permutation tests, issuer/schema/currency/scale controls, plus the
 #313 controls: the forced-pair counterexample, the forced-pair-holds
 case, the 8-event exact-beats-greedy case, the oversize-group
-adjudication case, and the random-group matching property test) and are
+adjudication case, and the random-group matching property test, plus
+the #314 controls: the INS counterexample regression, the
+partial/complete/not-supplied collection gate, the
+resolved-ambiguity acceptance case, the candidate-blocks-completion
+case, the out-of-scope-ambiguity decision case, and collection
+validation) and are
 wired into `scripts/harness_issue109.py` (`--scorer`). If the spec and
 the scorer ever disagree, **the spec wins** and the scorer is fixed.
 
