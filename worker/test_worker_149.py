@@ -482,7 +482,8 @@ check("real main(): the clean job behind it runs",
 receipt_drain = worker.PENDING_DONE / "test-149-drain.json"
 receipt_drain.write_text(json.dumps(
     {"worker": "borsagator-worker-5", "at": worker.now(),
-     "job": "run yahooquery <http://POUL.CA|POUL.CA", "archive": SHA}))
+     "job": "run yahooquery <http://POUL.CA|POUL.CA", "archive": SHA,
+     "id": "test-149-drain"}))
 worker.flush_pending_done()
 data_drain = origin_done("test-149-drain")
 check("drain: staged receipt published to origin/queue",
@@ -524,7 +525,8 @@ receipt_conflict = (worker.PENDING_DONE
                     / f"{job_conflict['id']}.json")
 receipt_conflict.write_text(json.dumps(
     {"worker": "borsagator-worker-5", "at": worker.now(),
-     "job": job_conflict["job"], "archive": SHA}))
+     "job": job_conflict["job"], "archive": SHA,
+     "id": job_conflict["id"]}))
 worker.flush_pending_done()
 check("conflict: competing bus record NOT overwritten",
       origin_done(job_conflict["id"]) == competing,
@@ -841,7 +843,8 @@ for _mode in ("corrupt", "conflict"):
     _f = worker.JOB_STATE / f"{_j['id']}.json"
     worker._write_receipt(worker._intent_path(_j["id"]), json.dumps(_j))
     _record = json.dumps({"worker": "test", "at": worker.now(),
-                          "job": _j["job"], "archive": "ledger-guard"})
+                          "job": _j["job"], "archive": "ledger-guard",
+                          "id": _j["id"]})
     if _mode == "conflict":
         assert REAL_PUBLISH_DONE(_j["id"], _record)
         _before = origin_bytes(_j["id"])
@@ -986,6 +989,55 @@ finally:
 check("cleanup: intent-sync failure retains completion evidence",
       _cf.exists() and worker._done_or_pending(_jid))
 _cf.unlink(missing_ok=True)
+
+# --- #233: a receipt whose recorded id differs from its filename ---
+# is quarantined, never published, still gating ---------------------
+# _valid_receipt used to check only shape (JSON object, string
+# worker/at/job/archive); a receipt for job A sitting in file B.json
+# would publish B's marker carrying A's metadata. The issue's literal
+# fix (d["job"] == job_id) is WRONG: "job" holds the job TEXT, not
+# the id (_mark_done writes job["job"]), so it would quarantine every
+# legitimate receipt - the drain/conflict sections above prove it.
+# The fix carries the id in its own field and compares that instead.
+_job233 = {"id": "test-233-mismatch",
+           "job": "sweep-lite POUL.CA market=EGX"}
+_good233 = json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": _job233["job"], "archive": "abc123", "id": _job233["id"]})
+_bad233 = json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": _job233["job"], "archive": "abc123", "id": "some-other-job"})
+_old233 = json.dumps(
+    {"worker": "borsagator-worker-5", "at": worker.now(),
+     "job": _job233["job"], "archive": "abc123"})
+check("233: matching receipt still valid (control)",
+      worker._valid_receipt(_good233, _job233["id"]))
+check("233: mismatched id field rejected",
+      not worker._valid_receipt(_bad233, _job233["id"]))
+check("233: old-shape receipt without id rejected",
+      not worker._valid_receipt(_old233, _job233["id"]))
+check("233: missing job field still rejected",
+      not worker._valid_receipt(json.dumps(
+          {"worker": "borsagator-worker-5", "at": worker.now(),
+           "archive": "abc123", "id": _job233["id"]}), _job233["id"]))
+_receipt233 = worker.PENDING_DONE / f"{_job233['id']}.json"
+_receipt233.write_text(_bad233)
+worker.flush_pending_done()
+check("233: mismatched receipt quarantined to *.corrupt",
+      (worker.PENDING_DONE / f"{_job233['id']}.json.corrupt")
+      .is_file() and not _receipt233.exists())
+check("233: mismatched receipt NOT published to origin/queue",
+      origin_done(_job233["id"]) is None)
+check("233: mismatched receipt still gates local re-execution",
+      worker._done_or_pending(_job233["id"])
+      and not main_loop_runnable(_job233))
+worker.heartbeat()
+_payload233 = json.loads(
+    (worker.BUS / "queue" / "heartbeat.json").read_text())
+check("233: quarantine surfaced in heartbeat corrupt_done",
+      _job233["id"] in _payload233.get("corrupt_done", []),
+      f"corrupt_done={_payload233.get('corrupt_done')}")
+(worker.PENDING_DONE / f"{_job233['id']}.json.corrupt").unlink(missing_ok=True)
 
 failed = [c for c in CHECKS if not c[1]]
 print(f"\n{len(CHECKS) - len(failed)}/{len(CHECKS)} passed")
