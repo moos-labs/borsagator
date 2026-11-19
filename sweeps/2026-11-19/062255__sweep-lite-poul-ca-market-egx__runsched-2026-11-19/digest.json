@@ -1,0 +1,455 @@
+{
+  "job": "sweep-lite POUL.CA market=EGX",
+  "ticker": "POUL.CA",
+  "date": "2026-11-19",
+  "started": "2026-11-19T06:17:56.802488+00:00",
+  "finished": "2026-11-19T06:22:55.030036+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_POUL.CA.csv": 1208,
+          "POUL.CA.csv_last_date": "2026-11-16",
+          "POUL.CA.csv_last_close": "8.020000457763672"
+        },
+        "files": [
+          "POUL.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_POUL_CA.csv": 483,
+          "POUL_CA.csv_last_date": "2026-11-17",
+          "POUL_CA.csv_last_close": "7.570000171661377"
+        },
+        "files": [
+          "POUL_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "symbol": "POUL",
+          "rows_egxpy_poul.csv": 3000,
+          "egxpy_poul.csv_last_date": "2026-11-18",
+          "egxpy_poul.csv_last_close": "7.7"
+        },
+        "files": [
+          "egxpy_poul.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "date": "2026-11-17",
+          "open": 8.02,
+          "high": 8.09,
+          "low": 7.51,
+          "close": 7.57,
+          "rsi_14": 17.2302,
+          "macd": -2.0931,
+          "macd_signal": -2.6155,
+          "macd_hist": 0.5224,
+          "ema_20": 10.401,
+          "ema_50": 16.7439,
+          "ema_200": 26.6439,
+          "adx_14": 53.6397,
+          "bb_upper": 10.9907,
+          "bb_mid": 9.612,
+          "bb_lower": 8.2333,
+          "bb_pctb": -0.2405,
+          "atr_14": 0.7019,
+          "stoch_k": 28.9238,
+          "stoch_d": 58.3842,
+          "rows_fetched": 6524,
+          "rows_used": 1924,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-17",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-17",
+          "indicators.csv_last_close": "7.570000171661377"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "rows_fetched": 6524,
+          "rows_used": 1924,
+          "last_date": "2026-11-17",
+          "last_close": 7.570000171661377,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-17",
+          "indicators.csv_last_close": "7.570000171661377"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2182,
+          "rows_ohlc.csv": 2182,
+          "ohlc.csv_last_close": "7.570000171661377"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2431,
+          "poul_ohlc.csv_last_close": "7.570000171661377"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "company": "Cairo Poultry Company (EGX: POUL)",
+          "input_csv": "data/poul_statements.csv"
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 13
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 12
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 13
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-15",
+          "forecast.csv_last_close": "9.2756"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "POUL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "fetched_at": "2026-11-19T06:22:53Z",
+          "tool": "news-disclosure",
+          "news_count": 29,
+          "disclosure_count": 10,
+          "arabic_headlines": 35,
+          "latest_news_date": "Wed, 18 Nov 2026 07:04:00 GMT",
+          "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT",
+          "llm_provider": "extractive",
+          "finbert_positive": 0.035,
+          "finbert_negative": 0.433,
+          "finbert_neutral": 0.532,
+          "finbert_scored": 4,
+          "multilingual_positive": 0.505,
+          "multilingual_negative": 0.034,
+          "multilingual_neutral": 0.461,
+          "multilingual_scored": 35,
+          "bodies_fetched": 9,
+          "egx_bodies_attached": 1,
+          "egx_disclosures_added": 9,
+          "egx_harvest_source": "local-file",
+          "translation_provider": "nllb",
+          "translated_positive": 0.139,
+          "translated_negative": 0.256,
+          "translated_neutral": 0.605,
+          "translated_scored": 35
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-19/sched-2026-11-19",
+      "claim_id": "sched-2026-11-19"
+    }
+  ]
+}
