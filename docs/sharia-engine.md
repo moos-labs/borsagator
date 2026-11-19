@@ -69,10 +69,12 @@ passing company with non-permissible revenue > 0 is
 AAOIFI Std 21; Ostool adopts it verbatim). Articles must not state
 riba/alcohol/pork objectives and the main activity must be permissible;
 interest-bearing borrowing ≤ 33% and interest-bearing investments ≤ 33%
-of **the greater of total assets or average market value in the review
-period**; liquid assets ≤ 70% of total assets; non-compliant income
+of **total assets**; liquid assets ≤ 70% of total assets; non-compliant income
 ≤ 5% of revenue. EGX publishes no purification rule, so this rule set
-reports none.
+reports none. (v1.1.0, issue #329: the borrowing/investments base was
+corrected from max(total assets, average market value in the review
+period) to total assets, per the published criteria — the old base
+passed ABUK H1-2026 at 23.28% where total assets fails it at 60.12%.)
 
 **Documented conflict (not silently resolved):** June 2024 launch
 coverage reported the EGX33 income limit as 10%. The methodology text

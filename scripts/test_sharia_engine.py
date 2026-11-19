@@ -10,8 +10,9 @@ EGX33 methodology per the EGX Sharia Supervisory Committee).
 Coverage: both rule sets' thresholds just under / at / just over the
 boundary; both AAOIFI denominator variants (spot market cap vs
 trailing 36-month average market value), including a snapshot whose
-verdict flips between them; the EGX33 whichever-is-greater base in
-both directions; missing-data behaviour (a missing input yields the
+verdict flips between them; the EGX33 total-assets base (the
+review-period market value is not used -- issue #329) and the ABUK
+H1-2026 case that exposed the old max() base; missing-data behaviour
 first-class insufficient-data verdict with the input named, never a
 silent pass); the decisive prohibited-activity screen; purification
 ratio and per-share maths; market aggregates derived from a
@@ -189,26 +190,30 @@ def _egx33_fin(**over):
     return fin
 
 
-def test_egx33_whichever_greater_uses_market_value():
-    # base = max(total_assets 800, review-period avg market value 1000)
-    #      = 1000. On total assets alone borrowing would be 320/800 =
-    # 0.40 (fail); on the correct greater base it is 0.32 (pass).
-    # investments 330/1000 = 0.33 at boundary -> pass.
-    # liquid 560/800 = 0.70 at boundary -> pass. income 8/200 = 0.04.
+def test_egx33_denominator_is_total_assets_ignores_market_value():
+    # Issue #329: the published EGX33 criteria divide by total
+    # assets, NOT by max(total assets, average market value in the
+    # review period). Fixture: total_assets 800, review-period avg
+    # market value 1000. On the retired greater base borrowing would
+    # be 320/1000 = 0.32 (pass); on total assets it is 320/800 =
+    # 0.40 (fail); investments 330/800 = 0.4125 (fail). The market
+    # value must not appear in either denominator.
     s = snap(financials=_egx33_fin(),
              market={"avg_market_value_review_period": 1000})
     row = se.screen(s, EGX33)
-    assert row["verdict"] == "compliant", row["verdict"]
-    assert ratio(row, "interest_bearing_borrowing")["denominator"] == 1000
-    assert ratio(row, "interest_bearing_borrowing")["value"] == 0.32
-    assert ratio(row, "interest_bearing_investments")["value"] == 0.33
-    assert ratio(row, "interest_bearing_investments")["passed"] is True
+    assert row["verdict"] == "non-compliant", row["verdict"]
+    b = ratio(row, "interest_bearing_borrowing")
+    assert b["denominator"] == 800 and b["denominator_base"] == "total_assets"
+    assert b["value"] == 0.4 and b["passed"] is False
+    inv = ratio(row, "interest_bearing_investments")
+    assert inv["denominator"] == 800 and inv["value"] == 0.4125
+    assert inv["passed"] is False
     assert ratio(row, "liquid_assets")["value"] == 0.7
     assert ratio(row, "liquid_assets")["passed"] is True
 
 
-def test_egx33_whichever_greater_uses_total_assets():
-    # base = max(total_assets 1200, avg market value 900) = 1200.
+def test_egx33_total_assets_boundary():
+    # base = total_assets 1200 (the 900 market value is ignored).
     # borrowing 396/1200 = 0.33 at boundary -> pass.
     fin = _egx33_fin(total_assets=1200, interest_bearing_debt=396,
                      interest_bearing_assets=0, cash_and_liquid_assets=0)
@@ -219,8 +224,54 @@ def test_egx33_whichever_greater_uses_total_assets():
     assert row["verdict"] == "compliant", row["verdict"]
 
 
+def test_egx33_abuk_h1_2026_investments_fail():
+    # Issue #329 / #326 run 1: ABUK (Abu Qir Fertilizers) H1-2026,
+    # standalone, six months ended 30 June 2026 -- the harvested
+    # snapshot (hidden_files/issue-172/snapshots/abuk-fy2026-
+    # snapshot.json; comparison-run-1.md verdict layer). Interest-
+    # bearing investments EGP 22,164,638,062 are 60.12% of total
+    # assets EGP 36,869,415,076 -- a clear fail of the EGX33
+    # investments screen (<= 33%). The retired max() base divided
+    # by the EGP 95,207,864,815 review-period average market value
+    # instead and passed it at 23.28%. Every other screen passes,
+    # so the investments screen alone drives the verdict.
+    fin = {"total_revenue": 23524557129,
+           "non_compliant_revenue": 1045526702,
+           "interest_bearing_debt": 0,
+           "interest_bearing_assets": 22164638062,
+           "cash_and_liquid_assets": 679027086,
+           "total_assets": 36869415076,
+           "shares_outstanding": 1261875720}
+    s = snap(financials=fin, ticker="ABUK.CA",
+             period={"label": "H1 2026",
+                     "start": "2026-01-01", "end": "2026-06-30"},
+             screening_date="2026-11-19",
+             market={"avg_market_value_review_period": 95207864815})
+    row = se.screen(s, EGX33)
+    inv = ratio(row, "interest_bearing_investments")
+    assert inv["denominator"] == 36869415076
+    assert inv["denominator_base"] == "total_assets"
+    assert inv["value"] == 0.601166, inv
+    assert inv["passed"] is False
+    assert ratio(row, "interest_bearing_borrowing")["passed"] is True
+    assert ratio(row, "non_compliant_income")["value"] == 0.044444
+    assert ratio(row, "liquid_assets")["value"] == 0.018417
+    assert row["verdict"] == "non-compliant", row["verdict"]
+    # The market aggregate is no longer an EGX33 input at all: the
+    # same snapshot with no market data screens identically.
+    row2 = se.screen(snap(financials=fin, ticker="ABUK.CA",
+                          period={"label": "H1 2026",
+                                  "start": "2026-01-01",
+                                  "end": "2026-06-30"},
+                          screening_date="2026-11-19", market={}), EGX33)
+    assert ratio(row2, "interest_bearing_investments")["value"] == 0.601166
+    assert row2["verdict"] == "non-compliant"
+    assert "avg_market_value_review_period" not in row2["missing_inputs"]
+
+
 def test_egx33_borrowing_just_over():
-    # 340/1000 = 0.34 > 0.33 -> fail -> non-compliant
+    # 340/800 = 0.425 > 0.33 -> fail -> non-compliant (the 1000
+    # market value is ignored).
     fin = _egx33_fin(interest_bearing_debt=340)
     s = snap(financials=fin, market={"avg_market_value_review_period": 1000})
     row = se.screen(s, EGX33)
@@ -229,8 +280,12 @@ def test_egx33_borrowing_just_over():
 
 
 def test_egx33_liquid_just_over():
-    # 561/800 = 0.70125 > 0.70 -> fail -> non-compliant
-    fin = _egx33_fin(cash_and_liquid_assets=561)
+    # 561/800 = 0.70125 > 0.70 -> fail -> non-compliant. Borrowing
+    # and investments sit at the 0.33 boundary (264/800) so the
+    # liquid screen alone drives the verdict.
+    fin = _egx33_fin(interest_bearing_debt=264,
+                     interest_bearing_assets=264,
+                     cash_and_liquid_assets=561)
     s = snap(financials=fin, market={"avg_market_value_review_period": 1000})
     row = se.screen(s, EGX33)
     assert ratio(row, "liquid_assets")["passed"] is False
@@ -241,7 +296,11 @@ def test_egx33_income_operative_five_percent():
     # 14/200 = 0.07: fails the operative 5% limit (it would pass the
     # 10% figure from June 2024 launch coverage -- that figure is a
     # documented conflict in the rule set, NOT the encoded threshold).
-    fin = _egx33_fin(non_compliant_revenue=14)
+    # Borrowing and investments sit at the 0.33 boundary (264/800)
+    # so the income screen alone drives the verdict.
+    fin = _egx33_fin(non_compliant_revenue=14,
+                     interest_bearing_debt=264,
+                     interest_bearing_assets=264)
     s = snap(financials=fin, market={"avg_market_value_review_period": 1000})
     row = se.screen(s, EGX33)
     assert ratio(row, "non_compliant_income")["threshold"] == 0.05
@@ -257,7 +316,10 @@ def test_egx33_no_purification_rule():
     # EGX publishes no purification rule: the outputs are null, and a
     # passing company with non-compliant revenue > 0 is plain
     # "compliant" (the with-purification verdict does not exist here).
-    s = snap(financials=_egx33_fin(),
+    # Borrowing and investments sit at the 0.33 boundary (264/800);
+    # liquid 560/800 = 0.70 and income 8/200 = 0.04 also pass.
+    s = snap(financials=_egx33_fin(interest_bearing_debt=264,
+                                   interest_bearing_assets=264),
              market={"avg_market_value_review_period": 1000})
     row = se.screen(s, EGX33)
     assert row["purification"]["defined"] is False
@@ -416,8 +478,12 @@ def test_rulesets_are_declarative_files():
         "AAOIFI", "DJIM", "EGX33", "FTSE", "ISLAMICLY", "MSCI",
         "MSCI_M", "SP_SHARIAH"]
     assert len(AAOIFI["ratios"]) == 3 and len(EGX33["ratios"]) == 4
+    assert AAOIFI["ruleset_version"] == "1.0.0"
+    # EGX33 v1.1.0 (issue #329): borrowing/investments denominators
+    # corrected from max(total assets, avg market value) to total
+    # assets, per the published criteria.
+    assert EGX33["ruleset_version"] == "1.1.0"
     for rs in (AAOIFI, EGX33):
-        assert rs["ruleset_version"] == "1.0.0"
         assert rs["sources"], rs["standard_id"]
         assert rs["activity_screen"]["required"] is True
 
@@ -449,10 +515,12 @@ def main():
         ("A5 denominator variants flip",
          test_aaoifi_denominator_variants_flip_verdict),
         ("A6 invalid params rejected", test_aaoifi_invalid_parameters_rejected),
-        ("E1 greater base = market value",
-         test_egx33_whichever_greater_uses_market_value),
-        ("E2 greater base = total assets",
-         test_egx33_whichever_greater_uses_total_assets),
+        ("E1 total-assets base ignores market value",
+         test_egx33_denominator_is_total_assets_ignores_market_value),
+        ("E2 total-assets boundary",
+         test_egx33_total_assets_boundary),
+        ("E2b ABUK H1-2026 investments fail",
+         test_egx33_abuk_h1_2026_investments_fail),
         ("E3 borrowing just over", test_egx33_borrowing_just_over),
         ("E4 liquid just over", test_egx33_liquid_just_over),
         ("E5 operative 5% + conflict doc",

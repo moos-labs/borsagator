@@ -674,7 +674,8 @@ def _flip_snapshot():
     #   avg market value 36m 20,000; review-period average 10,000.
     # AAOIFI (avg36m): debt 0.15, assets 0.05 -> compliant-with-
     #   purification.
-    # EGX33: base max(10,000, 10,000) = 10,000; borrowing 0.30,
+    # EGX33: base total assets 10,000 (the review-period market
+    #   value is not used since issue #329); borrowing 0.30,
     #   investments 0.10, liquid 0.20 -> compliant.
     # MSCI: receivables+cash (5500 + 2000)/10000 = 0.75 > 0.70
     #   -> non-compliant; everything else passes.

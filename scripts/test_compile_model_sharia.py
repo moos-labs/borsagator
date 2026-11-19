@@ -27,8 +27,10 @@ avg_market_value_36m 2,000,000,000; shares_outstanding
 EGX33 snapshot -- same revenue figures; interest_bearing_debt
 300,000,000; interest_bearing_assets 200,000,000;
 cash_and_liquid_assets 600,000,000; total_assets 1,200,000,000;
-avg_market_value_review_period 900,000,000:
-  denominator   = max(1,200,000,000, 900,000,000) = 1,200,000,000
+avg_market_value_review_period 900,000,000 (not used: since issue
+#329 the EGX33 base is total assets, not max(total assets, average
+market value)):
+  denominator   = total assets 1,200,000,000
   income ratio  = 0.02                            (<= 0.05 pass)
   borrowing     = 300,000,000 / 1,200,000,000 = 0.25 (<= 0.33 pass)
   investments   = 200,000,000 / 1,200,000,000 = 0.166667 (pass)
