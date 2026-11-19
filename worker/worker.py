@@ -316,7 +316,7 @@ def _write_receipt(path, text):
     _fsync_dir(path.parent)
 
 
-RECEIPT_KEYS = {"worker", "at", "job", "archive"}
+RECEIPT_KEYS = {"worker", "at", "job", "archive", "id"}
 
 # Last-resort diagnostics only. Production execution first persists an
 # intent, so a restart still gates an ambiguous effect if all subsequent
@@ -383,16 +383,22 @@ def _begin_execution(job):
 
 def _valid_receipt(text, job_id):
     """A receipt is publishable only as a JSON object with string
-    worker/at/job/archive values under a job-id-safe filename (the
-    filename becomes a git path)."""
+    worker/at/job/archive/id values under a job-id-safe filename
+    (the filename becomes a git path) AND with the id recorded
+    inside the receipt equal to the job the filename claims (#233:
+    the "job" field holds the job TEXT, not the id, so the literal
+    d["job"] == job_id check the issue suggested would reject
+    every legitimate receipt - the id is carried in its own field
+    instead, and a receipt for job A in file B.json is quarantined
+    as .corrupt by flush_pending_done)."""
     if not JOB_ID_RE.match(job_id):
         return False
     try:
         d = json.loads(text)
     except Exception:
         return False
-    return isinstance(d, dict) and all(
-        isinstance(d.get(k), str) for k in RECEIPT_KEYS)
+    return (isinstance(d, dict) and d.get("id") == job_id
+            and all(isinstance(d.get(k), str) for k in RECEIPT_KEYS))
 
 
 def _publish_done(job_id, record, attempts=PUSH_ATTEMPTS):
@@ -498,7 +504,8 @@ def flush_pending_done(attempts=DRAIN_ATTEMPTS, budget_seconds=300):
     the records are verified identical (a hand-reconcile with the same
     bytes, df1b557f); a differing bus record keeps the receipt pending
     and loud. A receipt that fails validation (unparseable, wrong
-    value types, unsafe filename) is quarantined to *.corrupt - never
+    value types, unsafe filename, id mismatching the filename) is
+    quarantined to *.corrupt - never
     published, never silently dropped, and it KEEPS blocking local
     re-execution (see _done_or_pending). A remote read that cannot
     prove absence (git error) skips the receipt this cycle rather
@@ -673,7 +680,7 @@ def _mark_done(job, archive_sha):
     independent. Never turn an intent alone into a done marker."""
     record = json.dumps(
         {"worker": os.uname().nodename, "at": now(), "job": job["job"],
-         "archive": archive_sha})
+         "archive": archive_sha, "id": job["id"]})
     receipt = None
     for directory in _completion_dirs():
         try:
