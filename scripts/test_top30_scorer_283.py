@@ -19,6 +19,7 @@ issuer/schema/currency/scale controls prove the typed input contract.
 """
 import itertools
 import os
+import random
 import sys
 from fractions import Fraction
 
@@ -498,6 +499,244 @@ def test_zero_denominator_na():
                 % (r["precision"], r["recall"], r["accepted"]))
 
 
+def _amb_by_pred(r):
+    """Ambiguous entries keyed by predicted gold_id (the scorer sorts
+    groups canonically, so entry order is not input order)."""
+    return {a["predicted"]["gold_id"]: a for a in r["ambiguous"]}
+
+
+# --- #313: forced-pair rule + large-group exact matching -------------------
+
+def test_313_forced_pair_counterexample():
+    """Issue #313 finding 1: g1={coupon 1}, g2={amount 2}; p1={coupon 1},
+    p2={coupon 1, amount 2}, p3={amount 2}. Three equal-total optima
+    exist; p1 is unmatched in one optimum, p3 in another, p2 in a
+    third. None of the three is a forced pair: tp=0 fp=3 fn=2, all
+    three flagged ambiguous, p1/p3 with unmatched_in_an_optimum set.
+    The pre-fix scorer matched p1->g1 and p3->g2 (tp=2) and flagged
+    only p2."""
+    gold = [_gold(div("egx:opt", gold_id="g1", coupon="1",
+                      amount_per_share=None)),
+            _gold(div("egx:opt", gold_id="g2", coupon=None,
+                      amount_per_share="2"))]
+    pred = [div("egx:opt", gold_id="p1", coupon="1",
+                amount_per_share=None),
+            div("egx:opt", gold_id="p2", coupon="1",
+                amount_per_share="2"),
+            div("egx:opt", gold_id="p3", coupon=None,
+                amount_per_share="2")]
+    r = S.score_cell(gold, pred)
+    amb = _amb_by_pred(r)
+    ok = ((r["tp"], r["fp"], r["fn"]) == (0, 3, 2)
+          and r["matches"] == []
+          and set(amb) == {"p1", "p2", "p3"}
+          and amb["p1"]["tied_gold_ids"] == ["g1"]
+          and amb["p1"].get("unmatched_in_an_optimum") is True
+          and amb["p3"]["tied_gold_ids"] == ["g2"]
+          and amb["p3"].get("unmatched_in_an_optimum") is True
+          and amb["p2"]["tied_gold_ids"] == ["g1", "g2"]
+          and amb["p2"].get("unmatched_in_an_optimum") is True)
+    return ok, ("tp=%d fp=%d fn=%d ambiguous=%s"
+                % (r["tp"], r["fp"], r["fn"], sorted(amb)))
+
+
+def test_313_forced_pair_holds():
+    """Issue #313 finding 1, positive side: p3->g2 is paired in EVERY
+    optimum (p1/p2 tie for g1, p3 is the only claimant of g2), so p3
+    stays matched while p1/p2 are left unmatched and flagged. A
+    forced pair is not collateral damage of the fix."""
+    gold = [_gold(div("egx:fp", gold_id="g1", coupon="1",
+                      amount_per_share=None)),
+            _gold(div("egx:fp", gold_id="g2", coupon="2",
+                      amount_per_share=None))]
+    # p1/p2 differ only in record_date, which is None in both golds,
+    # so they tie for g1 with equal agreement and are NOT identical
+    # duplicates (the §4.2 exception does not apply).
+    pred = [div("egx:fp", gold_id="p1", coupon="1",
+                amount_per_share=None, record_date="2026-11-20"),
+            div("egx:fp", gold_id="p2", coupon="1",
+                amount_per_share=None, record_date="2026-11-21"),
+            div("egx:fp", gold_id="p3", coupon="2",
+                amount_per_share=None)]
+    r = S.score_cell(gold, pred)
+    amb = _amb_by_pred(r)
+    ok = ((r["tp"], r["fp"], r["fn"]) == (1, 2, 1)
+          and [(m["gold"]["gold_id"], m["predicted"]["gold_id"])
+               for m in r["matches"]] == [("g2", "p3")]
+          and set(amb) == {"p1", "p2"}
+          and all(a.get("unmatched_in_an_optimum") is True
+                  for a in amb.values()))
+    return ok, ("tp=%d fp=%d fn=%d matches=%s ambiguous=%s"
+                % (r["tp"], r["fp"], r["fn"],
+                   [(m["gold"]["gold_id"], m["predicted"]["gold_id"])
+                    for m in r["matches"]], sorted(amb)))
+
+
+def test_313_exact_beats_greedy_eight_events():
+    """Issue #313 finding 2: an 8-event group (past the 7-event
+    enumeration limit) where canonical greedy diverges from exact.
+    A agrees with X on 3 fields and Y on 2; B agrees with X on 2 and
+    with nothing else. Greedy takes A->X (3) and strands B; the exact
+    maximum-total assignment is A->Y + B->X (4). The other six pairs
+    are unique forced matches that pad the group to 8 events."""
+    F = ["f1", "f2", "f3", "f4", "f5"]
+
+    def ev(gid, vals):
+        return {"gold_id": gid, "fields": dict(zip(F, vals))}
+
+    golds = [ev("X", ("a", "b", "c", "d", "e")),
+             ev("Y", ("A", "B", "C", "D", "E")),
+             ev("Z", ("p", "q", "r", "s", "t"))]
+    preds = [ev("A", ("a", "b", "c", "D", "E")),
+             ev("B", ("a", "b", "z", "Z", "Z")),
+             ev("C", ("p", "q", "r", "s", "t"))]
+    for k in range(5):
+        vals = tuple("w%d%d" % (k, j) for j in range(1, 6))
+        golds.append(ev("W%d" % k, vals))
+        preds.append(ev("D%d" % k, vals))
+    matches, unmatched_pred, unmatched_gold, ambiguous = \
+        S._match_group(golds, preds, F)
+    got = sorted((g["gold_id"], p["gold_id"]) for g, p in matches)
+    ok = (len(matches) == 8 and unmatched_pred == []
+          and unmatched_gold == [] and ambiguous == []
+          and ("Y", "A") in got and ("X", "B") in got
+          and ("Z", "C") in got)
+    return ok, ("matches=%d %s unmatched_pred=%d ambiguous=%d"
+                % (len(matches), got, len(unmatched_pred),
+                   len(ambiguous)))
+
+
+def test_313_oversize_group_adjudication():
+    """Issue #313 finding 2, over the 15-event exact limit: a 16x16
+    group is rejected into adjudication — nothing matches, every
+    predicted event is an FP, every gold event an FN, and every
+    ambiguous entry carries oversize_group."""
+    gold = [_gold(div("egx:big", gold_id="g%d" % i)) for i in range(16)]
+    pred = [div("egx:big", gold_id="p%d" % i) for i in range(16)]
+    r = S.score_cell(gold, pred)
+    ok = ((r["tp"], r["fp"], r["fn"]) == (0, 16, 16)
+          and r["matches"] == []
+          and len(r["ambiguous"]) == 16
+          and all(a.get("oversize_group") is True
+                  for a in r["ambiguous"]))
+    return ok, ("tp=%d fp=%d fn=%d ambiguous=%d oversize=%s"
+                % (r["tp"], r["fp"], r["fn"], len(r["ambiguous"]),
+                   all(a.get("oversize_group") for a in r["ambiguous"])))
+
+
+def _brute_forced_pairs(golds, preds, fields):
+    """Reference: enumerate every partial one-to-one assignment, find
+    the maximum total agreement, and return (forced, paired_some,
+    partners, unmatched_opt, gold_taken_every) — forced pairs present
+    in EVERY optimum, preds paired in SOME optimum, per-pred partner
+    sets across optima, whether each pred is unmatched in some
+    optimum, and whether each gold is taken in every optimum.
+    Independent of the scorer's enumeration/Hungarian paths."""
+    n_p, n_g = len(preds), len(golds)
+    agree = [[S._agreement(golds[j], preds[i], fields)
+              for j in range(n_g)] for i in range(n_p)]
+    best = [0]
+    optima = []
+
+    def walk(i, used, total, pairing):
+        if i == n_p:
+            if total > best[0]:
+                best[0] = total
+                optima.clear()
+                optima.append(list(pairing))
+            elif total == best[0]:
+                optima.append(list(pairing))
+            return
+        walk(i + 1, used, total, pairing)
+        for j in range(n_g):
+            if j not in used and agree[i][j] >= 1:
+                used.add(j)
+                pairing.append((i, j))
+                walk(i + 1, used, total + agree[i][j], pairing)
+                pairing.pop()
+                used.discard(j)
+
+    walk(0, set(), 0, [])
+    forced = set.intersection(*(set(o) for o in optima)) if optima else set()
+    paired_some = set().union(*(set(o) for o in optima)) if optima else set()
+    partners = [set() for _ in range(n_p)]
+    unmatched_opt = [False] * n_p
+    gold_used = [0] * n_g
+    for o in optima:
+        paired = {k for k, _ in o}
+        for k, j in o:
+            partners[k].add(j)
+            gold_used[j] += 1
+        for k in range(n_p):
+            if k not in paired:
+                unmatched_opt[k] = True
+    gold_taken_every = [gold_used[j] == len(optima) for j in range(n_g)]
+    return forced, paired_some, partners, unmatched_opt, gold_taken_every
+
+
+def test_313_matching_property():
+    """Property test (spec §4.3): over random small groups, the pairs
+    _match_group matches are exactly the forced pairs across all
+    maximum-total-agreement assignments — plus the spec §4.2
+    identical-duplicate exception (interchangeable twins: the first
+    takes a gold that is taken in every optimum, with no flag) —
+    counts are consistent (matches + unmatched = group size on each
+    side), no gold is used twice, and every ambiguous pred is
+    unmatched and paired in some optimum (the identical-duplicate
+    exception is the only direction not asserted: a duplicate twin may
+    be unmatched without a flag)."""
+    rng = random.Random(313)
+    F = ["f1", "f2", "f3"]
+    values = ["a", "b", None]
+    for trial in range(60):
+        n_p = rng.randint(0, 5)
+        n_g = rng.randint(0, 5)
+        golds = [{"gold_id": "g%d" % j,
+                  "fields": {f: rng.choice(values) for f in F}}
+                 for j in range(n_g)]
+        preds = [{"gold_id": "p%d" % i,
+                  "fields": {f: rng.choice(values) for f in F}}
+                 for i in range(n_p)]
+        matches, up, ug, amb = S._match_group(golds, preds, F)
+        forced, paired_some, partners, unmatched_opt, gold_taken = \
+            _brute_forced_pairs(golds, preds, F)
+        # The §4.2 exception: identical preds claiming one gold that
+        # is taken in every optimum, with no multi-partner claimant —
+        # the first (lowest index; the canonical sort is stable)
+        # takes the gold. Those pairs are matched but not forced.
+        allowed = set(forced)
+        for j in range(n_g):
+            if not gold_taken[j]:
+                continue
+            cs = [i for i in range(n_p) if partners[i] == {j}]
+            if len(cs) >= 2 and len({S._canonical_key(preds[i], F)
+                                    for i in cs}) == 1 \
+                    and not any(j in partners[k]
+                                for k in range(n_p)
+                                if len(partners[k]) > 1):
+                allowed.add((min(cs), j))
+        got = {(preds.index(p), golds.index(g)) for g, p in matches}
+        if got != allowed:
+            return False, ("trial %d: matched %s != forced+duplicates %s"
+                           % (trial, sorted(got), sorted(allowed)))
+        if len(matches) + len(up) != n_p or len(matches) + len(ug) != n_g:
+            return False, ("trial %d: counts inconsistent "
+                           "matches=%d up=%d ug=%d n_p=%d n_g=%d"
+                           % (trial, len(matches), len(up), len(ug),
+                              n_p, n_g))
+        if len({id(g) for g, _ in matches}) != len(matches):
+            return False, ("trial %d: gold reused" % trial)
+        amb_ids = {id(a["predicted"]) for a in amb}
+        if not amb_ids <= {id(p) for p in up}:
+            return False, ("trial %d: ambiguous pred matched" % trial)
+        for a in amb:
+            i = preds.index(a["predicted"])
+            if not any(k == i for k, _ in paired_some):
+                return False, ("trial %d: ambiguous pred never paired"
+                               % trial)
+    return True, "60 random groups: matched == forced, counts consistent"
+
+
 CASES = [
     ("swapped-date", test_swapped_date),
     ("sign", test_sign),
@@ -528,6 +767,15 @@ CASES = [
     ("scale-canonicalisation", test_scale_canonicalisation),
     ("arabic-indic-digits", test_arabic_indic_digits),
     ("zero-agreement-no-match", test_zero_agreement_no_match),
+    # --- #313 ---
+    ("313-forced-pair-counterexample",
+     test_313_forced_pair_counterexample),
+    ("313-forced-pair-holds", test_313_forced_pair_holds),
+    ("313-exact-beats-greedy-eight-events",
+     test_313_exact_beats_greedy_eight_events),
+    ("313-oversize-group-adjudication",
+     test_313_oversize_group_adjudication),
+    ("313-matching-property", test_313_matching_property),
 ]
 
 

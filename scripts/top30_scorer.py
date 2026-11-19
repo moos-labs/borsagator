@@ -29,10 +29,15 @@ Rules (spec sections in brackets):
   (agreement = count of scored fields equal after normalisation; a
   pair needs agreement >= 1 to be identifiable). A predicted event is
   matched only when it is paired to the SAME gold event in EVERY
-  maximum-agreement assignment (a forced pair); otherwise it is left
-  unmatched (FP) and the group is flagged ambiguous for adjudication
-  [§4.4]. The scorer never breaks a tie in the direction that raises
-  the score, and the result never depends on predicted input order.
+  maximum-agreement assignment (a forced pair) — being paired to one
+  gold in some optima and unmatched in others is NOT forced either;
+  otherwise it is left unmatched (FP) and the group is flagged
+  ambiguous for adjudication [§4.4]. Groups over 7 events use the
+  same rule computed exactly via the assignment problem (up to 15
+  events per side); larger groups are rejected into adjudication,
+  never greedily approximated [§4.3, §4.4, issue #313]. The scorer
+  never breaks a tie in the direction that raises the score, and the
+  result never depends on predicted input order.
 - A candidate predicted event never grants a TP, even with identical
   fields: it is an FP and its gold counterpart an FN [§3, §4].
 - Wrong predicted value = 1 FP + 1 FN; missing gold field = FN;
@@ -104,9 +109,13 @@ SCALE_FACTORS = {"one": 1, "thousand": 10 ** 3, "million": 10 ** 6,
 _ARABIC_DIGITS = str.maketrans(
     "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
 
-# Groups larger than this fall back to deterministic canonical greedy
-# matching (still order-independent); realistic groups are 1-3 events.
+# Groups up to this size are enumerated exhaustively. Groups up to
+# _MAX_EXACT_GROUP use the exact assignment-problem method
+# (_forced_pairs_exact); larger groups are rejected into adjudication
+# (_match_group_oversize) — never greedily approximated (issue #313).
+# Realistic groups are 1-3 events.
 _MAX_ENUMERATED_GROUP = 7
+_MAX_EXACT_GROUP = 15
 
 
 def _clean_digits(s):
@@ -320,81 +329,32 @@ def _merge_field_counts(dst, src):
 
 def _canonical_key(ev, fields):
     """Deterministic sort key for one event: the sorted normalised
-    (field, value) pairs. Used only by the large-group fallback."""
+    (field, value) pairs. Used to sort events into canonical
+    (input-order-independent) order and to test whether duplicate
+    claimants of one gold are identical."""
     gf = ev.get("fields") or {}
     return tuple(sorted((f, repr(_norm(f, gf.get(f)))) for f in fields))
 
 
-def _match_group(gold_list, pred_list, fields):
-    """Order-independent one-to-one matching for one group (spec §4).
+def _resolve_forced_pairs(gold_list, pred_list, fields, partners,
+                          unmatched_opt, gold_taken_every):
+    """Turn per-pred partner sets across all maximum-total-agreement
+    assignments into matches (spec §4.3/§4.4).
 
-    Returns (matches, unmatched_pred, unmatched_gold, ambiguous) where
-    matches is a list of (gold, pred) forced pairs. Events are first
-    sorted by canonical key, so the result depends only on the event
-    multisets, never on predicted input order. A pair is eligible only
-    with agreement >= 1 (spec §4.3: the event must be identifiable);
-    among all maximum-total-agreement assignments, a predicted event
-    is matched only when paired to the SAME gold event in every
-    optimum. A predicted event paired to two or more different golds
-    across optima is ambiguous: left unmatched (FP) and flagged [§4.4].
-    Several predicted events claiming one gold are duplicates when
-    identical (spec §4.2: one matches, the rest are FPs) and a
-    contested tie when they differ (all left unmatched and flagged —
-    matching any one would be a favourable, order-dependent choice).
-    The scorer never breaks a tie in the direction that raises the
-    score.
+    `partners[i]` is the set of gold indices pred i is paired to in
+    some optimum; `unmatched_opt[i]` says pred i is unmatched in at
+    least one optimum; `gold_taken_every[j]` says gold j is used in
+    every optimum. A predicted event is matched only when it is
+    paired to the SAME gold event in EVERY optimum (a forced pair) —
+    being paired to one gold in some optima and unmatched in others
+    is NOT forced: the event is left unmatched (FP) and flagged
+    ambiguous, with `unmatched_in_an_optimum` set so adjudication
+    knows the event may equally be no event at all, not just the
+    other gold. Identical duplicate predicted events are
+    interchangeable (spec §4.2): when they are the only claimants of
+    a gold that is taken in every optimum, the canonically-first
+    takes the gold and the rest are unmatched FPs, with no flag.
     """
-    gold_list = sorted(gold_list, key=lambda g: _canonical_key(g, fields))
-    pred_list = sorted(pred_list, key=lambda p: _canonical_key(p, fields))
-    n_g, n_p = len(gold_list), len(pred_list)
-    agree = [[_agreement(g, p, fields) for g in gold_list]
-             for p in pred_list]
-    eligible = [[agree[i][j] >= 1 for j in range(n_g)]
-                for i in range(n_p)]
-
-    if n_p > _MAX_ENUMERATED_GROUP or n_g > _MAX_ENUMERATED_GROUP:
-        return _match_group_greedy(gold_list, pred_list, fields,
-                                   agree, eligible)
-
-    # Enumerate every partial injective assignment; track the maximum
-    # total agreement, then (second pass) each predicted event's
-    # partner set across all optima.
-    best = [0]
-
-    def walk(i, used, total):
-        if total > best[0]:
-            best[0] = total
-        if i == n_p:
-            return
-        walk(i + 1, used, total)  # leave pred i unmatched
-        for j in range(n_g):
-            if j not in used and eligible[i][j]:
-                used.add(j)
-                walk(i + 1, used, total + agree[i][j])
-                used.discard(j)
-
-    walk(0, set(), 0)
-    optimum = best[0]
-    partners = [set() for _ in range(n_p)]
-
-    def collect(i, used, total, pairing):
-        if i == n_p:
-            if total == optimum:
-                for k, j in pairing:
-                    partners[k].add(j)
-            return
-        collect(i + 1, used, total, pairing)
-        for j in range(n_g):
-            if j not in used and eligible[i][j]:
-                used.add(j)
-                pairing.append((i, j))
-                collect(i + 1, used, total + agree[i][j], pairing)
-                pairing.pop()
-                used.discard(j)
-
-    collect(0, set(), 0, [])
-
-    # Resolve claims on each gold event.
     claimants = {}
     for i, ps in enumerate(partners):
         if len(ps) == 1:
@@ -403,8 +363,18 @@ def _match_group(gold_list, pred_list, fields):
     ambiguous_idx = set()
     for j, cs in claimants.items():
         if len(cs) == 1:
-            matched_pair[cs[0]] = j
-        elif len({_canonical_key(pred_list[i], fields) for i in cs}) == 1:
+            if unmatched_opt[cs[0]]:
+                # Paired to j in some optima, unmatched in others:
+                # not a forced pair — ambiguous, never matched on a
+                # favourable pick.
+                ambiguous_idx.add(cs[0])
+            else:
+                matched_pair[cs[0]] = j
+        elif len({_canonical_key(pred_list[i], fields) for i in cs}) == 1 \
+                and gold_taken_every[j] \
+                and not any(j in partners[k]
+                            for k in range(len(pred_list))
+                            if len(partners[k]) > 1):
             # Identical duplicates (spec §4.2): the canonically-first
             # takes the gold; the rest are unmatched FPs, no flag —
             # swapping identical events changes nothing.
@@ -425,11 +395,14 @@ def _match_group(gold_list, pred_list, fields):
             matches.append((gold_list[j], p))
         elif i in ambiguous_idx:
             unmatched_pred.append(p)
-            ambiguous.append({
+            entry = {
                 "predicted": p,
                 "tied_gold_ids": sorted(
                     str(gold_list[j].get("gold_id", "?%d" % j))
-                    for j in partners[i])})
+                    for j in partners[i])}
+            if unmatched_opt[i]:
+                entry["unmatched_in_an_optimum"] = True
+            ambiguous.append(entry)
         else:
             # Matched in no optimum: genuinely unmatched, not ambiguous.
             unmatched_pred.append(p)
@@ -438,38 +411,247 @@ def _match_group(gold_list, pred_list, fields):
     return matches, unmatched_pred, unmatched_gold, ambiguous
 
 
-def _match_group_greedy(gold_list, pred_list, fields, agree, eligible):
-    """Large-group fallback: deterministic canonical greedy matching.
-    Predicted events are processed in canonical (not input) order, so
-    the result is still order-independent. A tie for best agreement is
-    ambiguous, never broken favourably."""
-    order = sorted(range(len(pred_list)),
-                   key=lambda i: _canonical_key(pred_list[i], fields))
-    free_gold = list(range(len(gold_list)))
-    matches, unmatched_pred, ambiguous = [], [], []
-    for i in order:
-        p = pred_list[i]
-        scored = sorted(
-            ((agree[i][j], j) for j in free_gold if eligible[i][j]),
-            key=lambda t: (-t[0], t[1]))
-        if not scored:
-            unmatched_pred.append(p)
-            continue
-        best = scored[0][0]
-        tied = [s for s in scored if s[0] == best]
-        if len(tied) > 1:
-            unmatched_pred.append(p)
-            ambiguous.append({
-                "predicted": p,
-                "tied_gold_ids": sorted(
-                    str(gold_list[j].get("gold_id", "?%d" % j))
-                    for _, j in tied)})
-            continue
-        j = scored[0][1]
-        free_gold.remove(j)
-        matches.append((gold_list[j], p))
-    unmatched_gold = [gold_list[j] for j in free_gold]
-    return matches, unmatched_pred, unmatched_gold, ambiguous
+def _match_group(gold_list, pred_list, fields):
+    """Order-independent one-to-one matching for one group (spec §4).
+
+    Returns (matches, unmatched_pred, unmatched_gold, ambiguous) where
+    matches is a list of (gold, pred) forced pairs. Events are first
+    sorted by canonical key, so the result depends only on the event
+    multisets, never on predicted input order. A pair is eligible only
+    with agreement >= 1 (spec §4.3: the event must be identifiable);
+    among all maximum-total-agreement assignments, a predicted event
+    is matched only when paired to the SAME gold event in every
+    optimum. A predicted event paired to two or more different golds
+    across optima — or paired to one gold in some optima and
+    unmatched in others — is ambiguous: left unmatched (FP) and
+    flagged [§4.4]. Groups over 7 events use the same rule computed
+    exactly via the assignment problem (up to 15 events per side);
+    larger groups are rejected into adjudication, never greedily
+    approximated (issue #313).
+    Several predicted events claiming one gold are duplicates when
+    identical (spec §4.2: one matches, the rest are FPs) and a
+    contested tie when they differ (all left unmatched and flagged —
+    matching any one would be a favourable, order-dependent choice).
+    The scorer never breaks a tie in the direction that raises the
+    score.
+    """
+    gold_list = sorted(gold_list, key=lambda g: _canonical_key(g, fields))
+    pred_list = sorted(pred_list, key=lambda p: _canonical_key(p, fields))
+    n_g, n_p = len(gold_list), len(pred_list)
+    agree = [[_agreement(g, p, fields) for g in gold_list]
+             for p in pred_list]
+    eligible = [[agree[i][j] >= 1 for j in range(n_g)]
+                for i in range(n_p)]
+
+    if n_p > _MAX_EXACT_GROUP or n_g > _MAX_EXACT_GROUP:
+        return _match_group_oversize(gold_list, pred_list)
+
+    if n_p > _MAX_ENUMERATED_GROUP or n_g > _MAX_ENUMERATED_GROUP:
+        partners, unmatched_opt, gold_taken_every = _forced_pairs_exact(
+            agree, eligible)
+        return _resolve_forced_pairs(
+            gold_list, pred_list, fields, partners, unmatched_opt,
+            gold_taken_every)
+
+    # Enumerate every partial injective assignment; track the maximum
+    # total agreement, then (second pass) each predicted event's
+    # partner set across all optima — including the possibility of
+    # being UNMATCHED in an optimum (spec §4.3: a pred paired to one
+    # gold in some optima and unmatched in others is not a forced
+    # pair) — and whether each gold is taken in every optimum.
+    best = [0]
+
+    def walk(i, used, total):
+        if total > best[0]:
+            best[0] = total
+        if i == n_p:
+            return
+        walk(i + 1, used, total)  # leave pred i unmatched
+        for j in range(n_g):
+            if j not in used and eligible[i][j]:
+                used.add(j)
+                walk(i + 1, used, total + agree[i][j])
+                used.discard(j)
+
+    walk(0, set(), 0)
+    optimum = best[0]
+    partners = [set() for _ in range(n_p)]
+    unmatched_opt = [False] * n_p
+    gold_used = [0] * n_g
+    optima_count = [0]
+
+    def collect(i, used, total, pairing):
+        if i == n_p:
+            if total == optimum:
+                optima_count[0] += 1
+                paired = {k for k, _ in pairing}
+                for k, j in pairing:
+                    partners[k].add(j)
+                    gold_used[j] += 1
+                for k in range(n_p):
+                    if k not in paired:
+                        unmatched_opt[k] = True
+            return
+        collect(i + 1, used, total, pairing)
+        for j in range(n_g):
+            if j not in used and eligible[i][j]:
+                used.add(j)
+                pairing.append((i, j))
+                collect(i + 1, used, total + agree[i][j], pairing)
+                pairing.pop()
+                used.discard(j)
+
+    collect(0, set(), 0, [])
+    gold_taken_every = [gold_used[j] == optima_count[0]
+                        for j in range(n_g)]
+    return _resolve_forced_pairs(
+        gold_list, pred_list, fields, partners, unmatched_opt,
+        gold_taken_every)
+
+
+def _hungarian(cost):
+    """Minimum-cost square assignment (e-maxx O(n^3) Hungarian).
+
+    `cost` is a 1-indexed (n+1)x(n+1) matrix of non-negative integer
+    costs. Returns (min_total_cost, assignment) with assignment[i] =
+    the column assigned to row i (1-indexed). Only the total is used
+    by the scorer; forced pairs come from re-solving reduced
+    problems, never from one arbitrary optimal assignment.
+    """
+    n = len(cost) - 1
+    inf = 10 ** 18
+    u = [0] * (n + 1)
+    v = [0] * (n + 1)
+    p = [0] * (n + 1)    # p[j] = row currently matched to column j
+    way = [0] * (n + 1)
+    for i in range(1, n + 1):
+        p[0] = i
+        j0 = 0
+        minv = [inf] * (n + 1)
+        used = [False] * (n + 1)
+        while True:
+            used[j0] = True
+            i0 = p[j0]
+            delta, j1 = inf, 0
+            for j in range(1, n + 1):
+                if used[j]:
+                    continue
+                cur = cost[i0][j] - u[i0] - v[j]
+                if cur < minv[j]:
+                    minv[j] = cur
+                    way[j] = j0
+                if minv[j] < delta:
+                    delta, j1 = minv[j], j
+            for j in range(n + 1):
+                if used[j]:
+                    u[p[j]] += delta
+                    v[j] -= delta
+                else:
+                    minv[j] -= delta
+            j0 = j1
+            if p[j0] == 0:
+                break
+        while True:
+            j1 = way[j0]
+            p[j0] = p[j1]
+            j0 = j1
+            if j0 == 0:
+                break
+    assignment = [0] * (n + 1)
+    for j in range(1, n + 1):
+        if p[j]:
+            assignment[p[j]] = j
+    return -v[0], assignment
+
+
+def _max_total(agree, eligible):
+    """Maximum total agreement over all partial one-to-one
+    assignments (spec §4.3), via the assignment problem: rows are
+    predicted events, columns gold events, padded with dummy rows /
+    columns so any event may stay unmatched. Every square entry
+    costs MAXA except an eligible real pair, which costs
+    MAXA - agreement, and an ineligible real pair, which costs a
+    prohibitive BIG and is never chosen. The minimum-cost total is
+    then N*MAXA minus the maximum total agreement, so the returned
+    value is exactly the optimum the enumeration computes for small
+    groups — no greedy approximation anywhere.
+    """
+    n_p = len(agree)
+    n_g = len(agree[0]) if n_p else 0
+    if n_p == 0 or n_g == 0:
+        return 0
+    if not any(eligible[i][j] for i in range(n_p) for j in range(n_g)):
+        return 0
+    maxa = max(max(row) for row in agree)
+    n = n_p + n_g
+    big = n * maxa + 1
+    cost = [[maxa] * (n + 1) for _ in range(n + 1)]
+    for i in range(n_p):
+        for j in range(n_g):
+            cost[i + 1][j + 1] = (maxa - agree[i][j]) \
+                if eligible[i][j] else big
+    total, _ = _hungarian(cost)
+    return n * maxa - total
+
+
+def _forced_pairs_exact(agree, eligible):
+    """Partner sets across ALL maximum-total-agreement assignments
+    for a group too large to enumerate (spec §4.3), without
+    enumerating them: a pair is in some optimum iff its agreement
+    plus the optimum of the problem without that pred and gold
+    equals the full optimum; a pred is unmatched in some optimum
+    iff the optimum without it equals the full optimum; a gold is
+    taken in every optimum iff the optimum without it is strictly
+    smaller. Each reduced optimum is one assignment-problem solve.
+    Returns (partners, unmatched_opt, gold_taken_every) in the same
+    shape the enumeration produces, so both paths share
+    _resolve_forced_pairs and cannot drift apart.
+    """
+    n_p = len(agree)
+    n_g = len(agree[0]) if n_p else 0
+    optimum = _max_total(agree, eligible)
+    partners = [set() for _ in range(n_p)]
+    unmatched_opt = [False] * n_p
+    for i in range(n_p):
+        sub = [row[:] for k, row in enumerate(agree) if k != i]
+        sub_e = [row[:] for k, row in enumerate(eligible) if k != i]
+        if _max_total(sub, sub_e) == optimum:
+            unmatched_opt[i] = True
+    gold_taken_every = [True] * n_g
+    for j in range(n_g):
+        sub = [[v for k, v in enumerate(row) if k != j]
+               for row in agree]
+        sub_e = [[v for k, v in enumerate(row) if k != j]
+                 for row in eligible]
+        if _max_total(sub, sub_e) == optimum:
+            gold_taken_every[j] = False
+    for i in range(n_p):
+        for j in range(n_g):
+            if not eligible[i][j]:
+                continue
+            sub = [[v for k, v in enumerate(row) if k != j]
+                   for kk, row in enumerate(agree) if kk != i]
+            sub_e = [[v for k, v in enumerate(row) if k != j]
+                     for kk, row in enumerate(eligible) if kk != i]
+            if agree[i][j] + _max_total(sub, sub_e) == optimum:
+                partners[i].add(j)
+    return partners, unmatched_opt, gold_taken_every
+
+
+def _match_group_oversize(gold_list, pred_list):
+    """Groups over _MAX_EXACT_GROUP are rejected into adjudication
+    (spec §4.4) instead of being silently approximated: no pair is
+    matched, every predicted event is an FP, every gold event an
+    FN, and every predicted event is flagged ambiguous with
+    oversize_group set. Realistic groups are 1-3 events (the
+    extractor emits at most one event per type per document, spec
+    §2); a group this large is a pathological input, and the honest
+    answer is a human decision, not a greedy guess."""
+    all_ids = sorted(str(g.get("gold_id", "?%d" % j))
+                     for j, g in enumerate(gold_list))
+    ambiguous = [{"predicted": p, "tied_gold_ids": list(all_ids),
+                  "oversize_group": True} for p in pred_list]
+    return [], list(pred_list), list(gold_list), ambiguous
 
 
 def _field_verdict(counts):
