@@ -258,6 +258,18 @@ the unchanged scorer (`evaluate_completion`):
   failures — never from `ambiguous == []` alone (a candidate sits in
   `unmatched_predicted`). Ledger entries carry stable IDs tied to the
   frozen run/input digests, never array position or a gold-ID list.
+  IDs are distinct per frozen prediction occurrence: N identical
+  predictions yield N distinct IDs (an occurrence index is folded
+  into the hashed detail), so one decision over one ID can never
+  clear N entries. The mandatory ambiguity/candidate/collection
+  ledger is derived internally by `evaluate_completion` from the
+  scorer outputs and the collection state: an omitted, empty or
+  truncated caller ledger never passes while such cases exist, and
+  a frozen required-cell set must be supplied whenever cells are
+  present (without it, omitted universe members are undetectable).
+  Collection counts must be non-negative; a cell's `accepted` must
+  be exactly True/False/None (by identity — `1`/`0` are not
+  verdicts).
 - **Scope**: an out-of-scope ambiguity blocks only until an
   evidence-backed scope decision exists; the entry is retained with
   the exclusion reason. Scope is the frozen roster +
@@ -274,9 +286,24 @@ the unchanged scorer (`evaluate_completion`):
   decisions (pairing) apply only through the explicit adjudication
   adapter (`apply_adjudication`) and a re-score; merely marking an
   entry resolved, a stale/wrong-run decision, conflicting decisions,
-  or an unresolved supersession all fail closed. Frozen predictions
-  are never edited into correct answers: a resolved candidate cannot
-  gain a TP by status rewriting.
+  or an unresolved supersession all fail closed. A pairing joins
+  only events from the same source document, issuer and event type
+  (the frozen same-document matching rule — membership in the
+  unmatched lists plus field agreement is not enough). A decision
+  resolves only a ledger entry of a compatible kind: ambiguity by
+  pairing / reject_event / duplicate; candidate by reject_event /
+  duplicate; field by field; scope by scope; gold by field / scope;
+  collection entries by no decision at all — they close only when
+  the collection state shows the document archived. An ambiguous or
+  candidate case argued out of scope is recorded as its own
+  kind=`scope` ledger entry and resolved by a scope decision there.
+  Frozen predictions are never edited into correct answers: a
+  resolved candidate cannot gain a TP by status rewriting.
+- **Per-cell blocking**: `per_cell.blocked` reflects the global
+  collection state as well as unresolved ledger entries — an
+  unknown, unfinished or partial collection blocks every cell, so
+  report truth never depends on whether the caller remembered to
+  build a ledger.
 - **No report runner exists at this pin**: collection state and
   adjudication records have the schemas/interfaces defined here and
   in `top30_completion.py`, and `cell_report` builds the §8 per-cell
@@ -311,7 +338,11 @@ the separate completion state (`complete` + final outcome
 `incomplete` / `complete-pass` / `complete-fail` / `complete-N/A`,
 alongside the scorer's provisional `accepted` — a threshold pass is
 never reported as a completed evaluation); and, where the §2 limit
-bit, the count of gold events unmatchable because of it. Roll-ups
+bit, the count of gold events unmatchable because of it. The report's
+`unresolved_candidates` counts unresolved candidate ledger entries
+for the cell (derived from the effective ledger, so a resolved
+candidate no longer counts); the raw candidate-output count is kept
+separately as `candidate_outputs`. Roll-ups
 (per issuer, per type, overall) are summaries only — acceptance is
 per cell, never on a roll-up, and a roll-up cannot rescue a failed,
 blocked or unproven cell.
@@ -342,12 +373,21 @@ gate lives in `scripts/top30_completion.py` (separate `complete` +
 final outcome over the unchanged scorer; unresolved ledger from
 matching records + candidates + field/collection inputs; frozen
 collection/ledger/adjudication schemas; fail-closed adjudication
-adapter) and its negative controls live in
+adapter; mandatory ledger derived internally and distinct IDs per
+prediction occurrence, same-document/issuer/type pairing,
+decision/entry-kind compatibility, non-negative collection counts,
+exact `accepted` domain, per-cell blocking from global collection
+failures — issue #322) and its negative controls live in
 `scripts/test_top30_completion_314.py` (Ins's 8 required regression
 cases: contested group, candidate / sometimes-unmatched / oversize,
 collection gaps, out-of-scope, fields, adjudication applied vs
 merely marked, roll-ups, empty cells — plus the
-`accepted`-unchanged and §8-report-shape controls), also wired into
+`accepted`-unchanged and §8-report-shape controls, plus the #322
+regressions: omitted/empty/truncated ledger, mandatory required-cell
+set, multiplicity IDs, per-cell blocking, cross-document pairing,
+decision-kind compatibility, collection-entries-by-evidence-only,
+negative counts, malformed `accepted`, ledger-derived candidate
+reporting), also wired into
 `scripts/harness_issue109.py` (`--scorer`). If the spec and the
 scorer ever disagree, **the spec wins** and the scorer is fixed.
 

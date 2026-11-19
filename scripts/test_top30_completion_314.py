@@ -35,6 +35,21 @@ Case map:
   8. genuine empty cell is complete-N/A, FN-only cell fails recall,
      all-N/A evaluation is not a quality pass; missing capture cannot
      produce an empty-cell success.
+
+Issue #322 regressions (INS-314-POSTMERGE-REVIEW follow-up):
+  9. omitted/empty/truncated ledger never passes while scorer
+     outputs carry ambiguities/candidates; a frozen required-cell
+     set is mandatory when cells are present;
+  10. oversize/identical entries carry distinct IDs (reorder-stable),
+      one decision cannot clear them all; identical candidates too;
+  11. per-cell blocking reflects global collection failures;
+  12. cross-document/issuer/type pairings are refused (same-document
+      pairing still applies);
+  13. decision/entry-kind compatibility (field/pairing on a candidate,
+      scope on an ambiguity, any decision on a collection entry);
+  14. negative collection counts and non-domain `accepted` values
+      raise; cell_report derives unresolved_candidates from the
+      effective ledger and keeps candidate_outputs separately.
 """
 import inspect
 import os
@@ -467,6 +482,402 @@ def test_case8_empty_cells():
                    out_all_na["outcome"]))
 
 
+# --- issue #322 regressions --------------------------------------------
+# Each test is written from scratch against the fixed gate: the
+# fixture is built here (own docs/coupons/counts), the BEFORE
+# behaviour is the hole the issue records, and the test asserts the
+# AFTER behaviour. Failing-before was verified with the probe run
+# in ~/workspace/scratch-322/ (12-claim re-derivation: 10/12
+# confirmed as written, F1c confirmed in the issue's thresholds-pass
+# form, F5 confirmed as complete=True with outcome complete-fail
+# because the single-candidate cell genuinely fails thresholds).
+
+def _contested_322():
+    """Own contested construction: 40 clean + one tie. Two preds
+    claim one gold with equal agreement (each agrees on coupon +
+    one of amount/ex_date, differs on the other), so both stay
+    ambiguous and thresholds still pass (tp=40 fp=2 fn=1)."""
+    g, p = [], []
+    for i in range(40):
+        g.append(_gold(div("egx:clean322-%02d" % i, gold_id="g%d" % i,
+                           coupon=str(500 + i))))
+        p.append(div("egx:clean322-%02d" % i, gold_id="g%d" % i,
+                     coupon=str(500 + i)))
+    g.append(_gold(div("egx:tie322", gold_id="g-tie", coupon="77")))
+    p.append(div("egx:tie322", gold_id="p-a", coupon="77",
+                 amount_per_share="2.1"))
+    p.append(div("egx:tie322", gold_id="p-b", coupon="77",
+                 ex_date="2026-11-17"))
+    return S.score_cell(g, p)
+
+
+def test_322_f1_omitted_ledger_blocks():
+    r = _contested_322()
+    if not ((r["tp"], r["fp"], r["fn"]) == (40, 2, 1)
+            and r["accepted"] is True and len(r["ambiguous"]) == 2):
+        return False, "322 contested fixture drifted: %s" % (r,)
+    out_none = gate({CELL: r})  # helper passes no ledger
+    out_empty = gate({CELL: r}, ledger=[])
+    ledger = ledger_for({CELL: r})
+    out_full = gate({CELL: r}, ledger=ledger)
+    truncated = gate({CELL: r}, ledger=ledger[:1])
+    ok = (out_none["complete"] is False
+          and out_none["outcome"] == "incomplete"
+          and len(out_none["unresolved"]) == 2
+          and out_empty["complete"] is False
+          and out_full["complete"] is False
+          and len(out_full["unresolved"]) == 2
+          and truncated["complete"] is False
+          and len(truncated["unresolved"]) == 2
+          and any("ledger incomplete" in reason
+                  for reason in truncated["reasons"]))
+    return ok, ("omitted ledger -> %s (unresolved=%d); empty -> %s; "
+                "truncated 1/2 -> %s (unresolved=%d, flagged); full "
+                "ledger still blocks: %s"
+                % (out_none["complete"], len(out_none["unresolved"]),
+                   out_empty["complete"], truncated["complete"],
+                   len(truncated["unresolved"]),
+                   out_full["complete"]))
+
+
+def test_322_f1_candidate_omitted_ledger_blocks():
+    g, p = [], []
+    for i in range(40):
+        g.append(_gold(div("egx:clean322-%02d" % i, gold_id="g%d" % i,
+                           coupon=str(500 + i))))
+        p.append(div("egx:clean322-%02d" % i, gold_id="g%d" % i,
+                     coupon=str(500 + i)))
+    cand = div("egx:cand322", gold_id="px", coupon="77")
+    cand["extraction_status"] = "candidate"
+    p.append(cand)
+    r = S.score_cell(g, p)
+    if not ((r["tp"], r["fp"], r["fn"]) == (40, 1, 0)
+            and r["accepted"] is True and r["ambiguous"] == []):
+        return False, "322 candidate fixture drifted: %s" % (r,)
+    out_none = gate({CELL: r})
+    out_with = gate({CELL: r}, ledger=ledger_for({CELL: r}))
+    ok = (out_none["complete"] is False
+          and out_none["outcome"] == "incomplete"
+          and len(out_none["unresolved"]) == 1
+          and out_none["unresolved"][0]["kind"] == "candidate"
+          and out_with["complete"] is False)
+    return ok, ("40 clean + 1 candidate, thresholds pass, ledger "
+                "omitted -> %s (unresolved=%d, kind=%s)"
+                % (out_none["complete"], len(out_none["unresolved"]),
+                   out_none["unresolved"][0]["kind"]
+                   if out_none["unresolved"] else "?"))
+
+
+def test_322_f1_required_cells_unverified():
+    g, p = clean(1)
+    r = S.score_cell(g, p)
+    out_no_universe = C.evaluate_completion(
+        {CELL: r}, run_digest=RUN, input_digest=INP, collection=coll(),
+        ledger=ledger_for({CELL: r}), required_cells=())
+    out_frozen = C.evaluate_completion(
+        {CELL: r}, run_digest=RUN, input_digest=INP, collection=coll(),
+        ledger=ledger_for({CELL: r}), required_cells=[CELL])
+    ok = (out_no_universe["complete"] is False
+          and out_no_universe["outcome"] == "incomplete"
+          and any("required-cell set not supplied" in reason
+                  for reason in out_no_universe["reasons"])
+          and out_frozen["complete"] is True
+          and out_frozen["outcome"] == "complete-pass")
+    return ok, ("cells present, no frozen required-cell set -> %s; "
+                "same cells with the set -> %s"
+                % (out_no_universe["complete"],
+                   out_frozen["outcome"]))
+
+
+def test_322_f2_oversize_distinct_ids():
+    g16 = [_gold(div("egx:big322", gold_id="g%d" % i, coupon="9"))
+           for i in range(16)]
+    p16 = [div("egx:big322", gold_id="p%d" % i, coupon="9")
+           for i in range(16)]
+    r = S.score_cell(g16, p16)
+    if not (len(r["ambiguous"]) == 16
+            and all(a.get("oversize_group") is True
+                    for a in r["ambiguous"])):
+        return False, "322 oversize fixture drifted: %s" % (r,)
+    ledger = ledger_for({CELL: r})
+    ids = [e["id"] for e in ledger]
+    # Reorder stability: the same entries in reverse order give the
+    # same ID multiset (identical entries are interchangeable).
+    shuffled = dict(r)
+    shuffled["ambiguous"] = list(reversed(r["ambiguous"]))
+    ledger_rev = C.build_ledger({CELL: shuffled}, run_digest=RUN,
+                                input_digest=INP)
+    ids_rev = sorted(e["id"] for e in ledger_rev)
+    # One decision over ONE id clears one entry, not all sixteen.
+    one = _decision("dec-322-one", "duplicate", [ids[0]],
+                    evidence="p0 duplicates the p1 claim on g0")
+    out_one = gate({CELL: r}, ledger=ledger, decisions=[one])
+    ok = (len(ledger) == 16 and len(set(ids)) == 16
+          and sorted(ids) == ids_rev
+          and out_one["complete"] is False
+          and len(out_one["unresolved"]) == 15)
+    return ok, ("16 oversize entries -> %d distinct IDs; reorder "
+                "keeps the ID multiset; one decision leaves %d "
+                "unresolved, complete=%r"
+                % (len(set(ids)), len(out_one["unresolved"]),
+                   out_one["complete"]))
+
+
+def test_322_f2_identical_candidates_distinct_ids():
+    cands = []
+    for _ in range(3):
+        c = div("egx:dup322", gold_id="px", coupon="77")
+        c["extraction_status"] = "candidate"
+        cands.append(c)
+    r = S.score_cell([], cands)
+    ledger = ledger_for({CELL: r})
+    cand_ids = [e["id"] for e in ledger if e["kind"] == "candidate"]
+    ok = (len(ledger) == 3 and len(set(cand_ids)) == 3)
+    return ok, ("3 identical candidates -> %d entries, %d distinct "
+                "IDs" % (len(ledger), len(set(cand_ids))))
+
+
+def test_322_f3_per_cell_blocked_on_collection_failure():
+    g, p = clean(1)
+    r = S.score_cell(g, p)
+    variants = [
+        ("missing document, no ledger",
+         gate({CELL: r}, collection=coll(missing=["egx:gone322"]))),
+        ("unknown collection",
+         gate({CELL: r}, collection=None)),
+        ("unfinished pagination",
+         gate({CELL: r}, collection=coll(paged=False))),
+    ]
+    bad = []
+    for name, out in variants:
+        cell = out["per_cell"].get("POUL|dividend", {})
+        if out["complete"] is not False or cell.get("blocked") is not True \
+                or not any("collection:" in b
+                           for b in cell.get("blocking", [])):
+            bad.append(name)
+    control = gate({CELL: r}, collection=coll())
+    ok = (not bad
+          and control["per_cell"]["POUL|dividend"]["blocked"] is False)
+    return ok, ("missing/unknown/unfinished collection blocks the "
+                "cell (blocked=True, collection reason listed): %s; "
+                "complete collection leaves it unblocked: %r"
+                % ("OK" if not bad else "NOT BLOCKED: %s" % (bad,),
+                   control["per_cell"]["POUL|dividend"]["blocked"]))
+
+
+def test_322_f4_cross_document_pairing_refused():
+    def pair_dec(did, pred_ev, gold_ev):
+        return _decision(did, "pairing", ["entry-322"],
+                         pairing={"predicted_event": pred_ev,
+                                  "gold_event": gold_ev})
+    # Cross-document: gold in egx:docA322, prediction in egx:docB322.
+    ga = _gold(div("egx:docA322", gold_id="gA", coupon="7"))
+    pb = div("egx:docB322", gold_id="pB", coupon="7")
+    r_doc = S.score_cell([ga], [pb])
+    # Cross-issuer: same document, different issuer.
+    gc = _gold(div("egx:docC322", gold_id="gC", coupon="7"))
+    pi = div("egx:docC322", issuer="COMI", gold_id="pI", coupon="7")
+    r_iss = S.score_cell([gc], [pi])
+    # Cross-type: dividend gold, earnings prediction, same document.
+    gt = _gold(div("egx:docD322", gold_id="gT", coupon="7"))
+    pe = {"source_document_id": "egx:docD322", "event_type": "earnings",
+          "issuer": "POUL", "extraction_status": "extracted",
+          "verification_status": "verified",
+          "fields": {"period_start": "2026-01-01",
+                     "period_end": "2026-03-31", "npat": "100",
+                     "npat_scale": "million", "npat_comparative": "90",
+                     "yoy_npat_pct": "11", "revenue": "500",
+                     "announced": "2026-04-01"}}
+    r_typ = S.score_cell([gt], [pe])
+    refused = []
+    for name, res, dec in [
+            ("document", r_doc, pair_dec("d-322-doc", pb, ga)),
+            ("issuer", r_iss, pair_dec("d-322-iss", pi, gc)),
+            ("type", r_typ, pair_dec("d-322-typ", pe, gt))]:
+        try:
+            C.apply_adjudication(res, [dec], run_digest=RUN,
+                                 input_digest=INP)
+        except ValueError as e:
+            if "different" not in str(e):
+                return False, "%s pairing refused for the wrong reason: %r" % (name, e)
+            refused.append(name)
+        else:
+            return False, "%s pairing granted a cross-boundary TP" % name
+    # Positive control: same document/issuer/type pairing applies.
+    g0 = _gold(div("egx:pair322", gold_id="g0", coupon="5"))
+    q1 = div("egx:pair322", gold_id="q1", coupon="5",
+             amount_per_share="2.1")
+    q2 = div("egx:pair322", gold_id="q2", coupon="5",
+             ex_date="2026-11-17")
+    r_ok = S.score_cell([g0], [q1, q2])
+    dec_ok = pair_dec("d-322-ok", q1, g0)
+    rescored = C.apply_adjudication(r_ok, [dec_ok], run_digest=RUN,
+                                    input_digest=INP)
+    ok = (refused == ["document", "issuer", "type"]
+          and (rescored["tp"], rescored["fp"], rescored["fn"]) == (1, 1, 0))
+    return ok, ("cross-document/issuer/type pairings refused (%s); "
+                "same-document pairing applies: tp/fp/fn=%s"
+                % ("/".join(refused),
+                   (rescored["tp"], rescored["fp"], rescored["fn"])))
+
+
+def test_322_f5_kind_mismatch_refused():
+    cand = div("egx:cand322", gold_id="px", coupon="77")
+    cand["extraction_status"] = "candidate"
+    r = S.score_cell([_gold(div("egx:cand322", gold_id="g1",
+                                coupon="77"))], [cand])
+    ledger = ledger_for({CELL: r})
+    if len(ledger) != 1 or ledger[0]["kind"] != "candidate":
+        return False, "322 candidate ledger drifted: %s" % (ledger,)
+    eid = ledger[0]["id"]
+    field_dec = _decision("d-322-field", "field", [eid],
+                          evidence="resolved as not an event")
+    out_field = gate({CELL: r}, ledger=ledger, decisions=[field_dec])
+    # A pairing decision over the candidate entry: the adapter
+    # refuses the TP and the gate stays incomplete.
+    pair_dec = _decision(
+        "d-322-pair", "pairing", [eid],
+        pairing={"predicted_event": cand,
+                 "gold_event": r["unmatched_gold"][0]})
+    try:
+        C.apply_adjudication(r, [pair_dec], run_digest=RUN,
+                             input_digest=INP)
+    except ValueError:
+        adapter_refused = True
+    else:
+        adapter_refused = False
+    out_pair = gate({CELL: r}, ledger=ledger, decisions=[pair_dec])
+    # A scope decision over an ambiguity entry is likewise not a
+    # resolution (out-of-scope goes through a scope ledger entry).
+    r_amb = _contested_322()
+    ledger_amb = ledger_for({CELL: r_amb})
+    scope_dec = _decision("d-322-scope", "scope",
+                          [ledger_amb[0]["id"]],
+                          evidence="document outside the frozen window")
+    out_scope = gate({CELL: r_amb}, ledger=ledger_amb,
+                     decisions=[scope_dec])
+    # Positive control: reject_event resolves the candidate entry
+    # (the cell still fails thresholds, so complete-fail).
+    rej_dec = _decision("d-322-rej", "reject_event", [eid],
+                        evidence="candidate is not an event per source")
+    out_rej = gate({CELL: r}, ledger=ledger, decisions=[rej_dec])
+    ok = (out_field["complete"] is False
+          and any("cannot resolve" in reason
+                  for reason in out_field["reasons"])
+          and adapter_refused
+          and out_pair["complete"] is False
+          and out_scope["complete"] is False
+          and out_rej["complete"] is True
+          and out_rej["outcome"] == "complete-fail")
+    return ok, ("field/pairing decisions on a candidate entry and a "
+                "scope decision on an ambiguity entry all leave the "
+                "gate incomplete (adapter refused the pairing: %r); "
+                "reject_event resolves it -> %s"
+                % (adapter_refused, out_rej["outcome"]))
+
+
+def test_322_f5_collection_entry_not_decision_closed():
+    g, p = clean(1)
+    r = S.score_cell(g, p)
+    missing = coll(missing=["egx:gone322"])
+    ledger = ledger_for({CELL: r}, collection=missing)
+    coll_entries = [e for e in ledger if e["kind"] == "collection"]
+    if len(coll_entries) != 1:
+        return False, "322 collection ledger drifted: %s" % (ledger,)
+    dec = _decision("d-322-coll", "field", [coll_entries[0]["id"]],
+                    evidence="document judged irrelevant")
+    out_dec = gate({CELL: r}, ledger=ledger, decisions=[dec],
+                   collection=missing)
+    # Control: the same entry closes when the collection state shows
+    # the document archived (evidence, not a decision).
+    out_evidence = gate({CELL: r}, ledger=ledger, collection=coll())
+    # The entry-level check matters, not just the gate outcome: the
+    # global collection reason blocks completion either way, so the
+    # test pins that the entry itself stays UNRESOLVED under a
+    # decision (on the old code it was wrongly resolved and
+    # unresolved was empty).
+    ok = (out_dec["complete"] is False
+          and out_dec["outcome"] == "incomplete"
+          and coll_entries[0]["id"] in [e["id"] for e in
+                                         out_dec["unresolved"]]
+          and out_evidence["complete"] is True
+          and out_evidence["outcome"] == "complete-pass")
+    return ok, ("decision cannot close a missing-document entry "
+                "(%s, entry unresolved: %r); collection evidence "
+                "closes it (%s)"
+                % (out_dec["complete"],
+                   coll_entries[0]["id"] in [e["id"] for e in
+                                             out_dec["unresolved"]],
+                   out_evidence["outcome"]))
+
+
+def test_322_f6_negative_counts_raise():
+    for name, c in [
+            ("enumerated=-5/archived=-5",
+             coll(enumerated=-5, archived=-5)),
+            ("archived=-1", coll(enumerated=3, archived=-1)),
+            ("enumerated=-1", coll(enumerated=-1, archived=0))]:
+        try:
+            gate({CELL: S.score_cell(*clean(1))}, collection=c)
+        except ValueError as e:
+            if "non-negative" not in str(e):
+                return False, "%s raised the wrong error: %r" % (name, e)
+        else:
+            return False, "%s did not raise" % name
+    return True, "negative enumerated/archived counts raise ValueError"
+
+
+def test_322_f7_bogus_accepted_raises():
+    for name, acc in [("bogus string", "bogus"),
+                      ("int 1 (== True)", 1), ("int 0 (== False)", 0),
+                      ("string 'True'", "True")]:
+        fake = {"accepted": acc, "tp": 0, "fp": 0, "fn": 0}
+        try:
+            C.evaluate_completion(
+                {CELL: fake}, run_digest=RUN, input_digest=INP,
+                collection=coll(), required_cells=[CELL])
+        except ValueError as e:
+            if "accepted" not in str(e):
+                return False, "%s raised the wrong error: %r" % (name, e)
+        else:
+            return False, "%s accepted=%r did not raise" % (name, acc)
+    control = gate({CELL: S.score_cell(*clean(1))})
+    ok = control["complete"] is True \
+        and control["outcome"] == "complete-pass"
+    return ok, ("non-domain accepted values raise ValueError; "
+                "True still passes (%s)" % (control["outcome"],))
+
+
+def test_322_f8_report_candidates_from_ledger():
+    cand = div("egx:cand322", gold_id="px", coupon="77")
+    cand["extraction_status"] = "candidate"
+    r = S.score_cell([_gold(div("egx:cand322", gold_id="g1",
+                                coupon="77"))], [cand])
+    ledger = ledger_for({CELL: r})
+    rej = _decision("d-322-rej8", "reject_event", [ledger[0]["id"]],
+                    evidence="candidate is not an event per source")
+    rep_resolved = C.cell_report(
+        r, CELL, run_digest=RUN, input_digest=INP, collection=coll(),
+        ledger=ledger, decisions=[rej])
+    rep_open = C.cell_report(
+        r, CELL, run_digest=RUN, input_digest=INP, collection=coll(),
+        ledger=ledger)
+    ok = (rep_resolved["complete"] is True
+          and rep_resolved["unresolved_candidates"] == 0
+          and rep_resolved["candidate_outputs"] == 1
+          and rep_open["complete"] is False
+          and rep_open["unresolved_candidates"] == 1
+          and rep_open["candidate_outputs"] == 1)
+    return ok, ("resolved candidate: complete=%r, "
+                "unresolved_candidates=%d, candidate_outputs=%d; "
+                "unresolved: complete=%r, unresolved_candidates=%d"
+                % (rep_resolved["complete"],
+                   rep_resolved["unresolved_candidates"],
+                   rep_resolved["candidate_outputs"],
+                   rep_open["complete"],
+                   rep_open["unresolved_candidates"]))
+
+
 # --- accepted semantics unchanged -----------------------------------------
 def test_accepted_unchanged():
     """The scorer's `accepted` is the pure threshold result at this
@@ -525,6 +936,25 @@ CASES = [
     ("314-case8-empty-cells", test_case8_empty_cells),
     ("314-accepted-unchanged", test_accepted_unchanged),
     ("314-cell-report-shape", test_cell_report_shape),
+    ("322-f1-omitted-ledger-blocks", test_322_f1_omitted_ledger_blocks),
+    ("322-f1-candidate-omitted-ledger-blocks",
+     test_322_f1_candidate_omitted_ledger_blocks),
+    ("322-f1-required-cells-unverified",
+     test_322_f1_required_cells_unverified),
+    ("322-f2-oversize-distinct-ids", test_322_f2_oversize_distinct_ids),
+    ("322-f2-identical-candidates-distinct-ids",
+     test_322_f2_identical_candidates_distinct_ids),
+    ("322-f3-per-cell-blocked-on-collection-failure",
+     test_322_f3_per_cell_blocked_on_collection_failure),
+    ("322-f4-cross-document-pairing-refused",
+     test_322_f4_cross_document_pairing_refused),
+    ("322-f5-kind-mismatch-refused", test_322_f5_kind_mismatch_refused),
+    ("322-f5-collection-entry-not-decision-closed",
+     test_322_f5_collection_entry_not_decision_closed),
+    ("322-f6-negative-counts-raise", test_322_f6_negative_counts_raise),
+    ("322-f7-bogus-accepted-raises", test_322_f7_bogus_accepted_raises),
+    ("322-f8-report-candidates-from-ledger",
+     test_322_f8_report_candidates_from_ledger),
 ]
 
 
