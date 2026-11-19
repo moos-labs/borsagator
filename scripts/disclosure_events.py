@@ -44,6 +44,7 @@ Stdlib only.
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import date, timedelta
@@ -711,6 +712,23 @@ def extract_document(item, quarter_start=QUARTER_START,
                             doc_id, doc_rev, url, list(evidence))
         if ev is not None:
             events.append(ev)
+    # Issue #279: the event points at the stored source PDF. The
+    # pointer is attached AFTER _finish so event_revision_id (the
+    # hash of the body-derived event) is unchanged; the file carries
+    # its own sha256. An item with no attachment key predates
+    # capture — that is the explicit "not_recorded" state, never an
+    # absent key. The v2 report-model validator tolerates this
+    # additive top-level key (no closed key set at event level;
+    # only the payload has one).
+    attachment = item.get("attachment")
+    if not isinstance(attachment, dict):
+        attachment = {"status": "not_recorded", "files": [],
+                      "failures": [],
+                      "reason": "harvest predates attachment capture "
+                                "(#279)",
+                      "captured_at": None}
+    for ev in events:
+        ev["attachment"] = attachment
     for ev in events:
         ann = ev["announced"]["value"]
         if ann:
@@ -749,6 +767,7 @@ def extract_feed(items, quarter_start=QUARTER_START,
     """
     events, seen_docs, seen_payloads = [], {}, {}
     n_docs = n_dup_docs = 0
+    attach_counts = {}
     for item in items or []:
         n_docs += 1
         doc_id = _doc_id(item)
@@ -756,6 +775,11 @@ def extract_feed(items, quarter_start=QUARTER_START,
             n_dup_docs += 1
             continue
         seen_docs[doc_id] = True
+        att = item.get("attachment")
+        att_status = att.get("status") if isinstance(att, dict) \
+            else "not_recorded"
+        attach_counts[att_status] = \
+            attach_counts.get(att_status, 0) + 1
         for ev in extract_document(item, quarter_start, quarter_end):
             ident = None
             if ev["event_type"] == "dividend":
@@ -814,7 +838,8 @@ def extract_feed(items, quarter_start=QUARTER_START,
               "by_verification_status": {}, "stale": 0,
               "duplicate_links": 0,
               "candidates": by_status.get("candidate", 0),
-              "with_reasons": 0}
+              "with_reasons": 0,
+              "attachments": attach_counts}
     for ev in events:
         report["by_type"][ev["event_type"]] = \
             report["by_type"].get(ev["event_type"], 0) + 1
@@ -827,6 +852,174 @@ def extract_feed(items, quarter_start=QUARTER_START,
     return events, report
 
 
+# --- Attachment verification (#279) --------------------------------------
+# Acceptance property: re-reading the stored PDF reproduces the
+# extracted event fields. This checks ONLY fields the pilot already
+# extracts from harvested item text — it extracts nothing new from
+# the PDF. A stored PDF that does not contain a field the event
+# claims is a failed verification, reported explicitly.
+def _event_check_tokens(event):
+    """(label, kind, value) tokens to find in the stored PDF text.
+
+    kinds: "exact" (word-boundary digit string), "decimal"
+    (Decimal within #131 tolerance), "date" (ISO or d/m/Y form).
+    """
+    tokens = []
+    payload = event.get("payload") or {}
+    etype = event.get("event_type")
+    if etype == "dividend":
+        if payload.get("coupon_number"):
+            tokens.append(("coupon_number", "exact",
+                           str(payload["coupon_number"])))
+        amt = payload.get("amount_per_share", {}).get("value")
+        if amt:
+            tokens.append(("amount_per_share", "decimal", amt))
+        for key in ("ex_date", "entitlement_end", "payout_date"):
+            val = payload.get(key, {}).get("value")
+            if val:
+                tokens.append((key, "date", val))
+    elif etype == "earnings":
+        for key in ("npat", "npat_comparative", "revenue"):
+            val = payload.get(key, {}).get("value")
+            if val:
+                tokens.append((key, "decimal", val))
+        for key in ("period_start", "period_end"):
+            val = payload.get(key, {}).get("value")
+            if val:
+                tokens.append((key, "date", val))
+    elif etype == "board_decision":
+        for key in ("meeting_date", "assembly_date"):
+            val = payload.get(key, {}).get("value")
+            if val:
+                tokens.append((key, "date", val))
+    return tokens
+
+
+def _token_found(kind, value, norm, compact):
+    """True when one check token is present in normalised PDF text."""
+    if kind == "exact":
+        return re.search(r"(?<!\d)" + re.escape(value) + r"(?!\d)",
+                         compact) is not None
+    if kind == "decimal":
+        try:
+            want = Decimal(str(value))
+        except Exception:
+            return False
+        for m in re.finditer(r"\d[\d,]*\.?\d*", norm):
+            try:
+                got = Decimal(m.group(0).replace(",", ""))
+            except Exception:
+                continue
+            if _dps_same(got, want):
+                return True
+        return False
+    if kind == "date":
+        try:
+            y, mo, d = (int(x) for x in str(value).split("-"))
+        except Exception:
+            return False
+        forms = ["%02d/%02d/%04d" % (d, mo, y),
+                 "%d/%d/%04d" % (d, mo, y),
+                 "%04d-%02d-%02d" % (y, mo, d),
+                 "%02d-%02d-%04d" % (d, mo, y)]
+        return any(f in norm for f in forms)
+    return False
+
+
+def verify_event(event, attachments_dir):
+    """Re-read one event's stored PDF(s) and check its fields.
+
+    Returns {"event_id", "event_type", "status", "missing_tokens",
+    "files_checked", "detail"} with status one of: reproduced
+    (every checkable token found), partial (some found, some
+    missing), missing (no token found), skipped (no stored PDF to
+    check, or the event carries no checkable token), unreadable
+    (a stored PDF is absent from disk or yields no text).
+    """
+    base = {"event_id": event.get("event_id"),
+            "event_type": event.get("event_type"),
+            "status": "skipped", "missing_tokens": [],
+            "files_checked": [], "detail": ""}
+    tokens = _event_check_tokens(event)
+    if not tokens:
+        base["detail"] = "event carries no checkable token"
+        return base
+    att = event.get("attachment") or {}
+    if att.get("status") != "captured" or not att.get("files"):
+        base["detail"] = ("no stored PDF to verify against "
+                          "(attachment status: %s)"
+                          % att.get("status", "not_recorded"))
+        return base
+    # Lazy import: the extract path never needs pdf_text, so a
+    # checkout carrying only this script (e.g. the worker's release
+    # copy in test_worker_278) still extracts. Verify fails
+    # explicitly when the module is absent.
+    try:
+        import pdf_text
+    except ImportError:
+        try:
+            sys.path.insert(0, os.path.dirname(
+                os.path.abspath(__file__)))
+            import pdf_text
+        except ImportError:
+            base["status"] = "unreadable"
+            base["detail"] = ("pdf_text module unavailable — cannot "
+                              "re-read the stored PDF")
+            return base
+    texts = []
+    for f in att["files"]:
+        rel = f.get("path") or ""
+        path = rel if os.path.isabs(rel) else os.path.join(
+            attachments_dir or "", rel)
+        base["files_checked"].append(rel)
+        try:
+            with open(path, "rb") as fh:
+                data = fh.read()
+        except OSError as e:
+            base["status"] = "unreadable"
+            base["detail"] = "stored PDF missing from disk: %s (%s)" \
+                % (rel, e)
+            return base
+        texts.append(pdf_text.extract_text(data))
+    joined = "\n".join(texts)
+    if not joined.strip():
+        base["status"] = "unreadable"
+        base["detail"] = ("stored PDF yields no extractable text "
+                          "(scanned image or undecodable encoding)")
+        return base
+    norm = norm_digits(joined)
+    compact = re.sub(r"(?<=\d),(?=\d)", "", norm)
+    missing = [label for label, kind, value in tokens
+               if not _token_found(kind, value, norm, compact)]
+    base["missing_tokens"] = missing
+    if not missing:
+        base["status"] = "reproduced"
+        base["detail"] = ("%d/%d field tokens found in the stored PDF"
+                          % (len(tokens), len(tokens)))
+    elif len(missing) < len(tokens):
+        base["status"] = "partial"
+        base["detail"] = ("missing tokens in the stored PDF: %s"
+                          % ", ".join(missing))
+    else:
+        base["status"] = "missing"
+        base["detail"] = ("no field token found in the stored PDF: %s"
+                          % ", ".join(missing))
+    return base
+
+
+def verify_feed(events, attachments_dir):
+    """Verify a whole events file; returns (results, summary)."""
+    results = [verify_event(ev, attachments_dir)
+               for ev in events or []]
+    summary = {"events": len(results)}
+    for r in results:
+        summary[r["status"]] = summary.get(r["status"], 0) + 1
+    summary["failed"] = sum(
+        1 for r in results
+        if r["status"] in ("partial", "missing", "unreadable"))
+    return results, summary
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -835,8 +1028,39 @@ def main(argv=None):
     p.add_argument("--out", default=None)
     p.add_argument("--quarter-start", default=QUARTER_START.isoformat())
     p.add_argument("--quarter-end", default=QUARTER_END.isoformat())
+    v = sub.add_parser(
+        "verify",
+        help="re-read each event's stored PDF and check the extracted "
+             "fields reproduce from it (#279)")
+    v.add_argument("input", help="events file (extract --out output)")
+    v.add_argument("--attachments-dir", required=True,
+                   help="directory holding disclosures.json — "
+                        "attachment paths resolve under it")
+    v.add_argument("--out", default=None)
     sub.add_parser("check")
     args = ap.parse_args(argv)
+    if args.cmd == "verify":
+        with open(args.input, encoding="utf-8") as f:
+            data = json.load(f)
+        events = data.get("events", data) \
+            if isinstance(data, dict) else data
+        results, summary = verify_feed(events, args.attachments_dir)
+        out = {"verifier": "disclosure-events/verify-279",
+               "summary": summary, "results": results}
+        text = json.dumps(out, ensure_ascii=False, indent=1,
+                          sort_keys=True) + "\n"
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as f:
+                f.write(text)
+        else:
+            sys.stdout.write(text)
+        print("verified %d events: %s"
+              % (summary["events"],
+                 ", ".join("%s=%d" % (k, v)
+                           for k, v in sorted(summary.items())
+                           if k != "events")),
+              file=sys.stderr)
+        return 1 if summary.get("failed") else 0
     if args.cmd == "check":
         print("schema_version=%d extractor=%s config_hash=%s"
               % (SCHEMA_VERSION, EXTRACTOR_VERSION, CONFIG_HASH))

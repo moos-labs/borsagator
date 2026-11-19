@@ -100,6 +100,51 @@ The feed the pilot needs exists: `results/disclosures.json`,
 `news.json`, `feed_summary.json`; EGX bodies arrive via the harvest
 attach (clipped to 6,000 chars) or the #91 outright-add path.
 
+## Attachment capture (#279, capture-only)
+
+At harvest time the harvester follows each disclosure's attachment
+link where the source offers one and stores the PDF under the
+archive, with a stable pointer from the event:
+
+- **Discovery** (`worker/egx_harvest.py` + `worker/attachment_capture.py`):
+  every anchor on the detail page is collected; links whose href
+  carries `.pdf` (before any query string / fragment / parameter)
+  are downloaded through the same trusted Playwright session that
+  loaded the page, so TSPD trust carries over. At most 3 PDFs per
+  disclosure; each must be ≤ 25 MiB and start with the `%PDF`
+  magic, or it is refused.
+- **Storage:** `attachments/<NewsID>/<file>.pdf`, relative to the
+  directory holding `disclosures.json` — so the same pointer
+  resolves in the run dir (which rides the archive wholesale via
+  `publish`), in the on-box cache (`ROOT/harvest/attachments/`,
+  mirrored by `worker._sync_harvest_attachments` whenever a fresh
+  harvest is cached) and in any copy of the harvest. The archive
+  root's `harvest/<CODE>.json` pointer stays JSON-only, as before.
+- **Pointer:** each harvested item carries `attachment`
+  (`status`, `files[]` with `url` / `path` / `sha256` / `bytes` /
+  `content_type`, `failures[]`, `reason`, `captured_at`), and each
+  extracted event carries the same record verbatim. Statuses:
+  `captured` | `no_attachment` (nothing offered) |
+  `fetch_failed` (offered but not stored — reason named) |
+  `not_recorded` (item harvested before #279). A capture failure
+  never fails the harvest. The pointer is attached to events after
+  `_finish`, so `event_revision_id` is unchanged, and the v2
+  report-model validator accepts the additive top-level key (no
+  closed key set at event level; only the payload has one).
+- **Verification** (`scripts/disclosure_events.py verify <events.json>
+  --attachments-dir <harvest-dir>`, `scripts/pdf_text.py`):
+  re-reads each event's stored PDF and checks the already-extracted
+  fields reproduce from it (coupon / amount within the #131
+  tolerance / dates in ISO or dd/mm/yyyy form / NPAT figures).
+  Per-event status: `reproduced` | `partial` | `missing` |
+  `skipped` (no stored PDF / no checkable token) | `unreadable`
+  (file absent or no extractable text). Exit 1 when any captured
+  event fails to reproduce. This is a verification property of the
+  capture — it extracts no new PDF-only fields.
+- **Explicitly out of #279** (recorded scope decision): extracting
+  PDF-only fields (revenue, board details, record date from inside
+  PDFs) — a separate follow-up if wanted.
+
 ## What this change does NOT do (follow-ups, not in this PR)
 
 - No consumer switch, no `#26` feeding: the feed is recorded per
@@ -107,7 +152,8 @@ attach (clipped to 6,000 chars) or the #91 outright-add path.
   yet — that is #281 / #280. The worker wiring itself landed in
   #278 (see "Live wiring" below); it changes no `#68` model field.
 - No `#68` surfacing (that needs a strict D-7 version bump).
-- No harvester fix for the `iso_date` bug; no attachment capture.
+- No harvester fix for the `iso_date` bug (fixed separately, #274).
+  Attachment capture is #279 (see above).
 - No top-30 coverage until more tickers are harvested.
 - `#109` is CLOSED (2026-11-19, on the live-feed decision alone —
   option A sweep-live); its follow-ups are #278 (this wiring),

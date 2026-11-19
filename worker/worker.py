@@ -46,6 +46,7 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -1854,6 +1855,33 @@ def run_harvest(job, workdir):
 HARVEST_TTL_HOURS = 12
 
 
+def _sync_harvest_attachments(results_dir, cache_dir):
+    """Mirror a harvest's captured PDFs next to its cache copy (#279).
+
+    The item pointer (``attachments/<NewsID>/<file>.pdf``) is
+    relative to the directory holding ``disclosures.json``, so the
+    on-box cache needs the same ``attachments/`` tree beside
+    ``<CODE>.json`` — otherwise the pointer names files the cache
+    does not hold. Best-effort and never raising: a failed mirror
+    is logged, and the run-dir copy (which rides the archive
+    wholesale via publish) stays authoritative. Returns the number
+    of files mirrored. A stale file from an older harvest can linger
+    when an attachment URL changes basename; pointers always name
+    the current file, so a linger is inert.
+    """
+    try:
+        src = Path(results_dir) / "attachments"
+        if not src.is_dir():
+            return 0
+        dest = Path(cache_dir) / "attachments"
+        shutil.copytree(src, dest, dirs_exist_ok=True)
+        return sum(1 for p in dest.rglob("*") if p.is_file())
+    except Exception as e:  # noqa: BLE001 - mirror must never raise
+        print(f"sync_harvest_attachments failed: "
+              f"{type(e).__name__}: {e}", flush=True)
+        return 0
+
+
 def ensure_harvest(code):
     """Issue #53: keep a fresh EGX harvest on the box and return its
     disclosures.json path (or None). A harvest failure never blocks
@@ -1875,6 +1903,7 @@ def ensure_harvest(code):
         src = wd / "egx-harvest" / "results" / "disclosures.json"
         if res.get("egx-harvest") == "ok" and src.exists():
             cache.write_bytes(src.read_bytes())
+            _sync_harvest_attachments(src.parent, cache_dir)
             return cache
     except Exception:
         pass
@@ -2004,6 +2033,7 @@ def refresh_harvest(code, workdir):
             meta = _harvest_meta(src)
             if meta is not None and meta[1] > 0:
                 cache.write_bytes(src.read_bytes())
+                _sync_harvest_attachments(src.parent, cache_dir)
                 return ("refreshed", cache,
                         f"harvested_at={meta[0]} items={meta[1]}")
             return ("failed", None,

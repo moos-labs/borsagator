@@ -90,6 +90,37 @@ def collect_result_links(page):
     }""")
 
 
+def collect_attachment_links(page):
+    """Every anchor on the detail page (issue #279).
+
+    The harvester keeps only anchors whose href looks like a PDF
+    (see worker/attachment_capture.py); collecting all anchors
+    here keeps the filter testable without a browser.
+    """
+    return page.evaluate("""() => {
+      const out = [];
+      document.querySelectorAll('a[href]').forEach(a => {
+        out.push({href: a.href, text: (a.innerText || '').trim()});
+      });
+      return out;
+    }""")
+
+
+def _fetch_via_context(request):
+    """fetch(url) -> (bytes, content_type) over the trusted EGX
+    session (the same persistent-profile context that loaded the
+    detail page, so TSPD trust carries over)."""
+    def fetch(url):
+        resp = request.get(url, timeout=60000)
+        if resp.status != 200:
+            raise RuntimeError("HTTP %s" % resp.status)
+        headers = resp.headers or {}
+        ctype = headers.get("content-type") or headers.get(
+            "Content-Type", "")
+        return resp.body(), ctype
+    return fetch
+
+
 def iso_date(body, row_text=""):
     """Publish date of one harvested EGX disclosure (issue #274).
 
@@ -138,6 +169,10 @@ def main():
     import shutil
     debug = {"ticker": code, "stages": [],
              "xvfb": shutil.which("Xvfb") or shutil.which("xvfb-run")}
+    # Issue #279: attachment capture lives in the sibling module so
+    # it stays unit-testable without a browser.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import attachment_capture
 
     from playwright.sync_api import sync_playwright
     items = []
@@ -261,14 +296,50 @@ def main():
                 continue
             seen.add(m.group(1))
             dpage = ctx.new_page()
+            attachment = None
             try:
                 dpage.goto(lk["href"], wait_until="domcontentloaded",
                            timeout=90000)
                 dpage.wait_for_timeout(6000)
                 body = extract_main_text(dpage)
+                # Issue #279: capture the disclosure PDF where the
+                # source offers one. A capture failure is recorded
+                # on the item — it never fails the harvest.
+                try:
+                    links = collect_attachment_links(dpage)
+                    urls = attachment_capture.find_attachment_links(
+                        links, lk["href"])
+                    offered = attachment_capture.attachment_offered(
+                        body, lk["text"])
+                    attachment = attachment_capture.capture_attachments(
+                        m.group(1), urls, offered,
+                        _fetch_via_context(ctx.request), RESULTS)
+                except Exception as e:  # noqa: BLE001 - recorded
+                    attachment = {
+                        "status": "fetch_failed", "files": [],
+                        "failures": [{"url": "",
+                                      "error": "%s: %s" % (
+                                          type(e).__name__,
+                                          str(e)[:200])}],
+                        "reason": "capture error: %s" % str(e)[:200],
+                        "captured_at": None}
+                    log("attachment capture failed", lk["href"],
+                        str(e)[:150])
             except Exception as e:
                 log("details failed", lk["href"], str(e)[:150])
                 body = ""
+                # The detail page never loaded (or its text could
+                # not be read), so no attachment link could be seen
+                # — a fetch failure, not a "no attachment" and never
+                # a legacy record.
+                attachment = {
+                    "status": "fetch_failed", "files": [],
+                    "failures": [{"url": lk["href"],
+                                  "error": "%s: %s" % (
+                                      type(e).__name__, str(e)[:200])}],
+                    "reason": "detail page failed: %s"
+                              % str(e)[:200],
+                    "captured_at": None}
             finally:
                 dpage.close()
             items.append({
@@ -276,11 +347,20 @@ def main():
                 "date": iso_date(body, lk["row"]),
                 "title": lk["text"][:200], "url": lk["href"],
                 "row_text": lk["row"][:300], "body": body[:8000],
-                "body_chars": len(body)})
+                "body_chars": len(body),
+                "attachment": attachment or
+                attachment_capture.legacy_attachment_record()})
             write_out()  # incremental: a timeout keeps what exists
             log("item", m.group(1), "body_chars", len(body))
             time.sleep(1)
         ctx.close()
+    # Issue #279: attachment outcome counts — a harvest whose
+    # attachments all failed is visible from the bus alone.
+    counts = {}
+    for it in items:
+        st = (it.get("attachment") or {}).get("status", "not_recorded")
+        counts[st] = counts.get(st, 0) + 1
+    debug["attachments"] = counts
     with open(os.path.join(RESULTS, "debug.json"), "w") as f:
         json.dump(debug, f, indent=1, ensure_ascii=False)
     out = {"ticker": f"{code}.CA", "company_ar": ar_name, "isin": isin,
