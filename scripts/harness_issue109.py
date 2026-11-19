@@ -43,6 +43,13 @@ no Actions logs or artifacts. The pilot universe per #109 is top-30
 EGX over the last quarter — the archive holds only POUL.CA + COMI.CA
 EGX sweeps, so the report states the achieved coverage honestly
 instead of inventing the missing 28 names.
+
+Scorer checks (--scorer, also run in the default path): the #283
+top-30 scorer's own cases (scripts/test_top30_scorer_283.py,
+spec docs/top30-scoring.md) — swapped-date, sign, duplicate-reuse
+and candidate-only negative controls plus positive/structural cases.
+They score synthetic gold/predicted pairs and never touch the
+archive, so they run identically with or without one.
 """
 import argparse
 import importlib.util
@@ -343,6 +350,23 @@ def run_mutant(kind, stage):
     return killed
 
 
+# --- #283 top-30 scorer checks ---------------------------------------------
+def scorer_checks():
+    """The #283 scorer's cases (docs/top30-scoring.md), folded into
+    this harness's CHECKS so one harness run proves both the pilot
+    extractor and the top-30 scorer. Synthetic gold/predicted pairs
+    only — no archive, no network, no SCORE pollution."""
+    print("== scorer checks (#283) ==")
+    sys.path.insert(0, HERE)
+    import test_top30_scorer_283 as t283
+    for name, fn in t283.CASES:
+        try:
+            ok, detail = fn()
+        except Exception as e:  # a crashing case is a failed case
+            ok, detail = False, "raised %r" % (e,)
+        check("scorer-283: %s" % name, ok, detail)
+
+
 # --- determinism ---------------------------------------------------------------
 def determinism(stage):
     print("== determinism ==")
@@ -537,6 +561,8 @@ def main(argv=None):
     ap.add_argument("--archive-root", default=ARCHIVE_DEFAULT)
     ap.add_argument("--stage", default=STAGE_DEFAULT)
     ap.add_argument("--pristine", action="store_true")
+    ap.add_argument("--scorer", action="store_true",
+                    help="run only the #283 scorer checks")
     ap.add_argument("--mutate", choices=list(MUTATIONS))
     ap.add_argument("--no-shadow", action="store_true")
     args = ap.parse_args(argv)
@@ -544,7 +570,9 @@ def main(argv=None):
     mod = load_module(os.path.join(REPO, "scripts",
                                    "disclosure_events.py"),
                       "disclosure_events")
-    if args.pristine:
+    if args.scorer:
+        scorer_checks()
+    elif args.pristine:
         pristine_control()
     elif args.mutate:
         killed = run_mutant(args.mutate, args.stage)
@@ -554,6 +582,7 @@ def main(argv=None):
         split = run_fixture_suite(mod)
         determinism(args.stage)
         pristine_control()
+        scorer_checks()
         if not args.no_shadow:
             shadow_run(mod, args.archive_root, args.stage)
     prec, rec = precision_recall()
