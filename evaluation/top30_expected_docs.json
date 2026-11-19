@@ -1,0 +1,1184 @@
+{
+ "schema_version": 1,
+ "issue": 283,
+ "manifest": {
+  "path": "evaluation/top30_manifest.json",
+  "base_commit": "424f4b3",
+  "frozen_at": "2026-11-19",
+  "quarter": "2026-08-19 -> 2026-11-19"
+ },
+ "window": {
+  "start": "2026-08-19",
+  "end": "2026-11-19",
+  "inclusive": true
+ },
+ "enumerator": "scripts/top30_enumerate.py",
+ "enumerator_version": "1.0.0",
+ "run_id": "20261119T223039Z",
+ "generated_at": "2026-11-19T22:30:39Z",
+ "mode": "probe",
+ "live_access": {
+  "reachable": false,
+  "probes": [
+   {
+    "url": "https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20",
+    "at": "2026-11-19T22:30:37Z",
+    "reachable": false,
+    "detail": "status=200 body_chars=6160 challenge=True"
+   }
+  ]
+ },
+ "collection": {
+  "enumerated": 0,
+  "archived": 0,
+  "missing": [],
+  "enumeration_closed": false,
+  "pagination_complete": false
+ },
+ "issuers": [
+  {
+   "issuer": "TMGH",
+   "listings": [
+    {
+     "code": "TMGH",
+     "issuer": "TMGH",
+     "isin": "EGS691S1C011",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "TMGH": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ETEL",
+   "listings": [
+    {
+     "code": "ETEL",
+     "issuer": "ETEL",
+     "isin": "EGS48031C016",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ETEL": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EFIH",
+   "listings": [
+    {
+     "code": "EFIH",
+     "issuer": "EFIH",
+     "isin": "EGS743O1C013",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "EFIH": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ADIB",
+   "listings": [
+    {
+     "code": "ADIB",
+     "issuer": "ADIB",
+     "isin": "EGS60111C019",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ADIB": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EFID",
+   "listings": [
+    {
+     "code": "EFID",
+     "issuer": "EFID",
+     "isin": "EGS305I1C011",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "EFID": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORAS",
+   "listings": [
+    {
+     "code": "ORAS",
+     "issuer": "ORAS",
+     "isin": "EGS95001C011",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ORAS": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "FAIT",
+   "listings": [
+    {
+     "code": "FAIT",
+     "issuer": "FAIT",
+     "isin": "EGS60321C014",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    },
+    {
+     "code": "FAITA",
+     "issuer": "FAIT",
+     "isin": null,
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "B-02-missing-isin",
+       "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+       "evidence": "evaluation/top30_manifest.json blockers B-02"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "FAIT": null,
+    "FAITA": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    },
+    {
+     "listing": "FAITA",
+     "kind": "B-02-missing-isin",
+     "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+     "evidence": "evaluation/top30_manifest.json blockers B-02"
+    }
+   ]
+  },
+  {
+   "issuer": "PHDC",
+   "listings": [
+    {
+     "code": "PHDC",
+     "issuer": "PHDC",
+     "isin": "EGS655L1C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "PHDC": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "SKPC",
+   "listings": [
+    {
+     "code": "SKPC",
+     "issuer": "SKPC",
+     "isin": "EGS380S1C017",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "SKPC": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAL",
+   "listings": [
+    {
+     "code": "EGAL",
+     "issuer": "EGAL",
+     "isin": "EGS3E181C010",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "EGAL": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ISPH",
+   "listings": [
+    {
+     "code": "ISPH",
+     "issuer": "ISPH",
+     "isin": "EGS512O1C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ISPH": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "JUFO",
+   "listings": [
+    {
+     "code": "JUFO",
+     "issuer": "JUFO",
+     "isin": "EGS30901C010",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "JUFO": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MCQE",
+   "listings": [
+    {
+     "code": "MCQE",
+     "issuer": "MCQE",
+     "isin": "EGS3C391C017",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "MCQE": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORHD",
+   "listings": [
+    {
+     "code": "ORHD",
+     "issuer": "ORHD",
+     "isin": "EGS70321C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ORHD": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "AMOC",
+   "listings": [
+    {
+     "code": "AMOC",
+     "issuer": "AMOC",
+     "isin": "EGS380P1C010",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "AMOC": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MASR",
+   "listings": [
+    {
+     "code": "MASR",
+     "issuer": "MASR",
+     "isin": "EGS65571C019",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "MASR": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORWE",
+   "listings": [
+    {
+     "code": "ORWE",
+     "issuer": "ORWE",
+     "isin": "EGS33041C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ORWE": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "OLFI",
+   "listings": [
+    {
+     "code": "OLFI",
+     "issuer": "OLFI",
+     "isin": "EGS30AL1C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "OLFI": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "RMDA",
+   "listings": [
+    {
+     "code": "RMDA",
+     "issuer": "RMDA",
+     "isin": "EGS381B1C015",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "RMDA": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "OCDI",
+   "listings": [
+    {
+     "code": "OCDI",
+     "issuer": "OCDI",
+     "isin": "EGS65851C015",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "OCDI": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ARCC",
+   "listings": [
+    {
+     "code": "ARCC",
+     "issuer": "ARCC",
+     "isin": "EGS3C0O1C016",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ARCC": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "IFAP",
+   "listings": [
+    {
+     "code": "IFAP",
+     "issuer": "IFAP",
+     "isin": "EGS07061C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "IFAP": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MTIE",
+   "listings": [
+    {
+     "code": "MTIE",
+     "issuer": "MTIE",
+     "isin": "EGS75011C014",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "MTIE": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ATQA",
+   "listings": [
+    {
+     "code": "ATQA",
+     "issuer": "ATQA",
+     "isin": "EGS3D0C1C018",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ATQA": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "SAUD",
+   "listings": [
+    {
+     "code": "SAUD",
+     "issuer": "SAUD",
+     "isin": "EGS60101C010",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "SAUD": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "CIRA",
+   "listings": [
+    {
+     "code": "CIRA",
+     "issuer": "CIRA",
+     "isin": "EGS65541C012",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "CIRA": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ACGC",
+   "listings": [
+    {
+     "code": "ACGC",
+     "issuer": "ACGC",
+     "isin": "EGS32221C011",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ACGC": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MPCO",
+   "listings": [
+    {
+     "code": "MPCO",
+     "issuer": "MPCO",
+     "isin": "EGS02091C014",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "MPCO": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAS",
+   "listings": [
+    {
+     "code": "EGAS",
+     "issuer": "EGAS",
+     "isin": "EGS39011C019",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "EGAS": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ETRS",
+   "listings": [
+    {
+     "code": "ETRS",
+     "issuer": "ETRS",
+     "isin": "EGS42051C010",
+     "enumeration_status": "not_run",
+     "terminal_state": null,
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": []
+    }
+   ],
+   "enumeration_status": "not_run",
+   "terminal_states": {
+    "ETRS": null
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "kind": "egx_unreachable_from_vm",
+     "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+    }
+   ]
+  }
+ ],
+ "failures": [
+  {
+   "issuer": "TMGH",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ETEL",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "EFIH",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ADIB",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "EFID",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ORAS",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "FAIT",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "FAIT",
+   "listing": "FAITA",
+   "kind": "B-02-missing-isin",
+   "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+   "evidence": "evaluation/top30_manifest.json blockers B-02"
+  },
+  {
+   "issuer": "PHDC",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "SKPC",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "EGAL",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ISPH",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "JUFO",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "MCQE",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ORHD",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "AMOC",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "MASR",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ORWE",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "OLFI",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "RMDA",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "OCDI",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ARCC",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "IFAP",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "MTIE",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ATQA",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "SAUD",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "CIRA",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ACGC",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "MPCO",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "EGAS",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  },
+  {
+   "issuer": "ETRS",
+   "kind": "egx_unreachable_from_vm",
+   "reason": "live EGX NewsSearch unreachable from this machine; enumeration not attempted (probe: status=200 body_chars=6160 challenge=True)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 at=2026-11-19T22:30:37Z"
+  }
+ ]
+}

@@ -373,6 +373,14 @@ def scorer_checks():
         except Exception as e:  # a crashing case is a failed case
             ok, detail = False, "raised %r" % (e,)
         check("completion-314: %s" % name, ok, detail)
+    print("== enumeration checks (#283 stage 2) ==")
+    import test_top30_enumerate_283 as t283e
+    for name, fn in t283e.CASES:
+        try:
+            ok, detail = fn()
+        except Exception as e:  # a crashing case is a failed case
+            ok, detail = False, "raised %r" % (e,)
+        check("enumerate-283: %s" % name, ok, detail)
 
 
 # --- determinism ---------------------------------------------------------------
