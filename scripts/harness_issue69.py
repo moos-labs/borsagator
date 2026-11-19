@@ -37,8 +37,28 @@ Readings recorded here (scoping ambiguities resolved by the build):
 - Case 5(b): the real NVDA sweep (140746) is refused by the #68
   compiler (no ensemble, no marker) — unrenderable by design, no
   model exists. The ensemble-absent case is therefore synthetic.
+
+Ported coverage (2026-11-19, Muhammad's "port it onto main"
+decision): the render-69 build's extra harness cases merged in —
+case 1 corporate-actions / ledger-pin / sharia-flag checks, case 3
+cwd + timestamp + model-untouched checks, case 10 wrong-field
+limitation, case 11 envelope/vocabulary negatives, case 12 AR
+long-disclaimer + EN/AR numeric parity, case 15 no-$ check, case
+21 key-reorder invariance (render-69 T2), case 22 mutation
+discrimination (render-69 T8, audit + clock mutants only).
+Dropped with reasons recorded in the PR: render-69's
+render_error.txt marker assertions (main's renderer does not write
+the marker; the worker hook / Actions step does), its
+recommendation-notes refusal (main does not prose-audit
+recommendation.notes), its Eastern-Arabic-digits refusal (main's
+audit traces them as Western values), its final-gate mutant (no
+second gate on main, §2i), its MD model-SHA check (main's MD
+carries no SHA line) and its pristine P-series (main's control is
+a static-string discrimination).
 """
 import argparse
+import datetime
+import hashlib
 import html as html_mod
 import json
 import os
@@ -107,13 +127,13 @@ def compile_model(archive_root, key, out, repo_root):
     return out
 
 
-def render(repo_root, model, out_dir, extra=None):
+def render(repo_root, model, out_dir, extra=None, env=None):
     cmd = [sys.executable, os.path.join(repo_root, "scripts", "render.py"),
            model, "--profile", os.path.join(repo_root, "profiles", "POUL.CA.json"),
            "--out-dir", out_dir]
     if extra:
         cmd += extra
-    return run(cmd)
+    return run(cmd, env=env)
 
 
 def visible_text(html_text):
@@ -122,6 +142,29 @@ def visible_text(html_text):
     txt = re.sub(r"<svg.*?</svg>", " ", txt, flags=re.S)
     txt = re.sub(r"<[^>]+>", " ", txt)
     return html_mod.unescape(txt)
+
+
+def ar_visible_text(html_text):
+    """Simulate the EN->AR toggle (ported from the render-69 build,
+    its case 12): replace every data-i18n element's content with the
+    AR string from the embedded window.I18N table — exactly what
+    setLang('ar') does via textContent — then strip to visible
+    text."""
+    m = re.search(r"window\.I18N=(\{.*?\});", html_text, re.S)
+    table = json.loads(m.group(1)) if m else {}
+    ar = table.get("ar", {})
+
+    def _sub(mm):
+        tag, pre, key, post = mm.group(1), mm.group(2), mm.group(3), mm.group(4)
+        if key in ar:
+            return '<%s%sdata-i18n="%s"%s>%s</%s>' % (
+                tag, pre, key, post, ar[key], tag)
+        return mm.group(0)
+
+    body = re.sub(r"<script.*?</script>", " ", html_text, flags=re.S)
+    out = re.sub(r"<(\w+)([^>]*?)data-i18n=\"([^\"]+)\"([^>]*)>(.*?)</\1>",
+                 _sub, body, flags=re.S)
+    return visible_text(out)
 
 
 # Canonical legal text the renderer exempts from its prose-audit (§2i):
@@ -277,6 +320,29 @@ def case1_golden(ctx):
     check("1 no hardcoded provisional line",
           "Confidence is provisional" not in vis)
     check("1 md bands", "Technical Support Level at 7.13" in m)
+    # Ported from the render-69 build (its case 1): corporate
+    # actions, the ledger pin and the sharia flags on the golden.
+    vis_n = re.sub(r"\s+", " ", vis)
+    check("1 corporate actions: 3 blocks, dividend ex-date 2026-11-16",
+          vis_n.count("Corporate action:") == 3
+          and "ex-date: 2026-11-16" in vis_n
+          and "DPS: 1.8999999998" in vis_n)
+    mdoc = load_json(os.path.join(ctx["stage"], "model-141124.json"))
+    counts = (mdoc.get("ledger_pin") or {}).get("counts") or {}
+    check("1 ledger pin counts printed = model's counts",
+          ("sweeps: %s" % counts.get("sweeps")) in vis_n
+          and ("forecasts: %s" % counts.get("forecasts")) in vis_n
+          and ("matured: %s" % counts.get("matured")) in vis_n
+          and ("pending: %s" % counts.get("pending")) in vis_n
+          and ("invalid: %s" % counts.get("invalid")) in vis_n,
+          str(counts))
+    sharia_flags = re.findall(
+        r"sharia-(?:insufficient-data|table-missing)", vis_n)
+    check("1 sharia flags: all 8 standards, none determinate",
+          len(sharia_flags) == 8
+          and all(s in vis_n for s in ("AAOIFI", "DJIM", "EGX33", "FTSE",
+                                       "ISLAMICLY", "MSCI_M", "SP_SHARIAH")),
+          "flags=%d" % len(sharia_flags))
     return model, out, h, m
 
 
@@ -300,22 +366,54 @@ def case2_per_tool(ctx, out):
 def case3_determinism(ctx, model):
     print("case 3: determinism")
     sweep = os.path.join(ctx["archive"], SWEEPS["141124"])
+    with open(model, "rb") as fh:
+        model_sha_before = hashlib.sha256(fh.read()).hexdigest()
     outs = []
     for i, env in enumerate((None,
                              {"PYTHONHASHSEED": "7", "TZ": "Pacific/Kiritimati",
                               "LC_ALL": "C"})):
         out = os.path.join(ctx["stage"], "out-det%d" % i)
         proc = render(ctx["repo"], model, out, ["--sweep-dir", sweep,
-                                                "--delta", ctx["delta"]])
+                                                "--delta", ctx["delta"]],
+                      env=env)
         check("3 render %d exit 0" % i, proc.returncode == 0, proc.stderr[:200])
         outs.append(out)
+    # Ported from the render-69 build (its case 3): a render from a
+    # foreign cwd must exit 0 and produce identical bytes. All
+    # arguments are absolutized — the point is the renderer's own
+    # cwd-independence, not the caller's relative paths.
+    out2 = os.path.join(ctx["stage"], "out-det2")
+    proc = run([sys.executable,
+                os.path.join(ctx["repo"], "scripts", "render.py"),
+                os.path.abspath(model),
+                "--profile", os.path.join(ctx["repo"], "profiles",
+                                          "POUL.CA.json"),
+                "--out-dir", os.path.abspath(out2),
+                "--sweep-dir", os.path.abspath(sweep),
+                "--delta", os.path.abspath(ctx["delta"])],
+               cwd="/")
+    check("3 render from cwd=/ exit 0", proc.returncode == 0,
+          proc.stderr[:200])
+    outs.append(out2)
     outs.append(os.path.join(ctx["stage"], "out-141124"))
     blobs = []
     for out in outs:
         blobs.append((open(os.path.join(out, "report.html"), "rb").read(),
                       open(os.path.join(out, "report.md"), "rb").read()))
-    check("3 byte-identical html", blobs[0][0] == blobs[1][0] == blobs[2][0])
-    check("3 byte-identical md", blobs[0][1] == blobs[1][1] == blobs[2][1])
+    check("3 byte-identical html", len({b[0] for b in blobs}) == 1)
+    check("3 byte-identical md", len({b[1] for b in blobs}) == 1)
+    # Ported: no render-time timestamp in the output, and the model
+    # file itself is untouched by rendering.
+    h_det = open(os.path.join(outs[0], "report.html"),
+                 encoding="utf-8").read()
+    today = datetime.date.today().isoformat()
+    check("3 no render-time timestamp in output",
+          (today + "T") not in h_det
+          and "rendered at" not in h_det.lower())
+    with open(model, "rb") as fh:
+        model_sha_after = hashlib.sha256(fh.read()).hexdigest()
+    check("3 model file unchanged across renders",
+          model_sha_after == model_sha_before)
 
 
 def case4_legacy(ctx):
@@ -492,6 +590,11 @@ def case10_prose_audit(ctx):
         ("10c buy-decision passes",
          "Figures from the 10-Nov-2026 buy-decision research.", True),
         ("10c buy now fails", "You should buy now.", False),
+        # Ported from the render-69 build (its case 10i, T4): a
+        # value copied from the WRONG field passes — the audit is
+        # value-level only. Recorded limitation, asserted as-is.
+        ("10d wrong-field copy passes (value-level audit only)",
+         "Day move +16.73%.", True),
     ]
     for name, text, ok in cases:
         narr_path = os.path.join(ctx["stage"], "narr-10.json")
@@ -509,7 +612,7 @@ def case10_prose_audit(ctx):
 
 
 def case11_schema_negative(ctx):
-    print("case 11: schema-version negative")
+    print("case 11: schema + envelope negatives")
     base = load_json(os.path.join(ctx["stage"], "model-141124.json"))
     base["schema"] = "borsagator-report-model/99"
     mut = os.path.join(ctx["stage"], "model-v99.json")
@@ -522,6 +625,25 @@ def case11_schema_negative(ctx):
           and "borsagator-report-model/99" in proc.stderr)
     check("11 wrote no files",
           not os.path.exists(os.path.join(out, "report.html")))
+    # Ported from the render-69 build (its case 11, T5): missing
+    # envelope fields and out-of-vocabulary values refuse the same
+    # way (non-zero exit, no files written).
+    for label, mutate in (
+            ("finished", lambda b: b.pop("finished")),
+            ("ensemble_shape", lambda b: b.pop("ensemble_shape")),
+            ("market", lambda b: b.update(market="MARS")),
+            ("merged_by", lambda b: b["provenance"].update(
+                merged_by="someone-else"))):
+        neg = load_json(os.path.join(ctx["stage"], "model-141124.json"))
+        mutate(neg)
+        neg_path = os.path.join(ctx["stage"], "model-neg-%s.json" % label)
+        write_json(neg_path, neg)
+        out_neg = os.path.join(ctx["stage"], "out-neg-%s" % label)
+        proc = render(ctx["repo"], neg_path, out_neg)
+        check("11 missing/bad %s refused" % label,
+              proc.returncode != 0
+              and not os.path.exists(os.path.join(out_neg, "report.html")),
+              proc.stderr[:200])
 
 
 def case12_offline_bilingual(ctx, out):
@@ -545,6 +667,20 @@ def case12_offline_bilingual(ctx, out):
     check("12 AR short disclaimer verbatim",
           "بورساجاتور ليست مستشارًا استثماريًا" in table.get("ar", {}).get(
               "disclaimer.short", ""))
+    # Ported from the render-69 build (its case 12): the AR long
+    # disclaimer verbatim in the table, and EN/AR numeric parity —
+    # the AR view (setLang simulation) must carry the same numbers
+    # as the EN view, same count.
+    check("12 AR long disclaimer verbatim",
+          table.get("ar", {}).get("disclaimer.long", "").startswith(
+              "بورساجاتور تبيع تقريرًا محسوبًا"))
+    en_nums = sorted(numbers_in(visible_text(h)))
+    ar_nums = sorted(numbers_in(ar_visible_text(h)))
+    check("12 EN/AR numeric parity (same numbers, same count)",
+          len(en_nums) == len(ar_nums)
+          and all(abs(a - b) <= 0.005
+                  for a, b in zip(en_nums, ar_nums)),
+          "en=%d ar=%d" % (len(en_nums), len(ar_nums)))
     check("12 toggle sets lang/dir",
           'document.documentElement.lang' in h and "dir=" in h)
     # Tampered i18n table (one AR string deleted) must fail the render.
@@ -675,6 +811,12 @@ def case15_private_path(ctx):
     check("15 watermark unassigned", "unassigned" in h)
     check("15 no user id / requester",
           "user_id" not in h and "requester" not in h)
+    # Ported from the render-69 build (its case 15): no product
+    # price in the report — no $ amounts in either twin.
+    m_priv = open(os.path.join(private, "report.md"),
+                  encoding="utf-8").read()
+    check("15 no product price ($ amounts) in outputs",
+          "$" not in h and "$" not in m_priv)
 
 
 def case16_delta(ctx, out):
@@ -842,6 +984,180 @@ def case20_price_tail(ctx):
           and "price tail" not in m)
 
 
+def _sha256_file(path):
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
+def _reorder_keys(obj):
+    """Recursively reverse JSON object key order (render-69 T2)."""
+    if isinstance(obj, dict):
+        return {k: _reorder_keys(obj[k]) for k in reversed(list(obj))}
+    if isinstance(obj, list):
+        return [_reorder_keys(x) for x in obj]
+    return obj
+
+
+def case21_key_reorder(ctx):
+    """Ported from the render-69 build (its case 20, T2): the
+    rendered view is invariant under JSON object key order; array
+    order is meaningful and must change the output."""
+    print("case 21: key-reorder invariance (ported, render-69 T2)")
+    sweep = os.path.join(ctx["archive"], SWEEPS["141124"])
+    golden_out = os.path.join(ctx["stage"], "out-141124")
+    golden_html_sha = _sha256_file(os.path.join(golden_out,
+                                                "report.html"))
+
+    def _variant(doc, label):
+        path = os.path.join(ctx["stage"], "model-%s.json" % label)
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, ensure_ascii=False, indent=1,
+                      sort_keys=False)
+        out = os.path.join(ctx["stage"], "out-%s" % label)
+        proc = render(ctx["repo"], path, out,
+                      ["--sweep-dir", sweep, "--delta", ctx["delta"]])
+        return proc, out
+
+    def _strip_scripts(text):
+        return re.sub(r"<script.*?</script>", " ", text, flags=re.S)
+
+    base_model = load_json(os.path.join(ctx["stage"],
+                                        "model-141124.json"))
+    proc, out = _variant(_reorder_keys(base_model), "reordered")
+    check("21 key reorder renders", proc.returncode == 0,
+          proc.stderr[:200])
+    if proc.returncode == 0:
+        h_new = open(os.path.join(out, "report.html"),
+                     encoding="utf-8").read()
+        h_base = open(os.path.join(golden_out, "report.html"),
+                      encoding="utf-8").read()
+        check("21 key reorder -> identical rendered view "
+              "(data island excluded: it is the input file verbatim)",
+              _strip_scripts(h_new) == _strip_scripts(h_base))
+        m_new = open(os.path.join(out, "report.md"),
+                     encoding="utf-8").read()
+        m_base = open(os.path.join(golden_out, "report.md"),
+                      encoding="utf-8").read()
+        check("21 key reorder -> identical MD twin", m_new == m_base)
+    doc = load_json(os.path.join(ctx["stage"], "model-141124.json"))
+    doc["tools"] = list(reversed(doc["tools"]))
+    proc, out = _variant(doc, "tools-reversed")
+    check("21 tools[] order reversed -> output DIFFERS "
+          "(array order is meaningful)",
+          proc.returncode == 0
+          and _sha256_file(os.path.join(out, "report.html"))
+          != golden_html_sha)
+    doc = load_json(os.path.join(ctx["stage"], "model-141124.json"))
+    series = doc.get("price_series_last") or []
+    if len(series) >= 2:
+        series[0], series[1] = series[1], series[0]
+    proc, out = _variant(doc, "series-swapped")
+    check("21 price_series_last entries swapped -> output DIFFERS",
+          proc.returncode == 0
+          and _sha256_file(os.path.join(out, "report.html"))
+          != golden_html_sha)
+
+
+def _mutant_render(ctx, mut, label):
+    """A copy of render.py + its i18n table with one fault injected
+    (render-69 T8). Returns the mutant script path."""
+    mdir = os.path.join(ctx["stage"], "mutant-%s" % label)
+    os.makedirs(mdir, exist_ok=True)
+    src = open(os.path.join(ctx["repo"], "scripts", "render.py"),
+               encoding="utf-8").read()
+    mutated = mut(src)
+    assert mutated != src, "mutant %s: anchor not found" % label
+    script = os.path.join(mdir, "render.py")
+    with open(script, "w", encoding="utf-8") as fh:
+        fh.write(mutated)
+    shutil.copy(os.path.join(ctx["repo"], "scripts",
+                             "render_i18n.json"),
+                os.path.join(mdir, "render_i18n.json"))
+    return script
+
+
+def _run_script(script, ctx, model, out, extra=None):
+    cmd = [sys.executable, script, model,
+           "--profile", os.path.join(ctx["repo"], "profiles",
+                                     "POUL.CA.json"),
+           "--out-dir", out]
+    if extra:
+        cmd += extra
+    return run(cmd)
+
+
+def case22_mutations(ctx):
+    """Ported from the render-69 build (its case 21, T8): mutation
+    discrimination — each injected fault must fail exactly the
+    check the design predicts. (render-69's final-gate mutant is
+    NOT ported: main's renderer exempts verbatim quoted tool
+    reports from the prose audit by design (§2i), so there is no
+    second gate to gut.)"""
+    print("case 22: mutation discrimination (ported, render-69 T8)")
+    model = os.path.join(ctx["stage"], "model-141124.json")
+    sweep = os.path.join(ctx["archive"], SWEEPS["141124"])
+
+    # (a) Gut the prose audit: the 'buy now' slot now renders.
+    # Control: the real renderer refuses the same input.
+    def gut_audit(src):
+        anchor = ("def audit_narrative(text, allowed_numbers, "
+                  "allowed_dates, label):")
+        assert anchor in src, "audit_narrative def not found"
+        return src.replace(
+            anchor,
+            anchor + "\n    return  # MUTANT: audit gutted\n"
+            "def _audit_narrative_dead(text, allowed_numbers, "
+            "allowed_dates, label):", 1)
+
+    script = _mutant_render(ctx, gut_audit, "gut-audit")
+    narr_path = os.path.join(ctx["stage"], "narr-22.json")
+    write_json(narr_path, {"slots": [{"id": "summary", "max_chars": 2000,
+                                      "text": "Day move +18.71% — buy "
+                                              "now, guaranteed gains."}]})
+    out_m = os.path.join(ctx["stage"], "out-mutant-audit")
+    proc = _run_script(script, ctx, model, out_m,
+                       ["--narrative", narr_path])
+    check("22 mutant (audit gutted): 'buy now' slot now RENDERS",
+          proc.returncode == 0
+          and os.path.isfile(os.path.join(out_m, "report.html")),
+          proc.stderr[:200])
+    out_c = os.path.join(ctx["stage"], "out-mutant-control")
+    proc = _run_script(os.path.join(ctx["repo"], "scripts", "render.py"),
+                       ctx, model, out_c, ["--narrative", narr_path])
+    check("22 control: real renderer REFUSES the same slot",
+          proc.returncode != 0
+          and not os.path.exists(os.path.join(out_c, "report.html")))
+
+    # (b) Inject a wall clock into the HTML tail: two renders of
+    # the same model must differ — the determinism check fails as
+    # predicted.
+    def inject_clock(src):
+        anchor = '    parts.append("</body></html>")'
+        assert src.count(anchor) == 1, "render_html tail anchor not unique"
+        return src.replace(
+            anchor,
+            '    parts.append("<!-- rendered at " + '
+            '__import__("datetime").datetime.now('
+            '__import__("datetime").timezone.utc).isoformat()'
+            ' + " -->")\n' + anchor, 1)
+
+    script = _mutant_render(ctx, inject_clock, "clock")
+    clock_html = []
+    for tag in ("a", "b"):
+        out_k = os.path.join(ctx["stage"], "out-mutant-clock-%s" % tag)
+        proc = _run_script(script, ctx, model, out_k,
+                           ["--sweep-dir", sweep,
+                            "--delta", ctx["delta"]])
+        check("22 clock mutant render %s exit 0" % tag,
+              proc.returncode == 0, proc.stderr[:200])
+        clock_html.append(
+            open(os.path.join(out_k, "report.html"),
+                 encoding="utf-8").read()
+            if proc.returncode == 0 else "")
+    check("22 mutant (clock injected): two renders DIFFER",
+          clock_html[0] != "" and clock_html[0] != clock_html[1])
+
+
 def case19_pristine(ctx):
     print("case 19: pristine control (aggregate)")
     check("19 render.py exists on the fixed tree",
@@ -934,6 +1250,8 @@ def main(argv=None):
     case18_escaping(ctx)
     case19_pristine(ctx)
     case20_price_tail(ctx)
+    case21_key_reorder(ctx)
+    case22_mutations(ctx)
 
     print("\nharness_issue69: %d pass, %d fail" % (CHECKS["pass"], CHECKS["fail"]))
     if FAILURES:
