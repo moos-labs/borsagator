@@ -143,6 +143,100 @@ def test_unknown_versions_refused_everywhere():
     assert_refused_everywhere(None)
 
 
+def test_marker_coercion_refused_everywhere():
+    """#294: markers are type-strict — 2.0 is not 2, True is not 1,
+    "2" is not 2, None is not a version, a trailing space is not
+    the schema. Python ==/hash would coerce every one of these
+    into a valid tuple; the shared gate refuses them in the
+    validator, the renderer and the delta adapter alike."""
+    v1 = load_fixture("v1-model.json")
+    v2 = load_fixture("v2-model.json")
+    cases = []
+    for base, version, schema in (
+            (v2, 2.0, "borsagator-report-model/2"),
+            (v1, 1.0, "borsagator-report-model/1"),
+            (v2, True, "borsagator-report-model/2"),
+            (v1, True, "borsagator-report-model/1"),
+            (v2, "2", "borsagator-report-model/2"),
+            (v1, "1", "borsagator-report-model/1"),
+            (v2, None, "borsagator-report-model/2"),
+            (v1, None, "borsagator-report-model/1"),
+            (v2, 2, None),
+            (v2, 2.0, "borsagator-report-model/2 "),
+            (v2, 2, "borsagator-report-model/2 "),
+            (v1, 1, "borsagator-report-model/1 "),
+            (v2, 2, 2.0),
+    ):
+        coerced = dict(base)
+        coerced["model_version"] = version
+        coerced["schema"] = schema
+        cases.append((version, schema, coerced))
+    for version, schema, coerced in cases:
+        problems, _, _ = consumer_outcomes(coerced)
+        assert any("model_schema_unsupported" in p for p in problems), \
+            (version, schema, problems)
+        assert_refused_everywhere(coerced)
+    # Controls: the clean int/str markers still validate.
+    assert_accepted_everywhere(v1)
+    assert_accepted_everywhere(v2)
+
+
+def test_single_diagnostic_prefix():
+    """#294: the tuple-refusal problem already carries its
+    ``model_schema_unsupported:`` prefix — neither CLI prints it
+    twice. A non-prefixed problem (missing required field) still
+    gets the single prefix, exactly once."""
+    tmp = tempfile.mkdtemp(prefix="borsagator-294-prefix-")
+    try:
+        v2 = load_fixture("v2-model.json")
+        mixed = dict(v2)
+        mixed["schema"] = "borsagator-report-model/1"
+        path = os.path.join(tmp, "mixed.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(mixed, fh)
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "compile_model.py"),
+             "--check-model", path], capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported:") == 1, \
+            proc.stderr
+        out = os.path.join(tmp, "out")
+        proc = subprocess.run(
+            _render_args(path, out), capture_output=True, text=True,
+            timeout=120)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported:") == 1, \
+            proc.stderr
+        assert not os.path.exists(os.path.join(out, "report.html"))
+        # Coerced version through the CLI: exit 2, single prefix.
+        coerced = dict(v2)
+        coerced["model_version"] = 2.0
+        path2 = os.path.join(tmp, "coerced.json")
+        with open(path2, "w", encoding="utf-8") as fh:
+            json.dump(coerced, fh)
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "compile_model.py"),
+             "--check-model", path2], capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported:") == 1, \
+            proc.stderr
+        # Missing required field: still prefixed, still once.
+        missing = dict(v2)
+        del missing["disclosure_events"]
+        path3 = os.path.join(tmp, "missing.json")
+        with open(path3, "w", encoding="utf-8") as fh:
+            json.dump(missing, fh)
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "compile_model.py"),
+             "--check-model", path3], capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported:") == 1, \
+            proc.stderr
+        assert "missing required field: disclosure_events" in proc.stderr
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_no_bump_schema_diff():
     v1 = load_fixture("v1-model.json")
     v2 = load_fixture("v2-model.json")
@@ -725,6 +819,10 @@ def main():
           test_mixed_markers_refused_everywhere)
     check("unknown versions refused everywhere",
           test_unknown_versions_refused_everywhere)
+    check("marker coercion refused everywhere (#294)",
+          test_marker_coercion_refused_everywhere)
+    check("single diagnostic prefix (#294)",
+          test_single_diagnostic_prefix)
     check("no-bump schema-diff check", test_no_bump_schema_diff)
     check("malformed events refused everywhere",
           test_malformed_events_refused_everywhere)

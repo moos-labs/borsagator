@@ -1521,6 +1521,32 @@ def _archive_tree_has(arch, sha, expected):
     return True
 
 
+def _publish_harvest_attachments(results_dir, arch):
+    """Issue #279: copy harvested attachment PDFs next to the stable
+    harvest pointer (harvest/<CODE>.json) so an item's pointer
+    "attachments/<NewsID>.pdf" resolves inside the archive. The same
+    files also ride the wholesale results copy into worker-runs/; this
+    copy is what makes the pointer usable from harvest/<CODE>.json.
+    Only safe .pdf filenames are copied; anything else is skipped,
+    never renamed. Returns the number of files copied (0 when the
+    harvester stored none — older harvests have no attachments dir).
+    """
+    src = Path(results_dir) / "egx-harvest" / "results" / "attachments"
+    if not src.is_dir():
+        return 0
+    dest = Path(arch) / "harvest" / "attachments"
+    dest.mkdir(parents=True, exist_ok=True)
+    n = 0
+    for f in sorted(src.iterdir()):
+        if not f.is_file() or f.suffix.lower() != ".pdf":
+            continue
+        if not re.fullmatch(r"[A-Za-z0-9_.\-]+", f.name):
+            continue
+        (dest / f.name).write_bytes(f.read_bytes())
+        n += 1
+    return n
+
+
 def publish(job, results_dir, manifest):
     arch = ROOT / "archive-push"
     if not arch.exists():
@@ -1738,6 +1764,12 @@ def publish(job, results_dir, manifest):
         hdir.mkdir(parents=True, exist_ok=True)
         for code, src in ptr_src:
             (hdir / f"{code}.json").write_bytes(src.read_bytes())
+        # Issue #279: attachments captured by this harvest ride next
+        # to the pointer so item["attachments"] paths resolve. A
+        # harvest with no attachments dir copies nothing (0).
+        n_att = _publish_harvest_attachments(results_dir, arch)
+        print(f"publish: harvest attachments copied: {n_att}",
+              flush=True)
     # Commit message via a file: job text never enters a shell string.
     msg_file = arch / ".commit-msg"
     msg_file.write_text(f"worker run {job['id']}: {job['job']}\n")

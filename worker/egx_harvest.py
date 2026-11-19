@@ -20,6 +20,11 @@ from datetime import date, datetime, timedelta
 
 PROFILE = os.environ.get("GATOR_ROOT", "/opt/gator") + "/egx-profile"
 RESULTS = "results"
+# Issue #279: attachment capture lives in the sibling module; the
+# script dir is on sys.path whether run as a script or loaded by a
+# test harness via importlib (which does not add it).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from attachment_capture import capture_item_attachments  # noqa: E402
 BASE = "https://www.egx.com.eg"
 EGX_COMPANIES = {
     "POUL": ("القاهرة للدواجن", "EGS02051C018"),
@@ -87,6 +92,16 @@ def collect_result_links(page):
                   row: row ? (row.innerText || '').trim() : ''});
       });
       return out;
+    }""")
+
+
+def collect_attachment_links(page):
+    """All anchors on the detail page, for issue #279 attachment
+    capture. Returns [{"href", "text"}]; the capture module decides
+    which are attachment links (never the page's own navigation)."""
+    return page.evaluate("""() => {
+      return [...document.querySelectorAll('a[href]')].map(a => ({
+        href: a.href, text: (a.innerText || '').trim()}));
     }""")
 
 
@@ -262,13 +277,42 @@ def main():
             seen.add(m.group(1))
             dpage = ctx.new_page()
             try:
-                dpage.goto(lk["href"], wait_until="domcontentloaded",
-                           timeout=90000)
-                dpage.wait_for_timeout(6000)
-                body = extract_main_text(dpage)
-            except Exception as e:
-                log("details failed", lk["href"], str(e)[:150])
-                body = ""
+                try:
+                    dpage.goto(lk["href"], wait_until="domcontentloaded",
+                               timeout=90000)
+                    dpage.wait_for_timeout(6000)
+                    body = extract_main_text(dpage)
+                except Exception as e:
+                    log("details failed", lk["href"], str(e)[:150])
+                    body = ""
+                # Issue #279: attachment capture. Each step fails
+                # independently and is recorded on the item — a
+                # failed capture never loses the harvested body and
+                # never fails the harvest.
+                try:
+                    anchors = collect_attachment_links(dpage)
+                except Exception as e:
+                    log("attachment links failed", lk["href"],
+                        str(e)[:150])
+                    anchors = None
+
+                def _fetch(url, _page=dpage):
+                    # Same browser session as the detail page, so the
+                    # TSPD-trusted profile's cookies ride along.
+                    resp = _page.request.get(url, timeout=60000)
+                    return resp.status, resp.body()
+
+                try:
+                    attachments = capture_item_attachments(
+                        m.group(1), anchors, lk["href"], _fetch, RESULTS)
+                except Exception as e:
+                    log("attachment capture failed", lk["href"],
+                        str(e)[:150])
+                    attachments = [{"status": "link_scan_failed",
+                                    "path": None, "sha256": None,
+                                    "size_bytes": None, "source_url": None,
+                                    "reason": "capture raised: %s"
+                                    % str(e)[:200]}]
             finally:
                 dpage.close()
             items.append({
@@ -276,9 +320,12 @@ def main():
                 "date": iso_date(body, lk["row"]),
                 "title": lk["text"][:200], "url": lk["href"],
                 "row_text": lk["row"][:300], "body": body[:8000],
-                "body_chars": len(body)})
+                "body_chars": len(body),
+                "attachments": attachments})
             write_out()  # incremental: a timeout keeps what exists
-            log("item", m.group(1), "body_chars", len(body))
+            log("item", m.group(1), "body_chars", len(body),
+                "attachments",
+                ",".join(a["status"] for a in attachments))
             time.sleep(1)
         ctx.close()
     with open(os.path.join(RESULTS, "debug.json"), "w") as f:
