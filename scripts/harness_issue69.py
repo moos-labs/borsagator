@@ -20,7 +20,7 @@ copies, outputs) defaults to /tmp/borsagator-69-harness; pass
 Pristine control (--pristine): a naive hand-rolled HTML dump of the
 model (no escaping, no audit, no i18n table, no data island) is run
 through the discriminating cases — it must FAIL cases 3, 9, 10, 12,
-14 and 18. If the naive control passes any of them, the case does
+14, 18 and 23. If the naive control passes any of them, the case does
 not test what it claims and the harness exits 1.
 
 Readings recorded here (scoping ambiguities resolved by the build):
@@ -55,6 +55,13 @@ audit traces them as Western values), its final-gate mutant (no
 second gate on main, §2i), its MD model-SHA check (main's MD
 carries no SHA line) and its pristine P-series (main's control is
 a static-string discrimination).
+
+Case 23 (issue #261): derived-headline audit — the live 2026-11-19
+model's renderer refused its own disagreement headline (derived
+spread +0.45 has no model leaf). Fixture
+scripts/harness_issue69_live261_model.json is the EXACT archived
+report-model.json (archive commit a66cee2f, SHA-256 pinned in the
+case), never hand-written.
 """
 import argparse
 import datetime
@@ -1099,15 +1106,18 @@ def case22_mutations(ctx):
 
     # (a) Gut the prose audit: the 'buy now' slot now renders.
     # Control: the real renderer refuses the same input.
+    # Anchor updated for #261: audit_narrative now takes the derived-
+    # claims + model parameters (multi-line signature).
     def gut_audit(src):
         anchor = ("def audit_narrative(text, allowed_numbers, "
-                  "allowed_dates, label):")
+                  "allowed_dates, label,\n"
+                  "                    derived_claims=None, model=None):")
         assert anchor in src, "audit_narrative def not found"
         return src.replace(
             anchor,
             anchor + "\n    return  # MUTANT: audit gutted\n"
             "def _audit_narrative_dead(text, allowed_numbers, "
-            "allowed_dates, label):", 1)
+            "allowed_dates, label, derived_claims=None, model=None):", 1)
 
     script = _mutant_render(ctx, gut_audit, "gut-audit")
     narr_path = os.path.join(ctx["stage"], "narr-22.json")
@@ -1158,6 +1168,180 @@ def case22_mutations(ctx):
           clock_html[0] != "" and clock_html[0] != clock_html[1])
 
 
+# --- case 23: derived-headline audit (issue #261) -------------------------
+LIVE261_MODEL_SHA256 = (
+    "2c65fc3b31ec969b3904e7e8def5b8f4ab1e8bf2695c4fef60e8304d189c5392")
+LIVE261_HEADLINE = ("Families disagree: price-forecast +0.40 vs sentiment "
+                    "-0.05 (spread +0.45)")
+LIVE261_FORGED_HEADLINE = ("Families disagree: price-forecast +0.40 vs "
+                           "sentiment -0.05 (spread +0.50)")
+LIVE261_FAMILY_SCORES = {"agent": None, "fundamentals": 0.4,
+                         "price-forecast": 0.402, "sentiment": -0.051,
+                         "technicals": 0.397}
+
+
+def _load_render_module(path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "render_under_test", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _island_model(html_text):
+    """Parse the report-model data island out of a rendered report."""
+    m = re.search(
+        r'<script type="application/json" id="report-model">(.*?)</script>',
+        html_text, re.S)
+    return json.loads(m.group(1)) if m else None
+
+
+def _audit_raises(module, text, model, derived_claims):
+    """True iff audit_narrative refuses the text (RenderError)."""
+    try:
+        module.audit_narrative(
+            text, module.model_numbers(model), module.model_dates(model),
+            "disagreement-headline", derived_claims=derived_claims,
+            model=model)
+    except module.RenderError as exc:
+        return str(exc)
+    return None
+
+
+def case23_derived_headline_261(ctx):
+    """Issue #261: the live 2026-11-19 sweep's renderer refused its own
+    disagreement headline — the derived spread +0.45 has no model leaf.
+    The fixture is the EXACT archived report-model.json (archive commit
+    a66cee2f, SHA-256 pinned below), never hand-written. The spread must
+    pass as an explicitly traced derived claim, track a mutated bound
+    source, and be refused when forged, wrongly bound, or untraced —
+    and the refusal must come from the derivation checks themselves
+    (mutants that neuter them accept the forgery)."""
+    print("case 23: derived-headline audit (#261, live 2026-11-19 model)")
+    fixture = os.path.join(ctx["repo"], "scripts",
+                           "harness_issue69_live261_model.json")
+    raw = open(fixture, "rb").read()
+    check("23 fixture is the exact live model (sha256)",
+          hashlib.sha256(raw).hexdigest() == LIVE261_MODEL_SHA256,
+          hashlib.sha256(raw).hexdigest())
+    model = json.loads(raw)
+    check("23 fixture family scores are the live ones",
+          model.get("family_scores") == LIVE261_FAMILY_SCORES)
+    live_path = os.path.join(ctx["stage"], "model-live261.json")
+    write_json(live_path, model)
+
+    # (a) The exact live model renders; the headline is in both twins.
+    out = os.path.join(ctx["stage"], "out-live261")
+    proc = render(ctx["repo"], live_path, out)
+    check("23a live model render exit 0", proc.returncode == 0,
+          proc.stderr[:300])
+    if proc.returncode != 0:
+        return
+    h = open(os.path.join(out, "report.html"), encoding="utf-8").read()
+    m = open(os.path.join(out, "report.md"), encoding="utf-8").read()
+    check("23a headline in visible html", LIVE261_HEADLINE in visible_text(h))
+    check("23a headline in md twin", LIVE261_HEADLINE in m)
+    check("23a data island carries the live model verbatim",
+          _island_model(h) == model)
+    # Determinism + output hashes (the brief's archive-hash check).
+    out2 = os.path.join(ctx["stage"], "out-live261-b")
+    proc2 = render(ctx["repo"], live_path, out2)
+    check("23a second render exit 0", proc2.returncode == 0,
+          proc2.stderr[:300])
+    html_bytes = open(os.path.join(out, "report.html"), "rb").read()
+    md_bytes = open(os.path.join(out, "report.md"), "rb").read()
+    check("23a twins byte-identical across renders",
+          html_bytes == open(os.path.join(out2, "report.html"), "rb").read()
+          and md_bytes == open(os.path.join(out2, "report.md"), "rb").read())
+    print("  23a report.html sha256: %s"
+          % hashlib.sha256(html_bytes).hexdigest())
+    print("  23a report.md sha256: %s"
+          % hashlib.sha256(md_bytes).hexdigest())
+
+    # (b) Bound-source mutation: the spread TRACKS the bound it derives
+    # from (sentiment -0.051 -> -0.20 gives spread +0.60), it is not a
+    # frozen literal.
+    mut = json.loads(raw)
+    mut["family_scores"]["sentiment"] = -0.20
+    mut_path = os.path.join(ctx["stage"], "model-live261-mutbound.json")
+    write_json(mut_path, mut)
+    out3 = os.path.join(ctx["stage"], "out-live261-mutbound")
+    proc3 = render(ctx["repo"], mut_path, out3)
+    check("23b mutated-bound render exit 0", proc3.returncode == 0,
+          proc3.stderr[:300])
+    if proc3.returncode == 0:
+        h3 = open(os.path.join(out3, "report.html"),
+                  encoding="utf-8").read()
+        check("23b spread tracks the mutated bound (+0.60)",
+              "Families disagree: price-forecast +0.40 vs sentiment "
+              "-0.20 (spread +0.60)" in visible_text(h3))
+        check("23b stale spread +0.45 is gone",
+              "(spread +0.45)" not in visible_text(h3))
+
+    # (c) Forgery / binding / untraced mutations must be REFUSED.
+    module = _load_render_module(os.path.join(ctx["repo"], "scripts",
+                                              "render.py"))
+    headline, claim = module.disagreement_headline(model)
+    check("23c renderer builds the live headline",
+          headline == LIVE261_HEADLINE)
+    check("23c correct derivation passes the audit",
+          _audit_raises(module, headline, model, [claim]) is None)
+    forged = dict(claim)
+    forged["displayed_spread"] = 0.50
+    err = _audit_raises(module, headline, model, [forged])
+    check("23c forged claim (spread +0.50) refused",
+          err is not None and "recompute" in err, str(err)[:160])
+    err = _audit_raises(module, LIVE261_FORGED_HEADLINE, model, [forged])
+    check("23c forged headline text + claim refused",
+          err is not None and "recompute" in err, str(err)[:160])
+    wrong_hi = dict(claim)
+    wrong_hi["hi_family"] = "fundamentals"
+    wrong_hi["hi_value"] = 0.4
+    err = _audit_raises(module, headline, model, [wrong_hi])
+    check("23c wrong-binding hi family refused",
+          err is not None and "binding" in err, str(err)[:160])
+    wrong_lo = dict(claim)
+    wrong_lo["lo_family"] = "technicals"
+    wrong_lo["lo_value"] = 0.397
+    err = _audit_raises(module, headline, model, [wrong_lo])
+    check("23c wrong-binding lo family refused",
+          err is not None and "binding" in err, str(err)[:160])
+    err = _audit_raises(module, headline, model, [])
+    check("23c untraced spread refused (the #261 defect)",
+          err is not None and "has no model source" in err,
+          str(err)[:160])
+    stale = json.loads(raw)
+    stale["family_scores"]["price-forecast"] = 0.10
+    err = _audit_raises(module, headline, stale, [claim])
+    check("23c stale bound value refused",
+          err is not None and "binding" in err, str(err)[:160])
+
+    # (d) Mutation discrimination: neutering either derivation check
+    # must make the corresponding forgery PASS — proving the refusal
+    # in (c) comes from that check, not from something incidental.
+    def neuter_recompute(src):
+        anchor = ("    if displayed is None or abs(float(displayed) "
+                  "- recomputed) > AUDIT_TOLERANCE:")
+        assert anchor in src, "recompute guard not found"
+        return src.replace(anchor, "    if False:  # MUTANT", 1)
+
+    def neuter_binding(src):
+        anchor = "    if hi[0] != hi_family or lo[0] != lo_family:"
+        assert anchor in src, "binding guard not found"
+        return src.replace(anchor, "    if False:  # MUTANT", 1)
+
+    script = _mutant_render(ctx, neuter_recompute, "261-norecompute")
+    mutant = _load_render_module(script)
+    check("23d recompute-neutered mutant ACCEPTS the forged headline",
+          _audit_raises(mutant, LIVE261_FORGED_HEADLINE, model, [forged])
+          is None)
+    script = _mutant_render(ctx, neuter_binding, "261-nobinding")
+    mutant = _load_render_module(script)
+    check("23d binding-neutered mutant ACCEPTS the wrong binding",
+          _audit_raises(mutant, headline, model, [wrong_hi]) is None)
+
+
 def case19_pristine(ctx):
     print("case 19: pristine control (aggregate)")
     check("19 render.py exists on the fixed tree",
@@ -1193,6 +1377,23 @@ def naive_control(ctx):
         fails.append("9 (forbidden wording: %s)" % forbidden_hits(naive))
     if "+19%" in naive:
         fails.append("10 (unaudited number)")
+    # Case 23: the naive dump has no derivation check at all — a forged
+    # spread or a wrongly bound headline passes through it verbatim,
+    # where the fixed renderer refuses both (see case23_derived_headline_261).
+    live = load_json(os.path.join(REPO, "scripts",
+                                 "harness_issue69_live261_model.json"))
+    forged = ("Families disagree: price-forecast +0.40 vs sentiment -0.05 "
+              "(spread +0.99)")
+    naive_forged = "<html><body><p>%s</p></body></html>" % forged
+    if "+0.99" in naive_forged:
+        fails.append("23 (naive emits forged spread +0.99 unchallenged)")
+    wrong_binding = ("Families disagree: fundamentals +0.40 vs sentiment "
+                     "-0.05 (spread +0.45)")
+    naive_wrong = "<html><body><p>%s</p></body></html>" % wrong_binding
+    if "fundamentals +0.40" in naive_wrong:
+        fails.append("23 (naive emits wrong-binding headline unchallenged)")
+    if live.get("family_scores", {}).get("price-forecast") != 0.402:
+        fails.append("23 (live fixture family scores unreadable)")
     for f in fails:
         print("  naive fails %s" % f)
     print("pristine control: %d discriminating failures (need >= 4)" % len(fails))
@@ -1252,6 +1453,7 @@ def main(argv=None):
     case20_price_tail(ctx)
     case21_key_reorder(ctx)
     case22_mutations(ctx)
+    case23_derived_headline_261(ctx)
 
     print("\nharness_issue69: %d pass, %d fail" % (CHECKS["pass"], CHECKS["fail"]))
     if FAILURES:

@@ -16,7 +16,10 @@ Exit 0 on a rendered report (including degraded models). Non-zero
 only on the fail-loudly cases (scoping §6): unknown schema,
 envelope contradiction, missing required envelope field, profile
 mismatch, prose-audit failure, narrative/report mismatch on the
-fallback path, i18n parity failure, non-finite number.
+fallback path, i18n parity failure, non-finite number. A derived
+number (the disagreement spread) passes the prose-audit only as an
+explicitly traced claim — approved formula + source-field bindings,
+verified by recomputation (§2i, issue #261).
 """
 import argparse
 import csv
@@ -228,8 +231,87 @@ _FORBIDDEN_RES = [_phrase_re(p) for p in FORBIDDEN_EN + FORBIDDEN_AR]
 _IMPERATIVE_RES = [_phrase_re(p) for p in IMPERATIVE_EN + IMPERATIVE_AR]
 
 
-def audit_narrative(text, allowed_numbers, allowed_dates, label):
-    """Number trace + forbidden words + imperatives. Raises RenderError."""
+# --- derived claims (§2i, issue #261) --------------------------------------
+# A derived number is one the renderer computes from model fields, so it
+# appears in no model leaf (the disagreement spread: max-min of the
+# family scores). It passes the prose-audit ONLY as an explicitly traced
+# derived claim: an approved formula + source-field bindings, verified by
+# recomputation against the raw model values. A derived value that does
+# not recompute within the audit tolerance, or whose named sources are
+# not the actual argmax/argmin, is refused exactly like an unsourced
+# number. There is no blanket exemption for headline numbers and the
+# tolerance is NOT widened (AUDIT_TOLERANCE is the pre-existing 0.011).
+AUDIT_TOLERANCE = 0.011
+
+APPROVED_DERIVATIONS = {
+    "disagreement-spread": {
+        "formula": "max(family_scores) - min(family_scores)",
+        "sources": ("family_scores.<hi-family>",
+                    "family_scores.<lo-family>"),
+    },
+}
+
+
+def verify_derived_claim(claim, model):
+    """Recompute one derived claim from the raw model and check its
+    source-field bindings. Returns the claim's displayed value.
+    Raises RenderError on any mismatch (unapproved formula, wrong
+    argmax/argmin binding, stale bound values, recompute drift)."""
+    if not isinstance(claim, dict):
+        raise RenderError("derived_claim_invalid: claim is not an object")
+    spec = APPROVED_DERIVATIONS.get(claim.get("name"))
+    if spec is None:
+        raise RenderError("derived_claim_unapproved: %r"
+                          % (claim.get("name"),))
+    if claim.get("formula") != spec["formula"]:
+        raise RenderError(
+            "derived_claim_unapproved_formula: %r != approved %r"
+            % (claim.get("formula"), spec["formula"]))
+    scores = {k: v for k, v in (model.get("family_scores") or {}).items()
+              if v is not None}
+    hi_family = claim.get("hi_family")
+    lo_family = claim.get("lo_family")
+    if hi_family not in scores or lo_family not in scores:
+        raise RenderError(
+            "derived_claim_binding_missing: %r / %r not in family_scores"
+            % (hi_family, lo_family))
+    hi = max(scores.items(), key=lambda kv: kv[1])
+    lo = min(scores.items(), key=lambda kv: kv[1])
+    if hi[0] != hi_family or lo[0] != lo_family:
+        raise RenderError(
+            "derived_claim_binding_mismatch: headline names %s / %s but "
+            "family_scores argmax/argmin are %s / %s"
+            % (hi_family, lo_family, hi[0], lo[0]))
+    if (abs(float(claim.get("hi_value", float("nan"))) - hi[1])
+            > AUDIT_TOLERANCE
+            or abs(float(claim.get("lo_value", float("nan"))) - lo[1])
+            > AUDIT_TOLERANCE):
+        raise RenderError(
+            "derived_claim_binding_mismatch: headline bound values %r / %r "
+            "do not match family_scores %r / %r"
+            % (claim.get("hi_value"), claim.get("lo_value"),
+               hi[1], lo[1]))
+    recomputed = hi[1] - lo[1]
+    displayed = claim.get("displayed_spread")
+    if displayed is None or abs(float(displayed) - recomputed) > AUDIT_TOLERANCE:
+        raise RenderError(
+            "derived_claim_recompute_mismatch: spread %r does not recompute "
+            "from %s %r - %s %r = %r (formula: %s)"
+            % (displayed, hi_family, hi[1], lo_family, lo[1],
+               recomputed, claim.get("formula")))
+    return float(displayed)
+
+
+def audit_narrative(text, allowed_numbers, allowed_dates, label,
+                    derived_claims=None, model=None):
+    """Number trace + forbidden words + imperatives. Raises RenderError.
+
+    ``derived_claims`` is a list of explicitly traced derived claims
+    (see verify_derived_claim): each is verified by recomputation
+    against ``model`` first, and only its verified displayed value may
+    then satisfy the number trace — a literal that matches no model
+    number and no verified derived value is still refused.
+    """
     if not text:
         return
     checked = text
@@ -242,18 +324,33 @@ def audit_narrative(text, allowed_numbers, allowed_dates, label):
             raise RenderError(
                 "prose_audit_failed: %s: forbidden wording %r in %r"
                 % (label, m.group(0), text[:160]))
-    # 2. Every number must trace to the model (within formatting rounding).
+    # 1b. Derived claims: verify each by recomputation against the raw
+    # model before any literal may rely on it.
+    derived_values = []
+    for claim in (derived_claims or []):
+        if model is None:
+            raise RenderError(
+                "derived_claim_no_model: %s passed without a model to "
+                "verify against" % label)
+        derived_values.append(verify_derived_claim(claim, model))
+    # 2. Every number must trace to the model (within formatting rounding),
+    # or to a verified derived claim's displayed value (matched tightly:
+    # the literal is the claim's own formatted value, so 0.001 suffices —
+    # the 0.011 audit tolerance applies to the claim's recomputation,
+    # not to the literal match).
     # The lookahead allows sentence-final punctuation: "8.20." must still
     # be audited as 8.20, not skipped because a period follows it.
     for m in re.finditer(r"[-+]?\d[\d,]*\.?\d*\s*%", checked):
         val = float(m.group(0).replace("%", "").replace(",", "").strip())
-        if not any(abs(val - n) <= 0.011 for n in allowed_numbers):
+        if not any(abs(val - n) <= 0.011 for n in allowed_numbers) \
+                and not any(abs(val - d) <= 0.001 for d in derived_values):
             raise RenderError(
                 "prose_audit_failed: %s: number %r has no model source in %r"
                 % (label, m.group(0), text[:160]))
     for m in re.finditer(r"(?<![\w.])[-+]?\d+\.\d+(?!\d)", checked):
         val = float(m.group(0))
-        if not any(abs(val - n) <= 0.011 for n in allowed_numbers):
+        if not any(abs(val - n) <= 0.011 for n in allowed_numbers) \
+                and not any(abs(val - d) <= 0.001 for d in derived_values):
             raise RenderError(
                 "prose_audit_failed: %s: number %r has no model source in %r"
                 % (label, m.group(0), text[:160]))
@@ -449,15 +546,35 @@ def band_levels(model):
 
 
 def disagreement_headline(model):
+    """Headline + its explicitly traced derived claim (#261).
+
+    Returns (headline, claim) or (None, None) when fewer than two
+    families scored. The spread is a derived number: the claim binds
+    it to its approved formula and source fields (the argmax/argmin
+    families and their raw scores) so the prose-audit can verify it by
+    recomputation instead of by registry membership.
+    """
     scores = {k: v for k, v in (model.get("family_scores") or {}).items()
               if v is not None}
     if len(scores) < 2:
-        return None
+        return None, None
     hi = max(scores.items(), key=lambda kv: kv[1])
     lo = min(scores.items(), key=lambda kv: kv[1])
-    return ("Families disagree: %s %s vs %s %s (spread %s)"
-            % (hi[0], fmt_score(hi[1]), lo[0], fmt_score(lo[1]),
-               fmt_score(hi[1] - lo[1])))
+    spread = hi[1] - lo[1]
+    headline = ("Families disagree: %s %s vs %s %s (spread %s)"
+                % (hi[0], fmt_score(hi[1]), lo[0], fmt_score(lo[1]),
+                   fmt_score(spread)))
+    claim = {
+        "name": "disagreement-spread",
+        "formula": APPROVED_DERIVATIONS["disagreement-spread"]["formula"],
+        "hi_family": hi[0],
+        "hi_value": hi[1],
+        "lo_family": lo[0],
+        "lo_value": lo[1],
+        "spread": spread,
+        "displayed_spread": float(fmt_score(spread)),
+    }
+    return headline, claim
 
 
 def drop_secrets(summary):
@@ -481,12 +598,14 @@ def drop_secrets(summary):
 
 
 def build_view(model, profile, delta, narrative, sweep_dir, i18n):
-    """One shared view feeding HTML + MD. Returns (sections, numbers)."""
+    """One shared view feeding HTML + MD. Returns (sections, numbers,
+    dates, log, slot_html, slot_md, quoted, derived_claims)."""
     t = model.get("ticker")
     ens = model.get("ensemble") or {}
     price = model.get("price") or {}
     numbers = list(model_numbers(model))
     dates = model_dates(model)
+    derived_claims = []  # explicitly traced derived claims (#261)
     if delta:
         numbers += model_numbers(delta)
         dates |= model_dates(delta)
@@ -578,9 +697,20 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # §2 family scores + applied weights + disagreement headline.
     fscores = model.get("family_scores") or {}
     fam_html, fam_md = [], ["## Family scores"]
-    headline = disagreement_headline(model)
+    headline, headline_claim = disagreement_headline(model)
     if headline:
-        audit_narrative(headline, numbers, dates, "disagreement-headline")
+        derived_claims.append(headline_claim)
+        audit_narrative(headline, numbers, dates, "disagreement-headline",
+                        derived_claims=derived_claims, model=model)
+        log.append("derived-claim disagreement-spread: %s %r - %s %r = %r "
+                   "(displayed %s; formula: %s)"
+                   % (headline_claim["hi_family"],
+                      headline_claim["hi_value"],
+                      headline_claim["lo_family"],
+                      headline_claim["lo_value"],
+                      headline_claim["spread"],
+                      fmt_score(headline_claim["spread"]),
+                      headline_claim["formula"]))
         fam_html.append('<p class="headline">%s</p>' % esc(headline))
         fam_md.append(headline)
     fam_html.append("<table><thead><tr><th>Family</th><th>Score</th></tr></thead><tbody>")
@@ -1056,7 +1186,7 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             audit_narrative(text, numbers, dates, "narrative.%s" % sid)
             slot_html.append('<p class="slot">%s</p>' % esc(text))
             slot_md.append(text)
-    return sections, numbers, dates, log, slot_html, slot_md, quoted
+    return sections, numbers, dates, log, slot_html, slot_md, quoted, derived_claims
 
 
 def _looks_arabic(text):
@@ -1289,8 +1419,9 @@ def main(argv=None):
         if cb:
             AUDIT_EXEMPT.append(cb)
 
-        sections, numbers, dates, log, slot_html, slot_md, quoted = build_view(
-            model, profile, delta, narrative, args.sweep_dir, i18n)
+        sections, numbers, dates, log, slot_html, slot_md, quoted, \
+            derived_claims = build_view(
+                model, profile, delta, narrative, args.sweep_dir, i18n)
 
         out_dir = args.out_dir or os.path.dirname(os.path.abspath(args.model))
         os.makedirs(out_dir, exist_ok=True)
@@ -1308,11 +1439,16 @@ def main(argv=None):
         for q_html, _q_md in quoted:
             visible = visible.replace(
                 html.unescape(re.sub(r"<[^>]+>", " ", q_html)), " ")
-        audit_narrative(visible, numbers, dates, "rendered-html")
+        # The whole-document audit re-verifies the derived claims too
+        # (#261): the spread appears in the rendered twins, so it must
+        # pass here as a traced derivation, not by registry coincidence.
+        audit_narrative(visible, numbers, dates, "rendered-html",
+                        derived_claims=derived_claims, model=model)
         md_audited = md_text
         for _q_html, q_md in quoted:
             md_audited = md_audited.replace(q_md, " ")
-        audit_narrative(md_audited, numbers, dates, "rendered-md")
+        audit_narrative(md_audited, numbers, dates, "rendered-md",
+                        derived_claims=derived_claims, model=model)
         with open(os.path.join(out_dir, "report.html"), "w", encoding="utf-8") as fh:
             fh.write(html_text)
         with open(os.path.join(out_dir, "report.md"), "w", encoding="utf-8") as fh:
