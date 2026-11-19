@@ -145,13 +145,63 @@ archived by `worker/worker.py` `publish()`):
   fixture PDF) prove this on the real COMI 297291 body: the extracted
   NPAT `63079356` / announced `2026-11-10` trace to `63,079,356` /
   `10/11/2026` in the stored PDF.
-- Out of scope, unchanged: PDF-only field extraction (revenue, board
-  details, record date from inside PDFs) — a separate follow-up if
-  wanted. The link rules were not verified against a live EGX detail
-  page (egx.com.eg sits behind TSPD; no live fetch from the VM) —
-  they are grounded in the harvested body text only, so the first
-  live harvest should be checked for `captured` vs `no_attachment`
-  rates before relying on coverage.
+- Out of scope for #279 (see #301 below: candidate reporting with
+  evidence exists now; promotion into events is still a separate
+  stage): PDF-only field extraction (revenue, board details, record
+  date from inside PDFs). The link rules were not verified against
+  a live EGX detail page (egx.com.eg sits behind TSPD; no live fetch
+  from the VM) — they are grounded in the harvested body text only,
+  so the first live harvest should be checked for `captured` vs
+  `no_attachment` rates before relying on coverage.
+
+## PDF-text verification (#301, INS-299 follow-up)
+
+`scripts/pdf_verify.py` (`verify` subcommand) verifies the fields
+`disclosure_events.py` extracted from a harvested body against the
+stored source PDF(s), and reports the fields only the PDF carries.
+It replaces the byte-substring check above for field verification
+(`fields_present_in_pdf()` stays as a capture-level aid only) and
+does NOT adopt #299's scripts (`scripts/pdf_text.py` on branch
+`279-attachment-capture` was a duplicate of #297 and was not merged).
+
+- Engine: `scripts/pdf_text.py` reads text with pypdf (pinned in
+  `requirements.txt`, layout mode — Arabic in logical order). A
+  valid PDF with no text layer is `scanned` (OCR needed); a font
+  without a ToUnicode mapping makes its Arabic labels
+  inconclusive, never "missing"; no pypdf installed is
+  `unsupported` (also inconclusive, never a pass or a fail).
+- Role-aware: a value verifies only in the window after one of its
+  own field labels (e.g. `صافي الربح` for NPAT, `تاريخ تحريك
+  الحدود السعرية` for ex-date), cut off at the next label — so a
+  swapped ex-date/payout date or current/comparative NPAT fails
+  with `wrong_role` even though both values are in the PDF.
+  Period start/end verify as one `من..إلى` range.
+- Sign-aware numerics: a leading minus or parentheses mean a loss;
+  positive 100 never matches (100) or -100. Tolerances are
+  field-specific: dividend `amount_per_share` keeps the #131
+  coupon rule (max(0.02, 1%)); earnings money needs exact Decimal
+  equality; a PDF scale (`بالألف`/`بالمليون`) disagreeing with the
+  event's scale is `scale_mismatch`.
+- Contract: consumes the merged plural `attachments` pointers
+  (never the singular `attachment` #299 expected). Each captured
+  file is resolved strictly inside the archive root and hash-checked
+  with `verify_attachment()` before it is read. Per-field evidence
+  is page + verbatim quote + label + the pointer sha256.
+- PDF-only fields — the rule: a field in the event type's table
+  whose payload value is null, carried by the PDF with role
+  evidence, is reported under `pdf_only_fields` as a candidate
+  with evidence. It is never written into the event and never
+  changes its status; promoting it is a separate stage.
+- Statuses: `verified` / `partial` (some verified, rest merely
+  absent) / `mismatch` (any field the PDF contradicts, even when
+  others verify) / `missing` / `inconclusive` / `skipped`.
+  The verifier never mutates an event and never upgrades
+  `verification_status`. CLI exit codes: 0 = ≥1 verified, none
+  failed; 1 = any partial/mismatch/missing/inconclusive; 2 = zero
+  events, or zero events actually checked (all skipped) — zero exit
+  is not successful coverage. Tests: `scripts/test_pdf_verify_301.py`
+  (40 checks: role/swap negatives, sign/scale, plural attachments,
+  hash/path cases, scanned/unmapped/unsupported, CLI exit codes).
 
 ## Live wiring (#278, option A sweep-live)
 
