@@ -746,7 +746,7 @@ def case12_offline_bilingual(ctx, out):
     check("12 AR chart legend", "متصل: إغلاقات مسجلة" in ar_vis)
     check("12 AR display maps",
           all(s in ar_vis for s in (
-              "صاعد", "متفقة", "توزيع نقدي", "عرض التشغيل", "ناجح",
+              "صاعد", "متفق", "توزيع نقدي", "عرض التشغيل", "ناجح",
               "بيانات", "الأخبار:", "مستوى الخطر:")))
     tpl_keys = set(re.findall(r'data-i18n-tpl="([^"]+)"', h))
     missing_tpl = [k for k in tpl_keys
