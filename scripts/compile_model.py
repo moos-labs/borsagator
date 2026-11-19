@@ -1992,8 +1992,14 @@ def main(argv=None):
         problems = validate_model_schema(model)
         if problems:
             for problem in problems:
-                print(f"model_schema_unsupported: {problem}",
-                      file=sys.stderr)
+                # The problem may already carry the prefix (the
+                # shared gate phrases the tuple refusal that way):
+                # print it as-is instead of doubling the prefix.
+                if problem.startswith("model_schema_unsupported: "):
+                    print(problem, file=sys.stderr)
+                else:
+                    print(f"model_schema_unsupported: {problem}",
+                          file=sys.stderr)
             return 2
         print(f"model schema OK: {model.get('schema')} "
               f"(model_version {model.get('model_version')})")

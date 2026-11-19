@@ -129,8 +129,14 @@ def validate_model(model):
     empty events set."""
     problems = report_model.validate_model(model)
     if problems:
+        # The shared gate phrases the tuple refusal with the prefix
+        # already: strip it per problem so the refusal carries the
+        # prefix once, not twice.
+        stripped = [p[len("model_schema_unsupported: "):]
+                    if p.startswith("model_schema_unsupported: ") else p
+                    for p in problems]
         raise RenderError(
-            "model_schema_unsupported: " + "; ".join(problems))
+            "model_schema_unsupported: " + "; ".join(stripped))
     if model.get("metrics_schema") != METRICS_SCHEMA:
         raise RenderError(
             "model_schema_unsupported: metrics_schema %r, expected %r"

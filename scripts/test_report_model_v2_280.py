@@ -143,6 +143,67 @@ def test_unknown_versions_refused_everywhere():
     assert_refused_everywhere(None)
 
 
+def test_coerced_markers_refused_everywhere():
+    v2 = load_fixture("v2-model.json")
+    v1 = load_fixture("v1-model.json")
+    # 2.0 is not 2, True is not 1, 1.0 is not 1, "2" is not 2:
+    # tuple membership would coerce all four (== / hash), so the
+    # shared gate checks the marker types strictly (Ins's matrix).
+    for version, schema, base in (
+            (2.0, "borsagator-report-model/2", v2),
+            (True, "borsagator-report-model/1", v1),
+            (1.0, "borsagator-report-model/1", v1),
+            ("2", "borsagator-report-model/2", v2)):
+        coerced = dict(base)
+        coerced["model_version"] = version
+        coerced["schema"] = schema
+        assert_refused_everywhere(coerced)
+    # Same pair through the CLI: --check-model exits 2.
+    tmp = tempfile.mkdtemp(prefix="borsagator-280-coerced-")
+    try:
+        path = os.path.join(tmp, "coerced.json")
+        coerced = dict(v2)
+        coerced["model_version"] = 2.0
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(coerced, fh)
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "compile_model.py"),
+             "--check-model", path], capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert "model_schema_unsupported" in proc.stderr
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_refusal_prefix_printed_once():
+    # --check-model stderr carries "model_schema_unsupported: "
+    # exactly once: the shared gate phrases the refusal with the
+    # prefix, so the CLI must not add it again — and the render
+    # refusal carries it once too.
+    tmp = tempfile.mkdtemp(prefix="borsagator-280-prefix-")
+    try:
+        path = os.path.join(tmp, "bad.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump({"model_version": 3,
+                       "schema": "borsagator-report-model/3"}, fh)
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "compile_model.py"),
+             "--check-model", path], capture_output=True, text=True)
+        assert proc.returncode == 2, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported: ") == 1, \
+            proc.stderr
+        proc = subprocess.run(
+            [sys.executable, os.path.join(SCRIPTS, "render.py"),
+             path, "--profile",
+             os.path.join(ROOT, "profiles", "POUL.CA.json"),
+             "--out-dir", tmp], capture_output=True, text=True)
+        assert proc.returncode != 0, proc.stdout + proc.stderr
+        assert proc.stderr.count("model_schema_unsupported: ") == 1, \
+            proc.stderr
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_no_bump_schema_diff():
     v1 = load_fixture("v1-model.json")
     v2 = load_fixture("v2-model.json")
@@ -725,6 +786,10 @@ def main():
           test_mixed_markers_refused_everywhere)
     check("unknown versions refused everywhere",
           test_unknown_versions_refused_everywhere)
+    check("coerced markers refused everywhere",
+          test_coerced_markers_refused_everywhere)
+    check("refusal prefix printed once",
+          test_refusal_prefix_printed_once)
     check("no-bump schema-diff check", test_no_bump_schema_diff)
     check("malformed events refused everywhere",
           test_malformed_events_refused_everywhere)

@@ -404,6 +404,17 @@ def validate_model(model):
         return ["model is not an object"]
     version = model.get("model_version")
     schema = model.get("schema")
+    if type(version) is not int or type(schema) is not str:
+        # No coercion: 2.0 is not 2, True is not 1, "2" is not 2.
+        # Tuple membership alone would accept all three (== / hash),
+        # so the types are checked strictly first (Ins's matrix
+        # forbids coercing 2.0 into an integer version).
+        problems.append(
+            f"model_schema_unsupported: expected (1, "
+            f"'borsagator-report-model/1') or (2, "
+            f"'borsagator-report-model/2'), found "
+            f"({version!r}, {schema!r})")
+        return problems
     if (version, schema) not in SUPPORTED_VERSIONS:
         problems.append(
             f"model_schema_unsupported: expected (1, "
