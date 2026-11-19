@@ -151,12 +151,32 @@ def visible_text(html_text):
     return html_mod.unescape(txt)
 
 
+def _fmt_tpl(tpl, args, display, table):
+    """Mirror of render.py's setLang fmtTpl: substitute {name} from
+    args, mapping display-mapped args through display.<kind>.<value>
+    first (raw value on a miss — exactly what the JS does)."""
+    def _sub(m):
+        name = m.group(1)
+        if name not in args:
+            return m.group(0)
+        v = args[name]
+        kind = display.get(name)
+        if kind:
+            key = "display.%s.%s" % (kind, v)
+            if key in table:
+                return table[key]
+        return v
+    return re.sub(r"\{(\w+)\}", _sub, tpl)
+
+
 def ar_visible_text(html_text):
     """Simulate the EN->AR toggle (ported from the render-69 build,
     its case 12): replace every data-i18n element's content with the
     AR string from the embedded window.I18N table — exactly what
     setLang('ar') does via textContent — then strip to visible
-    text."""
+    text. Issue #268: also simulates data-i18n-tpl elements (AR
+    template + data-tpl-* args, display-mapped where
+    data-tpl-display says so), mirroring setLang's fmtTpl."""
     m = re.search(r"window\.I18N=(\{.*?\});", html_text, re.S)
     table = json.loads(m.group(1)) if m else {}
     ar = table.get("ar", {})
@@ -168,9 +188,33 @@ def ar_visible_text(html_text):
                 tag, pre, key, post, ar[key], tag)
         return mm.group(0)
 
+    def _sub_tpl(mm):
+        tag, pre, key, post = mm.group(1), mm.group(2), mm.group(3), mm.group(4)
+        if key not in ar:
+            return mm.group(0)
+        opening = pre + post
+        args = {}
+        for name, val in re.findall(r"data-tpl-([a-z0-9_]+)=\"([^\"]*)\"",
+                                    opening):
+            if name == "display":
+                continue
+            args[name] = html_mod.unescape(val)
+        display = {}
+        spec = re.search(r"data-tpl-display=\"([^\"]*)\"", opening)
+        if spec:
+            for pair in spec.group(1).split(","):
+                kv = pair.split(":")
+                if len(kv) == 2:
+                    display[kv[0]] = kv[1]
+        return '<%s%sdata-i18n-tpl="%s"%s>%s</%s>' % (
+            tag, pre, key, post,
+            _fmt_tpl(ar[key], args, display, ar), tag)
+
     body = re.sub(r"<script.*?</script>", " ", html_text, flags=re.S)
     out = re.sub(r"<(\w+)([^>]*?)data-i18n=\"([^\"]+)\"([^>]*)>(.*?)</\1>",
                  _sub, body, flags=re.S)
+    out = re.sub(r"<(\w+)([^>]*?)data-i18n-tpl=\"([^\"]+)\"([^>]*)>(.*?)</\1>",
+                 _sub_tpl, out, flags=re.S)
     return visible_text(out)
 
 
@@ -690,6 +734,34 @@ def case12_offline_bilingual(ctx, out):
           "en=%d ar=%d" % (len(en_nums), len(ar_nums)))
     check("12 toggle sets lang/dir",
           'document.documentElement.lang' in h and "dir=" in h)
+    # Issue #268: the toggle must translate the whole renderer
+    # chrome, not just the data-i18n static strings — title, the
+    # disagreement headline (template), the chart legend, and every
+    # display-mapped enum/flag/basis value. The AR view is the
+    # setLang simulation above, so these assert on simulated AR text.
+    ar_vis = ar_visible_text(h)
+    check("12 AR title", "تقرير بورساجاتور" in ar_vis)
+    check("12 AR headline", "تختلف العائلات:" in ar_vis
+          and "الأساسيات" in ar_vis and "المشاعر" in ar_vis)
+    check("12 AR chart legend", "متصل: إغلاقات مسجلة" in ar_vis)
+    check("12 AR display maps",
+          all(s in ar_vis for s in (
+              "صاعد", "متفقة", "توزيع نقدي", "عرض التشغيل", "ناجح",
+              "بيانات", "الأخبار:", "مستوى الخطر:")))
+    tpl_keys = set(re.findall(r'data-i18n-tpl="([^"]+)"', h))
+    missing_tpl = [k for k in tpl_keys
+                   if k not in table.get("en", {}) or k not in table.get("ar", {})]
+    check("12 every data-i18n-tpl key has EN+AR", missing_tpl == [],
+          str(missing_tpl))
+    aria_keys = set(re.findall(r'data-i18n-aria="([^"]+)"', h))
+    missing_aria = [k for k in aria_keys
+                    if k not in table.get("en", {}) or k not in table.get("ar", {})]
+    check("12 every data-i18n-aria key has EN+AR", missing_aria == [],
+          str(missing_aria))
+    # (Negative "no bare English chrome" coverage lives in
+    # scripts/test_render_i18n_268.py, which classifies every
+    # remaining Latin node of the golden AR view against the quoted
+    # tool reports, news titles and identifiers.)
     # Tampered i18n table (one AR string deleted) must fail the render.
     i18n = load_json(os.path.join(ctx["repo"], "scripts", "render_i18n.json"))
     del i18n["bands.support"]["ar"]
@@ -1282,7 +1354,7 @@ def case23_derived_headline_261(ctx):
     # (c) Forgery / binding / untraced mutations must be REFUSED.
     module = _load_render_module(os.path.join(ctx["repo"], "scripts",
                                               "render.py"))
-    headline, claim = module.disagreement_headline(model)
+    headline, claim, _tpl_args = module.disagreement_headline(model)
     check("23c renderer builds the live headline",
           headline == LIVE261_HEADLINE)
     check("23c correct derivation passes the audit",
