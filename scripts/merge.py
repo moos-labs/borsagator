@@ -621,6 +621,19 @@ def merge(job, run_dir, registry_path, weights_path, ensemble_path,
                 src = bench_dir / name
                 if src.is_file():
                     _copy(src, f"benchmark/{name}")
+        # Issue #280: stage the #278 disclosure-events feed file
+        # for this ticker into the sweep dir, so the Report Model
+        # compiler (v2) can surface it. Absent on Actions sweeps
+        # and pre-#278 runs: the compiler records "missing", never
+        # a failure. The file is staged as-is and validated by the
+        # compiler — a malformed feed surfaces as "unavailable"
+        # with the reason named, never as a merge refusal.
+        events_src = run_dir / "disclosure-events" / (
+            f"{ticker.split('.')[0]}-events.json")
+        if events_src.is_file():
+            _copy(events_src,
+                  f"disclosure-events/{ticker.split('.')[0]}"
+                  f"-events.json")
         for dirpath, _dirs, names in os.walk(collected):
             _dirs.sort()  # deterministic manifest file order
             for name in sorted(names):

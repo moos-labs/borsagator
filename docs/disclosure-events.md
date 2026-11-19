@@ -162,7 +162,7 @@ the sweep's tool loop in `_execute_body`):
   `harvested_at`, still within the bound). A later refresh by the news
   tool's own `ensure_harvest` does **not** rescue a failed phase 1 —
   the feed consumes only what the pre-sweep refresh produced or
-  validated; the next sweep re-extracts the full 45-day window, so
+  validated; the next sweep re-extracts the full 90-day window, so
   skipping loses no disclosure. Note the bounds differ by design:
   the news tool still serves a cache up to 72 h (its matching is
   content-based); the disclosure feed refuses anything past 12 h.
@@ -179,3 +179,67 @@ appears in the next sweep's events with announced `2026-11-19`
 `refresh → extract → merge → compile → render` order in the real
 `_execute_body`. The same file fails on pristine main (the wiring
 does not exist there).
+
+## Surfacing in the Report Model — v2 (#280)
+
+The events feed is surfaced in the Report Model under **strict D-7**:
+`model_version=2`, schema `borsagator-report-model/2`. The contract
+lives in one place — `scripts/report_model.py` (the single pinned
+authority the compiler, the validator, the renderer and the delta
+adapter all import) — and is frozen by the fixtures in
+`scripts/report_model_fixtures/` and the tests in
+`scripts/test_report_model_v2_280.py`.
+
+- **Pipeline:** `merge.py` stages the feed file
+  (`disclosure-events/<CODE>-events.json`, written by the worker's
+  phase 2 into the run dir) into the staged sweep dir, next to the
+  benchmark entrants. The compiler reads it from the sweep dir only;
+  the worker's `maybe_compile` re-validates the emitted model with
+  `--check-model` and `maybe_render` renders it — both from the same
+  checkout, so producer and readers are pinned together by code SHA.
+  A rollback stays compatible: v1 readers refuse v2 models (exit 2 /
+  `model_schema_unsupported`) and v2 readers still accept frozen v1
+  models. Nothing ever relabels v2 content as v1.
+- **The block** (`disclosure_events`, one new top-level field):
+  `status` (`valid` | `missing` | `unavailable` | `stale`), `source`
+  (sweep-dir-relative feed path), the feed's own provenance
+  (`feed_schema_version`, `extractor_version`, `config_hash`,
+  `quarter`, `feed_report`), `events` (records verbatim from the
+  feed — amounts are decimal strings, never floats; every field
+  carries evidence pointers: `source_url`,
+  `document_revision_id` (`clipped-body-sha256:…`), per-field
+  spans), `counts` (derived from `events`), `reason` (null on
+  valid). States are distinct and never conflated:
+  - `missing` — no feed file for the ticker (Actions sweeps,
+    pre-#278 runs). Normal state, no flag.
+  - `unavailable` — a file exists but failed validation. Flagged;
+    never partially surfaced.
+  - `stale` — feed valid but its quarter window ends before the
+    sweep date. Flagged; events still carried.
+  - `valid` — feed read and validated. Zero events is a valid-empty
+    state (recorded absence, not a gap).
+  A v1 model carries no block: events were **not recorded** by that
+  contract — the renderer says so, and the delta reports it as
+  "not recorded", never as an empty events set and never as
+  added/removed churn against a v2 model.
+- **Version policy (one policy, everywhere):** exact tuples only —
+  (1, `/1`) and (2, `/2`); mixed markers and unknown future versions
+  are refused identically by `--check-model`, the renderer and the
+  delta adapter. The no-bump schema-diff check refuses a model that
+  carries a field its declared version does not define, even when
+  its markers agree (a contract-field change without the required
+  bump). The Sharia additive-v1 note is a **historical v1 exception
+  only** — v1 models with or without `sharia` are both legal; it
+  must never be copied into another silent v1 addition.
+- **Determinism:** the v2 output is byte-identical across compiles
+  of the same sweep dir (sorted keys, fixed float formatting, no
+  wall-clock timestamps — the compiler's existing guarantees), and
+  the legacy financial / Sharia / common-field behaviour is
+  unchanged: a v2 compile of a sweep without a feed file differs
+  from its v1 compile only in the two version markers and the new
+  block.
+- **Negative controls:** a mismatch (mixed markers, unknown
+  version, malformed events) is refused by every consumer and, on
+  the compile path, the #161 quarantine moves a previous model
+  aside before any recompile is attempted — a refused recompile
+  never leaves stale output looking current.

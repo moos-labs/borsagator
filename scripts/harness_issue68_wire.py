@@ -284,9 +284,9 @@ def main(argv=None):
                 ensemble = json.load(handle)
             check("W-14 model parses under strict JSON",
                   isinstance(model, dict))
-            check("W-15 schema is borsagator-report-model/1",
-                  model.get("schema") == "borsagator-report-model/1"
-                  and model.get("model_version") == 1,
+            check("W-15 schema is borsagator-report-model/2",
+                  model.get("schema") == "borsagator-report-model/2"
+                  and model.get("model_version") == 2,
                   str(model.get("schema")))
             check("W-16 ticker POUL.CA, base 8.02 / 2026-11-16",
                   model.get("ticker") == "POUL.CA"

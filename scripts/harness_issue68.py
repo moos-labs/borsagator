@@ -188,9 +188,9 @@ def case2_golden(archive_root):
     if m is None:
         check("2b model emitted", False, "no model")
         return None
-    check("2b schema is borsagator-report-model/1",
-          m.get("schema") == "borsagator-report-model/1"
-          and m.get("model_version") == 1)
+    check("2b schema is borsagator-report-model/2",
+          m.get("schema") == "borsagator-report-model/2"
+          and m.get("model_version") == 2)
     check("2c base 8.02 / base_date 2026-11-16",
           m["price"]["base_price"] == 8.02
           and m["price"]["base_date"] == "2026-11-16")

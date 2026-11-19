@@ -1934,7 +1934,7 @@ def ensure_harvest(code):
 # by the news tool's own ensure_harvest does NOT rescue a failed
 # phase 1 — the feed consumes only what the pre-sweep refresh
 # produced or validated; the next sweep re-extracts the full
-# 45-day window, so skipping loses no disclosure.
+# 90-day window, so skipping loses no disclosure.
 DISCLOSURE_TICKERS = ("POUL", "COMI")
 DISCLOSURE_FRESH_HOURS = 12  # same bound as HARVEST_TTL_HOURS
 DISCLOSURE_EXTRACT_TIMEOUT = 300

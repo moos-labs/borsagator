@@ -49,6 +49,12 @@ import sys
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
+try:
+    import report_model
+except ImportError:  # imported from a checkout without scripts/ on path
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import report_model
+
 DELTA_VERSION = 1
 
 # Thresholds (issue #70 scoping section 4g, adopted as proposed).
@@ -415,7 +421,14 @@ def tripwire(digest, ensemble):
 
 # ------------------------------------------------------- model-path input
 
-MODEL_SCHEMA = "borsagator-report-model/1"
+# The Report Model contract (versions, field sets, no-bump schema-diff
+# check) lives in scripts/report_model.py — the single pinned
+# authority. This module never re-states a version marker: the gate
+# below refuses mixed markers and unknown versions exactly as the
+# validator and the renderer do (#280: delta used to check only the
+# schema string, so /1 with model_version 2 passed here while the
+# other two consumers refused it).
+MODEL_SCHEMA = report_model.SCHEMA
 
 # The raw view's price-series entry carries exactly these five keys
 # (delta.py _read_price_series); the model carries more per series
@@ -429,8 +442,8 @@ _PRICE_SERIES_KEYS = ("last_date", "last_close", "last_volume",
 
 def model_to_view(model, sweep_dir=None, archive_sha=None):
     """Build a sweep view from a parsed Report Model dict (schema
-    ``borsagator-report-model/1``) -- the model-path input to the
-    same ``compute_delta`` core the raw-ensemble path feeds.
+    ``borsagator-report-model/1`` or ``/2``) -- the model-path input
+    to the same ``compute_delta`` core the raw-ensemble path feeds.
 
     The converter reads ONLY the model (plus the sweep dir it is
     handed, for the path strings the delta pins): it never re-reads
@@ -477,11 +490,20 @@ def model_to_view(model, sweep_dir=None, archive_sha=None):
       #170): the Report Model's Sharia evaluation section,
       projected by the compiler from the engine's stored verdict
       tables; the v1 diff core does not read it.
+    * ``disclosure_events`` -- carried in the view for the renderer
+      and the events diff (#280, v2 only): the structured bilingual
+      EGX disclosure events for the sweep, with its status
+      (valid / missing / unavailable / stale). A v1 model carries
+      no block: events were NOT RECORDED by that contract, which
+      the diff reports as "not recorded" — never as an empty
+      events set, and never as added/removed churn against a v2
+      model. A v2 model with status "missing" / "unavailable" /
+      "stale" DOES carry a block, and the diff compares statuses.
     """
-    if not isinstance(model, dict) or model.get("schema") != MODEL_SCHEMA:
+    problems = report_model.validate_model(model)
+    if problems:
         raise DeltaError(
-            f"not a {MODEL_SCHEMA} report model: schema is "
-            f"{(model or {}).get('schema')!r}")
+            "report model refused: " + "; ".join(problems))
     ensemble = model.get("ensemble") or {}
     news = model.get("news") or {}
     pin = model.get("ledger_pin") or {}
@@ -568,16 +590,19 @@ def model_to_view(model, sweep_dir=None, archive_sha=None):
                                         or news.get("disclosure_count")),
             "ledger_pin": {"counts": pin.get("counts"),
                            "counts_source": "report-model ledger_pin "
-                           f"({MODEL_SCHEMA})",
+                           f"({model.get('schema')})",
                            "weights_file_sha256":
                                pin.get("weights_file_sha256")
                                or applied.get("file_sha256"),
                            "eligible": applied.get("eligible") or {}},
             "levels": model.get("levels"),
             "sharia": model.get("sharia"),
+            "model_version": model.get("model_version"),
+            "disclosure_events": model.get("disclosure_events"),
             "tripwire": tripwire_problems,
             "notes": ["view built from report-model.json "
-                      f"({MODEL_SCHEMA}); raw sweep files not read"]}
+                      f"({model.get('schema')}); raw sweep files "
+                      "not read"]}
 
 
 def load_model_view(sweep_dir, archive_sha=None):
@@ -1269,6 +1294,84 @@ def _diff_news(prev, cur):
     return out
 
 
+def _diff_disclosure_events(prev, cur):
+    """Disclosure-events diff (#280): an explicit policy, never a
+    silent conflation. A side with no block (a v1 model, or a raw
+    sweep view) did NOT record events by the v2 contract — that is
+    "not recorded", not an empty events set, so no added/removed
+    churn is ever reported against it. Two v2 blocks compare by
+    status first (a status move is a change), then by event_id:
+    added / removed / revision-changed (same event_id, a new
+    ``event_revision_id``). Counts are context only."""
+    prev_block = prev.get("disclosure_events")
+    cur_block = cur.get("disclosure_events")
+    if prev_block is None or cur_block is None:
+        if prev_block is None and cur_block is None:
+            note = ("disclosure events not recorded on either side "
+                    "(model v1 contract carries no events block); "
+                    "not an empty events set")
+            side = "both"
+        elif prev_block is None:
+            note = ("disclosure events not recorded in the previous "
+                    "model (v1 contract); the current model's events "
+                    "cannot be diffed against an unrecorded set — "
+                    "not added events")
+            side = "previous"
+        else:
+            note = ("disclosure events not recorded in the current "
+                    "model (v1 contract); the previous model's "
+                    "events cannot be diffed against an unrecorded "
+                    "set — not removed events")
+            side = "current"
+        return _section(False, note,
+                        **{"policy": "not-recorded",
+                           "missing_side": side,
+                           "flagged": False})
+    prev_events = {e.get("event_id"): e
+                   for e in prev_block.get("events") or []}
+    cur_events = {e.get("event_id"): e
+                  for e in cur_block.get("events") or []}
+    added = [cur_events[k] for k in sorted(
+        set(cur_events) - set(prev_events))]
+    removed = [prev_events[k] for k in sorted(
+        set(prev_events) - set(cur_events))]
+    revision_changed = []
+    for event_id in sorted(set(prev_events) & set(cur_events)):
+        if prev_events[event_id].get("event_revision_id") != \
+                cur_events[event_id].get("event_revision_id"):
+            revision_changed.append({
+                "event_id": event_id,
+                "from_revision":
+                    prev_events[event_id].get("event_revision_id"),
+                "to_revision":
+                    cur_events[event_id].get("event_revision_id")})
+    status_moved = prev_block.get("status") != cur_block.get("status")
+    changed = bool(status_moved or added or removed or revision_changed)
+    note = (f"events {len(prev_events)} -> {len(cur_events)} "
+            f"({prev_block.get('status')} -> {cur_block.get('status')})")
+    if added:
+        note += f"; +{len(added)} added"
+    if removed:
+        note += f"; -{len(removed)} removed"
+    if revision_changed:
+        note += (f"; {len(revision_changed)} revision change(s)")
+    return _section(
+        changed, note,
+        **{"policy": "compared",
+           "status": {"from": prev_block.get("status"),
+                      "to": cur_block.get("status")},
+           "added": [{"event_id": e.get("event_id"),
+                      "event_type": e.get("event_type")}
+                     for e in added],
+           "removed": [{"event_id": e.get("event_id"),
+                        "event_type": e.get("event_type")}
+                       for e in removed],
+           "revision_changed": revision_changed,
+           "counts": {"from": prev_block.get("counts"),
+                      "to": cur_block.get("counts")},
+           "flagged": changed})
+
+
 def _diff_tools(prev, cur):
     """Tool add / remove / status change is a shape note, never a
     ticker change. A tool present on one side only is listed, never
@@ -1368,6 +1471,7 @@ def compute_delta(prev, cur):
         "corporate_actions": _diff_corporate_actions(prev, cur),
         "risk": _diff_risk(prev, cur),
         "news": _diff_news(prev, cur),
+        "disclosure_events": _diff_disclosure_events(prev, cur),
         "tools": _diff_tools(prev, cur),
         "calibration": _diff_calibration(prev, cur, ex_action),
     }
@@ -1401,7 +1505,8 @@ def first_sweep_delta(cur):
     an error. Every section reports "no previous sweep"."""
     sections = {}
     for name in ("price", "horizons", "family_scores", "weights",
-                 "corporate_actions", "risk", "news", "tools",
+                 "corporate_actions", "risk", "news",
+                 "disclosure_events", "tools",
                  "calibration"):
         sections[name] = _section(
             None, "no previous sweep of this ticker + job shape")
@@ -1537,6 +1642,8 @@ def to_markdown(delta):
     for label in ("news", "disclosures"):
         entry = sections["news"][label]
         lines.append(f"- {label}: {entry['note']}")
+    lines.append("## Disclosure events")
+    lines.append(f"- {sections['disclosure_events']['note']}")
     lines.append("## Tools")
     lines.append(f"- {sections['tools']['note']}")
     lines.append("## Calibration")
