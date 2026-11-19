@@ -111,11 +111,17 @@ def _sha(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def find_dates(text):
+def find_dates(text, default_year=2026):
     """All (date, start, end) in digit-normalised text: d/m/Y and
     '15 نوفمبر 2026' / '15 November 2026' forms. Offsets are into the
     normalised text (evidence spans are measured there; the raw span is
-    kept alongside). Precedent: ensemble._find_dates."""
+    kept alongside). Precedent: ensemble._find_dates.
+
+    A yearless month-name date ('15 نوفمبر') defaults to
+    default_year — a body-extraction convenience, NOT evidence: the
+    verifier must use find_dates_explicit_year() instead, so a bare
+    month-name date can never confirm a prediction for that year
+    (#312: a 2027 document could otherwise falsely confirm 2026)."""
     t = norm_digits(text)
     found = []
     for m in re.finditer(r"(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{4})", t):
@@ -129,7 +135,43 @@ def find_dates(text):
         for m in re.finditer(r"(\d{1,2})\s+" + re.escape(name) +
                              r"(?:\s+(\d{4}))?", low):
             try:
-                found.append((date(int(m.group(2) or 2026), mon,
+                found.append((date(int(m.group(2) or default_year), mon,
+                                   int(m.group(1))), m.start(), m.end()))
+            except ValueError:
+                pass
+        for m in re.finditer(re.escape(name) +
+                             r"\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})",
+                             low):
+            try:
+                found.append((date(int(m.group(2)), mon, int(m.group(1))),
+                              m.start(), m.end()))
+            except ValueError:
+                pass
+    return found
+
+
+def find_dates_explicit_year(text):
+    """(date, start, end) for dates carrying an explicit year only.
+
+    Verification policy (#312): a yearless month-name date is never
+    evidence for a dated prediction — only numeric d/m/Y dates and
+    month-name dates with a printed year are returned. Body
+    extraction keeps find_dates() and its default-year convenience;
+    verification must not inherit that assumption."""
+    t = norm_digits(text)
+    found = []
+    for m in re.finditer(r"(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{4})", t):
+        try:
+            found.append((date(int(m.group(3)), int(m.group(2)),
+                               int(m.group(1))), m.start(), m.end()))
+        except ValueError:
+            pass
+    low = t.lower()
+    for name, mon in _MONTHS.items():
+        for m in re.finditer(r"(\d{1,2})\s+" + re.escape(name) +
+                             r"\s+(\d{4})", low):
+            try:
+                found.append((date(int(m.group(2)), mon,
                                    int(m.group(1))), m.start(), m.end()))
             except ValueError:
                 pass
