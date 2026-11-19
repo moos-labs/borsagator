@@ -365,6 +365,14 @@ def scorer_checks():
         except Exception as e:  # a crashing case is a failed case
             ok, detail = False, "raised %r" % (e,)
         check("scorer-283: %s" % name, ok, detail)
+    print("== completion-gate checks (#314) ==")
+    import test_top30_completion_314 as t314
+    for name, fn in t314.CASES:
+        try:
+            ok, detail = fn()
+        except Exception as e:  # a crashing case is a failed case
+            ok, detail = False, "raised %r" % (e,)
+        check("completion-314: %s" % name, ok, detail)
 
 
 # --- determinism ---------------------------------------------------------------
