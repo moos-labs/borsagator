@@ -219,6 +219,129 @@ def load_i18n(path):
     return table
 
 
+# --- i18n templates + display maps (§2h, issue #268) --------------------
+# Two mechanisms, one table (render_i18n.json, EN/AR parity fail-closed):
+#
+# 1. Static chrome: <... data-i18n="key">EN</...> — setLang swaps the
+#    whole element from window.I18N (the pre-existing mechanism).
+# 2. Templated chrome: <... data-i18n-tpl="key" data-tpl-<name>="<raw>"
+#    data-tpl-display="<name>:<kind>,...">EN</...> — setLang rebuilds
+#    the line from the AR template, substituting args; args named in
+#    data-tpl-display are looked up as display.<kind>.<value> first.
+#    Templates are used where a line must stay ONE text node in EN
+#    (a harness case asserts an exact label+value substring, e.g. the
+#    disagreement headline, the news line, "merged by worker") or
+#    where AR word order differs. The EN text rendered now is built
+#    from the EN template, so the EN view is unchanged.
+# 3. Display maps: model-carried display strings (enums, flag
+#    prefixes, band basis, confidence basis) render as
+#    <span data-i18n="display.<kind>.<value>">EN</span>. An unmapped
+#    value renders verbatim EN and is logged (display_unmapped) so a
+#    new enum value never refuses a live sweep.
+def tpl_attrs(key, args, display_map=None):
+    parts = ['data-i18n-tpl="%s"' % esc(key)]
+    for name in sorted(args):
+        parts.append('data-tpl-%s="%s"' % (esc(name), esc(str(args[name]))))
+    if display_map:
+        parts.append('data-tpl-display="%s"' % esc(",".join(
+            "%s:%s" % kv for kv in sorted(display_map.items()))))
+    return " ".join(parts)
+
+
+def tpl_text(i18n, key, args):
+    """EN text of a templated chrome line (args escaped)."""
+    text = i18n[key]["en"]
+    for name, val in args.items():
+        text = text.replace("{%s}" % name, esc(str(val)))
+    return text
+
+
+def display_span(i18n, kind, value, log):
+    if value is None:
+        return ""
+    key = "display.%s.%s" % (kind, value)
+    if key in i18n:
+        return '<span data-i18n="%s">%s</span>' % (esc(key), esc(value))
+    log.append("display_unmapped: %s %r" % (kind, value))
+    return esc(value)
+
+
+# Known compiler flag patterns (compile_model.py): each maps to an
+# i18n template/static key. Anything else renders verbatim EN and is
+# logged, so a new compiler flag never refuses a live sweep.
+_FLAG_RES = [
+    (re.compile(r"^witnesses-stale: common_date (\S+) vs base_date (\S+)$"),
+     "flag.witnesses-stale", ("common", "base"), None),
+    (re.compile(r"^tree-sha-unavailable: archive SHA given by flag, no git "
+                r"checkout to derive the tree SHA$"),
+     "flag.tree-sha-unavailable", (), None),
+    (re.compile(r"^archive-sha-unavailable: sweep dir is not a git checkout "
+                r"and no --archive-sha was given$"),
+     "flag.archive-sha-unavailable", (), None),
+    (re.compile(r"^recommendation-unavailable: no profiles/(\S+)\.recommendation\.json$"),
+     "flag.recommendation-unavailable", ("ticker",), None),
+    (re.compile(r"^recommendation-stale: profile as_of (\S+) base (\S+) != "
+                r"sweep (\S+) base (\S+)$"),
+     "flag.recommendation-stale", ("asof", "base1", "date", "base2"), None),
+    (re.compile(r"^base-from-undated-row$"),
+     "flag.base-from-undated-row", (), None),
+    (re.compile(r"^undated-actions: (\d+)$"),
+     "flag.undated-actions", ("n",), None),
+    (re.compile(r"^ledger-unreadable: (.+)$"),
+     "flag.ledger-unreadable", ("path",), None),
+    (re.compile(r"^weights-sha-differs-from-main$"),
+     "flag.weights-sha-differs", (), None),
+    (re.compile(r"^summary-missing: (\S+) \((\S+)\)$"),
+     "flag.summary-missing", ("tool", "status"), {"status": "toolstatus"}),
+    (re.compile(r"^sharia-table-missing: (\S+)$"),
+     "flag.sharia-table-missing", ("std",), None),
+    (re.compile(r"^sharia-insufficient-data: (\S+)$"),
+     "flag.sharia-insufficient-data", ("std",), None),
+]
+
+# Risk-flag patterns (ensemble.py): "{type} event: {title}" plus the
+# fixed abnormal-move / price-confirms / disclosures lines. The title
+# itself is quoted news text and stays verbatim.
+_RISK_FLAG_RES = [
+    (re.compile(r"^(\w+) event: (.*)$", re.S),
+     "riskflag.event", ("type", "title"), {"type": "event-type"}),
+    (re.compile(r"^abnormal move: last session ([\d.]+)σ$"),
+     "riskflag.abnormal-last", ("z",), None),
+    (re.compile(r"^abnormal move: ([\d.]+)σ in the last 3 sessions$"),
+     "riskflag.abnormal-3", ("z",), None),
+    (re.compile(r"^price confirms: last session ([\d.]+)σ$"),
+     "riskflag.price-confirms", ("z",), None),
+    (re.compile(r"^(\d+) disclosure\(s\) in the last 3 days$"),
+     "riskflag.disclosures", ("n",), None),
+]
+
+
+def _flag_element(i18n, text, patterns, log, what):
+    """One <p class="flag"> element for a model flag: localized when
+    its pattern is known, verbatim EN + log line when it is not."""
+    for rx, key, names, display_map in patterns:
+        m = rx.match(text)
+        if not m:
+            continue
+        args = dict(zip(names, m.groups()))
+        if not names:
+            return ('<p class="flag" data-i18n="%s">%s</p>'
+                    % (esc(key), esc(i18n[key]["en"])))
+        return ('<p class="flag" %s>%s</p>'
+                % (tpl_attrs(key, args, display_map),
+                   tpl_text(i18n, key, args)))
+    log.append("display_unmapped: %s flag %r" % (what, text))
+    return '<p class="flag">%s</p>' % esc(text)
+
+
+def render_flag(i18n, flag, log):
+    return _flag_element(i18n, flag, _FLAG_RES, log, "model")
+
+
+def render_risk_flag(i18n, flag, log):
+    return _flag_element(i18n, flag, _RISK_FLAG_RES, log, "risk")
+
+
 # --- prose-audit (§2i) ----------------------------------------------------
 def _phrase_re(phrase):
     # Word-boundary aware: a phrase next to a letter, digit or hyphen is
@@ -548,16 +671,19 @@ def band_levels(model):
 def disagreement_headline(model):
     """Headline + its explicitly traced derived claim (#261).
 
-    Returns (headline, claim) or (None, None) when fewer than two
-    families scored. The spread is a derived number: the claim binds
-    it to its approved formula and source fields (the argmax/argmin
-    families and their raw scores) so the prose-audit can verify it by
-    recomputation instead of by registry membership.
+    Returns (headline, claim, tpl_args) or (None, None, None) when
+    fewer than two families scored. The spread is a derived number:
+    the claim binds it to its approved formula and source fields (the
+    argmax/argmin families and their raw scores) so the prose-audit
+    can verify it by recomputation instead of by registry membership.
+    tpl_args carries the same values for the i18n template
+    (headline.disagree): the EN headline is built from the EN
+    template so the EN view is byte-identical to before.
     """
     scores = {k: v for k, v in (model.get("family_scores") or {}).items()
               if v is not None}
     if len(scores) < 2:
-        return None, None
+        return None, None, None
     hi = max(scores.items(), key=lambda kv: kv[1])
     lo = min(scores.items(), key=lambda kv: kv[1])
     spread = hi[1] - lo[1]
@@ -574,7 +700,10 @@ def disagreement_headline(model):
         "spread": spread,
         "displayed_spread": float(fmt_score(spread)),
     }
-    return headline, claim
+    tpl_args = {"hi": hi[0], "hi_val": fmt_score(hi[1]),
+                "lo": lo[0], "lo_val": fmt_score(lo[1]),
+                "spread": fmt_score(spread)}
+    return headline, claim, tpl_args
 
 
 def drop_secrets(summary):
@@ -658,7 +787,12 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             bands_html.append(
                 '<p><span data-i18n="bands.resistance">Technical Resistance Level at</span> '
                 '<span class="num">%s</span></p>' % fmt_price(resistance))
-            bands_html.append('<p class="dim">%s</p>' % esc(basis))
+            # The basis is a model-carried display string: the two
+            # known values map through display.levels-basis; anything
+            # else renders verbatim (display_span logs it).
+            bands_html.append('<p class="dim">%s</p>' % (
+                display_span(i18n, "levels-basis", basis, log)
+                if basis else ""))
             if computed:
                 bands_html.append('<p class="dim" data-i18n="bands.computed">'
                                    'Computed by the renderer from the week horizon range.</p>')
@@ -668,10 +802,8 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             bands_md.append("Basis: %s" % basis)
             base = price.get("base_price")
             if base is not None and not (support < base < resistance):
-                note = ("Both levels sit on one side of the current price — "
-                        "the range does not straddle the base.")
-                bands_html.append('<p class="dim">%s</p>' % note)
-                bands_md.append(note)
+                bands_html.append('<p class="dim" data-i18n="bands.note.oneside">Both levels sit on one side of the current price — the range does not straddle the base.</p>')
+                bands_md.append("Both levels sit on one side of the current price — the range does not straddle the base.")
         bands_html.append(
             '<p class="framing" data-i18n="framing">This is a description of a computed '
             'model output, not a recommendation to buy, sell, or hold any security. '
@@ -683,9 +815,9 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             bands_html.append('<p data-i18n="rec.none">Recommendation not available for this sweep.</p>')
             bands_md.append("Recommendation not available for this sweep.")
         else:
-            bands_html.append('<p>%s <span class="num">%s</span> · %s <span class="num">%s</span></p>' % (
-                esc("Base price:"), fmt_price(rec.get("base_price")),
-                esc("Reference price:"), fmt_price(rec.get("reference_price"))))
+            bands_html.append('<p><span data-i18n="rec.base">Base price:</span> <span class="num">%s</span> · <span data-i18n="rec.ref">Reference price:</span> <span class="num">%s</span></p>' % (
+                fmt_price(rec.get("base_price")),
+                fmt_price(rec.get("reference_price"))))
             bands_md.append("Base price: %s · Reference price: %s" % (
                 fmt_price(rec.get("base_price")), fmt_price(rec.get("reference_price"))))
             for note in rec.get("notes") or []:
@@ -697,7 +829,7 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # §2 family scores + applied weights + disagreement headline.
     fscores = model.get("family_scores") or {}
     fam_html, fam_md = [], ["## Family scores"]
-    headline, headline_claim = disagreement_headline(model)
+    headline, headline_claim, headline_args = disagreement_headline(model)
     if headline:
         derived_claims.append(headline_claim)
         audit_narrative(headline, numbers, dates, "disagreement-headline",
@@ -711,25 +843,40 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
                       headline_claim["spread"],
                       fmt_score(headline_claim["spread"]),
                       headline_claim["formula"]))
-        fam_html.append('<p class="headline">%s</p>' % esc(headline))
+        # One text node in EN (a harness case asserts the exact EN
+        # headline); the AR form comes from the headline.disagree
+        # template, with the family names display-mapped.
+        fam_html.append('<p class="headline" %s>%s</p>' % (
+            tpl_attrs("headline.disagree", headline_args,
+                      {"hi": "family", "lo": "family"}),
+            esc(headline)))
         fam_md.append(headline)
-    fam_html.append("<table><thead><tr><th>Family</th><th>Score</th></tr></thead><tbody>")
+    fam_html.append('<table><thead><tr><th data-i18n="th.family">Family</th><th data-i18n="th.score">Score</th></tr></thead><tbody>')
     for fam in ("price-forecast", "technicals", "sentiment", "fundamentals", "agent"):
         val = fscores.get(fam)
-        cell = fmt_score(val) if val is not None else "no data"
-        fam_html.append("<tr><td>%s</td><td class=\"num\">%s</td></tr>" % (esc(fam), cell))
-        fam_md.append("- %s: %s" % (fam, cell))
+        if val is not None:
+            cell = fmt_score(val)
+        else:
+            cell = '<span data-i18n="fam.nodata">no data</span>'
+        fam_html.append("<tr><td>%s</td><td class=\"num\">%s</td></tr>" % (
+            display_span(i18n, "family", fam, log), cell))
+        fam_md.append("- %s: %s" % (fam, fmt_score(val) if val is not None else "no data"))
     fam_html.append("</tbody></table>")
     weights = model.get("weights") or {}
     applied = weights.get("applied_weights")
     shape = model.get("ensemble_shape") or {}
     if applied and shape.get("has_applied_weights"):
         factors = applied.get("factors") or {}
-        fam_html.append("<p>Applied weights (ledger): %s</p>" % ", ".join(
-            "%s %s" % (k, fmt_weight(v)) for k, v in sorted(factors.items())))
+        fam_html.append('<p><span data-i18n="weights.applied.label">Applied weights (ledger):</span> %s</p>' % ", ".join(
+            "%s %s" % (display_span(i18n, "family", k, log), fmt_weight(v))
+            for k, v in sorted(factors.items())))
         fam_md.append("Applied weights (ledger): %s" % ", ".join(
             "%s %s" % (k, fmt_weight(v)) for k, v in sorted(factors.items())))
-        fam_html.append("<p>Confidence basis: %s</p>" % esc(weights.get("confidence_basis") or ""))
+        # The basis is a model-carried display string (two known
+        # values); anything else renders verbatim (display_span logs).
+        basis = weights.get("confidence_basis") or ""
+        fam_html.append('<p><span data-i18n="weights.confidence.label">Confidence basis:</span> %s</p>' % (
+            display_span(i18n, "confidence-basis", basis, log) if basis else ""))
         fam_md.append("Confidence basis: %s" % (weights.get("confidence_basis") or ""))
     else:
         fam_html.append('<p data-i18n="weights.none">Weights not recorded for this sweep (pre-#93/#94 run).</p>')
@@ -747,7 +894,9 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         d_md.append("First sweep of this ticker + job shape — nothing to compare against yet.")
     elif delta.get("pair_invalid"):
         reason = str(delta.get("pair_invalid"))
-        d_html.append('<p>Delta unavailable — %s</p>' % esc(reason))
+        d_html.append('<p %s>%s</p>' % (
+            tpl_attrs("delta.unavailable", {"reason": reason}),
+            tpl_text(i18n, "delta.unavailable", {"reason": reason})))
         d_md.append("Delta unavailable — %s" % reason)
     elif delta.get("first_sweep"):
         d_html.append('<p data-i18n="delta.none">First sweep of this ticker + job shape — nothing to compare against yet.</p>')
@@ -755,20 +904,31 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     else:
         prev = os.path.basename(str(delta.get("previous_sweep") or ""))
         cur = os.path.basename(str(delta.get("current_sweep") or ""))
-        d_html.append("<p>Previous: %s · Current: %s</p>" % (esc(prev), esc(cur)))
+        d_html.append('<p %s>%s</p>' % (
+            tpl_attrs("delta.prevcur", {"prev": prev, "cur": cur}),
+            tpl_text(i18n, "delta.prevcur", {"prev": prev, "cur": cur})))
         d_md.append("Previous: %s · Current: %s" % (prev, cur))
         exd = delta.get("ex_date") or {}
         if exd.get("ex_date"):
-            d_html.append("<p>Ex-date %s in window: mechanical <span class=\"num\">%s</span></p>" % (
-                esc(exd["ex_date"]), fmt_pct(exd.get("mechanical_pct"))))
+            d_html.append('<p %s>%s</p>' % (
+                tpl_attrs("delta.exdate", {"date": exd["ex_date"],
+                                          "pct": fmt_pct(exd.get("mechanical_pct"))}),
+                tpl_text(i18n, "delta.exdate", {"date": exd["ex_date"],
+                                                "pct": fmt_pct(exd.get("mechanical_pct"))})))
             d_md.append("Ex-date %s in window: mechanical %s" % (
                 exd["ex_date"], fmt_pct(exd.get("mechanical_pct"))))
         pd = (delta.get("sections") or {}).get("price") or {}
         pdel = pd.get("delta") or {}
         if pdel:
-            d_html.append("<p>Base move: <span class=\"num\">%s</span> (mechanical <span class=\"num\">%s</span>, residual <span class=\"num\">%s</span>)</p>" % (
-                fmt_pct(pdel.get("base_pct")), fmt_pct(pdel.get("mechanical_pct")),
-                fmt_pct(pdel.get("residual_pct"))))
+            d_html.append('<p %s>%s</p>' % (
+                tpl_attrs("delta.basemove", {
+                    "base": fmt_pct(pdel.get("base_pct")),
+                    "mech": fmt_pct(pdel.get("mechanical_pct")),
+                    "res": fmt_pct(pdel.get("residual_pct"))}),
+                tpl_text(i18n, "delta.basemove", {
+                    "base": fmt_pct(pdel.get("base_pct")),
+                    "mech": fmt_pct(pdel.get("mechanical_pct")),
+                    "res": fmt_pct(pdel.get("residual_pct"))})))
             d_md.append("Base move: %s (mechanical %s, residual %s)" % (
                 fmt_pct(pdel.get("base_pct")), fmt_pct(pdel.get("mechanical_pct")),
                 fmt_pct(pdel.get("residual_pct"))))
@@ -798,17 +958,18 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         h_html.append('<p data-i18n="horizons.none">No horizon scored a family — no forecast.</p>')
         h_md.append("No horizon scored a family — no forecast.")
     else:
-        h_html.append("<table><thead><tr><th>Horizon</th><th>Direction</th>"
-                      "<th>Expected</th><th>Range</th><th>Confidence</th></tr></thead><tbody>")
+        h_html.append('<table><thead><tr><th data-i18n="th.horizon">Horizon</th><th data-i18n="th.direction">Direction</th>'
+                      '<th data-i18n="th.expected">Expected</th><th data-i18n="th.range">Range</th><th data-i18n="th.confidence">Confidence</th></tr></thead><tbody>')
         for name in ("day", "week", "month"):
             hz = horizons.get(name)
             if not hz:
-                h_html.append("<tr><td>%s</td><td colspan=\"4\">not scored</td></tr>" % esc(name))
+                h_html.append("<tr><td>%s</td><td colspan=\"4\" data-i18n=\"fam.horizon.notscored\">not scored</td></tr>" % display_span(i18n, "horizon", name, log))
                 h_md.append("- %s: not scored" % name)
                 continue
             h_html.append("<tr><td>%s</td><td>%s</td><td class=\"num\">%s</td>"
                           "<td class=\"num\">%s … %s</td><td class=\"num\">%s</td></tr>" % (
-                              esc(name), esc(hz.get("direction")),
+                              display_span(i18n, "horizon", name, log),
+                              display_span(i18n, "direction", hz.get("direction"), log),
                               fmt_pct(hz.get("expected_move_pct")),
                               fmt_pct(hz.get("range_low_pct")),
                               fmt_pct(hz.get("range_high_pct")),
@@ -819,37 +980,60 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
                 fmt_conf(hz.get("confidence"))))
         h_html.append("</tbody></table>")
     if price:
-        h_html.append("<p>Base price: <span class=\"num\">%s</span> (%s, %s)</p>" % (
-            fmt_price(price.get("base_price")), esc(price.get("base_source")),
-            esc(price.get("base_date") or "base date not established")))
+        base_date = price.get("base_date") or "base date not established"
+        h_html.append('<p %s>%s</p>' % (
+            tpl_attrs("price.base", {
+                "price": fmt_price(price.get("base_price")),
+                "source": price.get("base_source"),
+                "date": base_date}, {"date": "sentinel"}),
+            tpl_text(i18n, "price.base", {
+                "price": fmt_price(price.get("base_price")),
+                "source": price.get("base_source"),
+                "date": base_date})))
         h_md.append("Base price: %s (%s, %s)" % (
             fmt_price(price.get("base_price")), price.get("base_source"),
             price.get("base_date") or "base date not established"))
         cc = price.get("price_crosscheck") or {}
         if cc:
-            h_html.append("<p>Price cross-check: %s (common date %s, base date %s)</p>" % (
-                esc(cc.get("status")), esc(cc.get("common_date")), esc(cc.get("base_date"))))
+            h_html.append('<p %s>%s</p>' % (
+                tpl_attrs("price.crosscheck", {
+                    "status": cc.get("status"),
+                    "common": cc.get("common_date"),
+                    "base": cc.get("base_date")}, {"status": "crosscheck"}),
+                tpl_text(i18n, "price.crosscheck", {
+                    "status": cc.get("status"),
+                    "common": cc.get("common_date"),
+                    "base": cc.get("base_date")})))
             h_md.append("Price cross-check: %s (common date %s, base date %s)" % (
                 cc.get("status"), cc.get("common_date"), cc.get("base_date")))
             if cc.get("common_date") and price.get("base_date") and \
                     str(cc["common_date"]) < str(price["base_date"]):
-                h_html.append('<p class="flag">Witnesses stale: common date %s trails base date %s.</p>' % (
-                    esc(cc["common_date"]), esc(price["base_date"])))
+                h_html.append('<p class="flag" %s>%s</p>' % (
+                    tpl_attrs("price.stale-note", {
+                        "common": cc.get("common_date"),
+                        "base": price.get("base_date")}),
+                    tpl_text(i18n, "price.stale-note", {
+                        "common": cc.get("common_date"),
+                        "base": price.get("base_date")})))
                 h_md.append("Witnesses stale: common date %s trails base date %s." % (
                     cc["common_date"], price["base_date"]))
     psl = model.get("price_series_last") or []
     if psl:
-        h_html.append("<table><thead><tr><th>Source</th><th>Last date</th>"
-                      "<th>Last close</th><th>Volume</th></tr></thead><tbody>")
+        h_html.append('<table><thead><tr><th data-i18n="th.source">Source</th><th data-i18n="th.lastdate">Last date</th>'
+                      '<th data-i18n="th.lastclose">Last close</th><th data-i18n="th.volume">Volume</th></tr></thead><tbody>')
         for row in psl:
             close = row.get("last_close")
-            cell = fmt_price(close) if close is not None else "last close-bearing row has no close — see note"
-            stale = " (stale)" if row.get("stale") else ""
-            h_html.append("<tr><td>%s</td><td>%s</td><td class=\"num\">%s</td><td>%s</td></tr>" % (
+            if close is not None:
+                cell = fmt_price(close)
+            else:
+                cell = '<span data-i18n="price.noclose">last close-bearing row has no close — see note</span>'
+            stale = '<span data-i18n="price.stale"> (stale)</span>' if row.get("stale") else ""
+            h_html.append("<tr><td>%s</td><td>%s</td><td class=\"num\">%s</td><td>%s%s</td></tr>" % (
                 esc(row.get("source")), esc(row.get("last_date")), cell,
-                esc(str(row.get("last_volume"))) + stale))
+                esc(str(row.get("last_volume"))), stale))
             h_md.append("- %s: %s on %s%s" % (
-                row.get("source"), cell, row.get("last_date"), stale))
+                row.get("source"), cell if close is not None else "last close-bearing row has no close — see note",
+                row.get("last_date"), " (stale)" if row.get("stale") else ""))
         h_html.append("</tbody></table>")
     sections.append(("horizons", "sec.horizons", "\n".join(h_html), "\n".join(h_md)))
 
@@ -862,26 +1046,34 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     else:
         wf = rp.get("walk_forward") or {}
         fit = rp.get("fit") or {}
-        r_html.append("<p>Built at %s · walk-forward train %s / test %s · hits %s · baseline hits %s</p>" % (
-            esc(rp.get("built_at")), wf.get("train"), wf.get("test"),
-            wf.get("hits"), wf.get("baseline_hits")))
+        r_html.append('<p %s>%s</p>' % (
+            tpl_attrs("reaction.built", {
+                "built": rp.get("built_at"), "train": wf.get("train"),
+                "test": wf.get("test"), "hits": wf.get("hits"),
+                "base": wf.get("baseline_hits")}),
+            tpl_text(i18n, "reaction.built", {
+                "built": rp.get("built_at"), "train": wf.get("train"),
+                "test": wf.get("test"), "hits": wf.get("hits"),
+                "base": wf.get("baseline_hits")})))
         r_md.append("Built at %s · walk-forward train %s / test %s · hits %s · baseline hits %s" % (
             rp.get("built_at"), wf.get("train"), wf.get("test"),
             wf.get("hits"), wf.get("baseline_hits")))
         if profile:
             by_type = profile.get("by_type") or {}
             if by_type:
-                r_html.append("<table><thead><tr><th>Event type</th><th>Median +5d (div-adj)</th><th>n</th></tr></thead><tbody>")
+                r_html.append('<table><thead><tr><th data-i18n="th.eventtype">Event type</th><th data-i18n="th.median5d">Median +5d (div-adj)</th><th data-i18n="th.n">n</th></tr></thead><tbody>')
                 for etype, vals in sorted(by_type.items()):
                     med = (vals or {}).get("median_r5_adj")
                     cell = fmt_pct(med) if med is not None else "—"
                     r_html.append("<tr><td>%s</td><td class=\"num\">%s</td><td>%s</td></tr>" % (
-                        esc(etype), cell, (vals or {}).get("n")))
+                        display_span(i18n, "event-type", etype, log), cell, (vals or {}).get("n")))
                     r_md.append("- %s: median +5d %s (n=%s)" % (etype, cell, (vals or {}).get("n")))
                 r_html.append("</tbody></table>")
             events = profile.get("events") or []
             if events:
-                r_html.append("<p>Events: %s recorded.</p>" % len(events))
+                r_html.append('<p %s>%s</p>' % (
+                    tpl_attrs("reaction.events", {"n": len(events)}),
+                    tpl_text(i18n, "reaction.events", {"n": len(events)})))
                 r_md.append("Events: %s recorded." % len(events))
     sections.append(("reaction", "sec.reaction", "\n".join(r_html), "\n".join(r_md)))
 
@@ -896,10 +1088,17 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         t_html.append("<h3>%s</h3>" % esc(name))
         t_md.append("### %s" % name)
         if name in REFERENCE_WORKLOADS:
-            t_html.append('<p class="dim">Reference workload — not %s data.</p>' % esc(t))
+            t_html.append('<p class="dim" %s>%s</p>' % (
+                tpl_attrs("tools.refworkload", {"ticker": t}),
+                tpl_text(i18n, "tools.refworkload", {"ticker": t})))
             t_md.append("_Reference workload — not %s data._" % t)
         status = tool.get("status")
-        t_html.append("<p>Status: %s · exit code: %s</p>" % (esc(status), tool.get("exit_code")))
+        t_html.append('<p %s>%s</p>' % (
+            tpl_attrs("tools.status", {"status": status,
+                                      "code": tool.get("exit_code")},
+                      {"status": "toolstatus"}),
+            tpl_text(i18n, "tools.status", {"status": status,
+                                            "code": tool.get("exit_code")})))
         t_md.append("Status: %s · exit code: %s" % (status, tool.get("exit_code")))
         if summary:
             if isinstance(summary, dict):
@@ -941,27 +1140,33 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             t_html.append('<p data-i18n="tool.noreport">No report for this tool.</p>')
             t_md.append("No report for this tool.")
     # §7 run table.
-    t_html.append("<h3>Tool run table</h3>")
+    t_html.append('<h3 data-i18n="tools.runtable">Tool run table</h3>')
     t_md.append("### Tool run table")
-    t_html.append("<table><thead><tr><th>Tool</th><th>Category</th><th>Status</th>"
-                  "<th>Exit</th><th>Run</th></tr></thead><tbody>")
+    t_html.append('<table><thead><tr><th data-i18n="th.tool">Tool</th><th data-i18n="th.category">Category</th><th data-i18n="th.status">Status</th>'
+                  '<th data-i18n="th.exit">Exit</th><th data-i18n="th.run">Run</th></tr></thead><tbody>')
     for tool in tools:
         if tool.get("run_url"):
-            run = '<a href="%s">run</a>' % esc(tool["run_url"])
+            run = '<a href="%s" data-i18n="tools.run.link">run</a>' % esc(tool["run_url"])
         elif tool.get("worker_run"):
-            run = "worker run %s" % esc(tool["worker_run"])
+            run = '<span %s>%s</span>' % (
+                tpl_attrs("tools.run.worker", {"id": tool["worker_run"]}),
+                tpl_text(i18n, "tools.run.worker", {"id": tool["worker_run"]}))
         else:
-            run = "worker run"
+            run = '<span data-i18n="tools.run.bare">worker run</span>'
         t_html.append("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-            esc(tool.get("tool")), esc(tool.get("category")), esc(tool.get("status")),
+            esc(tool.get("tool")),
+            display_span(i18n, "category", tool.get("category"), log),
+            display_span(i18n, "toolstatus", tool.get("status"), log),
             tool.get("exit_code"), run))
         t_md.append("- %s (%s): %s, exit %s" % (
             tool.get("tool"), tool.get("category"), tool.get("status"), tool.get("exit_code")))
     for name in model.get("tools_absent") or []:
-        t_html.append("<tr><td>%s</td><td></td><td>absent</td><td></td><td></td></tr>" % esc(name))
+        t_html.append("<tr><td>%s</td><td></td><td>%s</td><td></td><td></td></tr>" % (
+            esc(name), display_span(i18n, "toolstatus", "absent", log)))
         t_md.append("- %s: absent" % name)
     for name in model.get("tools_failed") or []:
-        t_html.append("<tr><td>%s</td><td></td><td>failed</td><td></td><td></td></tr>" % esc(name))
+        t_html.append("<tr><td>%s</td><td></td><td>%s</td><td></td><td></td></tr>" % (
+            esc(name), display_span(i18n, "toolstatus", "failed", log)))
         t_md.append("- %s: failed" % name)
     t_html.append("</tbody></table>")
     sections.append(("tools", "sec.tools", "\n".join(t_html), "\n".join(t_md)))
@@ -969,9 +1174,17 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # §8 news + disclosures.
     news = model.get("news") or {}
     n_html, n_md = [], ["## News + disclosures"]
-    n_html.append("<p>News: %s · disclosures: %s · identity scheme: %s</p>" % (
-        news.get("news_count"), news.get("disclosure_count"),
-        esc(news.get("identity_scheme") or "")))
+    # One text node in EN (a harness case asserts the exact EN line);
+    # the AR form comes from the news.line template.
+    n_html.append('<p %s>%s</p>' % (
+        tpl_attrs("news.line", {
+            "news": news.get("news_count"),
+            "disc": news.get("disclosure_count"),
+            "scheme": news.get("identity_scheme") or ""}),
+        tpl_text(i18n, "news.line", {
+            "news": news.get("news_count"),
+            "disc": news.get("disclosure_count"),
+            "scheme": news.get("identity_scheme") or ""})))
     n_md.append("News: %s · disclosures: %s · identity scheme: %s" % (
         news.get("news_count"), news.get("disclosure_count"), news.get("identity_scheme")))
     for item in (news.get("news_items") or [])[:22]:
@@ -1006,11 +1219,19 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     for fam in ("finbert", "finbert-tone", "financial-roberta"):
         ft = by_tool.get(fam)
         if ft and isinstance(ft.get("summary"), dict):
-            s_html.append("<p>%s: %s</p>" % (esc(fam), esc(str(ft["summary"].get("label") or ft["summary"].get("model") or ""))))
+            label = ft["summary"].get("label")
+            if label:
+                val_html = display_span(i18n, "sentiment-label", label, log)
+            else:
+                val_html = esc(str(ft["summary"].get("model") or ""))
+            s_html.append("<p>%s: %s</p>" % (esc(fam), val_html))
             s_md.append("- %s: %s" % (fam, ft["summary"].get("label") or ft["summary"].get("model") or ""))
     ftool = by_tool.get("financetoolkit")
     if ftool and isinstance(ftool.get("summary"), dict):
-        s_html.append("<p>Company: %s</p>" % esc(ftool["summary"].get("company") or ""))
+        company = ftool["summary"].get("company") or ""
+        s_html.append('<p %s>%s</p>' % (
+            tpl_attrs("sentiment.company", {"company": company}),
+            tpl_text(i18n, "sentiment.company", {"company": company})))
         s_md.append("Company: %s" % (ftool["summary"].get("company") or ""))
         s_html.append('<p data-i18n="fund.ratios">Valuation ratios are not carried in the model — no corrected-valuation callout in this report.</p>')
         s_md.append("Valuation ratios are not carried in the model — no corrected-valuation callout in this report.")
@@ -1025,22 +1246,31 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         r_md.append("Risk level unknown — the news tool was missing or failed; not “no risk”.")
     else:
         cap = risk.get("conf_cap")
-        r_html.append("<p>Risk level: %s · confidence cap: <span class=\"num\">%s</span></p>" % (
-            esc(level), fmt_conf(cap) if cap is not None else "not recorded"))
+        cap_text = fmt_conf(cap) if cap is not None else "not recorded"
+        r_html.append('<p %s>%s</p>' % (
+            tpl_attrs("risk.level", {"level": level, "cap": cap_text},
+                      {"level": "risk", "cap": "sentinel"}),
+            tpl_text(i18n, "risk.level", {"level": level, "cap": cap_text})))
         r_md.append("Risk level: %s · confidence cap: %s" % (
             level, fmt_conf(cap) if cap is not None else "not recorded"))
     for flag in risk.get("flags") or []:
-        r_html.append('<p class="flag">%s</p>' % esc(flag))
+        r_html.append(render_risk_flag(i18n, flag, log))
         r_md.append("- %s" % flag)
     for ev in risk.get("events") or []:
         title = ev.get("title") if isinstance(ev, dict) else str(ev)
         r_html.append("<p>%s</p>" % esc(title))
         r_md.append("- %s (truncated title — see the archived news file for full text)" % title)
     for ca in model.get("corporate_actions") or []:
-        r_html.append("<p>Corporate action: %s · ex-date: %s · DPS: %s</p>" % (
-            esc(ca.get("type") or ca.get("action") or ""),
-            esc(str(ca.get("ex_date"))),
-            esc(str(ca.get("dps") or ca.get("coupon") or ""))))
+        r_html.append('<p %s>%s</p>' % (
+            tpl_attrs("risk.corporate", {
+                "type": ca.get("type") or ca.get("action") or "",
+                "ex": ca.get("ex_date"),
+                "dps": ca.get("dps") or ca.get("coupon") or ""},
+                {"type": "corporate"}),
+            tpl_text(i18n, "risk.corporate", {
+                "type": ca.get("type") or ca.get("action") or "",
+                "ex": ca.get("ex_date"),
+                "dps": ca.get("dps") or ca.get("coupon") or ""})))
         r_md.append("- Corporate action: %s · ex-date: %s · DPS: %s" % (
             ca.get("type") or ca.get("action") or "", ca.get("ex_date"),
             ca.get("dps") or ca.get("coupon") or ""))
@@ -1049,10 +1279,14 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         r_html.append('<p data-i18n="rescale.none">Kronos ex-date rescale state not recorded.</p>')
         r_md.append("Kronos ex-date rescale state not recorded.")
     elif isinstance(kxr, dict) and kxr.get("applied"):
-        r_html.append("<p>Rescale applied: factor %s</p>" % esc(str(kxr.get("factor"))))
+        r_html.append('<p %s>%s</p>' % (
+            tpl_attrs("risk.rescale.applied", {"factor": kxr.get("factor")}),
+            tpl_text(i18n, "risk.rescale.applied", {"factor": kxr.get("factor")})))
         r_md.append("Rescale applied: factor %s" % kxr.get("factor"))
     else:
-        r_html.append("<p>Rescale attempted, did not apply — %s</p>" % esc(str((kxr or {}).get("reason"))))
+        r_html.append('<p %s>%s</p>' % (
+            tpl_attrs("risk.rescale.attempted", {"reason": (kxr or {}).get("reason")}),
+            tpl_text(i18n, "risk.rescale.attempted", {"reason": (kxr or {}).get("reason")})))
         r_md.append("Rescale attempted, did not apply — %s" % (kxr or {}).get("reason"))
     sections.append(("risks", "sec.risks", "\n".join(r_html), "\n".join(r_md)))
 
@@ -1074,7 +1308,7 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # from any check on the chart flag alone.
     history_points = sum(len(rows) for rows in chart_tails.values())
     if chart_tails or forecast:
-        c_html.append(_svg_chart(chart_tails, forecast, price))
+        c_html.append(_svg_chart(chart_tails, forecast, price, i18n))
         if chart_tails:
             c_md.append("Chart: %s price tail (%d points) + Kronos "
                         "forecast cone (see HTML)."
@@ -1107,12 +1341,24 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         l_md.append("Model not recorded (pre-#74 run).")
     else:
         for call in llm.get("calls") or []:
-            l_html.append("<p>%s · %s · model: %s · tokens in/out: %s/%s · USD: %s</p>" % (
-                esc(call.get("tool")), esc(call.get("role")),
-                esc(call.get("model") or "not recorded"),
-                call.get("tokens_in") or "not recorded",
-                call.get("tokens_out") or "not recorded",
-                call.get("usd") or "not recorded"))
+            l_html.append('<p %s>%s</p>' % (
+                tpl_attrs("llm.call", {
+                    "tool": call.get("tool"),
+                    "role": call.get("role"),
+                    "model": call.get("model") or "not recorded",
+                    "tin": call.get("tokens_in") or "not recorded",
+                    "tout": call.get("tokens_out") or "not recorded",
+                    "usd": call.get("usd") or "not recorded"},
+                    {"role": "llm-role", "model": "sentinel",
+                     "tin": "sentinel", "tout": "sentinel",
+                     "usd": "sentinel"}),
+                tpl_text(i18n, "llm.call", {
+                    "tool": call.get("tool"),
+                    "role": call.get("role"),
+                    "model": call.get("model") or "not recorded",
+                    "tin": call.get("tokens_in") or "not recorded",
+                    "tout": call.get("tokens_out") or "not recorded",
+                    "usd": call.get("usd") or "not recorded"})))
             l_md.append("- %s · %s · model: %s" % (
                 call.get("tool"), call.get("role"), call.get("model") or "not recorded"))
     sections.append(("llm", "sec.llm", "\n".join(l_html), "\n".join(l_md)))
@@ -1121,17 +1367,25 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     lp = model.get("ledger_pin") or {}
     counts = lp.get("counts") or {}
     w_html, w_md = [], ["## Ledger pin"]
-    w_html.append("<p>Ledger counts — sweeps: %s · forecasts: %s · matured: %s · pending: %s · invalid: %s</p>" % (
-        counts.get("sweeps"), counts.get("forecasts"), counts.get("matured"),
-        counts.get("pending"), counts.get("invalid")))
+    w_html.append('<p %s>%s</p>' % (
+        tpl_attrs("ledger.counts", {
+            "s": counts.get("sweeps"), "f": counts.get("forecasts"),
+            "m": counts.get("matured"), "p": counts.get("pending"),
+            "i": counts.get("invalid")}),
+        tpl_text(i18n, "ledger.counts", {
+            "s": counts.get("sweeps"), "f": counts.get("forecasts"),
+            "m": counts.get("matured"), "p": counts.get("pending"),
+            "i": counts.get("invalid")})))
     w_md.append("Ledger counts — sweeps: %s · forecasts: %s · matured: %s · pending: %s · invalid: %s" % (
         counts.get("sweeps"), counts.get("forecasts"), counts.get("matured"),
         counts.get("pending"), counts.get("invalid")))
     matured = counts.get("matured")
-    w_html.append("<p>No accuracy figure is published until n ≥ 30 matured forecasts (n = %s).</p>" % matured)
+    w_html.append('<p %s>%s</p>' % (
+        tpl_attrs("ledger.accuracy", {"n": matured}),
+        tpl_text(i18n, "ledger.accuracy", {"n": matured})))
     w_md.append("No accuracy figure is published until n ≥ 30 matured forecasts (n = %s)." % matured)
     if lp.get("weights_sha_matches_ensemble") is False:
-        w_html.append('<p class="flag">Weights changed since this sweep — the forecast stands on the pinned weights.</p>')
+        w_html.append('<p class="flag" data-i18n="ledger.weights-changed">Weights changed since this sweep — the forecast stands on the pinned weights.</p>')
         w_md.append("Weights changed since this sweep — the forecast stands on the pinned weights.")
     sections.append(("ledger", "sec.ledger", "\n".join(w_html), "\n".join(w_md)))
 
@@ -1142,29 +1396,42 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         f_html.append('<p data-i18n="flags.none">No data-quality flags raised.</p>')
         f_md.append("No data-quality flags raised.")
     for flag in flags:
-        f_html.append('<p class="flag">%s</p>' % esc(flag))
+        f_html.append(render_flag(i18n, flag, log))
         f_md.append("- %s" % flag)
     for mm in model.get("ticker_mismatch") or []:
-        f_html.append('<p class="flag">Ticker mismatch: %s</p>' % esc(str(mm)))
+        f_html.append('<p class="flag" %s>%s</p>' % (
+            tpl_attrs("flags.ticker-mismatch", {"value": mm}),
+            tpl_text(i18n, "flags.ticker-mismatch", {"value": mm})))
         f_md.append("- Ticker mismatch: %s" % mm)
     for cf in model.get("coercion_failed") or []:
-        f_html.append('<p class="flag">Coercion failed: %s</p>' % esc(str(cf)))
+        f_html.append('<p class="flag" %s>%s</p>' % (
+            tpl_attrs("flags.coercion-failed", {"value": cf}),
+            tpl_text(i18n, "flags.coercion-failed", {"value": cf})))
         f_md.append("- Coercion failed: %s" % cf)
     degraded = model.get("degraded")
     if degraded:
-        f_html.append('<p class="flag">Degraded: %s</p>' % esc(str(degraded)))
+        f_html.append('<p class="flag" %s>%s</p>' % (
+            tpl_attrs("flags.degraded", {"value": str(degraded)}),
+            tpl_text(i18n, "flags.degraded", {"value": str(degraded)})))
         f_md.append("Degraded: %s" % degraded)
     sections.append(("flags", "sec.flags", "\n".join(f_html), "\n".join(f_md)))
 
     # §15 provenance + disclaimer footer.
     prov = model.get("provenance") or {}
     p_html, p_md = [], ["## Provenance"]
-    p_html.append("<p>Provenance: merged by %s · compiler: %s · model: %s</p>" % (
-        esc(prov.get("merged_by") or ""), esc(prov.get("compiler") or ""),
-        esc(model.get("schema"))))
+    merged_by = prov.get("merged_by") or ""
+    p_html.append('<p %s>%s</p>' % (
+        tpl_attrs("prov.line", {
+            "merged": merged_by,
+            "compiler": prov.get("compiler") or "",
+            "schema": model.get("schema")}, {"merged": "merged-by"}),
+        tpl_text(i18n, "prov.line", {
+            "merged": merged_by,
+            "compiler": prov.get("compiler") or "",
+            "schema": model.get("schema")})))
     p_md.append("Provenance: merged by %s · compiler: %s · model: %s" % (
         prov.get("merged_by") or "", prov.get("compiler") or "", model.get("schema")))
-    p_html.append("<p>Viewer: <span class=\"watermark\">&lt;unassigned&gt;</span></p>")
+    p_html.append('<p><span data-i18n="prov.viewer">Viewer:</span> <span class="watermark">&lt;unassigned&gt;</span></p>')
     p_md.append("Viewer: <unassigned>")
     sections.append(("provenance", "sec.provenance", "\n".join(p_html), "\n".join(p_md)))
 
@@ -1193,7 +1460,7 @@ def _looks_arabic(text):
     return any("\u0600" <= ch <= "\u06ff" for ch in text)
 
 
-def _svg_chart(tails, forecast, price):
+def _svg_chart(tails, forecast, price, i18n):
     """Inline SVG line chart: price tails (solid) + Kronos forecast (dashed)."""
     points = []
     for src, rows in tails.items():
@@ -1201,7 +1468,7 @@ def _svg_chart(tails, forecast, price):
     if forecast:
         points += list(forecast)
     if not points:
-        return "<p>Chart data unavailable.</p>"
+        return '<p data-i18n="chart.unavailable">Chart data unavailable.</p>'
     closes = [c for _, c in points]
     lo, hi = min(closes), max(closes)
     if hi - lo < 1e-9:
@@ -1224,9 +1491,11 @@ def _svg_chart(tails, forecast, price):
         pts = " ".join("%.1f,%.1f" % xy(idx + j, c) for j, (_, c) in enumerate(forecast))
         lines.append('<polyline points="%s" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4"/>' % pts)
     return ('<svg viewBox="0 0 %d %d" xmlns="http://www.w3.org/2000/svg" role="img" '
-            'aria-label="Price chart%s">%s</svg>'
-            '<p class="dim">Solid: recorded closes; dashed: Kronos forecast.</p>'
-            % (width, height, " (forecast only)" if not tails else "",
+            'aria-label="%s" data-i18n-aria="%s">%s</svg>'
+            '<p class="dim" data-i18n="chart.legend">Solid: recorded closes; dashed: Kronos forecast.</p>'
+            % (width, height,
+               esc(i18n["chart.aria.forecast"]["en"] if not tails else i18n["chart.aria"]["en"]),
+               "chart.aria.forecast" if not tails else "chart.aria",
                "".join(lines)))
 
 
@@ -1244,10 +1513,13 @@ code{font-family:ui-monospace,Menlo,monospace}
 """
 
 TOGGLE_JS = """
+var LANG='en';
+function fmtTpl(tpl,args,display,t){return tpl.replace(/\\{(\\w+)\\}/g,function(m,name){var v=args[name];if(v===undefined){return m;}var kind=display[name];if(kind){var k='display.'+kind+'.'+v;if(t[k]!==undefined){return t[k];}}return v;});}
+function tplArgs(el){var args={},display={};Array.prototype.slice.call(el.attributes).forEach(function(a){if(a.name.indexOf('data-tpl-')===0&&a.name!=='data-tpl-display'){args[a.name.slice(9)]=a.value;}});var spec=el.getAttribute('data-tpl-display');if(spec){spec.split(',').forEach(function(pair){var kv=pair.split(':');if(kv.length===2){display[kv[0]]=kv[1];}});}return {args:args,display:display};}
 document.getElementById('langEn').addEventListener('click',function(){setLang('en')});
 document.getElementById('langAr').addEventListener('click',function(){setLang('ar')});
-function setLang(l){var t=window.I18N[l];document.documentElement.lang=l;document.documentElement.dir=(l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(t[k]!==undefined){el.textContent=t[k];}});}
-document.getElementById('copyJson').addEventListener('click',function(){var s=document.getElementById('report-model').textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(function(){document.getElementById('copyMsg').textContent='Copied.';},function(){document.getElementById('copyMsg').textContent='Copy failed — select the model text manually.';});}else{document.getElementById('copyMsg').textContent='Clipboard unavailable — select the model text manually.';}});
+function setLang(l){LANG=l;var t=window.I18N[l];document.documentElement.lang=l;document.documentElement.dir=(l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(t[k]!==undefined){el.textContent=t[k];}});document.querySelectorAll('[data-i18n-tpl]').forEach(function(el){var k=el.getAttribute('data-i18n-tpl');if(t[k]===undefined){return;}var d=tplArgs(el);el.textContent=fmtTpl(t[k],d.args,d.display,t);});document.querySelectorAll('[data-i18n-aria]').forEach(function(el){var k=el.getAttribute('data-i18n-aria');if(t[k]!==undefined){el.setAttribute('aria-label',t[k]);}});}
+document.getElementById('copyJson').addEventListener('click',function(){var s=document.getElementById('report-model').textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(function(){document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copied'];},function(){document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copy.failed'];});}else{document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copy.unavailable'];}});
 """
 
 
@@ -1263,11 +1535,19 @@ def render_html(model, raw_model, sections, slot_html, i18n, log):
     i18n_json = json.dumps({"en": {k: v["en"] for k, v in i18n.items()},
                             "ar": {k: v["ar"] for k, v in i18n.items()}},
                            ensure_ascii=False, sort_keys=True)
+    title_args = {"ticker": t, "date": model.get("date")}
+    job_args = {"job": model.get("job"), "shape": model.get("job_shape"),
+                "market": model.get("market") or "no market filter"}
+    model_args = {"schema": model.get("schema"),
+                  "sweep": model.get("sweep_dir"),
+                  "commit": model.get("archive_commit") or "not recorded"}
     parts = []
     parts.append("<!DOCTYPE html>")
     parts.append('<html lang="en" dir="ltr">')
     parts.append("<head><meta charset=\"utf-8\">")
-    parts.append("<title>Borsagator report — %s (%s)</title>" % (esc(t), esc(model.get("date"))))
+    parts.append('<title %s>%s</title>' % (
+        tpl_attrs("ui.title", title_args),
+        tpl_text(i18n, "ui.title", title_args)))
     parts.append('<link rel="icon" href="data:,">')
     parts.append("<style>%s</style></head>" % CSS)
     parts.append("<body>")
@@ -1279,16 +1559,20 @@ def render_html(model, raw_model, sections, slot_html, i18n, log):
         parts.append('<p class="banner" data-i18n="banner.partial">Partial sweep — forecast sections are not available for this sweep.</p>')
     degraded = model.get("degraded")
     if degraded:
-        parts.append('<p class="banner">Degraded: %s</p>' % esc(str(degraded)))
+        parts.append('<p class="banner" %s>%s</p>' % (
+            tpl_attrs("flags.degraded", {"value": str(degraded)}),
+            tpl_text(i18n, "flags.degraded", {"value": str(degraded)})))
     parts.append('<div class="disclaimer"><p data-i18n="disclaimer.short">%s</p></div>'
                  % esc(i18n["disclaimer.short"]["en"]))
-    parts.append("<h1>Borsagator report — %s (%s)</h1>" % (esc(t), esc(model.get("date"))))
-    parts.append("<p>Job: %s · shape: %s · market: %s</p>" % (
-        esc(model.get("job")), esc(model.get("job_shape")),
-        esc(model.get("market") or "no market filter")))
-    parts.append("<p>Model: %s · sweep: %s · archive commit: %s</p>" % (
-        esc(model.get("schema")), esc(model.get("sweep_dir")),
-        esc(model.get("archive_commit") or "not recorded")))
+    parts.append('<h1 %s>%s</h1>' % (
+        tpl_attrs("ui.title", title_args),
+        tpl_text(i18n, "ui.title", title_args)))
+    parts.append('<p %s>%s</p>' % (
+        tpl_attrs("header.job", job_args, {"market": "sentinel"}),
+        tpl_text(i18n, "header.job", job_args)))
+    parts.append('<p %s>%s</p>' % (
+        tpl_attrs("header.model", model_args, {"commit": "sentinel"}),
+        tpl_text(i18n, "header.model", model_args)))
     for anchor, key, body, _md in sections[1:]:
         title = i18n.get(key, {}).get("en", key)
         parts.append('<section id="%s"><h2 data-i18n="%s">%s</h2>%s</section>'
@@ -1300,7 +1584,7 @@ def render_html(model, raw_model, sections, slot_html, i18n, log):
                  '<p data-i18n="disclaimer.long">%s</p></div>' % (
                      esc(i18n["disclaimer.short"]["en"]),
                      esc(i18n["disclaimer.long"]["en"])))
-    parts.append('<p class="dim">Deterministic glue over the ensemble + reaction fit — '
+    parts.append('<p class="dim" data-i18n="ui.footer">Deterministic glue over the ensemble + reaction fit — '
                  'research tooling, not financial advice.</p>')
     parts.append('<script type="application/json" id="report-model">%s</script>' % island)
     parts.append("<script>window.I18N=%s;%s</script>" % (i18n_json, TOGGLE_JS))
