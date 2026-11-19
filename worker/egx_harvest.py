@@ -35,9 +35,54 @@ EGX_COMPANIES = {
     "SWDY": ("السويدي اليكتريك", "EGS3G0Z1C014"),
     "ESRS": ("عز ستيل", "EGS3C251C013"),
     "ABUK": ("أبو قير للأسمدة", "EGS38161C013"),
-    "AMOC": ("الإسكندرية للزيوت المعدنية", "EGS3E2B1C018"),
+    "AMOC": ("الإسكندرية للزيوت المعدنية", "EGS380P1C010"),
     "EKHO": ("القابضة المصرية الكويتية", "EGS69082C013"),
 }
+
+
+def is_valid_isin(isin):
+    """ISO 6166 check-digit validation for one ISIN.
+
+    An ISIN is 2 country letters + 9 alphanumerics + 1 check digit.
+    Letters convert A=10 .. Z=35, then the digit string must satisfy
+    the Luhn mod-10 check (every second digit from the right,
+    check digit included, is doubled, values >9 reduced by 9).
+    Returns False for malformed strings as well as bad check digits.
+    """
+    if not isinstance(isin, str):
+        return False
+    if not re.fullmatch(r"[A-Z]{2}[A-Z0-9]{9}[0-9]", isin):
+        return False
+    digits = "".join(str(ord(ch) - 55) if ch.isalpha() else ch
+                     for ch in isin)
+    total = 0
+    for i, ch in enumerate(reversed(digits)):
+        n = int(ch)
+        if i % 2 == 1:
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
+    return total % 10 == 0
+
+
+def validate_egx_companies_isins(companies=None):
+    """Fail loudly on any mistyped ISIN in the EGX_COMPANIES table.
+
+    Returns the list of bad (code, isin) pairs (empty when the table
+    is clean). Raises ValueError naming every bad entry, so a typo
+    can never flow silently into a harvest query — it must be fixed
+    at the source instead. Issue #304: the AMOC entry carried
+    EGS3E2B1C018, which fails this check and is not a real ISIN.
+    """
+    table = EGX_COMPANIES if companies is None else companies
+    bad = [(code, isin) for code, (_ar, isin) in table.items()
+           if not is_valid_isin(isin)]
+    if bad:
+        raise ValueError(
+            "invalid ISIN(s) in EGX_COMPANIES (ISO 6166 check digit): "
+            + ", ".join(f"{code}={isin}" for code, isin in bad))
+    return bad
 
 
 def log(*a):
@@ -146,6 +191,13 @@ def main():
         print(f"egx_harvest: no EGX listing known for {code}", file=sys.stderr)
         return 2
     ar_name, isin = EGX_COMPANIES[code]
+    # Issue #304: a mistyped ISIN must fail here, loudly, before it
+    # flows into a harvest query — never launch the browser on a
+    # value that cannot be a real ISIN.
+    if not is_valid_isin(isin):
+        raise ValueError(
+            f"invalid ISIN for {code}: {isin} "
+            "(fails ISO 6166 check digit)")
     os.makedirs(RESULTS, exist_ok=True)
     to_d = date.today()
     from_d = to_d - timedelta(days=days)
