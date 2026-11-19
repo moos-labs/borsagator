@@ -1595,6 +1595,54 @@ def publish(job, results_dir, manifest):
             return False
         if suppress not in drop:
             drop.append(suppress)
+    # Issue #69: maybe_render fail-closed handoff, mirroring the
+    # compile one above. The wholesale _merge_out copy never
+    # deletes, so a previous commit's report twins at the same
+    # sweep path would otherwise survive a render refusal (a false
+    # green: a report beside a refused model). Every non-rendered
+    # outcome drops the exact twins; a rendered outcome drops a
+    # previous commit's stale render_error.txt. A suppress_render
+    # list (twins the hook could not remove locally) must name
+    # exactly this sweep's twins, and a rendered outcome never
+    # records one — contradictory evidence refuses the publish.
+    render_block = manifest.get("render") \
+        if isinstance(manifest, dict) else None
+    if not isinstance(render_block, dict):
+        render_block = {}
+    render_rel = render_block.get("sweep_dir")
+    render_status = render_block.get("status")
+    suppress_render = render_block.get("suppress_render")
+    render_valid = isinstance(render_rel, str) and render_rel \
+        and not render_rel.startswith("/") \
+        and all(part not in ("", ".", "..")
+                for part in render_rel.split("/"))
+    if suppress_render is not None and not render_valid:
+        print(f"publish: refusing: suppress_render {suppress_render!r} "
+              f"recorded without a valid sweep_dir", flush=True)
+        return False
+    if suppress_render is not None and render_status == "rendered":
+        print(f"publish: refusing: status 'rendered' with "
+              f"suppress_render {suppress_render!r} recorded",
+              flush=True)
+        return False
+    if render_valid:
+        if render_status == "rendered":
+            drop.append(f"{render_rel}/render_error.txt")
+        elif render_status in ("refused", "error", "skipped"):
+            drop.append(f"{render_rel}/report.html")
+            drop.append(f"{render_rel}/report.md")
+    if suppress_render is not None:
+        if not isinstance(suppress_render, list) or sorted(
+                suppress_render) != sorted(
+                [f"{render_rel}/report.html",
+                 f"{render_rel}/report.md"]):
+            print(f"publish: refusing: suppress_render "
+                  f"{suppress_render!r} is not the recorded sweep's "
+                  f"report twins", flush=True)
+            return False
+        for rel in suppress_render:
+            if rel not in drop:
+                drop.append(rel)
     arch_resolved = arch.resolve()
     for rel in drop:
         target = arch / rel
@@ -2074,6 +2122,265 @@ def maybe_compile(job, workdir, manifest, plan):
     return False
 
 
+RENDER_TIMEOUT = 600
+
+
+def _record_render(manifest, entry):
+    """Best-effort manifest record: the render outcome must be
+    recorded whenever the manifest is the dict _execute_body built,
+    and a malformed manifest must still never raise into the publish
+    path."""
+    try:
+        manifest["render"] = entry
+    except Exception:  # noqa: BLE001 - recording must never raise
+        print(f"maybe_render: manifest not writable, outcome: "
+              f"{entry}", flush=True)
+
+
+def _append_sweep_files(sweep_dir, entries):
+    """Append (path, bytes, sha256) entries to the sweep dir's
+    manifest.json files[], replacing any same-path entry, so the
+    listing stays truthful (same shape archive.py writes). Returns
+    True on success, False otherwise; never raises. The twins ride
+    publish() through the wholesale _merge_out copy either way —
+    this only keeps the manifest's index honest."""
+    try:
+        mpath = sweep_dir / "manifest.json"
+        m = json.loads(mpath.read_text(encoding="utf-8"))
+        files = m.get("files")
+        if not isinstance(files, list):
+            return False
+        for e in entries:
+            files[:] = [f for f in files
+                        if not (isinstance(f, dict)
+                                and f.get("path") == e["path"])]
+            files.append(e)
+        mpath.write_text(json.dumps(m, indent=2) + "\n",
+                         encoding="utf-8")
+        return True
+    except Exception:  # noqa: BLE001 - index append is best-effort
+        return False
+
+
+def maybe_render(job, workdir, manifest, plan):
+    """Issue #69: post-compile report render hook. Runs
+    scripts/render.py on the just-compiled model
+    (workdir/_merge_out/<sweep_dir>/report-model.json) after
+    maybe_compile succeeds and before the second
+    _write_manifest_atomic / publish, so report.html + report.md
+    ride the SAME archive commit as fleet + merge + model, atomic
+    with their sweep (#69 D-6). Mirrors maybe_compile: fires only
+    for sweep / sweep-lite plans; a render refusal or crash never
+    loses the fleet — it writes render_error.txt, records
+    manifest["render"], and returns False so _execute still
+    publishes. The whole body is guarded: a malformed manifest or
+    a dead renderer ends in a recorded "error", never an exception
+    into _execute_body. Every non-rendered outcome is fail-closed:
+    with a writable sweep dir, surviving report.html / report.md
+    are removed and render_error.txt names the CURRENT cause. If
+    the twins can neither be removed (read-only tree), the hook
+    records cleanup_failed + a suppress_render list and publish()
+    excludes those exact files (validated pathlib removal,
+    publish refused on failure) — an unvalidated report never
+    publishes. I-5 fallback: the renderer gets --sweep-dir (the
+    merged sweep dir itself), so it reads per-tool report.md
+    contents and the price/Kronos chart CSVs from the sweep dir —
+    the live model carries no IR-1/IR-3 chart fields, so without
+    the fallback the chart degrades to a table and the per-tool
+    sections lose their reports. The fallback never fakes a chart:
+    with no chart CSVs the renderer renders the price-series
+    table instead. When reaction_profile.present is true the
+    profile file CODE/profiles/<TICKER>.json is passed --profile
+    (the renderer asserts built_at matches the model); a missing
+    or mismatched profile fails the render, never a silent skip.
+    Validation scope: exit 0 plus both twins present, non-empty,
+    the HTML carrying the model data island, and byte equality
+    against the first read (single-writer invariant). Semantic
+    correctness is the renderer's own contract (prose-audit,
+    schema refusal, i18n parity), trusted here because the pinned
+    renderer itself produced the twins — the harness verifies
+    bands, chart mode and twin SHAs behaviorally on the golden
+    sweep rather than the hook re-deriving them."""
+    sweep_dir = None
+    sweep_rel = None
+    status, detail = "error", "render hook aborted before running"
+    try:
+        kind = (job.get("job") or "").split()
+        if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
+            return False
+        compile_info = manifest.get("compile")
+        if not isinstance(compile_info, dict):
+            compile_info = {}
+        compile_status = compile_info.get("status")
+        sweep_rel = compile_info.get("sweep_dir")
+        # Gate on a COMPILED model: the renderer consumes the model
+        # and nothing else for numbers, so without one there is
+        # nothing to render. A refused/error compile records a
+        # skipped render (with the sweep_dir, so publish() can still
+        # drop stale twins at that path) — never a crash, never a
+        # render from raw sweep files.
+        if compile_status != "compiled":
+            _record_render(manifest, {
+                "status": "skipped",
+                "detail": ("no compiled model to render (compile "
+                           f"status: {compile_status})"),
+                **({"sweep_dir": sweep_rel}
+                   if isinstance(sweep_rel, str) and sweep_rel else {}),
+            })
+            return False
+        if not isinstance(sweep_rel, str) or not sweep_rel.strip():
+            _record_render(manifest, {
+                "status": "error",
+                "detail": "compiled model without a sweep_dir"})
+            return False
+        if os.path.isabs(sweep_rel):
+            _record_render(manifest, {
+                "status": "error",
+                "detail": (f"absolute sweep_dir from compile: "
+                           f"{sweep_rel!r}")[:500]})
+            return False
+        base = (Path(workdir) / "_merge_out").resolve()
+        sweep_dir = (base / sweep_rel).resolve()
+        if base not in sweep_dir.parents:
+            _record_render(manifest, {
+                "status": "error",
+                "detail": (f"sweep_dir escapes _merge_out: "
+                           f"{sweep_rel!r}")[:500]})
+            return False
+        if not sweep_dir.is_dir():
+            _record_render(manifest, {
+                "status": "error",
+                "detail": (f"merged sweep dir missing on disk: "
+                           f"{sweep_rel}")[:500]})
+            return False
+        model_path = sweep_dir / "report-model.json"
+        if not model_path.is_file():
+            detail = ("compiled model missing on disk: "
+                      f"{sweep_rel}/report-model.json")
+            status = "error"
+        else:
+            blob = model_path.read_bytes()
+            try:
+                model = json.loads(blob.decode("utf-8"))
+            except Exception as e:
+                model = None
+                detail = f"compiled model unreadable: {e}"
+                status = "error"
+            if model is not None:
+                ticker = model.get("ticker") or ""
+                if not re.fullmatch(r"[A-Za-z0-9.\-]{1,32}", ticker or ""):
+                    detail = f"model ticker not a safe profile name: {ticker!r}"
+                    status = "error"
+                else:
+                    render_script = CODE / "scripts" / "render.py"
+                    env = {k: v for k, v in os.environ.items()
+                           if k not in ENV_DENY_FOR_TOOLS}
+                    _assert_no_denied(env)
+                    cmd = [sys.executable, str(render_script),
+                           str(model_path),
+                           "--sweep-dir", str(sweep_dir),
+                           "--out-dir", str(sweep_dir)]
+                    rp = model.get("reaction_profile") or {}
+                    if rp.get("present"):
+                        cmd += ["--profile", str(
+                            CODE / "profiles" / f"{ticker}.json")]
+                    proc = subprocess.run(
+                        cmd, env=env, capture_output=True, text=True,
+                        timeout=RENDER_TIMEOUT)
+                    if proc.stdout.strip():
+                        print(proc.stdout, end="", flush=True)
+                    if proc.stderr.strip():
+                        print(proc.stderr, end="", file=sys.stderr,
+                              flush=True)
+                    html_path = sweep_dir / "report.html"
+                    md_path = sweep_dir / "report.md"
+                    if proc.returncode == 0 and html_path.is_file() \
+                            and md_path.is_file():
+                        html_blob = html_path.read_bytes()
+                        md_blob = md_path.read_bytes()
+                        if not html_blob or not md_blob:
+                            detail = ("render wrote an empty twin: "
+                                      f"html {len(html_blob)} bytes, "
+                                      f"md {len(md_blob)} bytes")
+                        elif b'id="report-model"' not in html_blob:
+                            detail = ("report.html carries no model "
+                                      "data island")
+                        elif (html_path.read_bytes() != html_blob
+                              or md_path.read_bytes() != md_blob):
+                            detail = ("report twins changed during "
+                                      "validation")
+                        else:
+                            chart = ("svg" if b'aria-label="Price chart"'
+                                     in html_blob else "table")
+                            files = [
+                                {"path": "report.html",
+                                 "bytes": len(html_blob),
+                                 "sha256": hashlib.sha256(
+                                     html_blob).hexdigest()},
+                                {"path": "report.md",
+                                 "bytes": len(md_blob),
+                                 "sha256": hashlib.sha256(
+                                     md_blob).hexdigest()},
+                            ]
+                            appended = _append_sweep_files(
+                                sweep_dir, files)
+                            _record_render(manifest, {
+                                "status": "rendered",
+                                "sweep_dir": sweep_rel,
+                                "files": files,
+                                "files_appended": appended,
+                                "chart": chart,
+                                "sweep_dir_fallback": True,
+                                "ticker": ticker,
+                            })
+                            return True
+                    elif proc.returncode == 0:
+                        detail = ("render exited 0 but report.html / "
+                                  "report.md missing")
+                    elif proc.returncode == 2:
+                        status = "refused"
+                        detail = ("render.py refused (exit 2): "
+                                  + (proc.stderr.strip()
+                                     or proc.stdout.strip()))
+                    else:
+                        detail = (f"render.py exited {proc.returncode}: "
+                                  f"{proc.stderr.strip()}")
+    except subprocess.TimeoutExpired:
+        status = "error"
+        detail = f"render timed out after {RENDER_TIMEOUT}s"
+    except Exception as e:  # noqa: BLE001 - the fleet must publish
+        status = "error"
+        detail = f"render hook failed: {type(e).__name__}: {e}"
+    # Fail-closed tail for every non-rendered outcome: never leave
+    # report twins in place that this run did not validate, and
+    # make render_error.txt name the CURRENT cause.
+    entry = {"status": status, "detail": detail[:500]}
+    if isinstance(sweep_rel, str) and sweep_rel:
+        entry["sweep_dir"] = sweep_rel
+        entry["error_file"] = f"{sweep_rel}/render_error.txt"
+    if sweep_dir is not None:
+        stale = []
+        for twin in ("report.html", "report.md"):
+            p = sweep_dir / twin
+            if p.is_file():
+                try:
+                    os.remove(p)
+                except OSError as exc:
+                    stale.append(twin)
+                    entry["cleanup_failed"] = (
+                        f"{type(exc).__name__}: {exc}")[:300]
+        if stale:
+            entry["suppress_render"] = [
+                f"{sweep_rel}/{t}" for t in ("report.html", "report.md")]
+        marker = sweep_dir / "render_error.txt"
+        try:
+            marker.write_text(f"render {status}: {detail}\n")
+        except OSError as exc:
+            entry["marker_write_failed"] = (
+                f"{type(exc).__name__}: {exc}")[:300]
+    _record_render(manifest, entry)
+    return False
+
 
 def _execute(job):
     # #231: an intent precedes ALL effects, including ledger publish.
@@ -2178,6 +2485,12 @@ def _execute_body(job):
     # never loses the fleet (see maybe_compile): publish() below
     # still runs.
     maybe_compile(job, workdir, manifest, plan)
+    # Issue #69: post-compile report render hook — the rendered
+    # report.html + report.md (or the render refusal marker) ride
+    # the SAME archive commit as fleet + merge + model. A render
+    # refusal or crash never loses the fleet (see maybe_render):
+    # publish() below still runs.
+    maybe_render(job, workdir, manifest, plan)
     # The merge and compile hooks record their outcomes in the
     # in-memory manifest; refresh the workdir copy so it stays
     # truthful (publish() writes the same final manifest into the
