@@ -108,10 +108,14 @@ def _page_fonts(page):
 def extract_pages(pdf_bytes, max_pages=MAX_PAGES):
     """Extract text page by page.
 
-    Returns {"status", "pages": [{"page", "text", "fonts"}],
+    Returns {"status", "pages": [{"page", "text", "fonts", "mode"}],
     "engine", "engine_version", "detail", "truncated"}.
     "pages" text is the RAW pypdf output (visual order for RTL);
     callers normalise with restore_logical_order() before matching.
+    "mode" records how the page was read — "layout" (Arabic in
+    logical order), "plain" (layout failed; plain mode reverses RTL
+    runs, so callers must restore logical order and record which
+    variant matched), or "failed" (neither mode read the page).
     Never raises.
     """
     version = _engine_version()
@@ -142,21 +146,25 @@ def extract_pages(pdf_bytes, max_pages=MAX_PAGES):
     for i, page in enumerate(reader.pages[:max_pages]):
         # Layout mode: text in reading order, Arabic in logical
         # order (plain mode reverses RTL runs). Falls back to plain
-        # mode for a page layout mode cannot read.
+        # mode for a page layout mode cannot read; the mode is
+        # recorded per page (#312) so the verifier knows which
+        # reading it is matching against.
         try:
             text = page.extract_text(extraction_mode="layout") or ""
+            mode = "layout"
         except Exception:
             try:
                 text = page.extract_text() or ""
+                mode = "plain"
             except Exception as exc:  # noqa: BLE001 - one bad page
                 text = ""
                 pages.append({"page": i + 1, "text": text,
-                              "fonts": _page_fonts(page),
+                              "fonts": _page_fonts(page), "mode": "failed",
                               "detail": "page text extraction failed: %s"
                               % str(exc)[:120]})
                 continue
         pages.append({"page": i + 1, "text": text,
-                      "fonts": _page_fonts(page)})
+                      "fonts": _page_fonts(page), "mode": mode})
     base["pages"] = pages
     base["truncated"] = truncated
     if not any(p["text"].strip() for p in pages):
