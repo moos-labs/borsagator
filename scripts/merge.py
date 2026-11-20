@@ -526,6 +526,22 @@ def merge(job, run_dir, registry_path, weights_path, ensemble_path,
         md = build_digest_md(job, started, finished, digest, degraded)
         _write_text_atomic(digest_dir / "digest.md", md)
 
+        # Issue #281: stage the #278 disclosure-events feed file
+        # into the staged tree BEFORE the ensemble runs, so
+        # ensemble.py (CWD = stage) can feed verified dividend
+        # events into #26 scoring. The archive copy below still
+        # stages from the run dir into the sweep dir; this copy is
+        # ensemble input only. Absent on Actions sweeps and pre-#278
+        # runs: the ensemble falls back to legacy text detection
+        # alone.
+        _events_src = run_dir / "disclosure-events" / (
+            f"{ticker.split('.')[0]}-events.json")
+        if _events_src.is_file():
+            _ev_dest = stage / "disclosure-events" / (
+                f"{ticker.split('.')[0]}-events.json")
+            _ev_dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(_events_src, _ev_dest)
+
         # Invoke ensemble.py unmodified, CWD = the staged tree.
         # The weights path is RELATIVE ("ledger/weights.json", the
         # staged copy): ensemble records the path verbatim in
