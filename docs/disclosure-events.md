@@ -114,6 +114,65 @@ attach (clipped to 6,000 chars) or the #91 outright-add path.
   #279 (attachments), #280 (#68 surfacing), #281 (#26 feeding),
   #282 (#32 adapter) and #283 (top-30 coverage).
 
+## Feeding #26 dividend-aware scoring (#281)
+
+`scripts/ensemble.py` (`events_to_corporate_actions` +
+`merge_corporate_actions`, wired into the corporate-actions section
+of `main()`) feeds verified dividend events into the same #26
+scoring the legacy text detection feeds. `scripts/merge.py` stages
+the #278 feed file (`disclosure-events/<CODE>-events.json`) into
+the staged sweep tree **before** invoking the ensemble, so the
+ensemble (CWD = stage) reads it; the worker already extracts before
+the merge, so no worker change was needed. The horizon marking, the
+#130 ex-date-today Kronos rescale and the model tripwire consume
+event actions exactly like legacy ones — the output shape is the
+`detect_corporate_actions` action dict plus provenance.
+
+### Field mapping (event field → scorer input)
+
+| Disclosure-event field | Scorer input (`#26` action) | Notes |
+|---|---|---|
+| `event_type == "dividend"` | gate: only dividend events considered | Earnings / board events never feed scoring |
+| `payload.amount_per_share.value` (Decimal string, EGP, scale `one`) | `dps` (float) | Same guard as legacy: `0 < dps < base`, EGP only |
+| `payload.ex_date.value` | `ex_date` | **Verbatim** (`verbatim:تاريخ تحريك الحدود السعرية`), `date_basis: "verbatim:ex-date"` — the legacy path derives it as entitlement-end + 1 |
+| `payload.entitlement_end.value` | `entitlement_end` | Carried as-is; the ex-date is never re-derived from it when the verbatim ex-date is present |
+| `announced.value` | `announced` (provenance) | Recorded on the action; no date parsing depends on it |
+| `payload.coupon_number` | `coupon_number` (provenance) | Identity only |
+| `issuer.ticker` | ticker guard | Must match the sweep ticker when present; absent is accepted (the feed file is already per-ticker) |
+| `verification_status == "verified"` **and** `extraction_status == "extracted"` | gate: both required | A candidate is never a verified event; an unverified (e.g. republication) extraction is not trusted to move the score |
+| `payload.record_date` | **not fed** | The extractor never states one; its T+2 value is an unvalidated candidate, never a fact |
+| `payload.payout_date` | **not fed** | A payout date is NOT an ex-date (#26) |
+
+### Merge rule
+
+An event action **supersedes** a legacy action for the same
+distribution: same DPS within the #131 tolerance and the ex-dates
+agree (or the legacy one is undated), or the legacy ex-date was
+derived (`date_basis == "entitlement+1"`) and sits within one day
+of the verbatim ex-date — the verbatim date corrects the
+derivation. Anything else survives alongside: two genuinely
+different coupons (same DPS, different ex-dates) stay two actions.
+A missing or malformed feed file changes nothing — legacy detection
+still stands, and a dead feed never loses a sweep.
+
+### Proof (POUL coupon 42, NewsID 296893; sweep date 2026-11-15, base 10.00)
+
+The real extractor on the real #109 golden yields one verified
+event (DPS 1.8999999998, ex-date 2026-11-16 verbatim,
+entitlement-end 2026-11-15, announced 2026-11-02). The real
+ensemble on a minimal sweep dir:
+
+| Run | `corporate_actions` | Horizon marks |
+|---|---|---|
+| A — legacy only (no events file) | 1 action, `date_basis: entitlement+1`, DPS 1.8999999998, ex 2026-11-16, mechanical −19.0% | day/week/month marked, mechanical −19.0% |
+| B — events file present | 1 action (no double-count), `date_basis: verbatim:ex-date`, `source: disclosure-event`, same DPS / ex-date / mechanical % | identical marks and scores to A (net 0.45; expected +0.46% / +0.92% / +1.78%) |
+| C — collected body blanked + events file | 1 action, identical to B | identical to B — the adjustment survives where legacy is blind |
+| Control — no event, no dividend text | `[]`, horizons unmarked | — |
+
+Reproducible: `scripts/test_ensemble_dividend_adapter_281.py`
+(5 tests: mapping, all gates, merge supersede/keep-apart, the
+three end-to-end runs above, the no-dividend control).
+
 ## Attachment capture (#279, capture-only)
 
 The harvest now captures the disclosure PDF itself
