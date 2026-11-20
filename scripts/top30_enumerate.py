@@ -308,7 +308,10 @@ def http_fetch(url, timeout=30):
         # arrived. A body that cannot be read keeps the status
         # with body=None (issue #383) — never an empty body as if
         # one had arrived; the read error is kept in the message
-        # so the cause is not lost.
+        # so the cause is not lost. A read that returns a
+        # non-bytes value (None, str, ...) is unreadable the same
+        # way (issue #389): e.read() promises bytes, so anything
+        # else carries no body evidence at all.
         try:
             raw = e.read()
         except Exception as read_err:  # noqa: BLE001 — must not raise
@@ -317,8 +320,12 @@ def http_fetch(url, timeout=30):
                      % (type(e).__name__, e,
                         type(read_err).__name__, read_err),
                 status=e.code, body=None)
-        body = (raw.decode("utf-8", errors="replace")
-                if isinstance(raw, (bytes, bytearray)) else "")
+        if not isinstance(raw, (bytes, bytearray)):
+            raise FetchFailure(
+                url, "%s: %s (error body unreadable: read returned %s)"
+                     % (type(e).__name__, e, type(raw).__name__),
+                status=e.code, body=None)
+        body = raw.decode("utf-8", errors="replace")
         raise FetchFailure(url, "%s: %s" % (type(e).__name__, e),
                            status=e.code, body=body)
     except Exception as e:  # URLError, RemoteDisconnected, timeout...
