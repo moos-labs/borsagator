@@ -3552,6 +3552,11 @@ def maybe_compile(job, workdir, manifest, plan):
     sweep_dir = None
     sweep_rel = None
     status, detail = "error", "compile hook aborted before running"
+    # Issue #406: outcome of the --archive-sha lookup, recorded in
+    # the manifest compile entry so a failed lookup is distinct
+    # from having no archive clone at all. None until the lookup
+    # block runs (early exits record no field, not a guess).
+    archive_lookup = None
     try:
         kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
         if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
@@ -3622,6 +3627,12 @@ def maybe_compile(job, workdir, manifest, plan):
             # OSError when git is missing; omit the flag on any
             # lookup failure and let the compiler record
             # archive-sha-unavailable rather than guess.
+            # Issue #406: record the outcome distinctly — a clone
+            # whose rev-parse fails (timeout / missing git /
+            # non-zero exit / empty output) is "lookup-failed",
+            # not the "no-clone" of a missing archive-push dir.
+            # Both used to land on the same archive-sha-unavailable
+            # fallback with nothing to tell them apart.
             try:
                 head = subprocess.run(
                     ["git", "-C", str(arch), "rev-parse", "HEAD"],
@@ -3631,6 +3642,11 @@ def maybe_compile(job, workdir, manifest, plan):
             if head is not None and head.returncode == 0 \
                     and head.stdout.strip():
                 cmd += ["--archive-sha", head.stdout.strip()]
+                archive_lookup = "ok"
+            else:
+                archive_lookup = "lookup-failed"
+        else:
+            archive_lookup = "no-clone"
         proc = subprocess.run(cmd, env=env, capture_output=True,
                               text=True, timeout=COMPILE_TIMEOUT)
         if proc.stdout.strip():
@@ -3676,6 +3692,7 @@ def maybe_compile(job, workdir, manifest, plan):
                         "flags": model.get("flags") or [],
                         "tools": len(model.get("tools") or []),
                         "archive_commit": model.get("archive_commit"),
+                        "archive_lookup": archive_lookup,
                     })
                     return True
         elif proc.returncode == 0:
@@ -3704,6 +3721,11 @@ def maybe_compile(job, workdir, manifest, plan):
     # compiler wrote this run — the refusal case — is already
     # current and is kept; anything older is replaced).
     entry = {"status": status, "detail": detail[:500]}
+    # Issue #406: carry the lookup outcome on the fail-closed
+    # record too, when the lookup ran — a compile that fails
+    # after a failed lookup must not lose the distinction.
+    if archive_lookup is not None:
+        entry["archive_lookup"] = archive_lookup
     if isinstance(sweep_rel, str) and sweep_rel:
         entry["sweep_dir"] = sweep_rel
         entry["error_file"] = f"{sweep_rel}/compile_error.txt"
