@@ -1,0 +1,1425 @@
+{
+ "schema_version": 1,
+ "issue": 283,
+ "manifest": {
+  "path": "evaluation/top30_manifest.json",
+  "base_commit": "424f4b3",
+  "frozen_at": "2026-11-19",
+  "quarter": "2026-08-19 -> 2026-11-19"
+ },
+ "window": {
+  "start": "2026-08-19",
+  "end": "2026-11-19",
+  "inclusive": true
+ },
+ "enumerator": "scripts/top30_enumerate.py",
+ "enumerator_version": "1.0.0",
+ "run_id": "20261120T072024Z",
+ "generated_at": "2026-11-20T07:20:24Z",
+ "mode": "live",
+ "live_access": {
+  "reachable": false,
+  "probes": [
+   {
+    "url": "https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20",
+    "at": "2026-11-20T07:20:21Z",
+    "reachable": false,
+    "detail": "status=200 body_chars=6668 challenge=True"
+   }
+  ]
+ },
+ "collection": {
+  "enumerated": 0,
+  "archived": 0,
+  "missing": [],
+  "enumeration_closed": false,
+  "pagination_complete": false
+ },
+ "issuers": [
+  {
+   "issuer": "TMGH",
+   "listings": [
+    {
+     "code": "TMGH",
+     "issuer": "TMGH",
+     "isin": "EGS691S1C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 raw_sha256=923234a0786e30e3dd953290f80d03098444252893f43b9e20e3ce2d17ab9aee"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "TMGH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "TMGH",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 raw_sha256=923234a0786e30e3dd953290f80d03098444252893f43b9e20e3ce2d17ab9aee"
+    }
+   ]
+  },
+  {
+   "issuer": "ETEL",
+   "listings": [
+    {
+     "code": "ETEL",
+     "issuer": "ETEL",
+     "isin": "EGS48031C016",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 raw_sha256=604ac95f01ba5129a5fc209eb22b44b1132252c2b4362b4c0b4cc804cc6ecf27"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ETEL": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ETEL",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 raw_sha256=604ac95f01ba5129a5fc209eb22b44b1132252c2b4362b4c0b4cc804cc6ecf27"
+    }
+   ]
+  },
+  {
+   "issuer": "EFIH",
+   "listings": [
+    {
+     "code": "EFIH",
+     "issuer": "EFIH",
+     "isin": "EGS743O1C013",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 raw_sha256=6b36f5b2abb1a43c4bb47f4eefecc956e7ed930535f3937f56164d7e2cde898e"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EFIH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EFIH",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 raw_sha256=6b36f5b2abb1a43c4bb47f4eefecc956e7ed930535f3937f56164d7e2cde898e"
+    }
+   ]
+  },
+  {
+   "issuer": "ADIB",
+   "listings": [
+    {
+     "code": "ADIB",
+     "issuer": "ADIB",
+     "isin": "EGS60111C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 raw_sha256=5ea7fb7d1d7d843a5f0977b9d5712df79fb87e18b120a2d16bde7d6020b6b1d3"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ADIB": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ADIB",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 raw_sha256=5ea7fb7d1d7d843a5f0977b9d5712df79fb87e18b120a2d16bde7d6020b6b1d3"
+    }
+   ]
+  },
+  {
+   "issuer": "EFID",
+   "listings": [
+    {
+     "code": "EFID",
+     "issuer": "EFID",
+     "isin": "EGS305I1C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 raw_sha256=4a7713ee80d4d42561ade1b7a91007eb89de7871731360df5ccb3acfda2b786e"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EFID": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EFID",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 raw_sha256=4a7713ee80d4d42561ade1b7a91007eb89de7871731360df5ccb3acfda2b786e"
+    }
+   ]
+  },
+  {
+   "issuer": "ORAS",
+   "listings": [
+    {
+     "code": "ORAS",
+     "issuer": "ORAS",
+     "isin": "EGS95001C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 raw_sha256=404f0f4bf44280b130d39a312a6fcce8245aef906c0c4cf41bdc3431e8b1312a"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORAS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORAS",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 raw_sha256=404f0f4bf44280b130d39a312a6fcce8245aef906c0c4cf41bdc3431e8b1312a"
+    }
+   ]
+  },
+  {
+   "issuer": "FAIT",
+   "listings": [
+    {
+     "code": "FAIT",
+     "issuer": "FAIT",
+     "isin": "EGS60321C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 raw_sha256=8d15f94e9c329f2623b1e3239979c5d401268ba4c42f7b50d969234cedd6d300"
+      }
+     ]
+    },
+    {
+     "code": "FAITA",
+     "issuer": "FAIT",
+     "isin": null,
+     "enumeration_status": "blocked",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "B-02-missing-isin",
+       "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+       "evidence": "evaluation/top30_manifest.json blockers B-02"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "blocked",
+   "terminal_states": {
+    "FAIT": "failed",
+    "FAITA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "FAIT",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 raw_sha256=8d15f94e9c329f2623b1e3239979c5d401268ba4c42f7b50d969234cedd6d300"
+    },
+    {
+     "listing": "FAITA",
+     "kind": "B-02-missing-isin",
+     "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+     "evidence": "evaluation/top30_manifest.json blockers B-02"
+    }
+   ]
+  },
+  {
+   "issuer": "PHDC",
+   "listings": [
+    {
+     "code": "PHDC",
+     "issuer": "PHDC",
+     "isin": "EGS655L1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 raw_sha256=96c4a5d43e9c373dcb7f6351d11498849866b7b8c868b073e120003e376ee850"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "PHDC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "PHDC",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 raw_sha256=96c4a5d43e9c373dcb7f6351d11498849866b7b8c868b073e120003e376ee850"
+    }
+   ]
+  },
+  {
+   "issuer": "SKPC",
+   "listings": [
+    {
+     "code": "SKPC",
+     "issuer": "SKPC",
+     "isin": "EGS380S1C017",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 raw_sha256=251955d9fef23012ca478717182314331ca692615a00d958719f38a44dca45a0"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "SKPC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "SKPC",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 raw_sha256=251955d9fef23012ca478717182314331ca692615a00d958719f38a44dca45a0"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAL",
+   "listings": [
+    {
+     "code": "EGAL",
+     "issuer": "EGAL",
+     "isin": "EGS3E181C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 raw_sha256=72200cb071ba415426c8c4bf942d0d0c35782e7aa6d44b15bc42a02f67ce39a9"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EGAL": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EGAL",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 raw_sha256=72200cb071ba415426c8c4bf942d0d0c35782e7aa6d44b15bc42a02f67ce39a9"
+    }
+   ]
+  },
+  {
+   "issuer": "ISPH",
+   "listings": [
+    {
+     "code": "ISPH",
+     "issuer": "ISPH",
+     "isin": "EGS512O1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 raw_sha256=a6661fdd5867e4ba1d7fe5e9b9db370874cb6f0c37dd373846c6a71998f1190e"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ISPH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ISPH",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 raw_sha256=a6661fdd5867e4ba1d7fe5e9b9db370874cb6f0c37dd373846c6a71998f1190e"
+    }
+   ]
+  },
+  {
+   "issuer": "JUFO",
+   "listings": [
+    {
+     "code": "JUFO",
+     "issuer": "JUFO",
+     "isin": "EGS30901C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 raw_sha256=68d256a0e743746f2c8a9b3510373a8fdd28f41a6d3d028c33b82820ada0915d"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "JUFO": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "JUFO",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 raw_sha256=68d256a0e743746f2c8a9b3510373a8fdd28f41a6d3d028c33b82820ada0915d"
+    }
+   ]
+  },
+  {
+   "issuer": "MCQE",
+   "listings": [
+    {
+     "code": "MCQE",
+     "issuer": "MCQE",
+     "isin": "EGS3C391C017",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 raw_sha256=0c4576be9476f281b9d82c7e482be0ed490813fa835c84b49f505a1491e8b82d"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MCQE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MCQE",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 raw_sha256=0c4576be9476f281b9d82c7e482be0ed490813fa835c84b49f505a1491e8b82d"
+    }
+   ]
+  },
+  {
+   "issuer": "ORHD",
+   "listings": [
+    {
+     "code": "ORHD",
+     "issuer": "ORHD",
+     "isin": "EGS70321C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 raw_sha256=6b80afbaa397963a1b996edcb016cbee418838ca4ca7ecc0508cda815a363cb6"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORHD": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORHD",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 raw_sha256=6b80afbaa397963a1b996edcb016cbee418838ca4ca7ecc0508cda815a363cb6"
+    }
+   ]
+  },
+  {
+   "issuer": "AMOC",
+   "listings": [
+    {
+     "code": "AMOC",
+     "issuer": "AMOC",
+     "isin": "EGS380P1C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 raw_sha256=754ec6bbf0610896828bb21467ff6c81edc8d9260c07a50dabbed2bd53f4509f"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "AMOC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "AMOC",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 raw_sha256=754ec6bbf0610896828bb21467ff6c81edc8d9260c07a50dabbed2bd53f4509f"
+    }
+   ]
+  },
+  {
+   "issuer": "MASR",
+   "listings": [
+    {
+     "code": "MASR",
+     "issuer": "MASR",
+     "isin": "EGS65571C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 raw_sha256=3b896520a69773ff633ab8408df8660e2c766b489507a7a42b46efb9c0146370"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MASR": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MASR",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 raw_sha256=3b896520a69773ff633ab8408df8660e2c766b489507a7a42b46efb9c0146370"
+    }
+   ]
+  },
+  {
+   "issuer": "ORWE",
+   "listings": [
+    {
+     "code": "ORWE",
+     "issuer": "ORWE",
+     "isin": "EGS33041C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 raw_sha256=b81b59eda0338bc78d2e3e3d7e761e188da8ee50889bc498ef993f5142b8d419"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORWE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORWE",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 raw_sha256=b81b59eda0338bc78d2e3e3d7e761e188da8ee50889bc498ef993f5142b8d419"
+    }
+   ]
+  },
+  {
+   "issuer": "OLFI",
+   "listings": [
+    {
+     "code": "OLFI",
+     "issuer": "OLFI",
+     "isin": "EGS30AL1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 raw_sha256=ec4f21e97383cf335c287a366ac62641d80ed35660a2555e14b7ab35567adb09"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "OLFI": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "OLFI",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 raw_sha256=ec4f21e97383cf335c287a366ac62641d80ed35660a2555e14b7ab35567adb09"
+    }
+   ]
+  },
+  {
+   "issuer": "RMDA",
+   "listings": [
+    {
+     "code": "RMDA",
+     "issuer": "RMDA",
+     "isin": "EGS381B1C015",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 raw_sha256=8f2519c0c8e2cd4c652a4e4f3c537f2bd953b79ae1d8c9fcdfab59842b0b2298"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "RMDA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "RMDA",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 raw_sha256=8f2519c0c8e2cd4c652a4e4f3c537f2bd953b79ae1d8c9fcdfab59842b0b2298"
+    }
+   ]
+  },
+  {
+   "issuer": "OCDI",
+   "listings": [
+    {
+     "code": "OCDI",
+     "issuer": "OCDI",
+     "isin": "EGS65851C015",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 raw_sha256=7345827856687f7217a0896906c60216354ec40e5ed8fa4ff64cd09e02e30481"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "OCDI": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "OCDI",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 raw_sha256=7345827856687f7217a0896906c60216354ec40e5ed8fa4ff64cd09e02e30481"
+    }
+   ]
+  },
+  {
+   "issuer": "ARCC",
+   "listings": [
+    {
+     "code": "ARCC",
+     "issuer": "ARCC",
+     "isin": "EGS3C0O1C016",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 raw_sha256=5b21616be22e2e13352f97e485040f106cd9a6d3d9f765f8800f752a3ea815a7"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ARCC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ARCC",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 raw_sha256=5b21616be22e2e13352f97e485040f106cd9a6d3d9f765f8800f752a3ea815a7"
+    }
+   ]
+  },
+  {
+   "issuer": "IFAP",
+   "listings": [
+    {
+     "code": "IFAP",
+     "issuer": "IFAP",
+     "isin": "EGS07061C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 raw_sha256=4a8e7e0277c2d17fff562a4e9a71088f1cbf61e962d8183bccf15123e518d3ea"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "IFAP": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "IFAP",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 raw_sha256=4a8e7e0277c2d17fff562a4e9a71088f1cbf61e962d8183bccf15123e518d3ea"
+    }
+   ]
+  },
+  {
+   "issuer": "MTIE",
+   "listings": [
+    {
+     "code": "MTIE",
+     "issuer": "MTIE",
+     "isin": "EGS75011C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 raw_sha256=a53a8f8a7accf45f3ecf63f4ae4d5306136e62ce8151a4b81b1158dfb085c39b"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MTIE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MTIE",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 raw_sha256=a53a8f8a7accf45f3ecf63f4ae4d5306136e62ce8151a4b81b1158dfb085c39b"
+    }
+   ]
+  },
+  {
+   "issuer": "ATQA",
+   "listings": [
+    {
+     "code": "ATQA",
+     "issuer": "ATQA",
+     "isin": "EGS3D0C1C018",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 raw_sha256=3caa046d70a15bb606f461ca6a989d956ed90e9e9ed86061063d76b9fd11bfc4"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ATQA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ATQA",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 raw_sha256=3caa046d70a15bb606f461ca6a989d956ed90e9e9ed86061063d76b9fd11bfc4"
+    }
+   ]
+  },
+  {
+   "issuer": "SAUD",
+   "listings": [
+    {
+     "code": "SAUD",
+     "issuer": "SAUD",
+     "isin": "EGS60101C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 raw_sha256=0ac5debcdc2805c1f67f74a6662ed9cb2349191df17f602f4e512fa3f38301f6"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "SAUD": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "SAUD",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 raw_sha256=0ac5debcdc2805c1f67f74a6662ed9cb2349191df17f602f4e512fa3f38301f6"
+    }
+   ]
+  },
+  {
+   "issuer": "CIRA",
+   "listings": [
+    {
+     "code": "CIRA",
+     "issuer": "CIRA",
+     "isin": "EGS65541C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 raw_sha256=5dfe8de554ee49f7d4786e3a72671fa96ecad6ea80f9b84f7767129376a708c0"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "CIRA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "CIRA",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 raw_sha256=5dfe8de554ee49f7d4786e3a72671fa96ecad6ea80f9b84f7767129376a708c0"
+    }
+   ]
+  },
+  {
+   "issuer": "ACGC",
+   "listings": [
+    {
+     "code": "ACGC",
+     "issuer": "ACGC",
+     "isin": "EGS32221C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 raw_sha256=09e10278e199b0799d8c6e0cff9c19dc216db2a791738aa32df8cccd9ceba0d0"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ACGC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ACGC",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 raw_sha256=09e10278e199b0799d8c6e0cff9c19dc216db2a791738aa32df8cccd9ceba0d0"
+    }
+   ]
+  },
+  {
+   "issuer": "MPCO",
+   "listings": [
+    {
+     "code": "MPCO",
+     "issuer": "MPCO",
+     "isin": "EGS02091C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 raw_sha256=d68953bde51378f6ba8f3d3a3edabfd4c374f250d0a3edb27556fab50d984995"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MPCO": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MPCO",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 raw_sha256=d68953bde51378f6ba8f3d3a3edabfd4c374f250d0a3edb27556fab50d984995"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAS",
+   "listings": [
+    {
+     "code": "EGAS",
+     "issuer": "EGAS",
+     "isin": "EGS39011C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 raw_sha256=91d9f13647faacb5b4fa4717407db2ab2b25f521d979e01e1245d42c4294eb63"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EGAS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EGAS",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 raw_sha256=91d9f13647faacb5b4fa4717407db2ab2b25f521d979e01e1245d42c4294eb63"
+    }
+   ]
+  },
+  {
+   "issuer": "ETRS",
+   "listings": [
+    {
+     "code": "ETRS",
+     "issuer": "ETRS",
+     "isin": "EGS42051C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 1,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "source_challenge",
+       "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 raw_sha256=b95885789085a1eab73cd3827ea810f011912f093339847a93b17491b1afb025"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ETRS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ETRS",
+     "kind": "source_challenge",
+     "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 raw_sha256=b95885789085a1eab73cd3827ea810f011912f093339847a93b17491b1afb025"
+    }
+   ]
+  }
+ ],
+ "failures": [
+  {
+   "issuer": "TMGH",
+   "listing": "TMGH",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 raw_sha256=923234a0786e30e3dd953290f80d03098444252893f43b9e20e3ce2d17ab9aee"
+  },
+  {
+   "issuer": "ETEL",
+   "listing": "ETEL",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 raw_sha256=604ac95f01ba5129a5fc209eb22b44b1132252c2b4362b4c0b4cc804cc6ecf27"
+  },
+  {
+   "issuer": "EFIH",
+   "listing": "EFIH",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 raw_sha256=6b36f5b2abb1a43c4bb47f4eefecc956e7ed930535f3937f56164d7e2cde898e"
+  },
+  {
+   "issuer": "ADIB",
+   "listing": "ADIB",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 raw_sha256=5ea7fb7d1d7d843a5f0977b9d5712df79fb87e18b120a2d16bde7d6020b6b1d3"
+  },
+  {
+   "issuer": "EFID",
+   "listing": "EFID",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 raw_sha256=4a7713ee80d4d42561ade1b7a91007eb89de7871731360df5ccb3acfda2b786e"
+  },
+  {
+   "issuer": "ORAS",
+   "listing": "ORAS",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 raw_sha256=404f0f4bf44280b130d39a312a6fcce8245aef906c0c4cf41bdc3431e8b1312a"
+  },
+  {
+   "issuer": "FAIT",
+   "listing": "FAIT",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 raw_sha256=8d15f94e9c329f2623b1e3239979c5d401268ba4c42f7b50d969234cedd6d300"
+  },
+  {
+   "issuer": "FAIT",
+   "listing": "FAITA",
+   "kind": "B-02-missing-isin",
+   "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+   "evidence": "evaluation/top30_manifest.json blockers B-02"
+  },
+  {
+   "issuer": "PHDC",
+   "listing": "PHDC",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 raw_sha256=96c4a5d43e9c373dcb7f6351d11498849866b7b8c868b073e120003e376ee850"
+  },
+  {
+   "issuer": "SKPC",
+   "listing": "SKPC",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 raw_sha256=251955d9fef23012ca478717182314331ca692615a00d958719f38a44dca45a0"
+  },
+  {
+   "issuer": "EGAL",
+   "listing": "EGAL",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 raw_sha256=72200cb071ba415426c8c4bf942d0d0c35782e7aa6d44b15bc42a02f67ce39a9"
+  },
+  {
+   "issuer": "ISPH",
+   "listing": "ISPH",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 raw_sha256=a6661fdd5867e4ba1d7fe5e9b9db370874cb6f0c37dd373846c6a71998f1190e"
+  },
+  {
+   "issuer": "JUFO",
+   "listing": "JUFO",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 raw_sha256=68d256a0e743746f2c8a9b3510373a8fdd28f41a6d3d028c33b82820ada0915d"
+  },
+  {
+   "issuer": "MCQE",
+   "listing": "MCQE",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 raw_sha256=0c4576be9476f281b9d82c7e482be0ed490813fa835c84b49f505a1491e8b82d"
+  },
+  {
+   "issuer": "ORHD",
+   "listing": "ORHD",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 raw_sha256=6b80afbaa397963a1b996edcb016cbee418838ca4ca7ecc0508cda815a363cb6"
+  },
+  {
+   "issuer": "AMOC",
+   "listing": "AMOC",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 raw_sha256=754ec6bbf0610896828bb21467ff6c81edc8d9260c07a50dabbed2bd53f4509f"
+  },
+  {
+   "issuer": "MASR",
+   "listing": "MASR",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 raw_sha256=3b896520a69773ff633ab8408df8660e2c766b489507a7a42b46efb9c0146370"
+  },
+  {
+   "issuer": "ORWE",
+   "listing": "ORWE",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 raw_sha256=b81b59eda0338bc78d2e3e3d7e761e188da8ee50889bc498ef993f5142b8d419"
+  },
+  {
+   "issuer": "OLFI",
+   "listing": "OLFI",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 raw_sha256=ec4f21e97383cf335c287a366ac62641d80ed35660a2555e14b7ab35567adb09"
+  },
+  {
+   "issuer": "RMDA",
+   "listing": "RMDA",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 raw_sha256=8f2519c0c8e2cd4c652a4e4f3c537f2bd953b79ae1d8c9fcdfab59842b0b2298"
+  },
+  {
+   "issuer": "OCDI",
+   "listing": "OCDI",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 raw_sha256=7345827856687f7217a0896906c60216354ec40e5ed8fa4ff64cd09e02e30481"
+  },
+  {
+   "issuer": "ARCC",
+   "listing": "ARCC",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 raw_sha256=5b21616be22e2e13352f97e485040f106cd9a6d3d9f765f8800f752a3ea815a7"
+  },
+  {
+   "issuer": "IFAP",
+   "listing": "IFAP",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 raw_sha256=4a8e7e0277c2d17fff562a4e9a71088f1cbf61e962d8183bccf15123e518d3ea"
+  },
+  {
+   "issuer": "MTIE",
+   "listing": "MTIE",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 raw_sha256=a53a8f8a7accf45f3ecf63f4ae4d5306136e62ce8151a4b81b1158dfb085c39b"
+  },
+  {
+   "issuer": "ATQA",
+   "listing": "ATQA",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 raw_sha256=3caa046d70a15bb606f461ca6a989d956ed90e9e9ed86061063d76b9fd11bfc4"
+  },
+  {
+   "issuer": "SAUD",
+   "listing": "SAUD",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 raw_sha256=0ac5debcdc2805c1f67f74a6662ed9cb2349191df17f602f4e512fa3f38301f6"
+  },
+  {
+   "issuer": "CIRA",
+   "listing": "CIRA",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 raw_sha256=5dfe8de554ee49f7d4786e3a72671fa96ecad6ea80f9b84f7767129376a708c0"
+  },
+  {
+   "issuer": "ACGC",
+   "listing": "ACGC",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 raw_sha256=09e10278e199b0799d8c6e0cff9c19dc216db2a791738aa32df8cccd9ceba0d0"
+  },
+  {
+   "issuer": "MPCO",
+   "listing": "MPCO",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 raw_sha256=d68953bde51378f6ba8f3d3a3edabfd4c374f250d0a3edb27556fab50d984995"
+  },
+  {
+   "issuer": "EGAS",
+   "listing": "EGAS",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 raw_sha256=91d9f13647faacb5b4fa4717407db2ab2b25f521d979e01e1245d42c4294eb63"
+  },
+  {
+   "issuer": "ETRS",
+   "listing": "ETRS",
+   "kind": "source_challenge",
+   "reason": "page served a bot-defence/challenge shell or near-empty body (not an empty result set)",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 raw_sha256=b95885789085a1eab73cd3827ea810f011912f093339847a93b17491b1afb025"
+  }
+ ],
+ "transport": "profile"
+}
