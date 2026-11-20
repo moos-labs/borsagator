@@ -309,7 +309,17 @@ the unchanged scorer (`evaluate_completion`):
   unmatched lists plus field agreement is not enough), and only
   events that each carry a nonempty source document, issuer and
   event type (the adapter refuses a document-less pair: `None ==
-  None` must not pass the same-document check). An adjudicated
+  None` must not pass the same-document check). A pairing decision
+  resolves only the ledger entry whose own predicted event its
+  payload pairs: the payload's predicted-event key must equal the
+  claimed entry's canonical predicted key from the derived detail
+  (issue #335) — a pairing that claims one ambiguity's ID while
+  pairing a different predicted event leaves the claimed entry
+  unresolved, and one pairing claiming several IDs resolves only
+  the entries it actually pairs. The gold side is not restricted
+  to the original tied-gold list: the contract permits the
+  adjudicator to choose another identifiable gold event within the
+  same document/issuer/type. An adjudicated
   overlay is verified by recomputation: its applied decision IDs
   must reconcile with the live pairing decisions for the cell in
   both directions (no ghost ID, no unapplied live decision), and
@@ -317,6 +327,11 @@ the unchanged scorer (`evaluate_completion`):
   exactly those decisions (counts, matches, unmatched lists,
   ambiguities, verdicts) — a hand-stamped overlay with ghost
   adjudication IDs, dropped cases or altered counts cannot pass.
+  A cell result missing any `score_cell` key is malformed input:
+  the gate raises ValueError (fail closed) — never complete-pass
+  and never an uncaught KeyError — including through the overlay
+  path, where a recomputation failure is reported as an incomplete
+  reason.
   A decision resolves only a ledger entry of a compatible kind:
   ambiguity by pairing / reject_event / duplicate; candidate by
   reject_event / duplicate; field by field; scope by scope; gold by
@@ -411,7 +426,9 @@ failures — issue #322; mandatory ledger derived from the original
 results with content-authoritative derived records, overlay
 verification by recomputation, exactly one scope policy (the
 decision-backed scope transition on the original entry), and the
-adapter's nonempty-identity boundary — issue #327) and its negative
+adapter's nonempty-identity boundary — issue #327;
+pairing-payload-to-ledger-entry binding and the malformed-result
+boundary — issue #335) and its negative
 controls live in
 `scripts/test_top30_completion_314.py` (Ins's 8 required regression
 cases: contested group, candidate / sometimes-unmatched / oversize,
@@ -427,7 +444,11 @@ detail changes refused, ghost/dropped/tampered overlays refused,
 relabelled entries keep the owning cell blocked, the scope
 transition end to end with original-entry accounting, a separate
 scope entry never accounting for originals, document-less pairing
-refused, and the honest adapter path still completing), also wired into
+refused, and the honest adapter path still completing, plus the #335
+regressions: wrong-entry pairing blocked, one-pairing-two-IDs
+resolves only the paired entry, small-cell variant incomplete,
+honest control still completes, malformed results raise
+ValueError), also wired into
 `scripts/harness_issue109.py` (`--scorer`). If the spec and the
 scorer ever disagree, **the spec wins** and the scorer is fixed.
 
