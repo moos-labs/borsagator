@@ -595,9 +595,16 @@ def test_f8_corpus_hash_shape():
 
 def test_honest_controls():
     manifest = real_manifest()
+    led = real_probe_ledger()
+    # The committed ledger is validated in the mode it records:
+    # probe-mode before the first live run, live-mode once a live
+    # run has landed (#283 run 4, 2026-11-20). The mode-mismatch
+    # rule itself is still enforced by the validator.
+    mode = led.get("mode")
     ok, reasons = worker._validate_top30_ledger(
-        real_probe_ledger(), manifest, "probe")
-    check("control: committed honest probe ledger still passes",
+        led, manifest, mode)
+    check("control: committed honest ledger still passes (mode=%s)"
+          % mode,
           ok and reasons == [])
 
     led = copy.deepcopy(real_probe_ledger())
@@ -608,7 +615,7 @@ def test_honest_controls():
         for lrec in irec["listings"]:
             lrec["terminal_state"] = "exhausted"
     ok, reasons = worker._validate_top30_ledger(
-        led, manifest, "probe")
+        led, manifest, mode)
     check("control: #340 variant-A ledger still fails closed",
           not ok and any("listing-level failure" in r
                          for r in reasons))

@@ -57,8 +57,13 @@ profile) is:
    the evidence (last page with no next control + a following page
    adding no new ids).
 
-Until that protocol runs live, every enumeration claim in the ledger
-is probe-mode (not run) or fixture-mode (simulated).
+Until that protocol runs live, no enumeration claim rests on a
+validated filter: the live runs in §3a returned no result page
+— runs 1–2 failed at connection resets, runs 3–4 at the
+challenge wall — so inclusivity, ISIN/name agreement,
+pagination control shape and source-total behaviour are all still
+unobserved. The ledger records live-mode failure evidence, not
+enumerated documents.
 
 ## 3. Live-access probes from this VM (2026-11-19, all failed)
 
@@ -73,11 +78,47 @@ is probe-mode (not run) or fixture-mode (simulated).
 This matches the known sandbox egress behaviour (direct TCP payload
 blackholed; only the HTTP proxy for named hosts) plus EGX's F5 TSPD
 defence, which drops non-trusted sessions. No live document was
-retrieved, and none is claimed. The ledger therefore records every
-issuer as `not_run` with the named failure
-`egx_unreachable_from_vm` and the probe evidence above; the
-enumerator's own probe (one POUL pilot request per run) is recorded
-in the ledger's `live_access` field.
+retrieved, and none is claimed.
+
+## 3a. Live enumeration runs on the worker (2026-11-20)
+
+The worker (borsagator-worker-5) runs the enumerator with the
+TSPD-trusted profile (`--transport profile`, harvester launch
+options from #366). Four live runs, all 30 issuers, 0 documents:
+
+| Run | Queued / ran (UTC) | Probe (POUL control) | Per-listing outcome |
+|---|---|---|---|
+| w5-top30-enum-live-001 | 04:40 / 04:40:34 | `net::ERR_CONNECTION_RESET` | 30 × `fetch_failed` |
+| w5-top30-enum-live-002 | 04:55 / 05:01:45 | `net::ERR_CONNECTION_RESET` | 30 × `fetch_failed` |
+| w5-top30-enum-live-003 | 07:18 / 07:20:47 | HTTP 200, 6668 chars, challenge | 30 × `source_challenge` |
+| w5-top30-enum-live-004 | 11:11 / 11:14:53 | HTTP 200, 6701 chars, challenge, markers `["tspd"]`, vendor hint `tspd`, full-body sha256 `a3bce7eb…` | 30 × `source_challenge` |
+
+Runs 1–2 used the old plain-headless profile launch; run 3 was the
+first with the #366 harvester launch options (the launch fix moved
+the failure from connection-reset to an HTTP 200 challenge shell,
+it did not restore enumeration). Run 4 re-ran the same code path on
+the current main tip (`5b20ac3f`, structured probe record per #372)
+and reproduced run 3 exactly: every live listing failed with
+`source_challenge`, FAITA stayed `blocked` (B-02, never defaulted
+to the FAIT ISIN). Archives:
+`worker-runs/2026-11-20/044034__top30-enumerate__w5-top30-enum-live-001`,
+`050145__…-002`, `072047__…-003`, `111454__…-004` (each with
+`top30/top30_expected_docs.json`, `top30-validation.json`,
+`top30-enumerate.log`, `top30_required_cells.json`).
+The paired A/B diagnostic `w5-diag-egx-ab-002` (07:31:22Z) was
+inconclusive: repeated harvester-config legs disagreed
+(`egx-error` then `challenge`) — EGX's response to the profile
+session is transient, but no leg has ever returned a real result
+page. The committed ledger is now run 4's live ledger
+(`evaluation/top30_expected_docs.json`, mode `live`,
+run `20261120T111431Z`): 0 enumerated, 0 archived, 31 failures,
+enumeration not closed.
+
+A VM probe the same morning (2026-11-20 11:11:45Z) also reached
+HTTP 200 with a 6029-char `tspd`-marked challenge shell
+(`body_sha256 d72a42b5…`, `capture_state: captured`) — the VM
+egress now delivers the challenge instead of dropping the
+connection, but the wall is the same: no result page, no documents.
 
 ## 4. Terminal states and reconciliation
 
@@ -191,12 +232,16 @@ in this step the corpus status of every ledger document is
   persistent Chromium profile the harvester uses
   (`worker/egx-profile`, `ProfileFetcher` in
   `scripts/top30_enumerate.py`); plain HTTP (`--transport http`,
-  the default) is for machines without the profile. Wiring proven
-  by fixture/stub tests only — NOT yet verified live: no
-  profile-backed enumeration against EGX has been observed, the
-  §2 validation protocol has not run, and pagination still uses
+  the default) is for machines without the profile. Profile-backed
+  live enumeration has now been observed on the worker (runs 1–4,
+  §3a): runs 1–2 failed at `net::ERR_CONNECTION_RESET` (30 ×
+  `fetch_failed` each) before any response arrived; runs 3–4
+  reached EGX and every listing returned an HTTP 200 challenge
+  shell — enumeration is still 0 documents. The §2
+  validation protocol has still not run, and pagination still uses
   the URL form (`&page=N`) rather than driving the `__doPostBack`
-  form. The first live sweep is the proof that remains.
+  form. A live sweep that returns a real result page is the proof
+  that remains.
 - `fixtures`: enumeration against a directory of JSON files mapping
   URL → `{status, body}`. Used by the tests and the pilot ledger;
   pages are SIMULATED and labelled as such in the ledger.
@@ -216,7 +261,13 @@ in this step the corpus status of every ledger document is
 ## 9. What is left (not this step)
 
 - Live filter-semantics validation (§2 protocol) on the worker.
-- The live enumeration run + corpus capture (full bodies +
-  attachments with hashes) once EGX is reachable.
+- A live enumeration that gets past the challenge wall, then the
+  corpus capture (full bodies + attachments with hashes). Four
+  live runs (2026-11-20, §3a) all ended with 0 documents —
+  runs 1–2 at connection resets (`net::ERR_CONNECTION_RESET`,
+  30 × `fetch_failed` each), runs 3–4 at the challenge wall
+  (HTTP 200 challenge shells, 30 × `source_challenge` each);
+  the wall itself is the next problem to solve, not
+  the enumeration logic.
 - Gold adjudication, scorer run, per-cell report (follow on the
   ledger + corpus, per the five gates).
