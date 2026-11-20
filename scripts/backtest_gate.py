@@ -53,10 +53,14 @@ def parse_iso(s):
 
 def fetch_chart(ticker, period1=0, period2=None, attempts=3):
     """Yahoo chart API: daily bars + dividend/split events.
-    Returns (rows, events, events_available, events_error) where
+    Returns (rows, events, events_available, events_error,
+    dropped_dates) where
     rows are {"date": ISO, "close": float} sorted by date and
     events are [{"type": "dividend"|"split", "ex_date": ISO,
-    "dps"|"ratio"}]. events_available is False when the feed is
+    "dps"|"ratio"}]. dropped_dates lists the session dates of
+    bars dropped for a null, unparseable or non-finite close —
+    a dropped bar must never silently shift the sessions that
+    follow it (see fetch_realised). events_available is False when the feed is
     absent AND when any event record was dropped as unparseable —
     a partially-dropped feed is not a verified feed (a dropped
     dividend would otherwise be scored as an ordinary price move).
@@ -102,9 +106,8 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
     meta = result.get("meta") or {}
     tz_name = meta.get("exchangeTimezoneName") or "UTC"
     rows = []
+    dropped_dates = []
     for stamp, close in zip(stamps, closes):
-        if close is None:
-            continue
         try:
             import datetime as _dt
             d = _dt.datetime.fromtimestamp(
@@ -114,17 +117,35 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
                 d = d.astimezone(zoneinfo.ZoneInfo(tz_name))
             except Exception:
                 pass
-            close_f = float(close)
-            if not math.isfinite(close_f):
-                # A NaN/inf close is not a bar: kept, it would
-                # count toward realised maturity and be written
-                # to realised.json as a bare NaN token.
-                continue
-            rows.append({"date": d.date().isoformat(),
-                         "close": close_f})
+            day = d.date().isoformat()
         except Exception:
             continue
+        # A bar whose close is null, unparseable or non-finite
+        # is dropped from rows — but its DATE is recorded in
+        # dropped_dates and returned with the fetch. Dropping
+        # it silently would shift every later session one
+        # position earlier for any consumer that counts
+        # sessions by position (the realised scorer does):
+        # fetch_realised blocks a cell whose realised window
+        # contains a dropped date instead of scoring a horizon
+        # on the wrong session's close.
+        if close is None:
+            dropped_dates.append(day)
+            continue
+        try:
+            close_f = float(close)
+        except Exception:
+            dropped_dates.append(day)
+            continue
+        if not math.isfinite(close_f):
+            # A NaN/inf close is not a bar: kept, it would
+            # count toward realised maturity and be written
+            # to realised.json as a bare NaN token.
+            dropped_dates.append(day)
+            continue
+        rows.append({"date": day, "close": close_f})
     rows.sort(key=lambda r: r["date"])
+    dropped_dates.sort()
     events = []
     dropped = []
     ev = (result.get("events") or {})
@@ -161,17 +182,22 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
                     "%d event record(s) unparseable and dropped: %s"
                     % (len(dropped), ", ".join(dropped[:5])))
     events_available = bool(ev) and not dropped
-    return rows, events, events_available, events_error
+    return rows, events, events_available, events_error, dropped_dates
 
 
 def unpack_fetch(result):
-    """(rows, events, events_available, events_error) from a
-    fetcher result — older/test fetchers return the 3-tuple
-    without events_error, which reads as None (clean)."""
-    if len(result) == 4:
+    """(rows, events, events_available, events_error,
+    dropped_dates) from a fetcher result — older/test fetchers
+    return the 3-tuple without events_error (reads as None,
+    clean) or the 4-tuple without dropped_dates (reads as no
+    dropped bars)."""
+    if len(result) == 5:
         return result
+    if len(result) == 4:
+        rows, events, ok, err = result
+        return rows, events, ok, err, []
     rows, events, ok = result
-    return rows, events, ok, None
+    return rows, events, ok, None, []
 
 
 def longest_flat_run(rows):
@@ -337,7 +363,7 @@ def main(argv=None):
         rows.sort(key=lambda r: r["date"])
         events_available = args.events_available
     else:
-        rows, _events, events_available, events_error = \
+        rows, _events, events_available, events_error, _dropped = \
             unpack_fetch(fetch_chart(args.ticker))
     rec = gate_ticker(args.ticker, rows, events_available,
                       args.latest_cutoff, args.series_start,

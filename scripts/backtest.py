@@ -587,7 +587,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     never visible to the forecast step. `fetcher` is injectable
     for tests (defaults to the Yahoo chart API)."""
     fetcher = fetcher or backtest_gate.fetch_chart
-    rows, events, ev_ok, ev_error = backtest_gate.unpack_fetch(
+    rows, events, ev_ok, ev_error, dropped = backtest_gate.unpack_fetch(
         fetcher(ticker))
     # The realised window's actions must be VERIFIED, not merely
     # empty: the admission fetch may have retrieved actions while
@@ -615,6 +615,26 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                                          SESSIONS_NEEDED))
     sessions = after[:SESSIONS_NEEDED]
     maturity = sessions[-1]["date"]
+    # A bar dropped for a missing/unusable close inside the
+    # realised window must not shift the scored horizons: the
+    # surviving rows alone would count the NEXT session's close
+    # as the dropped session (the day horizon would be scored
+    # on the second session's move) and still publish the
+    # capture as complete. Block the cell instead — the same
+    # fail-closed treatment as an unverifiable events feed.
+    # Drops after the window touch no scored horizon and do
+    # not block.
+    dropped_in_window = [d for d in dropped or []
+                         if parse_iso(d) is not None
+                         and c < parse_iso(d) <= parse_iso(maturity)]
+    if dropped_in_window:
+        return None, (
+            "realised: %d session(s) inside the realised window "
+            "have no usable close (%s) — the next available "
+            "close must not be counted as that session, so the "
+            "cell is not published"
+            % (len(dropped_in_window),
+               ", ".join(dropped_in_window)))
     index_ticker = INDEX_TICKER[market_of(ticker)]
     # The index fetch must not take the stock capture down with
     # it: if the index request exhausts its retries, record an
@@ -623,8 +643,8 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     # deltas unavailable until usable index data exists.
     index_gap = None
     try:
-        irows, _ievents, _iok, _ierr = backtest_gate.unpack_fetch(
-            fetcher(index_ticker))
+        irows, _ievents, _iok, _ierr, _idropped = \
+            backtest_gate.unpack_fetch(fetcher(index_ticker))
     except Exception as e:  # noqa: BLE001 - index fetch exhausted
         irows = []
         index_gap = "index fetch failed: %s" % e
@@ -720,7 +740,7 @@ def run_cell(cutoff, ticker, cfg):
                       % (cutoff, ticker))
             # 1. Gate (history fetch is the gate's own fetch).
             fetcher = cfg.get("fetcher") or backtest_gate.fetch_chart
-            rows, events, ev_ok, ev_error = \
+            rows, events, ev_ok, ev_error, _dropped = \
                 backtest_gate.unpack_fetch(fetcher(ticker))
             gate = backtest_gate.gate_ticker(
                 ticker, rows, ev_ok, cfg["latest_cutoff"],
@@ -1004,7 +1024,7 @@ def main(argv=None):
     if not args.cutoff or not args.ticker:
         ap.error("--cutoff and --ticker are required (or --plan)")
     if args.gate_only:
-        rows, events, ev_ok, ev_error = \
+        rows, events, ev_ok, ev_error, _dropped = \
             backtest_gate.unpack_fetch(
                 backtest_gate.fetch_chart(args.ticker))
         rec = backtest_gate.gate_ticker(

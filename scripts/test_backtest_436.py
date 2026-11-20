@@ -414,6 +414,12 @@ def test_gate():
           bt.unpack_fetch((rows, [], True))[3] is None)
     check("unpack_fetch 4-tuple passes through",
           bt.unpack_fetch((rows, [], False, "x"))[2] is False)
+    check("unpack_fetch 3/4-tuples default to no dropped bars",
+          bt.unpack_fetch((rows, [], True))[4] == []
+          and bt.unpack_fetch((rows, [], False, "x"))[4] == [])
+    check("unpack_fetch 5-tuple passes dropped dates through",
+          bt.unpack_fetch((rows, [], True, None, ["2025-07-01"]))[4]
+          == ["2025-07-01"])
     short = _gate_rows(n=100)
     rec = bt.gate_ticker("COMI.CA", short, True, "2025-06-30")
     check("gate fails short history", not rec["passed"]
@@ -524,7 +530,7 @@ def test_gate():
     try:
         _urlreq.urlopen = lambda req, timeout=30: _FakeResp(
             _chart_payload(float("nan")))
-        rows_n, ev_n, ok_n, err_n = bt.fetch_chart("COMI.CA")
+        rows_n, ev_n, ok_n, err_n, drop_n = bt.fetch_chart("COMI.CA")
         check("NaN dividend record is dropped",
               ev_n == [], "got %r" % (ev_n,))
         check("NaN dividend marks the feed failed",
@@ -534,11 +540,13 @@ def test_gate():
               len(rows_n) == 2, "got %d" % len(rows_n))
         _urlreq.urlopen = lambda req, timeout=30: _FakeResp(
             _chart_payload(1.9))
-        rows_f, ev_f, ok_f, err_f = bt.fetch_chart("COMI.CA")
+        rows_f, ev_f, ok_f, err_f, drop_f = bt.fetch_chart("COMI.CA")
         check("finite dividend keeps its current path",
               ok_f is True and err_f is None and len(ev_f) == 1
               and ev_f[0]["dps"] == 1.9,
               "ok=%r err=%r ev=%r" % (ok_f, err_f, ev_f))
+        check("clean feed records no dropped bars",
+              drop_f == [], "got %r" % (drop_f,))
     finally:
         _urlreq.urlopen = real_urlopen
     # [8] a non-finite CLOSE (NaN via float()) must be dropped
@@ -557,10 +565,12 @@ def test_gate():
     try:
         _urlreq.urlopen = lambda req, timeout=30: _FakeResp(
             _chart_payload_nan_close())
-        rows_x, _ev_x, _ok_x, _err_x = bt.fetch_chart("COMI.CA")
+        rows_x, _ev_x, _ok_x, _err_x, drop_x = bt.fetch_chart("COMI.CA")
         check("NaN close row is dropped",
               len(rows_x) == 1 and rows_x[0]["close"] == 100.0,
               "got %r" % (rows_x,))
+        check("NaN close date is recorded as dropped",
+              drop_x == ["2025-06-30"], "got %r" % (drop_x,))
     finally:
         _urlreq.urlopen = real_urlopen
 
@@ -1663,6 +1673,116 @@ def test_scorer():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_realised_dropped_close():
+    print("== realised dropped close (horizons must not shift) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    gate = load_module(os.path.join(HERE, "backtest_gate.py"),
+                       "backtest_gate")
+    import datetime as _dt
+    import urllib.request as _urlreq
+
+    # Mon-Fri bars 2025-06-23 .. 2025-07-25; the cutoff is
+    # 2025-06-30, so the first realised session is 2025-07-01
+    # and the 14th is 2025-07-18.
+    days = []
+    d = date(2025, 6, 23)
+    while d <= date(2025, 7, 25):
+        if d.weekday() < 5:
+            days.append(d)
+        d += timedelta(days=1)
+
+    def _ts(dd):
+        return int(_dt.datetime(dd.year, dd.month, dd.day,
+                                tzinfo=_dt.timezone.utc).timestamp())
+
+    def _payload(null_date=None, index=False):
+        closes = []
+        for i, dd in enumerate(days):
+            if null_date is not None and dd.isoformat() == null_date:
+                closes.append(None)
+            elif index:
+                closes.append(30000.0 + 10.0 * i)
+            else:
+                closes.append(100.0 + i)
+        body = {"timestamp": [_ts(dd) for dd in days],
+                "indicators": {"quote": [{"close": closes}]},
+                "meta": {"exchangeTimezoneName": "Africa/Cairo"}}
+        if not index:
+            body["events"] = {"dividend": {
+                str(_ts(date(2025, 6, 29))): {
+                    "amount": 1.0, "date": _ts(date(2025, 6, 29))}}}
+        return {"chart": {"error": None, "result": [body]}}
+
+    class _FakeResp:
+        def __init__(self, payload):
+            self._data = json.dumps(payload).encode("utf-8")
+
+        def read(self):
+            return self._data
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    holder = {"null_date": None}
+
+    def _fake_urlopen(req, timeout=30):
+        if "EGX30" in req.full_url:
+            return _FakeResp(_payload(index=True))
+        return _FakeResp(_payload(null_date=holder["null_date"]))
+
+    real_urlopen = _urlreq.urlopen
+    try:
+        _urlreq.urlopen = _fake_urlopen
+        # Control: a clean feed publishes the true first 14
+        # sessions, starting 2025-07-01.
+        holder["null_date"] = None
+        ok_realised, ok_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("clean feed publishes a realised capture",
+              ok_realised is not None, ok_err)
+        if ok_realised is not None:
+            check("clean feed starts at the first session",
+                  ok_realised["sessions"][0]["date"] == "2025-07-01",
+                  "got %r" % (ok_realised["sessions"][0],))
+            check("clean feed maturity is the 14th session",
+                  ok_realised["maturity_date"] == "2025-07-18",
+                  "got %r" % (ok_realised["maturity_date"],))
+        # A null close on the FIRST realised session: the bar
+        # existed but its close is unusable. Counting the next
+        # available close as session 1 would score the day
+        # horizon on the wrong day's move — the cell must be
+        # blocked, not published shifted.
+        holder["null_date"] = "2025-07-01"
+        bad_realised, bad_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("dropped first realised close blocks the cell",
+              bad_realised is None,
+              "published sessions start %r"
+              % ((bad_realised or {}).get("sessions", [{}])[0],))
+        check("block reason names the missing session",
+              bad_realised is None and "2025-07-01" in bad_err,
+              "err=%r" % (bad_err,))
+        # A null close AFTER the 14-session window does not
+        # touch any scored horizon: the capture still publishes
+        # with the true first 14 sessions.
+        holder["null_date"] = "2025-07-23"
+        late_realised, late_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("dropped close past the window still publishes",
+              late_realised is not None, late_err)
+        if late_realised is not None:
+            check("past-window drop keeps the true sessions",
+                  late_realised["sessions"][0]["date"] == "2025-07-01"
+                  and late_realised["maturity_date"] == "2025-07-18",
+                  "got %r .. %r" % (late_realised["sessions"][0],
+                                    late_realised["maturity_date"]))
+    finally:
+        _urlreq.urlopen = real_urlopen
+
+
 def test_realised_index_window():
     print("== realised index window (flat index = gap) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -1729,6 +1849,7 @@ def run_backtest_checks(verbose=True):
     test_audit()
     test_cell_guards()
     test_realised_index_window()
+    test_realised_dropped_close()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
     test_scorer()
