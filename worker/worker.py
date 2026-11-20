@@ -1040,6 +1040,35 @@ def load_schedule():
     return [e for e in data if isinstance(e, dict)]
 
 
+def _quarantine_non_object_entries(queue):
+    """Issue #402: return the dict entries of a raw queue, quarantining
+    every non-object entry with evidence first — never silently
+    dropped, never fatal to the cycle. A null/string/list entry has
+    no .get, so the unguarded `j.get("id", "")` comprehensions in
+    run_schedule_check() and run_ledger_watchdog() raised
+    AttributeError out of those functions before the #391
+    queue-loop quarantine ever ran — and run_schedule_check runs
+    at the top of every poll cycle, so the cycle then failed at the
+    same point forever with no valid job ever processing. The
+    quarantine record (queue/malformed/, raw entry kept) is the
+    evidence; the returned list is for id computation only — the
+    caller's raw queue is left untouched, so a quarantined entry
+    stays in queue.json exactly as the #391 main-loop path leaves
+    it (re-quarantine is a no-op once the record exists). A
+    queue.json that is not a list at all is quarantined as one
+    malformed payload ("queue-not-a-list") and yields no entries."""
+    if not isinstance(queue, list):
+        _quarantine_malformed_job(queue, "queue-not-a-list")
+        return []
+    entries = []
+    for entry in queue:
+        if isinstance(entry, dict):
+            entries.append(entry)
+        else:
+            _quarantine_malformed_job(entry, "not-an-object")
+    return entries
+
+
 def run_schedule_check(now_override=None):
     """Enqueue due scheduled jobs; mark missed ones explicitly.
     Runs at the top of every poll cycle, right after sync_bus, so
@@ -1061,7 +1090,15 @@ def run_schedule_check(now_override=None):
         print("run_schedule_check: queue.json unreadable; skipping",
               file=sys.stderr, flush=True)
         return
-    handled = {str(j.get("id", "")) for j in queue}
+    entries = _quarantine_non_object_entries(queue)
+    if not isinstance(queue, list):
+        # Issue #402: a non-list queue.json cannot be appended to;
+        # the whole payload is already quarantined above, so skip
+        # the check rather than crash the cycle.
+        print("run_schedule_check: queue.json is not a list; "
+              "skipping", file=sys.stderr, flush=True)
+        return
+    handled = {str(j.get("id", "")) for j in entries}
     claims_dir = BUS / "queue" / "claims"
     if claims_dir.exists():
         handled |= {f.name[:-len(".json")]
@@ -1332,7 +1369,11 @@ def run_ledger_watchdog(job):
               "from the reviewed release copies; refusing (D2)",
               file=sys.stderr, flush=True)
         return False
-    queue_ids = [str(j.get("id", "")) for j in read_queue()]
+    # Issue #402: read_queue() returns the raw parsed list, so a
+    # non-object entry raised AttributeError here before the
+    # watchdog ran; quarantine with evidence, never crash.
+    queue_ids = [str(j.get("id", "")) for j in
+                 _quarantine_non_object_entries(read_queue())]
     claims_dir = BUS / "queue" / "claims"
     claim_ids = [f.name[:-len(".json")] for f in
                  claims_dir.glob("*.json")] if claims_dir.exists() else []
