@@ -14,6 +14,8 @@ Usage:
     harness_issue109.py [--archive-root PATH] [--stage PATH]
     harness_issue109.py --pristine [--stage PATH]
     harness_issue109.py --mutate {role-swap,round2dp} [--stage PATH]
+    harness_issue109.py --backtest [--stage PATH]
+    harness_issue109.py --scorer [--stage PATH]
 
 Archive root defaults to ``$BORSAGATOR_ARCHIVE_ROOT`` or the sibling
 ``borsagator-archive`` checkout. Stage defaults to
@@ -351,6 +353,19 @@ def run_mutant(kind, stage):
 
 
 # --- #283 top-30 scorer checks ---------------------------------------------
+def backtest_checks():
+    """The #436 walk-forward harness checks
+    (scripts/test_backtest_436.py), folded into this harness's
+    CHECKS so one harness run proves the backtest harness too.
+    Fixture data only — no archive, no network, no model."""
+    print("== backtest harness checks (#436) ==")
+    sys.path.insert(0, HERE)
+    import test_backtest_436 as t436
+    t436.CHECKS = CHECKS
+    t436.FAILURES = FAILURES
+    t436.run_backtest_checks()
+
+
 def scorer_checks():
     """The #283 scorer's cases (docs/top30-scoring.md), folded into
     this harness's CHECKS so one harness run proves both the pilot
@@ -579,6 +594,8 @@ def main(argv=None):
     ap.add_argument("--pristine", action="store_true")
     ap.add_argument("--scorer", action="store_true",
                     help="run only the #283 scorer checks")
+    ap.add_argument("--backtest", action="store_true",
+                    help="run only the #436 walk-forward harness checks")
     ap.add_argument("--mutate", choices=list(MUTATIONS))
     ap.add_argument("--no-shadow", action="store_true")
     args = ap.parse_args(argv)
@@ -588,6 +605,8 @@ def main(argv=None):
                       "disclosure_events")
     if args.scorer:
         scorer_checks()
+    elif args.backtest:
+        backtest_checks()
     elif args.pristine:
         pristine_control()
     elif args.mutate:
