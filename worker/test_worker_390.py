@@ -27,6 +27,16 @@ self_update() now fails closed on an empty cur (UPDATE_ERROR set,
 no checkout, no adoption) while the diagnostic call sites above
 still degrade to "".
 
+Follow-up (issue #404): the #396 empty-cur refusal must NOT fire
+on the pinned path — a pinned adoption is trusted by configuration,
+not by ancestry (docstring: the worker adopts a tip that is a
+fast-forward descendant of the running checkout OR exactly
+GATOR_PIN_SHA when set), and the pin check runs before cur is read.
+So the refusal is gated on the unpinned path only: a matching pin
+adopts even when the checkout lookup returns "", while a
+mismatched pin still refuses and the unpinned empty-cur refusal
+is unchanged.
+
 Harness-first: FAILS on pristine main (the TimeoutExpired /
 OSError escapes update_checkout_sha() out of _execute_body, so no
 manifest is published and no done is marked) and PASSES on the
@@ -325,10 +335,11 @@ def fake_sh_self_update(cmd, cwd=None, env=None, timeout=3600):
     return FakeResult(0)
 
 
-def run_self_update(cur_mode, ancestor):
+def run_self_update(cur_mode, ancestor, pin=""):
     """Run worker.self_update() under the self-update fake with
-    UPDATE_PIN unset (the default, where the hole matters) and
-    return (UPDATE_ERROR, commands-run). Restores worker.sh."""
+    UPDATE_PIN set to `pin` ("" = unset, the default where the
+    #396 hole matters) and return (UPDATE_ERROR, commands-run).
+    Restores worker.sh."""
     SELF_UPDATE_CMDS.clear()
     SELF_UPDATE_FAKE["cur_mode"] = cur_mode
     SELF_UPDATE_FAKE["ancestor"] = ancestor
@@ -336,7 +347,7 @@ def run_self_update(cur_mode, ancestor):
     old_pin = worker.UPDATE_PIN
     old_err = worker.UPDATE_ERROR
     worker.sh = fake_sh_self_update
-    worker.UPDATE_PIN = ""
+    worker.UPDATE_PIN = pin
     worker.UPDATE_ERROR = None
     try:
         worker.self_update()
@@ -406,6 +417,43 @@ def test_self_update_still_refuses_non_descendant():
           not _tried_checkout(cmds))
 
 
+# --- self_update pinned path with unreadable cur (issue #404) ---
+
+def test_self_update_pinned_tip_adopts_on_empty_cur():
+    """THE #404 FIX: with GATOR_PIN_SHA set to the fetched tip,
+    the #396 empty-cur refusal must NOT fire — the pin is trusted
+    by configuration, not by ancestry, and the pin check already
+    ran before cur was read. On the unfixed tree this refuses
+    with UPDATE_ERROR and never checks out the tip."""
+    err, cmds = run_self_update("timeout", ancestor=True,
+                                pin=SELF_UPDATE_TIP)
+    check("self_update() with matching pin + empty cur: adopts "
+          "(checkout attempted, no UPDATE_ERROR)",
+          err is None and _tried_checkout(cmds))
+    check("self_update() with matching pin + empty cur: the "
+          "checkout lookup did fail (refusal would have been "
+          "from the empty cur alone)",
+          any("rev-parse HEAD" in c for c in cmds))
+
+
+def test_self_update_pinned_mismatch_still_refuses_on_empty_cur():
+    """Pin-mismatch refusal is preserved and still precedes the
+    cur lookup: a tip != pin refuses even when cur is unreadable,
+    before any checkout — and before the lookup is even attempted."""
+    err, cmds = run_self_update("timeout", ancestor=True,
+                                pin="a" * 40)
+    check("self_update() with mismatched pin + empty cur: "
+          "refuses with the pin-mismatch UPDATE_ERROR",
+          err is not None and "!=" in err and "pinned" in err)
+    check("self_update() with mismatched pin + empty cur: "
+          "never checks out the refused tip",
+          not _tried_checkout(cmds))
+    check("self_update() with mismatched pin + empty cur: the "
+          "pin check runs before cur is read (no lookup "
+          "attempted)",
+          not any("rev-parse HEAD" in c for c in cmds))
+
+
 def main():
     worker.sh = fake_sh
     worker.publish = stub_publish
@@ -425,6 +473,8 @@ def main():
     test_self_update_refuses_on_empty_cur()
     test_self_update_adopts_descendant_when_cur_known()
     test_self_update_still_refuses_non_descendant()
+    test_self_update_pinned_tip_adopts_on_empty_cur()
+    test_self_update_pinned_mismatch_still_refuses_on_empty_cur()
     print(f"\n{PASSED} passed")
     return 0
 
