@@ -33,11 +33,12 @@ import os
 import pathlib
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-TMP = Path(tempfile.mkdtemp(prefix="test160-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+TMP = _test_tmp.mkdtemp(prefix="test160-")
 
 
 def git(*args, cwd=None):

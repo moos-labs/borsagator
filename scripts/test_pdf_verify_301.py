@@ -39,7 +39,9 @@ from pathlib import Path
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _REPO = os.path.dirname(_HERE)
-_TMP = tempfile.mkdtemp(prefix="gator301-test-")
+sys.path.insert(0, os.path.join(_REPO, "worker"))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+_TMP = _test_tmp.mkdtemp(prefix="gator301-test-")
 
 try:
     import pypdf  # noqa: F401
