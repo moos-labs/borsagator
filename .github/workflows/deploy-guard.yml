@@ -29,6 +29,22 @@ name: deploy-guard
 # coverage is the hourly schedule plus manual workflow_dispatch
 # below. Installing this file on archive is not planned; archive is
 # a data-only, deploy-controlled branch.
+#
+# Issue #434: the `23 * * * *` schedule below is a BEST-EFFORT
+# secondary, NOT the relied-upon backstop for a missed worker
+# push. GitHub schedule delivery in this repo has repeatedly
+# failed silently: the ledger-guard schedule missed 6, 7 and 22+
+# consecutive ticks (#115, #142) and recreating the workflow file
+# did not restore firing; as of 2026-11-20 this workflow's own
+# schedule produced ONE run in the last 50 (48 push, 1 dispatch,
+# 1 schedule — created 08:51:54Z, 28 min late for the 08:23 slot).
+# The relied-upon backstop is the worker-side watchdog (every 30
+# min on worker-5, pages via queue/guard-alert.json when the guard
+# heartbeat is stale — its own suppression bug is fixed in #434),
+# plus the guard's done-gate (a slot is not marked done unless its
+# heartbeat commit is confirmed on main). The cron line stays: it
+# sometimes fires, costs nothing, and is a third layer — but no
+# correctness argument in this repo may depend on it firing.
 
 on:
   push:

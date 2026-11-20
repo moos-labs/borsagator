@@ -55,7 +55,7 @@ import os
 import shutil
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 from zoneinfo import ZoneInfo
@@ -244,14 +244,23 @@ class _FakeRun:
 def test_watchdog_quarantines_non_objects_and_runs():
     """Null + string entries: the watchdog runs to completion (the
     script is invoked), both bad entries are quarantined, and the
-    valid guard-pending id still flows into the pending check."""
+    valid guard-pending id still flows into the pending check.
+    Issue #434: the pending id must be a real guard slot within
+    the claim-staleness horizon — an unparsable guard-* id no
+    longer counts as pending (fail-safe towards paging), so the
+    old 'guard-402-pending' placeholder would suppress nothing."""
     reset_bus()
     PUSHED.clear()
     fake = _FakeRun()
     checkout = _TMP / "main-checkout"
     checkout.mkdir(parents=True, exist_ok=True)
+    slot = datetime.now(timezone.utc).replace(
+        minute=47, second=0, microsecond=0)
+    if slot > datetime.now(timezone.utc):
+        slot -= timedelta(hours=1)
+    pending_id = slot.strftime("guard-%Y-%m-%dT%H%MZ")
     write_queue([None, "junk-string",
-                 {"id": "guard-402-pending", "job": "ledger-guard"}])
+                 {"id": pending_id, "job": "ledger-guard"}])
     job = {"id": "test-402-watch", "job": "ledger-watchdog"}
     real_checkout = worker._ensure_main_checkout
     real_match = worker.scripts_match
