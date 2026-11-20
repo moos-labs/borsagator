@@ -119,7 +119,13 @@ listings (FAIT/FAITA union) are deduplicated by source id.
   `capture_state` is `captured`, `fetch_failed`, `probe_error`,
   or `not_attempted` (fixtures mode, no live fetch) — a failed
   capture keeps the original probe result (`reachable: false`,
-  `detail` with the error). **The body itself is never stored**:
+  `detail` with the error). A non-2xx response that actually
+  arrived (HTTPError with a body, issue #378) is not a capture
+  failure: its status, body_chars, digest, markers and vendor
+  hint are recorded exactly as for a 2xx body, with
+  `capture_state: "captured"` and `reachable: false`; only a
+  connection failure — no response arrived — is `fetch_failed`
+  with no status. **The body itself is never stored**:
   the archive is anonymously readable and publish copies the run
   directory wholesale, so no body text, URL, or script content
   may land in the probe record or in any file under the run

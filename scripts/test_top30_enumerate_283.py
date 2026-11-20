@@ -21,10 +21,12 @@ Required controls (issue #283 stage 2):
   as "clipped-body-sha256" and is never presented as a full hash.
 """
 import hashlib
+import io
 import json
 import os
 import sys
 import tempfile
+import urllib.error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -525,6 +527,129 @@ def test_probe_mode_ledger_honest():
     return ok, ("probe=%s" % (probe,))
 
 
+def test_httperror_403_probe_preserves_evidence():
+    """Issue #378: a non-2xx response that actually arrived keeps
+    its evidence. http_fetch reads the HTTPError body and carries
+    status + body on the FetchFailure; probe_live_access records
+    the same structured fields as a 2xx response (status,
+    body_chars, full digest, challenge markers, vendor hint)
+    with capture_state "captured" and reachable False — not
+    fetch_failed. The body itself appears nowhere in the record.
+    Connection failures stay fetch_failed with no status, and
+    enumeration keeps its existing non-2xx failure behaviour
+    (kind fetch_failed, never source_challenge)."""
+    import urllib.request
+    sentinel = "SENTINEL-378-BODY-SECRET-2c8e1"
+    body = ("<html><head><title>EGX</title></head><body>"
+            "<script src=\"/tspd.js\"></script>"
+            "<p>captcha check %s</p></body></html>" % sentinel)
+    url = E.search_url("EGS02051C018")
+    real_urlopen = urllib.request.urlopen
+
+    def _raise_403(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None,
+            fp=io.BytesIO(body.encode("utf-8")))
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    try:
+        urllib.request.urlopen = _raise_403
+        # http_fetch level: status + body carried on the failure.
+        try:
+            E.http_fetch(url)
+            fetch_ok = False
+            ferr = None
+        except E.FetchFailure as e:
+            fetch_ok = (e.status == 403 and e.body == body
+                        and e.error == "HTTPError: HTTP Error 403: "
+                        "Forbidden")
+            ferr = e
+        # Probe level (default fetcher = http_fetch, real path).
+        probe = E.probe_live_access()
+        ok = (fetch_ok
+              and probe["reachable"] is False
+              and probe["status"] == 403
+              and probe["body_chars"] == len(body)
+              and probe["body_sha256"] == digest
+              and probe["body_hash_kind"] == "full"
+              and probe["challenge"] is True
+              and probe["challenge_markers"] == ["tspd", "captcha"]
+              and probe["vendor_hint"] == "tspd"
+              and probe["capture_state"] == "captured"
+              and "HTTPError" in probe["detail"]
+              and sentinel not in json.dumps(probe))
+        # Enumeration level: same failure, still kind fetch_failed.
+        rec = E.enumerate_listing(_listing("POUL", "EGS02051C018"),
+                                  E.http_fetch)
+        kinds = [f["kind"] for f in rec["failures"]]
+        ok = (ok and rec["enumeration_status"] == "failed"
+              and kinds == ["fetch_failed"]
+              and rec["documents"] == [])
+
+        def _raise_conn(req, timeout=30):
+            raise urllib.error.URLError("empty reply")
+        urllib.request.urlopen = _raise_conn
+        try:
+            E.http_fetch(url)
+            conn_ok = False
+        except E.FetchFailure as e:
+            conn_ok = (e.status is None and e.body is None
+                       and "URLError" in e.error)
+        conn_probe = E.probe_live_access()
+        ok = (ok and conn_ok
+              and conn_probe["capture_state"] == "fetch_failed"
+              and conn_probe["reachable"] is False
+              and conn_probe["status"] is None
+              and conn_probe["body_chars"] is None
+              and conn_probe["body_sha256"] is None
+              and conn_probe["body_hash_kind"] is None
+              and conn_probe["challenge_markers"] == []
+              and conn_probe["vendor_hint"] is None
+              and "empty reply" in conn_probe["detail"])
+    finally:
+        urllib.request.urlopen = real_urlopen
+    return ok, ("probe=%s conn_probe_state=%s ferr=%s"
+                % (probe, conn_probe["capture_state"], ferr))
+
+
+def test_httperror_403_non_challenge_body_still_captured():
+    """Issue #378: a 403 body with no challenge marker still gets
+    its evidence preserved — captured with the status/digest, not
+    fetch_failed — and reachable stays False (a non-2xx response
+    is never reachable, however benign its body looks)."""
+    import urllib.request
+    body = ("<html><body><p>Access denied by policy. "
+            "Please contact the site operator for assistance "
+            "with your request and quote reference 12345. "
+            "This page intentionally carries no challenge "
+            "marker at all, so it must not be misread as a "
+            "challenge shell or as a reachable page.</p>"
+            "</body></html>")
+    assert len(body) >= 200
+    url = E.search_url("EGS02051C018")
+    real_urlopen = urllib.request.urlopen
+
+    def _raise_403(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None,
+            fp=io.BytesIO(body.encode("utf-8")))
+    try:
+        urllib.request.urlopen = _raise_403
+        probe = E.probe_live_access()
+    finally:
+        urllib.request.urlopen = real_urlopen
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    ok = (probe["reachable"] is False
+          and probe["status"] == 403
+          and probe["body_chars"] == len(body)
+          and probe["body_sha256"] == digest
+          and probe["body_hash_kind"] == "full"
+          and probe["challenge"] is False
+          and probe["challenge_markers"] == []
+          and probe["vendor_hint"] is None
+          and probe["capture_state"] == "captured")
+    return ok, ("probe=%s" % (probe,))
+
+
 def test_attachment_link_classification():
     ok = (E.classify_attachment_link(
               "https://www.egx.com.eg/ar/file.pdf", "report")
@@ -573,6 +698,10 @@ CASES = [
      test_challenge_probe_capture_failure_state),
     ("challenge-probe-publication-exclusion",
      test_challenge_probe_publication_exclusion),
+    ("httperror-403-probe-preserves-evidence",
+     test_httperror_403_probe_preserves_evidence),
+    ("httperror-403-non-challenge-body-still-captured",
+     test_httperror_403_non_challenge_body_still_captured),
     ("attachment-link-classification",
      test_attachment_link_classification),
     ("isin-validation-mirrors-harvester",
