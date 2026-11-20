@@ -127,6 +127,28 @@ def extract_main_text(page):
     }""")
 
 
+def extract_detail_body(dpage, href):
+    """Detail body of one harvested disclosure (issue #389).
+
+    Returns (body, detail_status, detail_error): on success the
+    extracted text with detail_status "captured" and detail_error
+    None; on any failure (navigation or extraction) body None with
+    detail_status "detail_failed" and the cause kept in
+    detail_error — never a fabricated empty body, so
+    disclosures.json can tell a failed detail extraction apart
+    from a genuinely empty detail body (body None / body_chars
+    None vs body "" / body_chars 0). The item is still harvested;
+    the log line is kept.
+    """
+    try:
+        dpage.goto(href, wait_until="domcontentloaded", timeout=90000)
+        dpage.wait_for_timeout(6000)
+        return extract_main_text(dpage), "captured", None
+    except Exception as e:  # noqa: BLE001 — a failed detail must not fail the harvest
+        log("details failed", href, str(e)[:150])
+        return None, "detail_failed", str(e)[:200]
+
+
 def collect_result_links(page):
     return page.evaluate("""() => {
       const out = [];
@@ -182,6 +204,29 @@ def iso_date(body, row_text=""):
             except ValueError:
                 continue  # invalid standalone line: keep looking
     return ""
+
+
+def disclosure_item(news_id, body, detail_status, detail_error, row,
+                    title, href, attachments):
+    """One disclosures.json item (issue #389).
+
+    A failed detail extraction (body None) records body/body_chars
+    unset with detail_status "detail_failed" — never a fabricated
+    empty body. A genuinely empty detail body (body "") stays a
+    captured empty body: body "", body_chars 0, detail_status
+    "captured". The publish date still comes from the search row
+    when the body is missing (iso_date scans body then row).
+    """
+    return {
+        "id": news_id, "kind": "disclosure", "source": "egx.com.eg",
+        "date": iso_date(body, row),
+        "title": title[:200], "url": href,
+        "row_text": row[:300],
+        "body": body[:8000] if body is not None else None,
+        "body_chars": len(body) if body is not None else None,
+        "detail_status": detail_status,
+        "detail_error": detail_error,
+        "attachments": attachments}
 
 
 def main():
@@ -329,14 +374,11 @@ def main():
             seen.add(m.group(1))
             dpage = ctx.new_page()
             try:
-                try:
-                    dpage.goto(lk["href"], wait_until="domcontentloaded",
-                               timeout=90000)
-                    dpage.wait_for_timeout(6000)
-                    body = extract_main_text(dpage)
-                except Exception as e:
-                    log("details failed", lk["href"], str(e)[:150])
-                    body = ""
+                # Issue #389: a failed detail extraction records a
+                # per-item failure state (body None, detail_status
+                # "detail_failed") — never a fabricated empty body.
+                body, detail_status, detail_error = extract_detail_body(
+                    dpage, lk["href"])
                 # Issue #279: attachment capture. Each step fails
                 # independently and is recorded on the item — a
                 # failed capture never loses the harvested body and
@@ -367,15 +409,13 @@ def main():
                                     % str(e)[:200]}]
             finally:
                 dpage.close()
-            items.append({
-                "id": m.group(1), "kind": "disclosure", "source": "egx.com.eg",
-                "date": iso_date(body, lk["row"]),
-                "title": lk["text"][:200], "url": lk["href"],
-                "row_text": lk["row"][:300], "body": body[:8000],
-                "body_chars": len(body),
-                "attachments": attachments})
+            items.append(disclosure_item(
+                m.group(1), body, detail_status, detail_error,
+                lk["row"], lk["text"], lk["href"], attachments))
             write_out()  # incremental: a timeout keeps what exists
-            log("item", m.group(1), "body_chars", len(body),
+            log("item", m.group(1), "body_chars",
+                len(body) if body is not None else None,
+                "detail_status", detail_status,
                 "attachments",
                 ",".join(a["status"] for a in attachments))
             time.sleep(1)
@@ -388,7 +428,7 @@ def main():
     with open(os.path.join(RESULTS, "disclosures.json"), "w") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
     print(f"egx_harvest: {code} items={len(items)} "
-          f"bodies={sum(1 for i in items if i['body_chars'] >= 200)}")
+          f"bodies={sum(1 for i in items if (i['body_chars'] or 0) >= 200)}")
     if not items:
         # A zero-item harvest is a FAILURE (wall changed, layout
         # changed, profile trust lost) — never a silent success:

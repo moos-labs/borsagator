@@ -1332,12 +1332,32 @@ def registry():
     return json.loads((CODE / "registry" / "tools.json").read_text())
 
 
+def job_text(job):
+    """Issue #381: the queue's `job` field is untrusted input —
+    normalize it to a string before any .split()/.lower() call.
+    A missing, None, or non-string value becomes "" (an empty job
+    string): the #371 fail-closed branch then records a named
+    failure instead of raising AttributeError after intent
+    persistence. Non-string values are rejected explicitly with
+    their own named failure in _execute_body; this helper only
+    ever feeds parsing and dispatch, never the manifest —
+    manifest["job"] keeps the raw queued value as evidence."""
+    if not isinstance(job, dict):
+        return ""
+    value = job.get("job")
+    return value if isinstance(value, str) else ""
+
+
 def parse_job(job, reg):
     """Reuse the orchestrator's grammar, minimally: run/category/
     sweep-lite/sweep, sequential only (the worker is one machine —
     the COMMANDS race cannot happen here)."""
     tools = {t["id"]: t for t in reg["tools"] if t.get("status") == "active"}
-    parts = job.split()
+    # Issue #381: the job string is untrusted queue input — a None
+    # (or non-string) job used to crash here (None.split()) after
+    # intent persistence. Treat it as an empty job string: the
+    # caller fails closed on the empty plan.
+    parts = (job if isinstance(job, str) else "").split()
     if not parts:
         return []
     kind = parts[0]
@@ -1373,6 +1393,35 @@ def parse_job(job, reg):
     # {ticker}; only registry tool ids and allowlisted tickers pass.
     return [(t, tk) for t, tk in sel
             if t in tools and TICKER_RE.match(tk)]
+
+
+def classify_empty_plan(job):
+    """Issue #381: WHY parse_job returned [] for this job string.
+    The #371 `unknown-job` status is one umbrella over distinct
+    causes — the manifest keeps that single status (test_worker_371
+    pins it) and records this cause beside it, so a deliberately
+    rejected selection is distinguished in the record from unknown
+    syntax instead of conflated under it:
+      "empty-job" — no job text at all ("" / whitespace / None).
+      "unknown-syntax" — the kind token is not a known job kind,
+        or a known kind is missing its arguments.
+      "invalid-selection" — known kind, well-formed arguments, but
+        the selection/filter emptied the plan (unknown tool id or
+        category, a filter token parse_job rejects, a market= with
+        no matching tool, a ticker the registry grammar refuses).
+    The cause is derived from the grammar alone, never from the
+    registry, so it stays truthful even when the registry is stale."""
+    parts = (job if isinstance(job, str) else "").split()
+    if not parts:
+        return "empty-job"
+    kind = parts[0]
+    if kind not in ("run", "category", "sweep", "sweep-lite"):
+        return "unknown-syntax"
+    if kind in ("run", "category") and len(parts) < 3:
+        return "unknown-syntax"
+    if kind in ("sweep", "sweep-lite") and len(parts) < 2:
+        return "unknown-syntax"
+    return "invalid-selection"
 
 
 def run_tool(tool, ticker, template, ref=None, repo_name=None):
@@ -1579,8 +1628,10 @@ def publish(job, results_dir, manifest):
     # INS-R3-01: the slug reaches shell strings below — reduce it to
     # a safe alphabet so a crafted job string cannot inject commands
     # ($(…), backticks, ;) into the publish step, which runs even
-    # for jobs that failed parsing.
-    slug = re.sub(r"[^a-z0-9]+", "-", job["job"].lower()).strip("-")[:60]
+    # for jobs that failed parsing. Issue #381: job_text() — a None
+    # (or non-string) job used to crash here (.lower()) after the
+    # #371 branch had already decided to publish the failure.
+    slug = re.sub(r"[^a-z0-9]+", "-", job_text(job).lower()).strip("-")[:60]
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d/%H%M%S")
     dest = arch / "worker-runs" / f"{ts}__{slug}__{job['id']}"
     # Issue #257: copy failures used to ride on silently (sh() never
@@ -1748,9 +1799,11 @@ def publish(job, results_dir, manifest):
     # Issue #348: tokenize on whitespace exactly like the #346 F9
     # fix did for top30-enumerate (and like run_harvest's own
     # .split()), so a leading-space harvest job refreshes the
-    # pointer instead of silently skipping it.
-    if (job["job"] or "").split()[:1] == ["harvest-egx"]:
-        parts = job["job"].split()
+    # pointer instead of silently skipping it. Issue #381: job_text()
+    # — the unguarded .split() here used to crash on a non-string
+    # job (the `(job["job"] or "")` guard only covers None/empty).
+    if job_text(job).split()[:1] == ["harvest-egx"]:
+        parts = job_text(job).split()
         code = parts[1].upper().replace(".CA", "") if len(parts) > 1 else ""
         cand = results_dir / "egx-harvest" / "results" / "disclosures.json"
         if manifest.get("tools", {}).get("egx-harvest") == "ok" \
@@ -1860,7 +1913,10 @@ def run_harvest(job, workdir):
     """Issue #47: EGX disclosure harvest — a borsagator-side script
     (kept current by self_update's main checkout) driven in its own
     playwright venv, with a persistent Chromium profile on the box."""
-    parts = job["job"].split()
+    # Issue #381: job_text() — only reached after the harvest-egx
+    # dispatch matched a string, but never trust a bare .split()
+    # on untrusted queue input twice.
+    parts = job_text(job).split()
     code = parts[1] if len(parts) > 1 else ""
     if not TICKER_RE.match(code.replace(".CA", "")):
         return {"egx-harvest": "bad-code"}
@@ -1960,7 +2016,9 @@ def parse_top30_job(job):
     NOTE: parse_job (the registry grammar) still returns [] for
     this string — the registry has no enumeration tool. Dispatch
     happens in _execute_body before parse_job, like harvest-egx."""
-    parts = (job or "").split()
+    # Issue #381: isinstance, not `or ""` — the old guard only
+    # covered None/empty; a non-string truthy value crashed .split().
+    parts = (job if isinstance(job, str) else "").split()
     if not parts or parts[0] != "top30-enumerate":
         return None
     plan = {"kind": "top30-enumerate", "mode": "live",
@@ -2428,7 +2486,10 @@ def run_top30_enumerate(job, workdir):
     profile is the transport, not just a prerequisite check
     (issue #346 F2). Probe/fixtures modes never touch EGX and
     need no profile."""
-    plan = parse_top30_job(job["job"])
+    # Issue #381: job_text() — only reached after the dispatch
+    # matched a string, but parse_top30_job must never see a raw
+    # untrusted value.
+    plan = parse_top30_job(job_text(job))
     run_dir = Path(workdir) / "top30"
     run_dir.mkdir(parents=True, exist_ok=True)
     if plan is None:
@@ -2544,7 +2605,8 @@ def parse_diag_egx_ab_job(job):
     registry grammar) still returns [] for this string — the
     registry has no diag tool. Dispatch happens in _execute_body
     before parse_job, like harvest-egx."""
-    parts = (job or "").split()
+    # Issue #381: isinstance, not `or ""` — see parse_top30_job.
+    parts = (job if isinstance(job, str) else "").split()
     if parts != ["diag-egx-ab"]:
         return None
     return {"kind": "diag-egx-ab"}
@@ -2569,7 +2631,8 @@ def run_diag_egx_ab(job, workdir):
     Live mode requires the persistent Chromium profile: the probe's
     premise is the SAME profile both tools use, and without it the
     legs would not reproduce either launch."""
-    plan = parse_diag_egx_ab_job(job["job"])
+    # Issue #381: job_text() — see run_top30_enumerate.
+    plan = parse_diag_egx_ab_job(job_text(job))
     run_dir = Path(workdir) / "diag-egx-ab"
     run_dir.mkdir(parents=True, exist_ok=True)
     if plan is None:
@@ -2863,7 +2926,7 @@ def refresh_disclosure_feed(job, workdir, manifest, plan):
     feed does not cover. Never raises: a harvester failure is a
     recorded feed failure, not a dead sweep."""
     try:
-        kind = (job.get("job") or "").split()
+        kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
         if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
             return None
         job_id = str(job.get("id", ""))
@@ -3037,7 +3100,7 @@ def extract_disclosure_events(job, workdir, manifest, plan):
     disclosure_feed.json. A failed or stale feed is recorded, never
     silent, and the sweep still runs. Never raises."""
     try:
-        kind = (job.get("job") or "").split()
+        kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
         if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
             return None
         record = manifest.get("disclosure_feed")
@@ -3228,7 +3291,7 @@ def maybe_merge(job, workdir, manifest, plan):
     or refusal must NEVER lose the fleet: it writes merge_error.txt
     in the run dir, records manifest["merge"], and returns False so
     _execute still publishes the fleet. Never raises."""
-    kind = (job.get("job") or "").split()
+    kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
     if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
         return False
     merge_script = CODE / "scripts" / "merge.py"
@@ -3353,7 +3416,7 @@ def maybe_compile(job, workdir, manifest, plan):
     sweep_rel = None
     status, detail = "error", "compile hook aborted before running"
     try:
-        kind = (job.get("job") or "").split()
+        kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
         if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
             return False
         merge_info = manifest.get("merge")
@@ -3660,7 +3723,7 @@ def maybe_render(job, workdir, manifest, plan):
     sweep_rel = None
     status, detail = "error", "render hook aborted before running"
     try:
-        kind = (job.get("job") or "").split()
+        kind = job_text(job).split()  # Issue #381: isinstance normalization, not `or ""`
         if not kind or kind[0] not in ("sweep", "sweep-lite") or not plan:
             return False
         compile_info = manifest.get("compile")
@@ -3890,11 +3953,22 @@ def _record_publish_failure(job):
 
 
 def _execute_body(job):
+    # Issue #381: normalize the untrusted `job` field ONCE, here,
+    # before any dispatch, parse, or publish call below. `text` is
+    # the string every .split()/== below uses; the raw queued value
+    # stays in manifest["job"] as evidence. None becomes "" (an
+    # empty job string, failed closed by the #371 branch below);
+    # any other non-string type is rejected explicitly with its own
+    # named failure — never an exception after intent persistence.
+    raw_job = job.get("job") if isinstance(job, dict) else None
+    text = raw_job if isinstance(raw_job, str) else ""
+    invalid_job_type = raw_job is not None \
+        and not isinstance(raw_job, str)
     # Issue #66 extension: first-party schedule jobs — no tools, no
     # archive publish; their outputs are ledger commits on main and
     # bus markers. Done is marked only when the attempt completed
     # (see run_ledger_guard / run_ledger_watchdog).
-    if job["job"] == "ledger-guard":
+    if text == "ledger-guard":
         if run_ledger_guard(job):
             # Issue #216: failure handling is centralized in
             # _mark_done (outbox retention, per-cycle drain,
@@ -3902,7 +3976,7 @@ def _execute_body(job):
             # deliberately do not branch on its return.
             _mark_done(job, "ledger-guard")
         return
-    if job["job"] == "ledger-watchdog":
+    if text == "ledger-watchdog":
         if run_ledger_watchdog(job):
             _mark_done(job, "ledger-watchdog")  # centralized #216 handling
         return
@@ -3926,13 +4000,36 @@ def _execute_body(job):
                 # code_sha remains the running-code pin.
                 "checkout_sha": update_checkout_sha(),
                 "update_branch": UPDATE_BRANCH}
+    if invalid_job_type:
+        # Issue #381: a non-string `job` field (int, list, dict,
+        # bool — anything but a string or None) is rejected
+        # explicitly with its own named failure. None normalizes
+        # to "" above and lands in the #371 unknown-job branch;
+        # other types never reach a parser: the raw value stays
+        # recorded in manifest["job"] as evidence, the run is
+        # published + marked done-with-failure (same "done means
+        # executed + archived" precedent as the unknown-job
+        # branch), and no AttributeError escapes after intent
+        # persistence. Only a failed publish leaves the job
+        # unmarked.
+        manifest["tools"] = {"invalid-job-type": "invalid-job-type"}
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job
+            # done. Issue #216: failure handling is centralized in
+            # _mark_done.
+            _mark_done(job, archive_sha)
+        return
     # Issue #348: tokenize on whitespace exactly like the #346 F9
     # fix did for top30-enumerate (and like run_harvest's own
     # .split()), so a leading-space harvest job dispatches here
     # instead of falling through to parse_job (which returns []
     # and — since #371 — fails closed with a named unknown-job
     # failure instead of publishing an empty run as done).
-    if (job["job"] or "").split()[:1] == ["harvest-egx"]:
+    if text.split()[:1] == ["harvest-egx"]:
         manifest["tools"] = run_harvest(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
@@ -3956,7 +4053,7 @@ def _execute_body(job):
     # (which returns [] and — since #371 — fails closed with a
     # named unknown-job failure instead of publishing an empty
     # run as done).
-    if (job["job"] or "").split()[:1] == ["top30-enumerate"]:
+    if text.split()[:1] == ["top30-enumerate"]:
         # Issue #328: the registry grammar has no enumeration tool
         # (parse_job returns []), so this kind dispatches here like
         # harvest-egx — never through the tool loop. A bad job
@@ -3977,7 +4074,7 @@ def _execute_body(job):
     # diag tool). A bad job string still publishes its named failure
     # and marks done (done means executed + archived, as for
     # harvest-egx); only a failed publish leaves the job unmarked.
-    if (job["job"] or "").split()[:1] == ["diag-egx-ab"]:
+    if text.split()[:1] == ["diag-egx-ab"]:
         manifest["tools"] = run_diag_egx_ab(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
@@ -3987,7 +4084,7 @@ def _execute_body(job):
             # Issue #149: only a successful publish marks the job done.
             _mark_done(job, archive_sha)
         return
-    plan = parse_job(job["job"], reg)
+    plan = parse_job(text, reg)
     if not plan:
         # Issue #371 (INS-HARV-003 finding 3): an empty plan fails
         # closed — never an empty run published as done. A job
@@ -4004,7 +4101,16 @@ def _execute_body(job):
         # in _mark_done; no new marking channel, no error file —
         # the failure lives in the published manifest, as for those
         # siblings). Only a failed publish leaves the job unmarked.
+        # Issue #381: `unknown-job` is ONE umbrella status over
+        # distinct causes — unknown syntax (a string parse_job
+        # cannot place, e.g. `harvest-egx-poul`) and invalid/empty
+        # selection (a well-formed `sweep-lite POUL.CA market=XX`
+        # whose filters deliberately reject it). The manifest keeps
+        # the single status (test_worker_371 pins it) and records
+        # the cause beside it, so the two are distinguished in the
+        # record instead of conflated: see classify_empty_plan.
         manifest["tools"] = {"unknown-job": "unknown-job"}
+        manifest["unknown_job_cause"] = classify_empty_plan(text)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
