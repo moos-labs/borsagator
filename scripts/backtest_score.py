@@ -251,6 +251,10 @@ def score_capture(capture_dir):
     ens = load_json(os.path.join(capture_dir, "digest/ensemble.json"))
     realised = load_json(os.path.join(capture_dir, "realised.json"))
     gaps = []
+    if not os.path.exists(os.path.join(capture_dir, "manifest.json")):
+        gaps.append("%s: no manifest.json — incomplete capture, "
+                    "skipped" % rel)
+        return [], gaps
     if not isinstance(ens, dict) or not ens.get("base_price"):
         gaps.append("%s: no ensemble.json / no base — skipped" % rel)
         return [], gaps
@@ -259,6 +263,23 @@ def score_capture(capture_dir):
         return [], gaps
     ticker = ens.get("ticker")
     as_of = str(ens.get("date") or realised.get("cutoff") or "")[:10]
+    # The realised file is labelled by its own ticker/cutoff — a
+    # file staged under the wrong cell must never be scored as
+    # this ticker's returns (an ETEL cell publishing a COMI file
+    # would report COMI returns as ETEL's).
+    rt, rc = realised.get("ticker"), realised.get("cutoff")
+    if not rt or not rc:
+        gaps.append("%s: realised.json has no ticker/cutoff — "
+                    "identity cannot be validated, skipped" % rel)
+        return [], gaps
+    if str(rt).upper() != str(ticker or "").upper():
+        gaps.append("%s: realised ticker %r != ensemble ticker %r — "
+                    "skipped" % (rel, rt, ticker))
+        return [], gaps
+    if str(rc)[:10] != as_of:
+        gaps.append("%s: realised cutoff %r != ensemble date %r — "
+                    "skipped" % (rel, rc, as_of))
+        return [], gaps
     base = fnum(ens.get("base_price"))
     kronos_path, kronos_first = read_kronos_path(
         os.path.join(capture_dir, "collected/kronos/forecast.csv"))
@@ -305,6 +326,26 @@ def score_capture(capture_dir):
     norm = ledger.normalize_actions(
         {"corporate_actions": merged_actions}, {})
     splits = realised.get("splits") or []
+    # An explicit index gap (the harness recorded it when the
+    # index fetch exhausted its retries): the stock capture is
+    # preserved, but index scores and deltas stay unavailable —
+    # no index-baseline rows are emitted for this capture.
+    index_gap = realised.get("index_gap")
+    if index_gap:
+        gaps.append("%s: index-baseline unavailable — %s"
+                    % (rel, index_gap))
+    # Maturity date per horizon, from the ticker's own realised
+    # sessions (the dates score_forecast() itself uses): the Nth
+    # session after the cutoff, or the last available session when
+    # the horizon has not matured yet — a split on/before that
+    # date sits inside the first N sessions either way, while a
+    # later split leaves the row pending (its maturity is unknown).
+    after_dates = sorted(d for d in series if d > as_of)
+    maturity = {}
+    for h in ledger.HORIZONS:
+        n = ledger.DEFAULT_SESSIONS[h]
+        maturity[h] = (after_dates[n - 1] if len(after_dates) >= n
+                       else after_dates[-1] if after_dates else None)
     rows = []
     for entrant in ENTRANTS:
         for h in ledger.HORIZONS:
@@ -313,6 +354,8 @@ def score_capture(capture_dir):
                 gaps.append("%s: %s has no %s horizon — no row"
                             % (rel, entrant, h))
                 continue
+            if entrant == "index-baseline" and index_gap:
+                continue  # no usable index evidence — see above
             # The index baseline is a forecast ON the index, so
             # its base is the index close at the cutoff — scoring
             # it against the ticker's base would divide an index
@@ -333,19 +376,34 @@ def score_capture(capture_dir):
                                if fnum(v) is not None},
                   "sessions": ledger.DEFAULT_SESSIONS[h],
                   "sessions_forecast": hb.get("sessions_forecast"),
-                  "corporate_actions": norm,
+                  # The index baseline is a forecast ON the index:
+                  # it must not carry the ticker's actions — a
+                  # ticker dividend inside the horizon would raise
+                  # the index return via score_forecast().
+                  "corporate_actions": (
+                      [] if entrant == "index-baseline" else norm),
                   "entrant": entrant}
-            if splits:
-                r = dict(fc)
-                r.update(status="invalid",
-                         invalid_reason=(
-                             "split inside the horizon (%s) — the "
-                             "price scale changes and the ledger "
-                             "has no split adjustment"
-                             % ", ".join(str(s.get("ex_date"))
-                                         for s in splits)))
-                rows.append(r)
-                continue
+            # A stock split invalidates only the stock rows whose
+            # own horizon spans it (ex-date after the cutoff, on
+            # or before that horizon's maturity date). Day/week
+            # rows maturing before the split stay valid, and the
+            # index baseline — a different price series — is never
+            # touched by a stock split.
+            if entrant != "index-baseline" and splits and maturity[h]:
+                hit = [s for s in splits
+                       if s.get("ex_date")
+                       and as_of < str(s["ex_date"])[:10] <= maturity[h]]
+                if hit:
+                    r = dict(fc)
+                    r.update(status="invalid",
+                             invalid_reason=(
+                                 "split inside the horizon (%s) — the "
+                                 "price scale changes and the ledger "
+                                 "has no split adjustment"
+                                 % ", ".join(str(s.get("ex_date"))
+                                             for s in hit)))
+                    rows.append(r)
+                    continue
             use_series = (index_series if entrant == "index-baseline"
                           else series)
             use_prov = (index_prov if entrant == "index-baseline"
@@ -374,8 +432,11 @@ def agg(subset):
 
 
 def score_all(captures_root):
-    """Score every capture under the root. Returns the backtest
-    document (JSON-serialisable) plus the markdown text."""
+    """Score every complete capture under the root. Directories
+    without a manifest.json are incomplete (a failed rerun's
+    staging, or a superseded backup) and are ignored, never
+    scored. Returns the backtest document (JSON-serialisable) plus
+    the markdown text."""
     rows, gaps = [], []
     captures = []
     for cutoff in sorted(os.listdir(captures_root)):
@@ -384,8 +445,16 @@ def score_all(captures_root):
             continue
         for ticker in sorted(os.listdir(cdir)):
             tdir = os.path.join(cdir, ticker)
-            if os.path.isdir(tdir):
-                captures.append(tdir)
+            if not os.path.isdir(tdir):
+                continue
+            if ".tmp-" in ticker or ".old-" in ticker:
+                continue  # unpublished staging / superseded backup
+            if not os.path.exists(os.path.join(tdir, "manifest.json")):
+                gaps.append("%s: no manifest.json — incomplete "
+                            "capture, ignored"
+                            % os.path.relpath(tdir))
+                continue
+            captures.append(tdir)
     for cap in sorted(captures):
         r, g = score_capture(cap)
         rows.extend(r)
@@ -404,33 +473,58 @@ def score_all(captures_root):
             "invalid": sum(1 for r in invalid if r["ticker"] == t)}
     # Per (entrant, horizon) cells, with deltas vs the two
     # baselines (design §2.2 — hit rate and MAE relative to the
-    # baselines, not just absolute).
+    # baselines, not just absolute). Standalone aggregates cover
+    # every matured row; each DELTA is computed on rows matched by
+    # capture and horizon (both the entrant and the baseline
+    # matured there), so a capture missing one entrant's path
+    # cannot move a baseline's aggregate and fake a skill gap.
     def cell(entrant, h):
         return agg([r for r in skill_rows
                     if r["entrant"] == entrant and r["horizon"] == h])
+
+    def paired(entrant, baseline, h):
+        """(entrant_rows, baseline_rows) matched by capture and
+        horizon after status/gap filtering."""
+        by_key = {(r["sweep"], r["horizon"], r["entrant"]): r
+                  for r in skill_rows}
+        e_rows, b_rows = [], []
+        for r in skill_rows:
+            if r["entrant"] == entrant and r["horizon"] == h:
+                b = by_key.get((r["sweep"], h, baseline))
+                if b is not None:
+                    e_rows.append(r)
+                    b_rows.append(b)
+        return e_rows, b_rows
+
     by_entrant = {}
     for entrant in ENTRANTS:
         by_entrant[entrant] = {}
         for h in ledger.HORIZONS:
             a = cell(entrant, h)
-            bah = cell("buy-and-hold", h)
-            idx = cell("index-baseline", h)
+            e_bah, b_bah = paired(entrant, "buy-and-hold", h)
+            e_idx, b_idx = paired(entrant, "index-baseline", h)
+            a_bah, b_bah_a = agg(e_bah), agg(b_bah)
+            a_idx, b_idx_a = agg(e_idx), agg(b_idx)
             a["hit_rate_vs_buy_and_hold"] = (
-                round(a["hit_rate"] - bah["hit_rate"], 3)
-                if a["hit_rate"] is not None
-                and bah["hit_rate"] is not None else None)
+                round(a_bah["hit_rate"] - b_bah_a["hit_rate"], 3)
+                if a_bah["hit_rate"] is not None
+                and b_bah_a["hit_rate"] is not None else None)
             a["mae_vs_buy_and_hold_pp"] = (
-                round(a["mean_abs_error_pp"] - bah["mean_abs_error_pp"], 2)
-                if a["mean_abs_error_pp"] is not None
-                and bah["mean_abs_error_pp"] is not None else None)
+                round(a_bah["mean_abs_error_pp"]
+                      - b_bah_a["mean_abs_error_pp"], 2)
+                if a_bah["mean_abs_error_pp"] is not None
+                and b_bah_a["mean_abs_error_pp"] is not None else None)
+            a["paired_n_vs_buy_and_hold"] = len(e_bah)
             a["hit_rate_vs_index"] = (
-                round(a["hit_rate"] - idx["hit_rate"], 3)
-                if a["hit_rate"] is not None
-                and idx["hit_rate"] is not None else None)
+                round(a_idx["hit_rate"] - b_idx_a["hit_rate"], 3)
+                if a_idx["hit_rate"] is not None
+                and b_idx_a["hit_rate"] is not None else None)
             a["mae_vs_index_pp"] = (
-                round(a["mean_abs_error_pp"] - idx["mean_abs_error_pp"], 2)
-                if a["mean_abs_error_pp"] is not None
-                and idx["mean_abs_error_pp"] is not None else None)
+                round(a_idx["mean_abs_error_pp"]
+                      - b_idx_a["mean_abs_error_pp"], 2)
+                if a_idx["mean_abs_error_pp"] is not None
+                and b_idx_a["mean_abs_error_pp"] is not None else None)
+            a["paired_n_vs_index"] = len(e_idx)
             # No quality claim for a cell with n < 10 (design §2.2).
             a["quality_claim"] = a["n"] >= 10
             by_entrant[entrant][h] = a
@@ -502,6 +596,9 @@ def render_md(doc):
                      f"{fmt(a['mae_vs_buy_and_hold_pp'])} | "
                      f"{fmt(a['hit_rate_vs_index'])} | "
                      f"{fmt(a['mae_vs_index_pp'])} |")
+    L += ["", "Deltas vs buy-and-hold / index are computed on matched "
+          "captures only (both the entrant and the baseline matured "
+          "there); the paired n per cell is in backtest.json."]
     L += ["", "## Family skill (2-family ensemble rows only; mean of "
           "family_score × sign(realized), matured only)", "",
           "| Family | Mean skill | n |", "|---|---|---|"]

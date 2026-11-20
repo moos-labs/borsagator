@@ -373,9 +373,47 @@ def test_gate():
     rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30")
     check("gate passes clean history", rec["passed"],
           "; ".join(rec["reasons"]))
-    check("gate rows", rec["rows"] == 820, "got %r" % rec["rows"])
+    # Quality checks run on bars on/before the cutoff only, so
+    # the record counts those (820 fetched, 800 on/before
+    # 2025-06-30) and its last date is the cutoff itself.
+    usable_n = len([r for r in rows if r["date"] <= "2025-06-30"])
+    check("gate rows are the on-or-before-cutoff bars",
+          rec["rows"] == usable_n,
+          "got %r want %r" % (rec["rows"], usable_n))
+    check("gate last_date is the cutoff", rec["last_date"] == "2025-06-30",
+          "got %r" % rec["last_date"])
     check("gate first_date 3y+", rec["first_date"] <= "2022-06-29",
           "got %r" % rec["first_date"])
+    # A 30-day data gap AFTER the cutoff must not reject the
+    # ticker for that cutoff: the fetched series still covers it
+    # (sessions resume in August), and the gap is outside the
+    # checked history. The pre-fix gate failed this on the July
+    # gap (~21 missed sessions).
+    july_gap = synthetic_series(n=860, cutoff="2025-08-28")
+    cut = date.fromisoformat("2025-06-30")
+    july_gap = [r for r in july_gap
+                if not (cut < date.fromisoformat(r["date"])
+                        <= cut + timedelta(days=30))]
+    rec = bt.gate_ticker("COMI.CA", july_gap, True, "2025-06-30")
+    check("gate ignores a post-cutoff gap", rec["passed"],
+          "; ".join(rec["reasons"]))
+    # A feed parsing failure (a dropped dividend) is reported
+    # separately from a verified empty feed — and still fails.
+    rec = bt.gate_ticker("COMI.CA", rows, False, "2025-06-30",
+                         events_error="1 event record(s) unparseable "
+                         "and dropped: dividend@1751241600")
+    check("gate reports a feed parsing failure separately",
+          not rec["passed"]
+          and any("parsing failed" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    check("gate records the parse error",
+          rec["events_parse_error"] is not None)
+    # unpack_fetch accepts the older 3-tuple (test fetchers) as a
+    # clean feed.
+    check("unpack_fetch 3-tuple reads clean",
+          bt.unpack_fetch((rows, [], True))[3] is None)
+    check("unpack_fetch 4-tuple passes through",
+          bt.unpack_fetch((rows, [], False, "x"))[2] is False)
     short = _gate_rows(n=100)
     rec = bt.gate_ticker("COMI.CA", short, True, "2025-06-30")
     check("gate fails short history", not rec["passed"]
@@ -426,6 +464,21 @@ def test_warmup_and_failure_classification():
         "on/before the cutoff (min-context 20)")
     check("kronos min-context refusal is a skip", skip, why)
     skip, why = bt.classify_runner_failure(
+        "--as-of 2024-01-02: only 15 sessions on/before the cutoff "
+        "(< 20 minimum rows); refusing to forecast")
+    check("kronos real refusal line is a skip", skip, why)
+    # Argparse usage text names the --min-context option: it must
+    # stay an error, not a minimum-rows skip (else the CLI exits
+    # zero on a real argument error).
+    skip, _why = bt.classify_runner_failure(
+        "usage: kronos_forecast.py [-h] [--ticker TICKER] "
+        "[--pred-len PRED_LEN] [--as-of AS_OF] "
+        "[--min-context MIN_CONTEXT]\n"
+        "kronos_forecast.py: error: argument --min-context: "
+        "invalid int value: 'x'")
+    check("usage text naming --min-context is an error, not a skip",
+          not skip)
+    skip, why = bt.classify_runner_failure(
         "cutoff (< 60 minimum rows); refusing to snapshot")
     check("pandas-ta MIN_ROWS refusal is a skip", skip, why)
     skip, _why = bt.classify_runner_failure(
@@ -469,6 +522,28 @@ def test_audit():
         v = bt.audit_stage(stage, FIXTURE_CUTOFF, FIXTURE_TICKER)
         check("audit aborts ledger weights leak",
               any("base-v1" in x for x in v), "; ".join(v))
+        # A report with no context-window line at all: the audit
+        # cannot verify what history Kronos consumed, so it must
+        # fail instead of passing silently.
+        build_fixture_stage(stage)
+        ens = run_ensemble(stage, two_family=True)
+        rpath = os.path.join(stage, "collected/kronos/report.md")
+        with open(rpath, "w", encoding="utf-8") as f:
+            f.write("# Kronos-small forecast — %s\n\n"
+                    "- Model: `NeoQuasar/Kronos-small`\n" % FIXTURE_TICKER)
+        v = bt.audit_stage(stage, FIXTURE_CUTOFF, FIXTURE_TICKER)
+        check("audit fails a report with no context line",
+              any("no context window" in x for x in v), "; ".join(v))
+        # A context line ending after the cutoff still fails.
+        build_fixture_stage(stage)
+        ens = run_ensemble(stage, two_family=True)
+        with open(rpath, "w", encoding="utf-8") as f:
+            f.write("# Kronos-small forecast — %s\n\n"
+                    "- Context window used: 2024-01-02 to 2025-07-01 "
+                    "— 300 sessions\n" % FIXTURE_TICKER)
+        v = bt.audit_stage(stage, FIXTURE_CUTOFF, FIXTURE_TICKER)
+        check("audit fails a post-cutoff context end",
+              any("after cutoff" in x for x in v), "; ".join(v))
         # Base-price guard: the #87 case (COMI 10.15 vs 128.51).
         ok, why = bt.base_price_guard(10.15, 128.51, "2025-06-30",
                                       "2025-06-30", [])
@@ -720,6 +795,222 @@ def test_smoke_and_determinism():
         shutil.rmtree(tmp + "-flip", ignore_errors=True)
 
 
+def test_cell_guards():
+    print("== cell guards (capture path / base date / realised / publish) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    tmp = tempfile.mkdtemp(prefix="bt436-guards-")
+    try:
+        # [10] capture-path validation is pure.
+        cell, err = bt.validate_capture_path(
+            "/tmp/bt-out", "2025-06-30", "COMI.CA")
+        check("capture path accepts a clean cell",
+              err == "" and cell.endswith("2025-06-30/COMI.CA"), err)
+        _c, err = bt.validate_capture_path(
+            "/tmp/bt-out", "../ledger", "COMI.CA")
+        check("capture path rejects a traversal cutoff", err != "", err)
+        _c, err = bt.validate_capture_path(
+            "/tmp/bt-out", "2025-06-30", "../../etc")
+        check("capture path rejects a traversal ticker", err != "", err)
+        _c, err = bt.validate_capture_path(
+            os.path.join(REPO, "ledger"), "2025-06-30", "COMI.CA")
+        check("capture path rejects an out-root inside ledger/",
+              err != "", err)
+        _c, err = bt.validate_capture_path(
+            os.path.join(REPO, "archive"), "2025-06-30", "COMI.CA")
+        check("capture path rejects an out-root inside archive/",
+              err != "", err)
+        _c, err = bt.validate_capture_path(
+            "/tmp/bt-out", "2025-6-30", "COMI.CA")
+        check("capture path rejects a non-ISO cutoff", err != "", err)
+        # [11] ensemble base-date check is pure.
+        check("base-date check accepts the evidenced session",
+              bt.check_ensemble_base_date(
+                  "2025-06-30", "2025-06-30", "2025-06-30") == "")
+        check("base-date check rejects an older base",
+              bt.check_ensemble_base_date(
+                  "2025-06-27", "2025-06-30", "2025-06-30") != "")
+        check("base-date check rejects a missing base_date",
+              bt.check_ensemble_base_date(
+                  None, "2025-06-30", "2025-06-30") != "")
+
+        series = synthetic_series(n=820, cutoff="2025-07-28")
+        index = [{"date": r["date"],
+                  "close": round(30000.0 + 2.0 * i, 4),
+                  "open": 0, "high": 0, "low": 0, "volume": 0}
+                 for i, r in enumerate(series)]
+
+        # [10] a traversal ticker fails the cell before any work.
+        cfg = _smoke_cfg(tmp + "-path", series, index)
+        cfg["repeat_kronos"] = False
+        res = bt.run_cell(FIXTURE_CUTOFF, "../../etc", cfg)
+        check("traversal ticker fails the cell",
+              res["status"] == "error"
+              and "capture path" in (res.get("reason") or ""),
+              "%s: %s" % (res["status"], res.get("reason", "")))
+        check("traversal ticker writes nothing",
+              not os.path.exists(os.path.join(
+                  tmp + "-path", "backtest")))
+
+        # [11] wiring: a June 27 ensemble base at the June 30
+        # evidenced close (same price) must fail the cell — the
+        # price guard alone would accept it.
+        cfg = _smoke_cfg(tmp + "-stale", series, index)
+        cfg["repeat_kronos"] = False
+        real_run_ensemble = bt.run_ensemble
+
+        def stale_ensemble(stage_dir, root, log, timeout=600):
+            ens, err = real_run_ensemble(stage_dir, root, log, timeout)
+            if ens is not None:
+                ens = dict(ens)
+                ens["base_date"] = "2025-06-27"
+            return ens, err
+
+        bt.run_ensemble = stale_ensemble
+        try:
+            res = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg)
+        finally:
+            bt.run_ensemble = real_run_ensemble
+        check("stale ensemble base_date fails the cell",
+              res["status"] == "error"
+              and "base_date" in (res.get("reason") or ""),
+              "%s: %s" % (res["status"], res.get("reason", "")))
+        check("stale-base cell publishes no capture",
+              res.get("capture_dir") is None)
+
+        # [12] a realised file labelled for another ticker (or
+        # cutoff) must never be published as this cell's returns.
+        cfg_ok = _smoke_cfg(tmp + "-ok", series, index)
+        cfg_ok["repeat_kronos"] = False
+        res_ok = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_ok)
+        check("baseline cell ok for realised-file tests",
+              res_ok["status"] == "ok",
+              "%s: %s" % (res_ok["status"], res_ok.get("reason", "")))
+        if res_ok["status"] == "ok":
+            good = json.load(open(os.path.join(
+                res_ok["capture_dir"], "realised.json"),
+                encoding="utf-8"))
+            for label, mutate in (
+                    ("wrong ticker",
+                     lambda d: d.update(ticker="ETEL.CA")),
+                    ("wrong cutoff",
+                     lambda d: d.update(cutoff="2025-03-31"))):
+                bad = dict(good)
+                mutate(bad)
+                slug = label.replace(" ", "-")
+                bad_path = os.path.join(tmp, "realised-%s.json" % slug)
+                json.dump(bad, open(bad_path, "w"), indent=1)
+                cfg_bad = _smoke_cfg(tmp + "-bad-" + slug,
+                                     series, index)
+                cfg_bad["repeat_kronos"] = False
+                cfg_bad["realised_file"] = bad_path
+                res_bad = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER,
+                                      cfg_bad)
+                check("%s realised file fails the cell" % label,
+                      res_bad["status"] == "error"
+                      and "mismatch" in (res_bad.get("reason") or ""),
+                      "%s: %s" % (res_bad["status"],
+                                  res_bad.get("reason", "")))
+                check("%s cell publishes no capture" % label,
+                      res_bad.get("capture_dir") is None
+                      and not os.path.exists(os.path.join(
+                          tmp + "-bad-" + slug, "backtest",
+                          FIXTURE_CUTOFF, FIXTURE_TICKER)))
+
+        # [9] an exhausted index fetch records an explicit gap
+        # and still publishes the matured stock capture.
+        def fetch_no_index(ticker):
+            if str(ticker).startswith("^"):
+                raise RuntimeError("Yahoo chart error for ^EGX30: 429")
+            return list(series), [], True
+
+        cfg_idx = _smoke_cfg(tmp + "-idx", series, index)
+        cfg_idx["repeat_kronos"] = False
+        cfg_idx["fetcher"] = fetch_no_index
+        res_idx = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_idx)
+        check("index fetch failure still publishes the stock capture",
+              res_idx["status"] == "ok",
+              "%s: %s" % (res_idx["status"], res_idx.get("reason", "")))
+        if res_idx["status"] == "ok":
+            rj = json.load(open(os.path.join(
+                res_idx["capture_dir"], "realised.json"),
+                encoding="utf-8"))
+            check("index-gap capture records the gap",
+                  bool(rj.get("index_gap")), str(rj.get("index_gap")))
+            check("index-gap capture has no index sessions",
+                  rj.get("index_sessions") == [])
+
+        # [8] a realised fetch that cannot verify the events feed
+        # (unavailable on the re-fetch, or dropping records)
+        # skips the cell instead of publishing an empty window.
+        calls = {"n": 0}
+
+        def fetch_flaky_events(ticker):
+            if str(ticker).startswith("^"):
+                return list(index), [], True
+            calls["n"] += 1
+            ok = calls["n"] == 1  # gate fetch fine, realised not
+            return list(series), [], ok
+
+        cfg_ev = _smoke_cfg(tmp + "-ev", series, index)
+        cfg_ev["repeat_kronos"] = False
+        cfg_ev["fetcher"] = fetch_flaky_events
+        res_ev = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_ev)
+        check("unverifiable realised events skip the cell",
+              res_ev["status"] == "skipped"
+              and "not verifiable" in (res_ev.get("reason") or ""),
+              "%s: %s" % (res_ev["status"], res_ev.get("reason", "")))
+        check("unverified-events cell publishes no capture",
+              res_ev.get("capture_dir") is None)
+
+        calls2 = {"n": 0}
+
+        def fetch_dropped_events(ticker):
+            if str(ticker).startswith("^"):
+                return list(index), [], True
+            calls2["n"] += 1
+            if calls2["n"] == 1:
+                return list(series), [], True
+            return list(series), [], False, \
+                "1 event record(s) unparseable and dropped"
+
+        cfg_ev2 = _smoke_cfg(tmp + "-ev2", series, index)
+        cfg_ev2["repeat_kronos"] = False
+        cfg_ev2["fetcher"] = fetch_dropped_events
+        res_ev2 = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_ev2)
+        check("dropped realised events skip the cell",
+              res_ev2["status"] == "skipped"
+              and "not verifiable" in (res_ev2.get("reason") or ""),
+              "%s: %s" % (res_ev2["status"], res_ev2.get("reason", "")))
+
+        # [13] a rerun republishes the whole capture as one unit:
+        # the second run's capture is complete, its manifest
+        # hashes match, and no staging/backup dirs are left.
+        cfg_re = _smoke_cfg(tmp + "-re", series, index)
+        cfg_re["repeat_kronos"] = False
+        res_a = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_re)
+        res_b = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_re)
+        check("rerun cell ok",
+              res_a["status"] == "ok" and res_b["status"] == "ok",
+              "%s / %s" % (res_a["status"], res_b["status"]))
+        if res_b["status"] == "ok":
+            cap = res_b["capture_dir"]
+            man = json.load(open(os.path.join(cap, "manifest.json"),
+                                 encoding="utf-8"))
+            check("rerun manifest hashes match",
+                  all(os.path.exists(os.path.join(cap, rel))
+                      and bt.sha256_file(os.path.join(cap, rel)) == sha
+                      for rel, sha in man["files"].items()))
+            leftovers = [d for d in os.listdir(os.path.join(
+                tmp + "-re", "backtest", FIXTURE_CUTOFF))
+                if ".tmp-" in d or ".old-" in d]
+            check("rerun leaves no staging/backup dirs",
+                  leftovers == [], str(leftovers))
+    finally:
+        for suffix in ("", "-path", "-stale", "-ok", "-bad-wrong-ticker",
+                       "-bad-wrong-cutoff", "-idx", "-ev", "-ev2", "-re"):
+            shutil.rmtree(tmp + suffix, ignore_errors=True)
+
+
 def test_runner_skip_classification_in_cell():
     print("== runner min-rows skip inside a cell ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -793,6 +1084,13 @@ def _fixture_capture(tmp):
                 "actions": [], "splits": [],
                 "fetched_at": FIXTURE_CUTOFF}
     json.dump(realised, open(os.path.join(cap, "realised.json"), "w"),
+              indent=1)
+    # A complete capture carries a manifest (the scorer ignores
+    # captures without one — a failed rerun's staging).
+    manifest = {"tool": "walkforward-backtest", "version": 1,
+                "issue": 436, "ticker": FIXTURE_TICKER,
+                "cutoff": FIXTURE_CUTOFF, "status": "ok", "files": {}}
+    json.dump(manifest, open(os.path.join(cap, "manifest.json"), "w"),
               indent=1)
     return cap, ens, base, after
 
@@ -933,6 +1231,35 @@ def test_scorer():
                    encoding="utf-8").read()
         check("ledger.py never reads backtest files",
               "backtest" not in src.lower())
+        # An explicit index gap: the stock capture still scores
+        # (12 rows — the 4 stock entrants), but no index-baseline
+        # rows are emitted and the gap is recorded.
+        cap2 = os.path.join(tmp, "backtest2", FIXTURE_CUTOFF,
+                            FIXTURE_TICKER)
+        shutil.copytree(cap, cap2)
+        r2 = json.load(open(os.path.join(cap2, "realised.json"),
+                            encoding="utf-8"))
+        r2["index_gap"] = "index fetch failed: Yahoo chart error"
+        r2["index_base_close"] = None
+        r2["index_sessions"] = []
+        json.dump(r2, open(os.path.join(cap2, "realised.json"), "w"),
+                  indent=1)
+        rows2, gaps2 = sc.score_capture(cap2)
+        check("index-gap capture scores 12 stock rows",
+              len(rows2) == 12, "got %d" % len(rows2))
+        check("index-gap capture emits no index-baseline rows",
+              all(r["entrant"] != "index-baseline" for r in rows2))
+        check("index-gap capture records the gap",
+              any("index-baseline unavailable" in g for g in gaps2),
+              "; ".join(gaps2))
+        # A capture without a manifest is incomplete and never
+        # scored, however valid its other files are.
+        os.remove(os.path.join(cap2, "manifest.json"))
+        rows3, gaps3 = sc.score_capture(cap2)
+        check("manifest-less capture scores nothing",
+              rows3 == [] and any("no manifest.json" in g
+                                  for g in gaps3),
+              "; ".join(gaps3))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -944,6 +1271,7 @@ def run_backtest_checks(verbose=True):
     test_gate()
     test_warmup_and_failure_classification()
     test_audit()
+    test_cell_guards()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
     test_scorer()

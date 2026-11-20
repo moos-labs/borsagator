@@ -53,14 +53,19 @@ def parse_iso(s):
 
 def fetch_chart(ticker, period1=0, period2=None, attempts=3):
     """Yahoo chart API: daily bars + dividend/split events.
-    Returns (rows, events, events_available) where rows are
-    {"date": ISO, "close": float} sorted by date and events are
-    [{"type": "dividend"|"split", "ex_date": ISO, "dps"|"ratio"}].
-    A failed fetch raises RuntimeError after `attempts` tries with
-    backoff; a fetch that succeeds but carries no events still
-    reports events_available False (the gate then fails the
-    ticker — an unretrievable events feed must not be scored
-    unadjusted, design §2.3)."""
+    Returns (rows, events, events_available, events_error) where
+    rows are {"date": ISO, "close": float} sorted by date and
+    events are [{"type": "dividend"|"split", "ex_date": ISO,
+    "dps"|"ratio"}]. events_available is False when the feed is
+    absent AND when any event record was dropped as unparseable —
+    a partially-dropped feed is not a verified feed (a dropped
+    dividend would otherwise be scored as an ordinary price move).
+    events_error names the dropped records (None when the feed
+    parsed cleanly). A failed fetch raises RuntimeError after
+    `attempts` tries with backoff; a fetch that succeeds but
+    carries no events still reports events_available False (the
+    gate then fails the ticker — an unretrievable events feed must
+    not be scored unadjusted, design §2.3)."""
     if period2 is None:
         period2 = int(time.time()) + 86400
     url = (CHART_URL % ticker
@@ -115,28 +120,50 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
             continue
     rows.sort(key=lambda r: r["date"])
     events = []
+    dropped = []
     ev = (result.get("events") or {})
     for ts, div in (ev.get("dividend") or {}).items():
         try:
             dps = float(div.get("amount"))
+            import datetime as _dt
+            d = _dt.datetime.fromtimestamp(
+                int(ts), tz=_dt.timezone.utc).date().isoformat()
         except Exception:
+            # Unparseable amount or timestamp: the record is
+            # dropped AND the feed is marked failed (see below) —
+            # never silently treated as "no dividend".
+            dropped.append("dividend@%s" % ts)
             continue
-        import datetime as _dt
-        d = _dt.datetime.fromtimestamp(
-            int(ts), tz=_dt.timezone.utc).date().isoformat()
         events.append({"type": "dividend", "ex_date": d, "dps": dps})
     for ts, split in (ev.get("split") or {}).items():
         try:
             import datetime as _dt
             d = _dt.datetime.fromtimestamp(
                 int(ts), tz=_dt.timezone.utc).date().isoformat()
-            events.append({"type": "split", "ex_date": d,
-                           "ratio": "%s:%s" % (split.get("numerator"),
-                                              split.get("denominator"))})
+            num, den = split.get("numerator"), split.get("denominator")
+            if num is None or den is None:
+                raise ValueError("split without numerator/denominator")
         except Exception:
+            dropped.append("split@%s" % ts)
             continue
+        events.append({"type": "split", "ex_date": d,
+                       "ratio": "%s:%s" % (num, den)})
     events.sort(key=lambda e: (e["ex_date"], e["type"]))
-    return rows, events, bool(ev)
+    events_error = (None if not dropped else
+                    "%d event record(s) unparseable and dropped: %s"
+                    % (len(dropped), ", ".join(dropped[:5])))
+    events_available = bool(ev) and not dropped
+    return rows, events, events_available, events_error
+
+
+def unpack_fetch(result):
+    """(rows, events, events_available, events_error) from a
+    fetcher result — older/test fetchers return the 3-tuple
+    without events_error, which reads as None (clean)."""
+    if len(result) == 4:
+        return result
+    rows, events, ok = result
+    return rows, events, ok, None
 
 
 def longest_flat_run(rows):
@@ -170,22 +197,34 @@ def max_gap(rows):
 
 
 def gate_ticker(ticker, rows, events_available, latest_cutoff,
-                series_start=None):
+                series_start=None, events_error=None):
     """Pure admission decision (design §4). `rows` are
     {"date", "close"} sorted by date; `latest_cutoff` is the last
     cutoff the ticker must cover. `series_start` is the first
     usable session after a corporate discontinuity (POUL.CA:
     2026-09-28) — earlier rows are dropped before every check.
-    Returns the gate record (JSON-serialisable)."""
+    `events_error` (from fetch_chart) reports a feed parsing
+    failure separately from a verified empty feed. History-quality
+    checks (depth, gap, flat-run) use only bars on/before the
+    cutoff — bars after it cannot reject the ticker; coverage
+    (history reaching the cutoff at all) is checked against the
+    full fetched series instead. Returns the gate record
+    (JSON-serialisable)."""
     ticker = (ticker or "").upper()
     cutoff = parse_iso(latest_cutoff)
     usable = [r for r in rows
               if parse_iso(r["date"]) is not None
+              and (cutoff is None or parse_iso(r["date"]) <= cutoff)
               and (series_start is None
                    or parse_iso(r["date"]) >= parse_iso(series_start))]
+    fetched = [r for r in rows
+               if parse_iso(r["date"]) is not None
+               and (series_start is None
+                    or parse_iso(r["date"]) >= parse_iso(series_start))]
     reasons = []
     first = usable[0]["date"] if usable else None
     last = usable[-1]["date"] if usable else None
+    fetched_last = fetched[-1]["date"] if fetched else None
     need_first = None
     if cutoff is not None:
         try:
@@ -200,9 +239,10 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
         reasons.append(
             "history starts %s, later than the %d-year minimum %s"
             % (first, MIN_HISTORY_YEARS, need_first))
-    if usable and parse_iso(last) < cutoff:
+    if usable and cutoff is not None and (
+            fetched_last is None or parse_iso(fetched_last) < cutoff):
         reasons.append("history ends %s, before the latest cutoff %s"
-                       % (last, latest_cutoff))
+                       % (fetched_last, latest_cutoff))
     gap_days, gap_missed = max_gap(usable)
     if gap_missed > MAX_GAP_SESSIONS_EST:
         reasons.append(
@@ -215,7 +255,12 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
             "stale-flat segment: %d consecutive identical closes, "
             "over the %d-session limit" % (flat, FLAT_RUN_LIMIT))
     if not events_available:
-        reasons.append("dividend/split events feed not retrievable")
+        if events_error:
+            reasons.append(
+                "dividend/split events feed parsing failed: %s"
+                % events_error)
+        else:
+            reasons.append("dividend/split events feed not retrievable")
     return {"ticker": ticker, "passed": not reasons,
             "reasons": reasons,
             "rows": len(usable),
@@ -225,6 +270,7 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
             "max_gap_sessions_est": gap_missed,
             "longest_flat_run": flat,
             "events_available": bool(events_available),
+            "events_parse_error": events_error,
             "series_start": series_start}
 
 
@@ -244,6 +290,7 @@ def main(argv=None):
                          "retrievable (default False when --history-csv "
                          "is used without this flag).")
     args = ap.parse_args(argv)
+    events_error = None
     if args.history_csv:
         import csv
         rows = []
@@ -258,9 +305,11 @@ def main(argv=None):
         rows.sort(key=lambda r: r["date"])
         events_available = args.events_available
     else:
-        rows, _events, events_available = fetch_chart(args.ticker)
+        rows, _events, events_available, events_error = \
+            unpack_fetch(fetch_chart(args.ticker))
     rec = gate_ticker(args.ticker, rows, events_available,
-                      args.latest_cutoff, args.series_start)
+                      args.latest_cutoff, args.series_start,
+                      events_error)
     print(json.dumps(rec, indent=1))
     return 0 if rec["passed"] else 1
 

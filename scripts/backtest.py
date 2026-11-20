@@ -75,11 +75,16 @@ SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 14
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
 # the runner; Kronos enforces --min-context). Match the refusal
-# wording the three runners actually print.
+# wording the three runners actually print. Kronos's real refusal
+# is "--as-of <C>: only <N> sessions on/before the cutoff
+# (< 20 minimum rows); refusing to forecast" — note it never
+# contains the string "min-context", so a bare min-context
+# pattern would misclassify argparse usage text (which names the
+# --min-context option) as a skip and exit zero on a real error.
 MIN_ROWS_PATTERNS = (
     re.compile(r"only \d+ sessions", re.I),
     re.compile(r"minimum rows", re.I),
-    re.compile(r"min-context", re.I),
+    re.compile(r"only \d+ sessions on/before the cutoff", re.I),
     re.compile(r"fewer than .* rows", re.I),
     re.compile(r"below .*min", re.I),
 )
@@ -386,7 +391,11 @@ def audit_stage(stage_dir, cutoff, ticker):
             violations.append(
                 "audit: %s ends %s, after cutoff %s"
                 % (rel, latest.isoformat(), cutoff))
-    # Kronos context window (report.md) must end <= C.
+    # Kronos context window (report.md) must end <= C. A report
+    # with no context line at all is a violation too: without it
+    # there is no evidence of what history Kronos consumed, and a
+    # passing audit would otherwise bless a forecast on unknown
+    # context.
     report = os.path.join(stage_dir, "collected/kronos/report.md")
     ctx_end = None
     if os.path.exists(report):
@@ -395,10 +404,18 @@ def audit_stage(stage_dir, cutoff, ticker):
                           f.read())
         if m:
             ctx_end = parse_iso(m.group(1))
-            if ctx_end > c:
+            if ctx_end is None:
+                violations.append(
+                    "audit: Kronos context end %s is not a valid date"
+                    % m.group(1))
+            elif ctx_end > c:
                 violations.append(
                     "audit: Kronos context ends %s, after cutoff %s"
                     % (m.group(1), cutoff))
+        else:
+            violations.append(
+                "audit: Kronos report has no context window line — "
+                "the context end date cannot be verified")
     else:
         violations.append("audit: missing collected/kronos/report.md")
     # 2. Snapshot last dates.
@@ -490,6 +507,58 @@ def base_price_guard(base, evidenced_close, level_date, as_of, actions):
                                         evidenced_close, level_date))
 
 
+def check_ensemble_base_date(ens_base_date, ev_date, cutoff):
+    """The ensemble base must be as of the evidenced session — the
+    last valid session on/before the cutoff, not the cutoff date
+    itself when the cutoff is not a session. A June 27 base at the
+    same price as the June 30 evidenced close is a June 27
+    forecast, not a June 30 one, and the price guard alone cannot
+    tell them apart. Returns an error string, or "" when the dates
+    agree."""
+    ens_base_date = str(ens_base_date or "")[:10]
+    if not ens_base_date:
+        return "ensemble has no base_date"
+    if ens_base_date != ev_date:
+        return ("ensemble base_date %s != evidenced session %s "
+                "(cutoff %s) — the forecast is as of an older "
+                "session" % (ens_base_date, ev_date, cutoff))
+    return ""
+
+
+# The harness writes only under --out-root and never to the
+# ledger or the archive. Both are repo-root trees, so a hostile
+# or mistaken cutoff/ticker (or out-root) must be rejected before
+# anything is created or replaced.
+PROTECTED_TREES = ("ledger", "archive")
+
+
+def validate_capture_path(out_root, cutoff, ticker):
+    """(cell_dir, error): the capture dir for one cell, or an
+    error string when the cutoff/ticker are not single path
+    components, or the resolved destination escapes the resolved
+    out-root, or it lands inside a protected tree."""
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(cutoff or "")):
+        return None, "cutoff %r is not a YYYY-MM-DD date" % (cutoff,)
+    if parse_iso(cutoff) is None:
+        return None, "cutoff %r is not a valid date" % (cutoff,)
+    if not ticker or str(ticker) in (".", "..") \
+            or "/" in str(ticker) or "\\" in str(ticker) \
+            or str(ticker) != str(ticker).strip():
+        return None, ("ticker %r is not a single path component"
+                      % (ticker,))
+    root = os.path.realpath(out_root)
+    cell = os.path.realpath(os.path.join(root, cutoff, ticker))
+    if os.path.commonpath([cell, root]) != root:
+        return None, "capture dir %s escapes out-root %s" % (cell, root)
+    for tree in PROTECTED_TREES:
+        protected = os.path.realpath(os.path.join(REPO_ROOT, tree))
+        if (os.path.commonpath([cell, protected]) == protected
+                or os.path.commonpath([root, protected]) == protected):
+            return None, ("capture root %s is inside the protected "
+                          "%s tree" % (root, tree))
+    return cell, ""
+
+
 # --------------------------------------------------------------------------
 # Realised closes (scoring input, fetched separately — §1.4.4)
 # --------------------------------------------------------------------------
@@ -501,7 +570,21 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     never visible to the forecast step. `fetcher` is injectable
     for tests (defaults to the Yahoo chart API)."""
     fetcher = fetcher or backtest_gate.fetch_chart
-    rows, events, _ev_ok = fetcher(ticker)
+    rows, events, ev_ok, ev_error = backtest_gate.unpack_fetch(
+        fetcher(ticker))
+    # The realised window's actions must be VERIFIED, not merely
+    # empty: the admission fetch may have retrieved actions while
+    # this separate realised fetch reports the feed unavailable
+    # (or drops records). Publishing an empty action window then
+    # would let the scorer count an unadjusted corporate-action
+    # move as forecast error. A verified action-free window
+    # (ev_ok True, no events) still scores.
+    if not ev_ok or ev_error:
+        return None, (
+            "realised: dividend/split events feed not verifiable "
+            "(%s) — the action window cannot be established, so "
+            "the cell is not published"
+            % (ev_error or "feed not retrievable"))
     c = parse_iso(cutoff)
     after = [r for r in rows if parse_iso(r["date"]) > c]
     after.sort(key=lambda r: r["date"])
@@ -516,12 +599,25 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     sessions = after[:SESSIONS_NEEDED]
     maturity = sessions[-1]["date"]
     index_ticker = INDEX_TICKER[market_of(ticker)]
-    irows, _ievents, _iok = fetcher(index_ticker)
+    # The index fetch must not take the stock capture down with
+    # it: if the index request exhausts its retries, record an
+    # explicit index gap and publish the matured stock capture
+    # without index evidence — the scorer leaves index scores and
+    # deltas unavailable until usable index data exists.
+    index_gap = None
+    try:
+        irows, _ievents, _iok, _ierr = backtest_gate.unpack_fetch(
+            fetcher(index_ticker))
+    except Exception as e:  # noqa: BLE001 - index fetch exhausted
+        irows = []
+        index_gap = "index fetch failed: %s" % e
     imap = {r["date"]: r["close"] for r in irows}
     ibase = [r for r in irows if parse_iso(r["date"]) <= c]
     index_base_close = ibase[-1]["close"] if ibase else None
     index_sessions = []
     for s in sessions:
+        if index_gap is not None:
+            break  # no index evidence at all — see index_gap
         d = s["date"]
         if d in imap:
             index_sessions.append({"date": d, "close": imap[d],
@@ -552,6 +648,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
             "index_ticker": index_ticker,
             "index_base_close": index_base_close,
             "index_sessions": index_sessions,
+            "index_gap": index_gap,
             "actions": window_actions,
             "splits": window_splits,
             "fetched_at": date.today().isoformat()}, ""
@@ -565,10 +662,16 @@ def run_cell(cutoff, ticker, cfg):
     status ok | skipped | error and, on ok, the capture dir."""
     ticker = ticker.upper()
     out_root = cfg["out_root"]
-    cell_dir = os.path.join(out_root, cutoff, ticker)
-    stage = tempfile.mkdtemp(prefix="bt436-cell-")
     result = {"tool": TOOL, "ticker": ticker, "cutoff": cutoff,
               "status": "error", "capture_dir": None}
+    # The capture directory boundary is enforced before any work:
+    # a bad cutoff/ticker or an out-root inside the ledger or
+    # archive trees fails the cell instead of writing there.
+    cell_dir, verr = validate_capture_path(out_root, cutoff, ticker)
+    if verr:
+        result.update(status="error", reason="capture path: " + verr)
+        return result
+    stage = tempfile.mkdtemp(prefix="bt436-cell-")
     log_path = os.path.join(stage, "harness.log")
     try:
         with open(log_path, "w", encoding="utf-8") as log:
@@ -576,10 +679,11 @@ def run_cell(cutoff, ticker, cfg):
                       % (cutoff, ticker))
             # 1. Gate (history fetch is the gate's own fetch).
             fetcher = cfg.get("fetcher") or backtest_gate.fetch_chart
-            rows, events, ev_ok = fetcher(ticker)
+            rows, events, ev_ok, ev_error = \
+                backtest_gate.unpack_fetch(fetcher(ticker))
             gate = backtest_gate.gate_ticker(
                 ticker, rows, ev_ok, cfg["latest_cutoff"],
-                SERIES_START.get(ticker))
+                SERIES_START.get(ticker), ev_error)
             result["gate"] = gate
             log.write("gate: %s\n" % json.dumps(gate))
             if not gate["passed"]:
@@ -629,6 +733,14 @@ def run_cell(cutoff, ticker, cfg):
                 return result
             ev_close = base_rows[-1]["close"]
             ev_date = base_rows[-1]["date"]
+            # The ensemble base must be as of the evidenced
+            # session, not an older one at the same price.
+            date_err = check_ensemble_base_date(
+                ens.get("base_date"), ev_date, cutoff)
+            if date_err:
+                result.update(status="error",
+                              reason="base-price guard: " + date_err)
+                return result
             ok, why = base_price_guard(ens.get("base_price"), ev_close,
                                        ev_date, cutoff, actions)
             if not ok:
@@ -698,26 +810,47 @@ def run_cell(cutoff, ticker, cfg):
                 result.update(status="skipped",
                               reason=rerr or "realised fetch failed")
                 return result
-            # 8. Stage the capture.
-            os.makedirs(cell_dir, exist_ok=True)
+            # The realised file is labelled by its own ticker and
+            # cutoff — a file staged under the wrong cell (an ETEL
+            # cell handed a COMI realised file) must never be
+            # published as this ticker's returns.
+            if (str(realised.get("ticker") or "").upper() != ticker
+                    or str(realised.get("cutoff") or "")[:10] != cutoff):
+                result.update(
+                    status="error",
+                    reason="realised ticker/cutoff mismatch: file "
+                    "says %r/%r, cell is %s/%s"
+                    % (realised.get("ticker"), realised.get("cutoff"),
+                       ticker, cutoff))
+                return result
+            # 8. Publish the capture as one unit. The complete
+            # capture (files + manifest with their hashes) is
+            # written and hashed in a sibling staging directory
+            # first; only then is it swapped into place. A rerun
+            # that fails before the swap leaves the previous
+            # complete capture readable, and the scorer ignores
+            # staging/backup directories (no manifest, .tmp-/
+            # .old- names) so it never reads a half-written cell.
+            publish_dir = cell_dir + ".tmp-%d" % os.getpid()
+            if os.path.exists(publish_dir):
+                shutil.rmtree(publish_dir)
+            os.makedirs(publish_dir)
             for sub in ("collected/kronos", "collected/pandas-ta",
                         "collected/talib", "digest"):
                 src = os.path.join(stage, sub)
-                dst = os.path.join(cell_dir, sub)
-                if os.path.exists(dst):
-                    shutil.rmtree(dst)
+                dst = os.path.join(publish_dir, sub)
                 shutil.copytree(src, dst)
-            with open(os.path.join(cell_dir, "price.csv"),
+            with open(os.path.join(publish_dir, "price.csv"),
                       "w", newline="", encoding="utf-8") as f:
                 w = csv.DictWriter(f, fieldnames=["date", "close"])
                 w.writeheader()
                 w.writerows([{"date": r["date"], "close": r["close"]}
                              for r in base_rows])
-            with open(os.path.join(cell_dir, "realised.json"),
+            with open(os.path.join(publish_dir, "realised.json"),
                       "w", encoding="utf-8") as f:
                 json.dump(realised, f, indent=1, ensure_ascii=False)
             shutil.copyfile(log_path,
-                            os.path.join(cell_dir, "harness.log"))
+                            os.path.join(publish_dir, "harness.log"))
             manifest = {
                 "tool": TOOL, "version": VERSION, "issue": 436,
                 "ticker": ticker, "cutoff": cutoff,
@@ -740,16 +873,29 @@ def run_cell(cutoff, ticker, cfg):
                 "audit": {"passed": True, "violations": []},
                 "files": {},
             }
-            for root, _dirs, files in os.walk(cell_dir):
+            for root, _dirs, files in os.walk(publish_dir):
                 for name in sorted(files):
                     if name == "manifest.json":
                         continue
                     p = os.path.join(root, name)
-                    manifest["files"][os.path.relpath(p, cell_dir)] = \
+                    manifest["files"][os.path.relpath(p, publish_dir)] = \
                         sha256_file(p)
-            with open(os.path.join(cell_dir, "manifest.json"),
+            with open(os.path.join(publish_dir, "manifest.json"),
                       "w", encoding="utf-8") as f:
                 json.dump(manifest, f, indent=1, ensure_ascii=False)
+            backup_dir = cell_dir + ".old-%d" % os.getpid()
+            if os.path.exists(backup_dir):
+                shutil.rmtree(backup_dir)
+            try:
+                if os.path.exists(cell_dir):
+                    os.rename(cell_dir, backup_dir)
+                os.rename(publish_dir, cell_dir)
+            except OSError:
+                if os.path.exists(backup_dir) \
+                        and not os.path.exists(cell_dir):
+                    os.rename(backup_dir, cell_dir)
+                raise
+            shutil.rmtree(backup_dir, ignore_errors=True)
             result["manifest"] = manifest
             result.update(status="ok", capture_dir=cell_dir)
             return result
@@ -806,22 +952,32 @@ def main(argv=None):
     if not args.cutoff or not args.ticker:
         ap.error("--cutoff and --ticker are required (or --plan)")
     if args.gate_only:
-        rows, events, ev_ok = backtest_gate.fetch_chart(args.ticker)
+        rows, events, ev_ok, ev_error = \
+            backtest_gate.unpack_fetch(
+                backtest_gate.fetch_chart(args.ticker))
         rec = backtest_gate.gate_ticker(
             args.ticker, rows, ev_ok, args.latest_cutoff,
-            SERIES_START.get(args.ticker.upper()))
+            SERIES_START.get(args.ticker.upper()), ev_error)
         print(json.dumps(rec, indent=1))
         return 0 if rec["passed"] else 1
-    runners = {"kronos": args.kronos_runner,
-               "pandas-ta": args.pandas_ta_runner,
-               "talib": args.talib_runner}
+    # Runner checkouts and the repo root are resolved to absolute
+    # paths once, here: run_runner joins the script path to the
+    # runner dir AND uses it as the child's cwd, so a relative
+    # checkout would be resolved twice (runners/kronos +
+    # runners/kronos/scripts/... does not exist), and run_ensemble
+    # runs with cwd=stage_dir, so a relative root would resolve
+    # from the stage directory instead of the repo.
+    runners = {k: (os.path.abspath(v) if v else v)
+               for k, v in {"kronos": args.kronos_runner,
+                           "pandas-ta": args.pandas_ta_runner,
+                           "talib": args.talib_runner}.items()}
     missing = [k for k, v in runners.items() if not v]
     if missing:
         ap.error("runner checkout(s) required: "
                  + ", ".join("--%s-runner" % k.replace("-", "_")
                              for k in missing))
     cfg = {"out_root": args.out_root, "runners": runners,
-           "borsagator_root": args.borsagator_root,
+           "borsagator_root": os.path.abspath(args.borsagator_root),
            "latest_cutoff": args.latest_cutoff,
            "timeout": args.timeout,
            "repeat_kronos": args.repeat_kronos
