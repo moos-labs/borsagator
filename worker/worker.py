@@ -364,8 +364,21 @@ def _begin_execution(job):
     establish durability refuses execution. Existing evidence refuses
     re-entry, including direct _execute callers. One worker process per
     ROOT is required, as for the existing fixed receipt temp names."""
+    # Issue #391: the missing-key case used to raise KeyError on
+    # job["job"] inside the durability try below and was misreported
+    # as an intent failure; a non-dict job raised AttributeError on
+    # job.get above. Refuse both explicitly, with no intent written.
+    if not isinstance(job, dict):
+        print("_begin_execution: malformed entry (not an object); "
+              "REFUSING execution", file=sys.stderr, flush=True)
+        return False
     job_id = str(job.get("id", ""))
     if not JOB_ID_RE.fullmatch(job_id):
+        return False
+    if "job" not in job:
+        print(f"_begin_execution {job_id}: no 'job' key; REFUSING "
+              "execution (malformed queue entry)",
+              file=sys.stderr, flush=True)
         return False
     if _done_or_pending(job_id):
         return False
@@ -604,6 +617,13 @@ def heartbeat():
         payload["pending_done"] = pending
     if corrupt:
         payload["corrupt_done"] = corrupt
+    # Issue #391: quarantined malformed queue entries are surfaced
+    # here so the skip is observable without another bus push.
+    malformed_dir = BUS / "queue" / "malformed"
+    malformed = sorted(f.stem for f in malformed_dir.glob("*.json")) \
+        if malformed_dir.exists() else []
+    if malformed:
+        payload["malformed_queue"] = malformed
     # An intent is not completion evidence. It means an attempt may
     # have caused effects. Only completed receipts are auto-replayed.
     uncertain = sorted(f.stem for f in JOB_STATE.glob("*.intent")
@@ -718,15 +738,76 @@ def _mark_done(job, archive_sha):
     return False
 
 
+def _malformed_name(job):
+    """File stem for a malformed queue entry's quarantine record.
+    A usable id names its own record; an entry without one is named
+    by a hash of its canonical JSON, so the same entry always maps
+    to the same record (and a later valid entry with that id is
+    never blocked by it — the record is evidence only, never a
+    gate)."""
+    job_id = job.get("id") if isinstance(job, dict) else None
+    if isinstance(job_id, str) and JOB_ID_RE.fullmatch(job_id):
+        return job_id
+    try:
+        canonical = json.dumps(job, sort_keys=True, default=str)
+    except Exception:
+        canonical = repr(job)
+    digest = hashlib.sha256(canonical.encode()).hexdigest()[:16]
+    return f"no-id-{digest}"
+
+
+def _quarantine_malformed_job(job, reason):
+    """Record a malformed queue entry as a named failure and return
+    False — never raise. Issue #391: a queue entry without a usable
+    id/job must be quarantined / skipped with evidence, never raised
+    out of claim() into the cycle. The record lives under
+    queue/malformed/ (scanned by nothing — not claims/, so
+    reclaim_stale_claims never touches it — and surfaced in the
+    heartbeat payload). An already-recorded entry is not re-pushed
+    every cycle; a record whose push failed is wiped by the next
+    sync_bus reset and re-recorded, so the push is retried."""
+    name = _malformed_name(job)
+    try:
+        record = {"worker": os.uname().nodename, "at": now(),
+                  "reason": reason, "entry": job}
+        d = BUS / "queue" / "malformed"
+        d.mkdir(parents=True, exist_ok=True)
+        path = d / f"{name}.json"
+        if path.exists():
+            return False
+        path.write_text(json.dumps(record))
+        push_bus(f"malformed queue entry skipped {name} ({reason})")
+    except Exception as e:  # noqa: BLE001 - a skip record must never raise
+        print(f"_quarantine_malformed_job {name}: record failed "
+              f"({type(e).__name__}: {e})", file=sys.stderr, flush=True)
+    return False
+
+
 def claim(job):
-    if _done_or_pending(job["id"]):
+    # Issue #391: a malformed queue entry must be quarantined with
+    # evidence, never raised out of claim() into the cycle. Before
+    # this guard, job["id"]/job["job"] raised KeyError here — before
+    # _execute ever ran, so the #381 job_text() normalization never
+    # got a chance — and the cycle-level catch aborted the queue
+    # loop, stalling head-of-line on one bad entry. A `job` key
+    # that is present but None/non-string is NOT rejected here: #381
+    # deliberately routes those through _execute_body, which fails
+    # closed with a named unknown-job / invalid-job-type failure.
+    if not isinstance(job, dict):
+        return _quarantine_malformed_job(job, "not-an-object")
+    job_id = job.get("id")
+    if not isinstance(job_id, str) or not JOB_ID_RE.fullmatch(job_id):
+        return _quarantine_malformed_job(job, "missing-or-invalid-id")
+    if "job" not in job:
+        return _quarantine_malformed_job(job, "missing-job")
+    if _done_or_pending(job_id):
         # Issue #149: a completed job is never claimed again.
         return False
     c = BUS / "queue" / "claims"
     c.mkdir(parents=True, exist_ok=True)
-    (c / f"{job['id']}.json").write_text(json.dumps(
+    (c / f"{job_id}.json").write_text(json.dumps(
         {"worker": os.uname().nodename, "at": now(), "job": job["job"]}))
-    return push_bus(f"claim {job['id']}")
+    return push_bus(f"claim {job_id}")
 
 
 # --- Issue #66: worker-owned schedule ---------------------------------
@@ -4336,16 +4417,22 @@ def main():
             prune_out()
             heartbeat()
             for job in read_queue():
-                if not JOB_ID_RE.match(str(job.get("id", ""))):
+                job_id = job.get("id") if isinstance(job, dict) else None
+                if not isinstance(job_id, str) or not JOB_ID_RE.match(job_id):
+                    # Issue #391: quarantine with evidence instead
+                    # of the old silent skip — and a non-dict entry
+                    # no longer raises AttributeError on job.get
+                    # here, which aborted the whole queue loop.
+                    _quarantine_malformed_job(job, "missing-or-invalid-id")
                     continue  # panel round 2: ids reach file paths
-                if _done_or_pending(job["id"]):
+                if _done_or_pending(job_id):
                     # Issue #149: a completed job never runs again,
                     # even after its claim was reclaimed. Issue #216:
                     # any local completion evidence (valid or
                     # quarantined-corrupt receipt) also blocks
                     # re-execution on this host.
                     continue
-                if not claimed(job["id"]):
+                if not claimed(job_id):
                     if claim(job):
                         execute(job)
                         break  # one job per cycle, then re-sync
