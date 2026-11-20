@@ -52,6 +52,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -418,32 +419,41 @@ def main(argv=None):
     url = args.url
     profile_dir = args.profile
     srv = None
+    # Issue #394: a dry-run without --profile gets an auto-created
+    # profile dir; it is removed on every exit path below. A
+    # user-supplied --profile is never removed.
+    created_profile_dir = False
     if args.dry_run:
         srv, base = start_stub_server()
         url = base + "/ar/NewsSearch.aspx?com=&word=&from=19/08/2026" \
             "&to=19/11/2026&isin=EGS02051C018&sec_id=20"
         if not profile_dir:
             profile_dir = tempfile.mkdtemp(prefix="diag-egx-ab-prof-")
+            created_profile_dir = True
         print("dry-run: stub at %s (SIMULATED pages)" % base)
     if not profile_dir:
         print("--profile is required (unless --dry-run)",
               file=sys.stderr)
         return 2
     try:
-        import playwright  # noqa: F401 — import check before launching
-    except ImportError:
-        print("playwright is not installed; run in the egx-harvest "
-              "venv (worker) or install playwright", file=sys.stderr)
-        return 2
-    try:
-        record = run_probe(profile_dir, url, legs,
-                           args.nav_timeout_ms, args.settle_ms)
+        try:
+            import playwright  # noqa: F401 — import check before launching
+        except ImportError:
+            print("playwright is not installed; run in the egx-harvest "
+                  "venv (worker) or install playwright", file=sys.stderr)
+            return 2
+        try:
+            record = run_probe(profile_dir, url, legs,
+                               args.nav_timeout_ms, args.settle_ms)
+        finally:
+            if srv is not None:
+                srv.shutdown()
+        for line in write_outputs(record, args.out_dir):
+            print(line)
+        return 0
     finally:
-        if srv is not None:
-            srv.shutdown()
-    for line in write_outputs(record, args.out_dir):
-        print(line)
-    return 0
+        if created_profile_dir:
+            shutil.rmtree(profile_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":

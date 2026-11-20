@@ -992,122 +992,126 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
         # revalidates (run_ledger rejects on a per-file fetch failure),
         # and the byte-identical check further down is the only skip —
         # so an incomplete ledger can neither be published nor locked in.
-        tmp = tempfile.mkdtemp(prefix="ledger-run-")
-        try:
-            # Issue #132: pass the committed ledger in so
-            # validate_ledger can reject a sharp matured regression
-            # (and error rows) instead of publishing a wiped ledger.
-            new = run_ledger(tmp, old)
-        except Exception as e:
-            return fail(str(e), digest_path, fail_hard, ctx)
-        # Issue #117 interim check: compare the pinned commit the ledger
-        # was computed from against the live archive HEAD. A mismatch
-        # means the branch advanced mid-run — the ledger is still a
-        # self-consistent snapshot of its pinned commit, so publish it
-        # and let the next guard tick refresh for the new tree.
-        live = live_archive_commit_sha()
-        pinned = (new.get("source") or {}).get("commit_sha")
-        if live and pinned and live != pinned:
-            log(f"archive advanced during the run (pinned "
-                f"{str(pinned)[:8]}, live {str(live)[:8]}) — publishing "
-                "the pinned snapshot; the next guard tick refreshes it")
-        elif live and pinned:
-            log(f"pinned commit {str(pinned)[:8]} matches live archive HEAD")
-        changed = []
-        for name in FILES:
-            newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
-            if not os.path.exists(newp):
-                return fail(f"ledger.py did not write {name}",
-                            digest_path, fail_hard, ctx)
-            if not os.path.exists(oldp) or \
-                    open(newp, "rb").read() != open(oldp, "rb").read():
-                changed.append(name)
-        if not changed:
-            log("rerun produced byte-identical outputs — nothing to publish")
-            append_digest(digest_path, section_unchanged(new))
-            # Issue #128: the ledger is verified current — a recovery
-            # closes any open publish-failure signal.
-            ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
-                             f"{new['counts']['matured']} matured)")
-            clear_failure_signal(ctx)
-            return 0
-        os.makedirs(LEDGER_DIR, exist_ok=True)
-        for name in changed:
-            shutil.copyfile(os.path.join(tmp, name),
-                            os.path.join(LEDGER_DIR, name))
-        new_w = _read_json(os.path.join(tmp, "weights.json"))
-        # Issue #79: the benchmark table rides the same publish —
-        # its counts line travels in the digest section (counts
-        # only, no claims).
-        new_bench = _read_json(os.path.join(tmp, "benchmark.json"))
-        log(f"changed: {', '.join(changed)} — {new['counts']}")
-        if not commit:
-            append_digest(digest_path,
-                          section_published(old, new, old_w, new_w,
-                                            new_bench))
-            return 0
-        if git_publish(new):
-            append_digest(digest_path,
-                          section_published(old, new, old_w, new_w,
-                                            new_bench))
-            # Issue #128: verified publish — close any open
-            # publish-failure signal with a recovery comment.
-            ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
-                             f"{new['counts']['matured']} matured)")
-            clear_failure_signal(ctx)
-            return 0
-        # The publish failed — its cause is in LAST_GIT_* (issue
-        # #127: never assert "push failed" when the failure was at
-        # add/commit, and never drop git's own stderr). Capture the
-        # stage/detail now: the fetch/reset below must not
-        # overwrite them.
-        stage, detail = LAST_GIT_STAGE, LAST_GIT_DETAIL
-        cause = LAST_GIT_ERROR or "ledger publish failed (no cause recorded)"
-        # Retry, by reset + recompute — never by rebase (see the
-        # #119 follow-up note at the top of this file). Issue #126:
-        # bounded at PUBLISH_MAX_ATTEMPTS attempts with a jittered
-        # backoff between them, so a second overlapping publisher
-        # landing mid-retry does not exhaust the attempts.
-        if attempt < PUBLISH_MAX_ATTEMPTS:
-            log("ledger publish failed — " + cause +
-                " — resetting to origin/main and recomputing from a "
-                f"fresh archive pin (attempt {attempt + 1} of "
-                f"{PUBLISH_MAX_ATTEMPTS})")
+        # Issue #394: the attempt tempdir is owned by this
+        # `with` — it is removed on every exit path
+        # (success, fail, retry, exception, interrupt),
+        # never leaked onto the worker disk.
+        with tempfile.TemporaryDirectory(prefix="ledger-run-") as tmp:
             try:
-                r = git("fetch", "origin", "main")
-                if r.returncode != 0:
+                # Issue #132: pass the committed ledger in so
+                # validate_ledger can reject a sharp matured regression
+                # (and error rows) instead of publishing a wiped ledger.
+                new = run_ledger(tmp, old)
+            except Exception as e:
+                return fail(str(e), digest_path, fail_hard, ctx)
+            # Issue #117 interim check: compare the pinned commit the ledger
+            # was computed from against the live archive HEAD. A mismatch
+            # means the branch advanced mid-run — the ledger is still a
+            # self-consistent snapshot of its pinned commit, so publish it
+            # and let the next guard tick refresh for the new tree.
+            live = live_archive_commit_sha()
+            pinned = (new.get("source") or {}).get("commit_sha")
+            if live and pinned and live != pinned:
+                log(f"archive advanced during the run (pinned "
+                    f"{str(pinned)[:8]}, live {str(live)[:8]}) — publishing "
+                    "the pinned snapshot; the next guard tick refreshes it")
+            elif live and pinned:
+                log(f"pinned commit {str(pinned)[:8]} matches live archive HEAD")
+            changed = []
+            for name in FILES:
+                newp, oldp = os.path.join(tmp, name), os.path.join(LEDGER_DIR, name)
+                if not os.path.exists(newp):
+                    return fail(f"ledger.py did not write {name}",
+                                digest_path, fail_hard, ctx)
+                if not os.path.exists(oldp) or \
+                        open(newp, "rb").read() != open(oldp, "rb").read():
+                    changed.append(name)
+            if not changed:
+                log("rerun produced byte-identical outputs — nothing to publish")
+                append_digest(digest_path, section_unchanged(new))
+                # Issue #128: the ledger is verified current — a recovery
+                # closes any open publish-failure signal.
+                ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
+                                 f"{new['counts']['matured']} matured)")
+                clear_failure_signal(ctx)
+                return 0
+            os.makedirs(LEDGER_DIR, exist_ok=True)
+            for name in changed:
+                shutil.copyfile(os.path.join(tmp, name),
+                                os.path.join(LEDGER_DIR, name))
+            new_w = _read_json(os.path.join(tmp, "weights.json"))
+            # Issue #79: the benchmark table rides the same publish —
+            # its counts line travels in the digest section (counts
+            # only, no claims).
+            new_bench = _read_json(os.path.join(tmp, "benchmark.json"))
+            log(f"changed: {', '.join(changed)} — {new['counts']}")
+            if not commit:
+                append_digest(digest_path,
+                              section_published(old, new, old_w, new_w,
+                                                new_bench))
+                return 0
+            if git_publish(new):
+                append_digest(digest_path,
+                              section_published(old, new, old_w, new_w,
+                                                new_bench))
+                # Issue #128: verified publish — close any open
+                # publish-failure signal with a recovery comment.
+                ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
+                                 f"{new['counts']['matured']} matured)")
+                clear_failure_signal(ctx)
+                return 0
+            # The publish failed — its cause is in LAST_GIT_* (issue
+            # #127: never assert "push failed" when the failure was at
+            # add/commit, and never drop git's own stderr). Capture the
+            # stage/detail now: the fetch/reset below must not
+            # overwrite them.
+            stage, detail = LAST_GIT_STAGE, LAST_GIT_DETAIL
+            cause = LAST_GIT_ERROR or "ledger publish failed (no cause recorded)"
+            # Retry, by reset + recompute — never by rebase (see the
+            # #119 follow-up note at the top of this file). Issue #126:
+            # bounded at PUBLISH_MAX_ATTEMPTS attempts with a jittered
+            # backoff between them, so a second overlapping publisher
+            # landing mid-retry does not exhaust the attempts.
+            if attempt < PUBLISH_MAX_ATTEMPTS:
+                log("ledger publish failed — " + cause +
+                    " — resetting to origin/main and recomputing from a "
+                    f"fresh archive pin (attempt {attempt + 1} of "
+                    f"{PUBLISH_MAX_ATTEMPTS})")
+                try:
+                    r = git("fetch", "origin", "main")
+                    if r.returncode != 0:
+                        return fail(_publish_fail_reason(stage, detail, cause) +
+                                    " (and the origin/main fetch for the "
+                                    "retry failed: " + _git_err(r) + ")",
+                                    digest_path, fail_hard or fail_push, ctx)
+                    r = git("reset", "--hard", "origin/main")
+                    if r.returncode != 0:
+                        return fail(_publish_fail_reason(stage, detail, cause) +
+                                    " (and the reset to origin/main for "
+                                    "the retry failed: " + _git_err(r) + ")",
+                                    digest_path, fail_hard or fail_push, ctx)
+                except (subprocess.TimeoutExpired, KeyboardInterrupt):
+                    log("interrupted during the push-retry reset — "
+                        "cleaning up")
+                    abort_rebase()
                     return fail(_publish_fail_reason(stage, detail, cause) +
-                                " (and the origin/main fetch for the "
-                                "retry failed: " + _git_err(r) + ")",
+                                " (interrupted during the retry reset)",
                                 digest_path, fail_hard or fail_push, ctx)
-                r = git("reset", "--hard", "origin/main")
-                if r.returncode != 0:
+                delay = (RETRY_DELAY_BASE_S * attempt +
+                         random.uniform(0, RETRY_DELAY_JITTER_S))
+                log(f"waiting {delay:.1f}s before attempt "
+                    f"{attempt + 1} (jittered backoff)")
+                try:
+                    time.sleep(delay)
+                except KeyboardInterrupt:
+                    log("interrupted during the retry backoff — cleaning up")
+                    abort_rebase()
                     return fail(_publish_fail_reason(stage, detail, cause) +
-                                " (and the reset to origin/main for "
-                                "the retry failed: " + _git_err(r) + ")",
+                                " (interrupted during the retry backoff)",
                                 digest_path, fail_hard or fail_push, ctx)
-            except (subprocess.TimeoutExpired, KeyboardInterrupt):
-                log("interrupted during the push-retry reset — "
-                    "cleaning up")
-                abort_rebase()
-                return fail(_publish_fail_reason(stage, detail, cause) +
-                            " (interrupted during the retry reset)",
-                            digest_path, fail_hard or fail_push, ctx)
-            delay = (RETRY_DELAY_BASE_S * attempt +
-                     random.uniform(0, RETRY_DELAY_JITTER_S))
-            log(f"waiting {delay:.1f}s before attempt "
-                f"{attempt + 1} (jittered backoff)")
-            try:
-                time.sleep(delay)
-            except KeyboardInterrupt:
-                log("interrupted during the retry backoff — cleaning up")
-                abort_rebase()
-                return fail(_publish_fail_reason(stage, detail, cause) +
-                            " (interrupted during the retry backoff)",
-                            digest_path, fail_hard or fail_push, ctx)
-            continue
-        return fail(_publish_fail_reason(stage, detail, cause),
-                    digest_path, fail_hard or fail_push, ctx)
+                continue
+            return fail(_publish_fail_reason(stage, detail, cause),
+                        digest_path, fail_hard or fail_push, ctx)
 
 
 def main():
