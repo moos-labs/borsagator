@@ -96,6 +96,29 @@ further:
 - The pairing adapter revalidates nonempty identity (source
   document, issuer, event type) on both events, so a document-less
   pair cannot pass on ``None == None``.
+
+Issue #335 (INS-327-POSTMERGE-REVIEW finding 1, follow-up) binds
+the pairing payload to the ledger entry it claims to resolve:
+- A pairing decision resolves an ambiguity entry only when the
+  payload's predicted event is that entry's own predicted event
+  (payload predicted-event key == the entry's canonical predicted
+  key from the derived detail). A pairing that claims one
+  ambiguity's ID while pairing a different predicted event leaves
+  the claimed entry unresolved; one pairing claiming several IDs
+  resolves only the entries it actually pairs. The gold side is
+  deliberately NOT bound to the original tied-gold list: the
+  contract permits another identifiable gold event within the same
+  document/issuer/type.
+- The gate is a validating boundary for cell results: a result
+  missing any ``score_cell`` key is malformed input and raises
+  ValueError (fail closed), never complete-pass and never an
+  uncaught KeyError — including through the overlay path, where
+  recomputation failures are reasons, never crashes. A pairing
+  payload event that is not a dict likewise raises ValueError in
+  the adapter instead of an uncaught AttributeError.
+- A persisted (JSON round-tripped) ledger still binds: list cells
+  normalise to the same cell key, and the predicted-key comparison
+  is canonical, so tuple -> list in the detail cannot break it.
 """
 import hashlib
 import json
@@ -136,11 +159,35 @@ DECISION_ENTRY_COMPAT = {
 # set(fields)}). No field is absent by default.
 COLLECTION_KEYS = ("enumerated", "archived", "missing",
                    "enumeration_closed", "pagination_complete")
+# Full score_cell result shape (docs/top30-scoring.md §7/§9): the
+# gate is a validating boundary, so a cell result missing any of
+# these keys is malformed input, not a passing cell (issue #335).
+SCORE_CELL_KEYS = ("tp", "fp", "fn", "field_score", "field_verdicts",
+                   "matches", "unmatched_gold", "unmatched_predicted",
+                   "ambiguous", "precision", "recall", "accepted")
+
+
+def _validate_score_cell_result(result, label):
+    """Raise ValueError when ``result`` is not a full ``score_cell``
+    result (issue #335): a hand-built dict with ``accepted`` set but
+    the scoring keys missing must fail closed — never complete-pass
+    and never reach the overlay path as an uncaught KeyError."""
+    if not isinstance(result, dict):
+        raise ValueError("not a score_cell result for %s: %r"
+                         % (label, result))
+    missing = [k for k in SCORE_CELL_KEYS if k not in result]
+    if missing:
+        raise ValueError(
+            "not a score_cell result for %s: missing keys %s"
+            % (label, ", ".join(sorted(missing))))
 
 
 def _cell_key(cell):
     """Normalise a cell key to an (issuer, event_type) tuple."""
-    if isinstance(cell, tuple) and len(cell) == 2:
+    if isinstance(cell, (tuple, list)) and len(cell) == 2:
+        # A list cell is the JSON round-trip of a tuple cell (issue
+        # #335: a persisted ledger must keep working through the
+        # gate); it means exactly the same cell.
         return (str(cell[0]), str(cell[1]))
     if isinstance(cell, str) and "|" in cell:
         issuer, etype = cell.split("|", 1)
@@ -445,10 +492,14 @@ def _apply_pairings(cell_result, pairing_decisions):
     and the same decisions, so a hand-stamped overlay cannot differ
     from what the adapter produces. Assumes the decisions are
     already validated (live, same run/input); raises ValueError for
-    any pair the adapter refuses. Returns (new_result, applied_ids);
+    any pair the adapter refuses, and for a cell result that is not
+    a full ``score_cell`` result (issue #335: a hand-built result
+    missing e.g. ``field_score`` must fail closed here, never as an
+    uncaught KeyError). Returns (new_result, applied_ids);
     the envelope fields (``adjudication_applied``, digests) are the
     caller's job. The original result is never mutated.
     """
+    _validate_score_cell_result(cell_result, "adjudication input")
     result = dict(cell_result)
     result["field_score"] = {f: dict(c) for f, c in
                              cell_result["field_score"].items()}
@@ -464,6 +515,14 @@ def _apply_pairings(cell_result, pairing_decisions):
         if p is None or g is None:
             raise ValueError("pairing decision %s needs predicted_event "
                              "and gold_event" % d["id"])
+        if not isinstance(p, dict) or not isinstance(g, dict):
+            # A non-dict payload event must fail closed as ValueError
+            # (issue #335): without this the .get() calls below raise
+            # an uncaught AttributeError through the gate's overlay
+            # path, which catches only ValueError.
+            raise ValueError(
+                "pairing decision %s needs predicted_event and "
+                "gold_event to be event dicts" % d["id"])
         if p.get("extraction_status") == "candidate" \
                 or p.get("verification_status") != "verified":
             raise ValueError(
@@ -711,6 +770,48 @@ def _overlay_matches_recomputed(overlay, recomputed):
     return True
 
 
+def _pairing_binds_entry(decision, entry, derived_by_id):
+    """True when a pairing decision's payload actually pairs the
+    predicted event of the ledger entry it claims to resolve
+    (issue #335).
+
+    The payload's predicted-event canonical key must equal the
+    claimed entry's canonical predicted key from the derived detail
+    (``detail["predicted"]``). The derived record is authoritative
+    when one exists; otherwise the supplied entry's own detail is
+    used, compared canonically so a JSON round-trip (tuple -> list)
+    cannot break the binding. A payload that cannot be keyed, or
+    an entry carrying no canonical predicted key, does not bind —
+    a pairing resolves only the entry whose own event it pairs, so
+    one pairing can never clear unrelated ambiguity IDs. The gold
+    side is deliberately NOT bound here: the contract permits the
+    adjudicator to choose another identifiable gold event within
+    the same document/issuer/type.
+    """
+    payload = (decision.get("pairing") or {}).get("predicted_event")
+    if not isinstance(payload, dict):
+        return False
+    try:
+        payload_key = _canonical_json(_canonical_event_key(payload))
+    except Exception:  # malformed payload event: cannot bind
+        return False
+    entry_key = None
+    derived_rec = (derived_by_id or {}).get(entry.get("id"))
+    for record in (derived_rec, entry):
+        if not isinstance(record, dict):
+            continue
+        detail = record.get("detail") or {}
+        if not isinstance(detail, dict):
+            continue
+        key = detail.get("predicted")
+        if key is not None:
+            entry_key = _canonical_json(key)
+            break
+    if entry_key is None:
+        return False
+    return payload_key == entry_key
+
+
 def evaluate_completion(cell_results, *, run_digest, input_digest,
                         collection=None, ledger=(), decisions=(),
                         required_cells=(), na_policy=None,
@@ -755,6 +856,16 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
     match the original under exactly those decisions); per-cell
     blocking derives from the authoritative derived record, so a
     relabelled supplied entry cannot move blocking to another cell.
+
+    Fail-closed coverage (issue #335): a pairing decision resolves
+    an entry only when its payload pairs that entry's own predicted
+    event (payload predicted-event key == the entry's canonical
+    predicted key from the derived detail) — one pairing claiming
+    several IDs resolves only the entries it actually pairs, and
+    the gold choice is not restricted to the tied-gold list. A cell
+    result missing any ``score_cell`` key is malformed input and
+    raises ValueError (never complete-pass, never an uncaught
+    KeyError, including through the overlay path).
     """
     if not run_digest or not input_digest:
         raise ValueError("run_digest and input_digest are required")
@@ -790,6 +901,11 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
             raise ValueError(
                 "adjudicated result for cell %s: adjudication_applied "
                 "must be a list of decision ids" % (key,))
+        # A hand-stamped overlay missing score_cell keys is malformed
+        # input (issue #335): fail closed here, never as a KeyError
+        # in the overlay comparison or the per-cell report below.
+        _validate_score_cell_result(result, "adjudicated result for "
+                                    "cell %s" % _cell_label(key))
         effective[key] = result
     # 0. Threshold verdicts must be exactly in-domain (issue #322
     # finding 7): True/False/None by identity. Identity (not ==)
@@ -803,6 +919,16 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
             raise ValueError(
                 "cell %s: accepted must be True, False or None, got "
                 "%r" % (_cell_label(key), acc))
+    # Shape boundary (issue #335): the ORIGINAL results must be full
+    # score_cell results. A hand-built dict with ``accepted`` set but
+    # the scoring keys missing (e.g. no ``field_score``) is malformed
+    # input and raises here — it must never reach the outcome branch
+    # as a complete-pass, and never reach §3b as a KeyError. This
+    # runs after the §0 domain check above so a non-domain
+    # ``accepted`` still raises with the accepted-domain message.
+    for key, result in originals.items():
+        _validate_score_cell_result(result, "cell %s"
+                                    % _cell_label(key))
     supplied_ledger = list(ledger or [])
     # 1. Collection.
     coll_ok, coll_reasons = _validate_collection(collection)
@@ -1029,7 +1155,9 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
         # KIND (issue #322 finding 5 — see DECISION_ENTRY_COMPAT);
         # a kind-mismatched decision does not resolve the entry. A
         # pairing decision additionally needs the re-scored result to
-        # have applied it.
+        # have applied it AND its payload to pair this entry's own
+        # predicted event (issue #335 binding — see
+        # :func:`_pairing_binds_entry`).
         if not live:
             reasons.append("entry %s unresolved (no adjudication)" % eid)
             unresolved.append(entry)
@@ -1055,6 +1183,22 @@ def evaluate_completion(cell_results, *, run_digest, input_digest,
                     reasons.append(
                         "entry %s: pairing decision %s merely marked "
                         "resolved, not applied and re-scored"
+                        % (eid, d["id"]))
+                    blocked = True
+                elif not _pairing_binds_entry(d, entry, derived_by_id):
+                    # Issue #335: the decision was applied, but its
+                    # payload pairs a different predicted event than
+                    # this entry's case — recomputing the overlay
+                    # verifies the pairing was applied, not that it
+                    # adjudicated the case it claims. The entry
+                    # stays unresolved; only the entry whose own
+                    # predicted event was paired is resolved by it.
+                    reasons.append(
+                        "entry %s: pairing decision %s does not pair "
+                        "this entry's predicted event (payload "
+                        "predicted-event key does not match the "
+                        "entry's canonical predicted key: pairing-"
+                        "payload-to-ledger-entry binding mismatch)"
                         % (eid, d["id"]))
                     blocked = True
         if blocked:

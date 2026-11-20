@@ -67,6 +67,19 @@ Issue #327 regressions (INS-322-POSTMERGE-REVIEW follow-up):
   19. the pairing adapter refuses document/issuer/type-less pairs
       (`None == None` no longer passes); the honest adapter path
       (real pairing + reject_event) still completes correctly.
+
+Issue #335 regressions (INS-327-POSTMERGE-REVIEW finding 1):
+  20. a pairing claiming one ambiguity's ID while pairing a
+      different predicted event leaves the claimed entry unresolved
+      (payload predicted-event key must match the entry's canonical
+      predicted key); one pairing claiming two IDs resolves only
+      the entry it actually pairs; the small-cell variant is
+      incomplete, not complete-fail; the honest pairing + reject
+      control still completes; malformed hand-built results raise
+      ValueError (fail closed), never complete-pass and never an
+      uncaught KeyError, including through the overlay path; a
+      JSON round-tripped ledger still binds (list cells and list
+      predicted keys compare canonically).
 """
 import inspect
 import os
@@ -1251,6 +1264,273 @@ def test_327_honest_path_still_completes():
                 % (out["outcome"],))
 
 
+# --- issue #335 regressions --------------------------------------------
+# Each test is written from scratch against the fixed gate, with its
+# own fixtures (own docs/coupons/counts — no shared code with Ins's
+# probes or with the post-merge probe script). The BEFORE behaviour
+# is the hole issue #335 records; the test asserts the AFTER
+# behaviour. Failing-before was verified by running this file
+# against the pre-fix module in ~/workspace/scratch-335/before-check/.
+
+def _contested_335(n_clean=40):
+    """Own contested construction: 40 clean + one tie. Two preds
+    claim one gold with equal agreement (each agrees on coupon +
+    one of amount/ex_date, differs on the other), so both stay
+    ambiguous and thresholds still pass (tp=40 fp=2 fn=1)."""
+    g, p = [], []
+    for i in range(n_clean):
+        g.append(_gold(div("egx:clean335-%02d" % i, gold_id="g335-%d" % i,
+                           coupon=str(700 + i))))
+        p.append(div("egx:clean335-%02d" % i, gold_id="g335-%d" % i,
+                     coupon=str(700 + i)))
+    g.append(_gold(div("egx:tie335", gold_id="g-tie335", coupon="55")))
+    p.append(div("egx:tie335", gold_id="q-a", coupon="55",
+                 amount_per_share="2.1"))
+    p.append(div("egx:tie335", gold_id="q-b", coupon="55",
+                 ex_date="2026-11-17"))
+    return S.score_cell(g, p)
+
+
+def _tie_335(r):
+    """(ledger, q-a entry id, q-b entry id, q-a, q-b, tie gold) for a
+    #335 contested result."""
+    ledger = ledger_for({CELL: r})
+    pa = [a["predicted"] for a in r["ambiguous"]
+          if a["predicted"]["gold_id"] == "q-a"][0]
+    pb = [a["predicted"] for a in r["ambiguous"]
+          if a["predicted"]["gold_id"] == "q-b"][0]
+    gtie = [g for g in r["unmatched_gold"]
+            if g.get("gold_id") == "g-tie335"][0]
+    x1 = _entry_for_pred(ledger, pa)["id"]
+    x2 = _entry_for_pred(ledger, pb)["id"]
+    return ledger, x1, x2, pa, pb, gtie
+
+
+def test_335_r1_wrong_entry_pairing_blocks():
+    """R1: a pairing claims q-a's entry but pairs q-b; a reject over
+    q-b's entry does not adjudicate q-a. The gate must stay
+    incomplete with q-a's entry unresolved and a reason naming the
+    pairing-payload-to-ledger-entry binding mismatch."""
+    r = _contested_335()
+    if not ((r["tp"], r["fp"], r["fn"]) == (40, 2, 1)
+            and r["accepted"] is True and len(r["ambiguous"]) == 2):
+        return False, "335 contested fixture drifted: %s" % (r,)
+    ledger, x1, x2, pa, pb, gtie = _tie_335(r)
+    pair_wrong = _decision("d-335-r1-pair", "pairing", [x1],
+                           pairing={"predicted_event": pb,
+                                    "gold_event": gtie})
+    rej_x2 = _decision("d-335-r1-rej", "reject_event", [x2],
+                       evidence="q-b is not the tie gold event per "
+                                "source")
+    adj = C.apply_adjudication(r, [pair_wrong, rej_x2], run_digest=RUN,
+                               input_digest=INP)
+    if not ((adj["tp"], adj["fp"], adj["fn"]) == (41, 1, 0)
+            and adj["accepted"] is True
+            and len(adj["ambiguous"]) == 1
+            and adj["ambiguous"][0].get("predicted") == pa):
+        return False, "335 R1 adjudicated shape drifted: %s" % (adj,)
+    out = gate({CELL: r}, ledger=ledger, decisions=[pair_wrong, rej_x2],
+               adjudicated={CELL: adj})
+    poul = out["per_cell"]["POUL|dividend"]
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 1
+          and out["unresolved"][0]["id"] == x1
+          and out["unresolved"][0]["kind"] == "ambiguity"
+          and any("binding mismatch" in reason
+                  for reason in out["reasons"])
+          and poul["blocked"] is True
+          and x1 in poul["blocking"])
+    return ok, ("wrong-entry pairing -> %s (unresolved=%d, q-a entry "
+                "unresolved: %r, binding mismatch flagged: %r)"
+                % (out["outcome"], len(out["unresolved"]),
+                   len(out["unresolved"]) == 1
+                   and out["unresolved"][0]["id"] == x1,
+                   any("binding mismatch" in reason
+                       for reason in out["reasons"])))
+
+
+def test_335_one_pairing_two_ids_resolves_only_paired():
+    """One pairing claiming BOTH ambiguity IDs while pairing only
+    q-b resolves only q-b's entry; q-a's entry stays unresolved."""
+    r = _contested_335()
+    ledger, x1, x2, pa, pb, gtie = _tie_335(r)
+    pair_both = _decision("d-335-both-pair", "pairing", [x1, x2],
+                          pairing={"predicted_event": pb,
+                                   "gold_event": gtie})
+    adj = C.apply_adjudication(r, [pair_both], run_digest=RUN,
+                               input_digest=INP)
+    out = gate({CELL: r}, ledger=ledger, decisions=[pair_both],
+               adjudicated={CELL: adj})
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 1
+          and out["unresolved"][0]["id"] == x1
+          and x2 not in [e["id"] for e in out["unresolved"]]
+          and any("binding mismatch" in reason
+                  for reason in out["reasons"]))
+    return ok, ("one pairing, two claimed IDs -> %s (unresolved=%d, "
+                "only q-a's entry: %r; q-b's entry resolved: %r)"
+                % (out["outcome"], len(out["unresolved"]),
+                   len(out["unresolved"]) == 1
+                   and out["unresolved"][0]["id"] == x1,
+                   x2 not in [e["id"] for e in out["unresolved"]]))
+
+
+def test_335_small_cell_wrong_pairing_incomplete():
+    """Small-cell variant: 10 clean + the same tie; the dishonest
+    pairing re-scores to accepted=False, yet the gate must report
+    incomplete — not complete-fail. Completion is false in either
+    threshold direction while q-a is unresolved."""
+    r = _contested_335(n_clean=10)
+    if not ((r["tp"], r["fp"], r["fn"]) == (10, 2, 1)
+            and len(r["ambiguous"]) == 2):
+        return False, "335 small-cell fixture drifted: %s" % (r,)
+    ledger, x1, x2, pa, pb, gtie = _tie_335(r)
+    pair_wrong = _decision("d-335-small-pair", "pairing", [x1],
+                           pairing={"predicted_event": pb,
+                                    "gold_event": gtie})
+    rej_x2 = _decision("d-335-small-rej", "reject_event", [x2],
+                       evidence="q-b is not the tie gold event per "
+                                "source")
+    adj = C.apply_adjudication(r, [pair_wrong, rej_x2], run_digest=RUN,
+                               input_digest=INP)
+    if not ((adj["tp"], adj["fp"], adj["fn"]) == (11, 1, 0)
+            and adj["accepted"] is False):
+        return False, "335 small-cell adjudicated drifted: %s" % (adj,)
+    out = gate({CELL: r}, ledger=ledger, decisions=[pair_wrong, rej_x2],
+               adjudicated={CELL: adj})
+    ok = (out["complete"] is False
+          and out["outcome"] == "incomplete"
+          and len(out["unresolved"]) == 1
+          and out["unresolved"][0]["id"] == x1)
+    return ok, ("small cell, dishonest pairing -> %s (accepted=%r, "
+                "unresolved=%d)"
+                % (out["outcome"], adj["accepted"],
+                   len(out["unresolved"])))
+
+
+def test_335_honest_pairing_still_completes():
+    """Honest control: the pairing claims q-b's entry and pairs q-b;
+    the reject covers q-a's entry. Complete-pass is unchanged."""
+    r = _contested_335()
+    ledger, x1, x2, pa, pb, gtie = _tie_335(r)
+    pair = _decision("d-335-hon-pair", "pairing", [x2],
+                     pairing={"predicted_event": pb, "gold_event": gtie})
+    rej = _decision("d-335-hon-rej", "reject_event", [x1],
+                    evidence="q-a is not the tie gold event per source")
+    adj = C.apply_adjudication(r, [pair, rej], run_digest=RUN,
+                               input_digest=INP)
+    out = gate({CELL: r}, ledger=ledger, decisions=[pair, rej],
+               adjudicated={CELL: adj})
+    poul = out["per_cell"]["POUL|dividend"]
+    ok = (out["complete"] is True
+          and out["outcome"] == "complete-pass"
+          and out["reasons"] == []
+          and out["unresolved"] == []
+          and poul["blocked"] is False)
+    return ok, ("honest pairing + reject_event -> %s (no reasons, "
+                "nothing unresolved, cell unblocked)"
+                % (out["outcome"],))
+
+
+def test_335_malformed_result_raises():
+    """Malformed hand-built results fail closed with ValueError —
+    never complete-pass and never an uncaught KeyError — with and
+    without a hand-stamped adjudicated overlay, and through the
+    adapter itself."""
+    hand = {"accepted": True, "ambiguous": [],
+            "unmatched_predicted": []}
+    try:
+        gate({CELL: hand}, ledger=[])
+    except ValueError as e:
+        if "missing keys" not in str(e):
+            return False, "hand-built result raised the wrong error: %r" % (e,)
+    except KeyError as e:
+        return False, "hand-built result raised KeyError, not " \
+                      "ValueError: %r" % (e,)
+    else:
+        return False, "hand-built result did not raise"
+    r = _contested_335()
+    _, _, _, _, pb, gtie = _tie_335(r)
+    hand_adj = dict(hand)
+    hand_adj["adjudication_applied"] = ["d-335-mal-pair"]
+    hand_adj["run_digest"] = RUN
+    hand_adj["input_digest"] = INP
+    pair = _decision("d-335-mal-pair", "pairing", ["nonexistent-entry"],
+                     pairing={"predicted_event": pb, "gold_event": gtie})
+    try:
+        gate({CELL: hand}, ledger=[], decisions=[pair],
+             adjudicated={CELL: hand_adj})
+    except ValueError as e:
+        if "missing keys" not in str(e):
+            return False, "hand-stamped overlay raised the wrong " \
+                          "error: %r" % (e,)
+    except KeyError as e:
+        return False, "hand-stamped overlay raised KeyError, not " \
+                      "ValueError: %r" % (e,)
+    else:
+        return False, "hand-stamped overlay did not raise"
+    try:
+        C.apply_adjudication(hand, [pair], run_digest=RUN,
+                             input_digest=INP)
+    except ValueError as e:
+        if "missing keys" not in str(e):
+            return False, "adapter on hand-built result raised the " \
+                          "wrong error: %r" % (e,)
+    except KeyError as e:
+        return False, "adapter on hand-built result raised KeyError: " \
+                      "%r" % (e,)
+    else:
+        return False, "adapter on hand-built result did not raise"
+    return True, ("hand-built result, hand-stamped overlay and "
+                  "adapter input all raise ValueError (missing keys), "
+                  "never complete-pass and never KeyError")
+
+
+def test_335_json_round_tripped_ledger_binds():
+    """A ledger that went through a JSON round-trip (tuple cells and
+    tuple predicted keys become lists) still binds honestly and
+    still blocks a wrong-entry pairing: the canonical comparison
+    must not break on the round-trip shape."""
+    import json
+    r = _contested_335()
+    ledger, x1, x2, pa, pb, gtie = _tie_335(r)
+    ledger_rt = json.loads(json.dumps(ledger, default=repr))
+    pair = _decision("d-335-rt-pair", "pairing", [x2],
+                     pairing={"predicted_event": pb, "gold_event": gtie})
+    rej = _decision("d-335-rt-rej", "reject_event", [x1],
+                    evidence="q-a is not the tie gold event per source")
+    adj = C.apply_adjudication(r, [pair, rej], run_digest=RUN,
+                               input_digest=INP)
+    out = gate({CELL: r}, ledger=ledger_rt, decisions=[pair, rej],
+               adjudicated={CELL: adj})
+    pair_w = _decision("d-335-rt-pair-w", "pairing", [x1],
+                       pairing={"predicted_event": pb,
+                                "gold_event": gtie})
+    rej2 = _decision("d-335-rt-rej-2", "reject_event", [x2],
+                     evidence="q-b is not the tie gold event per "
+                              "source")
+    adj2 = C.apply_adjudication(r, [pair_w, rej2], run_digest=RUN,
+                                input_digest=INP)
+    out2 = gate({CELL: r}, ledger=ledger_rt, decisions=[pair_w, rej2],
+                adjudicated={CELL: adj2})
+    ok = (out["complete"] is True
+          and out["outcome"] == "complete-pass"
+          and out2["complete"] is False
+          and out2["outcome"] == "incomplete"
+          and len(out2["unresolved"]) == 1
+          and out2["unresolved"][0]["id"] == x1
+          and any("binding mismatch" in reason
+                  for reason in out2["reasons"]))
+    return ok, ("round-tripped ledger: honest -> %s; wrong-entry -> "
+                "%s (unresolved=%d, binding mismatch flagged: %r)"
+                % (out["outcome"], out2["outcome"],
+                   len(out2["unresolved"]),
+                   any("binding mismatch" in reason
+                       for reason in out2["reasons"])))
+
+
 # --- accepted semantics unchanged -----------------------------------------
 def test_accepted_unchanged():
     """The scorer's `accepted` is the pure threshold result at this
@@ -1346,6 +1626,17 @@ CASES = [
      test_327_f4_none_identity_pairing_refused),
     ("327-honest-path-still-completes",
      test_327_honest_path_still_completes),
+    ("335-r1-wrong-entry-pairing-blocks",
+     test_335_r1_wrong_entry_pairing_blocks),
+    ("335-one-pairing-two-ids-resolves-only-paired",
+     test_335_one_pairing_two_ids_resolves_only_paired),
+    ("335-small-cell-wrong-pairing-incomplete",
+     test_335_small_cell_wrong_pairing_incomplete),
+    ("335-honest-pairing-still-completes",
+     test_335_honest_pairing_still_completes),
+    ("335-malformed-result-raises", test_335_malformed_result_raises),
+    ("335-json-round-tripped-ledger-binds",
+     test_335_json_round_tripped_ledger_binds),
 ]
 
 
