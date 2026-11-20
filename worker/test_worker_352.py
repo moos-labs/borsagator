@@ -239,18 +239,24 @@ def test_f4_within_issuer_uniqueness():
 
     led = baseline()
     tm = led["issuers"][0]
-    for doc_id in (None, 123, ["not", "a", "string"]):
+    for doc_id in (None, 123, ["not", "a", "string"], ""):
         d = copy.deepcopy(tm["documents"][0])
         d["source_document_id"] = doc_id
         tm["documents"].append(d)
-    led["collection"]["enumerated"] = 5
-    led["collection"]["archived"] = 5
+    led["collection"]["enumerated"] = 6
+    led["collection"]["archived"] = 6
     ok, reasons = validate(led)
     check("F4-control: missing/non-string ids never raise",
           isinstance(ok, bool) and isinstance(reasons, list))
-    check("F4-control: missing/non-string ids are not treated as "
-          "duplicates (they cannot collide)",
-          ok and not reasons)
+    # Issue #357 F2 SUPERSEDES the old #352 expectation here: a
+    # missing, empty, or non-string id is no longer "cannot
+    # collide, passes" — identity is required on every validated
+    # document record, so each such record is a named failure.
+    check("F4-control (#357 F2): missing/non-string/empty ids fail "
+          "with a named identity reason",
+          not ok and len([r for r in reasons
+                          if "source_document_id" in r
+                          and "non-empty string" in r]) == 4)
 
     led = baseline()
     ok, reasons = validate(led)
