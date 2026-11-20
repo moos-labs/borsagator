@@ -1,0 +1,471 @@
+{
+ "schema_version": 1,
+ "issue": 283,
+ "manifest_base_commit": "424f4b3",
+ "manifest_frozen_at": "2026-11-19",
+ "window": {
+  "start": "2026-08-19",
+  "end": "2026-11-19",
+  "inclusive": true
+ },
+ "event_types": [
+  "dividend",
+  "earnings",
+  "board-decision"
+ ],
+ "issuer_count": 30,
+ "count": 90,
+ "cells": [
+  {
+   "issuer": "TMGH",
+   "event_type": "dividend",
+   "cell_id": "TMGH:dividend"
+  },
+  {
+   "issuer": "TMGH",
+   "event_type": "earnings",
+   "cell_id": "TMGH:earnings"
+  },
+  {
+   "issuer": "TMGH",
+   "event_type": "board-decision",
+   "cell_id": "TMGH:board-decision"
+  },
+  {
+   "issuer": "ETEL",
+   "event_type": "dividend",
+   "cell_id": "ETEL:dividend"
+  },
+  {
+   "issuer": "ETEL",
+   "event_type": "earnings",
+   "cell_id": "ETEL:earnings"
+  },
+  {
+   "issuer": "ETEL",
+   "event_type": "board-decision",
+   "cell_id": "ETEL:board-decision"
+  },
+  {
+   "issuer": "EFIH",
+   "event_type": "dividend",
+   "cell_id": "EFIH:dividend"
+  },
+  {
+   "issuer": "EFIH",
+   "event_type": "earnings",
+   "cell_id": "EFIH:earnings"
+  },
+  {
+   "issuer": "EFIH",
+   "event_type": "board-decision",
+   "cell_id": "EFIH:board-decision"
+  },
+  {
+   "issuer": "ADIB",
+   "event_type": "dividend",
+   "cell_id": "ADIB:dividend"
+  },
+  {
+   "issuer": "ADIB",
+   "event_type": "earnings",
+   "cell_id": "ADIB:earnings"
+  },
+  {
+   "issuer": "ADIB",
+   "event_type": "board-decision",
+   "cell_id": "ADIB:board-decision"
+  },
+  {
+   "issuer": "EFID",
+   "event_type": "dividend",
+   "cell_id": "EFID:dividend"
+  },
+  {
+   "issuer": "EFID",
+   "event_type": "earnings",
+   "cell_id": "EFID:earnings"
+  },
+  {
+   "issuer": "EFID",
+   "event_type": "board-decision",
+   "cell_id": "EFID:board-decision"
+  },
+  {
+   "issuer": "ORAS",
+   "event_type": "dividend",
+   "cell_id": "ORAS:dividend"
+  },
+  {
+   "issuer": "ORAS",
+   "event_type": "earnings",
+   "cell_id": "ORAS:earnings"
+  },
+  {
+   "issuer": "ORAS",
+   "event_type": "board-decision",
+   "cell_id": "ORAS:board-decision"
+  },
+  {
+   "issuer": "FAIT",
+   "event_type": "dividend",
+   "cell_id": "FAIT:dividend"
+  },
+  {
+   "issuer": "FAIT",
+   "event_type": "earnings",
+   "cell_id": "FAIT:earnings"
+  },
+  {
+   "issuer": "FAIT",
+   "event_type": "board-decision",
+   "cell_id": "FAIT:board-decision"
+  },
+  {
+   "issuer": "PHDC",
+   "event_type": "dividend",
+   "cell_id": "PHDC:dividend"
+  },
+  {
+   "issuer": "PHDC",
+   "event_type": "earnings",
+   "cell_id": "PHDC:earnings"
+  },
+  {
+   "issuer": "PHDC",
+   "event_type": "board-decision",
+   "cell_id": "PHDC:board-decision"
+  },
+  {
+   "issuer": "SKPC",
+   "event_type": "dividend",
+   "cell_id": "SKPC:dividend"
+  },
+  {
+   "issuer": "SKPC",
+   "event_type": "earnings",
+   "cell_id": "SKPC:earnings"
+  },
+  {
+   "issuer": "SKPC",
+   "event_type": "board-decision",
+   "cell_id": "SKPC:board-decision"
+  },
+  {
+   "issuer": "EGAL",
+   "event_type": "dividend",
+   "cell_id": "EGAL:dividend"
+  },
+  {
+   "issuer": "EGAL",
+   "event_type": "earnings",
+   "cell_id": "EGAL:earnings"
+  },
+  {
+   "issuer": "EGAL",
+   "event_type": "board-decision",
+   "cell_id": "EGAL:board-decision"
+  },
+  {
+   "issuer": "ISPH",
+   "event_type": "dividend",
+   "cell_id": "ISPH:dividend"
+  },
+  {
+   "issuer": "ISPH",
+   "event_type": "earnings",
+   "cell_id": "ISPH:earnings"
+  },
+  {
+   "issuer": "ISPH",
+   "event_type": "board-decision",
+   "cell_id": "ISPH:board-decision"
+  },
+  {
+   "issuer": "JUFO",
+   "event_type": "dividend",
+   "cell_id": "JUFO:dividend"
+  },
+  {
+   "issuer": "JUFO",
+   "event_type": "earnings",
+   "cell_id": "JUFO:earnings"
+  },
+  {
+   "issuer": "JUFO",
+   "event_type": "board-decision",
+   "cell_id": "JUFO:board-decision"
+  },
+  {
+   "issuer": "MCQE",
+   "event_type": "dividend",
+   "cell_id": "MCQE:dividend"
+  },
+  {
+   "issuer": "MCQE",
+   "event_type": "earnings",
+   "cell_id": "MCQE:earnings"
+  },
+  {
+   "issuer": "MCQE",
+   "event_type": "board-decision",
+   "cell_id": "MCQE:board-decision"
+  },
+  {
+   "issuer": "ORHD",
+   "event_type": "dividend",
+   "cell_id": "ORHD:dividend"
+  },
+  {
+   "issuer": "ORHD",
+   "event_type": "earnings",
+   "cell_id": "ORHD:earnings"
+  },
+  {
+   "issuer": "ORHD",
+   "event_type": "board-decision",
+   "cell_id": "ORHD:board-decision"
+  },
+  {
+   "issuer": "AMOC",
+   "event_type": "dividend",
+   "cell_id": "AMOC:dividend"
+  },
+  {
+   "issuer": "AMOC",
+   "event_type": "earnings",
+   "cell_id": "AMOC:earnings"
+  },
+  {
+   "issuer": "AMOC",
+   "event_type": "board-decision",
+   "cell_id": "AMOC:board-decision"
+  },
+  {
+   "issuer": "MASR",
+   "event_type": "dividend",
+   "cell_id": "MASR:dividend"
+  },
+  {
+   "issuer": "MASR",
+   "event_type": "earnings",
+   "cell_id": "MASR:earnings"
+  },
+  {
+   "issuer": "MASR",
+   "event_type": "board-decision",
+   "cell_id": "MASR:board-decision"
+  },
+  {
+   "issuer": "ORWE",
+   "event_type": "dividend",
+   "cell_id": "ORWE:dividend"
+  },
+  {
+   "issuer": "ORWE",
+   "event_type": "earnings",
+   "cell_id": "ORWE:earnings"
+  },
+  {
+   "issuer": "ORWE",
+   "event_type": "board-decision",
+   "cell_id": "ORWE:board-decision"
+  },
+  {
+   "issuer": "OLFI",
+   "event_type": "dividend",
+   "cell_id": "OLFI:dividend"
+  },
+  {
+   "issuer": "OLFI",
+   "event_type": "earnings",
+   "cell_id": "OLFI:earnings"
+  },
+  {
+   "issuer": "OLFI",
+   "event_type": "board-decision",
+   "cell_id": "OLFI:board-decision"
+  },
+  {
+   "issuer": "RMDA",
+   "event_type": "dividend",
+   "cell_id": "RMDA:dividend"
+  },
+  {
+   "issuer": "RMDA",
+   "event_type": "earnings",
+   "cell_id": "RMDA:earnings"
+  },
+  {
+   "issuer": "RMDA",
+   "event_type": "board-decision",
+   "cell_id": "RMDA:board-decision"
+  },
+  {
+   "issuer": "OCDI",
+   "event_type": "dividend",
+   "cell_id": "OCDI:dividend"
+  },
+  {
+   "issuer": "OCDI",
+   "event_type": "earnings",
+   "cell_id": "OCDI:earnings"
+  },
+  {
+   "issuer": "OCDI",
+   "event_type": "board-decision",
+   "cell_id": "OCDI:board-decision"
+  },
+  {
+   "issuer": "ARCC",
+   "event_type": "dividend",
+   "cell_id": "ARCC:dividend"
+  },
+  {
+   "issuer": "ARCC",
+   "event_type": "earnings",
+   "cell_id": "ARCC:earnings"
+  },
+  {
+   "issuer": "ARCC",
+   "event_type": "board-decision",
+   "cell_id": "ARCC:board-decision"
+  },
+  {
+   "issuer": "IFAP",
+   "event_type": "dividend",
+   "cell_id": "IFAP:dividend"
+  },
+  {
+   "issuer": "IFAP",
+   "event_type": "earnings",
+   "cell_id": "IFAP:earnings"
+  },
+  {
+   "issuer": "IFAP",
+   "event_type": "board-decision",
+   "cell_id": "IFAP:board-decision"
+  },
+  {
+   "issuer": "MTIE",
+   "event_type": "dividend",
+   "cell_id": "MTIE:dividend"
+  },
+  {
+   "issuer": "MTIE",
+   "event_type": "earnings",
+   "cell_id": "MTIE:earnings"
+  },
+  {
+   "issuer": "MTIE",
+   "event_type": "board-decision",
+   "cell_id": "MTIE:board-decision"
+  },
+  {
+   "issuer": "ATQA",
+   "event_type": "dividend",
+   "cell_id": "ATQA:dividend"
+  },
+  {
+   "issuer": "ATQA",
+   "event_type": "earnings",
+   "cell_id": "ATQA:earnings"
+  },
+  {
+   "issuer": "ATQA",
+   "event_type": "board-decision",
+   "cell_id": "ATQA:board-decision"
+  },
+  {
+   "issuer": "SAUD",
+   "event_type": "dividend",
+   "cell_id": "SAUD:dividend"
+  },
+  {
+   "issuer": "SAUD",
+   "event_type": "earnings",
+   "cell_id": "SAUD:earnings"
+  },
+  {
+   "issuer": "SAUD",
+   "event_type": "board-decision",
+   "cell_id": "SAUD:board-decision"
+  },
+  {
+   "issuer": "CIRA",
+   "event_type": "dividend",
+   "cell_id": "CIRA:dividend"
+  },
+  {
+   "issuer": "CIRA",
+   "event_type": "earnings",
+   "cell_id": "CIRA:earnings"
+  },
+  {
+   "issuer": "CIRA",
+   "event_type": "board-decision",
+   "cell_id": "CIRA:board-decision"
+  },
+  {
+   "issuer": "ACGC",
+   "event_type": "dividend",
+   "cell_id": "ACGC:dividend"
+  },
+  {
+   "issuer": "ACGC",
+   "event_type": "earnings",
+   "cell_id": "ACGC:earnings"
+  },
+  {
+   "issuer": "ACGC",
+   "event_type": "board-decision",
+   "cell_id": "ACGC:board-decision"
+  },
+  {
+   "issuer": "MPCO",
+   "event_type": "dividend",
+   "cell_id": "MPCO:dividend"
+  },
+  {
+   "issuer": "MPCO",
+   "event_type": "earnings",
+   "cell_id": "MPCO:earnings"
+  },
+  {
+   "issuer": "MPCO",
+   "event_type": "board-decision",
+   "cell_id": "MPCO:board-decision"
+  },
+  {
+   "issuer": "EGAS",
+   "event_type": "dividend",
+   "cell_id": "EGAS:dividend"
+  },
+  {
+   "issuer": "EGAS",
+   "event_type": "earnings",
+   "cell_id": "EGAS:earnings"
+  },
+  {
+   "issuer": "EGAS",
+   "event_type": "board-decision",
+   "cell_id": "EGAS:board-decision"
+  },
+  {
+   "issuer": "ETRS",
+   "event_type": "dividend",
+   "cell_id": "ETRS:dividend"
+  },
+  {
+   "issuer": "ETRS",
+   "event_type": "earnings",
+   "cell_id": "ETRS:earnings"
+  },
+  {
+   "issuer": "ETRS",
+   "event_type": "board-decision",
+   "cell_id": "ETRS:board-decision"
+  }
+ ],
+ "sha256": "b8703d19822b9d561a3312e14027a6f01bae2e9be5c76139de2ce4b57cf59b33"
+}
