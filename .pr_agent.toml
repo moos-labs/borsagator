@@ -6,6 +6,10 @@
 [config]
 model = "openrouter/baidu/ernie-5.5-flash-preview:free"
 fallback_models = ["openrouter/inclusionai/ling-3.2-flash:free"]
+# Verified against the OpenRouter model catalog (context_length for
+# baidu/ernie-5.5-flash-preview:free). PR-Agent cannot resolve this
+# model's limit from its built-in table or LiteLLM metadata.
+custom_model_max_tokens = 1024000
 
 # /help_docs stays off (upstream-disabled pending a credential-exposure
 # fix; do not enable).
