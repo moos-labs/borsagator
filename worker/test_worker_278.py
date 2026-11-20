@@ -34,12 +34,13 @@ import json
 import os
 import shutil
 import sys
-import tempfile
 import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-_TMP = Path(tempfile.mkdtemp(prefix="gator278-test-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+_TMP = _test_tmp.mkdtemp(prefix="gator278-test-")
 os.environ["GATOR_ROOT"] = str(_TMP)
 
 _HERE = Path(os.path.abspath(__file__)).parent

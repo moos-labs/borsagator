@@ -33,13 +33,14 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-TMP = Path(tempfile.mkdtemp(prefix="test149-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+TMP = _test_tmp.mkdtemp(prefix="test149-")
 os.environ["GATOR_ROOT"] = str(TMP / "gator")
 
 spec = importlib.util.spec_from_file_location(

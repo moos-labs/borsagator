@@ -35,7 +35,9 @@ from pathlib import Path
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _REPO = os.path.dirname(_HERE)
-_TMP = tempfile.mkdtemp(prefix="gator279-test-")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+_TMP = str(_test_tmp.mkdtemp(prefix="gator279-test-"))
 
 
 def _load(name, path):

@@ -90,12 +90,13 @@ import os
 import shutil
 import subprocess
 import sys
-import tempfile
 from contextlib import redirect_stderr
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "scripts")
 sys.path.insert(0, SCRIPTS)
+sys.path.insert(0, os.path.join(ROOT, "worker"))
+import _test_tmp  # noqa: E402  (atexit cleanup of make_repo scratch dirs, #388)
 
 import worker_digest_issue as wdi
 
@@ -331,7 +332,7 @@ def make_repo(n_sweeps, digest_titles=None):
     """Throwaway git repo: base commit + one commit adding N merged
     sweep dirs (merge-manifest.json + digest.md each). Returns
     (tmpdir, base_sha, head_sha, [sweep_dirs])."""
-    tmp = tempfile.mkdtemp(prefix="wdi157-")
+    tmp = str(_test_tmp.mkdtemp(prefix="wdi157-"))
     git("init", "-q", cwd=tmp)
     git("config", "user.email", "t@t", cwd=tmp)
     git("config", "user.name", "t", cwd=tmp)
