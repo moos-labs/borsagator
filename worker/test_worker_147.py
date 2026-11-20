@@ -289,8 +289,6 @@ def main():
     check("ensemble has no price-forecast from failed Kronos",
           out["family_scores"].get("price-forecast") is None)
 
-    shutil.rmtree(_TMP, ignore_errors=True)
-    shutil.rmtree(sweep, ignore_errors=True)
     print(f"\n{PASSED}/18 passed")
     return 0
 
