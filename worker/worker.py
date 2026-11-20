@@ -4380,7 +4380,7 @@ def self_update():
                         f"{UPDATE_PIN[:12]}; keeping running code")
         return
     cur = update_checkout_sha()
-    if not cur:
+    if not cur and not UPDATE_PIN:
         # CodeRabbit Major on PR #396 (issue #390 follow-up): the
         # #390 guard makes update_checkout_sha() return "" on a
         # failed lookup, so an empty cur must NOT silently skip the
@@ -4389,6 +4389,13 @@ def self_update():
         # refuse adoption (fail closed) and keep running code.
         # Diagnostic call sites still degrade to "" (see
         # test_worker_390); only adoption refuses.
+        # Issue #404: this refusal is gated on the UNPINNED path
+        # only. A pinned adoption is trusted by configuration, not
+        # by ancestry (docstring: the worker adopts a tip that is
+        # a fast-forward descendant of the running checkout OR
+        # exactly GATOR_PIN_SHA when set) — the pin check already
+        # ran before cur was read, so a matching pin adopts even
+        # when the checkout lookup fails.
         UPDATE_ERROR = ("current checkout revision unreadable; "
                         "keeping running code")
         return
