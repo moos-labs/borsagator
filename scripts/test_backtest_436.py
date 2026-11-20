@@ -1726,11 +1726,12 @@ def test_realised_dropped_close():
         def __exit__(self, *a):
             return False
 
-    holder = {"null_date": None}
+    holder = {"null_date": None, "index_null_date": None}
 
     def _fake_urlopen(req, timeout=30):
         if "EGX30" in req.full_url:
-            return _FakeResp(_payload(index=True))
+            return _FakeResp(_payload(
+                null_date=holder["index_null_date"], index=True))
         return _FakeResp(_payload(null_date=holder["null_date"]))
 
     real_urlopen = _urlreq.urlopen
@@ -1779,6 +1780,44 @@ def test_realised_dropped_close():
                   and late_realised["maturity_date"] == "2025-07-18",
                   "got %r .. %r" % (late_realised["sessions"][0],
                                     late_realised["maturity_date"]))
+        # Index side: a dropped index close on a realised
+        # session date is NOT a non-session date — the index
+        # traded, its close is just unusable. Carrying the
+        # prior close forward would fabricate that session's
+        # index return; the capture must record an index gap
+        # and clear the index evidence instead, keeping the
+        # matured stock capture.
+        holder["null_date"] = None
+        holder["index_null_date"] = "2025-07-01"
+        idx_realised, idx_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("dropped index close keeps the stock capture",
+              idx_realised is not None, idx_err)
+        if idx_realised is not None:
+            check("dropped index close records an index gap",
+                  bool(idx_realised.get("index_gap"))
+                  and "2025-07-01" in idx_realised["index_gap"],
+                  "gap=%r" % (idx_realised.get("index_gap"),))
+            check("dropped index close clears index evidence",
+                  idx_realised.get("index_sessions") == []
+                  and idx_realised.get("index_base_close") is None,
+                  "sessions=%r base=%r"
+                  % (idx_realised.get("index_sessions"),
+                     idx_realised.get("index_base_close")))
+        # Control: a dropped index close AFTER the window
+        # touches no scored session — no gap, full evidence.
+        holder["index_null_date"] = "2025-07-23"
+        late_idx, late_idx_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("past-window index drop keeps the capture",
+              late_idx is not None, late_idx_err)
+        if late_idx is not None:
+            check("past-window index drop records no gap",
+                  late_idx.get("index_gap") is None
+                  and len(late_idx.get("index_sessions") or []) == 14,
+                  "gap=%r sessions=%r"
+                  % (late_idx.get("index_gap"),
+                     len(late_idx.get("index_sessions") or [])))
     finally:
         _urlreq.urlopen = real_urlopen
 

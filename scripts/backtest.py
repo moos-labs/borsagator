@@ -642,12 +642,14 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     # without index evidence — the scorer leaves index scores and
     # deltas unavailable until usable index data exists.
     index_gap = None
+    idropped = []
     try:
-        irows, _ievents, _iok, _ierr, _idropped = \
+        irows, _ievents, _iok, _ierr, idropped = \
             backtest_gate.unpack_fetch(fetcher(index_ticker))
     except Exception as e:  # noqa: BLE001 - index fetch exhausted
         irows = []
         index_gap = "index fetch failed: %s" % e
+    idropped_set = set(idropped or [])
     imap = {r["date"]: r["close"] for r in irows}
     ibase = [r for r in irows if parse_iso(r["date"]) <= c]
     index_base_close = ibase[-1]["close"] if ibase else None
@@ -656,6 +658,21 @@ def fetch_realised(ticker, cutoff, fetcher=None):
         if index_gap is not None:
             break  # no index evidence at all — see index_gap
         d = s["date"]
+        if d in idropped_set:
+            # The index DID trade this session — its bar was
+            # dropped for an unusable close. That is not a
+            # non-session date: carrying the prior close
+            # forward would fabricate this session's index
+            # return. Record the gap and clear the index
+            # evidence, keeping the stock capture (the same
+            # treatment as a failed index fetch). Carry-forward
+            # below stays for genuine non-session dates, which
+            # have no bar and so are never in idropped_set.
+            index_gap = ("%s close for session %s was dropped "
+                         "as unusable" % (index_ticker, d))
+            index_base_close = None
+            index_sessions = []
+            break
         if d in imap:
             index_sessions.append({"date": d, "close": imap[d],
                                    "exact": True})
