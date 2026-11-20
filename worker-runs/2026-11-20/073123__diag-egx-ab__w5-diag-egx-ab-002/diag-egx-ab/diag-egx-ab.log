@@ -1,0 +1,9 @@
+diag-egx-ab (issue #283) url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20
+started=2026-11-20T07:31:08Z finished=2026-11-20T07:31:22Z
+leg A (harvester): status=200 final_url=https://www.egx.com.eg/ar/EGX_Error.aspx?aspxerrorpath=/ar/NewsSearch.aspx body_chars=511 classification=egx-error nav_error=-
+leg B (enumerator): status=None final_url=None body_chars=0 classification=reset nav_error=Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20
+Call log:
+  - navigating to "https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20", waiting until "domcontentloaded"
+
+leg A (harvester): status=200 final_url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20 body_chars=2636 classification=challenge nav_error=-
+verdict: inconclusive — repeated A legs disagree: ['egx-error', 'challenge'] (transient moved)
