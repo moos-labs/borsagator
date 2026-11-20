@@ -205,19 +205,27 @@ def test_required_cells():
 
 def test_validate_honest_probe_ledger():
     manifest = real_manifest()
+    led = real_probe_ledger()
+    # The committed ledger is validated in the mode it records:
+    # probe-mode before the first live run, live-mode once a live
+    # run has landed (#283 run 4, 2026-11-20). The mode-mismatch
+    # rule itself is still enforced by the validator — a ledger
+    # validated against a different requested mode fails.
     ok, reasons = worker._validate_top30_ledger(
-        real_probe_ledger(), manifest, "probe")
-    check("validate: committed honest probe ledger passes",
+        led, manifest, led.get("mode"))
+    check("validate: committed honest ledger passes (mode=%s)"
+          % led.get("mode"),
           ok and reasons == [])
 
 
 def test_validate_dishonest_ledgers():
     manifest = real_manifest()
     base = real_probe_ledger()
+    mode = base.get("mode")
 
     led = copy.deepcopy(base)
     led["collection"]["enumeration_closed"] = True
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: closure claimed over 31 failures fails",
           not ok and any("enumeration_closed=True" in r
                          for r in reasons))
@@ -234,7 +242,7 @@ def test_validate_dishonest_ledgers():
     for irec in led["issuers"]:
         for lrec in irec["listings"]:
             lrec["terminal_state"] = "exhausted"
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: closure claimed over a kept listing-level "
           "failure fails (#340 variant A)",
           not ok and any("listing-level failure" in r
@@ -253,7 +261,7 @@ def test_validate_dishonest_ledgers():
             lrec["terminal_state"] = "exhausted"
             if lrec["code"] == "FAITA":
                 lrec["enumeration_status"] = "blocked"
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: closure claimed over a blocked listing fails "
           "(#340 blocked arm)",
           not ok and any("enumeration_status is blocked" in r
@@ -261,7 +269,7 @@ def test_validate_dishonest_ledgers():
 
     led = copy.deepcopy(base)
     del led["issuers"][0]["listings"][0]
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: missing listing route fails",
           not ok and any("missing from ledger" in r for r in reasons))
 
@@ -271,7 +279,7 @@ def test_validate_dishonest_ledgers():
             if lrec["code"] == "FAITA":
                 lrec["enumeration_status"] = "enumerated"
                 lrec["failures"] = []
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: FAITA enumerated fails (B-02: never default "
           "to the FAIT ISIN)",
           not ok and any("FAITA enumerated" in r for r in reasons))
@@ -281,7 +289,7 @@ def test_validate_dishonest_ledgers():
         for lrec in irec["listings"]:
             if lrec["code"] == "FAITA":
                 lrec["failures"] = []
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: FAITA without its B-02 named failure fails",
           not ok and any("B-02-missing-isin" in r for r in reasons))
 
@@ -295,19 +303,19 @@ def test_validate_dishonest_ledgers():
                    "body_sha256": "a" * 64,
                    "body_hash_kind": "clipped-body-sha256",
                    "body_chars": 100, "attachments": []}}]
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: clipped body presented as a full hash fails",
           not ok and any("clipped body" in r for r in reasons))
 
     led = copy.deepcopy(base)
     led["window"]["end"] = "2026-11-20"
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: rolling/frozen window mismatch fails",
           not ok and any("frozen" in r for r in reasons))
 
     led = copy.deepcopy(base)
     led["complete"] = True
-    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
     check("validate: complete claim from collection-only output "
           "fails",
           not ok and any("collection-only" in r for r in reasons))
