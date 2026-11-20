@@ -114,8 +114,14 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
                 d = d.astimezone(zoneinfo.ZoneInfo(tz_name))
             except Exception:
                 pass
+            close_f = float(close)
+            if not math.isfinite(close_f):
+                # A NaN/inf close is not a bar: kept, it would
+                # count toward realised maturity and be written
+                # to realised.json as a bare NaN token.
+                continue
             rows.append({"date": d.date().isoformat(),
-                         "close": float(close)})
+                         "close": close_f})
         except Exception:
             continue
     rows.sort(key=lambda r: r["date"])
@@ -264,7 +270,11 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
         tail_start = parse_iso(last)
         if tail_start is not None and tail_start < cutoff:
             tail_days = (cutoff - tail_start).days
-            tail_missed = max(0, round(tail_days * 5 / 7) - 1)
+            # No "- 1" here (unlike max_gap): the tail runs
+            # from the last observed bar to the cutoff, and no
+            # observed session closes it — subtracting one
+            # admitted a ~11-session tail at the 10 limit.
+            tail_missed = max(0, round(tail_days * 5 / 7))
             if tail_missed > MAX_GAP_SESSIONS_EST:
                 reasons.append(
                     "history ends %s, ~%d sessions before the "

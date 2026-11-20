@@ -547,7 +547,19 @@ def validate_capture_path(out_root, cutoff, ticker):
         return None, ("ticker %r is not a single path component"
                       % (ticker,))
     root = os.path.realpath(out_root)
-    cell = os.path.realpath(os.path.join(root, cutoff, ticker))
+    expected = os.path.join(root, cutoff, ticker)
+    cell = os.path.realpath(expected)
+    if cell != expected:
+        # The cutoff/ticker components themselves redirect the
+        # destination (a ticker symlink resolving to its own
+        # cutoff directory, say): publish would rename the
+        # resolved directory to the backup path and delete it,
+        # wiping every sibling capture under it. Only the
+        # out-root itself may be an alias (resolved above); the
+        # two components below it must be literal.
+        return None, ("capture dir %s resolves to %s — the "
+                      "cutoff/ticker path must not redirect"
+                      % (expected, cell))
     if cell == root or os.path.commonpath([cell, root]) != root:
         return None, "capture dir %s escapes out-root %s" % (cell, root)
     for tree in PROTECTED_TREES:
@@ -642,6 +654,23 @@ def fetch_realised(ticker, cutoff, fetcher=None):
             index_sessions.append({"date": d, "close": imap[prior[-1]],
                                    "exact": False,
                                    "index_date": prior[-1]})
+    if index_gap is None and not any(
+            parse_iso(d) is not None
+            and c < parse_iso(d) <= parse_iso(maturity)
+            for d in imap):
+        # The index feed has no close inside the realised
+        # window (it ends at/before the cutoff): every session
+        # above would carry the base close forward — a flat
+        # index path scored as real index evidence. Record the
+        # gap and keep the stock capture, exactly as for a
+        # failed index fetch. (Carrying the latest close across
+        # individual non-session dates stays: that path is only
+        # reached when an in-window index observation exists,
+        # which this check has just established.)
+        index_gap = ("no %s close after %s in the realised "
+                     "window" % (index_ticker, cutoff))
+        index_base_close = None
+        index_sessions = []
     window_actions = []
     window_splits = []
     for ev in events or []:
@@ -860,7 +889,8 @@ def run_cell(cutoff, ticker, cfg):
                              for r in base_rows])
             with open(os.path.join(publish_dir, "realised.json"),
                       "w", encoding="utf-8") as f:
-                json.dump(realised, f, indent=1, ensure_ascii=False)
+                json.dump(realised, f, indent=1, ensure_ascii=False,
+                          allow_nan=False)
             shutil.copyfile(log_path,
                             os.path.join(publish_dir, "harness.log"))
             manifest = {
@@ -894,7 +924,8 @@ def run_cell(cutoff, ticker, cfg):
                         sha256_file(p)
             with open(os.path.join(publish_dir, "manifest.json"),
                       "w", encoding="utf-8") as f:
-                json.dump(manifest, f, indent=1, ensure_ascii=False)
+                json.dump(manifest, f, indent=1, ensure_ascii=False,
+                          allow_nan=False)
             backup_dir = cell_dir + ".old-%d" % os.getpid()
             if os.path.exists(backup_dir):
                 shutil.rmtree(backup_dir)

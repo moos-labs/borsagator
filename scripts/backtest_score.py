@@ -323,11 +323,19 @@ def score_capture(capture_dir):
             series[s["date"]] = float(s["close"])
         except Exception:
             continue
+    # The index base is parsed ONCE, here: an offline realised
+    # file can carry an empty string (or a non-finite /
+    # non-positive value) for it, and float("") would raise
+    # before the index-gap check below is reached, aborting
+    # the whole capture and losing the stock rows. An unusable
+    # base is the index-gap condition: index rows are omitted,
+    # stock rows still score.
+    index_base = fnum(realised.get("index_base_close"))
+    if index_base is not None and index_base <= 0:
+        index_base = None
     index_series = {}
-    if realised.get("index_base_close") is not None and realised.get(
-            "base_date"):
-        index_series[realised["base_date"]] = float(
-            realised["index_base_close"])
+    if index_base is not None and realised.get("base_date"):
+        index_series[realised["base_date"]] = index_base
     for s in realised.get("index_sessions") or []:
         try:
             index_series[s["date"]] = float(s["close"])
@@ -359,8 +367,12 @@ def score_capture(capture_dir):
     # to score the index baseline against (a None base would
     # crash ledger.score_forecast when the row matures).
     index_gap = realised.get("index_gap")
-    if index_gap is None and realised.get("index_base_close") is None:
-        index_gap = "no index close on or before the cutoff"
+    if index_gap is None and index_base is None:
+        index_gap = ("no index close on or before the cutoff"
+                     if realised.get("index_base_close") is None
+                     else "index base close %r is not a usable "
+                          "number"
+                          % (realised.get("index_base_close"),))
     if index_gap:
         gaps.append("%s: index-baseline unavailable — %s"
                     % (rel, index_gap))
@@ -390,7 +402,7 @@ def score_capture(capture_dir):
             # its base is the index close at the cutoff — scoring
             # it against the ticker's base would divide an index
             # close by a stock price.
-            fc_base = (fnum(realised.get("index_base_close"))
+            fc_base = (index_base
                        if entrant == "index-baseline" else base)
             fc = {"ticker": ticker, "as_of": as_of,
                   "sweep": rel, "horizon": h,
@@ -496,6 +508,28 @@ def score_all(captures_root):
                             % (os.path.relpath(tdir),
                                seen_canonical[canon]))
                 continue
+            # Validate BEFORE claiming the canonical path: an
+            # alias whose own path disagrees with its manifest
+            # (a 2025-03-31 link to the 2025-06-30 capture) is
+            # rejected by score_capture — if it claimed the
+            # canonical entry first, the valid capture would be
+            # skipped as its duplicate and the report would
+            # count 0 forecasts for a capture that exists. The
+            # check mirrors score_capture's own path check.
+            man = load_json(os.path.join(tdir, "manifest.json"))
+            if isinstance(man, dict):
+                if (str(man.get("ticker") or "").upper()
+                        != ticker.upper()
+                        or str(man.get("cutoff") or "")[:10]
+                        != cutoff):
+                    gaps.append("%s: manifest ticker/cutoff "
+                                "%r/%r != cell path %s/%s — "
+                                "skipped"
+                                % (os.path.relpath(tdir),
+                                   man.get("ticker"),
+                                   man.get("cutoff"),
+                                   cutoff, ticker))
+                    continue
             seen_canonical[canon] = os.path.relpath(tdir)
             captures.append(tdir)
     for cap in sorted(captures):
