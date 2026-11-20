@@ -24,8 +24,13 @@ error — see docs/top30-enumeration.md). The live fetcher therefore
 records the exact failure per request and the ledger records every
 issuer as not_run with a named failure instead of inventing
 documents. A full live run belongs on the worker, where the
-TSPD-trusted browser profile lives; the filter-semantics validation
-protocol for that run is in docs/top30-enumeration.md.
+TSPD-trusted browser profile lives: ``--transport profile`` fetches
+through that persistent Chromium profile session (ProfileFetcher
+below, issue #346 F2); the filter-semantics validation protocol
+for that run is in docs/top30-enumeration.md. No profile-backed
+live enumeration has been verified yet — the wiring is proven by
+fixture/stub tests only, and the first live sweep is still the
+proof that remains (see docs/top30-enumeration.md §7).
 
 Stdlib only. No network in the pure functions: fetching is injected
 as a callable so tests (and the fixture pilot) can pass a fake.
@@ -256,6 +261,74 @@ def http_fetch(url, timeout=30):
                                                 time.gmtime())}
     except Exception as e:  # URLError, RemoteDisconnected, timeout...
         raise FetchFailure(url, "%s: %s" % (type(e).__name__, e))
+
+
+class ProfileFetcher:
+    """Live fetcher through the persistent Chromium profile session
+    (issue #346 F2): pages load in the TSPD-trusted browser the
+    harvester uses, so EGX sees the profile's cookies/trust
+    instead of a bare urllib request. Playwright is imported
+    lazily on first fetch; any failure (Playwright missing,
+    profile launch failed, navigation failed) raises FetchFailure
+    with the exact error — never a synthetic empty page. One
+    browser page is reused across URLs; call close() when done.
+    Pagination still uses the URL form (&page=N) the HTTP fetcher
+    uses — driving the __doPostBack form is a later step, not
+    claimed here."""
+
+    def __init__(self, profile_dir, timeout=60):
+        self.profile_dir = str(profile_dir)
+        self.timeout = timeout
+        self._pw = None
+        self._ctx = None
+        self._page_obj = None
+        self._launch_error = None
+
+    def __call__(self, url):
+        try:
+            page = self._page(url)
+            resp = page.goto(url, timeout=self.timeout * 1000,
+                             wait_until="domcontentloaded")
+            body = page.content()
+            status = resp.status if resp is not None else 200
+        except FetchFailure:
+            raise
+        except Exception as e:  # noqa: BLE001 — fetch must not raise
+            raise FetchFailure(url, "%s: %s" % (type(e).__name__, e))
+        return {"status": status, "body": body,
+                "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%SZ",
+                                            time.gmtime())}
+
+    def _page(self, url):
+        if self._page_obj is not None:
+            return self._page_obj
+        if self._launch_error is not None:
+            raise FetchFailure(url, self._launch_error)
+        try:
+            from playwright.sync_api import sync_playwright
+            self._pw = sync_playwright().start()
+            self._ctx = self._pw.chromium.launch_persistent_context(
+                self.profile_dir, headless=True)
+            self._page_obj = self._ctx.new_page()
+        except Exception as e:  # noqa: BLE001 — launch must not raise
+            self._launch_error = "%s: %s" % (type(e).__name__, e)
+            raise FetchFailure(url, self._launch_error)
+        return self._page_obj
+
+    def close(self):
+        try:
+            if self._ctx is not None:
+                self._ctx.close()
+        except Exception:  # noqa: BLE001 — close must not raise
+            pass
+        try:
+            if self._pw is not None:
+                self._pw.stop()
+        except Exception:  # noqa: BLE001 — close must not raise
+            pass
+        self._ctx = None
+        self._pw = None
+        self._page_obj = None
 
 
 def enumerate_listing(listing, fetcher, max_pages=MAX_PAGES):
@@ -665,6 +738,14 @@ def main(argv=None):
     ap.add_argument("--fixtures", default=None,
                     help="fixture dir (mode=fixtures): JSON files "
                          "mapping URL -> {status, body}")
+    ap.add_argument("--transport", choices=("http", "profile"),
+                    default="http",
+                    help="live-mode fetch transport: plain HTTP "
+                         "(default) or the persistent Chromium "
+                         "profile session (issue #346 F2)")
+    ap.add_argument("--profile", default=None,
+                    help="profile dir for --transport profile "
+                         "(the worker's egx-profile)")
     args = ap.parse_args(argv)
     manifest = load_manifest(args.manifest)
     if args.mode == "probe":
@@ -692,10 +773,30 @@ def main(argv=None):
                                   "attempted; pages are SIMULATED, "
                                   "not live EGX captures"}]}
     else:  # live: full enumeration on a machine that can reach EGX
-        probe = probe_live_access()
-        ledger = enumerate_universe(manifest, http_fetch, mode="live")
+        # Issue #346 F2: --transport profile fetches through the
+        # persistent Chromium profile session (the probe rides the
+        # same session, so it tests the transport the enumeration
+        # will use). Plain HTTP stays the default for probe mode
+        # and for machines without the profile.
+        if args.transport == "profile":
+            if not args.profile:
+                ap.error("--transport profile needs --profile DIR")
+            fetcher = ProfileFetcher(args.profile)
+            try:
+                probe = probe_live_access(fetcher)
+                ledger = enumerate_universe(manifest, fetcher,
+                                            mode="live")
+            finally:
+                fetcher.close()
+        else:
+            probe = probe_live_access()
+            ledger = enumerate_universe(manifest, http_fetch,
+                                        mode="live")
         ledger["live_access"] = {"reachable": probe["reachable"],
                                  "probes": [probe]}
+    ledger["transport"] = {"probe": "http",
+                           "fixtures": "fixtures",
+                           "live": args.transport}[args.mode]
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(ledger, f, indent=1, ensure_ascii=False)
     n_docs = ledger["collection"]["enumerated"]

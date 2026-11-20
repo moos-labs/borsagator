@@ -145,10 +145,17 @@ in this step the corpus status of every ledger document is
 - `probe` (default): one POUL pilot probe, then a ledger recording
   every issuer as `not_run` with the shared probe evidence. No
   doomed per-issuer requests, no invented documents.
-- `live`: full enumeration with the plain-HTTP fetcher. Intended for
-  a machine that can reach EGX; on the worker the fetcher should be
-  replaced with the TSPD-trusted browser session (same profile the
-  harvester uses) after the §2 validation protocol runs.
+- `live`: full enumeration. `--transport profile` (issue #346 F2)
+  fetches through the TSPD-trusted browser session — the same
+  persistent Chromium profile the harvester uses
+  (`worker/egx-profile`, `ProfileFetcher` in
+  `scripts/top30_enumerate.py`); plain HTTP (`--transport http`,
+  the default) is for machines without the profile. Wiring proven
+  by fixture/stub tests only — NOT yet verified live: no
+  profile-backed enumeration against EGX has been observed, the
+  §2 validation protocol has not run, and pagination still uses
+  the URL form (`&page=N`) rather than driving the `__doPostBack`
+  form. The first live sweep is the proof that remains.
 - `fixtures`: enumeration against a directory of JSON files mapping
   URL → `{status, body}`. Used by the tests and the pilot ledger;
   pages are SIMULATED and labelled as such in the ledger.
