@@ -128,8 +128,29 @@ def is_valid_isin(isin):
     return total % 10 == 0
 
 
-_CHALLENGE = re.compile(r"tspd|bot detection|are you human|captcha",
-                        re.I)
+_CHALLENGE_MARKERS = (
+    # (substring, marker enum) — the schema-ordered list of
+    # bot-defence signals a page body can match. "tspd" is the only
+    # allowlisted vendor SIGNATURE: matching it may add a vendor
+    # hint, never a certainty. The other markers are generic — a
+    # page can say "captcha" without naming a vendor — so they
+    # never produce a vendor hint.
+    ("tspd", "tspd"),
+    ("bot detection", "bot-detection"),
+    ("are you human", "human-check"),
+    ("captcha", "captcha"),
+)
+
+
+def challenge_markers(html):
+    """Matched challenge-marker enums for a page body, in schema
+    order. Empty when no bot-defence marker matches — a page can
+    still be a challenge shell via the near-empty-body rule in
+    parse_search_page (marker "empty-body", recorded by the
+    caller)."""
+    raw = html if isinstance(html, str) else ""
+    return [enum for pat, enum in _CHALLENGE_MARKERS
+            if re.search(pat, raw, re.I)]
 _NEWS_LINK = re.compile(
     r'<a[^>]+href="([^"]*NewsDetails\.aspx[^"]*)"[^>]*>'
     r'(.*?)</a>', re.I | re.S)
@@ -198,7 +219,7 @@ def parse_search_page(html, url):
         # Result links present: this is a real result page, never a
         # challenge shell, however short the markup is.
         pass
-    elif _CHALLENGE.search(raw):
+    elif challenge_markers(raw):
         out["is_challenge"] = True
         return out
     elif len(raw) < 200 and not _EMPTY_MARKER.search(raw):
@@ -626,23 +647,63 @@ def enumerate_universe(manifest, fetcher, run_id=None, mode="live"):
 def probe_live_access(fetcher=None):
     """One pilot probe (POUL control, ISIN EGS02051C018) to establish
     whether this machine can reach EGX NewsSearch at all. Returns
-    the probe record; never raises."""
+    the probe record; never raises.
+
+    Structured record (issue #372): HTTP status, full body_chars,
+    a sha256 digest of the FULL body received (body_hash_kind
+    "full" — a clipped hash is never presented as a full hash,
+    mirroring the corpus rule), the matched challenge-marker
+    enums, an allowlisted vendor hint (a hint, never a certainty
+    from a generic marker), and an explicit capture state. The
+    body itself is NEVER stored in the record: the archive is
+    anonymously readable and publish copies the run directory
+    wholesale, so no body text, URL, or script content may land
+    here — only the enums, counts and digest above. Challenge
+    captures stay outside documents[].corpus. Capture failure
+    has a named state ("fetch_failed" / "probe_error") and keeps
+    the original probe result (reachable False, detail with the
+    error). The legacy detail string is kept for compatibility:
+    run_probe_mode embeds it in failure reasons."""
     fetcher = fetcher or http_fetch
     url = search_url("EGS02051C018")
     rec = {"url": url,
            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "reachable": False, "detail": None}
+           "reachable": False, "detail": None,
+           "status": None, "body_chars": None,
+           "body_sha256": None, "body_hash_kind": None,
+           "challenge": None, "challenge_markers": [],
+           "vendor_hint": None, "capture_state": "not_attempted"}
     try:
         resp = fetcher(url)
-        parsed = parse_search_page(resp.get("body", ""), url)
+        body = resp.get("body", "")
+        if not isinstance(body, str):
+            body = ""
+        parsed = parse_search_page(body, url)
+        markers = challenge_markers(body)
+        if parsed["is_challenge"] and not markers:
+            # Near-empty body with no explicit empty-result marker:
+            # a challenge shell by the parse rule, with no matched
+            # signal to name.
+            markers = ["empty-body"]
+        rec["status"] = resp.get("status")
+        rec["body_chars"] = len(body)
+        rec["body_sha256"] = parsed["raw_sha256"]
+        rec["body_hash_kind"] = "full"
+        rec["challenge"] = parsed["is_challenge"]
+        rec["challenge_markers"] = markers
+        # Allowlisted vendor signature only: "tspd" may hint at the
+        # vendor; a generic captcha/human-check marker never does.
+        rec["vendor_hint"] = "tspd" if "tspd" in markers else None
+        rec["capture_state"] = "captured"
         rec["reachable"] = not parsed["is_challenge"]
         rec["detail"] = ("status=%s body_chars=%d challenge=%s"
-                         % (resp.get("status"),
-                            len(resp.get("body", "")),
+                         % (rec["status"], rec["body_chars"],
                             parsed["is_challenge"]))
     except FetchFailure as e:
+        rec["capture_state"] = "fetch_failed"
         rec["detail"] = "%s: %s" % (type(e).__name__, e.error)
     except Exception as e:  # noqa: BLE001 — probe must not raise
+        rec["capture_state"] = "probe_error"
         rec["detail"] = "%s: %s" % (type(e).__name__, e)
     return rec
 
@@ -779,7 +840,12 @@ def main(argv=None):
                         "reachable": None,
                         "detail": "fixture mode: no live access "
                                   "attempted; pages are SIMULATED, "
-                                  "not live EGX captures"}]}
+                                  "not live EGX captures",
+                        "status": None, "body_chars": None,
+                        "body_sha256": None, "body_hash_kind": None,
+                        "challenge": None, "challenge_markers": [],
+                        "vendor_hint": None,
+                        "capture_state": "not_attempted"}]}
     else:  # live: full enumeration on a machine that can reach EGX
         # Issue #346 F2: --transport profile fetches through the
         # persistent Chromium profile session (the probe rides the
