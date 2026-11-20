@@ -1887,11 +1887,14 @@ def run_harvest(job, workdir):
 # before parse_job (the harvest-egx pattern) and runs the enumerator
 # CLI in the same playwright venv the harvest uses.
 #
-# Scope: the entry point only. scripts/top30_enumerate.py is
-# unchanged, and the enumerator's live fetcher is still plain HTTP
-# (docs/top30-enumeration.md §7: replace it with the TSPD-trusted
-# browser session after the §2 filter-semantics validation protocol
-# runs). A live run whose requests meet challenge shells therefore
+# Scope: the entry point only. Issue #346 F2 wired the
+# enumerator's live fetcher through the TSPD-trusted browser
+# session (--transport profile; scripts/top30_enumerate.py
+# ProfileFetcher). What is still unverified live: the profile
+# session has never completed a real enumeration against EGX —
+# no profile-backed live run has been observed, and the §2
+# filter-semantics validation protocol (docs/top30-enumeration.md
+# §2) has not run. A live run whose requests meet challenge shells therefore
 # records source_challenge named failures per listing and an honest
 # enumeration_closed=False — the entry point never converts that
 # into a success. The browser-fetcher upgrade + §2 validation are
@@ -2001,6 +2004,13 @@ def build_top30_required_cells(manifest):
     return doc, cells
 
 
+def _is_sha256_hex(value):
+    """True when value is a 64-char lowercase hex digest — the only
+    shape hashlib.sha256(...).hexdigest() ever produces."""
+    return isinstance(value, str) \
+        and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
 def _validate_top30_ledger(ledger, manifest, mode):
     """Fail-closed validation of an enumerator ledger against the
     frozen manifest and the #283 gates re-check flags (issue #328).
@@ -2009,11 +2019,18 @@ def _validate_top30_ledger(ledger, manifest, mode):
     a blocked run. A DISHONEST ledger fails: a closure claim over
     failed routes, a missing route, FAITA defaulted or omitted, a
     clipped body presented as a full hash, or any complete/pass
-    verdict claimed from collection-only output. Never raises on
-    malformed input: every defect is a reason, not a crash."""
+    verdict claimed from collection-only output. Issue #346 adds:
+    the collection summary must reconcile against the records
+    (F4), route provenance must match the frozen manifest (F5),
+    the route set is frozen and duplicate route records are
+    rejected (F6), and an archived body needs a real 64-hex hash
+    (F8). Never raises on malformed input: every defect is a
+    reason, not a crash."""
     reasons = []
     if not isinstance(ledger, dict):
         return False, ["ledger is not a JSON object"]
+    if not isinstance(manifest, dict):
+        return False, ["manifest is not a JSON object"]
     if ledger.get("schema_version") != 1:
         reasons.append("ledger schema_version is not 1: %r"
                        % (ledger.get("schema_version"),))
@@ -2027,12 +2044,16 @@ def _validate_top30_ledger(ledger, manifest, mode):
         reasons.append("ledger mode %r != requested mode %r"
                        % (ledger.get("mode"), mode))
     mref = ledger.get("manifest")
+    # Issue #346 F7: mref may be a string/list (malformed input) —
+    # never call .get on it unless it is a dict; the validator's
+    # never-raises contract covers the reason line too.
+    mref_commit = mref.get("base_commit") \
+        if isinstance(mref, dict) else None
     if not isinstance(mref, dict) \
-            or mref.get("base_commit") != manifest.get("base_commit"):
+            or mref_commit != manifest.get("base_commit"):
         reasons.append("ledger manifest base_commit %r != frozen "
                        "manifest %r"
-                       % ((mref or {}).get("base_commit"),
-                          manifest.get("base_commit")))
+                       % (mref_commit, manifest.get("base_commit")))
     coll = ledger.get("collection")
     if not isinstance(coll, dict):
         reasons.append("collection missing")
@@ -2059,13 +2080,24 @@ def _validate_top30_ledger(ledger, manifest, mode):
                 reasons.append("collection %s must be a boolean: %r"
                                % (key, coll.get(key)))
     # Per-listing coverage: every manifest route must be present.
-    expected = {}
+    # Issue #346 F5/F6: the frozen route set is enforced both ways
+    # — a listing record's ISIN must equal the manifest ISIN for
+    # its code (FAITA's is None: never defaulted), an unknown code
+    # is rejected, a code recorded under the wrong issuer is
+    # rejected, and a duplicate route record is rejected instead
+    # of silently collapsing into `seen`.
+    expected = {}       # code -> manifest ISIN
+    route_issuer = {}   # code -> manifest issuer
+    manifest_issuers = set()
     for iss in manifest.get("issuers", []) or []:
         if not isinstance(iss, dict):
             continue
+        if iss.get("issuer"):
+            manifest_issuers.add(iss["issuer"])
         for lst in iss.get("listings", []) or []:
             if isinstance(lst, dict) and lst.get("code"):
                 expected[lst["code"]] = lst.get("isin")
+                route_issuer[lst["code"]] = iss.get("issuer")
     seen = {}
     issuers = ledger.get("issuers")
     if not isinstance(issuers, list):
@@ -2074,13 +2106,88 @@ def _validate_top30_ledger(ledger, manifest, mode):
     for irec in issuers:
         if not isinstance(irec, dict):
             continue
+        if irec.get("issuer") not in manifest_issuers:
+            reasons.append("issuer %r is not in the frozen manifest"
+                           % (irec.get("issuer"),))
         for lrec in irec.get("listings", []) or []:
-            if isinstance(lrec, dict) and lrec.get("code"):
-                seen[lrec["code"]] = lrec
+            if not isinstance(lrec, dict) or not lrec.get("code"):
+                continue
+            code = lrec["code"]
+            if code in seen:
+                reasons.append("duplicate listing route %s: recorded "
+                               "more than once" % code)
+                continue
+            seen[code] = lrec
+            if code not in expected:
+                reasons.append("listing route %s is not in the "
+                               "frozen manifest" % code)
+                continue
+            if lrec.get("isin") != expected[code]:
+                reasons.append("listing route %s carries ISIN %r but "
+                               "the frozen manifest records %r"
+                               % (code, lrec.get("isin"),
+                                  expected[code]))
+            if route_issuer.get(code) != irec.get("issuer"):
+                reasons.append("listing route %s is recorded under "
+                               "issuer %r but belongs to %r in the "
+                               "frozen manifest"
+                               % (code, irec.get("issuer"),
+                                  route_issuer.get(code)))
     for code in expected:
         if code not in seen:
             reasons.append("listing route %s missing from ledger"
                            % code)
+    # Issue #346 F4: reconcile the summary against the records it
+    # summarizes. `enumerated` is the count of issuer-level
+    # documents (the enumerator dedupes FAIT/FAITA shared ids at
+    # the issuer level, so listing-level documents are NOT summed
+    # — they would double-count). `archived` is the count of
+    # documents whose corpus status is archived. `missing` names
+    # routes that could not be enumerated (e.g. FAITA) — every
+    # entry must be a frozen route code; an invented id is neither
+    # an expected document nor a route.
+    doc_total = 0
+    archived_total = 0
+    for irec in issuers:
+        if not isinstance(irec, dict):
+            continue
+        docs = irec.get("documents")
+        if not isinstance(docs, list):
+            continue
+        for d in docs:
+            if not isinstance(d, dict):
+                continue
+            doc_total += 1
+            corp = d.get("corpus")
+            if isinstance(corp, dict) \
+                    and corp.get("status") == "archived":
+                archived_total += 1
+    if isinstance(coll.get("enumerated"), int) \
+            and not isinstance(coll.get("enumerated"), bool):
+        if coll["enumerated"] != doc_total:
+            reasons.append("collection enumerated=%d but the ledger "
+                           "carries %d issuer-level document(s)"
+                           % (coll["enumerated"], doc_total))
+    if isinstance(coll.get("archived"), int) \
+            and not isinstance(coll.get("archived"), bool):
+        if coll["archived"] != archived_total:
+            reasons.append("collection archived=%d but %d document(s) "
+                           "have corpus status archived"
+                           % (coll["archived"], archived_total))
+    if isinstance(coll.get("enumerated"), int) \
+            and not isinstance(coll.get("enumerated"), bool) \
+            and isinstance(coll.get("archived"), int) \
+            and not isinstance(coll.get("archived"), bool):
+        if coll["archived"] > coll["enumerated"]:
+            reasons.append("collection archived=%d exceeds "
+                           "enumerated=%d"
+                           % (coll["archived"], coll["enumerated"]))
+    if isinstance(coll.get("missing"), list):
+        for m in coll["missing"]:
+            if isinstance(m, str) and m not in expected:
+                reasons.append("collection missing entry %r is not a "
+                               "frozen route (expected documents / "
+                               "routes only)" % m)
     # FAITA: a named blocked route (B-02), never enumerated under
     # another listing's ISIN and never silently omitted.
     faita = seen.get("FAITA")
@@ -2143,6 +2250,39 @@ def _validate_top30_ledger(ledger, manifest, mode):
         for doc in irec.get("documents", []) or []:
             if not isinstance(doc, dict):
                 continue
+            # Issue #346 F5: a document's listing (when the record
+            # carries one) must be a route of its own issuer and
+            # never a blocked route; its ISIN (when carried) must
+            # match the manifest ISIN for that listing. A document
+            # with no listing attribution is not failed here — the
+            # enumerator always attributes one, and honest
+            # incomplete ledgers may carry unattributed documents.
+            dlisting = doc.get("listing")
+            if dlisting is not None:
+                if dlisting not in expected:
+                    reasons.append("document %s claims listing %r, "
+                                   "not a frozen route"
+                                   % (doc.get("source_document_id"),
+                                      dlisting))
+                elif route_issuer.get(dlisting) \
+                        != irec.get("issuer"):
+                    reasons.append("document %s claims listing %s, "
+                                   "not a route of issuer %s"
+                                   % (doc.get("source_document_id"),
+                                      dlisting, irec.get("issuer")))
+                elif expected[dlisting] is None:
+                    reasons.append("document %s claims blocked route "
+                                   "%s (no verified ISIN)"
+                                   % (doc.get("source_document_id"),
+                                      dlisting))
+                elif doc.get("isin") is not None \
+                        and doc.get("isin") != expected[dlisting]:
+                    reasons.append("document %s carries ISIN %r for "
+                                   "listing %s but the frozen "
+                                   "manifest records %r"
+                                   % (doc.get("source_document_id"),
+                                      doc.get("isin"), dlisting,
+                                      expected[dlisting]))
             corp = doc.get("corpus")
             if not isinstance(corp, dict):
                 reasons.append("document %s has no corpus record"
@@ -2167,6 +2307,25 @@ def _validate_top30_ledger(ledger, manifest, mode):
                                "body_hash_kind=%r (must be "
                                "clipped-body-sha256)"
                                % (doc.get("source_document_id"), kind))
+            # Issue #346 F8: an archived body needs a real 64-hex
+            # sha256 — a 2-char or non-hex string is not a hash.
+            # Any body_sha256 present on any corpus record must be
+            # 64-hex too. Attachment accounting is a named later
+            # step, not validated here: link_found entries carry
+            # no hash until the corpus runner fetches the PDF
+            # (docs/top30-enumeration.md §9), so only the record
+            # shape is checked.
+            sha = corp.get("body_sha256")
+            if sha and not _is_sha256_hex(sha):
+                reasons.append("document %s has body_sha256=%r (must "
+                               "be 64 hex chars when present)"
+                               % (doc.get("source_document_id"), sha))
+            atts = corp.get("attachments")
+            if atts is not None and (not isinstance(atts, list)
+                    or not all(isinstance(a, dict) for a in atts)):
+                reasons.append("document %s attachments is not a list "
+                               "of records"
+                               % (doc.get("source_document_id"),))
     for key in ("complete", "verdict", "passed",
                 "evaluation_complete"):
         if key in ledger:
@@ -2194,8 +2353,11 @@ def run_top30_enumerate(job, workdir):
         far still archives, so the failure is inspectable.
     Live mode requires the persistent Chromium profile: the run's
     premise is the TSPD-trusted profile, and without it the run
-    would only collect challenge shells. Probe/fixtures modes
-    never touch EGX and need no profile."""
+    would only collect challenge shells. The live fetch itself
+    runs through that profile session (--transport profile); the
+    profile is the transport, not just a prerequisite check
+    (issue #346 F2). Probe/fixtures modes never touch EGX and
+    need no profile."""
     plan = parse_top30_job(job["job"])
     run_dir = Path(workdir) / "top30"
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -2232,6 +2394,12 @@ def run_top30_enumerate(job, workdir):
            "--out", str(out_path)]
     if plan["fixtures"]:
         cmd += ["--fixtures", plan["fixtures"]]
+    if plan["mode"] == "live":
+        # Issue #346 F2: live enumeration fetches through the
+        # persistent Chromium profile session, not plain HTTP.
+        # Probe/fixtures modes keep their existing transports.
+        cmd += ["--transport", "profile", "--profile",
+                str(_egx_profile_dir())]
     env = {k: v for k, v in os.environ.items()
            if k not in ENV_DENY_FOR_TOOLS}
     # shlex.quote each part: the fixtures dir comes from the job
@@ -2256,6 +2424,8 @@ def run_top30_enumerate(job, workdir):
         if isinstance(ledger.get("collection"), dict) else {}
     validation = {
         "job": job["job"], "mode": plan["mode"],
+        "transport": {"live": "profile", "probe": "http",
+                      "fixtures": "fixtures"}[plan["mode"]],
         "enumerator": "scripts/top30_enumerate.py",
         "ledger": "top30/top30_expected_docs.json",
         "required_cells": "top30/top30_required_cells.json",
@@ -3583,7 +3753,11 @@ def _execute_body(job):
             # Issue #216: failure handling is centralized in _mark_done.
             _mark_done(job, archive_sha)
         return
-    if job["job"].split(" ", 1)[0] == "top30-enumerate":
+    # Issue #346 F9: tokenize on whitespace exactly like
+    # parse_top30_job does (.split()), so a leading-space job
+    # dispatches here instead of falling through to parse_job
+    # (which returns [] and publishes an empty run as done).
+    if (job["job"] or "").split()[:1] == ["top30-enumerate"]:
         # Issue #328: the registry grammar has no enumeration tool
         # (parse_job returns []), so this kind dispatches here like
         # harvest-egx — never through the tool loop. A bad job
