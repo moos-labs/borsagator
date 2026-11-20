@@ -424,8 +424,12 @@ def test_self_update_pinned_tip_adopts_on_empty_cur():
     the #396 empty-cur refusal must NOT fire — the pin is trusted
     by configuration, not by ancestry, and the pin check already
     ran before cur was read. On the unfixed tree this refuses
-    with UPDATE_ERROR and never checks out the tip."""
-    err, cmds = run_self_update("timeout", ancestor=True,
+    with UPDATE_ERROR and never checks out the tip.
+    Ancestry is deliberately NOT a descendant here (ancestor=False):
+    a pinned tip that is not a descendant must still adopt when cur
+    is unreadable — the ancestry block must be skipped on the pinned
+    path (CodeRabbit Minor on PR #409)."""
+    err, cmds = run_self_update("timeout", ancestor=False,
                                 pin=SELF_UPDATE_TIP)
     check("self_update() with matching pin + empty cur: adopts "
           "(checkout attempted, no UPDATE_ERROR)",
