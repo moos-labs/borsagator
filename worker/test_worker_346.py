@@ -626,6 +626,21 @@ def test_honest_controls():
 CANNED_EMPTY_PAGE = ("<html><body><div class=\"results\">"
                      "no results found</div></body></html>")
 
+# Expected launch options for ProfileFetcher._page
+# (scripts/top30_enumerate.py). #369 (INS-366 F4): the in-process
+# stub records the options; the test below asserts they equal
+# this, so a future wiring regression goes red. The live-mode
+# test asserts the same options on the subprocess stub's record.
+EXPECTED_LAUNCH_OPTIONS = {
+    "viewport": {"width": 1366, "height": 768},
+    "timezone_id": "Africa/Cairo",
+    "args": ["--disable-blink-features=AutomationControlled"],
+    "user_agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                   "AppleWebKit/537.36 (KHTML, like Gecko) "
+                   "Chrome/124.0.0.0 Safari/537.36"),
+    "locale": "ar-EG",
+}
+
 
 class _StubResponse:
     def __init__(self, status=200):
@@ -713,10 +728,15 @@ def test_f2_profile_fetcher_uses_the_profile_session():
         check("F2: profile fetcher returns the page body",
               res["body"] == CANNED_EMPTY_PAGE
               and res["status"] == 200 and res["fetched_at"])
+        launch_options = [c[1] for c in calls
+                          if c[0] == "launch-options"]
         check("F2: profile fetcher launched a persistent context "
-              "on the profile dir, with the launch headless value",
+              "on the profile dir, with the launch headless value "
+              "and the harvester launch options (#369 F4)",
               ("launch", "/fake/egx-profile",
-               not bool(os.environ.get("DISPLAY"))) in calls)
+               not bool(os.environ.get("DISPLAY"))) in calls
+              and len(launch_options) == 1
+              and launch_options[0] == EXPECTED_LAUNCH_OPTIONS)
         check("F2: profile fetcher navigated the browser to the URL",
               ("goto", url) in calls)
         fetcher.close()
@@ -763,19 +783,51 @@ def test_f2_profile_fetcher_fails_closed_without_playwright():
                 sys.modules[k] = v
 
 
+# The subprocess stub records every launch/navigation to this
+# file in the stub dir (#369, INS-366 F3): a launch failure
+# leaves no launch record, so the live-mode test can no longer
+# pass without a real fake session.
+_STUB_CALLS_NAME = "calls.jsonl"
+
+_LAUNCH_SIGNATURES = ("launch_persistent_context", "viewport",
+                      "unexpected keyword argument")
+
+
+def _is_launch_signature_failure(failure):
+    """True when a ledger failure is the launch failing — the
+    signature the pre-fix stub produced (TypeError on the
+    `viewport` keyword)."""
+    reason = str(failure.get("reason", ""))
+    return any(sig in reason for sig in _LAUNCH_SIGNATURES)
+
+
 def _write_stub_playwright_package(stub_dir):
     """A fake `playwright` package on disk: the enumerator
     subprocess (run under the venv python) imports it via
-    PYTHONPATH and serves the canned empty page for every URL."""
+    PYTHONPATH and serves the canned empty page for every URL.
+    Every launch/navigation is appended to calls.jsonl in the
+    stub dir, so the live-mode test can prove the fake session
+    really launched and navigated (#369 F3)."""
     pkg = stub_dir / "playwright"
     pkg.mkdir(parents=True, exist_ok=True)
+    calls_path = stub_dir / _STUB_CALLS_NAME
+    if calls_path.is_file():
+        calls_path.unlink()
     (pkg / "__init__.py").write_text("", encoding="utf-8")
     (pkg / "sync_api.py").write_text(
+        "import json\n"
+        "CALLS = %r\n"
         "CANNED = %r\n"
+        "def _record(event, **kw):\n"
+        "    rec = {\"event\": event}\n"
+        "    rec.update(kw)\n"
+        "    with open(CALLS, \"a\", encoding=\"utf-8\") as f:\n"
+        "        f.write(json.dumps(rec) + \"\\n\")\n"
         "class _Resp:\n"
         "    status = 200\n"
         "class _Page:\n"
         "    def goto(self, url, timeout=None, wait_until=None):\n"
+        "        _record(\"goto\", url=url)\n"
         "        return _Resp()\n"
         "    def content(self):\n"
         "        return CANNED\n"
@@ -787,6 +839,8 @@ def _write_stub_playwright_package(stub_dir):
         "class _Chromium:\n"
         "    def launch_persistent_context(self, profile_dir,\n"
         "                                headless=None, **options):\n"
+        "        _record(\"launch\", profile_dir=profile_dir,\n"
+        "                headless=headless, options=options)\n"
         "        return _Ctx()\n"
         "class _PW:\n"
         "    def __init__(self):\n"
@@ -796,7 +850,7 @@ def _write_stub_playwright_package(stub_dir):
         "    def stop(self):\n"
         "        pass\n"
         "def sync_playwright():\n"
-        "    return _PW()\n" % CANNED_EMPTY_PAGE,
+        "    return _PW()\n" % (str(calls_path), CANNED_EMPTY_PAGE),
         encoding="utf-8")
 
 
@@ -821,6 +875,16 @@ def test_f2_live_mode_runs_through_the_profile():
             os.environ["PYTHONPATH"] = old_path
         shutil.rmtree(profile_dir, ignore_errors=True)
     enum_cmds = [c for c in COMMANDS_SEEN if "top30_enumerate.py" in c]
+    # The subprocess stub's own record of what the fake session
+    # did (#369 F3): a launch failure leaves no launch record
+    # and no gotos, so the checks below go red instead of
+    # passing on the honest-looking ledger alone.
+    calls_path = stub_dir / _STUB_CALLS_NAME
+    records = ([json.loads(line) for line in
+                calls_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()] if calls_path.is_file() else [])
+    launches = [r for r in records if r.get("event") == "launch"]
+    gotos = [r for r in records if r.get("event") == "goto"]
     check("F2: live mode invokes the enumerator once",
           ENUMERATOR_INVOKED["n"] == before + 1 and len(enum_cmds) == 1)
     check("F2: live mode passes --transport profile to the "
@@ -829,19 +893,40 @@ def test_f2_live_mode_runs_through_the_profile():
               for c in enum_cmds))
     check("F2: live mode passes the persistent profile dir",
           any(str(profile_dir) in c for c in enum_cmds))
-    check("F2: live mode through the profile completes ok",
+    check("F2: live mode through the profile completes ok "
+          "(fake session really launched and navigated, #369 F3)",
           pub.get("manifest", {}).get("tools", {}).get(
-              "top30-enumerate") == "ok")
+              "top30-enumerate") == "ok"
+          and len(launches) == 1
+          and launches[0].get("profile_dir") == str(profile_dir)
+          and launches[0].get("options") == EXPECTED_LAUNCH_OPTIONS
+          and len(gotos) >= 1
+          and all(g.get("url", "").startswith(
+              "https://www.egx.com.eg/") for g in gotos))
     wd = worker.OUT / "test-346-live-profile" / "top30"
     ledger = json.loads(
         (wd / "top30_expected_docs.json").read_text(encoding="utf-8"))
     check("F2: live ledger records transport=profile",
-          ledger.get("transport") == "profile")
+          ledger.get("transport") == "profile"
+          and len(ledger.get("live_access", {}).get("probes", [])) == 1
+          and ledger["live_access"]["probes"][0].get(
+              "reachable") is True
+          and ledger["live_access"]["probes"][0].get("url") in
+          [g.get("url") for g in gotos])
     check("F2: live ledger mode is live, honestly open (FAITA "
           "blocked, canned empty pages)",
           ledger["mode"] == "live"
           and ledger["collection"]["enumeration_closed"] is False
-          and len(ledger["issuers"]) == 30)
+          and len(ledger["issuers"]) == 30
+          and len(gotos) == 1 + sum(
+              l.get("pages_fetched", 0)
+              for i in ledger["issuers"] for l in i["listings"])
+          and not any(_is_launch_signature_failure(f)
+                      for i in ledger["issuers"]
+                      for l in i["listings"]
+                      for f in l.get("failures", []))
+          and not any(_is_launch_signature_failure(f)
+                      for f in ledger.get("failures", [])))
     faita = [l for i in ledger["issuers"] for l in i["listings"]
              if l["code"] == "FAITA"][0]
     check("F2: live ledger still carries FAITA as the named "
