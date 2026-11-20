@@ -49,8 +49,12 @@ there is nothing left to drift.
 
 The `promotion-gate` workflow runs the same check on every PR to
 `worker-release` (head ≠ `main`, head SHA == `Reviewed-SHA:` trailer).
-It is advisory until added to worker-release's required status
-checks — see "Branch protection" below.
+The `frozen-candidate` job in the `promotion-gate` workflow is
+required on `worker-release`, as reported by the repository owner and
+recorded in the workflow header. The complete current required-check
+list must be confirmed through an authorized branch-protection read.
+Branch-protection read 2026-11-20 confirms the list is exactly
+[`frozen-candidate`] (`strict: false`).
 
 ## What NOT to do
 
@@ -78,23 +82,38 @@ SHA is known.
 - `worker-release`: PR required, `required_approving_review_count`
   0 (Muhammad's 2026-11-17 instruction — Moos merges without his
   review), `dismiss_stale_reviews: false`, `enforce_admins: true`,
-  no force pushes, no deletions, **no required status checks**.
+  no force pushes, no deletions (historical snapshot). Required-check
+  update: the repository owner reports `frozen-candidate` as required
+  on `worker-release`; the complete current list was not
+  independently retrieved in this review.
 - `main`: **unprotected** (protection API returns 404) at the same
   read. That is outside #145's scope, but it is why the frozen
   branch matters: `main` can move at any time, so a promotion PR
   tracking it is never stable.
 
-Recommendations for the cycle to apply deliberately (not changed by
-the #145 fix itself):
+Branch-protection read 2026-11-20 (issue #425): the complete current
+required-check list on `worker-release` is [`frozen-candidate`]
+(`strict: false`), and `dismiss_stale_reviews` is now `true` — both
+changed since the 2026-11-17 snapshot above. `main` is still
+unprotected (protection API returns 404, re-checked 2026-11-20).
 
-1. Add `promotion-gate` (the `frozen-candidate` job) as a **required
-   status check** on `worker-release`, so a PR that fails the gate
-   cannot merge even from the web UI.
-2. Once (1) is in place, set `dismiss_stale_reviews: true` on
-   `worker-release`. It is safe now — frozen branches never receive
-   heartbeat commits, so there is no churn to dismiss approvals —
-   and it closes the stale-approval hole for any future PR that
-   does change head.
+Recommendations for the cycle to apply deliberately (not changed by
+the #145 fix itself). Items 1–2 are already in place, confirmed by a
+branch-protection read on 2026-11-20; item 3 remains a separate
+decision:
+
+1. `frozen-candidate` is already reported as required on
+   `worker-release`; do not describe adding it as outstanding work.
+   The workflow is named `promotion-gate`; its required job/check
+   context is `frozen-candidate`. Branch-protection read 2026-11-20
+   confirms the complete required-check list is [`frozen-candidate`]
+   (`strict: false`).
+2. `dismiss_stale_reviews` is already `true` on `worker-release`
+   (branch-protection read 2026-11-20), so there is no longer a
+   stale-review proposal to apply. It is safe — frozen branches never
+   receive heartbeat commits, so there is no churn to dismiss
+   approvals — and it closes the stale-approval hole for any future
+   PR that does change head.
 3. Consider protecting `main` (PR + review) as a separate decision;
    #145 does not depend on it.
 
