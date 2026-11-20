@@ -1304,8 +1304,20 @@ def _write_guard_heartbeat(checkout, status, job_id=None):
     is verified to match, never on the diff alone."""
     for attempt in range(1, GUARD_HEARTBEAT_ATTEMPTS + 1):
         try:
-            sh(f"git -C {checkout} fetch origin main", timeout=120)
-            sh(f"git -C {checkout} reset --hard origin/main", timeout=60)
+            # CodeRabbit #440: a failed fetch/reset must stop the
+            # attempt — otherwise a heartbeat commit is created on
+            # top of a rejected push's commit and the next push
+            # publishes both to main.
+            if sh(f"git -C {checkout} fetch origin main",
+                  timeout=120).returncode != 0:
+                print(f"_write_guard_heartbeat: attempt {attempt}: "
+                      "fetch failed", file=sys.stderr, flush=True)
+                continue
+            if sh(f"git -C {checkout} reset --hard origin/main",
+                  timeout=60).returncode != 0:
+                print(f"_write_guard_heartbeat: attempt {attempt}: "
+                      "reset failed", file=sys.stderr, flush=True)
+                continue
             doc = {"last_run_utc": datetime.now(timezone.utc).strftime(
                        "%Y-%m-%dT%H:%M:%SZ"),
                    "run_id": job_id,
@@ -1483,7 +1495,10 @@ def guard_pending_from_bus(queue_ids, claim_ids, done_ids, now=None):
     suppressed every watchdog page while the heartbeat went stale
     (1547Z/1647Z/1747Z, 2026-11-20). A slot older than the horizon
     is stale evidence, not a pending execution, and must not
-    suppress the page. An id that does not parse as a guard slot
+    suppress the page. A future-dated slot is not pending either
+    (CodeRabbit #440: a negative age passed the horizon check, so
+    an injected future id would suppress the page — the scheduler
+    never produces one). An id that does not parse as a guard slot
     is not pending either (fail-safe towards paging, matching the
     watch script's unknown-pending rule)."""
     if now is None:
@@ -1495,7 +1510,8 @@ def guard_pending_from_bus(queue_ids, claim_ids, done_ids, now=None):
         slot = _guard_slot_time(job_id)
         if slot is None:
             continue
-        if (now - slot).total_seconds() < STALE_CLAIM_HOURS * 3600:
+        age = (now - slot).total_seconds()
+        if 0 <= age < STALE_CLAIM_HOURS * 3600:
             return True
     return False
 
@@ -1562,8 +1578,18 @@ def run_ledger_watchdog(job):
         return False
     try:
         payload = json.loads(out.read_text())
-    except Exception:
+    except FileNotFoundError:
         payload = None
+    except Exception as e:
+        # CodeRabbit #440: only a missing file is the designed
+        # no-signal suppression. An existing but unreadable or
+        # malformed signal file must NOT read as suppression — the
+        # page it carried would be dropped silently. Refuse done;
+        # the next half-hour watch retries.
+        print(f"run_ledger_watchdog: signal file unreadable for "
+              f"{job['id']}: {e}; refusing done",
+              file=sys.stderr, flush=True)
+        return False
     if payload is None:
         # The script exited 0 without writing a payload: the only
         # designed path is the #156 suppression (stale heartbeat

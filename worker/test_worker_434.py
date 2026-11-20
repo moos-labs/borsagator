@@ -30,6 +30,14 @@ The deploy-guard `:23` schedule is documented as best-effort only
 — the relied-upon backstop is the fixed watchdog + the guard's
 done-gate, not the cron.
 
+CodeRabbit review of PR #440 (3 actionable comments, all fixed
+here with regression tests): a failed fetch/reset in
+_write_guard_heartbeat must stop the attempt (a stacked commit
+from a rejected push could otherwise publish to main); a
+future-dated guard slot must not count as pending; an existing
+but unreadable/malformed watchdog signal file must refuse done
+instead of reading as the no-file suppression.
+
 Harness-first: the poison-slot, retry, empty-diff and watchdog
 tests FAIL on pristine main and PASS on the fixed tree. Stdlib
 only; the heartbeat tests run against real local git remotes
@@ -198,6 +206,19 @@ def test_pending_unparsable_guard_id_is_not_pending():
                                         now=NOW) is False)
 
 
+def test_pending_future_slot_is_not_pending():
+    # CodeRabbit #440: a future-dated slot has a negative age, which
+    # passed the old `< horizon` check and suppressed the page.
+    # The scheduler never produces one; an injected future id must
+    # not count as pending.
+    check("pending: slot 107 min in the future is NOT pending",
+          worker.guard_pending_from_bus(["guard-2026-11-20T1947Z"],
+                                        [], [], now=NOW) is False)
+    check("pending: slot exactly now (age 0) IS pending",
+          worker.guard_pending_from_bus(["guard-2026-11-20T1800Z"],
+                                        [], [], now=NOW) is True)
+
+
 # --- (a) _write_guard_heartbeat --------------------------------------
 
 def test_heartbeat_push_lands_and_verifies():
@@ -254,6 +275,100 @@ def test_heartbeat_total_push_failure_returns_false():
         live = main_heartbeat(remote)
         check("heartbeat: nothing landed on main after failure",
               live.get("last_run_utc") == "2026-11-20T14:55:37Z")
+
+
+def test_heartbeat_failed_reset_does_not_stack_commit():
+    # CodeRabbit #440: after a rejected push the heartbeat commit
+    # stays at HEAD. If the next attempt's reset fails and the code
+    # carries on, the new heartbeat is committed on top of the
+    # rejected one and the next push publishes BOTH to main.
+    # Fixed: a failed fetch/reset stops the attempt, so the retry
+    # resets cleanly first. Remote main must hold exactly one new
+    # commit (seed + heartbeat), never the stacked pair.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        real_sh = worker.sh
+        calls = {"push": 0, "reset": 0}
+        # Each attempt must stamp a different second, or the
+        # second attempt stages nothing and the old code's
+        # unverified empty-diff branch returns True vacuously —
+        # the stacked-commit failure would never be exercised.
+        start = datetime(2026, 11, 20, 18, 47, 30,
+                         tzinfo=timezone.utc)
+
+        class Advancing(datetime):
+            _t = [start]
+
+            @classmethod
+            def now(cls, tz=None):
+                t = cls._t[0]
+                cls._t[0] = t + timedelta(seconds=10)
+                return t
+
+        def flaky_sh(cmd, cwd=None, env=None, timeout=3600):
+            if "push origin HEAD:main" in cmd:
+                calls["push"] += 1
+                if calls["push"] == 1:
+                    return subprocess.CompletedProcess(
+                        cmd, 1, "", "rejected: non-fast-forward")
+            if "reset --hard origin/main" in cmd:
+                calls["reset"] += 1
+                if calls["reset"] == 2:
+                    return subprocess.CompletedProcess(
+                        cmd, 1, "", "fatal: unable to read tree")
+            return real_sh(cmd, cwd=cwd, env=env, timeout=timeout)
+
+        worker.sh = flaky_sh
+        real_dt = worker.datetime
+        worker.datetime = Advancing
+        try:
+            ok = worker._write_guard_heartbeat(co, "ok", SLOT)
+        finally:
+            worker.sh = real_sh
+            worker.datetime = real_dt
+        check("heartbeat: push-reject + reset-fail still lands",
+              ok is True)
+        check("heartbeat: push attempted twice", calls["push"] == 2)
+        n = git("--git-dir", str(remote), "rev-list", "--count",
+                "main").stdout.strip()
+        check("heartbeat: exactly one new commit on main (no "
+              "stacked rejected commit)", n == "2")
+        check("heartbeat: reset attempted three times",
+              calls["reset"] == 3)
+        check("heartbeat: on-main run_id is the job id",
+              main_heartbeat(remote).get("run_id") == SLOT)
+
+
+def test_heartbeat_fetch_failure_every_attempt_returns_false():
+    # CodeRabbit #440: a fetch that fails on every attempt must
+    # refuse the heartbeat, not commit-and-push against a stale
+    # origin/main ref. (Old code ignored the fetch return code and
+    # would land the heartbeat anyway.)
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        real_sh = worker.sh
+
+        def dead_fetch_sh(cmd, cwd=None, env=None, timeout=3600):
+            if "fetch origin main" in cmd:
+                return subprocess.CompletedProcess(
+                    cmd, 1, "", "fatal: unable to connect")
+            return real_sh(cmd, cwd=cwd, env=env, timeout=timeout)
+
+        worker.sh = dead_fetch_sh
+        try:
+            ok = worker._write_guard_heartbeat(co, "ok", SLOT)
+        finally:
+            worker.sh = real_sh
+        check("heartbeat: fetch failure on every attempt is False",
+              ok is False)
+        check("heartbeat: nothing landed on main after fetch "
+              "failure",
+              main_heartbeat(remote).get("last_run_utc")
+              == "2026-11-20T14:55:37Z")
 
 
 def test_heartbeat_empty_diff_only_counts_when_verified():
@@ -460,14 +575,50 @@ def test_watchdog_returns_false_when_alert_push_fails():
               ok is False)
 
 
+def test_watchdog_malformed_signal_file_refuses_done():
+    # CodeRabbit #440: the old `except Exception: payload = None`
+    # read an existing-but-unparseable signal file as the designed
+    # no-file suppression and returned True — the page it carried
+    # was dropped. Only a missing file is suppression now; a
+    # malformed file refuses done so the next watch retries.
+    with tempfile.TemporaryDirectory() as td:
+        recent = recent_slot()
+        co, remote = _watch_setup(
+            td,
+            [{"id": POISON, "job": "ledger-guard",
+              "added": "2026-11-19T06:51:00+00:00"},
+             {"id": recent, "job": "ledger-guard",
+              "added": "2026-11-20T17:51:00+00:00"}],
+            done_ids=[recent])
+        (co / "scripts" / "ledger_guard_watch.py").write_text(
+            "import argparse, sys\n"
+            "from pathlib import Path\n"
+            "p = argparse.ArgumentParser()\n"
+            "p.add_argument('--signal-out', required=True)\n"
+            "a, _ = p.parse_known_args()\n"
+            "Path(a.signal_out).write_text('not json{{{')\n"
+            "sys.exit(0)\n")
+        job = {"id": "watch-2026-11-20T1800Z",
+               "job": "ledger-watchdog"}
+        ok = worker.run_ledger_watchdog(job)
+        check("watchdog: malformed signal file refuses done",
+              ok is False)
+        check("watchdog: malformed signal writes no alert",
+              not (worker.BUS / "queue"
+                   / "guard-alert.json").exists())
+
+
 TESTS = [
     test_pending_poison_slot_is_not_pending,
     test_pending_recent_slot_is_pending,
     test_pending_done_slot_is_not_pending,
     test_pending_boundary,
     test_pending_unparsable_guard_id_is_not_pending,
+    test_pending_future_slot_is_not_pending,
     test_heartbeat_push_lands_and_verifies,
     test_heartbeat_push_retries_after_rejection,
+    test_heartbeat_failed_reset_does_not_stack_commit,
+    test_heartbeat_fetch_failure_every_attempt_returns_false,
     test_heartbeat_total_push_failure_returns_false,
     test_heartbeat_empty_diff_only_counts_when_verified,
     test_guard_returns_false_when_push_fails,
@@ -476,6 +627,7 @@ TESTS = [
     test_watchdog_pages_when_stale_and_poison_slot_present,
     test_watchdog_suppressed_when_recent_guard_pending,
     test_watchdog_returns_false_when_alert_push_fails,
+    test_watchdog_malformed_signal_file_refuses_done,
 ]
 
 if __name__ == "__main__":
