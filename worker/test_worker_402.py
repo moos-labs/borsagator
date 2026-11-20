@@ -40,9 +40,19 @@ The main() queue loop already routes non-dict entries through
 the same quarantine (#391) and is untouched here.
 
 Run: python3 worker/test_worker_402.py (exit 0 = all pass).
+
+CodeRabbit Minor on PR #407: each independent test starts from
+empty BUS state (reset_bus) so a malformed-record assertion can
+only pass on records written by that test — never on quarantine
+records left behind by an earlier test. The first schedule run
+and its repeat run live in one test, so the repeat-run setup is
+explicit. Watchdog checks compare each recorded entry against
+the payload written by that test, including the null, string,
+and non-list cases.
 """
 import json
 import os
+import shutil
 import sys
 import tempfile
 from datetime import datetime, timezone
@@ -101,6 +111,25 @@ def malformed_records():
             for f in sorted(d.glob("*.json"))}
 
 
+def reset_bus():
+    """Empty BUS queue state (queue.json, schedule.json, the
+    malformed/ quarantine records) before an independent test.
+    Without this, records left by an earlier test could satisfy a
+    later test's any(...) assertion — a watchdog that filters
+    entries but never quarantines them would still pass."""
+    d = worker.BUS / "queue"
+    if d.exists():
+        shutil.rmtree(d)
+
+
+def entries_with_reason(recs, reason):
+    """Canonical-JSON set of the recorded entries carrying
+    `reason`, for exact comparison against the payload the test
+    itself wrote."""
+    return {json.dumps(r["entry"], sort_keys=True)
+            for r in recs.values() if r["reason"] == reason}
+
+
 # Friday 2026-11-20, 08:20 Cairo = 06:20 UTC: a daily 08:15 entry
 # is due (fire) and inside the 09:30 Cairo catch-up cutoff.
 DUE_NOW = datetime(2026, 11, 20, 6, 20, tzinfo=timezone.utc)
@@ -112,7 +141,11 @@ DUE_JOB_ID = "sched-2026-11-20"
 def test_schedule_check_quarantines_non_objects_and_enqueues():
     """Null + string entries: the check runs to completion, both
     bad entries are quarantined with evidence, the due job is
-    still enqueued and the valid entry is untouched."""
+    still enqueued and the valid entry is untouched. The repeat
+    run lives in this same test, so its setup (the queue left by
+    the first run) is explicit: re-running the check neither
+    re-pushes the skips nor re-enqueues the due job."""
+    reset_bus()
     PUSHED.clear()
     write_schedule([DUE_ENTRY])
     write_queue([None, "junk-string",
@@ -121,15 +154,13 @@ def test_schedule_check_quarantines_non_objects_and_enqueues():
                   "added": worker.now()}])
     worker.run_schedule_check(now_override=DUE_NOW)
     recs = malformed_records()
-    check("schedule: null entry quarantined with reason "
-          "not-an-object",
-          any(r["reason"] == "not-an-object" and r["entry"] is None
-              for r in recs.values()))
-    check("schedule: string entry quarantined with reason "
-          "not-an-object",
-          any(r["reason"] == "not-an-object"
-              and r["entry"] == "junk-string"
-              for r in recs.values()))
+    check("schedule: exactly the two bad entries are quarantined",
+          len(recs) == 2)
+    check("schedule: null + string entries quarantined with "
+          "reason not-an-object, entries matching this test's "
+          "payloads",
+          entries_with_reason(recs, "not-an-object")
+          == {json.dumps(None), json.dumps("junk-string")})
     check("schedule: the skips are pushed to the bus",
           sum("malformed queue entry skipped" in m for m in PUSHED)
           == 2)
@@ -145,11 +176,7 @@ def test_schedule_check_quarantines_non_objects_and_enqueues():
           None in queue and "junk-string" in queue)
     check("schedule: the enqueue itself is pushed",
           any(f"schedule {DUE_JOB_ID}" in m for m in PUSHED))
-
-
-def test_schedule_check_second_run_is_quiet():
-    """Re-running the check (same queue, due job already handled)
-    neither re-pushes the skips nor re-enqueues the due job."""
+    # Repeat run, same test (see docstring).
     PUSHED.clear()
     before = len(malformed_records())
     worker.run_schedule_check(now_override=DUE_NOW)
@@ -169,17 +196,18 @@ def test_schedule_check_non_list_queue_skips_not_crashes():
     """A queue.json holding a JSON object (not a list) is
     quarantined as one malformed payload and the check skips
     instead of crashing on the append."""
+    reset_bus()
     PUSHED.clear()
     write_schedule([DUE_ENTRY])
     write_queue({"id": "not-a-list", "job": "sweep-lite POUL.CA"})
     worker.run_schedule_check(now_override=DUE_NOW)
     recs = malformed_records()
-    check("schedule non-list: the payload is quarantined with "
-          "reason queue-not-a-list",
-          any(r["reason"] == "queue-not-a-list"
-              and r["entry"] == {"id": "not-a-list",
-                                 "job": "sweep-lite POUL.CA"}
-              for r in recs.values()))
+    check("schedule non-list: exactly one record, the payload "
+          "quarantined with reason queue-not-a-list",
+          len(recs) == 1
+          and entries_with_reason(recs, "queue-not-a-list")
+          == {json.dumps({"id": "not-a-list",
+                          "job": "sweep-lite POUL.CA"})})
     check("schedule non-list: queue.json is left untouched "
           "(no append, no truncation)",
           read_queue_file() == {"id": "not-a-list",
@@ -217,6 +245,7 @@ def test_watchdog_quarantines_non_objects_and_runs():
     """Null + string entries: the watchdog runs to completion (the
     script is invoked), both bad entries are quarantined, and the
     valid guard-pending id still flows into the pending check."""
+    reset_bus()
     PUSHED.clear()
     fake = _FakeRun()
     checkout = _TMP / "main-checkout"
@@ -241,20 +270,19 @@ def test_watchdog_quarantines_non_objects_and_runs():
     check("watchdog: the queued guard id still counts as pending",
           fake.last_pending == "yes")
     recs = malformed_records()
-    check("watchdog: null entry quarantined with reason "
-          "not-an-object",
-          any(r["reason"] == "not-an-object" and r["entry"] is None
-              for r in recs.values()))
-    check("watchdog: string entry quarantined with reason "
-          "not-an-object",
-          any(r["reason"] == "not-an-object"
-              and r["entry"] == "junk-string"
-              for r in recs.values()))
+    check("watchdog: exactly the two bad entries are quarantined",
+          len(recs) == 2)
+    check("watchdog: null + string entries quarantined with "
+          "reason not-an-object, entries matching this test's "
+          "payloads",
+          entries_with_reason(recs, "not-an-object")
+          == {json.dumps(None), json.dumps("junk-string")})
 
 
 def test_watchdog_non_list_queue_runs():
     """A queue.json holding a JSON object does not abort the
     watchdog either; the payload is quarantined as one record."""
+    reset_bus()
     PUSHED.clear()
     fake = _FakeRun()
     checkout = _TMP / "main-checkout"
@@ -272,41 +300,46 @@ def test_watchdog_non_list_queue_runs():
         worker.scripts_match = real_match
     check("watchdog non-list: returns True (the check ran)",
           ran is True)
-    check("watchdog non-list: the payload is quarantined with "
-          "reason queue-not-a-list",
-          any(r["reason"] == "queue-not-a-list"
-              for r in malformed_records().values()))
+    recs = malformed_records()
+    check("watchdog non-list: exactly one record, the payload "
+          "quarantined with reason queue-not-a-list",
+          len(recs) == 1
+          and entries_with_reason(recs, "queue-not-a-list")
+          == {json.dumps({"id": "not-a-list",
+                          "job": "ledger-guard"})})
 
 
 def test_helper_filters_and_quarantines():
+    reset_bus()
     entries = worker._quarantine_non_object_entries(
         [{"id": "a"}, None, "x", ["sweep-lite"], {"id": "b"}])
     check("helper: only the dict entries are returned",
           entries == [{"id": "a"}, {"id": "b"}])
     recs = malformed_records()
-    check("helper: each non-object entry has a not-an-object "
-          "record with the raw entry kept",
-          all(any(r["reason"] == "not-an-object" and r["entry"] == e
-                  for r in recs.values())
-              for e in (None, "x", ["sweep-lite"])))
+    check("helper: exactly the three non-object entries have a "
+          "not-an-object record with the raw entry kept",
+          len(recs) == 3
+          and entries_with_reason(recs, "not-an-object")
+          == {json.dumps(e, sort_keys=True)
+              for e in (None, "x", ["sweep-lite"])})
 
 
 def test_helper_control_clean_queue():
-    before = len(malformed_records())
+    reset_bus()
     entries = worker._quarantine_non_object_entries(
         [{"id": "test-402-clean", "job": "sweep-lite POUL.CA"}])
     check("control: a clean queue passes through unchanged",
           entries == [{"id": "test-402-clean",
                        "job": "sweep-lite POUL.CA"}])
     check("control: a clean queue creates no malformed record",
-          len(malformed_records()) == before)
+          len(malformed_records()) == 0)
 
 
 def test_schedule_check_control_clean_queue_enqueues():
     """Control: with no bad entries the due job still enqueues
     exactly as before (no behaviour change on the happy path)."""
+    reset_bus()
     PUSHED.clear()
-    before = len(malformed_records())
     write_schedule([DUE_ENTRY])
     write_queue([{"id": "test-402-clean2",
                   "job": "sweep-lite POUL.CA market=EGX",
@@ -316,13 +349,12 @@ def test_schedule_check_control_clean_queue_enqueues():
           any(isinstance(e, dict) and e.get("id") == DUE_JOB_ID
               for e in read_queue_file()))
     check("control: a clean queue creates no malformed record",
-          len(malformed_records()) == before)
+          len(malformed_records()) == 0)
 
 
 def main():
     worker.push_bus = fake_push_bus
     test_schedule_check_quarantines_non_objects_and_enqueues()
-    test_schedule_check_second_run_is_quiet()
     test_schedule_check_non_list_queue_skips_not_crashes()
     test_watchdog_quarantines_non_objects_and_runs()
     test_watchdog_non_list_queue_runs()
