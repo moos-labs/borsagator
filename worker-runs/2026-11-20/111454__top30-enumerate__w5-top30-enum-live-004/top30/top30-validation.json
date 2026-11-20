@@ -1,0 +1,17 @@
+{
+ "job": "top30-enumerate",
+ "mode": "live",
+ "transport": "profile",
+ "enumerator": "scripts/top30_enumerate.py",
+ "ledger": "top30/top30_expected_docs.json",
+ "required_cells": "top30/top30_required_cells.json",
+ "required_cells_sha256": "b8703d19822b9d561a3312e14027a6f01bae2e9be5c76139de2ce4b57cf59b33",
+ "required_cells_count": 90,
+ "enumeration_closed": false,
+ "pagination_complete": false,
+ "enumerated": 0,
+ "failures": 31,
+ "valid": true,
+ "reasons": [],
+ "validated_at": "2026-11-20T11:14:53.831890+00:00"
+}
