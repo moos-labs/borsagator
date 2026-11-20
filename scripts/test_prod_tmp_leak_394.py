@@ -24,17 +24,21 @@ The TMPDIR must point under a scratch dir, never the shared /tmp
 (issue #388: worker tests leak hundreds of MB into /tmp).
 Exit 0 only when every test passes.
 """
+import builtins
 import glob
 import json
 import os
+import socket
 import subprocess
 import sys
 import tempfile
 from types import SimpleNamespace
+from urllib.parse import urlparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
+import diag_egx_ab as diag  # noqa: E402
 import ledger_publish as pub  # noqa: E402
 
 RESULTS = []
@@ -294,6 +298,98 @@ def test_dry_run_keeps_explicit_profile():
         assert _diag_residue(tmpdir) == [], _diag_residue(tmpdir)
 
 
+def _run_main_with_stub_print_failure(argv, tmpdir):
+    """Run the REAL diag main() with the dry-run stub print raising
+    BrokenPipeError (closed-pipe stdout). Returns (srv, base, error):
+    the stub server that was started and the BrokenPipeError main()
+    raised (or None if it did not raise). The auto-created profile
+    dir lands in tmpdir (via tempfile.tempdir)."""
+    saved_tempdir = tempfile.tempdir
+    saved_print = builtins.print
+    saved_start = diag.start_stub_server
+    seen = {}
+
+    def _start_stub_server():
+        srv, base = saved_start()
+        seen["srv"] = srv
+        seen["base"] = base
+        return srv, base
+
+    def _failing_print(*args, **kwargs):
+        if args and isinstance(args[0], str) and \
+                args[0].startswith("dry-run: stub at"):
+            raise BrokenPipeError("simulated closed-pipe stdout")
+        return saved_print(*args, **kwargs)
+
+    tempfile.tempdir = tmpdir
+    builtins.print = _failing_print
+    diag.start_stub_server = _start_stub_server
+    error = None
+    try:
+        diag.main(argv)
+    except BrokenPipeError as e:
+        error = e
+    finally:
+        builtins.print = saved_print
+        diag.start_stub_server = saved_start
+        tempfile.tempdir = saved_tempdir
+    return seen.get("srv"), seen.get("base"), error
+
+
+def _assert_stub_server_down(base):
+    port = urlparse(base).port
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=2):
+            raise AssertionError(
+                "stub server on port %d still accepting after "
+                "setup failure" % port)
+    except (ConnectionRefusedError, OSError):
+        pass
+
+
+def test_dry_run_stub_print_failure_removes_auto_profile():
+    """CodeRabbit Minor on PR #397: the stub print used to run before
+    the cleanup try/finally, so a BrokenPipeError there leaked the
+    auto-created profile dir. It must now be removed, and the stub
+    server shut down."""
+    with tempfile.TemporaryDirectory(
+            prefix="test-394-diag-") as scratch:
+        tmpdir = os.path.join(scratch, "tmp")
+        os.makedirs(tmpdir, exist_ok=True)
+        out = os.path.join(scratch, "out")
+        _srv, base, err = _run_main_with_stub_print_failure(
+            ["--dry-run", "--out-dir", out], tmpdir)
+        assert isinstance(err, BrokenPipeError), \
+            "expected BrokenPipeError from the stub print, got %r" % err
+        assert base is not None, "stub server was never started"
+        assert _diag_residue(tmpdir) == [], _diag_residue(tmpdir)
+        _assert_stub_server_down(base)
+
+
+def test_dry_run_stub_print_failure_keeps_explicit_profile():
+    """Same setup failure, but with a user-supplied --profile: the
+    explicit profile must survive untouched."""
+    with tempfile.TemporaryDirectory(
+            prefix="test-394-diag-") as scratch:
+        tmpdir = os.path.join(scratch, "tmp")
+        os.makedirs(tmpdir, exist_ok=True)
+        profile = os.path.join(scratch, "explicit-prof")
+        os.makedirs(profile)
+        marker = os.path.join(profile, "keep-me.txt")
+        with open(marker, "w", encoding="utf-8") as f:
+            f.write("user-supplied profile\n")
+        out = os.path.join(scratch, "out")
+        _srv, base, err = _run_main_with_stub_print_failure(
+            ["--dry-run", "--profile", profile, "--out-dir", out],
+            tmpdir)
+        assert isinstance(err, BrokenPipeError), \
+            "expected BrokenPipeError from the stub print, got %r" % err
+        assert os.path.isdir(profile), \
+            "explicit --profile must never be removed"
+        assert os.path.exists(marker), "explicit profile contents kept"
+        assert _diag_residue(tmpdir) == [], _diag_residue(tmpdir)
+
+
 TESTS = [
     ("publish unchanged leaves no ledger-run-* residue",
      test_publish_unchanged_no_residue),
@@ -311,6 +407,10 @@ TESTS = [
      test_dry_run_no_profile_residue),
     ("dry-run keeps an explicit --profile",
      test_dry_run_keeps_explicit_profile),
+    ("dry-run stub print failure removes auto-created profile",
+     test_dry_run_stub_print_failure_removes_auto_profile),
+    ("dry-run stub print failure keeps an explicit --profile",
+     test_dry_run_stub_print_failure_keeps_explicit_profile),
 ]
 
 
