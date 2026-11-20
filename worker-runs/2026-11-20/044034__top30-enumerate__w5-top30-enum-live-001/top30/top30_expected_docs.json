@@ -1,0 +1,1425 @@
+{
+ "schema_version": 1,
+ "issue": 283,
+ "manifest": {
+  "path": "evaluation/top30_manifest.json",
+  "base_commit": "424f4b3",
+  "frozen_at": "2026-11-19",
+  "quarter": "2026-08-19 -> 2026-11-19"
+ },
+ "window": {
+  "start": "2026-08-19",
+  "end": "2026-11-19",
+  "inclusive": true
+ },
+ "enumerator": "scripts/top30_enumerate.py",
+ "enumerator_version": "1.0.0",
+ "run_id": "20261120T044020Z",
+ "generated_at": "2026-11-20T04:40:20Z",
+ "mode": "live",
+ "live_access": {
+  "reachable": false,
+  "probes": [
+   {
+    "url": "https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20",
+    "at": "2026-11-20T04:40:17Z",
+    "reachable": false,
+    "detail": "FetchFailure: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02051C018&sec_id=20\", waiting until \"domcontentloaded\"\n"
+   }
+  ]
+ },
+ "collection": {
+  "enumerated": 0,
+  "archived": 0,
+  "missing": [],
+  "enumeration_closed": false,
+  "pagination_complete": false
+ },
+ "issuers": [
+  {
+   "issuer": "TMGH",
+   "listings": [
+    {
+     "code": "TMGH",
+     "issuer": "TMGH",
+     "isin": "EGS691S1C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "TMGH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "TMGH",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ETEL",
+   "listings": [
+    {
+     "code": "ETEL",
+     "issuer": "ETEL",
+     "isin": "EGS48031C016",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ETEL": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ETEL",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EFIH",
+   "listings": [
+    {
+     "code": "EFIH",
+     "issuer": "EFIH",
+     "isin": "EGS743O1C013",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EFIH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EFIH",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ADIB",
+   "listings": [
+    {
+     "code": "ADIB",
+     "issuer": "ADIB",
+     "isin": "EGS60111C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ADIB": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ADIB",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EFID",
+   "listings": [
+    {
+     "code": "EFID",
+     "issuer": "EFID",
+     "isin": "EGS305I1C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EFID": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EFID",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORAS",
+   "listings": [
+    {
+     "code": "ORAS",
+     "issuer": "ORAS",
+     "isin": "EGS95001C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORAS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORAS",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+    }
+   ]
+  },
+  {
+   "issuer": "FAIT",
+   "listings": [
+    {
+     "code": "FAIT",
+     "issuer": "FAIT",
+     "isin": "EGS60321C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+      }
+     ]
+    },
+    {
+     "code": "FAITA",
+     "issuer": "FAIT",
+     "isin": null,
+     "enumeration_status": "blocked",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "B-02-missing-isin",
+       "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+       "evidence": "evaluation/top30_manifest.json blockers B-02"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "blocked",
+   "terminal_states": {
+    "FAIT": "failed",
+    "FAITA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "FAIT",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+    },
+    {
+     "listing": "FAITA",
+     "kind": "B-02-missing-isin",
+     "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+     "evidence": "evaluation/top30_manifest.json blockers B-02"
+    }
+   ]
+  },
+  {
+   "issuer": "PHDC",
+   "listings": [
+    {
+     "code": "PHDC",
+     "issuer": "PHDC",
+     "isin": "EGS655L1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "PHDC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "PHDC",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+    }
+   ]
+  },
+  {
+   "issuer": "SKPC",
+   "listings": [
+    {
+     "code": "SKPC",
+     "issuer": "SKPC",
+     "isin": "EGS380S1C017",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "SKPC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "SKPC",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAL",
+   "listings": [
+    {
+     "code": "EGAL",
+     "issuer": "EGAL",
+     "isin": "EGS3E181C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EGAL": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EGAL",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ISPH",
+   "listings": [
+    {
+     "code": "ISPH",
+     "issuer": "ISPH",
+     "isin": "EGS512O1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ISPH": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ISPH",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+    }
+   ]
+  },
+  {
+   "issuer": "JUFO",
+   "listings": [
+    {
+     "code": "JUFO",
+     "issuer": "JUFO",
+     "isin": "EGS30901C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "JUFO": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "JUFO",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MCQE",
+   "listings": [
+    {
+     "code": "MCQE",
+     "issuer": "MCQE",
+     "isin": "EGS3C391C017",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MCQE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MCQE",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORHD",
+   "listings": [
+    {
+     "code": "ORHD",
+     "issuer": "ORHD",
+     "isin": "EGS70321C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORHD": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORHD",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+    }
+   ]
+  },
+  {
+   "issuer": "AMOC",
+   "listings": [
+    {
+     "code": "AMOC",
+     "issuer": "AMOC",
+     "isin": "EGS380P1C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "AMOC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "AMOC",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MASR",
+   "listings": [
+    {
+     "code": "MASR",
+     "issuer": "MASR",
+     "isin": "EGS65571C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MASR": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MASR",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ORWE",
+   "listings": [
+    {
+     "code": "ORWE",
+     "issuer": "ORWE",
+     "isin": "EGS33041C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ORWE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ORWE",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+    }
+   ]
+  },
+  {
+   "issuer": "OLFI",
+   "listings": [
+    {
+     "code": "OLFI",
+     "issuer": "OLFI",
+     "isin": "EGS30AL1C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "OLFI": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "OLFI",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+    }
+   ]
+  },
+  {
+   "issuer": "RMDA",
+   "listings": [
+    {
+     "code": "RMDA",
+     "issuer": "RMDA",
+     "isin": "EGS381B1C015",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "RMDA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "RMDA",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+    }
+   ]
+  },
+  {
+   "issuer": "OCDI",
+   "listings": [
+    {
+     "code": "OCDI",
+     "issuer": "OCDI",
+     "isin": "EGS65851C015",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "OCDI": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "OCDI",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ARCC",
+   "listings": [
+    {
+     "code": "ARCC",
+     "issuer": "ARCC",
+     "isin": "EGS3C0O1C016",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ARCC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ARCC",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+    }
+   ]
+  },
+  {
+   "issuer": "IFAP",
+   "listings": [
+    {
+     "code": "IFAP",
+     "issuer": "IFAP",
+     "isin": "EGS07061C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "IFAP": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "IFAP",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MTIE",
+   "listings": [
+    {
+     "code": "MTIE",
+     "issuer": "MTIE",
+     "isin": "EGS75011C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MTIE": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MTIE",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ATQA",
+   "listings": [
+    {
+     "code": "ATQA",
+     "issuer": "ATQA",
+     "isin": "EGS3D0C1C018",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ATQA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ATQA",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+    }
+   ]
+  },
+  {
+   "issuer": "SAUD",
+   "listings": [
+    {
+     "code": "SAUD",
+     "issuer": "SAUD",
+     "isin": "EGS60101C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "SAUD": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "SAUD",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+    }
+   ]
+  },
+  {
+   "issuer": "CIRA",
+   "listings": [
+    {
+     "code": "CIRA",
+     "issuer": "CIRA",
+     "isin": "EGS65541C012",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "CIRA": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "CIRA",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ACGC",
+   "listings": [
+    {
+     "code": "ACGC",
+     "issuer": "ACGC",
+     "isin": "EGS32221C011",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ACGC": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ACGC",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+    }
+   ]
+  },
+  {
+   "issuer": "MPCO",
+   "listings": [
+    {
+     "code": "MPCO",
+     "issuer": "MPCO",
+     "isin": "EGS02091C014",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "MPCO": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "MPCO",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+    }
+   ]
+  },
+  {
+   "issuer": "EGAS",
+   "listings": [
+    {
+     "code": "EGAS",
+     "issuer": "EGAS",
+     "isin": "EGS39011C019",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "EGAS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "EGAS",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+    }
+   ]
+  },
+  {
+   "issuer": "ETRS",
+   "listings": [
+    {
+     "code": "ETRS",
+     "issuer": "ETRS",
+     "isin": "EGS42051C010",
+     "enumeration_status": "failed",
+     "terminal_state": "failed",
+     "source_total": null,
+     "pages_fetched": 0,
+     "collected_ids": [],
+     "documents": [],
+     "failures": [
+      {
+       "kind": "fetch_failed",
+       "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+       "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+      }
+     ]
+    }
+   ],
+   "enumeration_status": "failed",
+   "terminal_states": {
+    "ETRS": "failed"
+   },
+   "source_total": null,
+   "collected_count": 0,
+   "documents": [],
+   "failures": [
+    {
+     "listing": "ETRS",
+     "kind": "fetch_failed",
+     "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+     "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+    }
+   ]
+  }
+ ],
+ "failures": [
+  {
+   "issuer": "TMGH",
+   "listing": "TMGH",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS691S1C011&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+  },
+  {
+   "issuer": "ETEL",
+   "listing": "ETEL",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS48031C016&sec_id=20&page=1 at=2026-11-20T04:40:21Z"
+  },
+  {
+   "issuer": "EFIH",
+   "listing": "EFIH",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS743O1C013&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+  },
+  {
+   "issuer": "ADIB",
+   "listing": "ADIB",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60111C019&sec_id=20&page=1 at=2026-11-20T04:40:22Z"
+  },
+  {
+   "issuer": "EFID",
+   "listing": "EFID",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS305I1C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+  },
+  {
+   "issuer": "ORAS",
+   "listing": "ORAS",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS95001C011&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+  },
+  {
+   "issuer": "FAIT",
+   "listing": "FAIT",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60321C014&sec_id=20&page=1 at=2026-11-20T04:40:23Z"
+  },
+  {
+   "issuer": "FAIT",
+   "listing": "FAITA",
+   "kind": "B-02-missing-isin",
+   "reason": "no verified ISIN for listing FAITA; ISIN-keyed enumeration cannot run (never default to another listing's ISIN)",
+   "evidence": "evaluation/top30_manifest.json blockers B-02"
+  },
+  {
+   "issuer": "PHDC",
+   "listing": "PHDC",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS655L1C012&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+  },
+  {
+   "issuer": "SKPC",
+   "listing": "SKPC",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380S1C017&sec_id=20&page=1 at=2026-11-20T04:40:24Z"
+  },
+  {
+   "issuer": "EGAL",
+   "listing": "EGAL",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3E181C010&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+  },
+  {
+   "issuer": "ISPH",
+   "listing": "ISPH",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS512O1C012&sec_id=20&page=1 at=2026-11-20T04:40:25Z"
+  },
+  {
+   "issuer": "JUFO",
+   "listing": "JUFO",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30901C010&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+  },
+  {
+   "issuer": "MCQE",
+   "listing": "MCQE",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C391C017&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+  },
+  {
+   "issuer": "ORHD",
+   "listing": "ORHD",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS70321C012&sec_id=20&page=1 at=2026-11-20T04:40:26Z"
+  },
+  {
+   "issuer": "AMOC",
+   "listing": "AMOC",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS380P1C010&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+  },
+  {
+   "issuer": "MASR",
+   "listing": "MASR",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65571C019&sec_id=20&page=1 at=2026-11-20T04:40:27Z"
+  },
+  {
+   "issuer": "ORWE",
+   "listing": "ORWE",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS33041C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+  },
+  {
+   "issuer": "OLFI",
+   "listing": "OLFI",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS30AL1C012&sec_id=20&page=1 at=2026-11-20T04:40:28Z"
+  },
+  {
+   "issuer": "RMDA",
+   "listing": "RMDA",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS381B1C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+  },
+  {
+   "issuer": "OCDI",
+   "listing": "OCDI",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65851C015&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+  },
+  {
+   "issuer": "ARCC",
+   "listing": "ARCC",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3C0O1C016&sec_id=20&page=1 at=2026-11-20T04:40:29Z"
+  },
+  {
+   "issuer": "IFAP",
+   "listing": "IFAP",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS07061C012&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+  },
+  {
+   "issuer": "MTIE",
+   "listing": "MTIE",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS75011C014&sec_id=20&page=1 at=2026-11-20T04:40:30Z"
+  },
+  {
+   "issuer": "ATQA",
+   "listing": "ATQA",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS3D0C1C018&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+  },
+  {
+   "issuer": "SAUD",
+   "listing": "SAUD",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS60101C010&sec_id=20&page=1 at=2026-11-20T04:40:31Z"
+  },
+  {
+   "issuer": "CIRA",
+   "listing": "CIRA",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS65541C012&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+  },
+  {
+   "issuer": "ACGC",
+   "listing": "ACGC",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS32221C011&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+  },
+  {
+   "issuer": "MPCO",
+   "listing": "MPCO",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS02091C014&sec_id=20&page=1 at=2026-11-20T04:40:32Z"
+  },
+  {
+   "issuer": "EGAS",
+   "listing": "EGAS",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS39011C019&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+  },
+  {
+   "issuer": "ETRS",
+   "listing": "ETRS",
+   "kind": "fetch_failed",
+   "reason": "fetch failed: Error: Page.goto: net::ERR_CONNECTION_RESET at https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\nCall log:\n  - navigating to \"https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1\", waiting until \"domcontentloaded\"\n",
+   "evidence": "url=https://www.egx.com.eg/ar/NewsSearch.aspx?com=&word=&from=19/08/2026&to=19/11/2026&isin=EGS42051C010&sec_id=20&page=1 at=2026-11-20T04:40:33Z"
+  }
+ ],
+ "transport": "profile"
+}
