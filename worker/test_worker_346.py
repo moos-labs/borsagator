@@ -714,8 +714,9 @@ def test_f2_profile_fetcher_uses_the_profile_session():
               res["body"] == CANNED_EMPTY_PAGE
               and res["status"] == 200 and res["fetched_at"])
         check("F2: profile fetcher launched a persistent context "
-              "on the profile dir, headless",
-              ("launch", "/fake/egx-profile", True) in calls)
+              "on the profile dir, with the launch headless value",
+              ("launch", "/fake/egx-profile",
+               not bool(os.environ.get("DISPLAY"))) in calls)
         check("F2: profile fetcher navigated the browser to the URL",
               ("goto", url) in calls)
         fetcher.close()
