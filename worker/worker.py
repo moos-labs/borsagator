@@ -2517,6 +2517,112 @@ def run_top30_enumerate(job, workdir):
     return {"top30-enumerate": "ok"}
 
 
+# --- Issue #283: paired A/B single-URL EGX diagnostic probe -------
+# The live top-30 enumeration reset on every listing
+# (``Page.goto: net::ERR_CONNECTION_RESET``) while a diagnostic
+# harvest did NOT reset (homepage 200; NewsSearch -> EGX_Error.aspx;
+# /ar/ warmup 403). The two tools launch Chromium differently and
+# time and configuration are confounded across all runs so far, so
+# this probe runs BOTH launch configs against ONE fixed URL
+# (scripts/diag_egx_ab.py, legs A-B-A, clean context close between
+# legs). The URL is fixed in the script: the job takes no arguments.
+# A probe that records both legs resetting is an honest "ok" with
+# verdict shared-access-problem, not a job failure — the record,
+# not the EGX response, is the deliverable (same honest-failure
+# rule as run_top30_enumerate). Dispatches in _execute_body before
+# parse_job, like harvest-egx / top30-enumerate: the registry has
+# no diag tool. Runs on the worker only, after verify -> merge ->
+# promote -> adopt.
+DIAG_EGX_AB_TIMEOUT = 1800  # 3 legs x 90 s nav + settle + launch
+
+
+def parse_diag_egx_ab_job(job):
+    """Parse a `diag-egx-ab` job string into a plan dict, or None
+    when the string is not exactly that job. Grammar: `diag-egx-ab`
+    and nothing else — the URL is fixed in scripts/diag_egx_ab.py,
+    so any argument fails closed (None). NOTE: parse_job (the
+    registry grammar) still returns [] for this string — the
+    registry has no diag tool. Dispatch happens in _execute_body
+    before parse_job, like harvest-egx."""
+    parts = (job or "").split()
+    if parts != ["diag-egx-ab"]:
+        return None
+    return {"kind": "diag-egx-ab"}
+
+
+def run_diag_egx_ab(job, workdir):
+    """Issue #283: run scripts/diag_egx_ab.py for one `diag-egx-ab`
+    job, in the egx-harvest playwright venv, under xvfb-run (leg A
+    is headful iff DISPLAY is set, exactly like run_harvest, so the
+    harvester launch is reproduced faithfully). The record +
+    human log land under workdir/diag-egx-ab/ and ride the archive
+    publish. Returns {"diag-egx-ab": status}:
+      ok — the probe ran and the record is well-formed. Any
+        verdict (config-dependent / shared-access-problem /
+        not-reproduced / inconclusive) is an "ok": the record is
+        the deliverable.
+      bad-job — the job string is not a diag-egx-ab job.
+      profile-missing / venv-failed / exit-N / record-missing /
+      record-unparseable / record-invalid — named failures; the
+        evidence written so far still archives, so the failure is
+        inspectable.
+    Live mode requires the persistent Chromium profile: the probe's
+    premise is the SAME profile both tools use, and without it the
+    legs would not reproduce either launch."""
+    plan = parse_diag_egx_ab_job(job["job"])
+    run_dir = Path(workdir) / "diag-egx-ab"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    if plan is None:
+        (run_dir / "diag-egx-ab-worker.log").write_text(
+            "bad job: %r\n" % job["job"])
+        return {"diag-egx-ab": "bad-job"}
+    if not _egx_profile_dir().is_dir():
+        (run_dir / "diag-egx-ab-worker.log").write_text(
+            "diag needs the persistent Chromium profile at %s "
+            "(created by a harvest run); refusing to probe without "
+            "it\n" % _egx_profile_dir())
+        return {"diag-egx-ab": "profile-missing"}
+    py, venv_ready = _ensure_egx_playwright_venv()
+    if not venv_ready:
+        (run_dir / "diag-egx-ab-worker.log").write_text(
+            "playwright venv not ready: no interpreter at %s\n" % py)
+        return {"diag-egx-ab": "venv-failed"}
+    script = CODE / "scripts" / "diag_egx_ab.py"
+    cmd = [str(py), str(script),
+           "--profile", str(_egx_profile_dir()),
+           "--out-dir", str(run_dir)]
+    if Path("/usr/bin/xvfb-run").exists():
+        # run_harvest's wrapper, verbatim: leg A needs DISPLAY.
+        cmd = ["xvfb-run", "-a", "-s", "-screen 0 1366x768x24"] + cmd
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    # shlex.quote each part: the profile/out paths come from the
+    # worker root, but the quoting rule is the same as
+    # run_top30_enumerate (INS-R3-01).
+    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=run_dir,
+           env=env, timeout=DIAG_EGX_AB_TIMEOUT)
+    (run_dir / "diag-egx-ab-worker.log").write_text(
+        (r.stdout + r.stderr)[-4000:])
+    if r.returncode != 0:
+        return {"diag-egx-ab": "exit-%d" % r.returncode}
+    record_path = run_dir / "diag-egx-ab.json"
+    if not record_path.exists():
+        return {"diag-egx-ab": "record-missing"}
+    try:
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001 — named failure, not a crash
+        (run_dir / "diag-egx-ab-worker.log").write_text(
+            "record unparseable: %s: %s\n" % (type(e).__name__, e))
+        return {"diag-egx-ab": "record-unparseable"}
+    legs = record.get("legs_records") \
+        if isinstance(record, dict) else None
+    if not isinstance(legs, list) or not legs or not all(
+            isinstance(leg, dict) and leg.get("classification")
+            for leg in legs):
+        return {"diag-egx-ab": "record-invalid"}
+    return {"diag-egx-ab": "ok"}
+
+
 HARVEST_TTL_HOURS = 12
 
 
@@ -3840,6 +3946,21 @@ def _execute_body(job):
         # (done means executed + archived, as for harvest-egx);
         # only a failed publish leaves the job unmarked.
         manifest["tools"] = run_top30_enumerate(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
+    # Issue #283: paired A/B EGX probe — same dispatch shape as
+    # top30-enumerate above (before parse_job; the registry has no
+    # diag tool). A bad job string still publishes its named failure
+    # and marks done (done means executed + archived, as for
+    # harvest-egx); only a failed publish leaves the job unmarked.
+    if (job["job"] or "").split()[:1] == ["diag-egx-ab"]:
+        manifest["tools"] = run_diag_egx_ab(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
