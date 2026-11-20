@@ -650,6 +650,74 @@ def test_httperror_403_non_challenge_body_still_captured():
     return ok, ("probe=%s" % (probe,))
 
 
+def test_httperror_body_read_failure_not_captured_empty():
+    """Issue #383 (CodeRabbit Minor on PR #375, follow-up to #372):
+    an HTTPError whose body cannot be read must NOT be recorded
+    as a full capture of an empty body. http_fetch carries
+    body=None (status kept) on a failed read, and
+    probe_live_access records capture_state "body_unreadable"
+    with the status kept and every body field unset — no
+    body_chars=0 / empty-body digest presented as a full capture.
+    Contrast: a genuinely empty body that really arrived IS still
+    recorded as captured (body_chars=0, sha256 of "")."""
+    import urllib.request
+
+    class _FailingBody(io.BytesIO):
+        def read(self, *args, **kwargs):
+            raise IOError("simulated body read failure")
+
+    url = E.search_url("EGS02051C018")
+    real_urlopen = urllib.request.urlopen
+
+    def _raise_403_unreadable(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None,
+            fp=_FailingBody(b"never read"))
+
+    def _raise_403_empty(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None, fp=io.BytesIO(b""))
+    empty_digest = hashlib.sha256(b"").hexdigest()
+    try:
+        urllib.request.urlopen = _raise_403_unreadable
+        # http_fetch level: status kept, body None, read cause kept.
+        try:
+            E.http_fetch(url)
+            fetch_ok = False
+            ferr = None
+        except E.FetchFailure as e:
+            fetch_ok = (e.status == 403 and e.body is None
+                        and "unreadable" in e.error)
+            ferr = e
+        # Probe level (default fetcher = http_fetch, real path).
+        probe = E.probe_live_access()
+        ok = (fetch_ok
+              and probe["reachable"] is False
+              and probe["status"] == 403
+              and probe["body_chars"] is None
+              and probe["body_sha256"] is None
+              and probe["body_hash_kind"] is None
+              and probe["challenge"] is None
+              and probe["challenge_markers"] == []
+              and probe["vendor_hint"] is None
+              and probe["capture_state"] == "body_unreadable"
+              and probe["body_sha256"] != empty_digest
+              and "HTTPError" in probe["detail"])
+        # Contrast: a genuinely empty body that really arrived is
+        # still a full capture of an empty body.
+        urllib.request.urlopen = _raise_403_empty
+        empty_probe = E.probe_live_access()
+        ok = (ok and empty_probe["status"] == 403
+              and empty_probe["body_chars"] == 0
+              and empty_probe["body_sha256"] == empty_digest
+              and empty_probe["body_hash_kind"] == "full"
+              and empty_probe["capture_state"] == "captured")
+    finally:
+        urllib.request.urlopen = real_urlopen
+    return ok, ("probe=%s empty_probe_state=%s ferr=%s"
+                % (probe, empty_probe["capture_state"], ferr))
+
+
 def test_attachment_link_classification():
     ok = (E.classify_attachment_link(
               "https://www.egx.com.eg/ar/file.pdf", "report")
@@ -702,6 +770,8 @@ CASES = [
      test_httperror_403_probe_preserves_evidence),
     ("httperror-403-non-challenge-body-still-captured",
      test_httperror_403_non_challenge_body_still_captured),
+    ("httperror-body-read-failure-not-captured-empty",
+     test_httperror_body_read_failure_not_captured_empty),
     ("attachment-link-classification",
      test_attachment_link_classification),
     ("isin-validation-mirrors-harvester",

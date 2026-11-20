@@ -117,15 +117,22 @@ listings (FAIT/FAITA union) are deduplicated by source id.
   FULL body received (`body_hash_kind: "full"`); a clipped-body
   hash is never presented as full, mirroring the corpus rule.
   `capture_state` is `captured`, `fetch_failed`, `probe_error`,
-  or `not_attempted` (fixtures mode, no live fetch) — a failed
-  capture keeps the original probe result (`reachable: false`,
-  `detail` with the error). A non-2xx response that actually
-  arrived (HTTPError with a body, issue #378) is not a capture
-  failure: its status, body_chars, digest, markers and vendor
-  hint are recorded exactly as for a 2xx body, with
-  `capture_state: "captured"` and `reachable: false`; only a
+  `body_unreadable`, or `not_attempted` (fixtures mode, no live
+  fetch) — a failed capture keeps the original probe result
+  (`reachable: false`, `detail` with the error). A non-2xx
+  response that actually arrived (HTTPError with a body, issue
+  #378) is not a capture failure: its status, body_chars, digest,
+  markers and vendor hint are recorded exactly as for a 2xx body,
+  with `capture_state: "captured"` and `reachable: false`; only a
   connection failure — no response arrived — is `fetch_failed`
-  with no status. **The body itself is never stored**:
+  with no status. If the response arrived but its error body
+  could not be read (issue #383), the status is kept but no body
+  evidence is recorded — `body_chars` / `body_sha256` /
+  `body_hash_kind` stay `None` and `capture_state` is
+  `body_unreadable`: a failed read is never presented as a full
+  capture of an empty body, while a genuinely empty body that
+  really arrived is still recorded as `captured` with
+  `body_chars: 0` and the sha256 of `""`. **The body itself is never stored**:
   the archive is anonymously readable and publish copies the run
   directory wholesale, so no body text, URL, or script content
   may land in the probe record or in any file under the run
