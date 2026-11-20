@@ -1804,6 +1804,29 @@ def test_realised_dropped_close():
                   "sessions=%r base=%r"
                   % (idx_realised.get("index_sessions"),
                      idx_realised.get("index_base_close")))
+        # The cutoff date itself: if the index bar ON the
+        # cutoff was dropped, the last earlier index close is
+        # adopted as index_base_close — but the scorer anchors
+        # that base AT the cutoff, so every index return would
+        # be measured from the wrong close with no gap
+        # recorded. The gap must be recorded and the base
+        # cleared, exactly as for a dropped session date.
+        holder["index_null_date"] = "2025-06-30"
+        base_idx, base_idx_err = bt.fetch_realised(
+            FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
+        check("dropped cutoff index close keeps the stock capture",
+              base_idx is not None, base_idx_err)
+        if base_idx is not None:
+            check("dropped cutoff index close records an index gap",
+                  bool(base_idx.get("index_gap"))
+                  and "2025-06-30" in base_idx["index_gap"],
+                  "gap=%r" % (base_idx.get("index_gap"),))
+            check("dropped cutoff index close clears the base",
+                  base_idx.get("index_base_close") is None
+                  and base_idx.get("index_sessions") == [],
+                  "base=%r sessions=%r"
+                  % (base_idx.get("index_base_close"),
+                     base_idx.get("index_sessions")))
         # Control: a dropped index close AFTER the window
         # touches no scored session — no gap, full evidence.
         holder["index_null_date"] = "2025-07-23"

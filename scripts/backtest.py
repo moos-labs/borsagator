@@ -653,6 +653,21 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     imap = {r["date"]: r["close"] for r in irows}
     ibase = [r for r in irows if parse_iso(r["date"]) <= c]
     index_base_close = ibase[-1]["close"] if ibase else None
+    if index_gap is None and any(
+            parse_iso(d) == c for d in idropped_set):
+        # The index bar ON the cutoff date was dropped for an
+        # unusable close: the last earlier close is not the
+        # cutoff close, and the scorer anchors the index base
+        # AT the cutoff — adopting the earlier close would
+        # mislabel the base and skew every index return with
+        # no gap recorded. Record the gap and clear the base;
+        # the session loop below then emits no index sessions.
+        # (A genuine index non-session cutoff has no bar at
+        # all, so it is never in idropped_set and keeps the
+        # earlier close as its base.)
+        index_gap = ("%s close for cutoff %s was dropped as "
+                     "unusable" % (index_ticker, cutoff))
+        index_base_close = None
     index_sessions = []
     for s in sessions:
         if index_gap is not None:
