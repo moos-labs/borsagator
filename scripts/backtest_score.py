@@ -250,10 +250,27 @@ def score_capture(capture_dir):
     rel = os.path.relpath(capture_dir)
     ens = load_json(os.path.join(capture_dir, "digest/ensemble.json"))
     realised = load_json(os.path.join(capture_dir, "realised.json"))
+    man = load_json(os.path.join(capture_dir, "manifest.json"))
     gaps = []
     if not os.path.exists(os.path.join(capture_dir, "manifest.json")):
         gaps.append("%s: no manifest.json — incomplete capture, "
                     "skipped" % rel)
+        return [], gaps
+    if not isinstance(man, dict):
+        gaps.append("%s: manifest.json unreadable — skipped" % rel)
+        return [], gaps
+    # The manifest labels its own cell: a manifest claiming a
+    # different ticker/cutoff than the cell path is a moved or
+    # copied capture, never scored as this cell's returns.
+    path_ticker = os.path.basename(os.path.normpath(capture_dir))
+    path_cutoff = os.path.basename(os.path.dirname(
+        os.path.normpath(capture_dir)))
+    if (str(man.get("ticker") or "").upper() != path_ticker.upper()
+            or str(man.get("cutoff") or "")[:10] != path_cutoff):
+        gaps.append("%s: manifest ticker/cutoff %r/%r != cell path "
+                    "%s/%s — skipped"
+                    % (rel, man.get("ticker"), man.get("cutoff"),
+                       path_cutoff, path_ticker))
         return [], gaps
     if not isinstance(ens, dict) or not ens.get("base_price"):
         gaps.append("%s: no ensemble.json / no base — skipped" % rel)
@@ -279,6 +296,13 @@ def score_capture(capture_dir):
     if str(rc)[:10] != as_of:
         gaps.append("%s: realised cutoff %r != ensemble date %r — "
                     "skipped" % (rel, rc, as_of))
+        return [], gaps
+    if (str(man.get("ticker") or "").upper() != str(rt).upper()
+            or str(man.get("cutoff") or "")[:10] != str(rc)[:10]):
+        gaps.append("%s: manifest ticker/cutoff %r/%r != realised "
+                    "%r/%r — skipped"
+                    % (rel, man.get("ticker"), man.get("cutoff"),
+                       rt, rc))
         return [], gaps
     base = fnum(ens.get("base_price"))
     kronos_path, kronos_first = read_kronos_path(
@@ -329,8 +353,14 @@ def score_capture(capture_dir):
     # An explicit index gap (the harness recorded it when the
     # index fetch exhausted its retries): the stock capture is
     # preserved, but index scores and deltas stay unavailable —
-    # no index-baseline rows are emitted for this capture.
+    # no index-baseline rows are emitted for this capture. A
+    # missing index base is the same condition: the index fetch
+    # returned no bar on/before the cutoff, so there is no base
+    # to score the index baseline against (a None base would
+    # crash ledger.score_forecast when the row matures).
     index_gap = realised.get("index_gap")
+    if index_gap is None and realised.get("index_base_close") is None:
+        index_gap = "no index close on or before the cutoff"
     if index_gap:
         gaps.append("%s: index-baseline unavailable — %s"
                     % (rel, index_gap))
@@ -439,6 +469,7 @@ def score_all(captures_root):
     the markdown text."""
     rows, gaps = [], []
     captures = []
+    seen_canonical = {}
     for cutoff in sorted(os.listdir(captures_root)):
         cdir = os.path.join(captures_root, cutoff)
         if not os.path.isdir(cdir):
@@ -454,6 +485,18 @@ def score_all(captures_root):
                             "capture, ignored"
                             % os.path.relpath(tdir))
                 continue
+            # One capture reached by two paths (a symlinked
+            # cutoff/ticker dir) is one observation, not two:
+            # the second path's sweep key would otherwise count
+            # it twice toward the quality threshold.
+            canon = os.path.realpath(tdir)
+            if canon in seen_canonical:
+                gaps.append("%s: same capture as %s (aliased "
+                            "path) — counted once"
+                            % (os.path.relpath(tdir),
+                               seen_canonical[canon]))
+                continue
+            seen_canonical[canon] = os.path.relpath(tdir)
             captures.append(tdir)
     for cap in sorted(captures):
         r, g = score_capture(cap)

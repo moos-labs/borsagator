@@ -548,14 +548,19 @@ def validate_capture_path(out_root, cutoff, ticker):
                       % (ticker,))
     root = os.path.realpath(out_root)
     cell = os.path.realpath(os.path.join(root, cutoff, ticker))
-    if os.path.commonpath([cell, root]) != root:
+    if cell == root or os.path.commonpath([cell, root]) != root:
         return None, "capture dir %s escapes out-root %s" % (cell, root)
     for tree in PROTECTED_TREES:
         protected = os.path.realpath(os.path.join(REPO_ROOT, tree))
+        # Overlap in EITHER direction: a cell inside a protected
+        # tree writes into it, and a cell containing one (an
+        # alias resolving to the repo root) would let publish
+        # move the whole tree to the backup path and delete it.
         if (os.path.commonpath([cell, protected]) == protected
-                or os.path.commonpath([root, protected]) == protected):
-            return None, ("capture root %s is inside the protected "
-                          "%s tree" % (root, tree))
+                or os.path.commonpath([root, protected]) == protected
+                or os.path.commonpath([protected, cell]) == cell):
+            return None, ("capture path %s overlaps the protected "
+                          "%s tree" % (cell, tree))
     return cell, ""
 
 
@@ -625,9 +630,15 @@ def fetch_realised(ticker, cutoff, fetcher=None):
         else:
             prior = [x for x in sorted(imap) if x <= d]
             if not prior:
-                return None, (
-                    "realised: no %s close on or before %s"
-                    % (index_ticker, d))
+                # No usable index close on/before this session:
+                # the index evidence is unusable, but the mature
+                # stock capture is still published — the same
+                # index_gap path as a fetch failure.
+                index_gap = ("no %s close on or before %s"
+                             % (index_ticker, d))
+                index_base_close = None
+                index_sessions = []
+                break
             index_sessions.append({"date": d, "close": imap[prior[-1]],
                                    "exact": False,
                                    "index_date": prior[-1]})
@@ -673,6 +684,7 @@ def run_cell(cutoff, ticker, cfg):
         return result
     stage = tempfile.mkdtemp(prefix="bt436-cell-")
     log_path = os.path.join(stage, "harness.log")
+    publish_dir = None  # this invocation's staging dir, if any
     try:
         with open(log_path, "w", encoding="utf-8") as log:
             log.write("walk-forward backtest cell %s %s\n"
@@ -901,6 +913,15 @@ def run_cell(cutoff, ticker, cfg):
             return result
     finally:
         shutil.rmtree(stage, ignore_errors=True)
+        if publish_dir:
+            # A rerun that failed after staging its publish dir
+            # (copying, hashing) leaves the partial copy behind:
+            # remove this invocation's own staging. On success
+            # the dir was renamed into place, so this is a
+            # no-op; the backup holding the previous complete
+            # capture is never touched here — on a swap failure
+            # it was already restored to the cell.
+            shutil.rmtree(publish_dir, ignore_errors=True)
 
 
 def v1_plan():

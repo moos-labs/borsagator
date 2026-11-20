@@ -443,6 +443,80 @@ def test_gate():
           "; ".join(rec["reasons"]))
     check("gate POUL usable rows tiny", rec["rows"] <= 5,
           "got %r" % rec["rows"])
+    # [1] a coverage gap at the END of the cutoff window: history
+    # ends 2025-06-02 and resumes 2025-07-01, so the June 30 gate
+    # must fail even though fetched data reaches past the cutoff
+    # (fetched_last is past it, and max_gap only measures gaps
+    # inside the usable rows). The pre-fix gate passed this.
+    tail_gap = synthetic_series(n=820, cutoff="2025-07-28")
+    tail_gap = [r for r in tail_gap
+                if not ("2025-06-03" <= r["date"] <= "2025-06-30")]
+    rec = bt.gate_ticker("COMI.CA", tail_gap, True, "2025-06-30")
+    check("gate fails a tail gap before the cutoff",
+          not rec["passed"]
+          and any("sessions before" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    # Control: last bar Friday 2025-06-27, cutoff Monday
+    # 2025-06-30 — a non-session cutoff stays valid (the tail
+    # tolerance is the same session estimate as max_gap).
+    weekend = synthetic_series(n=820, cutoff="2025-07-28")
+    weekend = [r for r in weekend
+               if not ("2025-06-28" <= r["date"] <= "2025-06-30")]
+    rec = bt.gate_ticker("COMI.CA", weekend, True, "2025-06-30")
+    check("gate passes a weekend tail before the cutoff",
+          rec["passed"], "; ".join(rec["reasons"]))
+    # [0] a non-finite dividend amount (NaN/inf via float()) is
+    # an unparseable record: dropped, feed marked failed — never
+    # kept into realised.json, where json.dump would write a bare
+    # NaN token and the scorer's dividend-adjusted close goes NaN.
+    import datetime as _dt
+    import urllib.request as _urlreq
+
+    def _chart_payload(amount):
+        ts = lambda y, m, d: int(_dt.datetime(
+            y, m, d, tzinfo=_dt.timezone.utc).timestamp())
+        return {"chart": {"error": None, "result": [{
+            "timestamp": [ts(2025, 6, 27), ts(2025, 6, 30)],
+            "indicators": {"quote": [{"close": [100.0, 101.0]}]},
+            "meta": {"exchangeTimezoneName": "Africa/Cairo"},
+            "events": {"dividend": {
+                str(ts(2025, 6, 29)): {"amount": amount,
+                                       "date": ts(2025, 6, 29)}}}}]}}
+
+    class _FakeResp:
+        def __init__(self, payload):
+            self._data = json.dumps(payload).encode("utf-8")
+
+        def read(self):
+            return self._data
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    real_urlopen = _urlreq.urlopen
+    try:
+        _urlreq.urlopen = lambda req, timeout=30: _FakeResp(
+            _chart_payload(float("nan")))
+        rows_n, ev_n, ok_n, err_n = bt.fetch_chart("COMI.CA")
+        check("NaN dividend record is dropped",
+              ev_n == [], "got %r" % (ev_n,))
+        check("NaN dividend marks the feed failed",
+              ok_n is False and err_n is not None
+              and "dividend" in err_n, "ok=%r err=%r" % (ok_n, err_n))
+        check("NaN dividend still parses the price rows",
+              len(rows_n) == 2, "got %d" % len(rows_n))
+        _urlreq.urlopen = lambda req, timeout=30: _FakeResp(
+            _chart_payload(1.9))
+        rows_f, ev_f, ok_f, err_f = bt.fetch_chart("COMI.CA")
+        check("finite dividend keeps its current path",
+              ok_f is True and err_f is None and len(ev_f) == 1
+              and ev_f[0]["dps"] == 1.9,
+              "ok=%r err=%r ev=%r" % (ok_f, err_f, ev_f))
+    finally:
+        _urlreq.urlopen = real_urlopen
 
 
 def test_warmup_and_failure_classification():
@@ -822,6 +896,39 @@ def test_cell_guards():
         _c, err = bt.validate_capture_path(
             "/tmp/bt-out", "2025-6-30", "COMI.CA")
         check("capture path rejects a non-ISO cutoff", err != "", err)
+        # [4] a cell alias resolving to the out-root itself must
+        # be rejected: publish would rename the whole out-root
+        # to .old- and delete every other capture under it.
+        out_alias = os.path.join(tmp, "out-alias")
+        os.makedirs(os.path.join(out_alias, "2025-06-30"),
+                    exist_ok=True)
+        os.symlink(out_alias, os.path.join(
+            out_alias, "2025-06-30", "COMI.CA"))
+        _c, err = bt.validate_capture_path(
+            out_alias, "2025-06-30", "COMI.CA")
+        check("capture path rejects a cell resolving to the "
+              "out-root", err != "", err)
+        # [5] a cell alias resolving to the repo root must be
+        # rejected too: the containment check only guards a cell
+        # *inside* the ledger/archive trees, not a cell that
+        # *contains* them — publish would move the whole repo
+        # to the backup path and delete it. The alias must sit
+        # under a broader out-root that contains the repo, or
+        # the escape check rejects it first (a different guard).
+        out_broad = os.path.dirname(REPO)
+        broad_cell_dir = os.path.join(out_broad, "2025-06-30")
+        os.makedirs(broad_cell_dir, exist_ok=True)
+        broad_link = os.path.join(broad_cell_dir, "COMI.CA")
+        try:
+            os.symlink(REPO, broad_link)
+            _c, err = bt.validate_capture_path(
+                out_broad, "2025-06-30", "COMI.CA")
+            check("capture path rejects a cell containing the "
+                  "ledger/archive trees", err != "", err)
+        finally:
+            if os.path.islink(broad_link):
+                os.unlink(broad_link)
+            shutil.rmtree(broad_cell_dir, ignore_errors=True)
         # [11] ensemble base-date check is pure.
         check("base-date check accepts the evidenced session",
               bt.check_ensemble_base_date(
@@ -939,6 +1046,39 @@ def test_cell_guards():
             check("index-gap capture has no index sessions",
                   rj.get("index_sessions") == [])
 
+        # [6] an index fetch that SUCCEEDS but has no usable
+        # close on/before the first stock session must take the
+        # same index_gap path as a fetch failure — the stock
+        # capture is preserved, not skipped with it.
+        late_index = [r for r in index
+                      if r["date"] > "2025-07-01"]
+
+        def fetch_late_index(ticker):
+            if str(ticker).startswith("^"):
+                return list(late_index), [], True
+            return list(series), [], True
+
+        cfg_late = _smoke_cfg(tmp + "-late", series, index)
+        cfg_late["repeat_kronos"] = False
+        cfg_late["fetcher"] = fetch_late_index
+        res_late = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER,
+                               cfg_late)
+        check("index with no usable close still publishes the "
+              "stock capture",
+              res_late["status"] == "ok",
+              "%s: %s" % (res_late["status"],
+                          res_late.get("reason", "")))
+        if res_late["status"] == "ok":
+            rj = json.load(open(os.path.join(
+                res_late["capture_dir"], "realised.json"),
+                encoding="utf-8"))
+            check("late-index capture records the gap",
+                  bool(rj.get("index_gap")), str(rj.get("index_gap")))
+            check("late-index capture has no index sessions",
+                  rj.get("index_sessions") == [])
+            check("late-index capture has no index base",
+                  rj.get("index_base_close") is None)
+
         # [8] a realised fetch that cannot verify the events feed
         # (unavailable on the re-fetch, or dropping records)
         # skips the cell instead of publishing an empty window.
@@ -1005,9 +1145,49 @@ def test_cell_guards():
                 if ".tmp-" in d or ".old-" in d]
             check("rerun leaves no staging/backup dirs",
                   leftovers == [], str(leftovers))
+
+        # [7] a rerun that fails AFTER staging its publish dir
+        # (hashing here) must not leave the partial copy behind:
+        # the previous complete capture stays readable, and no
+        # .tmp- dir accumulates for the next retry to trip over.
+        cfg_hash = _smoke_cfg(tmp + "-hash", series, index)
+        cfg_hash["repeat_kronos"] = False
+        res_h0 = bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_hash)
+        check("hash-failure test baseline cell ok",
+              res_h0["status"] == "ok",
+              "%s: %s" % (res_h0["status"], res_h0.get("reason", "")))
+        if res_h0["status"] == "ok":
+            cap_h = res_h0["capture_dir"]
+            man_h0 = json.load(open(os.path.join(
+                cap_h, "manifest.json"), encoding="utf-8"))
+            real_sha = bt.sha256_file
+
+            def boom_sha(path):
+                raise RuntimeError("hashing failed for the test")
+
+            bt.sha256_file = boom_sha
+            try:
+                bt.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg_hash)
+                raised = False
+            except RuntimeError:
+                raised = True
+            finally:
+                bt.sha256_file = real_sha
+            check("hash failure propagates out of the cell",
+                  raised)
+            leftovers = [d for d in os.listdir(os.path.join(
+                tmp + "-hash", "backtest", FIXTURE_CUTOFF))
+                if ".tmp-" in d or ".old-" in d]
+            check("failed rerun leaves no partial publish dir",
+                  leftovers == [], str(leftovers))
+            man_h1 = json.load(open(os.path.join(
+                cap_h, "manifest.json"), encoding="utf-8"))
+            check("failed rerun keeps the previous capture",
+                  man_h1 == man_h0)
     finally:
         for suffix in ("", "-path", "-stale", "-ok", "-bad-wrong-ticker",
-                       "-bad-wrong-cutoff", "-idx", "-ev", "-ev2", "-re"):
+                       "-bad-wrong-cutoff", "-idx", "-ev", "-ev2", "-re",
+                       "-late", "-hash"):
             shutil.rmtree(tmp + suffix, ignore_errors=True)
 
 
@@ -1260,6 +1440,65 @@ def test_scorer():
               rows3 == [] and any("no manifest.json" in g
                                   for g in gaps3),
               "; ".join(gaps3))
+        # [2] a missing index base with NO index_gap recorded:
+        # the producer wrote index_base_close None (index fetch
+        # returned no bar on/before the cutoff). The scorer must
+        # take the index-gap path — 12 stock rows, no
+        # index-baseline rows — not build index rows with a None
+        # base that crash ledger.score_forecast (TypeError).
+        cap3 = os.path.join(tmp, "backtest3", FIXTURE_CUTOFF,
+                            FIXTURE_TICKER)
+        shutil.copytree(cap, cap3)
+        r3 = json.load(open(os.path.join(cap3, "realised.json"),
+                            encoding="utf-8"))
+        r3["index_base_close"] = None
+        json.dump(r3, open(os.path.join(cap3, "realised.json"), "w"),
+                  indent=1)
+        crashed = None
+        try:
+            rows4, gaps4 = sc.score_capture(cap3)
+        except TypeError as e:
+            crashed = e
+            rows4, gaps4 = [], []
+        check("missing index base does not crash the scorer",
+              crashed is None, "TypeError: %s" % crashed)
+        check("missing index base scores 12 stock rows",
+              len(rows4) == 12, "got %d" % len(rows4))
+        check("missing index base emits no index-baseline rows",
+              all(r["entrant"] != "index-baseline" for r in rows4))
+        check("missing index base records the gap",
+              any("index-baseline unavailable" in g for g in gaps4),
+              "; ".join(gaps4))
+        # [3] one capture reached by two paths must count once:
+        # a cutoff dir aliased onto the real one is the same
+        # capture under a different sweep key, not a second
+        # observation toward the quality threshold.
+        alias_root = os.path.join(tmp, "backtest-alias")
+        shutil.copytree(cap, os.path.join(
+            alias_root, FIXTURE_CUTOFF, FIXTURE_TICKER))
+        os.makedirs(os.path.join(alias_root, "2025-06-30-alias"),
+                    exist_ok=True)
+        os.symlink(os.path.join(alias_root, FIXTURE_CUTOFF,
+                                FIXTURE_TICKER),
+                   os.path.join(alias_root, "2025-06-30-alias",
+                                FIXTURE_TICKER))
+        doc_a, _md_a = sc.score_all(alias_root)
+        check("aliased capture counted once",
+              doc_a["counts"]["forecasts"] == 15,
+              "got %d" % doc_a["counts"]["forecasts"])
+        check("alias reported as a gap",
+              any("alias" in g for g in doc_a["gaps"]),
+              "; ".join(doc_a["gaps"]))
+        # A manifest claiming a different cell than its path
+        # (copied capture, wrong cutoff dir) is never scored as
+        # the path's cell.
+        cap4 = os.path.join(tmp, "backtest4", "2025-03-31",
+                            FIXTURE_TICKER)
+        shutil.copytree(cap, cap4)
+        rows5, gaps5 = sc.score_capture(cap4)
+        check("manifest cutoff mismatch scores nothing",
+              rows5 == [] and any("manifest" in g for g in gaps5),
+              "; ".join(gaps5))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

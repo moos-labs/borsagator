@@ -125,6 +125,8 @@ def fetch_chart(ticker, period1=0, period2=None, attempts=3):
     for ts, div in (ev.get("dividend") or {}).items():
         try:
             dps = float(div.get("amount"))
+            if not math.isfinite(dps):
+                raise ValueError("non-finite dividend amount")
             import datetime as _dt
             d = _dt.datetime.fromtimestamp(
                 int(ts), tz=_dt.timezone.utc).date().isoformat()
@@ -249,6 +251,26 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
             "max session gap ~%d sessions (%d calendar days), "
             "over the %d-session limit"
             % (gap_missed, gap_days, MAX_GAP_SESSIONS_EST))
+    # The coverage check above only sees the fetched series'
+    # last bar: history ending June 2 and resuming July 1
+    # passes it for a June 30 cutoff, and max_gap only
+    # measures gaps *inside* the usable rows. Check the tail
+    # from the last usable bar through the cutoff with the
+    # same session estimate, so a non-session cutoff (a
+    # weekend) stays valid while a missing month is rejected.
+    # Gaps starting after the cutoff are still ignored — the
+    # tail is measured on usable rows only.
+    if usable and cutoff is not None:
+        tail_start = parse_iso(last)
+        if tail_start is not None and tail_start < cutoff:
+            tail_days = (cutoff - tail_start).days
+            tail_missed = max(0, round(tail_days * 5 / 7) - 1)
+            if tail_missed > MAX_GAP_SESSIONS_EST:
+                reasons.append(
+                    "history ends %s, ~%d sessions before the "
+                    "latest cutoff %s, over the %d-session limit"
+                    % (last, tail_missed, latest_cutoff,
+                       MAX_GAP_SESSIONS_EST))
     flat = longest_flat_run(usable)
     if flat > FLAT_RUN_LIMIT:
         reasons.append(
