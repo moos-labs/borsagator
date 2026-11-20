@@ -52,6 +52,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -346,6 +347,16 @@ def start_stub_server():
     return srv, "http://127.0.0.1:%d" % srv.server_address[1]
 
 
+def _stop_stub_server(srv):
+    """Stop a stub server and free its port. shutdown() alone only
+    stops the serve loop — the listening socket stays open until
+    server_close(), so both are needed for a full cleanup."""
+    try:
+        srv.shutdown()
+    finally:
+        srv.server_close()
+
+
 def run_probe(profile_dir, url, legs=("A", "B", "A"),
               nav_timeout_ms=NAV_TIMEOUT_MS, settle_ms=SETTLE_MS):
     """Run the legs sequentially under one playwright session and
@@ -418,32 +429,48 @@ def main(argv=None):
     url = args.url
     profile_dir = args.profile
     srv = None
-    if args.dry_run:
-        srv, base = start_stub_server()
-        url = base + "/ar/NewsSearch.aspx?com=&word=&from=19/08/2026" \
-            "&to=19/11/2026&isin=EGS02051C018&sec_id=20"
+    # Issue #394: a dry-run without --profile gets an auto-created
+    # profile dir; it is removed on every exit path below, including
+    # a failure during dry-run setup itself (e.g. BrokenPipeError
+    # from the stub print) — so the try/finally starts BEFORE the
+    # setup, not after it. A user-supplied --profile is never
+    # removed. The stub server is likewise shut down on every path.
+    created_profile_dir = False
+    try:
+        if args.dry_run:
+            srv, base = start_stub_server()
+            url = base + "/ar/NewsSearch.aspx?com=&word=&from=19/08/2026" \
+                "&to=19/11/2026&isin=EGS02051C018&sec_id=20"
+            if not profile_dir:
+                profile_dir = tempfile.mkdtemp(
+                    prefix="diag-egx-ab-prof-")
+                created_profile_dir = True
+            print("dry-run: stub at %s (SIMULATED pages)" % base)
         if not profile_dir:
-            profile_dir = tempfile.mkdtemp(prefix="diag-egx-ab-prof-")
-        print("dry-run: stub at %s (SIMULATED pages)" % base)
-    if not profile_dir:
-        print("--profile is required (unless --dry-run)",
-              file=sys.stderr)
-        return 2
-    try:
-        import playwright  # noqa: F401 — import check before launching
-    except ImportError:
-        print("playwright is not installed; run in the egx-harvest "
-              "venv (worker) or install playwright", file=sys.stderr)
-        return 2
-    try:
-        record = run_probe(profile_dir, url, legs,
-                           args.nav_timeout_ms, args.settle_ms)
+            print("--profile is required (unless --dry-run)",
+                  file=sys.stderr)
+            return 2
+        try:
+            import playwright  # noqa: F401 — import check before launching
+        except ImportError:
+            print("playwright is not installed; run in the egx-harvest "
+                  "venv (worker) or install playwright", file=sys.stderr)
+            return 2
+        try:
+            record = run_probe(profile_dir, url, legs,
+                               args.nav_timeout_ms, args.settle_ms)
+        finally:
+            if srv is not None:
+                _stop_stub_server(srv)
+                srv = None
+        for line in write_outputs(record, args.out_dir):
+            print(line)
+        return 0
     finally:
         if srv is not None:
-            srv.shutdown()
-    for line in write_outputs(record, args.out_dir):
-        print(line)
-    return 0
+            _stop_stub_server(srv)
+        if created_profile_dir:
+            shutil.rmtree(profile_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":
