@@ -3910,12 +3910,19 @@ def _execute_body(job):
     workdir = OUT / job["id"]
     workdir.mkdir(parents=True, exist_ok=True)
     manifest = {"job": job, "worker": os.uname().nodename,
-                "started": now(), "tools": {}}
+                "started": now(), "tools": {},
+                # Issue #371: pin the running code SHA on EVERY run
+                # manifest (same name/kind as the heartbeat) so the
+                # exact code behind a run — including a no-op — is
+                # proven from the archive alone.
+                "code_sha": running_code_sha(),
+                "code_sha_kind": "sha256-running-bytes"}
     # Issue #348: tokenize on whitespace exactly like the #346 F9
     # fix did for top30-enumerate (and like run_harvest's own
     # .split()), so a leading-space harvest job dispatches here
     # instead of falling through to parse_job (which returns []
-    # and publishes an empty run as done).
+    # and — since #371 — fails closed with a named unknown-job
+    # failure instead of publishing an empty run as done).
     if (job["job"] or "").split()[:1] == ["harvest-egx"]:
         manifest["tools"] = run_harvest(job, workdir)
         manifest["finished"] = now()
@@ -3937,7 +3944,9 @@ def _execute_body(job):
     # Issue #346 F9: tokenize on whitespace exactly like
     # parse_top30_job does (.split()), so a leading-space job
     # dispatches here instead of falling through to parse_job
-    # (which returns [] and publishes an empty run as done).
+    # (which returns [] and — since #371 — fails closed with a
+    # named unknown-job failure instead of publishing an empty
+    # run as done).
     if (job["job"] or "").split()[:1] == ["top30-enumerate"]:
         # Issue #328: the registry grammar has no enumeration tool
         # (parse_job returns []), so this kind dispatches here like
@@ -3970,6 +3979,33 @@ def _execute_body(job):
             _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
+    if not plan:
+        # Issue #371 (INS-HARV-003 finding 3): an empty plan fails
+        # closed — never an empty run published as done. A job
+        # string parse_job cannot place (e.g. `harvest-egx-poul`,
+        # a typo'd `top30-enumerate-typo`, an unknown sweep filter,
+        # an empty string) used to fall through the tool loop with
+        # no tools and publish `tools: {}` as a success. Record a
+        # named `unknown-job` failure instead: the bad job string
+        # stays recorded in manifest["job"], and the run is
+        # published + marked done-with-failure — "done means
+        # executed + archived", the exact precedent of the
+        # harvest-egx bad-code, top30-enumerate bad-job and
+        # diag-egx-ab bad-job branches (issue #216 central handling
+        # in _mark_done; no new marking channel, no error file —
+        # the failure lives in the published manifest, as for those
+        # siblings). Only a failed publish leaves the job unmarked.
+        manifest["tools"] = {"unknown-job": "unknown-job"}
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job
+            # done. Issue #216: failure handling is centralized in
+            # _mark_done.
+            _mark_done(job, archive_sha)
+        return
     templates = {t["id"]: t["command"] for t in reg["tools"]}
     # D2: each tool runs only at its registry-pinned SHA.
     refs = {t["id"]: t.get("ref") for t in reg["tools"]}
