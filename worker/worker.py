@@ -3916,7 +3916,16 @@ def _execute_body(job):
                 # exact code behind a run — including a no-op — is
                 # proven from the archive alone.
                 "code_sha": running_code_sha(),
-                "code_sha_kind": "sha256-running-bytes"}
+                "code_sha_kind": "sha256-running-bytes",
+                # Issue #382 (INS-373-374 F4): record the checkout
+                # HEAD + update branch alongside the running-code
+                # pin, mirroring the heartbeat fields. These are
+                # DIAGNOSTICS only — checkout_sha is the release
+                # checkout's HEAD, not proof of the running code
+                # (it lies after a failed adopt, issue #160);
+                # code_sha remains the running-code pin.
+                "checkout_sha": update_checkout_sha(),
+                "update_branch": UPDATE_BRANCH}
     # Issue #348: tokenize on whitespace exactly like the #346 F9
     # fix did for top30-enumerate (and like run_harvest's own
     # .split()), so a leading-space harvest job dispatches here
