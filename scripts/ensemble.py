@@ -45,6 +45,29 @@ W = {
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
 
+
+def expected_move(kmove, net_score, vol_h):
+    """The combine's expected move (issue #436): the Kronos path
+    move carries 60%, the family net score 40% scaled by the
+    1.28-sigma horizon band. Extracted verbatim from main() so the
+    walk-forward backtest can build family-alone entrants with the
+    same rule instead of a second one; the horizon loop below calls
+    this function, it does not duplicate the formula."""
+    return .6 * kmove + .4 * net_score * (1.28 * vol_h)
+
+
+def two_family_backtest():
+    """Issue #436: the walk-forward harness runs the ensemble in a
+    2-family mode (price-forecast + technicals only) by setting
+    BORSAGATOR_BACKTEST_TWO_FAMILY=1 on the ensemble subprocess.
+    Sentiment/news and agents cannot be backtested (no historical
+    headline archive; LLM training leaks the future) and
+    fundamentals have no verified point-in-time vintages, so those
+    families are forced to not vote and the news risk overlay is
+    disabled. Unset in every live sweep — the env var is the only
+    switch, and the harness sets it only for backtest cells."""
+    return bool(os.environ.get("BORSAGATOR_BACKTEST_TWO_FAMILY"))
+
 # Registry categories whose CSVs are REFERENCE workloads, never this
 # ticker's price series (issue #133): backtest tools run reference
 # backtests (vectorbt's poul_ohlc.csv ends at 3.13) and stats tools
@@ -141,7 +164,16 @@ def _apply_measured_weights(base):
     applied (every family, 1.0 where no eligible factor entered)
     plus the provenance of the weights document (path + sha256 of
     the exact bytes read), so a verifier can reconcile the merge
-    against the committed ledger/weights.json."""
+    against the committed ledger/weights.json.
+    Issue #436: in 2-family backtest mode the measured-weights
+    feedback is forbidden outright — the ledger's factors are
+    measured on 2026 sweeps, i.e. from the future relative to any
+    historical cutoff. The backtest always runs on the hand-set
+    base weights, recorded as source 'base-v1'."""
+    if two_family_backtest():
+        return base, "base-v1", {
+            "source": "base-v1", "file": None, "file_sha256": None,
+            "factors": {fam: 1.0 for fam in base}, "eligible": {}}
     import hashlib
     path = os.environ.get("BORSAGATOR_WEIGHTS", "ledger/weights.json")
     info = {"source": "builtin", "file": path, "file_sha256": None,
@@ -1202,6 +1234,16 @@ def main():
             if z_max3 >= 1.5:
                 risk["flags"].append(f"abnormal move: {z_max3:.1f}σ in the last 3 sessions")
 
+    # Issue #436: 2-family backtest mode — the news risk overlay is
+    # disabled outright (no news tool runs in a backtest cell, so the
+    # live "unknown" cap of 0.35 and price_mult 0.8 would be a
+    # penalty for missing data, not a measured risk). The forecast
+    # stands on the two families with no cap and no discount.
+    if two_family_backtest():
+        risk = {"level": "none", "conf_cap": .60, "price_mult": 1.0,
+                "flags": ["2-family backtest: news risk overlay "
+                          "disabled (issue #436)"]}
+
     # ---------- corporate actions (dividend awareness) ----------
     # A forecast that spans an ex-date contains a MECHANICAL move (the
     # price drops by ~the dividend on the ex-date) that is not a market
@@ -1222,6 +1264,25 @@ def main():
         actions = detect_corporate_actions(_items, base, as_of.year)
     except Exception:
         actions = []
+    # Issue #436: the backtest harness supplies the dividend actions
+    # known at the cutoff in digest["corporate_actions"] (Yahoo
+    # events feed, ex-dates <= as-of only — an ex-date after the
+    # cutoff is unknown to the forecast and enters only at scoring
+    # time). They merge exactly like the #281 event feed below, so
+    # the #130 rescale and the horizon marking consume them the same
+    # way. Shape: {type: "dividend", dps, ex_date,
+    # entitlement_end?, mechanical_pct, source}.
+    try:
+        _digest_actions = digest.get("corporate_actions")
+        if isinstance(_digest_actions, list) and _digest_actions:
+            _clean = [a for a in _digest_actions
+                      if isinstance(a, dict)
+                      and a.get("type") == "dividend"
+                      and a.get("ex_date") and a.get("dps") is not None]
+            if _clean:
+                actions = merge_corporate_actions(actions, _clean)
+    except Exception:
+        pass
     # Issue #281: feed verified #109 disclosure events into the same
     # scoring. The worker's phase-2 extraction writes
     # disclosure-events/<CODE>-events.json into the run dir and
@@ -1318,6 +1379,12 @@ def main():
         ex_rescale = {"applied": False, "reason": f"rescale error: {e}"}
 
     # ---------- combine per horizon ----------
+    # Issue #436: 2-family backtest mode — sentiment, agent and
+    # fundamentals never vote (see two_family_backtest()). The
+    # blocks above still ran (they read metrics/files only), but
+    # their scores are discarded here, before the combine.
+    if two_family_backtest():
+        sentiment = agent = fund = None
     fam_fixed = {"technicals": tech, "sentiment": sentiment,
                  "agent": agent, "fundamentals": fund}
     out = {"tool": "forecast-ensemble", "version": 2, "ticker": ticker,
@@ -1359,7 +1426,7 @@ def main():
         var = sum(weights[f] * (scores[f] - net) ** 2 for f in scores) / wsum
         disagree = math.sqrt(var)
         kmove = ka["move"] if ka else 0.0
-        expected = .6 * kmove + .4 * net * (1.28 * vol_h)
+        expected = expected_move(kmove, net, vol_h)
         half = max(1.28 * vol_h, ka["band"] if ka else 0.0) \
             * RISK_MULT[risk["level"]] * (1 + .5 * disagree)
         agree = max(0.0, 1.0 - disagree)
@@ -1374,6 +1441,11 @@ def main():
             "families": {f: round(scores[f], 3) for f in scores},
             "horizon_short": bool(ka and ka["short"]),
             "trading_sessions": h_eff,
+            # Issue #436: the backtest scorer rebuilds the
+            # family-alone entrants from these two numbers instead
+            # of re-deriving them from rounded sigma_daily.
+            "kronos_move_pct": round(kmove * 100, 4) if ka else None,
+            "vol_h_pct": round(vol_h * 100, 4),
         }
         # Mark horizons spanning an ex-date: the mechanical dividend
         # drop inside them is decomposed, not forecast skill/error.
