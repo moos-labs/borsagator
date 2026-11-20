@@ -3575,10 +3575,20 @@ def maybe_compile(job, workdir, manifest, plan):
         # no shell interpolation of paths.
         arch = ROOT / "archive-push"
         if arch.is_dir():
-            head = subprocess.run(
-                ["git", "-C", str(arch), "rev-parse", "HEAD"],
-                env=env, capture_output=True, text=True, timeout=30)
-            if head.returncode == 0 and head.stdout.strip():
+            # Issue #398: the archive HEAD is diagnostics only —
+            # a failed lookup must never abort the compile. The
+            # rev-parse raises TimeoutExpired on a timeout and
+            # OSError when git is missing; omit the flag on any
+            # lookup failure and let the compiler record
+            # archive-sha-unavailable rather than guess.
+            try:
+                head = subprocess.run(
+                    ["git", "-C", str(arch), "rev-parse", "HEAD"],
+                    env=env, capture_output=True, text=True, timeout=30)
+            except (subprocess.TimeoutExpired, OSError):
+                head = None
+            if head is not None and head.returncode == 0 \
+                    and head.stdout.strip():
                 cmd += ["--archive-sha", head.stdout.strip()]
         proc = subprocess.run(cmd, env=env, capture_output=True,
                               text=True, timeout=COMPILE_TIMEOUT)

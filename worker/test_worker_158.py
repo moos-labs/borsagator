@@ -272,7 +272,10 @@ def main():
     finally:
         worker.sh = real_sh
 
-    shutil.rmtree(_TMP, ignore_errors=True)
+    # _TMP is tracked by _test_tmp (#388): the shared atexit handler
+    # removes it on normal exit and preserves it when
+    # GATOR_TEST_KEEP_TMP=1. Do not delete it here (#405, same
+    # retention defeat as #147 fixed by #401).
     print(f"\n{PASSED}/{TOTAL} passed")
     return 0 if PASSED == TOTAL else 1
 
