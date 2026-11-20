@@ -33,6 +33,7 @@ Outputs: profiles/<TICKER>.recommendation.json + .md
 Usage: python3 scripts/recommend.py POUL.CA
 """
 import json
+import math
 import os
 import statistics
 import subprocess
@@ -40,6 +41,18 @@ import sys
 import urllib.parse
 import urllib.request
 from datetime import date, timedelta
+
+# Issue #357 F5: the staged disclosure-events feed is validated
+# with compile_model._validate_events_feed before selection (the
+# same strict validator compile_model itself applies at build
+# time). The fallback mirrors the one compile_model uses for
+# report_model, so recommend.py keeps working when it is run or
+# imported without scripts/ already on the path.
+try:
+    import compile_model
+except ImportError:  # noqa: BLE001 — same fallback as compile_model
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import compile_model
 
 REPO = "moos-labs/borsagator"
 RAW_MAIN = f"https://raw.githubusercontent.com/{REPO}/main/"
@@ -292,6 +305,25 @@ def events_to_reaction_triggers(events, ticker):
     triggers = []
     if not events:
         return triggers
+    # Issue #357 F5: a repeated event_id is a conflicting feed —
+    # the same id with two announced dates selects differently,
+    # and there is no principled way to pick one copy. Fail closed:
+    # no triggers at all, so the caller falls back to the legacy
+    # path. Only non-empty string ids carry identity; an event
+    # without one cannot conflict by identity (its absence is a
+    # feed-shape defect, caught by _validate_events_feed on the
+    # staged-feed path in main). duplicate_links /
+    # possible-duplicate annotations on DISTINCT disclosures are
+    # untouched — this keys on event_id only.
+    seen_ids = set()
+    for ev in events:
+        if not isinstance(ev, dict):
+            continue
+        ev_id = ev.get("event_id")
+        if isinstance(ev_id, str) and ev_id:
+            if ev_id in seen_ids:
+                return []
+            seen_ids.add(ev_id)
     code = (ticker or "").upper()
     for ev in events:
         if not isinstance(ev, dict):
@@ -332,6 +364,26 @@ def events_to_reaction_triggers(events, ticker):
     return triggers
 
 
+def _finite_shrunk(value):
+    """Issue #357 F6: a fitted shrunk coefficient must be a finite
+    number before it is consumed. A non-numeric value raises
+    TypeError on the arithmetic below (and on the :+ format in the
+    note); NaN/inf propagates into the recommendation JSON as a
+    bare NaN/Infinity literal. Returns the float, or None when the
+    value is unusable — the caller then treats the type as
+    unfitted and falls through to the next candidate / legacy
+    path, never a crash."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    try:
+        num = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(num):
+        return None
+    return num
+
+
 def select_reaction_nudge(verified_triggers, profile_events, fitted,
                            asof):
     """Issue #282: pick the reaction-profile nudge.
@@ -359,7 +411,8 @@ def select_reaction_nudge(verified_triggers, profile_events, fitted,
         except Exception:
             continue
         fv = (fitted or {}).get(tr.get("profile_type") or "")
-        shrunk = (fv or {}).get("shrunk_r5_adj")
+        # Issue #357 F6: finite-numeric check before consumption.
+        shrunk = _finite_shrunk((fv or {}).get("shrunk_r5_adj"))
         if shrunk is not None and 0 <= age <= 5:
             nudge = round(shrunk * 0.5, 2)
             note = (f"verified {tr['profile_type']} disclosure event "
@@ -384,7 +437,8 @@ def select_reaction_nudge(verified_triggers, profile_events, fitted,
         # INS-R6-02: old-format profiles predate the R5-05 key
         # rename (shrunk_r5, not shrunk_r5_adj) — a bare key
         # access would kill the whole recommendation.
-        shrunk = (fv or {}).get("shrunk_r5_adj")
+        # Issue #357 F6: finite-numeric check before consumption.
+        shrunk = _finite_shrunk((fv or {}).get("shrunk_r5_adj"))
         if shrunk is not None and 0 <= age <= 5:
             nudge = round(shrunk * 0.5, 2)
             note = (f"fresh {e['type']} event ({e['date']}, {age}d "
@@ -446,8 +500,24 @@ def main():
                 sweep_dir + "/disclosure-events/%s-events.json"
                 % ticker.split(".")[0])))
             if isinstance(feed, dict):
-                verified_triggers = events_to_reaction_triggers(
-                    feed.get("events") or [], ticker)
+                # Issue #357 F5: validate the staged feed with the
+                # same strict validator compile_model applies at
+                # build time, BEFORE selection consumes it. A feed
+                # that fails (notably a repeated event_id, which
+                # can shift selection with a conflicting copy)
+                # falls back to the legacy keyword path with the
+                # reason named in the notes — never a crash, never
+                # silent acceptance of the conflicting copy.
+                problems = compile_model._validate_events_feed(
+                    feed, ticker)
+                if problems:
+                    notes.append(
+                        "verified disclosure-events feed failed "
+                        "validation (%s) — legacy keyword path "
+                        "used" % problems[0])
+                else:
+                    verified_triggers = events_to_reaction_triggers(
+                        feed.get("events") or [], ticker)
     except Exception:
         verified_triggers = []
     nudge, _nudge_note, _trigger = select_reaction_nudge(

@@ -2033,7 +2033,11 @@ def _validate_top30_ledger(ledger, manifest, mode):
     ISIN is unresolved provenance, never vouched for), and
     source_document_id must be unique within each issuer (F4 —
     a repeated id under one issuer inflates the reconciled
-    totals). Never raises on malformed input: every defect is a
+    totals). Issue #357 F2: a non-empty string
+    source_document_id is required on every validated document
+    record — a missing, empty, or non-string id is a named
+    validation failure, never an exception and never silently
+    skipped. Never raises on malformed input: every defect is a
     reason, not a crash."""
     reasons = []
     if not isinstance(ledger, dict):
@@ -2174,17 +2178,34 @@ def _validate_top30_ledger(ledger, manifest, mode):
         # a repeated id under one issuer inflates the reconciled
         # totals. Uniqueness is per issuer only — one announcement
         # may legitimately appear through different issuers'
-        # searches, so cross-issuer sharing is NOT rejected. Only
-        # string ids are tracked (a missing or non-string id
-        # cannot collide; the never-raises contract forbids
-        # assuming hashability).
+        # searches, so cross-issuer sharing is NOT rejected.
+        # Issue #357 F2: identity is REQUIRED on every validated
+        # document record before it can be counted as a unique
+        # document — a missing, empty, or non-string id is a
+        # named validation failure, never an exception (the
+        # never-raises contract) and never silently skipped:
+        # #352 only tracked string ids, so unidentified records
+        # bypassed the uniqueness check entirely while still
+        # satisfying the reconciled counts. The producer always
+        # emits ids (top30_enumerate.py emits them at discovery),
+        # so honest ledgers are unaffected. An unidentified record
+        # still counts toward the totals (same precedent as #352
+        # F5 attribution: the failure is the named reason, not a
+        # cascade of count mismatches) — it just never enters the
+        # per-issuer identity set.
         seen_ids = set()
         for d in docs:
             if not isinstance(d, dict):
                 continue
             doc_total += 1
             sid = d.get("source_document_id")
-            if isinstance(sid, str):
+            if not isinstance(sid, str) or not sid:
+                reasons.append("document under issuer %s has "
+                               "source_document_id %r, not a "
+                               "non-empty string (identity required "
+                               "on every validated document record)"
+                               % (irec.get("issuer"), sid))
+            else:
                 if sid in seen_ids:
                     reasons.append("duplicate source_document_id "
                                    "%r within issuer %s"

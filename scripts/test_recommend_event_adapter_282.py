@@ -300,7 +300,18 @@ class TestEndToEnd(unittest.TestCase):
             recommend.PINNED_COMMIT = orig_pin
 
     def _feed(self, *events):
+        # Issue #357 F5: recommend.main now validates the staged
+        # feed with compile_model._validate_events_feed before
+        # selection, so the helper emits a complete feed envelope
+        # (the real #278 extractor output carries all of these) —
+        # a minimal {schema_version, events} dict is no longer a
+        # valid feed.
         return {"schema_version": disclosure_events.SCHEMA_VERSION,
+                "extractor_version": "test",
+                "config_hash": "test",
+                "quarter": {"start": "2026-08-19",
+                            "end": "2026-11-19"},
+                "report": {},
                 "events": list(events)}
 
     def test_A_no_feed_legacy_only(self):
