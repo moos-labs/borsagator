@@ -1,0 +1,40 @@
+# PR-Agent - self-hosted AI PR reviewer (workforce survey 2026-11-18, #215).
+# Runs on our own OpenRouter key (repo secret OPENROUTER_API_KEY); no code
+# goes to any new third party. Permissions are the workflow token's only:
+# contents: read, pull-requests: write, issues: write. It cannot merge -
+# merges stay gated on moos-sherbo's review, every time.
+name: PR Agent
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+jobs:
+  pr_agent_job:
+    # Comment runs are gated on author_association below: only OWNER /
+    # MEMBER / COLLABORATOR comments may trigger a run (PR events pass
+    # through unchanged). Bots are excluded on both paths.
+    if: ${{ github.event.sender.type != 'Bot' && (github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    name: Run PR Agent on every pull request
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        # Pinned to pr-agent @main as of 2026-11-20 (commit e7fd5a233a4bf95d01a3c399e62768cb33172ec9).
+        # To update: GET /repos/the-pr-agent/pr-agent/commits/main and replace the SHA below (#364).
+        uses: the-pr-agent/pr-agent@e7fd5a233a4bf95d01a3c399e62768cb33172ec9
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_action_config.auto_review: "true"
+          github_action_config.auto_describe: "true"
+          github_action_config.auto_improve: "true"
+          config.model: "openrouter/baidu/ernie-5.5-flash-preview:free"
+          config.custom_model_max_tokens: "1024000"
+          config.fallback_models: '["openrouter/inclusionai/ling-3.2-flash:free"]'

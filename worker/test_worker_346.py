@@ -662,8 +662,10 @@ class _StubChromium:
         self._calls = calls
         self._body = body
 
-    def launch_persistent_context(self, profile_dir, headless=None):
+    def launch_persistent_context(self, profile_dir, headless=None,
+                                **options):
         self._calls.append(("launch", profile_dir, headless))
+        self._calls.append(("launch-options", options))
         return _StubContext(self._calls, self._body)
 
 
@@ -712,8 +714,9 @@ def test_f2_profile_fetcher_uses_the_profile_session():
               res["body"] == CANNED_EMPTY_PAGE
               and res["status"] == 200 and res["fetched_at"])
         check("F2: profile fetcher launched a persistent context "
-              "on the profile dir, headless",
-              ("launch", "/fake/egx-profile", True) in calls)
+              "on the profile dir, with the launch headless value",
+              ("launch", "/fake/egx-profile",
+               not bool(os.environ.get("DISPLAY"))) in calls)
         check("F2: profile fetcher navigated the browser to the URL",
               ("goto", url) in calls)
         fetcher.close()
@@ -783,7 +786,7 @@ def _write_stub_playwright_package(stub_dir):
         "        pass\n"
         "class _Chromium:\n"
         "    def launch_persistent_context(self, profile_dir,\n"
-        "                                headless=None):\n"
+        "                                headless=None, **options):\n"
         "        return _Ctx()\n"
         "class _PW:\n"
         "    def __init__(self):\n"
