@@ -104,7 +104,34 @@ listings (FAIT/FAITA union) are deduplicated by source id.
 - `manifest` (path, base_commit, frozen quarter), `window`,
   `enumerator` + version, `run_id`, `generated_at`, `mode`
   (`probe` | `live` | `fixtures`).
-- `live_access`: `{reachable, probes: [{url, at, reachable, detail}]}`.
+- `live_access`: `{reachable, probes: [{url, at, reachable, detail,
+  status, body_chars, body_sha256, body_hash_kind ("full"),
+  challenge, challenge_markers[], vendor_hint, capture_state}]}`.
+  A challenge probe records structured public metadata only
+  (issue #372): `challenge_markers` are enums from the matched
+  bot-defence signals (`tspd`, `bot-detection`, `human-check`,
+  `captcha`, or `empty-body` for a near-empty shell with no matched
+  signal); `vendor_hint` is set only for the allowlisted `tspd`
+  signature and is a hint, never a certainty — a generic captcha
+  marker never names a vendor. `body_sha256` is the digest of the
+  FULL body received (`body_hash_kind: "full"`); a clipped-body
+  hash is never presented as full, mirroring the corpus rule.
+  `capture_state` is `captured`, `fetch_failed`, `probe_error`,
+  or `not_attempted` (fixtures mode, no live fetch) — a failed
+  capture keeps the original probe result (`reachable: false`,
+  `detail` with the error). A non-2xx response that actually
+  arrived (HTTPError with a body, issue #378) is not a capture
+  failure: its status, body_chars, digest, markers and vendor
+  hint are recorded exactly as for a 2xx body, with
+  `capture_state: "captured"` and `reachable: false`; only a
+  connection failure — no response arrived — is `fetch_failed`
+  with no status. **The body itself is never stored**:
+  the archive is anonymously readable and publish copies the run
+  directory wholesale, so no body text, URL, or script content
+  may land in the probe record or in any file under the run
+  directory; challenge captures stay outside
+  `documents[].corpus`. A private diagnostic capture is out of
+  scope and needs a separately approved design.
 - `collection`: `{enumerated, archived, missing,
   enumeration_closed, pagination_complete}` — the same keys
   `scripts/top30_completion.py` validates (`_validate_collection`):

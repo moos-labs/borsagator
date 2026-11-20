@@ -128,8 +128,29 @@ def is_valid_isin(isin):
     return total % 10 == 0
 
 
-_CHALLENGE = re.compile(r"tspd|bot detection|are you human|captcha",
-                        re.I)
+_CHALLENGE_MARKERS = (
+    # (substring, marker enum) — the schema-ordered list of
+    # bot-defence signals a page body can match. "tspd" is the only
+    # allowlisted vendor SIGNATURE: matching it may add a vendor
+    # hint, never a certainty. The other markers are generic — a
+    # page can say "captcha" without naming a vendor — so they
+    # never produce a vendor hint.
+    ("tspd", "tspd"),
+    ("bot detection", "bot-detection"),
+    ("are you human", "human-check"),
+    ("captcha", "captcha"),
+)
+
+
+def challenge_markers(html):
+    """Matched challenge-marker enums for a page body, in schema
+    order. Empty when no bot-defence marker matches — a page can
+    still be a challenge shell via the near-empty-body rule in
+    parse_search_page (marker "empty-body", recorded by the
+    caller)."""
+    raw = html if isinstance(html, str) else ""
+    return [enum for pat, enum in _CHALLENGE_MARKERS
+            if re.search(pat, raw, re.I)]
 _NEWS_LINK = re.compile(
     r'<a[^>]+href="([^"]*NewsDetails\.aspx[^"]*)"[^>]*>'
     r'(.*?)</a>', re.I | re.S)
@@ -198,7 +219,7 @@ def parse_search_page(html, url):
         # Result links present: this is a real result page, never a
         # challenge shell, however short the markup is.
         pass
-    elif _CHALLENGE.search(raw):
+    elif challenge_markers(raw):
         out["is_challenge"] = True
         return out
     elif len(raw) < 200 and not _EMPTY_MARKER.search(raw):
@@ -233,20 +254,34 @@ def classify_attachment_link(href, text):
 
 class FetchFailure(Exception):
     """A fetch that produced no usable page. Carries the exact
-    evidence (url, error, timestamp) so the ledger can name it."""
+    evidence (url, error, timestamp) so the ledger can name it.
 
-    def __init__(self, url, error):
+    ``status`` / ``body`` are set only when a response actually
+    arrived (issue #378): http_fetch catches HTTPError separately
+    and carries the non-2xx status + body here, so the probe can
+    preserve the evidence instead of discarding it. Connection
+    failures (URLError, timeout, disconnect) leave both None —
+    no response arrived, so there is no evidence to preserve.
+    The body is carried only in memory, never stored: the probe
+    records structured fields from it, never the body itself."""
+
+    def __init__(self, url, error, status=None, body=None):
         super().__init__("%s: %s" % (url, error))
         self.url = url
         self.error = str(error)
         self.at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        self.status = status
+        self.body = body
 
 
 def http_fetch(url, timeout=30):
     """Default live fetcher: plain HTTP with a browser UA. Raises
     FetchFailure with the exact error — never returns a synthetic
     empty page (an empty page would masquerade as an empty result
-    set)."""
+    set). A non-2xx response still raises (enumeration keeps its
+    existing non-2xx failure behaviour), but the HTTPError body is
+    read and carried on the FetchFailure (issue #378), so a probe
+    can record the response's evidence instead of losing it."""
     req = urllib.request.Request(url, headers={
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -259,6 +294,21 @@ def http_fetch(url, timeout=30):
             return {"status": r.status, "body": body,
                     "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%SZ",
                                                 time.gmtime())}
+    except urllib.error.HTTPError as e:
+        # A response arrived: read its body so the probe record
+        # keeps the evidence (status, chars, digest, challenge
+        # markers). Still raises — enumeration's non-2xx failure
+        # behaviour is unchanged; only the probe preserves what
+        # arrived. An unreadable body keeps the status with an
+        # empty body rather than losing the status too.
+        try:
+            raw = e.read()
+        except Exception:  # noqa: BLE001 — body read must not raise
+            raw = b""
+        body = (raw.decode("utf-8", errors="replace")
+                if isinstance(raw, (bytes, bytearray)) else "")
+        raise FetchFailure(url, "%s: %s" % (type(e).__name__, e),
+                           status=e.code, body=body)
     except Exception as e:  # URLError, RemoteDisconnected, timeout...
         raise FetchFailure(url, "%s: %s" % (type(e).__name__, e))
 
@@ -623,26 +673,97 @@ def enumerate_universe(manifest, fetcher, run_id=None, mode="live"):
     return ledger
 
 
+def _probe_record_fields(rec, url, status, body):
+    """Fill the structured capture fields of a probe record from a
+    body that was actually received — a 2xx body or an HTTPError
+    body (issue #378). The same fields either way, so a 403
+    challenge shell gets the same evidence as a 200 one. The body
+    itself is never stored: only status, chars, digest, marker
+    enums and vendor hint land in the record. Returns the parsed
+    page, for the caller's reachable/detail decisions."""
+    body = body if isinstance(body, str) else ""
+    parsed = parse_search_page(body, url)
+    markers = challenge_markers(body)
+    if parsed["is_challenge"] and not markers:
+        # Near-empty body with no explicit empty-result marker: a
+        # challenge shell by the parse rule, with no matched signal
+        # to name.
+        markers = ["empty-body"]
+    rec["status"] = status
+    rec["body_chars"] = len(body)
+    rec["body_sha256"] = parsed["raw_sha256"]
+    rec["body_hash_kind"] = "full"
+    rec["challenge"] = parsed["is_challenge"]
+    rec["challenge_markers"] = markers
+    # Allowlisted vendor signature only: "tspd" may hint at the
+    # vendor; a generic captcha/human-check marker never does.
+    rec["vendor_hint"] = "tspd" if "tspd" in markers else None
+    return parsed
+
+
 def probe_live_access(fetcher=None):
     """One pilot probe (POUL control, ISIN EGS02051C018) to establish
     whether this machine can reach EGX NewsSearch at all. Returns
-    the probe record; never raises."""
+    the probe record; never raises.
+
+    Structured record (issue #372): HTTP status, full body_chars,
+    a sha256 digest of the FULL body received (body_hash_kind
+    "full" — a clipped hash is never presented as a full hash,
+    mirroring the corpus rule), the matched challenge-marker
+    enums, an allowlisted vendor hint (a hint, never a certainty
+    from a generic marker), and an explicit capture state. The
+    body itself is NEVER stored in the record: the archive is
+    anonymously readable and publish copies the run directory
+    wholesale, so no body text, URL, or script content may land
+    here — only the enums, counts and digest above. Challenge
+    captures stay outside documents[].corpus. A non-2xx response
+    that actually arrived (HTTPError with a body, issue #378) is
+    not a capture failure: its status, body_chars, digest, markers
+    and vendor hint are recorded exactly as for a 2xx body, with
+    capture_state "captured" and reachable False. Only a
+    connection failure — no response arrived — is "fetch_failed"
+    with no status. Capture failure has a named state
+    ("fetch_failed" / "probe_error") and keeps the original probe
+    result (reachable False, detail with the error). The legacy
+    detail string is kept for compatibility: run_probe_mode embeds
+    it in failure reasons."""
     fetcher = fetcher or http_fetch
     url = search_url("EGS02051C018")
     rec = {"url": url,
            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "reachable": False, "detail": None}
+           "reachable": False, "detail": None,
+           "status": None, "body_chars": None,
+           "body_sha256": None, "body_hash_kind": None,
+           "challenge": None, "challenge_markers": [],
+           "vendor_hint": None, "capture_state": "not_attempted"}
     try:
         resp = fetcher(url)
-        parsed = parse_search_page(resp.get("body", ""), url)
+        body = resp.get("body", "")
+        parsed = _probe_record_fields(rec, url, resp.get("status"),
+                                      body)
+        rec["capture_state"] = "captured"
         rec["reachable"] = not parsed["is_challenge"]
         rec["detail"] = ("status=%s body_chars=%d challenge=%s"
-                         % (resp.get("status"),
-                            len(resp.get("body", "")),
+                         % (rec["status"], rec["body_chars"],
                             parsed["is_challenge"]))
     except FetchFailure as e:
-        rec["detail"] = "%s: %s" % (type(e).__name__, e.error)
+        if getattr(e, "status", None) is not None:
+            # A response actually arrived (non-2xx HTTPError): its
+            # evidence is preserved exactly like a 2xx body
+            # (issue #378) — capture_state "captured", reachable
+            # stays False, and the legacy error detail is kept.
+            # Only a response that arrived gets this treatment;
+            # a connection failure (status None) stays fetch_failed
+            # with no status below.
+            _probe_record_fields(rec, url, e.status, e.body)
+            rec["capture_state"] = "captured"
+            rec["reachable"] = False
+            rec["detail"] = "%s: %s" % (type(e).__name__, e.error)
+        else:
+            rec["capture_state"] = "fetch_failed"
+            rec["detail"] = "%s: %s" % (type(e).__name__, e.error)
     except Exception as e:  # noqa: BLE001 — probe must not raise
+        rec["capture_state"] = "probe_error"
         rec["detail"] = "%s: %s" % (type(e).__name__, e)
     return rec
 
@@ -779,7 +900,12 @@ def main(argv=None):
                         "reachable": None,
                         "detail": "fixture mode: no live access "
                                   "attempted; pages are SIMULATED, "
-                                  "not live EGX captures"}]}
+                                  "not live EGX captures",
+                        "status": None, "body_chars": None,
+                        "body_sha256": None, "body_hash_kind": None,
+                        "challenge": None, "challenge_markers": [],
+                        "vendor_hint": None,
+                        "capture_state": "not_attempted"}]}
     else:  # live: full enumeration on a machine that can reach EGX
         # Issue #346 F2: --transport profile fetches through the
         # persistent Chromium profile session (the probe rides the

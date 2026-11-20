@@ -21,8 +21,12 @@ Required controls (issue #283 stage 2):
   as "clipped-body-sha256" and is never presented as a full hash.
 """
 import hashlib
+import io
+import json
 import os
 import sys
+import tempfile
+import urllib.error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -384,6 +388,127 @@ def test_window_frozen():
                                    % (url, no_isin_raises))
 
 
+def test_challenge_probe_structured_record():
+    """Issue #372: a challenge probe records structured public
+    metadata — marker enums, status, full body_chars, a digest of
+    the full body, and an explicit capture state — and no body
+    text anywhere in the record."""
+    sentinel = "SENTINEL-372-BODY-SECRET-7f3a9"
+    body = ("<html><head><title>EGX</title></head><body>"
+            "<script src=\"/tspd.js\"></script>"
+            "<p>captcha check %s</p></body></html>" % sentinel)
+    probe = E.probe_live_access(
+        fetcher=lambda url: {"status": 200, "body": body})
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    ok = (probe["reachable"] is False
+          and probe["status"] == 200
+          and probe["body_chars"] == len(body)
+          and probe["body_sha256"] == digest
+          and probe["body_hash_kind"] == "full"
+          and probe["challenge"] is True
+          and probe["challenge_markers"] == ["tspd", "captcha"]
+          and probe["vendor_hint"] == "tspd"
+          and probe["capture_state"] == "captured"
+          and sentinel not in json.dumps(probe))
+    # Generic marker only: enums recorded, no vendor hint.
+    generic = E.probe_live_access(
+        fetcher=lambda url: {"status": 200,
+                             "body": "<html><body>please complete "
+                                     "the captcha</body></html>"})
+    ok = (ok and generic["challenge_markers"] == ["captcha"]
+          and generic["vendor_hint"] is None
+          and generic["capture_state"] == "captured")
+    # Near-empty shell, no matched signal: challenge by the parse
+    # rule, marker "empty-body", still no vendor hint.
+    empty = E.probe_live_access(
+        fetcher=lambda url: {"status": 200,
+                             "body": "<html></html>"})
+    ok = (ok and empty["challenge"] is True
+          and empty["challenge_markers"] == ["empty-body"]
+          and empty["vendor_hint"] is None)
+    return ok, ("tspd probe=%s generic=%s empty=%s"
+                % (probe, generic["challenge_markers"],
+                   empty["challenge_markers"]))
+
+
+def test_challenge_probe_capture_failure_state():
+    """Issue #372: capture failure has a named state without
+    losing the original probe result."""
+    def _boom(url):
+        raise E.FetchFailure(url, "URLError: empty reply")
+    failed = E.probe_live_access(fetcher=_boom)
+    ok = (failed["capture_state"] == "fetch_failed"
+          and failed["reachable"] is False
+          and failed["status"] is None
+          and failed["body_chars"] is None
+          and failed["body_sha256"] is None
+          and failed["body_hash_kind"] is None
+          and failed["challenge"] is None
+          and failed["challenge_markers"] == []
+          and failed["vendor_hint"] is None
+          and "empty reply" in failed["detail"]
+          and failed["url"] and failed["at"])
+
+    def _crash(url):
+        raise RuntimeError("boom")
+    errored = E.probe_live_access(fetcher=_crash)
+    ok = (ok and errored["capture_state"] == "probe_error"
+          and errored["reachable"] is False
+          and "boom" in errored["detail"])
+    return ok, ("fetch_failed=%s probe_error=%s"
+                % (failed["capture_state"],
+                   errored["capture_state"]))
+
+
+def test_challenge_probe_publication_exclusion():
+    """Issue #372: the challenge body is nowhere in the published
+    run directory. Publish copies the run directory wholesale
+    (worker/worker.py publish: cp -r results_dir/. dest/), so the
+    test serialises the ledger exactly as main() does into a temp
+    run dir and walks every file: the sentinel body text must
+    appear in none of them, and no probe/body side file may exist.
+    """
+    sentinel = "SENTINEL-372-BODY-SECRET-7f3a9"
+    body = ("<html><head><title>EGX</title></head><body>"
+            "<script src=\"/tspd.js\"></script>"
+            "<p>captcha check %s</p></body></html>" % sentinel)
+    store = {E.search_url("EGS02051C018"):
+             {"status": 200, "body": body},
+             E.search_url("EGS02051C018", page=1):
+             {"status": 200, "body": body}}
+    manifest = {"base_commit": "test", "frozen_at": "2026-11-19",
+                "quarter": {"start": "2026-08-19",
+                            "end": "2026-11-19"},
+                "issuers": [{"issuer": "POUL", "listings": [
+                    {"code": "POUL", "currency": "EGP",
+                     "isin": "EGS02051C018"}]}]}
+    probe = E.probe_live_access(fetcher=FakeFetcher(store))
+    ledger = E.enumerate_universe(manifest, FakeFetcher(store),
+                                  mode="live")
+    ledger["live_access"] = {"reachable": probe["reachable"],
+                             "probes": [probe]}
+    with tempfile.TemporaryDirectory() as tmp:
+        out = os.path.join(tmp, "top30_expected_docs.json")
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump(ledger, f, indent=1, ensure_ascii=False)
+        leaked = []
+        files = []
+        for root, _dirs, names in os.walk(tmp):
+            for name in names:
+                files.append(os.path.join(root, name))
+                with open(os.path.join(root, name),
+                          encoding="utf-8") as f:
+                    if sentinel in f.read():
+                        leaked.append(name)
+        ok = (not leaked
+              and files == [out]
+              and sentinel not in json.dumps(probe)
+              and probe["body_sha256"] == hashlib.sha256(
+                  body.encode("utf-8")).hexdigest())
+    return ok, ("files=%s leaked=%s"
+                % ([os.path.basename(f) for f in files], leaked))
+
+
 def test_probe_mode_ledger_honest():
     def _boom(url):
         raise E.FetchFailure(url, "URLError: empty reply")
@@ -399,6 +524,129 @@ def test_probe_mode_ledger_honest():
     # enumerate_universe in probe-like conditions below.
     ok = (probe["reachable"] is False
           and "empty reply" in probe["detail"])
+    return ok, ("probe=%s" % (probe,))
+
+
+def test_httperror_403_probe_preserves_evidence():
+    """Issue #378: a non-2xx response that actually arrived keeps
+    its evidence. http_fetch reads the HTTPError body and carries
+    status + body on the FetchFailure; probe_live_access records
+    the same structured fields as a 2xx response (status,
+    body_chars, full digest, challenge markers, vendor hint)
+    with capture_state "captured" and reachable False — not
+    fetch_failed. The body itself appears nowhere in the record.
+    Connection failures stay fetch_failed with no status, and
+    enumeration keeps its existing non-2xx failure behaviour
+    (kind fetch_failed, never source_challenge)."""
+    import urllib.request
+    sentinel = "SENTINEL-378-BODY-SECRET-2c8e1"
+    body = ("<html><head><title>EGX</title></head><body>"
+            "<script src=\"/tspd.js\"></script>"
+            "<p>captcha check %s</p></body></html>" % sentinel)
+    url = E.search_url("EGS02051C018")
+    real_urlopen = urllib.request.urlopen
+
+    def _raise_403(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None,
+            fp=io.BytesIO(body.encode("utf-8")))
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    try:
+        urllib.request.urlopen = _raise_403
+        # http_fetch level: status + body carried on the failure.
+        try:
+            E.http_fetch(url)
+            fetch_ok = False
+            ferr = None
+        except E.FetchFailure as e:
+            fetch_ok = (e.status == 403 and e.body == body
+                        and e.error == "HTTPError: HTTP Error 403: "
+                        "Forbidden")
+            ferr = e
+        # Probe level (default fetcher = http_fetch, real path).
+        probe = E.probe_live_access()
+        ok = (fetch_ok
+              and probe["reachable"] is False
+              and probe["status"] == 403
+              and probe["body_chars"] == len(body)
+              and probe["body_sha256"] == digest
+              and probe["body_hash_kind"] == "full"
+              and probe["challenge"] is True
+              and probe["challenge_markers"] == ["tspd", "captcha"]
+              and probe["vendor_hint"] == "tspd"
+              and probe["capture_state"] == "captured"
+              and "HTTPError" in probe["detail"]
+              and sentinel not in json.dumps(probe))
+        # Enumeration level: same failure, still kind fetch_failed.
+        rec = E.enumerate_listing(_listing("POUL", "EGS02051C018"),
+                                  E.http_fetch)
+        kinds = [f["kind"] for f in rec["failures"]]
+        ok = (ok and rec["enumeration_status"] == "failed"
+              and kinds == ["fetch_failed"]
+              and rec["documents"] == [])
+
+        def _raise_conn(req, timeout=30):
+            raise urllib.error.URLError("empty reply")
+        urllib.request.urlopen = _raise_conn
+        try:
+            E.http_fetch(url)
+            conn_ok = False
+        except E.FetchFailure as e:
+            conn_ok = (e.status is None and e.body is None
+                       and "URLError" in e.error)
+        conn_probe = E.probe_live_access()
+        ok = (ok and conn_ok
+              and conn_probe["capture_state"] == "fetch_failed"
+              and conn_probe["reachable"] is False
+              and conn_probe["status"] is None
+              and conn_probe["body_chars"] is None
+              and conn_probe["body_sha256"] is None
+              and conn_probe["body_hash_kind"] is None
+              and conn_probe["challenge_markers"] == []
+              and conn_probe["vendor_hint"] is None
+              and "empty reply" in conn_probe["detail"])
+    finally:
+        urllib.request.urlopen = real_urlopen
+    return ok, ("probe=%s conn_probe_state=%s ferr=%s"
+                % (probe, conn_probe["capture_state"], ferr))
+
+
+def test_httperror_403_non_challenge_body_still_captured():
+    """Issue #378: a 403 body with no challenge marker still gets
+    its evidence preserved — captured with the status/digest, not
+    fetch_failed — and reachable stays False (a non-2xx response
+    is never reachable, however benign its body looks)."""
+    import urllib.request
+    body = ("<html><body><p>Access denied by policy. "
+            "Please contact the site operator for assistance "
+            "with your request and quote reference 12345. "
+            "This page intentionally carries no challenge "
+            "marker at all, so it must not be misread as a "
+            "challenge shell or as a reachable page.</p>"
+            "</body></html>")
+    assert len(body) >= 200
+    url = E.search_url("EGS02051C018")
+    real_urlopen = urllib.request.urlopen
+
+    def _raise_403(req, timeout=30):
+        raise urllib.error.HTTPError(
+            url, 403, "Forbidden", hdrs=None,
+            fp=io.BytesIO(body.encode("utf-8")))
+    try:
+        urllib.request.urlopen = _raise_403
+        probe = E.probe_live_access()
+    finally:
+        urllib.request.urlopen = real_urlopen
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    ok = (probe["reachable"] is False
+          and probe["status"] == 403
+          and probe["body_chars"] == len(body)
+          and probe["body_sha256"] == digest
+          and probe["body_hash_kind"] == "full"
+          and probe["challenge"] is False
+          and probe["challenge_markers"] == []
+          and probe["vendor_hint"] is None
+          and probe["capture_state"] == "captured")
     return ok, ("probe=%s" % (probe,))
 
 
@@ -444,6 +692,16 @@ CASES = [
      test_corpus_fetch_failure_recorded),
     ("window-frozen", test_window_frozen),
     ("probe-mode-ledger-honest", test_probe_mode_ledger_honest),
+    ("challenge-probe-structured-record",
+     test_challenge_probe_structured_record),
+    ("challenge-probe-capture-failure-state",
+     test_challenge_probe_capture_failure_state),
+    ("challenge-probe-publication-exclusion",
+     test_challenge_probe_publication_exclusion),
+    ("httperror-403-probe-preserves-evidence",
+     test_httperror_403_probe_preserves_evidence),
+    ("httperror-403-non-challenge-body-still-captured",
+     test_httperror_403_non_challenge_body_still_captured),
     ("attachment-link-classification",
      test_attachment_link_classification),
     ("isin-validation-mirrors-harvester",
