@@ -6,10 +6,21 @@ name: pr-close-gate
 # after the close), not the project auto-close on card move. board_sync.py
 # could only react (reopen + revert) after the unverified close happened.
 # This gate is the preventive fix: it blocks merging while any closing
-# keyword in the PR body targets an issue in this repo that lacks the
-# 'verified' label. The author then uses 'Related to #N' and closes via
+# keyword in the MERGE MESSAGE — the PR title, the PR body and the branch
+# commit messages (see #432: PR #430's body said only "For #425" while its
+# title and commit message said "Fix #425", and the squash commit
+# auto-closed unverified #425) — targets an issue in this repo that lacks
+# the 'verified' label. The author then uses 'Related to #N' and closes via
 # the verified close-out procedure (scripts/verified_closeout.py).
 # See scripts/check_pr_close_keywords.py for the rule.
+# Label freshness (issue #432, Gap 2): this workflow triggers only on
+# pull_request events, so a 'verified' label change on a target issue
+# does NOT re-run the gate — a removal after green leaves a stale green,
+# an addition after red leaves a stale red until the next PR push/edit.
+# The stale-green window is bounded by board_sync.py's reactive reopen
+# (it reopened #425 13s after the unverified close) plus the rule that a
+# close is only legitimate via the verified close-out; a label-change
+# re-run is the documented follow-up, not implemented here.
 
 on:
   pull_request:
