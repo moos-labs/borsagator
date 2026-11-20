@@ -2028,7 +2028,12 @@ def _validate_top30_ledger(ledger, manifest, mode):
     (F4), route provenance must match the frozen manifest (F5),
     the route set is frozen and duplicate route records are
     rejected (F6), and an archived body needs a real 64-hex hash
-    (F8). Never raises on malformed input: every defect is a
+    (F8). Issue #352 adds: attribution is required on every
+    validated document record (F5 — a record without listing /
+    ISIN is unresolved provenance, never vouched for), and
+    source_document_id must be unique within each issuer (F4 —
+    a repeated id under one issuer inflates the reconciled
+    totals). Never raises on malformed input: every defect is a
     reason, not a crash."""
     reasons = []
     if not isinstance(ledger, dict):
@@ -2146,10 +2151,16 @@ def _validate_top30_ledger(ledger, manifest, mode):
     # documents (the enumerator dedupes FAIT/FAITA shared ids at
     # the issuer level, so listing-level documents are NOT summed
     # — they would double-count). `archived` is the count of
-    # documents whose corpus status is archived. `missing` names
-    # routes that could not be enumerated (e.g. FAITA) — every
-    # entry must be a frozen route code; an invented id is neither
-    # an expected document nor a route.
+    # documents whose corpus status is archived.
+    # Issue #352 (settled interface): `collection.missing` is a
+    # list of frozen ROUTE codes for routes that could not be
+    # enumerated — never document IDs, and never manufactured:
+    # the producer emits missing=[] and evidences blocked/failed
+    # routes in the listing/failure records (e.g. FAITA's B-02
+    # named failure), so no later consumer may read missing as
+    # an exhaustive ledger of unarchived documents. Every entry
+    # must still be a frozen route code; an invented id is
+    # neither an expected document nor a route.
     doc_total = 0
     archived_total = 0
     for irec in issuers:
@@ -2158,10 +2169,27 @@ def _validate_top30_ledger(ledger, manifest, mode):
         docs = irec.get("documents")
         if not isinstance(docs, list):
             continue
+        # Issue #352 F4: source_document_id must be unique WITHIN
+        # each issuer. The producer dedupes within an issuer, so
+        # a repeated id under one issuer inflates the reconciled
+        # totals. Uniqueness is per issuer only — one announcement
+        # may legitimately appear through different issuers'
+        # searches, so cross-issuer sharing is NOT rejected. Only
+        # string ids are tracked (a missing or non-string id
+        # cannot collide; the never-raises contract forbids
+        # assuming hashability).
+        seen_ids = set()
         for d in docs:
             if not isinstance(d, dict):
                 continue
             doc_total += 1
+            sid = d.get("source_document_id")
+            if isinstance(sid, str):
+                if sid in seen_ids:
+                    reasons.append("duplicate source_document_id "
+                                   "%r within issuer %s"
+                                   % (sid, irec.get("issuer")))
+                seen_ids.add(sid)
             corp = d.get("corpus")
             if isinstance(corp, dict) \
                     and corp.get("status") == "archived":
@@ -2254,39 +2282,56 @@ def _validate_top30_ledger(ledger, manifest, mode):
         for doc in irec.get("documents", []) or []:
             if not isinstance(doc, dict):
                 continue
-            # Issue #346 F5: a document's listing (when the record
-            # carries one) must be a route of its own issuer and
-            # never a blocked route; its ISIN (when carried) must
-            # match the manifest ISIN for that listing. A document
-            # with no listing attribution is not failed here — the
-            # enumerator always attributes one, and honest
-            # incomplete ledgers may carry unattributed documents.
+            # Issue #352 F5: attribution is REQUIRED on every
+            # validated document record. The #346 fix checked a
+            # document's listing/ISIN only when the record carried
+            # them, so stripping listing and/or isin bypassed every
+            # provenance check while the document still counted
+            # toward the validated totals. The producer always
+            # attributes documents (top30_enumerate.py emits
+            # listing + isin at discovery, including not_captured
+            # records), so a record without attribution is not an
+            # honest incomplete ledger — it is unresolved
+            # provenance, and it fails here rather than being
+            # vouched for. A document's listing must be a route of
+            # its own issuer and never a blocked route; its ISIN
+            # must be present and match the manifest ISIN for that
+            # listing.
             dlisting = doc.get("listing")
-            if dlisting is not None:
-                if dlisting not in expected:
-                    reasons.append("document %s claims listing %r, "
-                                   "not a frozen route"
-                                   % (doc.get("source_document_id"),
-                                      dlisting))
-                elif route_issuer.get(dlisting) \
-                        != irec.get("issuer"):
-                    reasons.append("document %s claims listing %s, "
-                                   "not a route of issuer %s"
-                                   % (doc.get("source_document_id"),
-                                      dlisting, irec.get("issuer")))
-                elif expected[dlisting] is None:
-                    reasons.append("document %s claims blocked route "
-                                   "%s (no verified ISIN)"
-                                   % (doc.get("source_document_id"),
-                                      dlisting))
-                elif doc.get("isin") is not None \
-                        and doc.get("isin") != expected[dlisting]:
-                    reasons.append("document %s carries ISIN %r for "
-                                   "listing %s but the frozen "
-                                   "manifest records %r"
-                                   % (doc.get("source_document_id"),
-                                      doc.get("isin"), dlisting,
-                                      expected[dlisting]))
+            if dlisting is None:
+                reasons.append("document %s has no listing "
+                               "attribution (validated records must "
+                               "name a frozen route)"
+                               % (doc.get("source_document_id"),))
+            elif dlisting not in expected:
+                reasons.append("document %s claims listing %r, "
+                               "not a frozen route"
+                               % (doc.get("source_document_id"),
+                                  dlisting))
+            elif route_issuer.get(dlisting) \
+                    != irec.get("issuer"):
+                reasons.append("document %s claims listing %s, "
+                               "not a route of issuer %s"
+                               % (doc.get("source_document_id"),
+                                  dlisting, irec.get("issuer")))
+            elif expected[dlisting] is None:
+                reasons.append("document %s claims blocked route "
+                               "%s (no verified ISIN)"
+                               % (doc.get("source_document_id"),
+                                  dlisting))
+            elif doc.get("isin") is None:
+                reasons.append("document %s claims listing %s but "
+                               "carries no ISIN (provenance "
+                               "required)"
+                               % (doc.get("source_document_id"),
+                                  dlisting))
+            elif doc.get("isin") != expected[dlisting]:
+                reasons.append("document %s carries ISIN %r for "
+                               "listing %s but the frozen "
+                               "manifest records %r"
+                               % (doc.get("source_document_id"),
+                                  doc.get("isin"), dlisting,
+                                  expected[dlisting]))
             corp = doc.get("corpus")
             if not isinstance(corp, dict):
                 reasons.append("document %s has no corpus record"
