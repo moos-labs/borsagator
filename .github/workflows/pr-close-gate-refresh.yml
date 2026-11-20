@@ -1,0 +1,34 @@
+name: pr-close-gate-refresh
+
+# Issue #432, Gap 2: the pr-close-gate workflow triggers only on
+# pull_request events, so a 'verified' label change on a target issue
+# never re-ran it — removing 'verified' after green left a stale green
+# (unsafe), adding it after red left a stale red until the next PR
+# push/edit. This workflow re-runs the latest completed close-gate run
+# for each open PR whose merge message targets the relabeled issue, so
+# the check on the PR is re-evaluated against the fresh label state.
+# It only triggers re-runs; it never blocks a merge itself.
+# See scripts/refresh_close_gate.py for the rule.
+
+on:
+  issues:
+    types: [labeled, unlabeled]
+
+permissions:
+  actions: write
+  pull-requests: read
+  issues: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Re-run the close-gate for PRs targeting the relabeled issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python3 scripts/refresh_close_gate.py
