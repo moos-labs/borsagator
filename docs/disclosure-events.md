@@ -173,6 +173,83 @@ Reproducible: `scripts/test_ensemble_dividend_adapter_281.py`
 (5 tests: mapping, all gates, merge supersede/keep-apart, the
 three end-to-end runs above, the no-dividend control).
 
+## Feeding #32 reaction profiles (#282)
+
+`scripts/recommend.py` (`events_to_reaction_triggers` +
+`select_reaction_nudge`, wired into `main()`) feeds verified
+disclosure events into #32 reaction-profile selection. The consumer
+is the daily recommendation glue, not the ensemble: it reads
+`profiles/<TICKER>.json` (the reaction fit) and nudges the expected
+week move by the fitted type's SHRUNK reaction × 0.5 decay when a
+fresh event of a fitted type falls within 5 calendar days before
+the ensemble's as-of date. A verified event **selects** the profile
+type for the sessions after its announcement — it does not
+re-weight anything (the nudge weight is unchanged; #282 is about
+selection). The feed file (`disclosure-events/<CODE>-events.json`)
+is already staged into the archived sweep dir by merge.py #280, so
+`recommend.py` fetches it from the same sweep dir as the ensemble,
+at the same pinned commit — no worker/merge change was needed. The
+winning verified trigger is recorded on the recommendation JSON as
+`reaction_trigger` (null on the legacy path); `compile_model.py`
+copies only a whitelist of recommendation keys, so the extra key is
+ignored downstream.
+
+### Field mapping (event field → profile input)
+
+| Disclosure-event field | Profile input | Notes |
+|---|---|---|
+| `event_type == "dividend"` | profile type `dividend` | |
+| `event_type == "earnings"` | profile type `earnings` | |
+| `event_type == "board_decision"` + `subtype == "egm_call"` / `"agm_call"` | profile type `governance` | The extractor's subtype already distinguishes an assembly call (governance) from the board's own decisions (management) — use it, never a guess |
+| `event_type == "board_decision"` + `subtype == "board_decisions"` | profile type `management` | |
+| `announced.value` | **session-alignment date** | The sessions after the announcement are the ones scored against the profile; the trigger is fresh when 0–5 calendar days before the ensemble's as-of date (the same window as the legacy path, about 3 trading sessions) |
+| `event_id` | provenance | Recorded on the trigger and in the note |
+| `issuer.ticker` | ticker guard | Must match the sweep ticker when present; absent is accepted (the feed file is already per-ticker) |
+| `verification_status == "verified"` **and** `extraction_status == "extracted"` | gate: both required | Same gates as #281 — a candidate is never a verified event, and an unverified (e.g. republication) extraction is not trusted to move the call |
+| any other event type / subtype | **not fed** | The mapping above is exhaustive by design; an event with no profile type never selects |
+| event with no parseable announced date | **not fed** | No date, no alignment |
+
+### Selection rule
+
+Verified triggers are considered first, newest first: the first
+fresh trigger whose profile type has a fitted shrunk value wins.
+If no verified trigger qualifies — unfitted type, stale, future —
+the legacy keyword-classified profile events are considered in the
+same order (newest first, `"other"` never nudges, INS-R7-01), with
+the exact legacy note text reproduced. A verified trigger wins over
+a fresher keyword event of another type: provenance beats
+recency. A missing or malformed feed file changes nothing — the
+legacy path still stands, and a dead feed never loses a
+recommendation.
+
+### Proof (POUL, base 10.00, expected week +1.0%)
+
+The real extractor on the real #109 golden yields verified events:
+dividend (announced 2026-11-02, ev_bf7532c5c9185f9f113d, DPS
+1.8999999998), 9M earnings (announced 2026-11-12,
+ev_b89440084409130408c1), EGM call (announced 2026-11-08,
+ev_c8f760b067890b8c30f3); the candidate board event is gated out.
+The real `recommend.main()` on a stubbed archive (canned newest
+ensemble + canned profile/feed fetches), real committed
+`profiles/POUL.CA.json` (fitted types: dividend only, shrunk 3.46):
+
+| Run | Feed | `nudge_pct` | Note / trigger |
+|---|---|---|---|
+| A — legacy only, as-of 2026-11-05 | none | +1.73 | "fresh dividend event (2026-11-02, 3d before the ensemble)…" — the baseline |
+| B — verified dividend, as-of 2026-11-05 | real dividend event | +1.73 | "verified dividend disclosure event (2026-11-02, 3d before the ensemble, ev_bf7532c5c9185f9f113d)…" + `reaction_trigger` recorded — same profile, authoritative provenance |
+| C — blind body, as-of 2026-11-05 | none, then real dividend event | 0.0 → +1.73 | Profile whose only fresh event is the AGM story keyword-classified "other" (mirroring the real 2026-10-19 AGM story the classifier left as "other"): legacy finds nothing; the verified event selects the profile |
+| D — verified earnings, as-of 2026-11-13 | real earnings event | −1.00 | Crafted profile with fitted earnings (shrunk −2.0): the event selects the earnings profile |
+| E — precedence, as-of 2026-11-05 | real dividend event | +1.73 | Profile with a fresher keyword earnings event (2026-11-03, fitted): the older verified dividend wins |
+| F — verified EGM call, as-of 2026-11-09 | real EGM call + candidate board | +0.75 | Crafted profile with fitted governance (shrunk 1.5): the EGM call selects governance; the candidate board event is ignored |
+| G — malformed feed, as-of 2026-11-05 | garbage / non-list events | +1.73 | Legacy path unchanged |
+| Control — no event, no feed | none | 0.0 | No regression on event-free sweeps |
+
+Reproducible: `scripts/test_recommend_event_adapter_282.py`
+(16 tests: mapping, all gates, selection precedence/freshness/
+fallback, the eight end-to-end runs above, the no-event control).
+Failing-before on base main: 12 errors + 3 failures (the new
+functions and the `reaction_trigger` key do not exist there).
+
 ## Attachment capture (#279, capture-only)
 
 The harvest now captures the disclosure PDF itself

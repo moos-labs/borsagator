@@ -110,6 +110,13 @@ listings (FAIT/FAITA union) are deduplicated by source id.
   `scripts/top30_completion.py` validates (`_validate_collection`):
   a ratio of archived/enumerated = 100% is insufficient unless
   enumeration is closed and evidenced complete.
+- `collection.missing` (issue #352, settled): a list of frozen
+  ROUTE codes for routes that could not be enumerated — never
+  document IDs, and never manufactured. The producer emits
+  `missing=[]` and evidences blocked/failed routes in the
+  listing/failure records (e.g. FAITA's B-02 named failure), so
+  no later consumer may read `missing` as an exhaustive ledger
+  of unarchived documents.
 - `issuers[]`: per issuer `{issuer, listings[], enumeration_status,
   terminal_states, source_total, collected_count, documents[],
   failures[]}`.

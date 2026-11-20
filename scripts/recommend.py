@@ -246,6 +246,154 @@ def newest_ensemble(ticker):
     return None, None
 
 
+# Issue #282: verified #109 disclosure events -> reaction-profile
+# triggers. Mirrors #281 (ensemble.py events_to_corporate_actions):
+# the same gates (verified + extracted, ticker match) and the same
+# source of truth (the #278 feed file,
+# disclosure-events/<CODE>-events.json, already staged into the
+# archived sweep dir by merge.py #280, so it is fetched from the same
+# sweep dir as the ensemble, at the same pinned commit). A trigger
+# SELECTS the profile type for the sessions after the announcement;
+# the nudge weight (shrunk x 0.5 decay) is unchanged — this issue is
+# about selection, not re-weighting. The legacy keyword-classified
+# profile events remain the fallback: a verified event wins only
+# when it is fresh and its type is fitted, never by fiat.
+_EVENT_TO_PROFILE_TYPE = {
+    "dividend": "dividend",
+    "earnings": "earnings",
+}
+# board_decision carries no single profile type: the extractor's
+# subtype already distinguishes an assembly call (governance) from
+# the board's own decisions (management) — use it, never a guess.
+_BOARD_SUBTYPE_TO_PROFILE_TYPE = {
+    "egm_call": "governance",
+    "agm_call": "governance",
+    "board_decisions": "management",
+}
+
+
+def events_to_reaction_triggers(events, ticker):
+    """Issue #282: verified #109 disclosure events -> reaction
+    triggers. Only ``verification_status == "verified"`` and
+    ``extraction_status == "extracted"`` feed selection — a
+    candidate is never a verified event, and an unverified (e.g.
+    republication) extraction is not trusted to move the call. The
+    issuer ticker must match the sweep ticker when the event names
+    one (the feed file is already per-ticker, so a missing ticker
+    is accepted, a mismatched one is not). The trigger date is the
+    event's ANNOUNCED date (verbatim, ``announced.value``) — the
+    session-alignment date: the sessions after the announcement are
+    the ones scored against the profile. Deliberately NOT fed: an
+    event with no parseable announced date (no date, no alignment),
+    and any event type with no profile type (the mapping above is
+    exhaustive by design). Output is a trigger dict (profile type,
+    announced date, provenance), so the nudge selection consumes
+    verified triggers exactly like the legacy profile events."""
+    triggers = []
+    if not events:
+        return triggers
+    code = (ticker or "").upper()
+    for ev in events:
+        if not isinstance(ev, dict):
+            continue
+        if ev.get("verification_status") != "verified":
+            continue
+        if ev.get("extraction_status") != "extracted":
+            continue
+        etype = ev.get("event_type")
+        if etype in _EVENT_TO_PROFILE_TYPE:
+            ptype = _EVENT_TO_PROFILE_TYPE[etype]
+        elif etype == "board_decision":
+            ptype = _BOARD_SUBTYPE_TO_PROFILE_TYPE.get(
+                ev.get("subtype"))
+            if ptype is None:
+                continue
+        else:
+            continue
+        issuer = ev.get("issuer") or {}
+        ev_ticker = (issuer.get("ticker") or "").upper()
+        if ev_ticker and ev_ticker != code:
+            continue
+        announced = (ev.get("announced") or {}).get("value")
+        try:
+            ann_date = date.fromisoformat(str(announced)[:10]) \
+                if announced else None
+        except ValueError:
+            ann_date = None
+        if ann_date is None:
+            continue
+        triggers.append({
+            "profile_type": ptype,
+            "announced": ann_date.isoformat(),
+            "event_id": ev.get("event_id"),
+            "event_type": etype,
+            "subtype": ev.get("subtype"),
+            "source": "disclosure-event"})
+    return triggers
+
+
+def select_reaction_nudge(verified_triggers, profile_events, fitted,
+                           asof):
+    """Issue #282: pick the reaction-profile nudge.
+
+    Verified #109 triggers are considered first (newest first): the
+    first fresh trigger (0 <= age <= 5 calendar days vs as-of, the
+    same window as the legacy path — about 3 trading sessions)
+    whose profile type has a fitted shrunk value wins. If no
+    verified trigger qualifies, the legacy keyword-classified
+    profile events are considered in the same order (newest first,
+    "other" never nudges, INS-R7-01). Returns (nudge, note,
+    trigger) where trigger is the winning verified trigger dict or
+    None for the legacy path. The nudge weight is the same in both
+    paths (shrunk x 0.5 decay); only the selection changes. The
+    note text never carries buy/sell/hold wording (compile_model
+    R-10 audits the copied notes for imperative wording)."""
+    if asof is None:
+        return 0.0, None, None
+    for tr in sorted(verified_triggers or [],
+                     key=lambda t: t.get("announced", ""),
+                     reverse=True):
+        try:
+            age = (asof - date.fromisoformat(
+                tr["announced"][:10])).days
+        except Exception:
+            continue
+        fv = (fitted or {}).get(tr.get("profile_type") or "")
+        shrunk = (fv or {}).get("shrunk_r5_adj")
+        if shrunk is not None and 0 <= age <= 5:
+            nudge = round(shrunk * 0.5, 2)
+            note = (f"verified {tr['profile_type']} disclosure event "
+                    f"({tr['announced']}, {age}d before the ensemble, "
+                    f"{tr.get('event_id') or '?'}): shrunk reaction "
+                    f"{shrunk:+}% x 0.5 decay = {nudge:+}% nudge")
+            return nudge, note, tr
+    for e in sorted(profile_events or [],
+                    key=lambda x: x.get("date", ""),
+                    reverse=True):
+        # INS-R7-01: never nudge on an unclassified event, whatever
+        # the committed profile contains — the build side excludes
+        # "other" from fitted types, but a stale pre-fix profile
+        # carried forward after a soft-fail would re-open it.
+        if (e.get("type") or "") == "other":
+            continue
+        try:
+            age = (asof - date.fromisoformat(e["date"][:10])).days
+        except Exception:
+            continue
+        fv = (fitted or {}).get(e.get("type") or "")
+        # INS-R6-02: old-format profiles predate the R5-05 key
+        # rename (shrunk_r5, not shrunk_r5_adj) — a bare key
+        # access would kill the whole recommendation.
+        shrunk = (fv or {}).get("shrunk_r5_adj")
+        if shrunk is not None and 0 <= age <= 5:
+            nudge = round(shrunk * 0.5, 2)
+            note = (f"fresh {e['type']} event ({e['date']}, {age}d "
+                    f"before the ensemble): shrunk reaction "
+                    f"{shrunk:+}% x 0.5 decay = {nudge:+}% nudge")
+            return nudge, note, None
+    return 0.0, None, None
+
+
 def main():
     ticker = (sys.argv[1] if len(sys.argv) > 1 else "POUL.CA").upper()
     ens, sweep_dir = newest_ensemble(ticker)
@@ -279,39 +427,33 @@ def main():
         profile = {}
     fit = profile.get("reaction_fit") or {}
     fitted = fit.get("by_type") or {}
-    nudge = 0.0
     events = profile.get("events") or []
     asof = None
     try:
         asof = date.fromisoformat((ens.get("date") or "")[:10])
     except Exception:
         asof = None
-    if events and asof:
-        for e in sorted(events, key=lambda x: x.get("date", ""),
-                        reverse=True):
-            # INS-R7-01: never nudge on an unclassified event, whatever
-            # the committed profile contains — the build side excludes
-            # "other" from fitted types, but a stale pre-fix profile
-            # carried forward after a soft-fail would re-open it.
-            if (e.get("type") or "") == "other":
-                continue
-            try:
-                age = (asof - date.fromisoformat(e["date"][:10])).days
-            except Exception:
-                continue
-            fv = fitted.get(e.get("type") or "")
-            # INS-R6-02: old-format profiles predate the R5-05 key
-            # rename (shrunk_r5, not shrunk_r5_adj) — a bare key
-            # access would kill the whole recommendation.
-            shrunk = (fv or {}).get("shrunk_r5_adj")
-            if shrunk is not None and 0 <= age <= 5:
-                nudge = round(shrunk * 0.5, 2)
-                notes.append(
-                    f"fresh {e['type']} event ({e['date']}, {age}d "
-                    f"before the ensemble): shrunk reaction "
-                    f"{shrunk:+}% x 0.5 decay = "
-                    f"{nudge:+}% nudge")
-                break
+    # Issue #282: verified #109 events from the same archived sweep
+    # dir (merge.py #280 stages the feed there) select the profile
+    # type first. Absent on Actions sweeps and pre-#278 runs, and a
+    # missing or malformed feed changes nothing — the legacy
+    # keyword-classified path below still stands, and a dead feed
+    # never loses a recommendation.
+    verified_triggers = []
+    try:
+        if PINNED_COMMIT:
+            feed = json.loads(fetch_text(blob_url(
+                sweep_dir + "/disclosure-events/%s-events.json"
+                % ticker.split(".")[0])))
+            if isinstance(feed, dict):
+                verified_triggers = events_to_reaction_triggers(
+                    feed.get("events") or [], ticker)
+    except Exception:
+        verified_triggers = []
+    nudge, _nudge_note, _trigger = select_reaction_nudge(
+        verified_triggers, events, fitted, asof)
+    if _nudge_note:
+        notes.append(_nudge_note)
     wf = profile.get("walk_forward") or {}
     if (wf.get("hits") is not None and wf.get("baseline_hits") is not None
             and wf["hits"] <= wf["baseline_hits"]):
@@ -388,6 +530,7 @@ def main():
            "sell_above": sell_above,
            "expected_week_pct": expected, "nudge_pct": nudge,
            "expected_week_adj_pct": expected_adj,
+           "reaction_trigger": _trigger,
            "confidence": conf, "risk": risk,
            "weights_source": ens.get("weights_source", "builtin"),
            "notes": notes}
