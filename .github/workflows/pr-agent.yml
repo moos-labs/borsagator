@@ -13,7 +13,10 @@ on:
 
 jobs:
   pr_agent_job:
-    if: ${{ github.event.sender.type != 'Bot' }}
+    # Comment runs are gated on author_association below: only OWNER /
+    # MEMBER / COLLABORATOR comments may trigger a run (PR events pass
+    # through unchanged). Bots are excluded on both paths.
+    if: ${{ github.event.sender.type != 'Bot' && (github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,7 +26,9 @@ jobs:
     steps:
       - name: PR Agent action step
         id: pragent
-        uses: the-pr-agent/pr-agent@main
+        # Pinned to pr-agent @main as of 2026-11-20 (commit e7fd5a233a4bf95d01a3c399e62768cb33172ec9).
+        # To update: GET /repos/the-pr-agent/pr-agent/commits/main and replace the SHA below (#364).
+        uses: the-pr-agent/pr-agent@e7fd5a233a4bf95d01a3c399e62768cb33172ec9
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
