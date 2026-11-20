@@ -15,10 +15,20 @@ cases, and board_sync.py's verification gate could only REACT (reopen
 and revert) after the unverified close had already happened.
 
 This gate runs on pull_request (see .github/workflows/pr-close-gate.yml)
-and BLOCKS THE MERGE while the PR body carries a closing keyword
-(``Fixes`` / ``Closes`` / ``Resolves`` and variants) referencing an issue
-in this repo that does NOT yet carry the ``verified`` label. The close
-is therefore deferred, not repaired after the fact:
+and BLOCKS THE MERGE while the text GitHub will parse for auto-close
+at merge — the PR title, the PR body AND the branch commit messages —
+carries a closing keyword (``Fixes`` / ``Closes`` / ``Resolves`` and
+variants) referencing an issue in this repo that does NOT yet carry the
+``verified`` label. The close is therefore deferred, not repaired
+after the fact. Scanning the body alone was the #432 bypass: PR #430
+merged 2026-11-20T14:08:39Z with body "For #425" (gate green
+14:07:29Z) but title "Fix #425: ..." and a branch commit message
+identical to title + body; the squash commit 44b031d2 reads
+"Fix #425: ..." and #425 closed 14:08:41Z, reopened 14:08:54Z by
+borsagator[bot]. The title/body/commit union is the merge-time text
+for this repo's settings (squash + merge-commit + rebase all allowed;
+squash_merge_commit_message=COMMIT_MESSAGES, merge_commit_message=
+PR_TITLE — read 2026-11-20).
 
   - No closing keyword, or every referenced issue verified -> exit 0.
   - Any referenced issue unverified -> exit 1, naming the issue(s) and
@@ -38,8 +48,10 @@ verify them, and closing them is outside this repo's board.
 Stdlib only, no network in the pure functions (tests inject a fake
 label fetcher). Usage in CI: GH_TOKEN, GITHUB_REPOSITORY and PR_NUMBER
 from the environment. For a local check, set PR_BODY instead of
-PR_NUMBER to skip the API fetch for the PR body (labels are still
-read from the API).
+PR_NUMBER to skip the API fetch (labels are still read from the API);
+PR_TITLE and PR_COMMIT_MESSAGES (a JSON list of commit-message
+strings) default to empty when unset, so a body-only local check
+keeps working.
 """
 import json
 import os
@@ -92,7 +104,7 @@ def _ref_number(match, repo):
 
 
 def find_close_targets(body, repo=DEFAULT_REPO):
-    """Issue numbers in `repo` a PR body would auto-close at merge.
+    """Issue numbers in `repo` a PR's merge message would auto-close.
 
     Only references directly following a closing keyword count:
     ``Related to #420`` links without closing and is ignored, as is
@@ -151,10 +163,10 @@ def blocked_message(blocked):
     )
 
 
-def fetch_pr_body(number, token, repo=DEFAULT_REPO):
-    """PR body from the API (never the event payload — see #198)."""
+def _api_get(url, token):
+    """GET a GitHub API URL, returning (parsed JSON, Link header)."""
     r = urllib.request.Request(
-        f"{API}/repos/{repo}/pulls/{number}",
+        url,
         headers={
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
@@ -162,13 +174,62 @@ def fetch_pr_body(number, token, repo=DEFAULT_REPO):
         },
     )
     with urllib.request.urlopen(r, timeout=60) as resp:
-        return json.loads(resp.read()).get("body") or ""
+        return json.loads(resp.read()), resp.headers.get("Link") or ""
+
+
+def fetch_pr(number, token, repo=DEFAULT_REPO):
+    """PR title + body from the API (never the event payload — see #198)."""
+    pr, _ = _api_get(f"{API}/repos/{repo}/pulls/{number}", token)
+    return {"title": pr.get("title") or "", "body": pr.get("body") or ""}
+
+
+def fetch_pr_commit_messages(number, token, repo=DEFAULT_REPO):
+    """Messages of every commit on the PR, following pagination.
+
+    These land on main under rebase, and under squash when the repo's
+    squash message is COMMIT_MESSAGES (this repo's setting) — so they
+    are part of the text GitHub parses for auto-close at merge.
+    """
+    messages = []
+    url = (f"{API}/repos/{repo}/pulls/{number}/commits"
+           "?per_page=100")
+    while url:
+        page, link = _api_get(url, token)
+        messages.extend(c.get("commit", {}).get("message") or ""
+                        for c in page)
+        url = None
+        for part in link.split(","):
+            if 'rel="next"' in part:
+                url = part.split(";")[0].strip().strip("<>")
+    return messages
+
+
+def merge_message_text(title, body, commit_messages):
+    """The text GitHub parses for auto-close when this PR merges.
+
+    The union of the PR title, the PR body and the branch commit
+    messages: the squash message is composed from the title plus the
+    commit messages (this repo: squash_merge_commit_message=
+    COMMIT_MESSAGES), a merge commit carries the PR title
+    (merge_commit_message=PR_TITLE), and rebase lands each commit
+    message verbatim. Empty parts are skipped.
+    """
+    parts = [title or "", body or ""]
+    parts.extend(commit_messages or [])
+    return "\n\n".join(p for p in parts if p)
+
+
+def fetch_pr_body(number, token, repo=DEFAULT_REPO):
+    """PR body from the API (kept for callers that only need the body)."""
+    return fetch_pr(number, token, repo)["body"]
 
 
 def main():
     repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
     token = os.environ.get("GH_TOKEN", "")
+    title = os.environ.get("PR_TITLE")
     body = os.environ.get("PR_BODY")
+    commits_env = os.environ.get("PR_COMMIT_MESSAGES")
     number = os.environ.get("PR_NUMBER")
     try:
         if body is None:
@@ -178,13 +239,33 @@ def main():
             if not token:
                 raise RuntimeError("GH_TOKEN is required")
             print("close-gate: fetching PR #%s from the API" % number)
-            body = fetch_pr_body(number, token, repo)
-        targets = find_close_targets(body, repo)
+            pr = fetch_pr(number, token, repo)
+            title = pr["title"]
+            body = pr["body"]
+            commit_messages = fetch_pr_commit_messages(number, token, repo)
+        else:
+            title = title or ""
+            if commits_env:
+                commit_messages = json.loads(commits_env)
+                if (not isinstance(commit_messages, list)
+                        or not all(isinstance(m, str)
+                                   for m in commit_messages)):
+                    raise ValueError(
+                        "PR_COMMIT_MESSAGES must be a JSON list of strings")
+            else:
+                commit_messages = []
+        # The gate scans the merge message (title + body + commit
+        # messages), not the body alone — see #432: the closing keyword
+        # that auto-closed #425 lived in PR #430's title and commit
+        # message, while its body said only "For #425".
+        text = merge_message_text(title, body, commit_messages)
+        targets = find_close_targets(text, repo)
         if not targets:
-            print("close-gate: no closing keyword references %s — pass"
-                  % repo)
+            print("close-gate: no closing keyword references in the "
+                  "merge message %s — pass" % repo)
             return 0
-        print("close-gate: closing keyword(s) target %s"
+        print("close-gate: closing keyword(s) in the merge message "
+              "target %s"
               % ", ".join("#%d" % n for n in targets))
         allowed, blocked = check_targets(
             targets, lambda n: fetch_issue_labels(n, token, repo))
