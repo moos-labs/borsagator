@@ -615,6 +615,130 @@ def _same_distribution(a_dps, a_ex, b_dps, b_ex):
     return _dps_same(a_dps, b_dps)
 
 
+def events_to_corporate_actions(events, ticker, base):
+    """Issue #281: verified #109 disclosure events -> #26 actions.
+
+    The event record carries the dividend facts as structured fields,
+    so nothing here re-parses prose: DPS, ex-date and entitlement-end
+    are read verbatim. Gate (precision beats recall, as in #26): only
+    ``event_type == "dividend"`` with ``verification_status ==
+    "verified"`` and ``extraction_status == "extracted"`` feed
+    scoring — a candidate is never a verified event, and an
+    unverified (e.g. republication) extraction is not trusted to move
+    the score. The issuer ticker must match the sweep ticker when the
+    event names one (the feed file is already per-ticker, so a
+    missing ticker is accepted, a mismatched one is not). The DPS
+    guard is the same as the legacy path (0 < dps < base, EGP only).
+    The ex-date is VERBATIM (``verbatim:تاريخ تحريك الحدود
+    السعرية``) — the legacy path derives it as entitlement-end + 1,
+    which agrees for coupon 42 but is a derivation, not a fact.
+    Deliberately NOT fed: ``record_date`` (the extractor never states
+    one — its T+2 value is an unvalidated candidate, never a fact)
+    and ``payout_date`` (a payout date is NOT an ex-date, #26).
+    Output shape is the ``detect_corporate_actions`` action dict plus
+    provenance (``source``, ``event_id``, ``announced``,
+    ``coupon_number``), so the horizon marking, the Kronos ex-date
+    rescale (#130) and the model tripwire consume event actions
+    exactly like legacy ones."""
+    actions = []
+    if not events or not base or base <= 0:
+        return actions
+    code = (ticker or "").upper()
+    for ev in events:
+        if not isinstance(ev, dict):
+            continue
+        if ev.get("event_type") != "dividend":
+            continue
+        if ev.get("verification_status") != "verified":
+            continue
+        if ev.get("extraction_status") != "extracted":
+            continue
+        issuer = ev.get("issuer") or {}
+        ev_ticker = (issuer.get("ticker") or "").upper()
+        if ev_ticker and ev_ticker != code:
+            continue
+        payload = ev.get("payload") or {}
+        amt = payload.get("amount_per_share") or {}
+        if (amt.get("currency") or "EGP") != "EGP":
+            continue
+        try:
+            dps = float(amt.get("value"))
+        except (TypeError, ValueError):
+            continue
+        if not (0 < dps < base):
+            continue
+        ex_raw = (payload.get("ex_date") or {}).get("value")
+        try:
+            ex_date = date.fromisoformat(str(ex_raw)[:10]) \
+                if ex_raw else None
+        except ValueError:
+            ex_date = None
+        if ex_date is None:
+            continue
+        ent_raw = (payload.get("entitlement_end") or {}).get("value")
+        try:
+            ent_date = date.fromisoformat(str(ent_raw)[:10]) \
+                if ent_raw else None
+        except ValueError:
+            ent_date = None
+        announced = (ev.get("announced") or {}).get("value")
+        title = (ev.get("summary_en") or ev.get("summary_ar") or "")[:90]
+        actions.append({
+            "type": "dividend", "dps": dps,
+            "ex_date": ex_date.isoformat(),
+            "entitlement_end": (ent_date.isoformat()
+                                if ent_date else None),
+            "date_basis": "verbatim:ex-date",
+            "mechanical_pct": round(-dps / base * 100, 2),
+            "title": title,
+            "source": "disclosure-event",
+            "event_id": ev.get("event_id"),
+            "verification_status": "verified",
+            "announced": announced,
+            "coupon_number": payload.get("coupon_number")})
+    return actions
+
+
+def merge_corporate_actions(legacy, event_actions):
+    """Issue #281: merge legacy text-detected actions with
+    event-sourced ones. An event action SUPERSEDES a legacy action
+    for the same distribution — same DPS within the #131 tolerance
+    and the ex-dates agree (or the legacy one is undated), per
+    ``_same_distribution`` — or the legacy ex-date was DERIVED
+    (``date_basis == "entitlement+1"``) and sits within one day of
+    the verbatim ex-date, i.e. the verbatim date corrects the
+    derivation. Anything else survives alongside: two genuinely
+    different coupons (same DPS, different ex-dates) stay two
+    actions, and non-dividend legacy entries are never touched.
+    Deterministic: legacy order is kept, event actions append in
+    event order."""
+    merged = list(legacy or [])
+    for ea in event_actions or []:
+        keep = []
+        for a in merged:
+            if a.get("type") != "dividend":
+                keep.append(a)
+                continue
+            same = _same_distribution(a.get("dps"), a.get("ex_date"),
+                                      ea["dps"], ea["ex_date"])
+            if not same and a.get("date_basis") == "entitlement+1":
+                try:
+                    a_ex = date.fromisoformat(a["ex_date"]) \
+                        if a.get("ex_date") else None
+                    e_ex = date.fromisoformat(ea["ex_date"])
+                    if (a_ex is not None
+                            and _dps_same(a.get("dps"), ea["dps"])
+                            and abs((a_ex - e_ex).days) <= 1):
+                        same = True
+                except (ValueError, TypeError):
+                    pass
+            if not same:
+                keep.append(a)
+        merged = keep
+        merged.append(ea)
+    return merged
+
+
 def detect_corporate_actions(items, base, default_year):
     """Dividend announcements in the collected items. Conservative by
     design: an amount is only trusted next to dividend wording, an
@@ -1098,6 +1222,26 @@ def main():
         actions = detect_corporate_actions(_items, base, as_of.year)
     except Exception:
         actions = []
+    # Issue #281: feed verified #109 disclosure events into the same
+    # scoring. The worker's phase-2 extraction writes
+    # disclosure-events/<CODE>-events.json into the run dir and
+    # merge.py stages it into the sweep dir before the ensemble runs,
+    # so the file is here (cwd) when present. Absent on Actions
+    # sweeps and pre-#278 runs; a missing or malformed feed changes
+    # nothing — the legacy text detection above still stands, and a
+    # dead feed never loses a sweep.
+    try:
+        _ev_path = os.path.join(
+            os.getcwd(), "disclosure-events",
+            "%s-events.json" % ticker.split(".")[0])
+        _feed = load_json(_ev_path)
+        if isinstance(_feed, dict):
+            _ev_actions = events_to_corporate_actions(
+                _feed.get("events") or [], ticker, base)
+            if _ev_actions:
+                actions = merge_corporate_actions(actions, _ev_actions)
+    except Exception:
+        pass
 
     # ---------- issue #130: ex-date-today Kronos rescale ----------
     # On the ex-date itself (as_of == ex_date) the base is already
@@ -1303,6 +1447,14 @@ def main():
         f"{k} ×{_fmt_factor(v)}" for k, v in _aw.items()) + ".", ""]
     for a in actions:
         if a.get("ex_date"):
+            # Issue #281: name the event source in the digest line so
+            # the dividend-aware adjustment is visibly event-fed, not
+            # only text-detected.
+            _prov = ""
+            if a.get("source") == "disclosure-event":
+                _prov = (" — via verified EGX disclosure event %s "
+                         "(verbatim ex-date)"
+                         % (a.get("event_id") or "?"))
             if a["ex_date"] == as_of.isoformat():
                 # Issue #130: the ex-date is TODAY — the drop already
                 # happened and the base already reflects it, so there
@@ -1320,14 +1472,14 @@ def main():
                           f"ex-date {a['ex_date']} (today) — the base price "
                           f"already reflects the ex-dividend drop; {_rs}. "
                           f"Horizons are marked ex-distorted; the calibration "
-                          f"ledger scores them without further adjustment.", ""]
+                          f"ledger scores them without further adjustment.{_prov}", ""]
             else:
                 lines += [f"💰 **Corporate action:** dividend {a['dps']:g}/share, "
                           f"ex-date {a['ex_date']} — a mechanical "
                           f"≈ {a['mechanical_pct']:+.2f}% move is expected on the "
                           f"ex-date (not a market signal). Horizons spanning it "
                           f"are marked; the calibration ledger will score them "
-                          f"dividend-adjusted.", ""]
+                          f"dividend-adjusted.{_prov}", ""]
     lines += [
              "| Horizon | Direction | Expected | Range | Confidence |",
              "|---|---|---|---|---|"]
