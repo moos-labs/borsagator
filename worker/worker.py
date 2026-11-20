@@ -1056,7 +1056,13 @@ def _quarantine_non_object_entries(queue):
     stays in queue.json exactly as the #391 main-loop path leaves
     it (re-quarantine is a no-op once the record exists). A
     queue.json that is not a list at all is quarantined as one
-    malformed payload ("queue-not-a-list") and yields no entries."""
+    malformed payload ("queue-not-a-list") and yields no entries.
+    Issue #420: main() routes its queue through this helper too,
+    so a non-list queue.json is quarantined as one record even
+    when no schedule exists (run_schedule_check returns before
+    quarantine then) — before #420 the main loop iterated the raw
+    payload, raising TypeError on a scalar and quarantining one
+    record per char/key on a string/object."""
     if not isinstance(queue, list):
         _quarantine_malformed_job(queue, "queue-not-a-list")
         return []
@@ -4527,7 +4533,20 @@ def main():
             reclaim_stale_claims()
             prune_out()
             heartbeat()
-            for job in read_queue():
+            # Issue #420: validate the top-level queue before
+            # iterating — a queue.json holding a scalar (42, null)
+            # raised TypeError at iteration, and a string/object
+            # iterated as chars/keys, quarantining one record per
+            # char/key. With no schedule.json, run_schedule_check
+            # returns before quarantine, so no diagnostic was
+            # recorded at all. The #402 helper quarantines a
+            # non-list payload as one "queue-not-a-list" record
+            # and filters non-dict entries as "not-an-object" —
+            # that replaces the loop's old "missing-or-invalid-id"
+            # reason for non-dict entries; the #391 dict-entry
+            # reasons (missing-or-invalid-id / missing-job) are
+            # unchanged.
+            for job in _quarantine_non_object_entries(read_queue()):
                 job_id = job.get("id") if isinstance(job, dict) else None
                 if not isinstance(job_id, str) or not JOB_ID_RE.match(job_id):
                     # Issue #391: quarantine with evidence instead
