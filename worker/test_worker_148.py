@@ -20,11 +20,12 @@ import importlib.util
 import json
 import os
 import sys
-import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-TMP = Path(tempfile.mkdtemp(prefix="test148-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+TMP = _test_tmp.mkdtemp(prefix="test148-")
 os.environ["GATOR_ROOT"] = str(TMP / "gator")
 
 spec = importlib.util.spec_from_file_location(

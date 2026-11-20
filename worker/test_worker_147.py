@@ -32,11 +32,12 @@ import json
 import os
 import shutil
 import sys
-import tempfile
 from datetime import date, timedelta
 from pathlib import Path
 
-_TMP = Path(tempfile.mkdtemp(prefix="gator147-test-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+_TMP = _test_tmp.mkdtemp(prefix="gator147-test-")
 os.environ["GATOR_ROOT"] = str(_TMP)
 
 _HERE = Path(os.path.abspath(__file__)).parent
@@ -217,7 +218,7 @@ def main():
          worker.maybe_merge, worker.publish) = orig
 
     # --- ensemble: failed-tool files excluded from base/voting ---
-    sweep = Path(tempfile.mkdtemp(prefix="gator147-sweep-"))
+    sweep = _test_tmp.mkdtemp(prefix="gator147-sweep-")
     collected = sweep / "collected"
     registry_path = sweep / "tools.json"
     registry_path.write_text(json.dumps({"tools": [

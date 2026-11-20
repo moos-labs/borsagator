@@ -36,10 +36,11 @@ Run: python3 worker/test_worker_352.py (exit 0 = all pass).
 import copy
 import os
 import sys
-import tempfile
 from pathlib import Path
 
-_TMP = Path(tempfile.mkdtemp(prefix="gator352-test-"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _test_tmp  # noqa: E402  (atexit cleanup of scratch dirs, #388)
+_TMP = _test_tmp.mkdtemp(prefix="gator352-test-")
 os.environ["GATOR_ROOT"] = str(_TMP)
 
 _HERE = Path(os.path.abspath(__file__)).parent
