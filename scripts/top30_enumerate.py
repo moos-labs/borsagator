@@ -307,8 +307,16 @@ class ProfileFetcher:
         try:
             from playwright.sync_api import sync_playwright
             self._pw = sync_playwright().start()
+            headful = bool(os.environ.get("DISPLAY"))
             self._ctx = self._pw.chromium.launch_persistent_context(
-                self.profile_dir, headless=True)
+                self.profile_dir, headless=not headful,
+                viewport={"width": 1366, "height": 768},
+                timezone_id="Africa/Cairo",
+                args=["--disable-blink-features=AutomationControlled"],
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                           "Chrome/124.0.0.0 Safari/537.36",
+                locale="ar-EG")
             self._page_obj = self._ctx.new_page()
         except Exception as e:  # noqa: BLE001 — launch must not raise
             self._launch_error = "%s: %s" % (type(e).__name__, e)
