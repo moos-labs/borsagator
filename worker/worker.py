@@ -1745,7 +1745,11 @@ def publish(job, results_dir, manifest):
     # own output, or the harvest-pointer/ stash _execute leaves
     # when a news run used the local harvest cache.
     ptr_src = []
-    if job["job"].startswith("harvest-egx"):
+    # Issue #348: tokenize on whitespace exactly like the #346 F9
+    # fix did for top30-enumerate (and like run_harvest's own
+    # .split()), so a leading-space harvest job refreshes the
+    # pointer instead of silently skipping it.
+    if (job["job"] or "").split()[:1] == ["harvest-egx"]:
         parts = job["job"].split()
         code = parts[1].upper().replace(".CA", "") if len(parts) > 1 else ""
         cand = results_dir / "egx-harvest" / "results" / "disclosures.json"
@@ -3735,7 +3739,12 @@ def _execute_body(job):
     workdir.mkdir(parents=True, exist_ok=True)
     manifest = {"job": job, "worker": os.uname().nodename,
                 "started": now(), "tools": {}}
-    if job["job"].startswith("harvest-egx"):
+    # Issue #348: tokenize on whitespace exactly like the #346 F9
+    # fix did for top30-enumerate (and like run_harvest's own
+    # .split()), so a leading-space harvest job dispatches here
+    # instead of falling through to parse_job (which returns []
+    # and publishes an empty run as done).
+    if (job["job"] or "").split()[:1] == ["harvest-egx"]:
         manifest["tools"] = run_harvest(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
