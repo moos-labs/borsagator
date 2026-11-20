@@ -171,10 +171,10 @@
   "harvest": {
     "collection_target": "100% archived collection of the enumerated expected documents; missing records are named failures, not exclusions.",
     "item_cap": 25,
-    "item_cap_source": "worker/egx_harvest.py:271 (stops at 25 items). A cap hit cannot pass 100% collection — stage 2 must implement evidenced pagination/date partitions.",
+    "item_cap_source": "worker/egx_harvest.py:323 (stops at 25 items). A cap hit cannot pass 100% collection — stage 2 must implement evidenced pagination/date partitions.",
     "stage": "Stage 1 is spec + fixtures only. NO live EGX collection, NO gold adjudication, NO enumeration runs were performed for this manifest.",
     "window_days": 45,
-    "window_source": "worker/egx_harvest.py:144 (default 45 days), rolling from today (:150-151) — NOT a fixed historical interval; stage 2 must pass explicit from/to (the source query already accepts from/to/ISIN, :206-208 per design comment)."
+    "window_source": "worker/egx_harvest.py:189 (default 45 days), rolling from today (:202-203) — NOT a fixed historical interval; stage 2 must pass explicit from/to (the source query already accepts from/to/ISIN, :273-275 per the URL construction)."
   },
   "issue": 283,
   "issuers": [
@@ -508,7 +508,7 @@
             "name_ar_source": "worker/egx_harvest.py EGX_COMPANIES (main 424f4b3)",
             "status": "verified",
             "name_en_source": "worker/egx_harvest.py EGX_COMPANIES (main 424f4b3) — Arabic name only; see correction note — checked 2026-11-19",
-            "note": "CORRECTION 2026-11-19: stage-1 ISIN EGS3E2B1C018 is NOT a valid ISIN (fails ISO 6166 check-digit validation) and is not the IPF-listed ISIN. Corrected to EGS380P1C010 (IPF row 103; check digit valid). worker/egx_harvest.py EGX_COMPANIES still carries the wrong value and needs a separate fix (worker/ untouched in this task). Arabic name unchanged from the harvester mapping.",
+            "note": "CORRECTION 2026-11-19: stage-1 ISIN EGS3E2B1C018 is NOT a valid ISIN (fails ISO 6166 check-digit validation) and is not the IPF-listed ISIN. Corrected to EGS380P1C010 (IPF row 103; check digit valid). The worker side is fixed too: worker/egx_harvest.py EGX_COMPANIES now carries EGS380P1C010 at :38 (fixed by #309; the harvester also fails loudly on any invalid ISIN before launching the browser). Arabic name unchanged from the harvester mapping.",
             "verified_on": "2026-11-19"
           }
         }
@@ -898,7 +898,7 @@
     "date": "2026-11-19",
     "scope": "B-01–B-04 mapping verification (ISIN + English name + Arabic name) for the 31 listings",
     "method": "EGX disclosure headers as republished by Mubasher (english.mubasher.info) and Okaz (okazinvest.com) — Company Name / ISIN Code / Reuters Code header — plus the Investor Protection Fund (ipf.eg) official fund-members list (ISIN + legal name per member). Aggregator values (coindataflow, Finnhub, FoudaLens, StockAnalysis, Decypha, TradingView) were used only as candidates to re-confirm, never as the verifying source. Every ISIN written here passed ISO 6166 check-digit validation (Luhn on the letter-expanded form), run locally 2026-11-19.",
-    "amoc_correction": "Stage-1 \"verified\" AMOC ISIN EGS3E2B1C018 is INVALID (fails ISO 6166 check digit) and disagrees with the IPF list (EGS380P1C010, check digit valid). Corrected in this file. worker/egx_harvest.py EGX_COMPANIES still carries EGS3E2B1C018 — separate fix needed; worker/ untouched in this task.",
+    "amoc_correction": "Stage-1 \"verified\" AMOC ISIN EGS3E2B1C018 is INVALID (fails ISO 6166 check digit) and disagrees with the IPF list (EGS380P1C010, check digit valid). Corrected in this file. The worker side is fixed too: worker/egx_harvest.py EGX_COMPANIES now carries EGS380P1C010 at :38 (fixed by #309).",
     "counts": {
       "listings_with_isin_verified": 30,
       "listings_with_isin_missing": 1,
