@@ -2110,6 +2110,27 @@ def _validate_top30_ledger(ledger, manifest, mode):
                 reasons.append("enumeration_closed=True but %s "
                                "terminal_state=%r is not evidenced"
                                % (code, lrec.get("terminal_state")))
+            # Issue #340: the closure check above only looked at
+            # the TOP-LEVEL failures list. A hand-built ledger can
+            # clear that list and set every terminal_state while
+            # a route still carries a named listing-level failure
+            # (variant A: FAITA's B-02). Closure requires zero
+            # failures at BOTH levels, and no blocked route.
+            lfails = lrec.get("failures")
+            if lfails:
+                if isinstance(lfails, list):
+                    reasons.append("enumeration_closed=True but %s "
+                                   "carries %d named listing-level "
+                                   "failure(s)"
+                                   % (code, len(lfails)))
+                else:
+                    reasons.append("enumeration_closed=True but %s "
+                                   "listing failures is not a list: "
+                                   "%r" % (code, lfails))
+            if lrec.get("enumeration_status") == "blocked":
+                reasons.append("enumeration_closed=True but %s "
+                               "enumeration_status is blocked"
+                               % code)
         if not coll.get("pagination_complete"):
             reasons.append("enumeration_closed=True but "
                            "pagination_complete is not True")

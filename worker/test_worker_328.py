@@ -221,6 +221,43 @@ def test_validate_dishonest_ledgers():
           not ok and any("enumeration_closed=True" in r
                          for r in reasons))
 
+    # Issue #340, variant A: clear the TOP-LEVEL failures list and
+    # set every listing's terminal_state to exhausted, but KEEP
+    # FAITA's listing-level B-02 failure. Before the fix this
+    # returned (True, []): the closure check never inspected
+    # per-listing failures.
+    led = copy.deepcopy(base)
+    led["collection"]["enumeration_closed"] = True
+    led["collection"]["pagination_complete"] = True
+    led["failures"] = []
+    for irec in led["issuers"]:
+        for lrec in irec["listings"]:
+            lrec["terminal_state"] = "exhausted"
+    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    check("validate: closure claimed over a kept listing-level "
+          "failure fails (#340 variant A)",
+          not ok and any("listing-level failure" in r
+                         for r in reasons))
+
+    # Issue #340, blocked-status arm: same closure claim with
+    # FAITA's B-02 failure kept, but FAITA's enumeration_status
+    # set to blocked. The listing-level-failure reason also fires
+    # here; the assertion pins the blocked-status reason itself.
+    led = copy.deepcopy(base)
+    led["collection"]["enumeration_closed"] = True
+    led["collection"]["pagination_complete"] = True
+    led["failures"] = []
+    for irec in led["issuers"]:
+        for lrec in irec["listings"]:
+            lrec["terminal_state"] = "exhausted"
+            if lrec["code"] == "FAITA":
+                lrec["enumeration_status"] = "blocked"
+    ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
+    check("validate: closure claimed over a blocked listing fails "
+          "(#340 blocked arm)",
+          not ok and any("enumeration_status is blocked" in r
+                         for r in reasons))
+
     led = copy.deepcopy(base)
     del led["issuers"][0]["listings"][0]
     ok, reasons = worker._validate_top30_ledger(led, manifest, "probe")
