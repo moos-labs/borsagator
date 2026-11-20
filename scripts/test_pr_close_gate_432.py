@@ -159,9 +159,103 @@ def test_main():
     check("main: malformed PR_COMMIT_MESSAGES fails closed", rc == 1)
 
 
+def test_fetch_pr_commit_messages_coverage():
+    # CodeRabbit on PR #433: the list-PR-commits endpoint returns at
+    # most 250 commits even with pagination, and answers 200 with a
+    # shorter array rather than saying it stopped. A 300-commit PR
+    # whose only closing keyword sits in commit 251 would pass the
+    # gate on the fetched 250. The fake below is exactly that shape:
+    # three pages (100/100/50), no next link on the last page.
+    def pages():
+        return [
+            ([{"commit": {"message": "c%d" % i}} for i in range(100)],
+             '<https://api.github.com/x?page=2>; rel="next"'),
+            ([{"commit": {"message": "c%d" % i}}
+              for i in range(100, 200)],
+             '<https://api.github.com/x?page=3>; rel="next"'),
+            ([{"commit": {"message": "c%d" % i}}
+              for i in range(200, 250)], ""),
+        ]
+
+    state = {"pages": pages(), "n": 0}
+
+    def fake_get(url, token):
+        page, link = state["pages"][state["n"]]
+        state["n"] += 1
+        return page, link
+
+    old = gate._api_get
+    gate._api_get = fake_get
+    try:
+        # FAILING-BEFORE probe: on the #432 code this call raises
+        # TypeError (no expected_total parameter) and main() below
+        # exits 0 — the 300-commit PR passes unchecked.
+        raised = None
+        try:
+            gate.fetch_pr_commit_messages(1, "tok", expected_total=300)
+        except gate.IncompleteCommitCoverage as e:
+            raised = e
+        check("coverage: 250 of 300 raises IncompleteCommitCoverage",
+              raised is not None and len(raised.fetched) == 250
+              and raised.expected == 300)
+        state["n"] = 0
+        msgs = gate.fetch_pr_commit_messages(1, "tok", expected_total=250)
+        check("coverage: 250 of 250 returns all messages",
+              len(msgs) == 250 and msgs[249] == "c249")
+        state["n"] = 0
+        msgs = gate.fetch_pr_commit_messages(1, "tok")
+        check("coverage: no expected total keeps legacy behaviour",
+              len(msgs) == 250)
+    finally:
+        gate._api_get = old
+
+
+def test_main_incomplete_coverage_fails_closed():
+    # API path (PR_NUMBER set): a PR with 251 commits whose fetched
+    # 250 carry no keyword must still fail — the unseen commit 251
+    # may carry it. The real fetch_pr_commit_messages runs here
+    # against a fake _api_get returning 250 messages.
+    def fake_get(url, token):
+        if url.endswith("/commits?per_page=100"):
+            return ([{"commit": {"message": "c%d" % i}}
+                     for i in range(100)],
+                    '<https://api.github.com/x?page=2>; rel="next"')
+        if "page=2" in url:
+            return ([{"commit": {"message": "c%d" % i}}
+                     for i in range(100, 200)],
+                    '<https://api.github.com/x?page=3>; rel="next"')
+        return ([{"commit": {"message": "c%d" % i}}
+                 for i in range(200, 250)], "")
+
+    old_get = gate._api_get
+    old_pr = gate.fetch_pr
+    old_labels = gate.fetch_issue_labels
+    gate._api_get = fake_get
+    gate.fetch_pr = lambda n, t, r=REPO: {
+        "title": "Docs tidy", "body": "Related to #425.",
+        "commits": 251}
+    gate.fetch_issue_labels = lambda n, t, r=REPO: set()
+    os.environ["PR_NUMBER"] = "1"
+    os.environ["GH_TOKEN"] = "tok"
+    os.environ.pop("PR_TITLE", None)
+    os.environ.pop("PR_BODY", None)
+    os.environ.pop("PR_COMMIT_MESSAGES", None)
+    try:
+        rc = gate.main()
+    finally:
+        gate._api_get = old_get
+        gate.fetch_pr = old_pr
+        gate.fetch_issue_labels = old_labels
+        os.environ.pop("PR_NUMBER", None)
+        os.environ.pop("GH_TOKEN", None)
+    check("main: 251-commit PR with 250 fetched fails closed", rc == 1)
+
+
 if __name__ == "__main__":
     test_merge_message_text()
     test_main()
+    test_fetch_pr_commit_messages_coverage()
+    test_main_incomplete_coverage_fails_closed()
     print("test_pr_close_gate_432: %d passed, %d failed"
           % (PASSED, len(FAILED)))
     if FAILED:

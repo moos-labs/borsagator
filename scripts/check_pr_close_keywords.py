@@ -178,17 +178,44 @@ def _api_get(url, token):
 
 
 def fetch_pr(number, token, repo=DEFAULT_REPO):
-    """PR title + body from the API (never the event payload — see #198)."""
+    """PR title + body + commit count from the API (never the event
+    payload — see #198). The `commits` count is the ground truth the
+    commit-fetch coverage check compares against (see #433)."""
     pr, _ = _api_get(f"{API}/repos/{repo}/pulls/{number}", token)
-    return {"title": pr.get("title") or "", "body": pr.get("body") or ""}
+    return {"title": pr.get("title") or "", "body": pr.get("body") or "",
+            "commits": pr.get("commits")}
 
 
-def fetch_pr_commit_messages(number, token, repo=DEFAULT_REPO):
+class IncompleteCommitCoverage(RuntimeError):
+    """The PR-commits endpoint could not return every commit.
+
+    Carries the partial message list in `fetched` and the PR's total
+    commit count in `expected`, so callers can fail closed on the
+    partial set instead of silently treating it as complete.
+    """
+
+    def __init__(self, message, fetched, expected):
+        super().__init__(message)
+        self.fetched = fetched
+        self.expected = expected
+
+
+def fetch_pr_commit_messages(number, token, repo=DEFAULT_REPO,
+                             expected_total=None):
     """Messages of every commit on the PR, following pagination.
 
     These land on main under rebase, and under squash when the repo's
     squash message is COMMIT_MESSAGES (this repo's setting) — so they
     are part of the text GitHub parses for auto-close at merge.
+
+    Coverage: the list-PR-commits endpoint returns at most 250 commits,
+    even with pagination (docs.github.com/en/rest/pulls/pulls), and
+    answers 200 with a shorter array rather than saying it stopped —
+    so pagination alone cannot prove completeness. When
+    `expected_total` (the PR object's `commits` count) is given and
+    fewer messages were fetched, raise IncompleteCommitCoverage so the
+    caller fails closed instead of passing a PR whose commit 251 might
+    carry the closing keyword (CodeRabbit on PR #433).
     """
     messages = []
     url = (f"{API}/repos/{repo}/pulls/{number}/commits"
@@ -201,6 +228,14 @@ def fetch_pr_commit_messages(number, token, repo=DEFAULT_REPO):
         for part in link.split(","):
             if 'rel="next"' in part:
                 url = part.split(";")[0].strip().strip("<>")
+    if (expected_total is not None
+            and len(messages) < expected_total):
+        raise IncompleteCommitCoverage(
+            "incomplete commit coverage for PR #%s: fetched %d of %d "
+            "commits (the list-PR-commits endpoint caps at 250) — "
+            "cannot prove no later commit carries a closing keyword"
+            % (number, len(messages), expected_total),
+            fetched=messages, expected=expected_total)
     return messages
 
 
@@ -242,7 +277,12 @@ def main():
             pr = fetch_pr(number, token, repo)
             title = pr["title"]
             body = pr["body"]
-            commit_messages = fetch_pr_commit_messages(number, token, repo)
+            if pr.get("commits") is None:
+                raise RuntimeError(
+                    "PR #%s object carries no commit count — cannot "
+                    "establish commit coverage, failing closed" % number)
+            commit_messages = fetch_pr_commit_messages(
+                number, token, repo, expected_total=pr["commits"])
         else:
             title = title or ""
             if commits_env:

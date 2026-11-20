@@ -80,9 +80,16 @@ def affected_prs(summaries, issue_number):
     """PR summaries whose merge message targets `issue_number`.
 
     Each summary is {number, head_sha, title, body, commit_messages}.
+    A summary flagged `commit_coverage_incomplete` is affected
+    regardless of what its partial commit set shows: the unseen commits
+    may carry the closing keyword, so the PR must be re-evaluated
+    (fail closed) rather than treated as clean (CodeRabbit on #433).
     """
     affected = []
     for s in summaries:
+        if s.get("commit_coverage_incomplete"):
+            affected.append(s)
+            continue
         text = gate.merge_message_text(
             s.get("title") or "", s.get("body") or "",
             s.get("commit_messages") or [])
@@ -91,15 +98,26 @@ def affected_prs(summaries, issue_number):
     return affected
 
 
-def latest_gate_run(token, repo, head_sha):
-    """Latest pr-close-gate run for a head SHA, or None."""
+def latest_gate_run(token, repo, head_sha, pr_number):
+    """Latest pr-close-gate run for a head SHA belonging to PR number.
+
+    Selected by the PR number in the run's `pull_requests` list, not
+    by head_sha alone: two open PRs can share a head SHA (same branch
+    PR'd to two bases), and the newest run for the SHA can then belong
+    to the other PR — re-running it would re-evaluate the wrong PR
+    while this PR's check stays stale (CodeRabbit on #433). Returns
+    None when no run belongs to this PR number; the caller reports it.
+    """
     runs = api(
         "GET",
         f"/repos/{repo}/actions/workflows/{GATE_WORKFLOW}/runs"
-        f"?head_sha={head_sha}&per_page=1",
+        f"?head_sha={head_sha}&per_page=30",
         token)
-    runs = runs.get("workflow_runs") or []
-    return runs[0] if runs else None
+    for run in runs.get("workflow_runs") or []:
+        for pr in run.get("pull_requests") or []:
+            if pr.get("number") == pr_number:
+                return run
+    return None
 
 
 def rerun_gate(token, repo, run_id):
@@ -122,25 +140,42 @@ def main():
         summaries = []
         for pr in prs:
             detail = gate.fetch_pr(pr["number"], token, repo)
+            incomplete = False
+            try:
+                commit_messages = gate.fetch_pr_commit_messages(
+                    pr["number"], token, repo,
+                    expected_total=detail.get("commits"))
+            except gate.IncompleteCommitCoverage as e:
+                # The partial set cannot prove the PR clean: flag it
+                # affected so its gate is re-run and fails closed with
+                # the diagnosis, instead of trusting the partial set.
+                incomplete = True
+                commit_messages = e.fetched
+                print("refresh: PR #%d has %d commits but only %d were "
+                      "fetchable (endpoint caps at 250) — treating as "
+                      "affected, the re-run gate will fail closed"
+                      % (pr["number"], e.expected, len(e.fetched)))
             summaries.append({
                 "number": pr["number"],
                 "head_sha": pr["head_sha"],
                 "title": detail["title"],
                 "body": detail["body"],
-                "commit_messages": gate.fetch_pr_commit_messages(
-                    pr["number"], token, repo),
+                "commit_messages": commit_messages,
+                "commit_coverage_incomplete": incomplete,
             })
         affected = affected_prs(summaries, issue_number)
         if not affected:
             print("refresh: no open PR targets #%d — nothing to re-run"
                   % issue_number)
             return 0
+        failed = []
         for pr in affected:
-            run = latest_gate_run(token, repo, pr["head_sha"])
+            run = latest_gate_run(token, repo, pr["head_sha"],
+                                  pr["number"])
             if run is None:
-                print("refresh: PR #%d targets #%d but the gate never "
-                      "ran on it — needs a push/edit to trigger"
-                      % (pr["number"], issue_number))
+                print("refresh: PR #%d targets #%d but no gate run "
+                      "belongs to PR #%d — needs a push/edit to trigger"
+                      % (pr["number"], issue_number, pr["number"]))
                 continue
             if run.get("status") != "completed":
                 print("refresh: PR #%d gate run %s still %s — skipping, "
@@ -148,11 +183,31 @@ def main():
                       % (pr["number"], run.get("id"),
                          run.get("status")))
                 continue
-            rerun_gate(token, repo, run["id"])
+            try:
+                rerun_gate(token, repo, run["id"])
+            except Exception as e:  # noqa: BLE001 - per-PR, keep going
+                # A rerun can fail per PR (e.g. the run is older than
+                # GitHub's 30-day rerun window) — that must not stop
+                # later PRs being refreshed (CodeRabbit on #433).
+                failed.append(pr["number"])
+                print("::error::refresh: re-run of gate run %s for "
+                      "PR #%d failed: %s — PR #%d needs a push or edit "
+                      "to create a fresh gate run"
+                      % (run["id"], pr["number"], e, pr["number"]))
+                print("refresh: re-run for PR #%d failed (%s) — "
+                      "continuing with the remaining PRs"
+                      % (pr["number"], e))
+                continue
             print("refresh: re-ran gate run %s for PR #%d (was %s) — "
                   "re-evaluates #%d labels"
                   % (run["id"], pr["number"], run.get("conclusion"),
                      issue_number))
+        if failed:
+            print("refresh: %d PR(s) could not be refreshed: %s — each "
+                  "needs a push or edit to create a fresh gate run"
+                  % (len(failed),
+                     ", ".join("#%d" % n for n in failed)))
+            return 1
         return 0
     except Exception as e:  # noqa: BLE001 - loud failure, never silent
         print("::error::PR CLOSE GATE REFRESH FAILED: %s" % e)
