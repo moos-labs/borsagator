@@ -3639,11 +3639,16 @@ def maybe_compile(job, workdir, manifest, plan):
             # not the "no-clone" of a missing archive-push dir.
             # Both used to land on the same archive-sha-unavailable
             # fallback with nothing to tell them apart.
+            # Issue #421: text=True decoding can also fail — a
+            # UnicodeDecodeError from undecodable git output is a
+            # lookup failure too, not a compile failure; catch
+            # UnicodeError (its parent) so the diagnostic lands
+            # as "lookup-failed" and the compile continues.
             try:
                 head = subprocess.run(
                     ["git", "-C", str(arch), "rev-parse", "HEAD"],
                     env=env, capture_output=True, text=True, timeout=30)
-            except (subprocess.TimeoutExpired, OSError):
+            except (subprocess.TimeoutExpired, OSError, UnicodeError):
                 head = None
             if head is not None and head.returncode == 0 \
                     and head.stdout.strip():
