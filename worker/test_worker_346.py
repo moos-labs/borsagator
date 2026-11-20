@@ -570,7 +570,8 @@ def test_f8_corpus_hash_shape():
     led = baseline()
     led["issuers"][0]["documents"] = [
         doc("TMGH-doc-1", status="not_captured", kind=None,
-            sha=None)]
+            sha=None, listing_code="TMGH",
+            isin="EGS000000001")]
     led["collection"]["archived"] = 1
     ok, reasons = validate(led)
     check("F8-control: not_captured with no hash still passes",
@@ -578,10 +579,11 @@ def test_f8_corpus_hash_shape():
 
     led = baseline()
     led["issuers"][0]["documents"] = [
-        doc("TMGH-doc-1", attachments=[{"status": "link_found",
-                                        "path": None, "sha256": None,
-                                        "source_url":
-                                            "https://x/y.pdf"}])]
+        doc("TMGH-doc-1", listing_code="TMGH",
+            isin="EGS000000001",
+            attachments=[{"status": "link_found",
+                          "path": None, "sha256": None,
+                          "source_url": "https://x/y.pdf"}])]
     ok, reasons = validate(led)
     check("F8-control: link_found attachment without a hash still "
           "passes (attachment accounting is a later step)",
