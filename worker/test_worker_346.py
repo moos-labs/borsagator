@@ -662,8 +662,10 @@ class _StubChromium:
         self._calls = calls
         self._body = body
 
-    def launch_persistent_context(self, profile_dir, headless=None):
+    def launch_persistent_context(self, profile_dir, headless=None,
+                                **options):
         self._calls.append(("launch", profile_dir, headless))
+        self._calls.append(("launch-options", options))
         return _StubContext(self._calls, self._body)
 
 
@@ -783,7 +785,7 @@ def _write_stub_playwright_package(stub_dir):
         "        pass\n"
         "class _Chromium:\n"
         "    def launch_persistent_context(self, profile_dir,\n"
-        "                                headless=None):\n"
+        "                                headless=None, **options):\n"
         "        return _Ctx()\n"
         "class _PW:\n"
         "    def __init__(self):\n"
