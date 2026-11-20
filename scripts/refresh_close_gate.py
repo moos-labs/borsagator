@@ -105,19 +105,28 @@ def latest_gate_run(token, repo, head_sha, pr_number):
     by head_sha alone: two open PRs can share a head SHA (same branch
     PR'd to two bases), and the newest run for the SHA can then belong
     to the other PR — re-running it would re-evaluate the wrong PR
-    while this PR's check stays stale (CodeRabbit on #433). Returns
-    None when no run belongs to this PR number; the caller reports it.
+    while this PR's check stays stale (CodeRabbit on #433). The
+    runs endpoint pages at 30, so a full page of the other PR's
+    newer runs can hide this PR's run on a later page: follow pages
+    until a matching run is found or a short page ends the list
+    (CodeRabbit on #433, review 5995989212). Returns None when no
+    run belongs to this PR number; the caller reports it.
     """
-    runs = api(
-        "GET",
-        f"/repos/{repo}/actions/workflows/{GATE_WORKFLOW}/runs"
-        f"?head_sha={head_sha}&per_page=30",
-        token)
-    for run in runs.get("workflow_runs") or []:
-        for pr in run.get("pull_requests") or []:
-            if pr.get("number") == pr_number:
-                return run
-    return None
+    page = 1
+    while True:
+        runs = api(
+            "GET",
+            f"/repos/{repo}/actions/workflows/{GATE_WORKFLOW}/runs"
+            f"?head_sha={head_sha}&per_page=30&page={page}",
+            token)
+        batch = runs.get("workflow_runs") or []
+        for run in batch:
+            for pr in run.get("pull_requests") or []:
+                if pr.get("number") == pr_number:
+                    return run
+        if len(batch) < 30:
+            return None
+        page += 1
 
 
 def rerun_gate(token, repo, run_id):

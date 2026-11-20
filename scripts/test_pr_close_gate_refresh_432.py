@@ -182,6 +182,70 @@ def test_latest_gate_run_selects_by_pr_number():
         refresh.api = old_api
 
 
+def test_latest_gate_run_follows_pages():
+    # CodeRabbit on PR #433 (review 5995989212): latest_gate_run
+    # fetched a single page (per_page=30), so when two PRs share a
+    # head SHA and 30 newer runs belong to the other PR, the
+    # requested PR's run sits on page 2 and refresh wrongly reports
+    # "no run" and leaves the check stale. FAILING-BEFORE: the
+    # #433 code returns None for PR #431 here (it never fetches
+    # page 2).
+    other_runs = [{"id": 1000 + i, "status": "completed",
+                   "conclusion": "success",
+                   "pull_requests": [{"number": 432}]}
+                  for i in range(30)]
+    matching = {"id": 111, "status": "completed",
+                "conclusion": "success",
+                "pull_requests": [{"number": 431}]}
+    pages = {1: {"workflow_runs": other_runs},
+             2: {"workflow_runs": [matching]}}
+    requested = []
+    old_api = refresh.api
+
+    def page_of(path):
+        # The #433 code requests no page= param (implicit page 1);
+        # the fixed code adds &page=N. Default to 1 when absent.
+        marker = "&page="
+        return int(path.split(marker)[-1]) if marker in path else 1
+
+    def fake_api(m, p, t, body=None):
+        requested.append(p)
+        return pages[page_of(p)]
+
+    refresh.api = fake_api
+    try:
+        run = refresh.latest_gate_run("tok", "moos-labs/borsagator",
+                                      "abc123", 431)
+        check("latest run: matching run on page 2 is found",
+              run is not None and run["id"] == 111,
+              "got %r" % (run or {}).get("id"))
+        check("latest run: page 2 was requested",
+              any("page=2" in p for p in requested),
+              "requested=%r" % (requested,))
+    finally:
+        refresh.api = old_api
+    # Genuinely absent: page 1 full of the other PR's runs, page 2
+    # empty — None only after all pages are exhausted.
+    pages_absent = {1: {"workflow_runs": other_runs},
+                    2: {"workflow_runs": []}}
+    requested_absent = []
+
+    def fake_api_absent(m, p, t, body=None):
+        requested_absent.append(p)
+        return pages_absent[page_of(p)]
+
+    refresh.api = fake_api_absent
+    try:
+        check("latest run: no matching run across pages returns None",
+              refresh.latest_gate_run("tok", "moos-labs/borsagator",
+                                      "abc123", 999) is None)
+        check("latest run: absent case still fetched page 2",
+              any("page=2" in p for p in requested_absent),
+              "requested=%r" % (requested_absent,))
+    finally:
+        refresh.api = old_api
+
+
 def test_main_rerun_failure_continues():
     # CodeRabbit on PR #433: GitHub allows re-runs only within 30 days
     # of the initial run, so an old completed run fails the POST — and
@@ -238,6 +302,7 @@ if __name__ == "__main__":
     test_affected_prs()
     test_main()
     test_latest_gate_run_selects_by_pr_number()
+    test_latest_gate_run_follows_pages()
     test_main_rerun_failure_continues()
     test_main_incomplete_coverage_pr_is_affected()
     print("test_pr_close_gate_refresh_432: %d passed, %d failed"
