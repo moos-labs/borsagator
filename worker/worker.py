@@ -1860,15 +1860,7 @@ def run_harvest(job, workdir):
     code = parts[1] if len(parts) > 1 else ""
     if not TICKER_RE.match(code.replace(".CA", "")):
         return {"egx-harvest": "bad-code"}
-    venv = VENVS / "egx-harvest"
-    py = venv / "bin" / "python"
-    if not py.exists():
-        sh(f"python3 -m venv {venv}", timeout=300)
-        sh(f"{venv}/bin/pip install -q playwright", timeout=1200)
-    marker = venv / ".browser-installed"
-    if not marker.exists():
-        sh(f"{py} -m playwright install chromium", timeout=1800)
-        marker.write_text(now())
+    py, _venv_ready = _ensure_egx_playwright_venv()
     script = CODE / "worker" / "egx_harvest.py"
     run_dir = workdir / "egx-harvest"
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -1881,6 +1873,387 @@ def run_harvest(job, workdir):
     (workdir / "egx-harvest.log").write_text((r.stdout + r.stderr)[-4000:])
     return {"egx-harvest": "ok" if r.returncode == 0
             else f"exit-{r.returncode}"}
+
+
+# --- Issue #328: worker entry point for the live top-30 enumeration ---
+# The #283 stage-2 tooling (scripts/top30_enumerate.py) is merged and
+# probe/fixture-validated only. The live run — filter-semantics
+# validation + fixed-window enumeration + corpus capture — needs the
+# worker and its TSPD-trusted browser profile (this VM cannot reach
+# EGX). Before this issue there was no worker route to run it:
+# parse_job returns [] for any other job string, so a queued
+# `top30-enumerate ...` job ran an empty plan and published an empty
+# run as done. The entry point below dispatches in _execute_body
+# before parse_job (the harvest-egx pattern) and runs the enumerator
+# CLI in the same playwright venv the harvest uses.
+#
+# Scope: the entry point only. scripts/top30_enumerate.py is
+# unchanged, and the enumerator's live fetcher is still plain HTTP
+# (docs/top30-enumeration.md §7: replace it with the TSPD-trusted
+# browser session after the §2 filter-semantics validation protocol
+# runs). A live run whose requests meet challenge shells therefore
+# records source_challenge named failures per listing and an honest
+# enumeration_closed=False — the entry point never converts that
+# into a success. The browser-fetcher upgrade + §2 validation are
+# follow-up work, not claimed here. Corpus capture
+# (capture_document) is likewise a later stage: the enumerator's
+# live mode enumerates; the ledger it writes carries per-document
+# corpus states (not_captured until capture runs) and this entry
+# point archives exactly that ledger — it never presents
+# collection-only output as a ready corpus or a complete/pass
+# verdict.
+TOP30_WINDOW_START = "2026-08-19"
+TOP30_WINDOW_END = "2026-11-19"
+TOP30_MODES = ("live", "probe", "fixtures")
+TOP30_ENUMERATOR_TIMEOUT = 7200  # 31 listings x pagination; the
+# claim-refresh thread in execute() keeps the claim alive past 6 h.
+TOP30_TERMINAL_STATES = ("empty", "exhausted", "count_reconciled",
+                         "duplicate_page")
+TOP30_CORPUS_STATES = ("not_captured", "archived", "partial",
+                       "failed")
+
+
+def _ensure_egx_playwright_venv():
+    """Shared playwright venv for the EGX harvest and the top-30
+    enumeration: the venv python + installed Chromium. Returns
+    (py, ready); ready is False when no interpreter exists after
+    the ensure attempt. run_harvest keeps its historical unchecked
+    behaviour (it ignores ready); run_top30_enumerate fails closed
+    on not ready."""
+    venv = VENVS / "egx-harvest"
+    py = venv / "bin" / "python"
+    if not py.exists():
+        sh(f"python3 -m venv {venv}", timeout=300)
+        sh(f"{venv}/bin/pip install -q playwright", timeout=1200)
+    marker = venv / ".browser-installed"
+    if not marker.exists():
+        sh(f"{py} -m playwright install chromium", timeout=1800)
+        marker.write_text(now())
+    return py, py.exists()
+
+
+def _egx_profile_dir():
+    """The persistent Chromium profile the harvester uses
+    (worker/egx_harvest.py PROFILE): the TSPD trust anchor. A live
+    enumeration without it would only collect challenge shells."""
+    return ROOT / "egx-profile"
+
+
+def parse_top30_job(job):
+    """Parse a `top30-enumerate` job string into a plan dict, or
+    None when the string is not a top30 job / malformed. Grammar:
+    `top30-enumerate [--mode live|probe|fixtures]
+    [--fixtures DIR]`. Unknown tokens fail closed (None) — a job
+    the worker does not understand must never run. `--mode
+    fixtures` needs its fixture dir named, and `--fixtures` is
+    only meaningful with it: a fixtures run archives SIMULATED
+    pages, labelled mode=fixtures in the ledger, so it can never
+    pass as a live run — it exists so the entry point itself can be
+    verified end to end on the worker without EGX contact.
+    NOTE: parse_job (the registry grammar) still returns [] for
+    this string — the registry has no enumeration tool. Dispatch
+    happens in _execute_body before parse_job, like harvest-egx."""
+    parts = (job or "").split()
+    if not parts or parts[0] != "top30-enumerate":
+        return None
+    plan = {"kind": "top30-enumerate", "mode": "live",
+            "fixtures": None}
+    i = 1
+    while i < len(parts):
+        tok = parts[i]
+        if tok == "--mode" and i + 1 < len(parts) \
+                and parts[i + 1] in TOP30_MODES:
+            plan["mode"] = parts[i + 1]
+            i += 2
+        elif tok == "--fixtures" and i + 1 < len(parts):
+            plan["fixtures"] = parts[i + 1]
+            i += 2
+        else:
+            return None
+    if plan["mode"] == "fixtures" and not plan["fixtures"]:
+        return None  # fixtures mode needs its fixture dir named
+    if plan["mode"] != "fixtures" and plan["fixtures"]:
+        return None  # --fixtures only with --mode fixtures
+    return plan
+
+
+def build_top30_required_cells(manifest):
+    """Frozen 90-cell required universe (issue #283 gates re-check
+    schema addition): 30 issuers x the manifest's event types, one
+    cell per issuer x type — FAIT/FAITA is ONE issuer, so its two
+    listings form one cell per type, not two. Returns (cells_doc,
+    cells); cells_doc carries the versioned sha256 the later runner
+    consumes as `required_cells`."""
+    issuers = [i["issuer"] for i in manifest.get("issuers", [])]
+    types = list(manifest.get("event_types", []))
+    cells = [{"issuer": iss, "event_type": t,
+              "cell_id": "%s:%s" % (iss, t)}
+             for iss in issuers for t in types]
+    canon = json.dumps(cells, sort_keys=True, ensure_ascii=False)
+    doc = {"schema_version": 1, "issue": 283,
+           "manifest_base_commit": manifest.get("base_commit"),
+           "manifest_frozen_at": manifest.get("frozen_at"),
+           "window": {"start": TOP30_WINDOW_START,
+                      "end": TOP30_WINDOW_END, "inclusive": True},
+           "event_types": types, "issuer_count": len(issuers),
+           "count": len(cells), "cells": cells,
+           "sha256": hashlib.sha256(canon.encode("utf-8")).hexdigest()}
+    return doc, cells
+
+
+def _validate_top30_ledger(ledger, manifest, mode):
+    """Fail-closed validation of an enumerator ledger against the
+    frozen manifest and the #283 gates re-check flags (issue #328).
+    Returns (ok, reasons). An honest failure ledger PASSES — named
+    failures + enumeration_closed False is the correct outcome of
+    a blocked run. A DISHONEST ledger fails: a closure claim over
+    failed routes, a missing route, FAITA defaulted or omitted, a
+    clipped body presented as a full hash, or any complete/pass
+    verdict claimed from collection-only output. Never raises on
+    malformed input: every defect is a reason, not a crash."""
+    reasons = []
+    if not isinstance(ledger, dict):
+        return False, ["ledger is not a JSON object"]
+    if ledger.get("schema_version") != 1:
+        reasons.append("ledger schema_version is not 1: %r"
+                       % (ledger.get("schema_version"),))
+    window = ledger.get("window")
+    if not isinstance(window, dict) \
+            or window.get("start") != TOP30_WINDOW_START \
+            or window.get("end") != TOP30_WINDOW_END:
+        reasons.append("window is not the frozen %s -> %s"
+                       % (TOP30_WINDOW_START, TOP30_WINDOW_END))
+    if ledger.get("mode") != mode:
+        reasons.append("ledger mode %r != requested mode %r"
+                       % (ledger.get("mode"), mode))
+    mref = ledger.get("manifest")
+    if not isinstance(mref, dict) \
+            or mref.get("base_commit") != manifest.get("base_commit"):
+        reasons.append("ledger manifest base_commit %r != frozen "
+                       "manifest %r"
+                       % ((mref or {}).get("base_commit"),
+                          manifest.get("base_commit")))
+    coll = ledger.get("collection")
+    if not isinstance(coll, dict):
+        reasons.append("collection missing")
+        coll = {}
+    else:
+        for key in ("enumerated", "archived", "missing",
+                    "enumeration_closed", "pagination_complete"):
+            if coll.get(key) is None:
+                reasons.append("collection %s not supplied" % key)
+        for key in ("enumerated", "archived"):
+            v = coll.get(key)
+            if v is not None and (not isinstance(v, int)
+                                  or isinstance(v, bool) or v < 0):
+                reasons.append("collection %s must be a non-negative "
+                               "int: %r" % (key, v))
+        if not isinstance(coll.get("missing"), list) \
+                or not all(isinstance(m, str)
+                           for m in (coll.get("missing") or [])):
+            reasons.append("collection missing must be a list of "
+                           "strings")
+        for key in ("enumeration_closed", "pagination_complete"):
+            if coll.get(key) is not None \
+                    and not isinstance(coll.get(key), bool):
+                reasons.append("collection %s must be a boolean: %r"
+                               % (key, coll.get(key)))
+    # Per-listing coverage: every manifest route must be present.
+    expected = {}
+    for iss in manifest.get("issuers", []) or []:
+        if not isinstance(iss, dict):
+            continue
+        for lst in iss.get("listings", []) or []:
+            if isinstance(lst, dict) and lst.get("code"):
+                expected[lst["code"]] = lst.get("isin")
+    seen = {}
+    issuers = ledger.get("issuers")
+    if not isinstance(issuers, list):
+        reasons.append("issuers is not a list")
+        issuers = []
+    for irec in issuers:
+        if not isinstance(irec, dict):
+            continue
+        for lrec in irec.get("listings", []) or []:
+            if isinstance(lrec, dict) and lrec.get("code"):
+                seen[lrec["code"]] = lrec
+    for code in expected:
+        if code not in seen:
+            reasons.append("listing route %s missing from ledger"
+                           % code)
+    # FAITA: a named blocked route (B-02), never enumerated under
+    # another listing's ISIN and never silently omitted.
+    faita = seen.get("FAITA")
+    if faita is None:
+        reasons.append("FAITA route missing (B-02 named failure "
+                       "required)")
+    elif faita.get("enumeration_status") == "enumerated":
+        reasons.append("FAITA enumerated despite missing ISIN "
+                       "(B-02: never default to the FAIT ISIN)")
+    elif not any(isinstance(f, dict)
+                 and f.get("kind") == "B-02-missing-isin"
+                 for f in faita.get("failures", []) or []):
+        reasons.append("FAITA carries no B-02-missing-isin named "
+                       "failure")
+    # enumeration_closed honesty: closed only with zero failures,
+    # every route at an evidenced terminal state, pagination done.
+    failures = ledger.get("failures")
+    if not isinstance(failures, list):
+        reasons.append("failures is not a list")
+        failures = []
+    if coll.get("enumeration_closed"):
+        if failures:
+            reasons.append("enumeration_closed=True with %d named "
+                           "failure(s)" % len(failures))
+        for code, lrec in seen.items():
+            if lrec.get("terminal_state") not in TOP30_TERMINAL_STATES:
+                reasons.append("enumeration_closed=True but %s "
+                               "terminal_state=%r is not evidenced"
+                               % (code, lrec.get("terminal_state")))
+        if not coll.get("pagination_complete"):
+            reasons.append("enumeration_closed=True but "
+                           "pagination_complete is not True")
+    # Corpus honesty per document: a clipped body is never a full
+    # hash; archived requires a full hash; partial requires the
+    # clipped label. Collection-only output claims no verdict.
+    for irec in issuers:
+        if not isinstance(irec, dict):
+            continue
+        for doc in irec.get("documents", []) or []:
+            if not isinstance(doc, dict):
+                continue
+            corp = doc.get("corpus")
+            if not isinstance(corp, dict):
+                reasons.append("document %s has no corpus record"
+                               % (doc.get("source_document_id"),))
+                continue
+            st, kind = corp.get("status"), corp.get("body_hash_kind")
+            if st not in TOP30_CORPUS_STATES:
+                reasons.append("document %s corpus status %r is not "
+                               "a known state"
+                               % (doc.get("source_document_id"), st))
+            if st == "archived" and kind != "full":
+                reasons.append("document %s archived with "
+                               "body_hash_kind=%r (a clipped body "
+                               "is never a full-document hash)"
+                               % (doc.get("source_document_id"), kind))
+            if st == "archived" and not corp.get("body_sha256"):
+                reasons.append("document %s archived with no "
+                               "body_sha256"
+                               % (doc.get("source_document_id"),))
+            if st == "partial" and kind != "clipped-body-sha256":
+                reasons.append("document %s partial with "
+                               "body_hash_kind=%r (must be "
+                               "clipped-body-sha256)"
+                               % (doc.get("source_document_id"), kind))
+    for key in ("complete", "verdict", "passed",
+                "evaluation_complete"):
+        if key in ledger:
+            reasons.append("ledger claims %r from collection-only "
+                           "output (gold/scorer verdicts are later "
+                           "stages)" % key)
+    return (not reasons), reasons
+
+
+def run_top30_enumerate(job, workdir):
+    """Issue #328: run scripts/top30_enumerate.py for one
+    `top30-enumerate` job, in the egx-harvest playwright venv, and
+    validate the ledger fail-closed before it can be archived.
+    The ledger + frozen required-cells file + validation record
+    land under workdir/top30/ and ride the archive publish.
+    Returns {"top30-enumerate": status}:
+      ok — the enumerator ran and the ledger passed validation.
+        enumeration_closed may still be False: an honest failure
+        ledger (challenge shells, blocked FAITA, unreachable EGX)
+        is a successful entry-point run, not a job failure.
+      bad-job — the job string is not a top30-enumerate job.
+      manifest-missing / venv-failed / profile-missing /
+      ledger-missing / ledger-unparseable / exit-N /
+      validation-failed — named failures; the evidence written so
+        far still archives, so the failure is inspectable.
+    Live mode requires the persistent Chromium profile: the run's
+    premise is the TSPD-trusted profile, and without it the run
+    would only collect challenge shells. Probe/fixtures modes
+    never touch EGX and need no profile."""
+    plan = parse_top30_job(job["job"])
+    run_dir = Path(workdir) / "top30"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    if plan is None:
+        return {"top30-enumerate": "bad-job"}
+    manifest_path = CODE / "evaluation" / "top30_manifest.json"
+    try:
+        manifest = json.loads(
+            manifest_path.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001 — named failure, not a crash
+        (run_dir / "top30-enumerate.log").write_text(
+            "manifest load failed: %s: %s\n"
+            % (type(e).__name__, e))
+        return {"top30-enumerate": "manifest-missing"}
+    cells_doc, _cells = build_top30_required_cells(manifest)
+    (run_dir / "top30_required_cells.json").write_text(
+        json.dumps(cells_doc, indent=1, ensure_ascii=False),
+        encoding="utf-8")
+    py, venv_ready = _ensure_egx_playwright_venv()
+    if not venv_ready:
+        (run_dir / "top30-enumerate.log").write_text(
+            "playwright venv not ready: no interpreter at %s\n" % py)
+        return {"top30-enumerate": "venv-failed"}
+    if plan["mode"] == "live" and not _egx_profile_dir().is_dir():
+        (run_dir / "top30-enumerate.log").write_text(
+            "live mode requires the persistent Chromium profile at "
+            "%s (created by a harvest run); refusing to enumerate "
+            "without it\n" % _egx_profile_dir())
+        return {"top30-enumerate": "profile-missing"}
+    script = CODE / "scripts" / "top30_enumerate.py"
+    out_path = run_dir / "top30_expected_docs.json"
+    cmd = [str(py), str(script), "--mode", plan["mode"],
+           "--manifest", str(manifest_path),
+           "--out", str(out_path)]
+    if plan["fixtures"]:
+        cmd += ["--fixtures", plan["fixtures"]]
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    # shlex.quote each part: the fixtures dir comes from the job
+    # string and must never reach a shell unquoted (INS-R3-01).
+    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=run_dir,
+           env=env, timeout=TOP30_ENUMERATOR_TIMEOUT)
+    (run_dir / "top30-enumerate.log").write_text(
+        (r.stdout + r.stderr)[-4000:])
+    if r.returncode != 0:
+        return {"top30-enumerate": "exit-%d" % r.returncode}
+    if not out_path.exists():
+        return {"top30-enumerate": "ledger-missing"}
+    try:
+        ledger = json.loads(out_path.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001 — named failure, not a crash
+        (run_dir / "top30-enumerate.log").write_text(
+            "ledger unparseable: %s: %s\n" % (type(e).__name__, e))
+        return {"top30-enumerate": "ledger-unparseable"}
+    ok, reasons = _validate_top30_ledger(ledger, manifest,
+                                         plan["mode"])
+    coll = ledger.get("collection") \
+        if isinstance(ledger.get("collection"), dict) else {}
+    validation = {
+        "job": job["job"], "mode": plan["mode"],
+        "enumerator": "scripts/top30_enumerate.py",
+        "ledger": "top30/top30_expected_docs.json",
+        "required_cells": "top30/top30_required_cells.json",
+        "required_cells_sha256": cells_doc["sha256"],
+        "required_cells_count": cells_doc["count"],
+        "enumeration_closed": coll.get("enumeration_closed"),
+        "pagination_complete": coll.get("pagination_complete"),
+        "enumerated": coll.get("enumerated"),
+        "failures": len(ledger.get("failures") or [])
+        if isinstance(ledger.get("failures"), list) else None,
+        "valid": ok, "reasons": reasons,
+        "validated_at": now(),
+    }
+    (run_dir / "top30-validation.json").write_text(
+        json.dumps(validation, indent=1, ensure_ascii=False),
+        encoding="utf-8")
+    if not ok:
+        return {"top30-enumerate": "validation-failed"}
+    return {"top30-enumerate": "ok"}
 
 
 HARVEST_TTL_HOURS = 12
@@ -3136,6 +3509,19 @@ def _execute(job):
         _execute_body(job)
 
 
+def _record_publish_failure(job):
+    """Publish failures must be observable on the bus, not just
+    local (shared by the harvest and top30 branches)."""
+    try:
+        err = BUS / "queue" / "claims" / f"{job['id']}.error.json"
+        err.write_text(json.dumps(
+            {"worker": os.uname().nodename, "at": now(),
+             "error": "publish failed"}))
+        push_bus(f"publish failed {job['id']}")
+    except Exception:
+        pass
+
+
 def _execute_body(job):
     # Issue #66 extension: first-party schedule jobs — no tools, no
     # archive publish; their outputs are ledger commits on main and
@@ -3174,6 +3560,22 @@ def _execute_body(job):
         else:
             # Issue #149: only a successful publish marks the job done.
             # Issue #216: failure handling is centralized in _mark_done.
+            _mark_done(job, archive_sha)
+        return
+    if job["job"].split(" ", 1)[0] == "top30-enumerate":
+        # Issue #328: the registry grammar has no enumeration tool
+        # (parse_job returns []), so this kind dispatches here like
+        # harvest-egx — never through the tool loop. A bad job
+        # string still publishes its named failure and marks done
+        # (done means executed + archived, as for harvest-egx);
+        # only a failed publish leaves the job unmarked.
+        manifest["tools"] = run_top30_enumerate(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
             _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
