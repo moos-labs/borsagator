@@ -27,6 +27,15 @@ Fix under test (worker/worker.py, _execute_body):
     same name/kind as the heartbeat), so the exact code behind any
     run — including a no-op — is proven.
 
+Issue #382 (INS-373-374 F4) extends the manifest provenance: the
+manifest also carries `checkout_sha` + `update_branch` as separate
+diagnostic fields (mirroring the heartbeat). checkout_sha is a
+diagnostic only — the checkout HEAD, not proof of the running code
+(issue #160); code_sha remains the running-code pin. The fake sh
+stub returns empty stdout, so update_checkout_sha() is "" here;
+the check asserts the manifest carries exactly what the worker
+reports, and that update_branch names the release branch.
+
 Harness-first: FAILS on pristine main (the unknown job publishes
 `tools: {}` and marks done; no code_sha in the manifest) and PASSES
 on the fixed tree. Stdlib only. publish/_mark_done are stubbed at
@@ -189,6 +198,29 @@ def test_unknown_sweep_filter_fails_closed():
           done.get("archive_sha") == "fake-archive-sha-371")
 
 
+def test_manifest_carries_checkout_provenance():
+    """Issue #382: every manifest carries checkout_sha +
+    update_branch alongside code_sha/code_sha_kind (heartbeat
+    fields, diagnostics — not the running-code proof)."""
+    pub, done = run_execute({
+        "id": "test-382-prov",
+        "job": "harvest-egx-poul",
+        "added": worker.now()})
+    manifest = pub.get("manifest", {})
+    check("issue #382: manifest carries checkout_sha (same value "
+          "the worker reports for the release checkout)",
+          "checkout_sha" in manifest
+          and manifest.get("checkout_sha")
+          == worker.update_checkout_sha())
+    check("issue #382: manifest carries update_branch (the "
+          "release branch the worker updates from)",
+          manifest.get("update_branch") == worker.UPDATE_BRANCH)
+    check("issue #382: code_sha remains the running-code pin "
+          "alongside the diagnostics",
+          manifest.get("code_sha") == worker.running_code_sha()
+          and manifest.get("code_sha_kind") == "sha256-running-bytes")
+
+
 def test_valid_jobs_still_parse():
     """Control: the gate is the EMPTY plan only — valid job strings
     must still parse to a non-empty plan (parse_job level; no tool
@@ -212,6 +244,7 @@ def main():
     test_unknown_enumerate_typo_fails_closed()
     test_empty_job_string_fails_closed()
     test_unknown_sweep_filter_fails_closed()
+    test_manifest_carries_checkout_provenance()
     test_valid_jobs_still_parse()
     print(f"\n{PASSED} passed")
     return 0
