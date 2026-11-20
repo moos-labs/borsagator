@@ -4399,10 +4399,14 @@ def self_update():
         UPDATE_ERROR = ("current checkout revision unreadable; "
                         "keeping running code")
         return
-    if tip != cur:
+    if not UPDATE_PIN and tip != cur:
         # Fast-forward only: a rewritten history is refused even if
         # the branch moved. (Needs the full clone from
         # _ensure_update_checkout — shallow history has no ancestry.)
+        # Skipped on the pinned path (CodeRabbit Minor on PR #409):
+        # a matching pin is trusted by configuration, not by
+        # ancestry — with cur unreadable, tip != cur is still true
+        # and the ancestry check would refuse the pinned update.
         if sh(f"git -C {CODE} merge-base --is-ancestor HEAD {tip}",
               timeout=60).returncode != 0:
             UPDATE_ERROR = (f"release tip {tip[:12]} is not a "
