@@ -647,11 +647,36 @@ def read_queue():
     try:
         data = json.loads(q.read_text())
         QUEUE_ERROR = None
-        return data
     except Exception as e:
         QUEUE_ERROR = f"{type(e).__name__}: {e}"[:200]
         print(f"read_queue: {QUEUE_ERROR}", file=sys.stderr, flush=True)
         return []
+    if not isinstance(data, list):
+        # Issue #402: a non-list queue.json (dict, string, null) is
+        # not a queue at all — the old code returned it raw and the
+        # call sites iterated its keys/characters into .get()
+        # AttributeErrors. Treat it like an unreadable queue.
+        QUEUE_ERROR = "queue.json is not a list; ignoring"
+        print(f"read_queue: {QUEUE_ERROR}", file=sys.stderr, flush=True)
+        return []
+    queue = []
+    for entry in data:
+        if isinstance(entry, dict):
+            queue.append(entry)
+        else:
+            # Issue #402: same malformed-queue family as #391, one
+            # layer earlier. run_schedule_check() (top of every poll
+            # cycle) and run_ledger_watchdog() both call .get("id")
+            # on every queue entry, so one null/string entry raised
+            # AttributeError out of them before the queue loop (and
+            # its #391 quarantine) ever ran: a head-of-line stall,
+            # retried and failed at the same point every cycle.
+            # Quarantine with evidence here, once, and filter the
+            # entry out of the returned list so no caller can crash
+            # on it. _quarantine_malformed_job never raises and is
+            # idempotent (an existing record is not re-pushed).
+            _quarantine_malformed_job(entry, "not-an-object")
+    return queue
 
 
 def claimed(job_id):
