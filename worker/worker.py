@@ -661,7 +661,7 @@ def _done_or_pending(job_id):
             or bool(_receipt_paths(job_id)))
 
 
-def _mark_done(job, archive_sha):
+def _mark_done(job, archive_sha, result=None):
     """#149/#216/#231: mark completion only AFTER a successful effect.
     First stage exact completion bytes in the primary outbox. If that
     write fails, try JOB_STATE with the same crash-durable write, then
@@ -680,7 +680,8 @@ def _mark_done(job, archive_sha):
     independent. Never turn an intent alone into a done marker."""
     record = json.dumps(
         {"worker": os.uname().nodename, "at": now(), "job": job["job"],
-         "archive": archive_sha, "id": job["id"]})
+         "archive": archive_sha, "id": job["id"],
+         **({"result": result} if result is not None else {})})
     receipt = None
     for directory in _completion_dirs():
         try:
@@ -3909,8 +3910,13 @@ def _execute_body(job):
     reg = registry()
     workdir = OUT / job["id"]
     workdir.mkdir(parents=True, exist_ok=True)
+    # Issue #373: pin the running code SHA in every manifest (the
+    # heartbeat already carries code_sha; the manifest carried none,
+    # so a manifest alone could not prove which revision ran it).
     manifest = {"job": job, "worker": os.uname().nodename,
-                "started": now(), "tools": {}}
+                "started": now(), "tools": {},
+                "code_sha": running_code_sha(),
+                "code_sha_kind": "sha256-running-bytes"}
     # Issue #348: tokenize on whitespace exactly like the #346 F9
     # fix did for top30-enumerate (and like run_harvest's own
     # .split()), so a leading-space harvest job dispatches here
@@ -3970,6 +3976,30 @@ def _execute_body(job):
             _mark_done(job, archive_sha)
         return
     plan = parse_job(job["job"], reg)
+    if not plan:
+        # Issue #373: fail closed — a job string matching no special
+        # dispatch and no registry grammar used to run zero tools and
+        # still publish + mark done with an empty tools: {} (job
+        # w5-harvest-poul-diag-002, `harvest-egx-poul`, started /
+        # finished 49 microseconds apart). Record a named failure
+        # instead, visible in the manifest and the done record, so
+        # the queue / ledger can flag it — never a silent empty
+        # success. Done still means executed + archived (as for the
+        # harvest / top30 / diag branches); only a failed publish
+        # leaves the job unmarked.
+        manifest["tools"] = {"job": "unknown-job"}
+        manifest["error"] = (
+            "unknown-job: %r matched no special dispatch and no "
+            "registry grammar" % (job["job"],))
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            # Issue #216: failure handling is centralized in _mark_done.
+            _mark_done(job, archive_sha, result="unknown-job")
+        return
     templates = {t["id"]: t["command"] for t in reg["tools"]}
     # D2: each tool runs only at its registry-pinned SHA.
     refs = {t["id"]: t.get("ref") for t in reg["tools"]}
