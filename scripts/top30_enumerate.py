@@ -262,8 +262,14 @@ class FetchFailure(Exception):
     preserve the evidence instead of discarding it. Connection
     failures (URLError, timeout, disconnect) leave both None —
     no response arrived, so there is no evidence to preserve.
-    The body is carried only in memory, never stored: the probe
-    records structured fields from it, never the body itself."""
+    ``body`` is None (with ``status`` set) when a response
+    arrived but its body could not be read (issue #383): that is
+    NOT an empty body — a genuinely empty body that really
+    arrived is carried as ``body=""``. The distinction matters:
+    a failed read must never be recorded as a full capture of
+    an empty body. The body is carried only in memory, never
+    stored: the probe records structured fields from it, never
+    the body itself."""
 
     def __init__(self, url, error, status=None, body=None):
         super().__init__("%s: %s" % (url, error))
@@ -299,12 +305,18 @@ def http_fetch(url, timeout=30):
         # keeps the evidence (status, chars, digest, challenge
         # markers). Still raises — enumeration's non-2xx failure
         # behaviour is unchanged; only the probe preserves what
-        # arrived. An unreadable body keeps the status with an
-        # empty body rather than losing the status too.
+        # arrived. A body that cannot be read keeps the status
+        # with body=None (issue #383) — never an empty body as if
+        # one had arrived; the read error is kept in the message
+        # so the cause is not lost.
         try:
             raw = e.read()
-        except Exception:  # noqa: BLE001 — body read must not raise
-            raw = b""
+        except Exception as read_err:  # noqa: BLE001 — must not raise
+            raise FetchFailure(
+                url, "%s: %s (error body unreadable: %s: %s)"
+                     % (type(e).__name__, e,
+                        type(read_err).__name__, read_err),
+                status=e.code, body=None)
         body = (raw.decode("utf-8", errors="replace")
                 if isinstance(raw, (bytes, bytearray)) else "")
         raise FetchFailure(url, "%s: %s" % (type(e).__name__, e),
@@ -720,13 +732,18 @@ def probe_live_access(fetcher=None):
     that actually arrived (HTTPError with a body, issue #378) is
     not a capture failure: its status, body_chars, digest, markers
     and vendor hint are recorded exactly as for a 2xx body, with
-    capture_state "captured" and reachable False. Only a
+    capture_state "captured" and reachable False. If the response
+    arrived but its body could not be read (issue #383), the
+    status is kept but no body evidence is recorded at all —
+    body_chars / body_sha256 / body_hash_kind stay None and
+    capture_state is "body_unreadable": a failed read is never
+    presented as a full capture of an empty body. Only a
     connection failure — no response arrived — is "fetch_failed"
     with no status. Capture failure has a named state
-    ("fetch_failed" / "probe_error") and keeps the original probe
-    result (reachable False, detail with the error). The legacy
-    detail string is kept for compatibility: run_probe_mode embeds
-    it in failure reasons."""
+    ("fetch_failed" / "body_unreadable" / "probe_error") and keeps
+    the original probe result (reachable False, detail with the
+    error). The legacy detail string is kept for compatibility:
+    run_probe_mode embeds it in failure reasons."""
     fetcher = fetcher or http_fetch
     url = search_url("EGS02051C018")
     rec = {"url": url,
@@ -754,9 +771,18 @@ def probe_live_access(fetcher=None):
             # stays False, and the legacy error detail is kept.
             # Only a response that arrived gets this treatment;
             # a connection failure (status None) stays fetch_failed
-            # with no status below.
-            _probe_record_fields(rec, url, e.status, e.body)
-            rec["capture_state"] = "captured"
+            # with no status below. But a response whose body
+            # could not be read (body None, issue #383) is NOT a
+            # capture: the status is kept, every body field stays
+            # unset, and capture_state is "body_unreadable" —
+            # a failed read is never recorded as a captured
+            # empty body.
+            if getattr(e, "body", None) is not None:
+                _probe_record_fields(rec, url, e.status, e.body)
+                rec["capture_state"] = "captured"
+            else:
+                rec["status"] = e.status
+                rec["capture_state"] = "body_unreadable"
             rec["reachable"] = False
             rec["detail"] = "%s: %s" % (type(e).__name__, e.error)
         else:
