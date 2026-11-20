@@ -119,19 +119,24 @@ check("track returns the same Path it was given",
 
 # --- 7. End to end: a real worker test leaves no residue -----------
 # test_worker_357.py is the fastest script-style worker test with a
-# module-level tempdir; run it with a default TMPDIR and assert no
+# module-level tempdir; run it with a private temp base and assert no
 # new gator357-f2-test-* dir survives it.
+# The child gets its own base (not the shared default tempdir) so a
+# concurrent test-357 run cannot create/remove dirs between the two
+# globs and cause a false failure. The child env also drops
+# GATOR_TEST_KEEP_TMP: if the parent runs with it set (to keep its
+# own scratch dir for inspection), the child would retain its dir
+# and the residue assertion would fail by design. The parent env is
+# left untouched, so its own scratch dir stays available.
 env = os.environ.copy()
-env.pop("TMPDIR", None)
-base = subprocess.run(
-    [sys.executable, "-c",
-     "import tempfile; print(tempfile.gettempdir())"],
-    capture_output=True, text=True, env=env, timeout=30).stdout.strip()
-before = set(Path(base).glob("gator357-f2-test-*"))
+env.pop("GATOR_TEST_KEEP_TMP", None)
+base = _test_tmp.mkdtemp(prefix="gator388-e2e-")
+env["TMPDIR"] = str(base)
+before = set(base.glob("gator357-f2-test-*"))
 r = subprocess.run([sys.executable, "worker/test_worker_357.py"],
                    cwd=str(REPO), capture_output=True, text=True,
                    env=env, timeout=120)
-after = set(Path(base).glob("gator357-f2-test-*"))
+after = set(base.glob("gator357-f2-test-*"))
 check("real worker test (357) passes", r.returncode == 0,
       f"rc={r.returncode} out={r.stdout.strip()[-200:]} "
       f"err={r.stderr.strip()[-200:]}")
