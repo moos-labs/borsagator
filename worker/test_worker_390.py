@@ -19,6 +19,14 @@ as before), so publication proceeds with code_sha intact.
 checkout_sha is diagnostics only (#382) — a failed diagnostic
 lookup must never become a job failure.
 
+Follow-up (CodeRabbit Major on PR #396): the "" fallback must NOT
+leak into self_update() — `if cur and tip != cur:` skipped the D2
+ancestry check entirely when cur == "", so a failed lookup let the
+worker check out and execute a possibly non-descendant tip.
+self_update() now fails closed on an empty cur (UPDATE_ERROR set,
+no checkout, no adoption) while the diagnostic call sites above
+still degrade to "".
+
 Harness-first: FAILS on pristine main (the TimeoutExpired /
 OSError escapes update_checkout_sha() out of _execute_body, so no
 manifest is published and no done is marked) and PASSES on the
@@ -289,6 +297,115 @@ def test_heartbeat_survives_git_timeout():
           and payload.get("code_sha_kind") == "sha256-running-bytes")
 
 
+# --- self_update fail-closed on empty cur (CodeRabbit Major, PR #396) ---
+
+SELF_UPDATE_CMDS = []
+SELF_UPDATE_FAKE = {"cur_mode": "timeout", "ancestor": False}
+SELF_UPDATE_TIP = "f" * 40
+
+
+def fake_sh_self_update(cmd, cwd=None, env=None, timeout=3600):
+    """Fake worker.sh for the self_update tests: the release tip is
+    SELF_UPDATE_TIP; the current-revision lookup fails per
+    SELF_UPDATE_FAKE["cur_mode"] ("timeout" -> "", "ok" -> a SHA);
+    merge-base answers per ["ancestor"]; every command is logged
+    so the test can prove whether a checkout was attempted."""
+    SELF_UPDATE_CMDS.append(cmd)
+    if cmd.startswith("rm -rf "):
+        shutil.rmtree(cmd[len("rm -rf "):].strip(), ignore_errors=True)
+        return FakeResult(0)
+    if "rev-parse FETCH_HEAD" in cmd:
+        return FakeResult(0, out=SELF_UPDATE_TIP + "\n")
+    if "rev-parse HEAD" in cmd:
+        if SELF_UPDATE_FAKE["cur_mode"] == "timeout":
+            raise subprocess.TimeoutExpired(cmd, timeout)
+        return FakeResult(0, out="abc123def4567890\n")
+    if "merge-base --is-ancestor" in cmd:
+        return FakeResult(0 if SELF_UPDATE_FAKE["ancestor"] else 1)
+    return FakeResult(0)
+
+
+def run_self_update(cur_mode, ancestor):
+    """Run worker.self_update() under the self-update fake with
+    UPDATE_PIN unset (the default, where the hole matters) and
+    return (UPDATE_ERROR, commands-run). Restores worker.sh."""
+    SELF_UPDATE_CMDS.clear()
+    SELF_UPDATE_FAKE["cur_mode"] = cur_mode
+    SELF_UPDATE_FAKE["ancestor"] = ancestor
+    old_sh = worker.sh
+    old_pin = worker.UPDATE_PIN
+    old_err = worker.UPDATE_ERROR
+    worker.sh = fake_sh_self_update
+    worker.UPDATE_PIN = ""
+    worker.UPDATE_ERROR = None
+    try:
+        worker.self_update()
+        return worker.UPDATE_ERROR, list(SELF_UPDATE_CMDS)
+    finally:
+        worker.sh = old_sh
+        worker.UPDATE_PIN = old_pin
+        worker.UPDATE_ERROR = old_err
+
+
+def _tried_checkout(cmds):
+    return any(" checkout " in c for c in cmds)
+
+
+def _tried_ancestry(cmds):
+    return any("merge-base --is-ancestor" in c for c in cmds)
+
+
+def test_self_update_refuses_on_empty_cur():
+    """THE MAJOR: with the current-revision lookup failing (""),
+    self_update() must refuse adoption — UPDATE_ERROR set, NO
+    checkout of the fetched tip, no ancestry check to skip.
+    On the unfixed tree this checks out the tip (no UPDATE_ERROR,
+    checkout attempted) — the D2 guard silently skipped."""
+    err, cmds = run_self_update("timeout", ancestor=False)
+    check("self_update() on empty cur: refuses with UPDATE_ERROR "
+          "set (fail closed, keeps running code)",
+          err is not None and "unreadable" in err)
+    check("self_update() on empty cur: never checks out the "
+          "fetched tip",
+          not _tried_checkout(cmds))
+    check("self_update() on empty cur: returns before the "
+          "ancestry check (nothing to prove descent from)",
+          not _tried_ancestry(cmds))
+    # The diagnostic degradation itself is proven by the
+    # update_checkout_sha tests above; assert it once more here in
+    # the self-update context (fake_sh restored by run_self_update).
+    FAKE_MODE["mode"] = "timeout"
+    check("self_update() on empty cur: diagnostic lookup still "
+          "degrades to '' (call sites unaffected)",
+          worker.update_checkout_sha() == "")
+    check("self_update() on empty cur: fetch + tip lookup did "
+          "succeed (refusal is from the empty cur alone)",
+          any("fetch origin" in c for c in cmds)
+          and any("rev-parse FETCH_HEAD" in c for c in cmds))
+
+
+def test_self_update_adopts_descendant_when_cur_known():
+    """Positive control: with a known cur and a descendant tip,
+    the fix changes nothing — the tip is checked out and
+    UPDATE_ERROR is cleared."""
+    err, cmds = run_self_update("ok", ancestor=True)
+    check("self_update() with known cur + descendant tip: "
+          "adopts (checkout attempted, no UPDATE_ERROR)",
+          err is None and _tried_checkout(cmds))
+
+
+def test_self_update_still_refuses_non_descendant():
+    """The D2 ancestry guard still works when cur IS known: a
+    non-descendant tip is refused before any checkout."""
+    err, cmds = run_self_update("ok", ancestor=False)
+    check("self_update() with known cur + non-descendant tip: "
+          "refuses with a descendant UPDATE_ERROR",
+          err is not None and "not a descendant" in err)
+    check("self_update() with known cur + non-descendant tip: "
+          "never checks out the refused tip",
+          not _tried_checkout(cmds))
+
+
 def main():
     worker.sh = fake_sh
     worker.publish = stub_publish
@@ -305,6 +422,9 @@ def main():
     test_ordinary_unknown_job_publishes_on_missing_git()
     test_special_dispatch_harvest_publishes_on_missing_git()
     test_heartbeat_survives_git_timeout()
+    test_self_update_refuses_on_empty_cur()
+    test_self_update_adopts_descendant_when_cur_known()
+    test_self_update_still_refuses_non_descendant()
     print(f"\n{PASSED} passed")
     return 0
 

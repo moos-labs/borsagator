@@ -1327,7 +1327,10 @@ def update_checkout_sha():
     which runs after intent persistence and would block publish +
     done, leaving the job uncertain. Return "" on any lookup
     failure so publication proceeds with code_sha intact; the
-    lookup stays bounded by its 30s timeout."""
+    lookup stays bounded by its 30s timeout. (self_update is the
+    one exception: it fails closed on "" — see its own guard —
+    because adopting a tip with no known running revision would
+    skip the D2 ancestry check.)"""
     try:
         r = sh(f"git -C {CODE} rev-parse HEAD", timeout=30)
     except (subprocess.TimeoutExpired, OSError):
@@ -4296,7 +4299,19 @@ def self_update():
                         f"{UPDATE_PIN[:12]}; keeping running code")
         return
     cur = update_checkout_sha()
-    if cur and tip != cur:
+    if not cur:
+        # CodeRabbit Major on PR #396 (issue #390 follow-up): the
+        # #390 guard makes update_checkout_sha() return "" on a
+        # failed lookup, so an empty cur must NOT silently skip the
+        # ancestry check below — with no known running revision
+        # there is nothing to prove the tip descends from, so
+        # refuse adoption (fail closed) and keep running code.
+        # Diagnostic call sites still degrade to "" (see
+        # test_worker_390); only adoption refuses.
+        UPDATE_ERROR = ("current checkout revision unreadable; "
+                        "keeping running code")
+        return
+    if tip != cur:
         # Fast-forward only: a rewritten history is refused even if
         # the branch moved. (Needs the full clone from
         # _ensure_update_checkout — shallow history has no ancestry.)
