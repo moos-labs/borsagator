@@ -1,0 +1,34 @@
+name: pr-close-gate
+
+# Issue #426: a PR body saying "Fixes #N" auto-closes issue N at merge —
+# BEFORE verification. The #420/#421 timelines prove the closing keyword
+# was the trigger (close 2-3s after merge, card moved to Released only
+# after the close), not the project auto-close on card move. board_sync.py
+# could only react (reopen + revert) after the unverified close happened.
+# This gate is the preventive fix: it blocks merging while any closing
+# keyword in the PR body targets an issue in this repo that lacks the
+# 'verified' label. The author then uses 'Related to #N' and closes via
+# the verified close-out procedure (scripts/verified_closeout.py).
+# See scripts/check_pr_close_keywords.py for the rule.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: read
+  issues: read
+
+jobs:
+  close-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check closing keywords only target verified issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python3 scripts/check_pr_close_keywords.py
