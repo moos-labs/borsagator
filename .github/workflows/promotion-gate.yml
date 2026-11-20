@@ -7,7 +7,8 @@ name: promotion-gate
 # drifts as commits land) fail this check, as does any head that no
 # longer equals the reviewed SHA. See docs/promotion.md and
 # scripts/promote.py. This check is a REQUIRED status check on
-# worker-release (since 2026-11-17); a red X here means "do not merge".
+# worker-release (confirmed by branch-protection read 2026-11-20);
+# a red X here means "do not merge".
 #
 # Issue #198 (2026-11-18): this gate failed 6/6 runs on two valid
 # frozen candidates (PR #200: opened, edited, reopened, re-run; PR
