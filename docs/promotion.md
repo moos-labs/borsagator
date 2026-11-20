@@ -87,15 +87,22 @@ SHA is known.
   on `worker-release`; the complete current list was not
   independently retrieved in this review.
 - `main`: **unprotected** (protection API returns 404) at the same
-  read. That is outside #145's scope, but it is why the frozen
+  read — superseded by the 2026-11-20 read below. That is outside #145's scope, but it is why the frozen
   branch matters: `main` can move at any time, so a promotion PR
   tracking it is never stable.
 
 Branch-protection read 2026-11-20 (issue #425): the complete current
 required-check list on `worker-release` is [`frozen-candidate`]
 (`strict: false`), and `dismiss_stale_reviews` is now `true` — both
-changed since the 2026-11-17 snapshot above. `main` is still
-unprotected (protection API returns 404, re-checked 2026-11-20).
+changed since the 2026-11-17 snapshot above. `main` was still
+unprotected at that read (protection API returned 404, re-checked
+2026-11-20); that is superseded by the #433 Gap-3 change — see the
+2026-11-20 read below.
+
+Branch-protection read 2026-11-20 (issue #437, after the #433 Gap-3
+protection change): `main` is protected — required status checks
+exactly [`close-gate`] (`strict: false`), `enforce_admins: true`,
+no required pull-request reviews.
 
 Recommendations for the cycle to apply deliberately (not changed by
 the #145 fix itself). Items 1–2 are already in place, confirmed by a
@@ -114,8 +121,11 @@ decision:
    receive heartbeat commits, so there is no churn to dismiss
    approvals — and it closes the stale-approval hole for any future
    PR that does change head.
-3. Consider protecting `main` (PR + review) as a separate decision;
-   #145 does not depend on it.
+3. Protecting `main` is done in a narrower form than proposed here:
+   the #433 Gap-3 change made `close-gate` a required check on
+   `main` (`enforce_admins: true`, no required reviews). A PR +
+   review requirement on `main` remains a separate decision, if ever
+   wanted; #145 does not depend on it.
 
 ## Promotion log
 
