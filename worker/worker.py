@@ -1319,7 +1319,19 @@ def _ensure_update_checkout():
 
 
 def update_checkout_sha():
-    r = sh(f"git -C {CODE} rev-parse HEAD", timeout=30)
+    """Issue #390: the checkout HEAD is diagnostics only (#382) —
+    a failed lookup must never become a job failure. sh() raises
+    subprocess.TimeoutExpired on a timeout and OSError when git is
+    missing, so an unguarded call here raises out of every call
+    site — including the manifest-creation site in _execute_body,
+    which runs after intent persistence and would block publish +
+    done, leaving the job uncertain. Return "" on any lookup
+    failure so publication proceeds with code_sha intact; the
+    lookup stays bounded by its 30s timeout."""
+    try:
+        r = sh(f"git -C {CODE} rev-parse HEAD", timeout=30)
+    except (subprocess.TimeoutExpired, OSError):
+        return ""
     return r.stdout.strip() if r.returncode == 0 else ""
 
 
