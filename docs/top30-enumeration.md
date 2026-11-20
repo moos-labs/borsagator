@@ -58,8 +58,9 @@ profile) is:
    adding no new ids).
 
 Until that protocol runs live, no enumeration claim rests on a
-validated filter: the live runs in §3 hit the challenge wall
-before any result page, so inclusivity, ISIN/name agreement,
+validated filter: the live runs in §3a returned no result page
+— runs 1–2 failed at connection resets, runs 3–4 at the
+challenge wall — so inclusivity, ISIN/name agreement,
 pagination control shape and source-total behaviour are all still
 unobserved. The ledger records live-mode failure evidence, not
 enumerated documents.
@@ -233,8 +234,10 @@ in this step the corpus status of every ledger document is
   `scripts/top30_enumerate.py`); plain HTTP (`--transport http`,
   the default) is for machines without the profile. Profile-backed
   live enumeration has now been observed on the worker (runs 1–4,
-  §3a): the profile session reaches EGX but every listing returns
-  a challenge shell — enumeration is still 0 documents. The §2
+  §3a): runs 1–2 failed at `net::ERR_CONNECTION_RESET` (30 ×
+  `fetch_failed` each) before any response arrived; runs 3–4
+  reached EGX and every listing returned an HTTP 200 challenge
+  shell — enumeration is still 0 documents. The §2
   validation protocol has still not run, and pagination still uses
   the URL form (`&page=N`) rather than driving the `__doPostBack`
   form. A live sweep that returns a real result page is the proof
@@ -260,8 +263,11 @@ in this step the corpus status of every ledger document is
 - Live filter-semantics validation (§2 protocol) on the worker.
 - A live enumeration that gets past the challenge wall, then the
   corpus capture (full bodies + attachments with hashes). Four
-  live runs (2026-11-20, §3a) all ended at the wall with 0
-  documents; the wall itself is the next problem to solve, not
+  live runs (2026-11-20, §3a) all ended with 0 documents —
+  runs 1–2 at connection resets (`net::ERR_CONNECTION_RESET`,
+  30 × `fetch_failed` each), runs 3–4 at the challenge wall
+  (HTTP 200 challenge shells, 30 × `source_challenge` each);
+  the wall itself is the next problem to solve, not
   the enumeration logic.
 - Gold adjudication, scorer run, per-cell report (follow on the
   ledger + corpus, per the five gates).

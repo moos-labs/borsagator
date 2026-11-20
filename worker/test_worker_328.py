@@ -211,6 +211,12 @@ def test_validate_honest_probe_ledger():
     # run has landed (#283 run 4, 2026-11-20). The mode-mismatch
     # rule itself is still enforced by the validator — a ledger
     # validated against a different requested mode fails.
+    # The recorded mode itself must be a supported one: passing
+    # led.get("mode") straight through as the requested mode
+    # compares the ledger with itself, so a missing/unsupported
+    # mode would still pass the validator below.
+    check("validate: committed ledger records a supported mode",
+          led.get("mode") in worker.TOP30_MODES)
     ok, reasons = worker._validate_top30_ledger(
         led, manifest, led.get("mode"))
     check("validate: committed honest ledger passes (mode=%s)"
