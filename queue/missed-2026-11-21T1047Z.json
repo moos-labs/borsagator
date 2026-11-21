@@ -1,0 +1,7 @@
+{
+ "job_id": "guard-2026-11-21T1047Z",
+ "job": "ledger-guard",
+ "at": "2026-11-21T10:58:49.129207+00:00",
+ "worker": "borsagator-worker-5",
+ "reason": "guard ran but its heartbeat commit did not land on main \u2014 slot not marked done; the next hourly guard retries the push (issue #434)"
+}
