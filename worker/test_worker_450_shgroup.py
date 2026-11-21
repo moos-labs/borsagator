@@ -81,8 +81,11 @@ def test_detached_ignoring_descendant_dies():
             p.unlink()
     # The descendant ignores SIGTERM and detaches its descriptors
     # (so the leader's pipes close when the leader dies); the
-    # leader itself honours SIGTERM and dies at once.
-    cmd = ("(trap '' TERM; sleep 20; touch %s) "
+    # leader itself honours SIGTERM and dies at once. Its touch
+    # is due at 6s; the marker assertion below waits past that
+    # deadline so absence actually proves it died (round-2
+    # review: a 20s delay made the assertion vacuous).
+    cmd = ("(trap '' TERM; sleep 6; touch %s) "
            "</dev/null >/dev/null 2>&1 & echo $! > %s; sleep 30"
            % (shlex.quote(str(marker)), shlex.quote(str(pidfile))))
     t0 = time.time()
@@ -98,8 +101,11 @@ def test_detached_ignoring_descendant_dies():
     check("detached descendant: dead once the timeout returns "
           "(round-4 sh_group left it alive)",
           not pid_alive(pid))
-    time.sleep(3)
-    check("detached descendant: never reached its side effect",
+    remaining = 8 - (time.time() - t0)
+    if remaining > 0:
+        time.sleep(remaining)
+    check("detached descendant: never reached its side effect "
+          "(checked after its 6s touch deadline)",
           not marker.exists())
 
 
