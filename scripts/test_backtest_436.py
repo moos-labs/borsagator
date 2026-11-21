@@ -9,7 +9,10 @@ Covers, per the design and the step-2 brief:
     a non-deterministic Kronos stub is caught, not passed
   * runner-failure classification — a pandas-ta/talib MIN_ROWS failure is
     skipped-with-reason, not an unexpected error (step-1 observation)
-  * gate — history depth / gaps / flat segments / events feed (§4)
+  * gate — history depth / gaps / flat segments / events feed (§4),
+    plus the shared 2019-01-01 history floor (INS-REVIEW-025 / #446),
+    hardened per INS-REVIEW-029 (registered suite entry, malformed
+    floor/start rejection, --gate-only parity, empty-data checks)
   * scorer — ledger.score_forecast reuse, entrant blocks cross-checked
     against benchmark_freeze.freeze_* on identical fixtures, agg values,
     index-baseline deltas, and the separation guard (no backtest file is
@@ -28,6 +31,7 @@ as `--backtest`, mirroring the existing `--scorer` mode.
 import csv
 import hashlib
 import importlib.util
+import io
 import json
 import math
 import os
@@ -35,6 +39,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import redirect_stdout
 from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -573,6 +578,366 @@ def test_gate():
               drop_x == ["2025-06-30"], "got %r" % (drop_x,))
     finally:
         _urlreq.urlopen = real_urlopen
+
+
+def test_gate_history_floor():
+    """Shared 2019-01-01 history floor (INS-REVIEW-025 / #446).
+
+    A 25-session stale-flat run entirely before 2019-01-01 must
+    no longer reject, while the identical run inside the window
+    still does; SERIES_START composes with the floor (later of
+    the two wins); depth/gap/tail stay fail-closed with the floor
+    on; and the standalone gate CLI and run_cell agree on the
+    same fixture. Admission fields (rows/first_date/
+    longest_flat_run) are window-relative — they describe the
+    floored window, not the archived raw series, whose anomaly
+    statistics survive only as non-failing full_history_*
+    diagnostics.
+    """
+    print("== admission gate: shared history floor ==")
+    bt = load_module(os.path.join(HERE, "backtest_gate.py"),
+                     "backtest_gate")
+    # 1800 weekday sessions ending 2025-07-28: the series starts
+    # 2018-09-04, so rows[0:85] are pre-2019 and rows[85] is
+    # 2019-01-01. Flattening rows[20:45] plants a 26-session flat
+    # run (rows[19:45] equal) entirely before the floor.
+    rows = synthetic_series(n=1800, cutoff="2025-07-28")
+    for r in rows[20:45]:
+        r["close"] = rows[19]["close"]
+    window = [r for r in rows
+              if "2019-01-01" <= r["date"] <= "2025-06-30"]
+    before_cutoff = [r for r in rows if r["date"] <= "2025-06-30"]
+    check("floor fixture starts pre-2019",
+          rows[0]["date"] < "2019-01-01",
+          "got %r" % rows[0]["date"])
+    check("floor fixture first in-window bar is the floor",
+          window[0]["date"] == "2019-01-01",
+          "got %r" % window[0]["date"])
+    check("floor fixture plants a 26-session pre-floor flat run",
+          bt.longest_flat_run(
+              [r for r in rows if r["date"] < "2019-01-01"]) == 26)
+    # Without the floor the pre-2019 flat run rejects, exactly
+    # as before the fix (history_floor defaults to None).
+    rec0 = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30")
+    check("no-floor gate still rejects the pre-2019 flat run",
+          not rec0["passed"]
+          and any("flat" in r for r in rec0["reasons"]),
+          "; ".join(rec0["reasons"]))
+    check("no-floor gate records no effective floor",
+          rec0["history_floor"] is None,
+          "got %r" % rec0["history_floor"])
+    check("no-floor gate flat run is the full-history run",
+          rec0["longest_flat_run"] == 26,
+          "got %r" % rec0["longest_flat_run"])
+    # With the floor the same fixture passes, and the admission
+    # fields describe the floored window, not the raw series.
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate passes the pre-2019 flat run",
+          rec["passed"], "; ".join(rec["reasons"]))
+    check("floor gate records the effective floor",
+          rec["history_floor"] == "2019-01-01",
+          "got %r" % rec["history_floor"])
+    check("floor gate first_date is the floor",
+          rec["first_date"] == "2019-01-01",
+          "got %r" % rec["first_date"])
+    check("floor gate rows are the in-window bars",
+          rec["rows"] == len(window),
+          "got %r want %r" % (rec["rows"], len(window)))
+    check("floor gate flat run is window-relative",
+          rec["longest_flat_run"] == bt.longest_flat_run(window),
+          "got %r want %r" % (rec["longest_flat_run"],
+                              bt.longest_flat_run(window)))
+    check("floor gate keeps the pre-floor flat as a diagnostic",
+          rec["full_history_longest_flat_run"] == 26,
+          "got %r" % rec["full_history_longest_flat_run"])
+    check("floor gate full-history rows cover the raw series",
+          rec["full_history_rows"] == len(before_cutoff),
+          "got %r want %r" % (rec["full_history_rows"],
+                              len(before_cutoff)))
+    check("floor gate full-history first date is pre-floor",
+          rec["full_history_first_date"] == rows[0]["date"],
+          "got %r" % rec["full_history_first_date"])
+    check("floor gate history_needed_from is the plan-depth bound",
+          rec["history_needed_from"] == "2022-06-28",
+          "got %r" % rec["history_needed_from"])
+    check("floor gate discloses the future-informed cohort",
+          "future-informed" in rec["cohort_note"]
+          and "history_needed_from" in rec["cohort_note"],
+          rec["cohort_note"])
+    # SERIES_START composes with the floor: the effective lower
+    # bound is the later of the two, in both directions.
+    poul = synthetic_series(n=1500, cutoff="2026-09-30")
+    rec_poul = bt.gate_ticker("POUL.CA", poul, True, "2026-09-30",
+                              series_start="2026-09-28",
+                              history_floor="2019-01-01")
+    check("later series_start wins over the floor",
+          rec_poul["history_floor"] == "2026-09-28",
+          "got %r" % rec_poul["history_floor"])
+    check("POUL still fails usable-series depth with the floor",
+          not rec_poul["passed"]
+          and any("history starts" in r for r in rec_poul["reasons"]),
+          "; ".join(rec_poul["reasons"]))
+    check("POUL usable rows tiny with the floor",
+          rec_poul["rows"] <= 5, "got %r" % rec_poul["rows"])
+    rec_early = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                               series_start="2018-06-01",
+                               history_floor="2019-01-01")
+    check("later floor wins over an earlier series_start",
+          rec_early["history_floor"] == "2019-01-01"
+          and rec_early["passed"],
+          "floor=%r passed=%r" % (rec_early["history_floor"],
+                                  rec_early["passed"]))
+    # Malformed non-empty floor / series_start values are
+    # rejected by name (INS-REVIEW-029): the old code let
+    # parse_iso() return None and silently dropped the
+    # constraint, so a bad floor silently became no floor.
+    # Intentional None, an empty string and the CLI's 'none'
+    # stay distinct from invalid input.
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor="not-a-date")
+    check("malformed history_floor is rejected by name",
+          not rec["passed"]
+          and any("invalid history_floor" in r
+                  for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    check("malformed history_floor is not the flat-run rejection",
+          not any("flat" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor="2019-13-01")
+    check("impossible-month history_floor is rejected by name",
+          not rec["passed"]
+          and any("invalid history_floor" in r
+                  for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         series_start="2026-99-99",
+                         history_floor="2019-01-01")
+    check("malformed series_start is rejected by name",
+          not rec["passed"]
+          and any("invalid series_start" in r
+                  for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    check("malformed series_start rejection names the bad value",
+          any("2026-99-99" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    # None / '' / 'none' are intentional "no constraint", not
+    # invalid input — they must never produce an 'invalid'
+    # reason (the pre-floor flat run still rejects, by name).
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor=None)
+    check("None history_floor is not an invalid-date rejection",
+          not any("invalid" in r for r in rec["reasons"])
+          and any("flat" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor="")
+    check("empty history_floor is not an invalid-date rejection",
+          not any("invalid" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    rec = bt.gate_ticker("COMI.CA", rows, True, "2025-06-30",
+                         history_floor="none")
+    check("literal 'none' history_floor is not an invalid-date "
+          "rejection",
+          not any("invalid" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    # Identical anomalies INSIDE the window still reject with
+    # the floor on — the floor only excuses pre-floor history.
+    flat = _gate_rows(flat_run=25)
+    rec = bt.gate_ticker("COMI.CA", flat, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate still fails an in-window 25-flat run",
+          not rec["passed"]
+          and any("flat" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    gapped = _gate_rows(gap_after=400)
+    rec = bt.gate_ticker("COMI.CA", gapped, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate still fails an in-window 30-day gap",
+          not rec["passed"]
+          and any("gap" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    tail_gap = synthetic_series(n=820, cutoff="2025-07-28")
+    tail_gap = [r for r in tail_gap
+                if not ("2025-06-03" <= r["date"] <= "2025-06-30")]
+    rec = bt.gate_ticker("COMI.CA", tail_gap, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate still fails an in-window tail gap",
+          not rec["passed"]
+          and any("sessions before" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    short = _gate_rows(n=100)
+    rec = bt.gate_ticker("COMI.CA", short, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate still fails short in-window history",
+          not rec["passed"]
+          and any("history starts" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    # Depth stays fail-closed: a long pre-floor history must not
+    # satisfy the depth check once the floor excludes it.
+    depth_rows = [r for r in rows
+                  if r["date"] < "2019-01-01"
+                  or r["date"] >= "2025-01-01"]
+    rec = bt.gate_ticker("COMI.CA", depth_rows, True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("floor gate fails depth on pre-floor history alone",
+          not rec["passed"]
+          and any("history starts" in r for r in rec["reasons"]),
+          "; ".join(rec["reasons"]))
+    check("floor depth failure starts at the in-window first bar",
+          rec["first_date"] == "2025-01-01",
+          "got %r" % rec["first_date"])
+    # Empty data and a floor beyond all data fail closed with
+    # a named rejection, not an exception (INS-REVIEW-029):
+    # the gate reports "no usable history rows" either way.
+    rec = bt.gate_ticker("COMI.CA", [], True, "2025-06-30",
+                         history_floor="2019-01-01")
+    check("empty data with a floor is a named rejection",
+          not rec["passed"]
+          and rec["reasons"] == ["no usable history rows"],
+          "; ".join(rec["reasons"]))
+    rec = bt.gate_ticker("COMI.CA", [], True, "2025-06-30")
+    check("empty data without a floor is the same rejection",
+          not rec["passed"]
+          and rec["reasons"] == ["no usable history rows"],
+          "; ".join(rec["reasons"]))
+    # A floor later than every fetched bar excludes the whole
+    # series: same named rejection, with the raw rows still
+    # visible in the full-history diagnostics.
+    old_rows = synthetic_series(n=300, cutoff="2018-12-28")
+    rec = bt.gate_ticker("COMI.CA", old_rows, True, "2018-12-28",
+                         history_floor="2019-01-01")
+    check("floor beyond all data is a named rejection",
+          not rec["passed"]
+          and rec["reasons"] == ["no usable history rows"],
+          "; ".join(rec["reasons"]))
+    check("floor-beyond-all-data keeps the raw rows as diagnostics",
+          rec["full_history_rows"] == len(old_rows)
+          and rec["history_floor"] == "2019-01-01",
+          "rows=%r floor=%r" % (rec["full_history_rows"],
+                                rec["history_floor"]))
+    # The harness-side floor is unchanged: sessions_on_or_before
+    # (which the realised fetch also uses) still drops pre-2019
+    # rows, so the gate window and the cell window agree.
+    bt2 = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    usable = bt2.sessions_on_or_before(rows, "2025-06-30")
+    check("harness sessions_on_or_before still floors at 2019",
+          len(usable) == len(window)
+          and usable[0]["date"] == "2019-01-01"
+          and usable[-1]["date"] == "2025-06-30",
+          "got %d rows %s..%s" % (
+              len(usable),
+              usable[0]["date"] if usable else None,
+              usable[-1]["date"] if usable else None))
+    # CLI and cell verdicts agree on the same fixture: the
+    # standalone gate CLI (default floor) and run_cell (which
+    # passes DROP_BEFORE) must return the identical record.
+    tmp = tempfile.mkdtemp(prefix="bt436-gatefloor-")
+    try:
+        csv_path = os.path.join(tmp, "history.csv")
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["date", "close"])
+            w.writeheader()
+            w.writerows([{"date": r["date"], "close": r["close"]}
+                         for r in rows])
+        proc = subprocess.run(
+            [sys.executable, os.path.join(HERE, "backtest_gate.py"),
+             "--ticker", "COMI.CA", "--latest-cutoff", "2025-06-30",
+             "--events-available", "--history-csv", csv_path],
+            capture_output=True, text=True, timeout=120)
+        check("gate CLI passes the floored fixture (default floor)",
+              proc.returncode == 0,
+              proc.stdout[-500:] + proc.stderr[-500:])
+        cli_rec = json.loads(proc.stdout) if proc.returncode == 0 else {}
+        check("gate CLI records the effective floor",
+              cli_rec.get("history_floor") == "2019-01-01",
+              "got %r" % (cli_rec.get("history_floor"),))
+        # --history-floor none restores the pre-fix verdict.
+        proc_none = subprocess.run(
+            [sys.executable, os.path.join(HERE, "backtest_gate.py"),
+             "--ticker", "COMI.CA", "--latest-cutoff", "2025-06-30",
+             "--events-available", "--history-csv", csv_path,
+             "--history-floor", "none"],
+            capture_output=True, text=True, timeout=120)
+        check("gate CLI --history-floor none rejects the pre-floor flat",
+              proc_none.returncode == 1, proc_none.stdout[-300:])
+        index = [{"date": r["date"],
+                  "close": round(30000.0 + 2.0 * i, 4),
+                  "open": 0, "high": 0, "low": 0, "volume": 0}
+                 for i, r in enumerate(rows)]
+        cfg = _smoke_cfg(tmp, rows, index)
+        res = bt2.run_cell(FIXTURE_CUTOFF, FIXTURE_TICKER, cfg)
+        check("cell passes the floored fixture",
+              res["status"] == "ok",
+              "%s: %s" % (res["status"], res.get("reason", "")))
+        check("cell gate records the effective floor",
+              (res.get("gate") or {}).get("history_floor")
+              == "2019-01-01",
+              "got %r" % ((res.get("gate") or {}).get("history_floor"),))
+        check("CLI and cell gate records agree",
+              (res.get("gate") or {}) == cli_rec,
+              "cell=%r cli=%r" % (res.get("gate"), cli_rec))
+        # A malformed --history-floor is rejected by the CLI
+        # the same way (exit 1, named reason in the record).
+        proc_bad = subprocess.run(
+            [sys.executable, os.path.join(HERE, "backtest_gate.py"),
+             "--ticker", "COMI.CA", "--latest-cutoff", "2025-06-30",
+             "--events-available", "--history-csv", csv_path,
+             "--history-floor", "garbage"],
+            capture_output=True, text=True, timeout=120)
+        try:
+            bad_rec = json.loads(proc_bad.stdout)
+        except Exception:
+            bad_rec = {}
+        check("gate CLI rejects a malformed --history-floor",
+              proc_bad.returncode == 1
+              and any("invalid history_floor" in r
+                      for r in bad_rec.get("reasons", [])),
+              proc_bad.stdout[-300:])
+        # --gate-only is the third entry point (INS-REVIEW-029):
+        # backtest.py --gate-only must agree with the standalone
+        # gate CLI and with run_cell on the same fixture. The
+        # live fetch is stubbed in-process (no network).
+        def gate_only_record(fixture_rows):
+            """Run backtest.py --gate-only in-process with the
+            live fetch stubbed to fixture_rows; returns
+            (returncode, record dict)."""
+            real_fetch = bt2.backtest_gate.fetch_chart
+            buf = io.StringIO()
+            try:
+                bt2.backtest_gate.fetch_chart = (
+                    lambda ticker: (list(fixture_rows), [], True))
+                with redirect_stdout(buf):
+                    rc = bt2.main(
+                        ["--ticker", "COMI.CA", "--cutoff", "2025-06-30",
+                         "--latest-cutoff", "2025-06-30", "--gate-only"])
+            finally:
+                bt2.backtest_gate.fetch_chart = real_fetch
+            try:
+                return rc, json.loads(buf.getvalue())
+            except Exception:
+                return rc, {}
+        gate_only_rc, gate_only_rec = gate_only_record(rows)
+        check("backtest.py --gate-only passes the floored fixture",
+              gate_only_rc == 0,
+              "rc=%r rec=%r" % (gate_only_rc, gate_only_rec))
+        check("backtest.py --gate-only agrees with the gate CLI",
+              gate_only_rec == cli_rec,
+              "gate-only=%r cli=%r" % (gate_only_rec, cli_rec))
+        check("backtest.py --gate-only agrees with run_cell",
+              gate_only_rec == (res.get("gate") or {}),
+              "gate-only=%r cell=%r" % (gate_only_rec,
+                                        res.get("gate")))
+        flat_rc, flat_rec = gate_only_record(_gate_rows(flat_run=25))
+        check("backtest.py --gate-only fails an in-window flat run",
+              flat_rc == 1
+              and not flat_rec.get("passed", True)
+              and any("flat" in r
+                      for r in flat_rec.get("reasons", [])),
+              "rc=%r rec=%r" % (flat_rc, flat_rec))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def test_warmup_and_failure_classification():
@@ -1957,6 +2322,7 @@ def run_backtest_checks(verbose=True):
     (passed, failed, failures)."""
     test_ensemble_two_family()
     test_gate()
+    test_gate_history_floor()
     test_warmup_and_failure_classification()
     test_audit()
     test_cell_guards()
