@@ -1,7 +1,7 @@
 {
- "kind": "publish-failed",
+ "kind": "heartbeat-push-failed",
  "job_id": "guard-2026-11-21T0647Z",
- "at": "2026-11-21T06:58:16.246697+00:00",
+ "at": "2026-11-21T06:58:26.237929+00:00",
  "worker": "borsagator-worker-5",
- "detail": "ils.\n[ledger-publish] leaving the retry to publish() (reset to origin/main + recompute, never rebase)\n[ledger-publish] FAILED: git push of ledger/ to main failed: sitory pushing to hint: the same ref. If you want to integrate the remote changes, use hint: 'git pull' before pushing again. hint: See the 'Note about fast-forwards' in 'git push --help' for details.\n[ledger-publish] signal issue search failed (HTTP 422) \u2014 assuming none\n[ledger-publish] durable signal: ledger-failure issue #460 filed\n"
+ "detail": "heartbeat commit not confirmed on main after 3 attempts; slot not marked done; publisher also failed: ils.\n[ledger-publish] leaving the retry to publish() (reset to origin/main + recompute, never rebase)\n[ledger-publish] FAILED: git push of ledger/ to main failed: sitory pushing to hint: the same ref. If you want to integrate the remote changes, use hint: 'git pull' before pushing again. hint: See the 'Note about fast-forwards' in 'git push --help' for details.\n[ledger-publish] signal issue search failed (HTTP 422) \u2014 assuming none\n[ledger-publish] durable signal: ledger-failure issue #460 filed\n"
 }
