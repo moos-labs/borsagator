@@ -77,6 +77,7 @@ BT_INVOKED = {"n": 0, "cmds": []}
 CELL_MODE = {"mode": "ok"}  # ok | skipped | exit3 | timeout
 PUBLISH_FAILURES = []
 GIT_FAIL = {"on": False}
+GIT_TIMEOUT = {"on": False}
 PINS = {"kronos": "a" * 40, "pandas-ta": "b" * 40,
         "talib": "c" * 40}
 RUNNER_TOOLS = ("kronos", "pandas-ta", "talib")
@@ -111,11 +112,17 @@ def fake_sh(cmd, cwd=None, env=None, timeout=3600):
             return subprocess.CompletedProcess(
                 cmd, 0, head.read_text().strip() + "\n", "")
         if sub == "fetch":
+            if GIT_TIMEOUT["on"]:
+                raise subprocess.TimeoutExpired(cmd, 180)
             return subprocess.CompletedProcess(
                 cmd, 1 if GIT_FAIL["on"] else 0, "", "")
         if sub == "checkout":
             (repo / ".fake-head").write_text(parts[4])
             return subprocess.CompletedProcess(cmd, 0, "", "")
+        if sub == "status":
+            sf = repo / ".fake-status"
+            return subprocess.CompletedProcess(
+                cmd, 0, sf.read_text() if sf.exists() else "", "")
         return subprocess.CompletedProcess(cmd, 0, "", "")
     if "backtest.py" in cmd:
         BT_INVOKED["n"] += 1
@@ -389,6 +396,47 @@ def test_entry_point_ref_unavailable():
         head_file.write_text(PINS["kronos"], encoding="utf-8")
 
 
+def test_entry_point_ref_dirty():
+    status_file = worker.RUNNERS / "pandas-ta" / ".fake-status"
+    status_file.write_text(" M pandas_ta_forecast.py\n",
+                           encoding="utf-8")
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-refdirty"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-refdirty",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("ref prep: a tracked modification at the pin fails "
+              "closed as ref-mismatch (HEAD equality proves the "
+              "commit, not the working tree)",
+              res == {"backtest": "ref-mismatch"})
+        check("ref prep: the harness never runs a modified "
+              "checkout", BT_INVOKED["n"] == before)
+    finally:
+        status_file.unlink()
+
+
+def test_entry_point_setup_timeout():
+    head_file = worker.RUNNERS / "kronos" / ".fake-head"
+    head_file.write_text("d" * 40, encoding="utf-8")
+    GIT_TIMEOUT["on"] = True
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-setuptimeout"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-setuptimeout",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("ref prep: a preparation timeout archives as the "
+              "named setup-timeout failure (never an exception "
+              "out of _execute_body)",
+              res == {"backtest": "setup-timeout"})
+        check("ref prep: the harness never runs after a setup "
+              "timeout", BT_INVOKED["n"] == before)
+    finally:
+        GIT_TIMEOUT["on"] = False
+        head_file.write_text(PINS["kronos"], encoding="utf-8")
+
+
 def test_entry_point_venv_stale():
     marker = worker.VENVS / "talib" / ".gator-requirements-sha"
     good = marker.read_text()
@@ -409,15 +457,31 @@ def test_entry_point_venv_stale():
         marker.write_text(good, encoding="utf-8")
 
 
+def _pid_alive(pid):
+    """Alive = a live process, not a zombie: a killed descendant
+    whose parent also died can linger as an unreaped zombie entry
+    (kill(pid, 0) succeeds on it), which is dead for our
+    purposes."""
+    try:
+        stat = Path("/proc/%d/stat" % pid).read_text()
+        state = stat.rsplit(")", 1)[1].split()[0]
+        return state not in ("Z", "X")
+    except (FileNotFoundError, IndexError):
+        return False
+
+
 def test_sh_group_timeout_kills_tree():
     check("sh_group: worker provides the process-group runner",
           REAL_SH_GROUP is not None)
     if REAL_SH_GROUP is None:
         return
     marker = worker.OUT / "test-446-group-marker"
-    if marker.exists():
-        marker.unlink()
-    cmd = "(sleep 3; touch %s) & sleep 30" % shlex.quote(str(marker))
+    pidfile = worker.OUT / "test-446-group-pid"
+    for p in (marker, pidfile):
+        if p.exists():
+            p.unlink()
+    cmd = ("(sleep 3; touch %s) & echo $! > %s; sleep 30"
+           % (shlex.quote(str(marker)), shlex.quote(str(pidfile))))
     t0 = time.time()
     raised = False
     try:
@@ -427,9 +491,38 @@ def test_sh_group_timeout_kills_tree():
     elapsed = time.time() - t0
     check("sh_group: timeout raises TimeoutExpired promptly",
           raised and elapsed < 8)
+    child_pid = int(pidfile.read_text().strip())
     time.sleep(4)
     check("sh_group: the whole tree died — the background child "
           "never reached its 3s touch", not marker.exists())
+    check("sh_group: the recorded descendant pid is no longer "
+          "alive", not _pid_alive(child_pid))
+    # A descendant tree that ignores SIGTERM must still be reaped
+    # by the SIGKILL step before the timeout result returns. (The
+    # 3s-touch marker trick cannot be used here: the tree
+    # legitimately lives through the SIGTERM grace period, so
+    # the proof is the recorded descendant pid being dead.)
+    marker2 = worker.OUT / "test-446-group-marker2"
+    pidfile2 = worker.OUT / "test-446-group-pid2"
+    for p in (marker2, pidfile2):
+        if p.exists():
+            p.unlink()
+    cmd2 = ("trap '' TERM; (sleep 20; touch %s) & echo $! > %s; "
+            "sleep 30" % (shlex.quote(str(marker2)),
+                          shlex.quote(str(pidfile2))))
+    t0 = time.time()
+    raised = False
+    try:
+        REAL_SH_GROUP(cmd2, timeout=1)
+    except subprocess.TimeoutExpired:
+        raised = True
+    elapsed = time.time() - t0
+    check("sh_group: a SIGTERM-ignoring tree still times out via "
+          "SIGKILL (bounded, not the full sleep)",
+          raised and elapsed < 25)
+    child2_pid = int(pidfile2.read_text().strip())
+    check("sh_group: the SIGTERM-ignoring descendant is dead "
+          "once the timeout returns", not _pid_alive(child2_pid))
 
 
 def test_bad_job_publishes_failure_manifest():
@@ -510,6 +603,8 @@ def main():
     test_entry_point_timeout()
     test_entry_point_ref_prep()
     test_entry_point_ref_unavailable()
+    test_entry_point_ref_dirty()
+    test_entry_point_setup_timeout()
     test_entry_point_venv_stale()
     test_sh_group_timeout_kills_tree()
     test_bad_job_publishes_failure_manifest()

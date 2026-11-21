@@ -3140,7 +3140,11 @@ def run_backtest(job, workdir):
         the result JSON at the tail of the log.
       bad-job — the job string is not a `run backtest` job.
       ref-unpinned / ref-unavailable / ref-mismatch — a runner
-        checkout could not be confirmed at its registry pin.
+        checkout could not be confirmed at its registry pin
+        (ref-mismatch includes a tracked working-tree change at
+        the pin: HEAD equality proves the commit, not the tree).
+      setup-timeout / setup-failed — the preparation phase timed
+        out or errored; the log names the runner + operation.
       venv-missing — a runner venv interpreter is absent (the
         tool has not run on this box yet).
       venv-stale — a venv's requirements marker does not match
@@ -3160,75 +3164,114 @@ def run_backtest(job, workdir):
         log_path.write_text("bad job: %r\n" % job["job"])
         return {"backtest": "bad-job"}
     runners = ("kronos", "pandas-ta", "talib")
-    reg = {t["id"]: t for t in registry()["tools"]}
-    for tool in runners:
-        entry = reg.get(tool) or {}
-        pin = entry.get("ref")
-        if not pin or not re.fullmatch(r"[0-9a-f]{40}", pin):
-            log_path.write_text(
-                "runner %s: registry ref unpinned (%r)\n"
-                % (tool, pin))
-            return {"backtest": "ref-unpinned"}
-        repo = RUNNERS / tool
-        if not repo.exists():
-            url = "https://github.com/%s/%s" % (
-                ORG, entry.get("repo") or tool + "-runner")
-            if sh(f"git clone --depth 1 {url} {repo}",
-                  timeout=600).returncode != 0:
+    # The whole preparation phase converts timeouts and execution
+    # errors into named setup failures (round-4 review): an
+    # uncaught TimeoutExpired from a prep fetch would escape
+    # _execute_body unpublished, exactly like the harness timeout
+    # did before round 2. prep_step names the runner + operation
+    # in the log.
+    prep_step = "registry"
+    try:
+        reg = {t["id"]: t for t in registry()["tools"]}
+        for tool in runners:
+            prep_step = "%s checkout" % tool
+            entry = reg.get(tool) or {}
+            pin = entry.get("ref")
+            if not pin or not re.fullmatch(r"[0-9a-f]{40}", pin):
                 log_path.write_text(
-                    "runner %s: clone failed\n" % tool)
-                return {"backtest": "ref-unavailable"}
-        head = sh(f"git -C {repo} rev-parse HEAD", timeout=60)
-        head_sha = head.stdout.strip() if head.returncode == 0 \
-            else ""
-        if head_sha != pin:
-            # run_tool's fetch discipline: shallow first, full
-            # fetch as fallback, then checkout the pin.
-            if sh(f"git -C {repo} fetch --depth 1 origin {pin}",
-                  timeout=180).returncode != 0:
-                if sh(f"git -C {repo} fetch origin {pin}",
-                      timeout=180).returncode != 0:
-                    log_path.write_text(
-                        "runner %s: pin %s unreachable (checkout "
-                        "at %s)\n" % (tool, pin, head_sha or "?"))
-                    return {"backtest": "ref-unavailable"}
-            if sh(f"git -C {repo} checkout {pin}",
-                  timeout=120).returncode != 0:
-                log_path.write_text(
-                    "runner %s: checkout of pin %s failed\n"
+                    "runner %s: registry ref unpinned (%r)\n"
                     % (tool, pin))
-                return {"backtest": "ref-unavailable"}
+                return {"backtest": "ref-unpinned"}
+            repo = RUNNERS / tool
+            if not repo.exists():
+                url = "https://github.com/%s/%s" % (
+                    ORG, entry.get("repo") or tool + "-runner")
+                if sh(f"git clone --depth 1 {url} {repo}",
+                      timeout=600).returncode != 0:
+                    log_path.write_text(
+                        "runner %s: clone failed\n" % tool)
+                    return {"backtest": "ref-unavailable"}
             head = sh(f"git -C {repo} rev-parse HEAD", timeout=60)
             head_sha = head.stdout.strip() \
                 if head.returncode == 0 else ""
             if head_sha != pin:
+                # run_tool's fetch discipline: shallow first, full
+                # fetch as fallback, then checkout the pin.
+                if sh(f"git -C {repo} fetch --depth 1 origin {pin}",
+                      timeout=180).returncode != 0:
+                    if sh(f"git -C {repo} fetch origin {pin}",
+                          timeout=180).returncode != 0:
+                        log_path.write_text(
+                            "runner %s: pin %s unreachable "
+                            "(checkout at %s)\n"
+                            % (tool, pin, head_sha or "?"))
+                        return {"backtest": "ref-unavailable"}
+                if sh(f"git -C {repo} checkout {pin}",
+                      timeout=120).returncode != 0:
+                    log_path.write_text(
+                        "runner %s: checkout of pin %s failed\n"
+                        % (tool, pin))
+                    return {"backtest": "ref-unavailable"}
+                head = sh(f"git -C {repo} rev-parse HEAD",
+                          timeout=60)
+                head_sha = head.stdout.strip() \
+                    if head.returncode == 0 else ""
+                if head_sha != pin:
+                    log_path.write_text(
+                        "runner %s: checkout at %s after "
+                        "preparation, pin is %s\n"
+                        % (tool, head_sha or "?", pin))
+                    return {"backtest": "ref-mismatch"}
+            # HEAD == pin proves the commit, not the working tree:
+            # a tracked local modification would execute modified
+            # code while the manifest records the pinned HEAD.
+            status = sh(f"git -C {repo} status --porcelain "
+                        f"--untracked-files=no", timeout=60)
+            if status.returncode != 0 or status.stdout.strip():
                 log_path.write_text(
-                    "runner %s: checkout at %s after preparation, "
-                    "pin is %s\n" % (tool, head_sha or "?", pin))
+                    "runner %s: tracked working-tree changes at "
+                    "pin %s (or status failed): %s\n"
+                    % (tool, pin,
+                       (status.stdout.strip().splitlines()
+                        or ["(status command failed)"])[0]))
                 return {"backtest": "ref-mismatch"}
-    venv_pythons = {t: VENVS / t / "bin" / "python" for t in runners}
-    missing = [t for t in runners if not venv_pythons[t].exists()]
-    if missing:
-        log_path.write_text(
-            "runner venv interpreter(s) missing: %s — the tool "
-            "has not run on this box yet, so its venv (built by "
-            "run_tool from the pinned ref's requirements) does "
-            "not exist\n" % ", ".join(
-                "%s (%s)" % (t, venv_pythons[t]) for t in missing))
-        return {"backtest": "venv-missing"}
-    for tool in runners:
-        req = RUNNERS / tool / "requirements.txt"
-        req_sha = _sha256_file(req) if req.exists() else ""
-        marker = VENVS / tool / ".gator-requirements-sha"
-        installed = marker.read_text().strip() \
-            if marker.is_file() else ""
-        if installed != req_sha:
+        venv_pythons = {t: VENVS / t / "bin" / "python"
+                        for t in runners}
+        missing = [t for t in runners
+                   if not venv_pythons[t].exists()]
+        if missing:
             log_path.write_text(
-                "runner %s: venv requirements marker %s does not "
-                "match the prepared checkout's requirements %s — "
-                "a sweep run rebuilds the venv\n"
-                % (tool, installed or "(none)", req_sha or "(none)"))
-            return {"backtest": "venv-stale"}
+                "runner venv interpreter(s) missing: %s \u2014 the "
+                "tool has not run on this box yet, so its venv "
+                "(built by run_tool from the pinned ref's "
+                "requirements) does not exist\n" % ", ".join(
+                    "%s (%s)" % (t, venv_pythons[t])
+                    for t in missing))
+            return {"backtest": "venv-missing"}
+        for tool in runners:
+            prep_step = "%s venv" % tool
+            req = RUNNERS / tool / "requirements.txt"
+            req_sha = _sha256_file(req) if req.exists() else ""
+            marker = VENVS / tool / ".gator-requirements-sha"
+            installed = marker.read_text().strip() \
+                if marker.is_file() else ""
+            if installed != req_sha:
+                log_path.write_text(
+                    "runner %s: venv requirements marker %s does "
+                    "not match the prepared checkout's "
+                    "requirements %s \u2014 a sweep run rebuilds "
+                    "the venv\n"
+                    % (tool, installed or "(none)",
+                       req_sha or "(none)"))
+                return {"backtest": "venv-stale"}
+    except subprocess.TimeoutExpired:
+        log_path.write_text(
+            "setup timed out during %s\n" % prep_step)
+        return {"backtest": "setup-timeout"}
+    except OSError as exc:
+        log_path.write_text(
+            "setup failed during %s: %s\n" % (prep_step, exc))
+        return {"backtest": "setup-failed"}
     script = CODE / "scripts" / "backtest.py"
     cmd = [sys.executable, str(script),
            "--cutoff", plan["cutoff"],
