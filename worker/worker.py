@@ -46,6 +46,7 @@ import json
 import os
 import re
 import shlex
+import signal
 import subprocess
 import sys
 import time
@@ -162,6 +163,48 @@ def sh_bash(cmd, cwd=None, env=None, timeout=3600):
     import shlex
     return sh(f"bash -c {shlex.quote(cmd)}", cwd=cwd, env=env,
               timeout=timeout)
+
+
+def sh_group(cmd, cwd=None, env=None, timeout=3600):
+    """Like sh(), but the child runs in its own session (process
+    group) and a timeout kills the WHOLE group before raising
+    (issue #446): with shell=True, subprocess.run's timeout kills
+    only the shell, so a long-lived child's own subprocesses (a
+    harness's runners) would survive against a run directory the
+    caller is about to publish. Same env discipline as sh(): a
+    supplied env is the COMPLETE subprocess env (#146)."""
+    if env is None:
+        e = dict(os.environ)
+    else:
+        _assert_no_denied(env)
+        e = dict(env)
+    proc = subprocess.Popen(cmd, shell=True, cwd=cwd, env=e,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, text=True,
+                            start_new_session=True)
+    try:
+        out, err = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        # start_new_session made the child a group leader, so its
+        # pid IS the pgid; everything it spawned shares the group.
+        out, err = "", ""
+        for sig, grace in ((signal.SIGTERM, 10),
+                           (signal.SIGKILL, 30)):
+            try:
+                os.killpg(proc.pid, sig)
+            except ProcessLookupError:
+                break
+            try:
+                out, err = proc.communicate(timeout=grace)
+                break
+            except subprocess.TimeoutExpired:
+                continue
+        else:
+            out, err = proc.communicate()
+        raise subprocess.TimeoutExpired(cmd, timeout, output=out,
+                                        stderr=err)
+    return subprocess.CompletedProcess(cmd, proc.returncode, out,
+                                       err)
 
 
 def now():
@@ -3031,6 +3074,251 @@ def run_diag_egx_ab(job, workdir):
     return {"diag-egx-ab": "ok"}
 
 
+# --- Issue #446: walk-forward backtest cells (design #436 §6.4) --
+# PR #441 shipped the harness (scripts/backtest.py) but no worker
+# dispatch: parse_job's grammar has no backtest tool, so the
+# design's job string `run backtest <cutoff> <ticker>` produced an
+# empty plan and failed closed as unknown-job (#371) without any
+# cell ever executing. The entry point below dispatches in
+# _execute_body before parse_job, like top30-enumerate /
+# diag-egx-ab, and runs the harness from the release checkout with
+# its only output root pointed at the run dir, so the cell's
+# captures + scores ride the archive publish and the forward
+# ledger is never touched.
+BACKTEST_TIMEOUT = 7200  # capture + 3 runners (Kronos x2) + scoring
+
+
+def parse_backtest_job(job):
+    """Parse a `run backtest` job string into a plan dict, or None
+    when the string is not exactly that job. Grammar:
+    `run backtest <cutoff> <ticker>` — the cutoff a canonical
+    YYYY-MM-DD date, the ticker one token (uppercased here).
+    Unknown or extra tokens fail closed (None): a job the worker
+    does not understand must never run. NOTE: parse_job (the
+    registry grammar) still returns [] for this string — the
+    registry has no backtest tool. Dispatch happens in
+    _execute_body before parse_job, like top30-enumerate."""
+    # Issue #381: isinstance, not `or ""` — see parse_top30_job.
+    parts = (job if isinstance(job, str) else "").split()
+    if len(parts) != 4 or parts[:2] != ["run", "backtest"]:
+        return None
+    cutoff = parts[2]
+    try:
+        parsed = datetime.strptime(cutoff, "%Y-%m-%d")
+    except ValueError:
+        return None
+    if parsed.strftime("%Y-%m-%d") != cutoff:
+        return None  # canonical form only (2023-2-9 is not a cutoff)
+    ticker = parts[3].upper()
+    if not re.fullmatch(r"[A-Z0-9][A-Z0-9.\-]*", ticker):
+        return None
+    return {"kind": "backtest", "cutoff": cutoff, "ticker": ticker}
+
+
+def run_backtest(job, workdir):
+    """Issue #446: run one walk-forward backtest cell (design #436
+    §6.4) via scripts/backtest.py from the release checkout.
+
+    Pins first (the D2/#65 discipline run_tool enforces): every
+    runner checkout is prepared and verified against the release
+    registry pin — clone if missing, fetch + checkout on a
+    mismatch, HEAD re-verified — because a release can promote a
+    pin before the next live tool run, and the harness must never
+    execute a checkout the current registry has not pinned. Each
+    runner then runs under its own venv interpreter
+    (VENVS/<id>/bin/python), whose requirements marker
+    (.gator-requirements-sha, maintained by run_tool) must match
+    the prepared checkout's requirements.txt. The harness itself
+    is stdlib + repo scripts and runs under the worker's own
+    interpreter, launched via sh_group so a timeout kills the
+    whole process tree before the result archives.
+
+    Returns {"backtest": status}:
+      ok — the cell ran and its manifest is in the run dir.
+      skipped — the harness completed with a skipped cell (a gate
+        or data refusal); it writes no manifest, and the reason is
+        the result JSON at the tail of the log.
+      bad-job — the job string is not a `run backtest` job.
+      ref-unpinned / ref-unavailable / ref-mismatch — a runner
+        checkout could not be confirmed at its registry pin
+        (ref-mismatch includes a tracked working-tree change at
+        the pin: HEAD equality proves the commit, not the tree).
+      setup-timeout / setup-failed — the preparation phase timed
+        out or errored; the log names the runner + operation.
+      venv-missing — a runner venv interpreter is absent (the
+        tool has not run on this box yet).
+      venv-stale — a venv's requirements marker does not match
+        its checkout's requirements.txt (a sweep rebuilds it).
+      timeout — the harness exceeded BACKTEST_TIMEOUT; the
+        failure archives like every other named failure instead
+        of escaping _execute_body unpublished.
+      exit-N / manifest-unparseable / manifest-invalid — named
+        failures; the evidence written so far still archives, so
+        the failure is inspectable."""
+    # Issue #381: job_text() — see run_top30_enumerate.
+    plan = parse_backtest_job(job_text(job))
+    run_dir = Path(workdir) / "backtest"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    log_path = run_dir / "backtest-worker.log"
+    if plan is None:
+        log_path.write_text("bad job: %r\n" % job["job"])
+        return {"backtest": "bad-job"}
+    runners = ("kronos", "pandas-ta", "talib")
+    # The whole preparation phase converts timeouts and execution
+    # errors into named setup failures (round-4 review): an
+    # uncaught TimeoutExpired from a prep fetch would escape
+    # _execute_body unpublished, exactly like the harness timeout
+    # did before round 2. prep_step names the runner + operation
+    # in the log.
+    prep_step = "registry"
+    try:
+        reg = {t["id"]: t for t in registry()["tools"]}
+        for tool in runners:
+            prep_step = "%s checkout" % tool
+            entry = reg.get(tool) or {}
+            pin = entry.get("ref")
+            if not pin or not re.fullmatch(r"[0-9a-f]{40}", pin):
+                log_path.write_text(
+                    "runner %s: registry ref unpinned (%r)\n"
+                    % (tool, pin))
+                return {"backtest": "ref-unpinned"}
+            repo = RUNNERS / tool
+            if not repo.exists():
+                url = "https://github.com/%s/%s" % (
+                    ORG, entry.get("repo") or tool + "-runner")
+                if sh(f"git clone --depth 1 {url} {repo}",
+                      timeout=600).returncode != 0:
+                    log_path.write_text(
+                        "runner %s: clone failed\n" % tool)
+                    return {"backtest": "ref-unavailable"}
+            head = sh(f"git -C {repo} rev-parse HEAD", timeout=60)
+            head_sha = head.stdout.strip() \
+                if head.returncode == 0 else ""
+            if head_sha != pin:
+                # run_tool's fetch discipline: shallow first, full
+                # fetch as fallback, then checkout the pin.
+                if sh(f"git -C {repo} fetch --depth 1 origin {pin}",
+                      timeout=180).returncode != 0:
+                    if sh(f"git -C {repo} fetch origin {pin}",
+                          timeout=180).returncode != 0:
+                        log_path.write_text(
+                            "runner %s: pin %s unreachable "
+                            "(checkout at %s)\n"
+                            % (tool, pin, head_sha or "?"))
+                        return {"backtest": "ref-unavailable"}
+                if sh(f"git -C {repo} checkout {pin}",
+                      timeout=120).returncode != 0:
+                    log_path.write_text(
+                        "runner %s: checkout of pin %s failed\n"
+                        % (tool, pin))
+                    return {"backtest": "ref-unavailable"}
+                head = sh(f"git -C {repo} rev-parse HEAD",
+                          timeout=60)
+                head_sha = head.stdout.strip() \
+                    if head.returncode == 0 else ""
+                if head_sha != pin:
+                    log_path.write_text(
+                        "runner %s: checkout at %s after "
+                        "preparation, pin is %s\n"
+                        % (tool, head_sha or "?", pin))
+                    return {"backtest": "ref-mismatch"}
+            # HEAD == pin proves the commit, not the working tree:
+            # a tracked local modification would execute modified
+            # code while the manifest records the pinned HEAD.
+            status = sh(f"git -C {repo} status --porcelain "
+                        f"--untracked-files=no", timeout=60)
+            if status.returncode != 0 or status.stdout.strip():
+                log_path.write_text(
+                    "runner %s: tracked working-tree changes at "
+                    "pin %s (or status failed): %s\n"
+                    % (tool, pin,
+                       (status.stdout.strip().splitlines()
+                        or ["(status command failed)"])[0]))
+                return {"backtest": "ref-mismatch"}
+        venv_pythons = {t: VENVS / t / "bin" / "python"
+                        for t in runners}
+        missing = [t for t in runners
+                   if not venv_pythons[t].exists()]
+        if missing:
+            log_path.write_text(
+                "runner venv interpreter(s) missing: %s \u2014 the "
+                "tool has not run on this box yet, so its venv "
+                "(built by run_tool from the pinned ref's "
+                "requirements) does not exist\n" % ", ".join(
+                    "%s (%s)" % (t, venv_pythons[t])
+                    for t in missing))
+            return {"backtest": "venv-missing"}
+        for tool in runners:
+            prep_step = "%s venv" % tool
+            req = RUNNERS / tool / "requirements.txt"
+            req_sha = _sha256_file(req) if req.exists() else ""
+            marker = VENVS / tool / ".gator-requirements-sha"
+            installed = marker.read_text().strip() \
+                if marker.is_file() else ""
+            if installed != req_sha:
+                log_path.write_text(
+                    "runner %s: venv requirements marker %s does "
+                    "not match the prepared checkout's "
+                    "requirements %s \u2014 a sweep run rebuilds "
+                    "the venv\n"
+                    % (tool, installed or "(none)",
+                       req_sha or "(none)"))
+                return {"backtest": "venv-stale"}
+    except subprocess.TimeoutExpired:
+        log_path.write_text(
+            "setup timed out during %s\n" % prep_step)
+        return {"backtest": "setup-timeout"}
+    except OSError as exc:
+        log_path.write_text(
+            "setup failed during %s: %s\n" % (prep_step, exc))
+        return {"backtest": "setup-failed"}
+    script = CODE / "scripts" / "backtest.py"
+    cmd = [sys.executable, str(script),
+           "--cutoff", plan["cutoff"],
+           "--ticker", plan["ticker"],
+           "--out-root", str(run_dir),
+           "--kronos-runner", str(RUNNERS / "kronos"),
+           "--pandas-ta-runner", str(RUNNERS / "pandas-ta"),
+           "--talib-runner", str(RUNNERS / "talib"),
+           "--kronos-python", str(venv_pythons["kronos"]),
+           "--pandas-ta-python", str(venv_pythons["pandas-ta"]),
+           "--talib-python", str(venv_pythons["talib"]),
+           "--borsagator-root", str(CODE),
+           "--repeat-kronos"]
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    # shlex.quote each part: the run-dir path comes from the worker
+    # root, but the quoting rule is the same as run_diag_egx_ab.
+    try:
+        r = sh_group(" ".join(shlex.quote(c) for c in cmd),
+                     cwd=CODE, env=env, timeout=BACKTEST_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        log_path.write_text(
+            "harness timed out after %ds; process group "
+            "terminated\n" % BACKTEST_TIMEOUT)
+        return {"backtest": "timeout"}
+    log_path.write_text((r.stdout + r.stderr)[-4000:])
+    if r.returncode != 0:
+        return {"backtest": "exit-%d" % r.returncode}
+    manifest_path = run_dir / plan["cutoff"] / plan["ticker"] \
+        / "manifest.json"
+    if not manifest_path.exists():
+        # A skipped cell writes no manifest; its reason is the
+        # result JSON at the tail of the log above.
+        return {"backtest": "skipped"}
+    try:
+        manifest = json.loads(
+            manifest_path.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001 — named failure, not a crash
+        (run_dir / "backtest-worker.log").write_text(
+            "manifest unparseable: %s: %s\n" % (type(e).__name__, e))
+        return {"backtest": "manifest-unparseable"}
+    if not isinstance(manifest, dict) \
+            or manifest.get("status") != "ok":
+        return {"backtest": "manifest-invalid"}
+    return {"backtest": "ok"}
+
+
 HARVEST_TTL_HOURS = 12
 
 
@@ -4461,6 +4749,24 @@ def _execute_body(job):
     # harvest-egx); only a failed publish leaves the job unmarked.
     if text.split()[:1] == ["diag-egx-ab"]:
         manifest["tools"] = run_diag_egx_ab(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
+    # Issue #446: walk-forward backtest cells (design #436 §6.4) —
+    # same dispatch shape as diag-egx-ab above (before parse_job;
+    # the registry has no backtest tool). The two-token prefix
+    # keeps the registry grammar's `run <tool> <ticker>` jobs
+    # untouched. A bad job string still publishes its named
+    # failure and marks done (done means executed + archived, as
+    # for diag-egx-ab); only a failed publish leaves the job
+    # unmarked.
+    if text.split()[:2] == ["run", "backtest"]:
+        manifest["tools"] = run_backtest(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
