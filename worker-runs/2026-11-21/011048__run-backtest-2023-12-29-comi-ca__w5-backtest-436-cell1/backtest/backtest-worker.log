@@ -1,0 +1,25 @@
+{
+ "tool": "walkforward-backtest",
+ "ticker": "COMI.CA",
+ "cutoff": "2023-12-29",
+ "status": "skipped",
+ "capture_dir": null,
+ "gate": {
+  "ticker": "COMI.CA",
+  "passed": false,
+  "reasons": [
+   "stale-flat segment: 143 consecutive identical closes, over the 20-session limit"
+  ],
+  "rows": 6499,
+  "first_date": "2000-11-27",
+  "last_date": "2026-09-30",
+  "history_needed_from": "2023-09-28",
+  "max_gap_days": 10,
+  "max_gap_sessions_est": 6,
+  "longest_flat_run": 143,
+  "events_available": true,
+  "events_parse_error": null,
+  "series_start": null
+ },
+ "reason": "gate failed: stale-flat segment: 143 consecutive identical closes, over the 20-session limit"
+}
