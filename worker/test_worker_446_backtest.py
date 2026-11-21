@@ -11,15 +11,23 @@ The wiring under test (worker/worker.py):
     registry grammar) still returns [] for the string — the
     registry has no backtest tool — which is why _execute_body
     dispatches this kind before parse_job, like diag-egx-ab.
-  run_backtest — invokes scripts/backtest.py from the release
-    checkout under the worker's own interpreter, with the fleet
-    runner checkouts at RUNNERS/<registry id> and each runner's
-    own venv interpreter (VENVS/<id>/bin/python, the env run_tool
-    builds), --repeat-kronos, its output root pointed at the run
-    dir; validates the outcome fail-closed (venv-missing /
-    timeout / exit-N / skipped when the harness wrote no
-    manifest / manifest-unparseable / manifest-invalid). An ok
-    cell's manifest is the deliverable.
+  run_backtest — pins first (round 3): every runner checkout is
+    prepared and verified against the release registry pin the
+    way run_tool does it (clone if missing, fetch + checkout on
+    a mismatch, re-verify; ref-unpinned / ref-unavailable /
+    ref-mismatch fail closed), and each runner's venv must match
+    the checkout's requirements (the .gator-requirements-sha
+    marker run_tool maintains; venv-missing / venv-stale fail
+    closed). Only then does it invoke scripts/backtest.py from
+    the release checkout under the worker's own interpreter,
+    with the fleet runner checkouts at RUNNERS/<registry id> and
+    each runner's own venv interpreter (VENVS/<id>/bin/python),
+    --repeat-kronos, its output root pointed at the run dir; the
+    harness runs via sh_group so a timeout kills the whole
+    process tree before the named timeout result archives
+    (venv-missing / venv-stale / timeout / exit-N / skipped when
+    the harness wrote no manifest / manifest-unparseable /
+    manifest-invalid). An ok cell's manifest is the deliverable.
   _execute_body backtest branch — publishes via the stubbed
     publish and marks done only on a successful publish, like
     diag-egx-ab (a failed publish records the failure and never
@@ -41,11 +49,13 @@ the fixed tree. Stdlib only.
 
 Run: python3 worker/test_worker_446_backtest.py (exit 0 = pass).
 """
+import hashlib
 import json
 import os
 import shlex
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -66,6 +76,11 @@ MARK_DONE_SEEN = {}
 BT_INVOKED = {"n": 0, "cmds": []}
 CELL_MODE = {"mode": "ok"}  # ok | skipped | exit3 | timeout
 PUBLISH_FAILURES = []
+GIT_FAIL = {"on": False}
+PINS = {"kronos": "a" * 40, "pandas-ta": "b" * 40,
+        "talib": "c" * 40}
+RUNNER_TOOLS = ("kronos", "pandas-ta", "talib")
+REAL_SH_GROUP = worker.sh_group if hasattr(worker, "sh_group") else None
 
 
 def check(name, cond):
@@ -87,6 +102,21 @@ def fake_sh(cmd, cwd=None, env=None, timeout=3600):
     harness outcome CELL_MODE names (manifest write / nothing /
     exit 3) without any fetch or runner work; everything else
     (git, etc.) succeeds silently."""
+    if cmd.startswith("git -C "):
+        parts = shlex.split(cmd)
+        repo = Path(parts[2])
+        sub = parts[3]
+        if sub == "rev-parse":
+            head = repo / ".fake-head"
+            return subprocess.CompletedProcess(
+                cmd, 0, head.read_text().strip() + "\n", "")
+        if sub == "fetch":
+            return subprocess.CompletedProcess(
+                cmd, 1 if GIT_FAIL["on"] else 0, "", "")
+        if sub == "checkout":
+            (repo / ".fake-head").write_text(parts[4])
+            return subprocess.CompletedProcess(cmd, 0, "", "")
+        return subprocess.CompletedProcess(cmd, 0, "", "")
     if "backtest.py" in cmd:
         BT_INVOKED["n"] += 1
         BT_INVOKED["cmds"].append(cmd)
@@ -116,23 +146,45 @@ def fake_sh(cmd, cwd=None, env=None, timeout=3600):
 
 
 def setup_release():
-    """Fake release checkout: a minimal registry (registry()
-    reads it before the backtest branch runs)."""
+    """Fake release checkout: a registry carrying the three
+    runner tools at their pins (registry() reads it before the
+    backtest branch runs, and run_backtest verifies against it)."""
     code = worker.CODE
     (code / "scripts").mkdir(parents=True, exist_ok=True)
     (code / "registry").mkdir(parents=True, exist_ok=True)
     (code / "registry" / "tools.json").write_text(json.dumps({
-        "tools": []}), encoding="utf-8")
+        "tools": [{"id": t, "ref": PINS[t]} for t in RUNNER_TOOLS]}),
+        encoding="utf-8")
+
+
+def setup_runners():
+    """Fake fleet checkouts at RUNNERS/<registry id>, each at its
+    pin (.fake-head is what fake_sh's git rev-parse reports) with
+    a requirements.txt."""
+    for tool in RUNNER_TOOLS:
+        repo = worker.RUNNERS / tool
+        repo.mkdir(parents=True, exist_ok=True)
+        (repo / "requirements.txt").write_text(
+            "# %s deps\n" % tool, encoding="utf-8")
+        (repo / ".fake-head").write_text(PINS[tool],
+                                         encoding="utf-8")
 
 
 def setup_venvs():
     """Fake per-runner venvs: VENVS/<registry id>/bin/python, the
-    interpreters run_tool builds for live sweeps."""
-    for tool in ("kronos", "pandas-ta", "talib"):
-        bindir = worker.VENVS / tool / "bin"
+    interpreters run_tool builds for live sweeps, plus the
+    .gator-requirements-sha marker matching the checkout's
+    requirements.txt, exactly as run_tool maintains it."""
+    for tool in RUNNER_TOOLS:
+        venv = worker.VENVS / tool
+        bindir = venv / "bin"
         bindir.mkdir(parents=True, exist_ok=True)
         (bindir / "python").write_text("#!/bin/sh\n",
                                        encoding="utf-8")
+        req = worker.RUNNERS / tool / "requirements.txt"
+        (venv / ".gator-requirements-sha").write_text(
+            hashlib.sha256(req.read_bytes()).hexdigest(),
+            encoding="utf-8")
 
 
 def stub_publish(job, results_dir, manifest):
@@ -214,15 +266,28 @@ def test_entry_point_ok():
     check("entry point: output root is the run dir",
           "--out-root %s" % shlex.quote(str(wd / "backtest"))
           in cmd)
-    check("entry point: runner checkouts are RUNNERS/<registry id> "
-          "(run_tool's layout, not the repo names)",
-          all(str(worker.RUNNERS / r) in cmd for r in (
-              "kronos", "pandas-ta", "talib")))
-    check("entry point: each runner gets its own venv interpreter",
-          all(("--%s-python %s" % (
-              r, shlex.quote(str(worker.VENVS / r / "bin"
-                                 / "python")))) in cmd
-              for r in ("kronos", "pandas-ta", "talib")))
+    parts = shlex.split(cmd)
+
+    def arg_after(flag):
+        return parts[parts.index(flag) + 1]
+
+    check("entry point: runner checkouts are exactly "
+          "RUNNERS/<registry id> (run_tool's layout — a repo-name "
+          "path like kronos-runner must NOT pass)",
+          arg_after("--kronos-runner") == str(worker.RUNNERS
+                                              / "kronos")
+          and arg_after("--pandas-ta-runner") == str(
+              worker.RUNNERS / "pandas-ta")
+          and arg_after("--talib-runner") == str(worker.RUNNERS
+                                                 / "talib"))
+    check("entry point: each runner gets exactly its own venv "
+          "interpreter",
+          arg_after("--kronos-python") == str(
+              worker.VENVS / "kronos" / "bin" / "python")
+          and arg_after("--pandas-ta-python") == str(
+              worker.VENVS / "pandas-ta" / "bin" / "python")
+          and arg_after("--talib-python") == str(
+              worker.VENVS / "talib" / "bin" / "python"))
     check("entry point: ok cell with a manifest is ok",
           res == {"backtest": "ok"})
     check("entry point: cell manifest landed under the run dir",
@@ -284,6 +349,87 @@ def test_entry_point_timeout():
               "_execute_body)", res == {"backtest": "timeout"})
     finally:
         CELL_MODE["mode"] = "ok"
+
+
+def test_entry_point_ref_prep():
+    head_file = worker.RUNNERS / "kronos" / ".fake-head"
+    head_file.write_text("d" * 40, encoding="utf-8")
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-refprep"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-refprep",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("ref prep: a checkout behind its pin is fetched + "
+              "checked out to the pin, then the cell runs",
+              res == {"backtest": "ok"}
+              and head_file.read_text() == PINS["kronos"]
+              and BT_INVOKED["n"] == before + 1)
+    finally:
+        head_file.write_text(PINS["kronos"], encoding="utf-8")
+
+
+def test_entry_point_ref_unavailable():
+    head_file = worker.RUNNERS / "kronos" / ".fake-head"
+    head_file.write_text("d" * 40, encoding="utf-8")
+    GIT_FAIL["on"] = True
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-refunavail"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-refunavail",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("ref prep: an unreachable pin fails closed as "
+              "ref-unavailable", res == {"backtest":
+                                         "ref-unavailable"})
+        check("ref prep: the harness never runs on an unverified "
+              "checkout", BT_INVOKED["n"] == before)
+    finally:
+        GIT_FAIL["on"] = False
+        head_file.write_text(PINS["kronos"], encoding="utf-8")
+
+
+def test_entry_point_venv_stale():
+    marker = worker.VENVS / "talib" / ".gator-requirements-sha"
+    good = marker.read_text()
+    marker.write_text("0" * 64, encoding="utf-8")
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-venvstale"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-venvstale",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("venv: a requirements marker mismatch fails closed "
+              "as venv-stale (the venv was built from another "
+              "ref's requirements)",
+              res == {"backtest": "venv-stale"})
+        check("venv: the harness never runs against stale deps",
+              BT_INVOKED["n"] == before)
+    finally:
+        marker.write_text(good, encoding="utf-8")
+
+
+def test_sh_group_timeout_kills_tree():
+    check("sh_group: worker provides the process-group runner",
+          REAL_SH_GROUP is not None)
+    if REAL_SH_GROUP is None:
+        return
+    marker = worker.OUT / "test-446-group-marker"
+    if marker.exists():
+        marker.unlink()
+    cmd = "(sleep 3; touch %s) & sleep 30" % shlex.quote(str(marker))
+    t0 = time.time()
+    raised = False
+    try:
+        REAL_SH_GROUP(cmd, timeout=1)
+    except subprocess.TimeoutExpired:
+        raised = True
+    elapsed = time.time() - t0
+    check("sh_group: timeout raises TimeoutExpired promptly",
+          raised and elapsed < 8)
+    time.sleep(4)
+    check("sh_group: the whole tree died — the background child "
+          "never reached its 3s touch", not marker.exists())
 
 
 def test_bad_job_publishes_failure_manifest():
@@ -350,9 +496,11 @@ def test_failed_publish_never_marks_done():
 
 def main():
     worker.sh = fake_sh
+    worker.sh_group = fake_sh
     worker.publish = stub_publish
     worker._mark_done = stub_mark_done
     setup_release()
+    setup_runners()
     setup_venvs()
     test_parse()
     test_entry_point_ok()
@@ -360,6 +508,10 @@ def main():
     test_entry_point_exit()
     test_entry_point_venv_missing()
     test_entry_point_timeout()
+    test_entry_point_ref_prep()
+    test_entry_point_ref_unavailable()
+    test_entry_point_venv_stale()
+    test_sh_group_timeout_kills_tree()
     test_bad_job_publishes_failure_manifest()
     test_execute_ok_publishes()
     test_execute_leading_space_dispatches()
