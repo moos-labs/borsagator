@@ -1,16 +1,16 @@
 {
  "state": "dead",
- "at": "2026-11-21T23:06:40.057596+00:00",
+ "at": "2026-11-21T23:32:06.041654+00:00",
  "worker": "borsagator-worker-5",
- "job_id": "watch-2026-11-21T2300Z",
+ "job_id": "watch-2026-11-21T2330Z",
  "signal": {
   "action": "create",
   "title": "\u26a0\ufe0f Ledger guard dead",
-  "body": "\u26a0\ufe0f No completed ledger-guard run has been observed for over 90 minutes. The committed ledger on `main` is only refreshed by the guard between sweeps, so a dead guard leaves it stale with no red run.\n\nLast heartbeat: 2026-11-20 14:55 UTC (status ok)\n**Checked:** 2026-11-21 23:06 UTC\n**Detail:** last guard heartbeat 2026-11-20 14:55 UTC (1931 min ago, status ok) \u2014 older than the 90-minute threshold; a guard run is pending (forced), but the heartbeat is older than the 420-minute maximum latency \u2014 a queued guard that never lands is a real outage\n\nThis issue is the durable signal for #128 \u2014 the guard's hourly schedule is the retry path for failed ledger publishes, so a dead guard is load-bearing (see #115). It is NOT a digest issue: the digest watch only closes digest issues, and board-sync only skips digest issues \u2014 this one stays open until a fresh heartbeat appears. The watchdog closes it automatically with a recovery comment when the guard is alive again.\n\nWSJF: 6.0",
+  "body": "\u26a0\ufe0f No completed ledger-guard run has been observed for over 90 minutes. The committed ledger on `main` is only refreshed by the guard between sweeps, so a dead guard leaves it stale with no red run.\n\nLast heartbeat: 2026-11-20 14:55 UTC (status ok)\n**Checked:** 2026-11-21 23:32 UTC\n**Detail:** last guard heartbeat 2026-11-20 14:55 UTC (1956 min ago, status ok) \u2014 older than the 90-minute threshold; a guard run is pending (forced), but the heartbeat is older than the 420-minute maximum latency \u2014 a queued guard that never lands is a real outage\n\nThis issue is the durable signal for #128 \u2014 the guard's hourly schedule is the retry path for failed ledger publishes, so a dead guard is load-bearing (see #115). It is NOT a digest issue: the digest watch only closes digest issues, and board-sync only skips digest issues \u2014 this one stays open until a fresh heartbeat appears. The watchdog closes it automatically with a recovery comment when the guard is alive again.\n\nWSJF: 6.0",
   "labels": [
    "ledger-failure"
   ],
   "issue_number": null,
-  "reason": "last guard heartbeat 2026-11-20 14:55 UTC (1931 min ago, status ok) \u2014 older than the 90-minute threshold; a guard run is pending (forced), but the heartbeat is older than the 420-minute maximum latency \u2014 a queued guard that never lands is a real outage"
+  "reason": "last guard heartbeat 2026-11-20 14:55 UTC (1956 min ago, status ok) \u2014 older than the 90-minute threshold; a guard run is pending (forced), but the heartbeat is older than the 420-minute maximum latency \u2014 a queued guard that never lands is a real outage"
  }
 }
