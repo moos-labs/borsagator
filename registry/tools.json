@@ -50,7 +50,7 @@
    "command": "mkdir -p results\npython scripts/ta_snapshot.py --ticker {ticker} 2>&1 | tee results/run.log",
    "id": "pandas-ta",
    "repo": "pandas-ta-runner",
-   "ref": "e126e8f8e54d94e19f319039a17b502eedc73c76",
+   "ref": "cddf15f3b7fd601eac85cf37a6385996e2b4ed10",
    "status": "active",
    "markets": [
     "EGX",
@@ -187,7 +187,7 @@
    "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
    "id": "kronos",
    "repo": "kronos-runner",
-   "ref": "584ac365f281ceb9c03cd502bfee651eb91f0a9e",
+   "ref": "54de65a295862e13c80c73534834369f9086f61e",
    "status": "active",
    "markets": [
     "EGX",

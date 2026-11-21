@@ -778,9 +778,14 @@ def run_cell(cutoff, ticker, cfg):
             fetcher = cfg.get("fetcher") or backtest_gate.fetch_chart
             rows, events, ev_ok, ev_error, _dropped = \
                 backtest_gate.unpack_fetch(fetcher(ticker))
+            # The gate applies the shared 2019-01-01 history floor
+            # (DROP_BEFORE, INS-REVIEW-025 / #446) alongside any
+            # corporate SERIES_START; the effective lower bound is
+            # the later of the two.
             gate = backtest_gate.gate_ticker(
                 ticker, rows, ev_ok, cfg["latest_cutoff"],
-                SERIES_START.get(ticker), ev_error)
+                SERIES_START.get(ticker), ev_error,
+                history_floor=DROP_BEFORE)
             result["gate"] = gate
             log.write("gate: %s\n" % json.dumps(gate))
             if not gate["passed"]:
@@ -1074,7 +1079,8 @@ def main(argv=None):
                 backtest_gate.fetch_chart(args.ticker))
         rec = backtest_gate.gate_ticker(
             args.ticker, rows, ev_ok, args.latest_cutoff,
-            SERIES_START.get(args.ticker.upper()), ev_error)
+            SERIES_START.get(args.ticker.upper()), ev_error,
+            history_floor=DROP_BEFORE)
         print(json.dumps(rec, indent=1))
         return 0 if rec["passed"] else 1
     # Runner checkouts and the repo root are resolved to absolute
