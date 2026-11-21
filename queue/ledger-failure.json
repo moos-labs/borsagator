@@ -1,7 +1,7 @@
 {
- "kind": "heartbeat-push-failed",
- "job_id": "guard-2026-11-21T0947Z",
- "at": "2026-11-21T09:57:23.080456+00:00",
+ "kind": "publish-failed",
+ "job_id": "guard-2026-11-21T1047Z",
+ "at": "2026-11-21T10:58:37.403560+00:00",
  "worker": "borsagator-worker-5",
- "detail": "heartbeat commit not confirmed on main after 3 attempts; slot not marked done; publisher also failed: git'\n[ledger-publish] leaving the retry to publish() (reset to origin/main + recompute, never rebase)\n[ledger-publish] FAILED: git push of ledger/ to main failed: ected. To https://github.com/moos-labs/borsagator.git ! [remote rejected] HEAD -> main (protected branch hook declined) error: failed to push some refs to 'https://github.com/moos-labs/borsagator.git'\n[ledger-publish] signal issue search failed (HTTP 422) \u2014 assuming none\n[ledger-publish] durable signal: ledger-failure issue #463 filed\n"
+ "detail": "git'\n[ledger-publish] leaving the retry to publish() (reset to origin/main + recompute, never rebase)\n[ledger-publish] FAILED: git push of ledger/ to main failed: ected. To https://github.com/moos-labs/borsagator.git ! [remote rejected] HEAD -> main (protected branch hook declined) error: failed to push some refs to 'https://github.com/moos-labs/borsagator.git'\n[ledger-publish] signal issue search failed (HTTP 422) \u2014 assuming none\n[ledger-publish] durable signal: ledger-failure issue #464 filed\n"
 }
