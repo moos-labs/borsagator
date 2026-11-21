@@ -3075,15 +3075,24 @@ def parse_backtest_job(job):
 def run_backtest(job, workdir):
     """Issue #446: run one walk-forward backtest cell (design #436
     §6.4) via scripts/backtest.py from the release checkout. The
-    runner checkouts are the worker's own fleet clones (RUNNERS) —
-    the same ones live sweeps run — and the harness runs under
-    `python`, the interpreter the registry commands prove live.
-    Returns {"backtest": status}:
+    runner checkouts are the worker's fleet clones at
+    RUNNERS/<registry id> — run_tool's layout (the repo names,
+    kronos-runner etc., appear only in clone URLs) — and each
+    runner runs under its own venv interpreter
+    (VENVS/<id>/bin/python, the env run_tool builds from the
+    pinned ref's requirements), passed to the harness per runner;
+    the harness itself is stdlib + repo scripts and runs under
+    the worker's own interpreter. Returns {"backtest": status}:
       ok — the cell ran and its manifest is in the run dir.
       skipped — the harness completed with a skipped cell (a gate
         or data refusal); it writes no manifest, and the reason is
         the result JSON at the tail of the log.
       bad-job — the job string is not a `run backtest` job.
+      venv-missing — a runner venv interpreter is absent (the
+        tool has not run on this box yet); the harness never runs.
+      timeout — the harness exceeded BACKTEST_TIMEOUT; the
+        failure archives like every other named failure instead
+        of escaping _execute_body unpublished.
       exit-N / manifest-unparseable / manifest-invalid — named
         failures; the evidence written so far still archives, so
         the failure is inspectable."""
@@ -3095,22 +3104,41 @@ def run_backtest(job, workdir):
         (run_dir / "backtest-worker.log").write_text(
             "bad job: %r\n" % job["job"])
         return {"backtest": "bad-job"}
+    runners = ("kronos", "pandas-ta", "talib")
+    venv_pythons = {t: VENVS / t / "bin" / "python" for t in runners}
+    missing = [t for t in runners if not venv_pythons[t].exists()]
+    if missing:
+        (run_dir / "backtest-worker.log").write_text(
+            "runner venv interpreter(s) missing: %s — the tool "
+            "has not run on this box yet, so its venv (built by "
+            "run_tool from the pinned ref's requirements) does "
+            "not exist\n" % ", ".join(
+                "%s (%s)" % (t, venv_pythons[t]) for t in missing))
+        return {"backtest": "venv-missing"}
     script = CODE / "scripts" / "backtest.py"
-    cmd = ["python", str(script),
+    cmd = [sys.executable, str(script),
            "--cutoff", plan["cutoff"],
            "--ticker", plan["ticker"],
            "--out-root", str(run_dir),
-           "--kronos-runner", str(RUNNERS / "kronos-runner"),
-           "--pandas-ta-runner", str(RUNNERS / "pandas-ta-runner"),
-           "--talib-runner", str(RUNNERS / "talib-runner"),
+           "--kronos-runner", str(RUNNERS / "kronos"),
+           "--pandas-ta-runner", str(RUNNERS / "pandas-ta"),
+           "--talib-runner", str(RUNNERS / "talib"),
+           "--kronos-python", str(venv_pythons["kronos"]),
+           "--pandas-ta-python", str(venv_pythons["pandas-ta"]),
+           "--talib-python", str(venv_pythons["talib"]),
            "--borsagator-root", str(CODE),
            "--repeat-kronos"]
     env = {k: v for k, v in os.environ.items()
            if k not in ENV_DENY_FOR_TOOLS}
     # shlex.quote each part: the run-dir path comes from the worker
     # root, but the quoting rule is the same as run_diag_egx_ab.
-    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=CODE,
-           env=env, timeout=BACKTEST_TIMEOUT)
+    try:
+        r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=CODE,
+               env=env, timeout=BACKTEST_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        (run_dir / "backtest-worker.log").write_text(
+            "harness timed out after %ds\n" % BACKTEST_TIMEOUT)
+        return {"backtest": "timeout"}
     (run_dir / "backtest-worker.log").write_text(
         (r.stdout + r.stderr)[-4000:])
     if r.returncode != 0:

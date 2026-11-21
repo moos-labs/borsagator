@@ -1329,6 +1329,56 @@ def test_runner_skip_classification_in_cell():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_runner_python_override():
+    print("== runner interpreter override (worker venvs) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    tmp = tempfile.mkdtemp(prefix="bt436-rpy-")
+    try:
+        runner_dir = os.path.join(tmp, "kronos")
+        os.makedirs(os.path.join(runner_dir, "results"))
+        for rel in ("forecast.csv", "report.md"):
+            with open(os.path.join(runner_dir, "results", rel),
+                      "w", encoding="utf-8") as f:
+                f.write("stub\n")
+        stage = os.path.join(tmp, "stage")
+        os.makedirs(stage)
+        captured = {}
+
+        class FakeProc:
+            returncode = 0
+            stdout = ""
+            stderr = ""
+
+        def fake_run_subprocess(cmd, cwd, env=None, timeout=1800):
+            captured["cmd"] = list(cmd)
+            return FakeProc()
+
+        real = bt.run_subprocess
+        bt.run_subprocess = fake_run_subprocess
+        try:
+            import io
+            status, _ = bt.run_runner(
+                "kronos", runner_dir, FIXTURE_TICKER, FIXTURE_CUTOFF,
+                stage, io.StringIO(), python="/fake/venv/bin/python")
+            check("runner override: status ok", status == "ok",
+                  status)
+            check("runner override: the override interpreter runs "
+                  "the runner",
+                  captured["cmd"][0] == "/fake/venv/bin/python",
+                  captured["cmd"][0])
+            status, _ = bt.run_runner(
+                "kronos", runner_dir, FIXTURE_TICKER, FIXTURE_CUTOFF,
+                stage, io.StringIO())
+            check("runner default: sys.executable runs the runner",
+                  status == "ok"
+                  and captured["cmd"][0] == sys.executable,
+                  captured["cmd"][0])
+        finally:
+            bt.run_subprocess = real
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 # --------------------------------------------------------------------------
 # Scorer
 # --------------------------------------------------------------------------
@@ -1914,6 +1964,7 @@ def run_backtest_checks(verbose=True):
     test_realised_dropped_close()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
+    test_runner_python_override()
     test_scorer()
     return CHECKS["pass"], CHECKS["fail"], list(FAILURES)
 

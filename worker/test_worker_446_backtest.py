@@ -12,14 +12,18 @@ The wiring under test (worker/worker.py):
     registry has no backtest tool — which is why _execute_body
     dispatches this kind before parse_job, like diag-egx-ab.
   run_backtest — invokes scripts/backtest.py from the release
-    checkout with the worker's fleet runner checkouts and
-    --repeat-kronos, its output root pointed at the run dir;
-    validates the outcome fail-closed (exit-N / skipped when the
-    harness wrote no manifest / manifest-unparseable /
-    manifest-invalid). An ok cell's manifest is the deliverable.
+    checkout under the worker's own interpreter, with the fleet
+    runner checkouts at RUNNERS/<registry id> and each runner's
+    own venv interpreter (VENVS/<id>/bin/python, the env run_tool
+    builds), --repeat-kronos, its output root pointed at the run
+    dir; validates the outcome fail-closed (venv-missing /
+    timeout / exit-N / skipped when the harness wrote no
+    manifest / manifest-unparseable / manifest-invalid). An ok
+    cell's manifest is the deliverable.
   _execute_body backtest branch — publishes via the stubbed
     publish and marks done only on a successful publish, like
-    diag-egx-ab.
+    diag-egx-ab (a failed publish records the failure and never
+    marks done).
 
 Deterministic replay (no live fetches, no runner execution): the
 fake `sh` performs no subprocess work for a backtest.py
@@ -40,6 +44,7 @@ Run: python3 worker/test_worker_446_backtest.py (exit 0 = pass).
 import json
 import os
 import shlex
+import subprocess
 import sys
 from pathlib import Path
 
@@ -59,7 +64,8 @@ PASSED = 0
 PUBLISH_SEEN = {}
 MARK_DONE_SEEN = {}
 BT_INVOKED = {"n": 0, "cmds": []}
-CELL_MODE = {"mode": "ok"}  # ok | skipped | exit3
+CELL_MODE = {"mode": "ok"}  # ok | skipped | exit3 | timeout
+PUBLISH_FAILURES = []
 
 
 def check(name, cond):
@@ -84,6 +90,8 @@ def fake_sh(cmd, cwd=None, env=None, timeout=3600):
     if "backtest.py" in cmd:
         BT_INVOKED["n"] += 1
         BT_INVOKED["cmds"].append(cmd)
+        if CELL_MODE["mode"] == "timeout":
+            raise subprocess.TimeoutExpired(cmd, 7200)
         parts = shlex.split(cmd)
         out_root = Path(parts[parts.index("--out-root") + 1])
         cutoff = parts[parts.index("--cutoff") + 1]
@@ -115,6 +123,16 @@ def setup_release():
     (code / "registry").mkdir(parents=True, exist_ok=True)
     (code / "registry" / "tools.json").write_text(json.dumps({
         "tools": []}), encoding="utf-8")
+
+
+def setup_venvs():
+    """Fake per-runner venvs: VENVS/<registry id>/bin/python, the
+    interpreters run_tool builds for live sweeps."""
+    for tool in ("kronos", "pandas-ta", "talib"):
+        bindir = worker.VENVS / tool / "bin"
+        bindir.mkdir(parents=True, exist_ok=True)
+        (bindir / "python").write_text("#!/bin/sh\n",
+                                       encoding="utf-8")
 
 
 def stub_publish(job, results_dir, manifest):
@@ -189,14 +207,22 @@ def test_entry_point_ok():
     cmd = BT_INVOKED["cmds"][-1]
     check("entry point: invoked from the release checkout",
           str(worker.CODE / "scripts" / "backtest.py") in cmd)
+    check("entry point: harness runs under the worker's own "
+          "interpreter", cmd.startswith(shlex.quote(sys.executable)))
     check("entry point: invoked with --repeat-kronos (design §6.4)",
           "--repeat-kronos" in cmd)
     check("entry point: output root is the run dir",
           "--out-root %s" % shlex.quote(str(wd / "backtest"))
           in cmd)
-    check("entry point: fleet runner checkouts passed",
+    check("entry point: runner checkouts are RUNNERS/<registry id> "
+          "(run_tool's layout, not the repo names)",
           all(str(worker.RUNNERS / r) in cmd for r in (
-              "kronos-runner", "pandas-ta-runner", "talib-runner")))
+              "kronos", "pandas-ta", "talib")))
+    check("entry point: each runner gets its own venv interpreter",
+          all(("--%s-python %s" % (
+              r, shlex.quote(str(worker.VENVS / r / "bin"
+                                 / "python")))) in cmd
+              for r in ("kronos", "pandas-ta", "talib")))
     check("entry point: ok cell with a manifest is ok",
           res == {"backtest": "ok"})
     check("entry point: cell manifest landed under the run dir",
@@ -227,6 +253,37 @@ def test_entry_point_exit():
     check("entry point: non-zero harness exit is a named exit-N "
           "failure", res == {"backtest": "exit-3"})
     CELL_MODE["mode"] = "ok"
+
+
+def test_entry_point_venv_missing():
+    py = worker.VENVS / "talib" / "bin" / "python"
+    py.unlink()
+    try:
+        before = BT_INVOKED["n"]
+        wd = worker.OUT / "test-446-bt-novenv"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-novenv",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("entry point: a missing runner venv fails closed as "
+              "venv-missing", res == {"backtest": "venv-missing"})
+        check("entry point: without all venvs the harness never "
+              "runs", BT_INVOKED["n"] == before)
+    finally:
+        py.write_text("#!/bin/sh\n", encoding="utf-8")
+
+
+def test_entry_point_timeout():
+    CELL_MODE["mode"] = "timeout"
+    try:
+        wd = worker.OUT / "test-446-bt-timeout"
+        res = worker.run_backtest(
+            {"id": "test-446-bt-timeout",
+             "job": "run backtest 2023-12-29 COMI.CA"}, wd)
+        check("entry point: a harness timeout archives as a named "
+              "timeout failure (never an exception out of "
+              "_execute_body)", res == {"backtest": "timeout"})
+    finally:
+        CELL_MODE["mode"] = "ok"
 
 
 def test_bad_job_publishes_failure_manifest():
@@ -269,18 +326,44 @@ def test_execute_leading_space_dispatches():
               "backtest") == "ok")
 
 
+def test_failed_publish_never_marks_done():
+    real_publish = worker.publish
+    real_record = worker._record_publish_failure
+    worker.publish = lambda job, wd, manifest: None
+    worker._record_publish_failure = (
+        lambda job: PUBLISH_FAILURES.append(job["id"]))
+    PUBLISH_FAILURES.clear()
+    MARK_DONE_SEEN.clear()
+    try:
+        worker._execute_body({
+            "id": "test-446-bt-pubfail",
+            "job": "run backtest 2023-12-29 COMI.CA",
+            "added": worker.now()})
+    finally:
+        worker.publish = real_publish
+        worker._record_publish_failure = real_record
+    check("failed publish: the failure is recorded",
+          PUBLISH_FAILURES == ["test-446-bt-pubfail"])
+    check("failed publish: the job is NOT marked done",
+          MARK_DONE_SEEN == {})
+
+
 def main():
     worker.sh = fake_sh
     worker.publish = stub_publish
     worker._mark_done = stub_mark_done
     setup_release()
+    setup_venvs()
     test_parse()
     test_entry_point_ok()
     test_entry_point_skipped()
     test_entry_point_exit()
+    test_entry_point_venv_missing()
+    test_entry_point_timeout()
     test_bad_job_publishes_failure_manifest()
     test_execute_ok_publishes()
     test_execute_leading_space_dispatches()
+    test_failed_publish_never_marks_done()
     print("\n%d passed" % PASSED)
     return 0
 

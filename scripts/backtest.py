@@ -203,14 +203,18 @@ RUNNERS = {
 
 
 def run_runner(kind, runner_dir, ticker, cutoff, stage_dir, log,
-               timeout=1800, extra_args=()):
+               timeout=1800, extra_args=(), python=None):
     """Run one runner with --as-of and stage its outputs.
     Returns (status, detail) where status is ok | skipped | error.
-    `log` is an open file the runner's output is appended to."""
+    `log` is an open file the runner's output is appended to.
+    `python` is the interpreter for THIS runner (issue #446: on
+    the worker each runner's dependencies live in its own venv,
+    so the caller passes that venv's interpreter per runner);
+    None means sys.executable, the historical behaviour."""
     spec = RUNNERS[kind]
     script = os.path.join(runner_dir, spec["script"])
-    cmd = [sys.executable, script] + spec["args"](ticker, cutoff,
-                                                  list(extra_args))
+    cmd = [python or sys.executable, script] + spec["args"](
+        ticker, cutoff, list(extra_args))
     log.write("\n$ %s (cwd=%s)\n" % (" ".join(cmd), runner_dir))
     log.flush()
     try:
@@ -795,7 +799,8 @@ def run_cell(cutoff, ticker, cfg):
             for kind in ("kronos", "pandas-ta", "talib"):
                 status, detail = run_runner(
                     kind, cfg["runners"][kind], ticker, cutoff, stage,
-                    log, timeout=cfg["timeout"])
+                    log, timeout=cfg["timeout"],
+                    python=(cfg.get("runner_pythons") or {}).get(kind))
                 if status != "ok":
                     if status == "skipped":
                         result.update(status="skipped", reason=detail)
@@ -853,7 +858,9 @@ def run_cell(cutoff, ticker, cfg):
                                            "digest/ensemble.json"))
                     status, detail = run_runner(
                         "kronos", cfg["runners"]["kronos"], ticker,
-                        cutoff, stage2, log, timeout=cfg["timeout"])
+                        cutoff, stage2, log, timeout=cfg["timeout"],
+                        python=(cfg.get("runner_pythons") or {}).get(
+                            "kronos"))
                     if status != "ok":
                         result.update(status="error",
                                       reason="repeat kronos: " + detail)
@@ -1033,6 +1040,12 @@ def main(argv=None):
     ap.add_argument("--kronos-runner", default=None)
     ap.add_argument("--pandas-ta-runner", default=None)
     ap.add_argument("--talib-runner", default=None)
+    # Issue #446: per-runner interpreters — on the worker each
+    # runner's dependencies live in its own venv, so the caller
+    # passes that venv's python per runner. Unset = sys.executable.
+    ap.add_argument("--kronos-python", default=None)
+    ap.add_argument("--pandas-ta-python", default=None)
+    ap.add_argument("--talib-python", default=None)
     ap.add_argument("--borsagator-root", default=REPO_ROOT)
     ap.add_argument("--latest-cutoff", default=CUTOFFS_V1[-1],
                     help="Latest cutoff the gate must cover.")
@@ -1087,6 +1100,11 @@ def main(argv=None):
            "repeat_kronos": args.repeat_kronos
            and not args.no_repeat_kronos,
            "realised_file": args.realised_file,
+           "runner_pythons": {
+               k: os.path.abspath(v)
+               for k, v in {"kronos": args.kronos_python,
+                            "pandas-ta": args.pandas_ta_python,
+                            "talib": args.talib_python}.items() if v},
            "fetcher": None}
     result = run_cell(args.cutoff, args.ticker, cfg)
     print(json.dumps({k: v for k, v in result.items()
