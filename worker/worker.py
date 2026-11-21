@@ -171,7 +171,9 @@ def sh_group(cmd, cwd=None, env=None, timeout=3600):
     (issue #446): with shell=True, subprocess.run's timeout kills
     only the shell, so a long-lived child's own subprocesses (a
     harness's runners) would survive against a run directory the
-    caller is about to publish. Same env discipline as sh(): a
+    caller is about to publish. The kill is verified, not assumed
+    (issue #450): after SIGTERM the group must test empty, and
+    anything left is SIGKILLed. Same env discipline as sh(): a
     supplied env is the COMPLETE subprocess env (#146)."""
     if env is None:
         e = dict(os.environ)
@@ -188,19 +190,41 @@ def sh_group(cmd, cwd=None, env=None, timeout=3600):
         # start_new_session made the child a group leader, so its
         # pid IS the pgid; everything it spawned shares the group.
         out, err = "", ""
-        for sig, grace in ((signal.SIGTERM, 10),
-                           (signal.SIGKILL, 30)):
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            out, err = proc.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            pass
+        # Issue #450: the leader being reaped does NOT prove the
+        # group is empty — a descendant that ignores SIGTERM and
+        # detached its descriptors lets communicate() return while
+        # it lives on. Verify the group is gone; SIGKILL whatever
+        # remains and poll until it is actually empty (bounded —
+        # a zombie member can hold the entry briefly; it is dead,
+        # and the poll gives up rather than hanging).
+        try:
+            os.killpg(proc.pid, 0)
+            group_alive = True
+        except ProcessLookupError:
+            group_alive = False
+        if group_alive:
             try:
-                os.killpg(proc.pid, sig)
+                os.killpg(proc.pid, signal.SIGKILL)
             except ProcessLookupError:
-                break
+                pass
+            for _ in range(50):
+                try:
+                    os.killpg(proc.pid, 0)
+                except ProcessLookupError:
+                    break
+                time.sleep(0.1)
             try:
-                out, err = proc.communicate(timeout=grace)
-                break
-            except subprocess.TimeoutExpired:
-                continue
-        else:
-            out, err = proc.communicate()
+                out, err = proc.communicate(timeout=5)
+            except Exception:
+                pass
         raise subprocess.TimeoutExpired(cmd, timeout, output=out,
                                         stderr=err)
     return subprocess.CompletedProcess(cmd, proc.returncode, out,
