@@ -11,6 +11,21 @@ excluded WITH the reason, never silently dropped and never
 replaced mid-run. The gate result per ticker is recorded in the
 run manifest.
 
+The gate applies the shared history floor (2019-01-01): rows
+before it are dropped before every admission check, so a
+pre-2019 anomaly (the stale-flat segment that motivated the
+flat-run check) can no longer reject a ticker — the
+full-history anomaly statistics are kept in the record as
+non-failing diagnostics. The floor composes with a corporate
+SERIES_START: the effective lower bound is the later of the two.
+
+`history_needed_from` is NOT the floor: it is the plan-depth
+bound (3 years before the latest cutoff). Admission evaluates
+history through the latest cutoff, so for a cell whose own
+cutoff is earlier the cohort is future-informed relative to
+that cell — the record says so in `cohort_note` instead of
+hiding it.
+
 Stdlib only. The fetch hits Yahoo's chart API (the same endpoint
 the pandas-ta / talib runners use); `gate_ticker()` itself is pure
 and takes rows, so the tests run it on fixtures with no network.
@@ -40,6 +55,14 @@ MAX_GAP_DAYS = 21
 # that motivated this check) ran flat for months; a genuine
 # limit-locked stretch is days, not weeks.
 FLAT_RUN_LIMIT = 20
+
+# Shared history floor (INS-REVIEW-025 / #446): rows before
+# 2019-01-01 are dropped before every admission check — the
+# same floor the runners apply to their indicator frames
+# (backtest.py DROP_BEFORE, Kronos/pandas-ta clean/drop-before).
+# The standalone gate CLI defaults to it; gate_ticker() takes
+# it as an explicit optional argument instead.
+HISTORY_FLOOR_DEFAULT = "2019-01-01"
 CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/%s"
 USER_AGENT = "Mozilla/5.0"
 
@@ -49,6 +72,32 @@ def parse_iso(s):
         return date.fromisoformat(str(s)[:10])
     except Exception:
         return None
+
+
+def _absent_date(value):
+    """True when a history_floor / series_start value intentionally
+    means "no constraint": None, an empty string, or the CLI's
+    'none' (case-insensitive). Distinct from an invalid value,
+    which _invalid_date_reason() rejects by name."""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value.strip() == "" or value.strip().lower() == "none"
+    return False
+
+
+def _invalid_date_reason(value, name):
+    """Reason string when a non-empty history_floor /
+    series_start value is not a parseable YYYY-MM-DD date,
+    else None. parse_iso() returns None for garbage, so
+    without this check an invalid floor silently became no
+    floor (INS-REVIEW-029)."""
+    if _absent_date(value):
+        return None
+    if parse_iso(value) is None:
+        return ("invalid %s %r (expected YYYY-MM-DD date, or "
+                "none to disable)" % (name, value))
+    return None
 
 
 def fetch_chart(ticker, period1=0, period2=None, attempts=3):
@@ -231,30 +280,109 @@ def max_gap(rows):
 
 
 def gate_ticker(ticker, rows, events_available, latest_cutoff,
-                series_start=None, events_error=None):
+                series_start=None, events_error=None,
+                history_floor=None):
     """Pure admission decision (design §4). `rows` are
     {"date", "close"} sorted by date; `latest_cutoff` is the last
     cutoff the ticker must cover. `series_start` is the first
     usable session after a corporate discontinuity (POUL.CA:
     2026-09-28) — earlier rows are dropped before every check.
-    `events_error` (from fetch_chart) reports a feed parsing
-    failure separately from a verified empty feed. History-quality
-    checks (depth, gap, flat-run) use only bars on/before the
-    cutoff — bars after it cannot reject the ticker; coverage
+    `history_floor` is the shared history floor (2019-01-01):
+    rows before it are dropped before every check too, and the
+    effective lower bound is the later of the two floors — a
+    later series_start wins over an earlier floor and vice
+    versa. A malformed non-empty history_floor or
+    series_start is rejected by name (a failed record whose
+    reason names the bad value) instead of silently dropping
+    the constraint; None, an empty string and the CLI's
+    'none' mean no constraint. `events_error` (from fetch_chart)
+    reports a feed
+    parsing failure separately from a verified empty feed.
+    History-quality checks (depth, gap, flat-run) use only bars
+    on/before the cutoff and on/after the effective floor —
+    bars after the cutoff cannot reject the ticker; coverage
     (history reaching the cutoff at all) is checked against the
-    full fetched series instead. Returns the gate record
-    (JSON-serialisable)."""
+    full fetched series instead. The admission fields (rows,
+    first_date, longest_flat_run, max_gap_*) are window-relative:
+    they describe the floored window, not the archived raw
+    series. The pre-floor anomaly statistics are retained as
+    non-failing diagnostics (full_history_*) — they are recorded
+    and never reject. `history_needed_from` is the plan-depth
+    bound (3 years before the latest cutoff), not the floor;
+    admission through the latest cutoff makes cohort selection
+    future-informed relative to an earlier cell cutoff, which
+    the record discloses in `cohort_note` instead of hiding.
+    Returns the gate record (JSON-serialisable)."""
     ticker = (ticker or "").upper()
     cutoff = parse_iso(latest_cutoff)
+    # Reject a malformed non-empty floor / series_start
+    # explicitly (INS-REVIEW-029): parse_iso() returns None
+    # for garbage, and the old code silently dropped the
+    # constraint — an invalid floor silently became no floor
+    # and an invalid series_start silently lost the
+    # corporate-history constraint. Intentional None, an empty
+    # string and the CLI's 'none' still mean "no constraint"
+    # and are distinct from invalid input. The rejection is a
+    # named record (passed False), not an exception, so the
+    # CLI and run_cell report it the same way as any other
+    # gate failure.
+    bad_date = (_invalid_date_reason(history_floor,
+                                     "history_floor")
+                or _invalid_date_reason(series_start,
+                                        "series_start"))
+    if bad_date is not None:
+        # No admission window was computed: the admitted
+        # fields stay empty and the raw-series diagnostics
+        # still describe what was fetched.
+        full_history = [r for r in rows
+                        if parse_iso(r["date"]) is not None
+                        and (cutoff is None
+                             or parse_iso(r["date"]) <= cutoff)]
+        full_flat = longest_flat_run(full_history)
+        full_gap_days, full_gap_missed = max_gap(full_history)
+        try:
+            need_first = (
+                cutoff - timedelta(days=366 * MIN_HISTORY_YEARS)
+                ).isoformat() if cutoff is not None else None
+        except Exception:
+            need_first = None
+        return {"ticker": ticker, "passed": False,
+                "reasons": [bad_date],
+                "rows": 0,
+                "first_date": None, "last_date": None,
+                "history_needed_from": need_first,
+                "max_gap_days": 0,
+                "max_gap_sessions_est": 0,
+                "longest_flat_run": 0,
+                "events_available": bool(events_available),
+                "events_parse_error": events_error,
+                "series_start": series_start,
+                "history_floor": None,
+                "full_history_rows": len(full_history),
+                "full_history_first_date": (
+                    full_history[0]["date"] if full_history else None),
+                "full_history_longest_flat_run": full_flat,
+                "full_history_max_gap_days": full_gap_days,
+                "full_history_max_gap_sessions_est": full_gap_missed,
+                "cohort_note": (
+                    "No admission window was computed: the "
+                    "history_floor / series_start value was "
+                    "rejected (see reasons).")}
+    # Effective lower bound: the later of the shared history
+    # floor and the corporate series_start (either may be absent).
+    floor_dates = [parse_iso(history_floor),
+                   parse_iso(series_start)]
+    floor_dates = [d for d in floor_dates if d is not None]
+    effective_floor = max(floor_dates) if floor_dates else None
     usable = [r for r in rows
               if parse_iso(r["date"]) is not None
               and (cutoff is None or parse_iso(r["date"]) <= cutoff)
-              and (series_start is None
-                   or parse_iso(r["date"]) >= parse_iso(series_start))]
+              and (effective_floor is None
+                   or parse_iso(r["date"]) >= effective_floor)]
     fetched = [r for r in rows
                if parse_iso(r["date"]) is not None
-               and (series_start is None
-                    or parse_iso(r["date"]) >= parse_iso(series_start))]
+               and (effective_floor is None
+                    or parse_iso(r["date"]) >= effective_floor)]
     reasons = []
     first = usable[0]["date"] if usable else None
     last = usable[-1]["date"] if usable else None
@@ -267,6 +395,24 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
         except Exception:
             need_first = None
     depth_ok = bool(first and need_first and first <= need_first)
+    # Cohort disclosure (INS-REVIEW-025 / #446): admission
+    # evaluates history through the latest cutoff, so for a cell
+    # whose own cutoff is earlier the cohort is future-informed
+    # relative to that cell. history_needed_from is the
+    # plan-depth bound, not the gate's history floor.
+    if cutoff is not None:
+        cohort_note = (
+            "Admission evaluates history through the latest "
+            "cutoff %s; for a cell whose own cutoff is earlier, "
+            "cohort selection uses data after that cell's cutoff "
+            "(future-informed relative to the cell). "
+            "history_needed_from %s is the plan-depth bound "
+            "(3 years before the latest cutoff), not the gate's "
+            "history floor."
+            % (latest_cutoff, need_first))
+    else:
+        cohort_note = ("No latest cutoff was given, so no plan-depth "
+                       "bound or cohort window applies.")
     if not usable:
         reasons.append("no usable history rows")
     elif not depth_ok:
@@ -307,6 +453,16 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
                     "latest cutoff %s, over the %d-session limit"
                     % (last, tail_missed, latest_cutoff,
                        MAX_GAP_SESSIONS_EST))
+    # Full-history anomaly statistics, retained as NON-FAILING
+    # diagnostics: every fetched bar on/before the cutoff, with
+    # no lower bound — the pre-floor anomaly stays visible in
+    # the record even though it no longer rejects.
+    full_history = [r for r in rows
+                    if parse_iso(r["date"]) is not None
+                    and (cutoff is None
+                         or parse_iso(r["date"]) <= cutoff)]
+    full_flat = longest_flat_run(full_history)
+    full_gap_days, full_gap_missed = max_gap(full_history)
     flat = longest_flat_run(usable)
     if flat > FLAT_RUN_LIMIT:
         reasons.append(
@@ -329,7 +485,17 @@ def gate_ticker(ticker, rows, events_available, latest_cutoff,
             "longest_flat_run": flat,
             "events_available": bool(events_available),
             "events_parse_error": events_error,
-            "series_start": series_start}
+            "series_start": series_start,
+            "history_floor": (effective_floor.isoformat()
+                              if effective_floor is not None
+                              else None),
+            "full_history_rows": len(full_history),
+            "full_history_first_date": (
+                full_history[0]["date"] if full_history else None),
+            "full_history_longest_flat_run": full_flat,
+            "full_history_max_gap_days": full_gap_days,
+            "full_history_max_gap_sessions_est": full_gap_missed,
+            "cohort_note": cohort_note}
 
 
 def main(argv=None):
@@ -340,6 +506,12 @@ def main(argv=None):
     ap.add_argument("--series-start", default=None,
                     help="First usable session after a corporate "
                          "discontinuity (POUL.CA: 2026-09-28).")
+    ap.add_argument("--history-floor",
+                    default=HISTORY_FLOOR_DEFAULT,
+                    help="Shared history floor (YYYY-MM-DD, default "
+                         "2019-01-01): drop earlier sessions before "
+                         "every admission check. Pass 'none' to "
+                         "disable the floor (pre-fix behaviour).")
     ap.add_argument("--history-csv", default=None,
                     help="Offline mode: CSV with date,close columns "
                          "instead of a Yahoo fetch.")
@@ -365,9 +537,12 @@ def main(argv=None):
     else:
         rows, _events, events_available, events_error, _dropped = \
             unpack_fetch(fetch_chart(args.ticker))
+    history_floor = (None
+                     if (args.history_floor or "").lower() == "none"
+                     else args.history_floor)
     rec = gate_ticker(args.ticker, rows, events_available,
                       args.latest_cutoff, args.series_start,
-                      events_error)
+                      events_error, history_floor=history_floor)
     print(json.dumps(rec, indent=1))
     return 0 if rec["passed"] else 1
 
