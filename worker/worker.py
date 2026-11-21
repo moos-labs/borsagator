@@ -3031,6 +3031,109 @@ def run_diag_egx_ab(job, workdir):
     return {"diag-egx-ab": "ok"}
 
 
+# --- Issue #446: walk-forward backtest cells (design #436 §6.4) --
+# PR #441 shipped the harness (scripts/backtest.py) but no worker
+# dispatch: parse_job's grammar has no backtest tool, so the
+# design's job string `run backtest <cutoff> <ticker>` produced an
+# empty plan and failed closed as unknown-job (#371) without any
+# cell ever executing. The entry point below dispatches in
+# _execute_body before parse_job, like top30-enumerate /
+# diag-egx-ab, and runs the harness from the release checkout with
+# its only output root pointed at the run dir, so the cell's
+# captures + scores ride the archive publish and the forward
+# ledger is never touched.
+BACKTEST_TIMEOUT = 7200  # capture + 3 runners (Kronos x2) + scoring
+
+
+def parse_backtest_job(job):
+    """Parse a `run backtest` job string into a plan dict, or None
+    when the string is not exactly that job. Grammar:
+    `run backtest <cutoff> <ticker>` — the cutoff a canonical
+    YYYY-MM-DD date, the ticker one token (uppercased here).
+    Unknown or extra tokens fail closed (None): a job the worker
+    does not understand must never run. NOTE: parse_job (the
+    registry grammar) still returns [] for this string — the
+    registry has no backtest tool. Dispatch happens in
+    _execute_body before parse_job, like top30-enumerate."""
+    # Issue #381: isinstance, not `or ""` — see parse_top30_job.
+    parts = (job if isinstance(job, str) else "").split()
+    if len(parts) != 4 or parts[:2] != ["run", "backtest"]:
+        return None
+    cutoff = parts[2]
+    try:
+        parsed = datetime.strptime(cutoff, "%Y-%m-%d")
+    except ValueError:
+        return None
+    if parsed.strftime("%Y-%m-%d") != cutoff:
+        return None  # canonical form only (2023-2-9 is not a cutoff)
+    ticker = parts[3].upper()
+    if not re.fullmatch(r"[A-Z0-9][A-Z0-9.\-]*", ticker):
+        return None
+    return {"kind": "backtest", "cutoff": cutoff, "ticker": ticker}
+
+
+def run_backtest(job, workdir):
+    """Issue #446: run one walk-forward backtest cell (design #436
+    §6.4) via scripts/backtest.py from the release checkout. The
+    runner checkouts are the worker's own fleet clones (RUNNERS) —
+    the same ones live sweeps run — and the harness runs under
+    `python`, the interpreter the registry commands prove live.
+    Returns {"backtest": status}:
+      ok — the cell ran and its manifest is in the run dir.
+      skipped — the harness completed with a skipped cell (a gate
+        or data refusal); it writes no manifest, and the reason is
+        the result JSON at the tail of the log.
+      bad-job — the job string is not a `run backtest` job.
+      exit-N / manifest-unparseable / manifest-invalid — named
+        failures; the evidence written so far still archives, so
+        the failure is inspectable."""
+    # Issue #381: job_text() — see run_top30_enumerate.
+    plan = parse_backtest_job(job_text(job))
+    run_dir = Path(workdir) / "backtest"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    if plan is None:
+        (run_dir / "backtest-worker.log").write_text(
+            "bad job: %r\n" % job["job"])
+        return {"backtest": "bad-job"}
+    script = CODE / "scripts" / "backtest.py"
+    cmd = ["python", str(script),
+           "--cutoff", plan["cutoff"],
+           "--ticker", plan["ticker"],
+           "--out-root", str(run_dir),
+           "--kronos-runner", str(RUNNERS / "kronos-runner"),
+           "--pandas-ta-runner", str(RUNNERS / "pandas-ta-runner"),
+           "--talib-runner", str(RUNNERS / "talib-runner"),
+           "--borsagator-root", str(CODE),
+           "--repeat-kronos"]
+    env = {k: v for k, v in os.environ.items()
+           if k not in ENV_DENY_FOR_TOOLS}
+    # shlex.quote each part: the run-dir path comes from the worker
+    # root, but the quoting rule is the same as run_diag_egx_ab.
+    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=CODE,
+           env=env, timeout=BACKTEST_TIMEOUT)
+    (run_dir / "backtest-worker.log").write_text(
+        (r.stdout + r.stderr)[-4000:])
+    if r.returncode != 0:
+        return {"backtest": "exit-%d" % r.returncode}
+    manifest_path = run_dir / plan["cutoff"] / plan["ticker"] \
+        / "manifest.json"
+    if not manifest_path.exists():
+        # A skipped cell writes no manifest; its reason is the
+        # result JSON at the tail of the log above.
+        return {"backtest": "skipped"}
+    try:
+        manifest = json.loads(
+            manifest_path.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001 — named failure, not a crash
+        (run_dir / "backtest-worker.log").write_text(
+            "manifest unparseable: %s: %s\n" % (type(e).__name__, e))
+        return {"backtest": "manifest-unparseable"}
+    if not isinstance(manifest, dict) \
+            or manifest.get("status") != "ok":
+        return {"backtest": "manifest-invalid"}
+    return {"backtest": "ok"}
+
+
 HARVEST_TTL_HOURS = 12
 
 
@@ -4461,6 +4564,24 @@ def _execute_body(job):
     # harvest-egx); only a failed publish leaves the job unmarked.
     if text.split()[:1] == ["diag-egx-ab"]:
         manifest["tools"] = run_diag_egx_ab(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
+    # Issue #446: walk-forward backtest cells (design #436 §6.4) —
+    # same dispatch shape as diag-egx-ab above (before parse_job;
+    # the registry has no backtest tool). The two-token prefix
+    # keeps the registry grammar's `run <tool> <ticker>` jobs
+    # untouched. A bad job string still publishes its named
+    # failure and marks done (done means executed + archived, as
+    # for diag-egx-ab); only a failed publish leaves the job
+    # unmarked.
+    if text.split()[:2] == ["run", "backtest"]:
+        manifest["tools"] = run_backtest(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
