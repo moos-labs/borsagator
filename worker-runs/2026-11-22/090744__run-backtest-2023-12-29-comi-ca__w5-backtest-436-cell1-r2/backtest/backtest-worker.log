@@ -1,0 +1,40 @@
+{
+ "tool": "walkforward-backtest",
+ "ticker": "COMI.CA",
+ "cutoff": "2023-12-29",
+ "status": "ok",
+ "capture_dir": "/opt/gator/out/w5-backtest-436-cell1-r2/backtest/2023-12-29/COMI.CA",
+ "gate": {
+  "ticker": "COMI.CA",
+  "passed": true,
+  "reasons": [],
+  "rows": 1892,
+  "first_date": "2019-01-01",
+  "last_date": "2026-09-30",
+  "history_needed_from": "2023-09-28",
+  "max_gap_days": 10,
+  "max_gap_sessions_est": 6,
+  "longest_flat_run": 6,
+  "events_available": true,
+  "events_parse_error": null,
+  "series_start": null,
+  "history_floor": "2019-01-01",
+  "full_history_rows": 6499,
+  "full_history_first_date": "2000-11-27",
+  "full_history_longest_flat_run": 143,
+  "full_history_max_gap_days": 10,
+  "full_history_max_gap_sessions_est": 6,
+  "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."
+ },
+ "warmup_sessions": 1231,
+ "ensemble": {
+  "base_price": 72.94000244140625,
+  "base_date": "2023-12-28",
+  "weights_source": "base-v1"
+ },
+ "audit_violations": [],
+ "determinism": {
+  "rerun": true,
+  "diffs": []
+ }
+}
