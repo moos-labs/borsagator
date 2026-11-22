@@ -1,8 +1,8 @@
 # 🐊 Borsagator — forward quality benchmark (issue #79)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 60ff5912, commit 60ff5912). Sweeps archived: 50 (6 with a benchmark freeze).
+Source: `moos-labs/borsagator` branch `archive` (tree 3d97d4b1, commit 3d97d4b1). Sweeps archived: 51 (7 with a benchmark freeze).
 
-**Benchmark rows: 108 · matured: 0 · pending: 108 · invalid: 0 · excluded gap-flagged: 0**
+**Benchmark rows: 126 · matured: 24 · pending: 102 · invalid: 0 · excluded gap-flagged: 0**
 
 Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 10 matured forecasts — such cells show their count and the gate wording only. Public accuracy claims need n ≥ 30 matured forecasts (D4).
 
@@ -10,21 +10,21 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 
 | Entrant | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| ensemble | 14 | 0.0 | 11.36 | 0.429 |
-| buy-and-hold | n=0 — below the n≥10 gate, no claim | — | — | — |
+| ensemble | 18 | 0.0 | 10.71 | 0.556 |
+| buy-and-hold | n=4 — below the n≥10 gate, no claim | — | — | — |
 | family-agent | n=0 — below the n≥10 gate, no claim | — | — | — |
-| family-fundamentals | n=0 — below the n≥10 gate, no claim | — | — | — |
-| family-price-forecast | n=0 — below the n≥10 gate, no claim | — | — | — |
-| family-sentiment | n=0 — below the n≥10 gate, no claim | — | — | — |
-| family-technicals | n=0 — below the n≥10 gate, no claim | — | — | — |
-| kronos-alone | n=0 — below the n≥10 gate, no claim | — | — | — |
+| family-fundamentals | n=4 — below the n≥10 gate, no claim | — | — | — |
+| family-price-forecast | n=4 — below the n≥10 gate, no claim | — | — | — |
+| family-sentiment | n=4 — below the n≥10 gate, no claim | — | — | — |
+| family-technicals | n=4 — below the n≥10 gate, no claim | — | — | — |
+| kronos-alone | n=4 — below the n≥10 gate, no claim | — | — | — |
 | raw-llm-cohere | n=0 — below the n≥10 gate, no claim | — | — | — |
 
 ## week (matured only)
 
 | Entrant | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| ensemble | n=0 — below the n≥10 gate, no claim | — | — | — |
+| ensemble | n=8 — below the n≥10 gate, no claim | — | — | — |
 | buy-and-hold | n=0 — below the n≥10 gate, no claim | — | — | — |
 | family-agent | n=0 — below the n≥10 gate, no claim | — | — | — |
 | family-fundamentals | n=0 — below the n≥10 gate, no claim | — | — | — |
@@ -62,5 +62,7 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 - sweeps/2026-11-19/062255__sweep-lite-poul-ca-market-egx__runsched-2026-11-19: raw-llm-cohere absent (llm-key-absent) — no rows
 - sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002: family-agent absent (family-did-not-vote) — no rows
 - sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002: raw-llm-cohere absent (llm-key-absent) — no rows
+- sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22: family-agent absent (family-did-not-vote) — no rows
+- sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22: raw-llm-cohere absent (llm-key-absent) — no rows
 
 _The ensemble is the reference row: the table is symmetric and fixed-order, and every cell is published as scored._
