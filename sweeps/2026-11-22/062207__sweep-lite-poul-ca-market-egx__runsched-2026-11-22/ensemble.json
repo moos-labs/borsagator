@@ -1,0 +1,150 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 7.58,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_date": "2026-11-19",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_poul.csv": 7.7,
+   "openbb/poul_ca.csv": 7.699999809265137,
+   "pandas-ta/indicators.csv": 7.699999809265137,
+   "talib/indicators.csv": 7.699999809265137,
+   "yahooquery/poul.ca.csv": 7.699999809265137
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-18",
+  "base_used": 7.58,
+  "base_source_used": "egx-data/egxpy_poul.csv",
+  "base_date": "2026-11-19",
+  "latest_collected_date": "2026-11-19",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "entitlement_end": "2026-11-15",
+   "date_basis": "verbatim:ex-date",
+   "mechanical_pct": -25.07,
+   "title": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15;",
+   "source": "disclosure-event",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "verification_status": "verified",
+   "announced": "2026-11-02",
+   "coupon_number": "42"
+  }
+ ],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0675,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0367, σ10=0.0675)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-22",
+ "risk": {
+  "level": "elevated",
+  "conf_cap": 0.45,
+  "price_mult": 0.8,
+  "flags": [],
+  "events": [],
+  "move_z": {
+   "last": 0.23,
+   "max3": 0.86
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "66aa7dc61d55e677b090ff077915da1a93077bad91785a74303aa03b63babe59",
+  "factors": {
+   "price-forecast": 0.503,
+   "technicals": 0.717,
+   "sentiment": 1.069,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.503,
+    "n": 13,
+    "skill": -0.497
+   },
+   "technicals": {
+    "factor": 0.717,
+    "n": 14,
+    "skill": -0.283
+   },
+   "sentiment": {
+    "factor": 1.069,
+    "n": 14,
+    "skill": 0.069
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.497,
+  "sentiment": -0.023,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.348
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 4.98,
+   "range_low_pct": -6.58,
+   "range_high_pct": 16.54,
+   "confidence": 0.45,
+   "net_score": 0.339,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": -0.023,
+    "price-forecast": 0.47
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 6.3483,
+   "vol_h_pct": 6.7488
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 9.67,
+   "range_low_pct": -10.63,
+   "range_high_pct": 29.96,
+   "confidence": 0.45,
+   "net_score": 0.335,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": -0.023,
+    "price-forecast": 0.546
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 12.7731,
+   "vol_h_pct": 11.6892
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 15.16,
+   "range_low_pct": -26.33,
+   "range_high_pct": 56.65,
+   "confidence": 0.45,
+   "net_score": 0.356,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": -0.023,
+    "fundamentals": 0.4,
+    "price-forecast": 0.348
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 17.5976,
+   "vol_h_pct": 25.2515
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

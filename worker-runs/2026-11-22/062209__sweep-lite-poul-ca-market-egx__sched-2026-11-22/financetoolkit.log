@@ -1,0 +1,41 @@
+inancetoolkit/models/models_controller.py", line 5798, in get_sustainable_growth_rate
+    return_on_equity, dividend_payout_ratio = self._return_on_equity_and_payout(
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/utilities/sources_model.py", line 296, in wrapper
+    return function(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/models/models_controller.py", line 5846, in _return_on_equity_and_payout
+    else self._cash_flow_statement.loc[:, "Dividends Paid", :]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/functools.py", line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/models/models_controller.py", line 270, in _cash_flow_statement
+    return self._cash_source() if callable(self._cash_source) else self._cash_source
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/toolkit_controller.py", line 935, in <lambda>
+    cash=lambda: self._get_module_statement("cash_flow_statement", "Models"),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/utilities/sources_model.py", line 296, in wrapper
+    return function(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/toolkit_controller.py", line 6597, in _get_module_statement
+    raise ValueError(
+ValueError: The models class requires an API key from FinancialModelPrep. Get an API key here: https://www.jeroenbouma.com/fmp
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_synthetic_credit_rating could not be calculated for POUL. ValueError: No interest coverage ratio could be calculated.
+Traceback (most recent call last):
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/utilities/error_model.py", line 180, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/venvs/financetoolkit/lib/python3.12/site-packages/financetoolkit/models/models_controller.py", line 7489, in get_synthetic_credit_rating
+    raise ValueError("No interest coverage ratio could be calculated.")
+ValueError: No interest coverage ratio could be calculated.
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_taffler_z_score could not be calculated for POUL because the item 'Total Current Assets' is missing from the provided financial statements. Fill this row to obtain the metric.
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_tobins_q_ratio could not be calculated for POUL because the item 'Weighted Average Shares Diluted' is missing from the provided financial statements. Fill this row to obtain the metric.
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_two_stage_dividend_discount_model could not be calculated for POUL because the item 'Weighted Average Shares Diluted' is missing from the provided financial statements. Fill this row to obtain the metric.
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_weighted_average_cost_of_capital could not be calculated for POUL because the item 'Weighted Average Shares Diluted' is missing from the provided financial statements. Fill this row to obtain the metric.
+2026-11-22 06:18:02 - financetoolkit - ERROR - get_zmijewski_score could not be calculated for POUL because the item 'Total Current Assets' is missing from the provided financial statements. Fill this row to obtain the metric.
+FinanceToolkit attempt: ok
+Ratios computed for periods: ['FY2024', 'FY2025', 'H1_2026', 'PAYOUT_FY2025', 'VALUATION_AT_10.00']
+Total ratio entries: 45
+Wrote results/ratios.json and results/report.md

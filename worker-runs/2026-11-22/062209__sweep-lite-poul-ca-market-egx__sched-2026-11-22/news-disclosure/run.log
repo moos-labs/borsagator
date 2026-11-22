@@ -1,0 +1,21 @@
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://sa.investing.com/news/stock-market-news/article-3447360
+WARN body extract short (0 chars): https://www.mubasher.info/news/21587272/%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%85%D8%B5%D8%B1-
+bodies: 9/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 2}
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6443.01it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14225.66it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 14705.47it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6121.16it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 27, "disclosure_count": 10, "arabic_headlines": 31, "latest_news_date": "Thu, 19 Nov 2026 06:59:00 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.042, "finbert_negative": 0.303, "finbert_neutral": 0.655, "finbert_scored": 6, "multilingual_positive": 0.429, "multilingual_negative": 0.044, "multilingual_neutral": 0.527, "multilingual_scored": 31, "bodies_fetched": 9, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.144, "translated_negative": 0.262, "translated_neutral": 0.594, "translated_scored": 31}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Thu, 19 Nov 2026 06:59:00 GMT] (Investing.com) أسهم الأغذية في مصر: فوديكو تقفز 25% بعد حكم نهائي والقاهرة للدواجن توزع 1.9 جنيه - Investing.com
+- [Tue, 17 Nov 2026 16:28:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائى: حولت إنذارات السيارات إلى موسيقى - اليوم السابع
+- [Tue, 17 Nov 2026 16:16:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: استخدمت صرخات جمهور حفل روك للتعبير عن مشهد مذبحة مدرسية - اليوم السابع
+- [Tue, 17 Nov 2026 15:11:00 GMT] (اليوم السابع) بول ديفيز بالقاهرة السينمائى: اكتشفت شغفى بتصميم الصوت فى سن الـ15 - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: ديفيد لينش مصدر إلهامي وأستعين باللوحات الفنية - اليوم السابع
+- [Mon, 16 Nov 2026 14:51:18 GMT] (شبكة تواصل الإخبارية) القاهرة للدواجن تتصدر الأسهم الأكثر تراجعًا بالبورصة بخسائر 17% - شبكة تواصل الإخبارية
+- [Mon, 16 Nov 2026 13:18:04 GMT] (https://www.youlyou.com/) القاهرة للدواجن تتصدر الأسهم الأكثر انخفاضا بالبورصة المصرية بنسبة 17% - https://www.youlyou.com/
+- [Mon, 16 Nov 2026 10:32:00 GMT] (اليوم السابع) سقوط مفاجئ لأسهم المضاربات بأكثر من 2%.. والقاهرة للدواجن تقود التراجع بالبورصة - اليوم السابع

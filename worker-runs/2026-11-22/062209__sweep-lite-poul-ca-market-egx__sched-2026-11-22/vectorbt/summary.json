@@ -1,0 +1,245 @@
+{
+  "tickers_tried": [
+    {
+      "ticker": "POUL.CA",
+      "strategy": "yf_download_ignore_tz",
+      "rows": 0,
+      "error": null
+    },
+    {
+      "ticker": "POUL.CA",
+      "strategy": "yf_ticker_history",
+      "rows": 0,
+      "error": "2023-04-28 00:00:00"
+    },
+    {
+      "ticker": "POUL.CA",
+      "strategy": "yahoo_chart_api",
+      "rows": 2433,
+      "error": null
+    }
+  ],
+  "ticker_used": "POUL.CA",
+  "notes": [
+    "Downloaded entry closes match the verified exchange closes (median ratio 1.0000); the series is on the exchange scale and no rescaling was applied.",
+    "Prices fetched with auto_adjust=False (no dividend adjustment), which is what a capture study needs.",
+    "No fees, slippage or taxes are modelled.",
+    "Event 2018: Downloaded prices around this event sit on a different scale than the verified exchange closes (ratio 0.4115); that segment of the provider series appears split-adjusted and/or stale, so this row's captures are not reliable."
+  ],
+  "strategy_used": "yahoo_chart_api",
+  "rows": 2433,
+  "first_date": "2017-01-02",
+  "last_date": "2026-11-19",
+  "first_close": 3.6559998989105225,
+  "last_close": 7.579999923706055,
+  "sample_closes": {
+    "2017-01-02": 3.6559998989105225,
+    "2017-01-03": 3.6559998989105225,
+    "2017-01-04": 3.615999937057495,
+    "2026-11-17": 7.570000171661377,
+    "2026-11-18": 7.699999809265137,
+    "2026-11-19": 7.579999923706055
+  },
+  "data_verdict": "OK: POUL.CA returned 2433 rows via yahoo_chart_api.",
+  "price_scale": {
+    "ratios": {
+      "2018": 0.4115299216395207,
+      "2019": 0.9999999577850404,
+      "2021": 1.000000022784028,
+      "2024": 1.0,
+      "Apr 2026": 0.9999999956291067
+    },
+    "raw_entry_closes": {
+      "2018": 3.7119998931884766,
+      "2019": 4.96999979019165,
+      "2021": 2.930000066757202,
+      "2024": 12.25,
+      "Apr 2026": 34.90999984741211
+    },
+    "median_ratio": 0.9999999956291067,
+    "multiplier_applied": 1.0
+  },
+  "events": [
+    {
+      "label": "2018",
+      "rights_end_date": "2018-04-05",
+      "ex_date": "2018-04-10",
+      "dividend": 0.25,
+      "status": "ok",
+      "entry_session": "2018-04-09",
+      "entry_close": 3.7119998931884766,
+      "ex_session": "2018-04-10",
+      "dividend_yield_pct": 6.734913986898282,
+      "payday_session": "2018-04-12",
+      "exits": {
+        "ex_open": {
+          "price": 3.7119998931884766,
+          "capture": 0.25,
+          "capture_pct": 6.734913986898282
+        },
+        "ex_close": {
+          "price": 3.7119998931884766,
+          "capture": 0.25,
+          "capture_pct": 6.734913986898282
+        },
+        "payday_close": {
+          "price": 3.7119998931884766,
+          "capture": 0.25,
+          "capture_pct": 6.734913986898282
+        }
+      },
+      "scale_ratio_vs_verified": 0.4115299216395207,
+      "scale_consistent": false,
+      "data_quality_flag": "Downloaded prices around this event sit on a different scale than the verified exchange closes (ratio 0.4115); that segment of the provider series appears split-adjusted and/or stale, so this row's captures are not reliable."
+    },
+    {
+      "label": "2019",
+      "rights_end_date": "2019-07-14",
+      "ex_date": "2019-07-15",
+      "dividend": 0.25,
+      "status": "ok",
+      "entry_session": "2019-07-14",
+      "entry_close": 4.96999979019165,
+      "ex_session": "2019-07-15",
+      "dividend_yield_pct": 5.0301812988680155,
+      "payday_session": "2019-07-17",
+      "exits": {
+        "ex_open": {
+          "price": 4.96999979019165,
+          "capture": 0.25,
+          "capture_pct": 5.0301812988680155
+        },
+        "ex_close": {
+          "price": 4.78000020980835,
+          "capture": 0.06000041961669922,
+          "capture_pct": 1.2072519547206162
+        },
+        "payday_close": {
+          "price": 4.619999885559082,
+          "capture": -0.09999990463256836,
+          "capture_pct": -2.0120706006853215
+        }
+      },
+      "scale_ratio_vs_verified": 0.9999999577850404,
+      "scale_consistent": true
+    },
+    {
+      "label": "2021",
+      "rights_end_date": "2021-05-17",
+      "ex_date": "2021-05-18",
+      "dividend": 0.16,
+      "status": "ok",
+      "entry_session": "2021-05-17",
+      "entry_close": 2.930000066757202,
+      "ex_session": "2021-05-18",
+      "dividend_yield_pct": 5.460750728824423,
+      "payday_session": "2021-05-20",
+      "exits": {
+        "ex_open": {
+          "price": 2.930000066757202,
+          "capture": 0.16,
+          "capture_pct": 5.460750728824423
+        },
+        "ex_close": {
+          "price": 2.8399999141693115,
+          "capture": 0.06999984741210938,
+          "capture_pct": 2.389073236082967
+        },
+        "payday_close": {
+          "price": 3.140000104904175,
+          "capture": 0.3700000381469727,
+          "capture_pct": 12.62798736235091
+        }
+      },
+      "scale_ratio_vs_verified": 1.000000022784028,
+      "scale_consistent": true
+    },
+    {
+      "label": "2024",
+      "rights_end_date": "2024-10-21",
+      "ex_date": "2024-10-22",
+      "dividend": 0.847875,
+      "status": "ok",
+      "entry_session": "2024-10-21",
+      "entry_close": 12.25,
+      "ex_session": "2024-10-22",
+      "dividend_yield_pct": 6.921428571428572,
+      "payday_session": "2024-10-24",
+      "exits": {
+        "ex_open": {
+          "price": 12.25,
+          "capture": 0.847875,
+          "capture_pct": 6.921428571428572
+        },
+        "ex_close": {
+          "price": 12.010000228881836,
+          "capture": 0.607875228881836,
+          "capture_pct": 4.962246766382335
+        },
+        "payday_close": {
+          "price": 13.180000305175781,
+          "capture": 1.7778753051757814,
+          "capture_pct": 14.513267797353318
+        }
+      },
+      "scale_ratio_vs_verified": 1.0,
+      "scale_consistent": true
+    },
+    {
+      "label": "Apr 2026",
+      "rights_end_date": "2026-04-26",
+      "ex_date": "2026-04-27",
+      "dividend": 0.33,
+      "status": "ok",
+      "entry_session": "2026-04-26",
+      "entry_close": 34.90999984741211,
+      "ex_session": "2026-04-27",
+      "dividend_yield_pct": 0.9452878872597962,
+      "payday_session": "2026-04-29",
+      "exits": {
+        "ex_open": {
+          "price": 34.90999984741211,
+          "capture": 0.33,
+          "capture_pct": 0.9452878872597962
+        },
+        "ex_close": {
+          "price": 35.349998474121094,
+          "capture": 0.7699986267089844,
+          "capture_pct": 2.205667803135395
+        },
+        "payday_close": {
+          "price": 35.75,
+          "capture": 1.1700001525878907,
+          "capture_pct": 3.351475673737716
+        }
+      },
+      "scale_ratio_vs_verified": 0.9999999956291067,
+      "scale_consistent": true
+    }
+  ],
+  "averages": {
+    "ex_open": {
+      "n": 5,
+      "avg_capture": 0.36757500000000004,
+      "avg_capture_pct": 5.018512494655818
+    },
+    "ex_close": {
+      "n": 5,
+      "avg_capture": 0.3515748245239258,
+      "avg_capture_pct": 3.4998307494439187
+    },
+    "payday_close": {
+      "n": 5,
+      "avg_capture": 0.6935751182556154,
+      "avg_capture_pct": 7.043114843930981
+    }
+  },
+  "vectorbt": {
+    "events_used": 5,
+    "init_cash": 100000.0,
+    "final_value": 92548.3587513414,
+    "total_return": -0.07451641248658634,
+    "total_return_pct": -7.4516412486586345,
+    "trade_count": 5
+  }
+}

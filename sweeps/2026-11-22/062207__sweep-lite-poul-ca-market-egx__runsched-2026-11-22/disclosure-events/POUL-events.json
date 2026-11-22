@@ -1,0 +1,614 @@
+{
+ "config_hash": "05efef83ce166443",
+ "events": [
+  {
+   "announced": {
+    "basis": "standalone-date-line",
+    "derived_candidate": null,
+    "derived_rule": null,
+    "evidence": {
+     "end": 154,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 144
+    },
+    "value": "2026-11-12"
+   },
+   "candidate_reasons": [
+    "revenue not stated in source body (in attachment, not harvested)"
+   ],
+   "config_hash": "05efef83ce166443",
+   "document_revision_id": "clipped-body-sha256:991ed706903b5641edeb540c8f93c745fbe052a59d472f65747c2524ecd7a769",
+   "duplicate_links": [],
+   "event_id": "ev_b89440084409130408c1",
+   "event_revision_id": "rev_afc29f938f1614ac2f7b",
+   "event_type": "earnings",
+   "evidence": [
+    {
+     "end": 154,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 144
+    },
+    {
+     "end": 300,
+     "field": "payload.period",
+     "kind": "verbatim",
+     "span": "القوائم المالية المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026",
+     "start": 237
+    },
+    {
+     "end": 327,
+     "field": "payload.npat",
+     "kind": "verbatim",
+     "span": "1,439,879,918",
+     "start": 314
+    },
+    {
+     "end": 433,
+     "field": "payload.npat_comparative",
+     "kind": "verbatim",
+     "span": "2,365,410,070",
+     "start": 420
+    }
+   ],
+   "extraction_status": "extracted",
+   "extractor_version": "disclosure-events/1.0.0",
+   "issuer": {
+    "isin": "EGS02051C018",
+    "name_ar": "القاهرة للدواجن",
+    "name_en": null,
+    "ticker": "POUL.CA"
+   },
+   "payload": {
+    "basis": "consolidated",
+    "fiscal_quarter": "Q3",
+    "fiscal_year": "2026",
+    "npat": {
+     "currency": "EGP",
+     "evidence": {
+      "end": 327,
+      "field": "payload.npat",
+      "kind": "verbatim",
+      "span": "1,439,879,918",
+      "start": 314
+     },
+     "raw": "صافي الربح : 1,439,879,918",
+     "scale": "one",
+     "value": "1439879918"
+    },
+    "npat_comparative": {
+     "currency": "EGP",
+     "evidence": {
+      "end": 433,
+      "field": "payload.npat_comparative",
+      "kind": "verbatim",
+      "span": "2,365,410,070",
+      "start": 420
+     },
+     "raw": "صافي الربح لفترة المقارنة : 2,365,410,070",
+     "scale": "one",
+     "value": "2365410070"
+    },
+    "period_end": {
+     "basis": "verbatim:القوائم المالية عن الفترة",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-09-30"
+    },
+    "period_start": {
+     "basis": "verbatim:القوائم المالية عن الفترة",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-01-01"
+    },
+    "revenue": {
+     "currency": "EGP",
+     "evidence": null,
+     "raw": null,
+     "scale": "one",
+     "value": null
+    },
+    "yoy_npat_pct": {
+     "basis": "derived: NPAT vs comparative NPAT",
+     "evidence": null,
+     "value": "-39.13"
+    }
+   },
+   "schema_version": 1,
+   "source_document_id": "egx:297563",
+   "source_kind": "primary",
+   "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297563",
+   "stale": false,
+   "subtype": "results_9m",
+   "summary_ar": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+   "summary_en": "POUL.CA consolidated Q3 2026 results 2026-01-01-2026-09-30: NPAT EGP 1439879918.",
+   "summary_meta": {
+    "generator": "template-v1",
+    "language": "en",
+    "origin": "derived-from-facts"
+   },
+   "verification_status": "verified"
+  },
+  {
+   "announced": {
+    "basis": "standalone-date-line",
+    "derived_candidate": null,
+    "derived_rule": null,
+    "evidence": {
+     "end": 162,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 152
+    },
+    "value": "2026-11-12"
+   },
+   "candidate_reasons": [
+    "revenue not stated in source body (in attachment, not harvested)"
+   ],
+   "config_hash": "05efef83ce166443",
+   "document_revision_id": "clipped-body-sha256:ce7f71954c9f0c6ca78722c000b33cb015947253fa3380029826e762845fa72c",
+   "duplicate_links": [],
+   "event_id": "ev_dc2d244b2f8fd4875e1c",
+   "event_revision_id": "rev_e0bd323c03debae51c19",
+   "event_type": "earnings",
+   "evidence": [
+    {
+     "end": 162,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 152
+    },
+    {
+     "end": 312,
+     "field": "payload.period",
+     "kind": "verbatim",
+     "span": "القوائم المالية غير المجمعة عن الفترة :من 01/01/2026 الى 30/09/2026",
+     "start": 245
+    },
+    {
+     "end": 337,
+     "field": "payload.npat",
+     "kind": "verbatim",
+     "span": "291,445,617",
+     "start": 326
+    },
+    {
+     "end": 445,
+     "field": "payload.npat_comparative",
+     "kind": "verbatim",
+     "span": "113,879,501",
+     "start": 434
+    }
+   ],
+   "extraction_status": "extracted",
+   "extractor_version": "disclosure-events/1.0.0",
+   "issuer": {
+    "isin": "EGS02051C018",
+    "name_ar": "القاهرة للدواجن",
+    "name_en": null,
+    "ticker": "POUL.CA"
+   },
+   "payload": {
+    "basis": "standalone",
+    "fiscal_quarter": "Q3",
+    "fiscal_year": "2026",
+    "npat": {
+     "currency": "EGP",
+     "evidence": {
+      "end": 337,
+      "field": "payload.npat",
+      "kind": "verbatim",
+      "span": "291,445,617",
+      "start": 326
+     },
+     "raw": "صافي الربح : 291,445,617",
+     "scale": "one",
+     "value": "291445617"
+    },
+    "npat_comparative": {
+     "currency": "EGP",
+     "evidence": {
+      "end": 445,
+      "field": "payload.npat_comparative",
+      "kind": "verbatim",
+      "span": "113,879,501",
+      "start": 434
+     },
+     "raw": "صافي الربح لفترة المقارنة : 113,879,501",
+     "scale": "one",
+     "value": "113879501"
+    },
+    "period_end": {
+     "basis": "verbatim:القوائم المالية عن الفترة",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-09-30"
+    },
+    "period_start": {
+     "basis": "verbatim:القوائم المالية عن الفترة",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-01-01"
+    },
+    "revenue": {
+     "currency": "EGP",
+     "evidence": null,
+     "raw": null,
+     "scale": "one",
+     "value": null
+    },
+    "yoy_npat_pct": {
+     "basis": "derived: NPAT vs comparative NPAT",
+     "evidence": null,
+     "value": "155.92"
+    }
+   },
+   "schema_version": 1,
+   "source_document_id": "egx:297561",
+   "source_kind": "primary",
+   "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297561",
+   "stale": false,
+   "subtype": "results_9m",
+   "summary_ar": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر",
+   "summary_en": "POUL.CA standalone Q3 2026 results 2026-01-01-2026-09-30: NPAT EGP 291445617.",
+   "summary_meta": {
+    "generator": "template-v1",
+    "language": "en",
+    "origin": "derived-from-facts"
+   },
+   "verification_status": "verified"
+  },
+  {
+   "announced": {
+    "basis": "standalone-date-line",
+    "derived_candidate": null,
+    "derived_rule": null,
+    "evidence": {
+     "end": 134,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 124
+    },
+    "value": "2026-11-12"
+   },
+   "candidate_reasons": [
+    "decision details in attachment, not harvested"
+   ],
+   "config_hash": "05efef83ce166443",
+   "document_revision_id": "clipped-body-sha256:e6f338a960961346ac3ffcabd11fc2e5873a31026c0aa018e37ce46f12306e78",
+   "duplicate_links": [],
+   "event_id": "ev_a44eee4eb988411805a4",
+   "event_revision_id": "rev_87f6a02fd55966677f5f",
+   "event_type": "board_decision",
+   "evidence": [
+    {
+     "end": 134,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "12/11/2026",
+     "start": 124
+    },
+    {
+     "end": 290,
+     "field": "payload.meeting_date",
+     "kind": "verbatim",
+     "span": "11/11/2026",
+     "start": 280
+    }
+   ],
+   "extraction_status": "candidate",
+   "extractor_version": "disclosure-events/1.0.0",
+   "issuer": {
+    "isin": "EGS02051C018",
+    "name_ar": "القاهرة للدواجن",
+    "name_en": null,
+    "ticker": "POUL.CA"
+   },
+   "payload": {
+    "assembly_date": {
+     "basis": "not-stated",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": null
+    },
+    "assembly_time": null,
+    "decision_subtype": "board_decisions",
+    "meeting_date": {
+     "basis": "verbatim:بجلسته المنعقدة بتاريخ",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-11-11"
+    },
+    "state": "unknown",
+    "subject_ar": null,
+    "subject_en": null
+   },
+   "schema_version": 1,
+   "source_document_id": "egx:297436",
+   "source_kind": "primary",
+   "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297436",
+   "stale": false,
+   "subtype": "board_decisions",
+   "summary_ar": "القاهرة للدواجن (POUL.CA) - قرارات مجلس إدارة الشركة",
+   "summary_en": null,
+   "summary_meta": {
+    "generator": "template-v1",
+    "language": "en",
+    "origin": "derived-from-facts"
+   },
+   "verification_status": "unverified"
+  },
+  {
+   "announced": {
+    "basis": "standalone-date-line",
+    "derived_candidate": null,
+    "derived_rule": null,
+    "evidence": {
+     "end": 148,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "08/11/2026",
+     "start": 138
+    },
+    "value": "2026-11-08"
+   },
+   "candidate_reasons": [],
+   "config_hash": "05efef83ce166443",
+   "document_revision_id": "clipped-body-sha256:e78531298537ec19957588c81661ef7c8f8086c498b94ace0392b0acd5dd2d4c",
+   "duplicate_links": [],
+   "event_id": "ev_c8f760b067890b8c30f3",
+   "event_revision_id": "rev_76d90871b58c9ac00d25",
+   "event_type": "board_decision",
+   "evidence": [
+    {
+     "end": 148,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "08/11/2026",
+     "start": 138
+    },
+    {
+     "end": 340,
+     "field": "payload.assembly_date",
+     "kind": "verbatim",
+     "span": "30/11/2026",
+     "start": 330
+    }
+   ],
+   "extraction_status": "extracted",
+   "extractor_version": "disclosure-events/1.0.0",
+   "issuer": {
+    "isin": "EGS02051C018",
+    "name_ar": "القاهرة للدواجن",
+    "name_en": null,
+    "ticker": "POUL.CA"
+   },
+   "payload": {
+    "assembly_date": {
+     "basis": "verbatim:المقرر انعقادها بتاريخ",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": "2026-11-30"
+    },
+    "assembly_time": "03:00",
+    "decision_subtype": "egm_call",
+    "meeting_date": {
+     "basis": "not-stated",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": null,
+     "value": null
+    },
+    "state": "proposed",
+    "subject_ar": null,
+    "subject_en": null
+   },
+   "schema_version": 1,
+   "source_document_id": "egx:297135",
+   "source_kind": "primary",
+   "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297135",
+   "stale": false,
+   "subtype": "egm_call",
+   "summary_ar": "القاهرة للدواجن (POUL.CA) - دعوة الجمعية العامة غير العادية",
+   "summary_en": "POUL.CA extraordinary general assembly called for 2026-11-30 at 03:00.",
+   "summary_meta": {
+    "generator": "template-v1",
+    "language": "en",
+    "origin": "derived-from-facts"
+   },
+   "verification_status": "verified"
+  },
+  {
+   "announced": {
+    "basis": "standalone-date-line",
+    "derived_candidate": null,
+    "derived_rule": null,
+    "evidence": {
+     "end": 118,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "02/11/2026",
+     "start": 108
+    },
+    "value": "2026-11-02"
+   },
+   "candidate_reasons": [],
+   "config_hash": "05efef83ce166443",
+   "document_revision_id": "clipped-body-sha256:c16e023a5befec5a7ae9ead33ced15895e8554ab1c82cc060bef11aa8b353fad",
+   "duplicate_links": [],
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "event_revision_id": "rev_b50059412c729279acb5",
+   "event_type": "dividend",
+   "evidence": [
+    {
+     "end": 118,
+     "field": "announced",
+     "kind": "verbatim",
+     "span": "02/11/2026",
+     "start": 108
+    },
+    {
+     "end": 236,
+     "field": "payload.coupon_number",
+     "kind": "verbatim",
+     "span": "42",
+     "start": 234
+    },
+    {
+     "end": 264,
+     "field": "payload.amount_per_share",
+     "kind": "verbatim",
+     "span": "1.8999999998",
+     "start": 252
+    },
+    {
+     "end": 296,
+     "field": "payload.payout_date",
+     "kind": "verbatim",
+     "span": "18/11/2026",
+     "start": 286
+    },
+    {
+     "end": 326,
+     "field": "payload.entitlement_end",
+     "kind": "verbatim",
+     "span": "15/11/2026",
+     "start": 316
+    },
+    {
+     "end": 366,
+     "field": "payload.ex_date",
+     "kind": "verbatim",
+     "span": "16/11/2026",
+     "start": 356
+    }
+   ],
+   "extraction_status": "extracted",
+   "extractor_version": "disclosure-events/1.0.0",
+   "issuer": {
+    "isin": "EGS02051C018",
+    "name_ar": "القاهرة للدواجن",
+    "name_en": null,
+    "ticker": "POUL.CA"
+   },
+   "payload": {
+    "amount_per_share": {
+     "currency": "EGP",
+     "evidence": {
+      "end": 264,
+      "field": "payload.amount_per_share",
+      "kind": "verbatim",
+      "span": "1.8999999998",
+      "start": 252
+     },
+     "raw": "قيمة الكوبون : 1.8999999998 جنيه",
+     "scale": "one",
+     "value": "1.8999999998"
+    },
+    "coupon_number": "42",
+    "currency": "EGP",
+    "entitlement_end": {
+     "basis": "verbatim:تاريخ نهاية الحق",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": {
+      "end": 326,
+      "field": "payload.entitlement_end",
+      "kind": "verbatim",
+      "span": "15/11/2026",
+      "start": 316
+     },
+     "value": "2026-11-15"
+    },
+    "ex_date": {
+     "basis": "verbatim:تاريخ تحريك الحدود السعرية",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": {
+      "end": 366,
+      "field": "payload.ex_date",
+      "kind": "verbatim",
+      "span": "16/11/2026",
+      "start": 356
+     },
+     "value": "2026-11-16"
+    },
+    "payout_date": {
+     "basis": "verbatim:تاريخ التوزيع",
+     "derived_candidate": null,
+     "derived_rule": null,
+     "evidence": {
+      "end": 296,
+      "field": "payload.payout_date",
+      "kind": "verbatim",
+      "span": "18/11/2026",
+      "start": 286
+     },
+     "value": "2026-11-18"
+    },
+    "record_date": {
+     "basis": "not-stated-in-source",
+     "derived_candidate": "2026-11-17",
+     "derived_rule": "T+2 settlement from entitlement_end (UNVALIDATED — candidate only, not a fact)",
+     "evidence": null,
+     "value": null
+    }
+   },
+   "schema_version": 1,
+   "source_document_id": "egx:296893",
+   "source_kind": "primary",
+   "source_url": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296893",
+   "stale": false,
+   "subtype": "cash_dividend",
+   "summary_ar": "القاهرة للدواجن (POUL.CA) تعلن عن توزيع نقدي",
+   "summary_en": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15; ex-date 2026-11-16; payout 2026-11-18.",
+   "summary_meta": {
+    "generator": "template-v1",
+    "language": "en",
+    "origin": "derived-from-facts"
+   },
+   "verification_status": "verified"
+  }
+ ],
+ "extractor_version": "disclosure-events/1.0.0",
+ "quarter": {
+  "end": "2026-11-22",
+  "start": "2026-08-24"
+ },
+ "report": {
+  "by_extraction_status": {
+   "candidate": 1,
+   "extracted": 4
+  },
+  "by_type": {
+   "board_decision": 2,
+   "dividend": 1,
+   "earnings": 2
+  },
+  "by_verification_status": {
+   "unverified": 1,
+   "verified": 4
+  },
+  "candidates": 1,
+  "documents": 10,
+  "duplicate_documents": 0,
+  "duplicate_links": 0,
+  "events": 5,
+  "stale": 0,
+  "with_reasons": 3
+ },
+ "schema_version": 1
+}

@@ -1,0 +1,88 @@
+{
+ "as_of": "2026-11-22",
+ "base_date": "2026-11-19",
+ "base_price": 7.58,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "announced": "2026-11-02",
+   "coupon_number": "42",
+   "date_basis": "verbatim:ex-date",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -25.07,
+   "source": "disclosure-event",
+   "title": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15;",
+   "type": "dividend",
+   "verification_status": "verified"
+  }
+ ],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-22T06:22:08.070215+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 5.43,
+   "families": {
+    "price-forecast": 0.47
+   },
+   "horizon_short": false,
+   "net_score": 0.47,
+   "range_high_pct": 15.8,
+   "range_low_pct": -4.93,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 15.06,
+   "families": {
+    "price-forecast": 0.348
+   },
+   "horizon_short": false,
+   "net_score": 0.348,
+   "range_high_pct": 53.85,
+   "range_low_pct": -23.73,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 10.93,
+   "families": {
+    "price-forecast": 0.546
+   },
+   "horizon_short": false,
+   "net_score": 0.546,
+   "range_high_pct": 28.89,
+   "range_low_pct": -7.03,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "f0bbd3923eed71d65d8ff2274f563c750fcfc099deac9999c238c6d7a6df7726",
+  "digest.json": "8f26a85abd6fa588e81deab36822624e979f59714180e3dfb533d1d451d87595",
+  "ensemble.json": "78e1a69a6e726ee488dc81a8e8ec69c1d57057701693bc827397931de6d3ae13"
+ },
+ "kronos_first_row_date": "2026-11-19",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.66,
+ "sigma_daily": 0.0675,
+ "status": "present",
+ "sweep": "sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

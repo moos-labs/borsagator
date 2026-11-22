@@ -1,0 +1,55 @@
+{
+  "POUL.CA": {
+    "ticker": "POUL.CA",
+    "rows": 1209,
+    "first_date": "2021-11-21",
+    "last_date": "2026-11-18",
+    "first_close": 2.640000104904175,
+    "last_close": 7.699999809265137,
+    "info_obtained": {
+      "summary_detail": false,
+      "asset_profile": false,
+      "price": true
+    },
+    "info_fields": {
+      "summary_detail": [],
+      "asset_profile": [],
+      "price": [
+        "currency",
+        "currencySymbol",
+        "exchange",
+        "exchangeDataDelayedBy",
+        "exchangeName",
+        "fromCurrency",
+        "fulldayChange",
+        "fulldayChangePercent",
+        "fulldayPrice",
+        "lastMarket",
+        "longName",
+        "marketCap",
+        "marketState",
+        "maxAge",
+        "priceHint",
+        "quoteSourceName",
+        "quoteType",
+        "regularMarketChange",
+        "regularMarketChangePercent",
+        "regularMarketPreviousClose",
+        "regularMarketPrice",
+        "regularMarketSource",
+        "regularMarketTime",
+        "shortName",
+        "symbol",
+        "toCurrency",
+        "underlyingSymbol"
+      ]
+    },
+    "info_notes": {
+      "summary_detail": "non-dict payload (str): No fundamentals data found for symbol: POUL.CA",
+      "asset_profile": "non-dict payload (str): No fundamentals data found for symbol: POUL.CA"
+    },
+    "info_errors": {},
+    "error": null,
+    "csv_file": "POUL.CA.csv"
+  }
+}

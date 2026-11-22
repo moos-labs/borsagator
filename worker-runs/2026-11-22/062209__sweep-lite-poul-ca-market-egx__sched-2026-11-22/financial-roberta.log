@@ -1,0 +1,8 @@
+headlines: 16 English scored-input, 2 Arabic skipped, window 30d, ticker POUL.CA
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 393/393 [00:00<00:00, 14259.06it/s]
+Scored 16 texts | counts={'neutral': 10, 'negative': 3, 'positive': 3} | means=positive=0.1879, negative=0.1853, neutral=0.6268
