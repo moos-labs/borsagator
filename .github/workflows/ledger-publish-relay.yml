@@ -316,8 +316,13 @@ jobs:
             # The required context itself: the NEWEST close-gate
             # check run on the candidate SHA must be the success —
             # that is the state branch protection merges against.
+            # "Newest" sorts by check-run id: ids are monotonic
+            # with creation, and check runs carry no created_at
+            # field (verified against a real payload from PR
+            # #494 — a created_at sort key is null for every run
+            # and would silently degrade to API return order).
             NEWEST=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?per_page=100" \
-              --jq '[.check_runs[] | select(.name=="close-gate")] | sort_by(.created_at) | last | "\(.status)/\(.conclusion // "-")"')
+              --jq '[.check_runs[] | select(.name=="close-gate")] | sort_by(.id) | last | "\(.status)/\(.conclusion // "-")"')
             if [ "$NEWEST" = "completed/success" ]; then
               GATE_OK=1
               echo "close-gate succeeded on $SHA and is its newest check (run $RUN_ID)"
