@@ -14,7 +14,9 @@ git remote (no GitHub, no credentials):
     reconciles as staged (idempotent), even though the heartbeat
     timestamp moved;
   - the same branch with DIFFERENT outputs fails immediately as
-    a branch collision (the run id was reused);
+    a branch collision (the run id was reused) — including from a
+    checkout that still heads the first staged commit, where a
+    fast-forward would otherwise skip collision detection;
   - with the ledger already current, staging without a heartbeat
     stages nothing, and staging with one produces the
     heartbeat-only envelope;
@@ -33,6 +35,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 _HERE = Path(os.path.abspath(__file__)).parent
@@ -178,8 +181,13 @@ def test_staging_identical_outputs_reconcile():
         check("reconcile: first staging exits 0", r1.returncode == 0)
         # Reset the checkout to main, as the worker does per run,
         # and stage the same run again: the heartbeat timestamp
-        # differs, the ledger outputs do not.
+        # differs, the ledger outputs do not. The sleep forces a
+        # distinct heartbeat second — within one second the two
+        # envelope commits could be byte-identical, the re-push
+        # would report up-to-date, and the reconcile path this
+        # test asserts would never run (review finding on #491).
         git("-C", str(repo), "reset", "--hard", "origin/main")
+        time.sleep(1.1)
         r2 = run_publisher(repo, "--commit", "--fail-hard",
                            "--publish-branch", BRANCH,
                            "--guard-heartbeat")
@@ -209,6 +217,33 @@ def test_staging_collision_fails_immediately():
         doc = json.loads(remote_show(remote, BRANCH,
                                      "ledger/ledger.json"))
         check("collision: the branch still carries variant 1",
+              doc["counts"]["forecasts"] == 3)
+
+
+def test_staging_no_fast_forward_over_existing_branch():
+    # Review finding on #491: if the checkout still HEADS the
+    # first staged commit, a second publish with different
+    # outputs could fast-forward the same branch, skipping
+    # collision detection. Staging is create-only: the existing
+    # branch is reconciled by content, never updated.
+    with tempfile.TemporaryDirectory() as td:
+        remote, repo = make_repo(Path(td))
+        r1 = run_publisher(repo, "--commit", "--fail-hard",
+                           "--publish-branch", BRANCH,
+                           "--guard-heartbeat", variant="1")
+        check("no-ff: first staging exits 0", r1.returncode == 0)
+        tip = remote_ref(remote, BRANCH)
+        # NO reset: HEAD is still the first envelope commit.
+        r2 = run_publisher(repo, "--commit", "--fail-hard",
+                           "--publish-branch", BRANCH,
+                           "--guard-heartbeat", variant="2")
+        check("no-ff: different outputs from a dirty checkout "
+              "fail as a collision", r2.returncode == 1)
+        check("no-ff: the branch tip did not move",
+              remote_ref(remote, BRANCH) == tip)
+        doc = json.loads(remote_show(remote, BRANCH,
+                                     "ledger/ledger.json"))
+        check("no-ff: the branch still carries variant 1",
               doc["counts"]["forecasts"] == 3)
 
 
@@ -256,6 +291,7 @@ def main():
     test_staging_lands_on_branch_not_main()
     test_staging_identical_outputs_reconcile()
     test_staging_collision_fails_immediately()
+    test_staging_no_fast_forward_over_existing_branch()
     test_staging_unchanged_and_heartbeat_only()
     print(f"\n{PASSED} checks passed")
 

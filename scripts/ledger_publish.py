@@ -809,18 +809,40 @@ def _git_publish(new_doc, branch=None):
         log("leaving the retry to publish() "
             "(reset to origin/main + recompute, never rebase)")
         return False
-    # Issue #443 staging mode: push the envelope commit to the
-    # per-run branch. A fresh branch accepts the push outright —
-    # main moving underneath cannot reject it (the relay merges
-    # the branch; divergence is the merge's business, not the
-    # push's). A rejection therefore means the branch already
-    # exists: either an earlier attempt of THIS run staged the
-    # identical envelope (reconcile as staged), or the run id was
-    # reused with different content (a collision no recompute can
-    # fix — publish() fails it immediately, no retry).
+    # Issue #443 staging mode: the push CREATES the per-run
+    # branch — it never updates one. A fresh branch accepts the
+    # push outright (main moving underneath cannot reject it; the
+    # relay merges the branch, divergence is the merge's
+    # business). If the branch already exists, this run's envelope
+    # is either already there (identical ledger outputs: reconcile
+    # as staged) or the run id was reused with different content
+    # (a collision no recompute can fix — publish() fails it
+    # immediately, no retry). The existence check comes FIRST: a
+    # checkout still holding an earlier staged commit could
+    # otherwise fast-forward different outputs onto the existing
+    # branch and skip collision detection entirely (review
+    # finding on #491).
+    if _remote_branch_sha(branch) is not None:
+        if _staged_tree_matches(branch):
+            log(f"staging branch {branch} already carries these "
+                "exact ledger outputs — an earlier attempt staged "
+                "them; treating as staged (idempotent)")
+            return True
+        _record_git_failure(
+            "branch-collision",
+            f"git push origin HEAD:refs/heads/{branch}",
+            subprocess.CompletedProcess(
+                args=[], returncode=1, stdout="",
+                stderr="the staging branch already exists with "
+                       "different ledger content (run id reused)"))
+        return False
     r = git("push", "origin", f"HEAD:refs/heads/{branch}")
     if r.returncode == 0:
         return True
+    # The push was rejected: either the branch appeared between
+    # the check and the push (a creation race — reconcile by
+    # content, exactly as above), or the push itself failed
+    # (auth, network) and publish()'s retry owns it.
     if _staged_tree_matches(branch):
         log(f"staging branch {branch} already carries these exact "
             "ledger outputs — an earlier attempt staged them; "
@@ -1233,7 +1255,14 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                               section_published(old, new, old_w, new_w,
                                                 new_bench))
                 return 0
-            if git_publish(new, publish_branch):
+            # Direct mode keeps the historical one-argument call
+            # shape: the #394 regression harness stubs git_publish
+            # with a one-argument replacement.
+            if publish_branch is not None:
+                published = git_publish(new, publish_branch)
+            else:
+                published = git_publish(new)
+            if published:
                 if publish_branch is not None:
                     # Issue #443: staged is PENDING, not published.
                     # No digest "published" claim, no signal clear —
