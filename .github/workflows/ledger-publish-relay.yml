@@ -63,6 +63,17 @@ name: ledger-publish-relay
 # guard (ledger-guard.yml) dispatches this relay directly,
 # because its staging push is made with GITHUB_TOKEN and
 # GITHUB_TOKEN pushes do not fire workflows at all.
+#
+# Merge-race hardening (live evidence, PR #494's first relay,
+# 2026-11-22): branch protection reads the NEWEST close-gate
+# check on the candidate SHA, and the PR's own approval-required
+# pull_request check can materialize after the relay dispatches
+# its gate — shadowing the dispatched success and refusing the
+# merge — while GitHub's mergeability computation itself lags
+# by seconds. The gate step therefore settles before dispatch,
+# verifies the NEWEST check (not just any), re-dispatches when
+# shadowed, and the merge step retries a refused merge with
+# backoff under the same exact-head precondition.
 
 on:
   workflow_dispatch:
@@ -235,59 +246,90 @@ jobs:
           PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
         run: |
           set -euo pipefail
-          BEFORE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          gh workflow run pr-close-gate.yml --ref "$BRANCH" -f pr_number="$PR_NUMBER"
-          echo "close-gate dispatched for PR #$PR_NUMBER on $BRANCH ($SHA)"
-          # Find the dispatched run (newest workflow_dispatch run of
-          # the gate on this branch created at/after the dispatch).
-          # NOTE: gh api's --jq takes a bare filter — jq's --arg is
-          # NOT accepted there (review finding on #491); $BEFORE is
-          # a machine-generated ISO timestamp (digits, '-', ':',
-          # 'T', 'Z' only), safe to interpolate into the filter.
-          RUN_ID=""
-          for i in $(seq 1 12); do
-            RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pr-close-gate.yml/runs?branch=$BRANCH&event=workflow_dispatch&per_page=10" \
-              --jq "[.workflow_runs[] | select(.created_at >= \"$BEFORE\")][0].id // empty")
-            [ -n "$RUN_ID" ] && break
-            sleep 10
-          done
-          if [ -z "$RUN_ID" ]; then
-            echo "::error::the dispatched close-gate run never appeared for PR #$PR_NUMBER"
-            exit 1
-          fi
-          echo "close-gate run: $RUN_ID"
-          # Wait for the run to complete (15-minute cap; the gate
-          # normally finishes in about a minute).
-          DEADLINE=$(( $(date +%s) + 900 ))
-          while : ; do
-            read -r STATUS CONCLUSION HEAD_SHA < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
-              --jq '[.status, (.conclusion // "-"), .head_sha] | @tsv')
-            if [ "$STATUS" = "completed" ]; then
-              if [ "$HEAD_SHA" != "$SHA" ]; then
-                echo "::error::close-gate run $RUN_ID executed on $HEAD_SHA, not the candidate $SHA — refusing"
-                exit 1
-              fi
-              if [ "$CONCLUSION" != "success" ]; then
-                echo "::error::close-gate run $RUN_ID concluded $CONCLUSION for PR #$PR_NUMBER — refusing to merge"
-                exit 1
-              fi
-              break
-            fi
-            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
-              echo "::error::close-gate run $RUN_ID did not complete within 15 minutes"
+          # Settle: a just-opened PR's own pull_request gate run is
+          # approval-required (the PR was created with
+          # GITHUB_TOKEN) and its check run materializes a few
+          # seconds after the open. Branch protection reads the
+          # NEWEST close-gate check on the candidate SHA, so the
+          # dispatched run's check must be created after it —
+          # dispatching instantly can leave the dispatched success
+          # shadowed by the still-pending approval-required check
+          # (proven live on PR #494's first relay, 2026-11-22:
+          # gate success at 10:40:15, merge refused at 10:40:16).
+          sleep 20
+          # Dispatch → wait → verify, in up to 3 rounds. Branch
+          # protection reads the NEWEST close-gate check run on
+          # the candidate SHA; a check created after ours (the
+          # PR's approval-required check if it materialized late,
+          # or a re-triggered pull_request run) can shadow a
+          # successful dispatched check with a non-success state.
+          # Re-dispatching makes our check the newest again. A
+          # gate run that concludes non-success is a real refusal
+          # — it exits immediately, never re-dispatched.
+          GATE_OK=""
+          for ROUND in 1 2 3; do
+            BEFORE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            gh workflow run pr-close-gate.yml --ref "$BRANCH" -f pr_number="$PR_NUMBER"
+            echo "close-gate dispatched for PR #$PR_NUMBER on $BRANCH ($SHA), round $ROUND"
+            # Find the dispatched run (newest workflow_dispatch
+            # run of the gate on this branch created at/after the
+            # dispatch). NOTE: gh api's --jq takes a bare filter —
+            # jq's --arg is NOT accepted there (review finding on
+            # #491); $BEFORE is a machine-generated ISO timestamp
+            # (digits, '-', ':', 'T', 'Z' only), safe to
+            # interpolate into the filter.
+            RUN_ID=""
+            for i in $(seq 1 12); do
+              RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pr-close-gate.yml/runs?branch=$BRANCH&event=workflow_dispatch&per_page=10" \
+                --jq "[.workflow_runs[] | select(.created_at >= \"$BEFORE\")][0].id // empty")
+              [ -n "$RUN_ID" ] && break
+              sleep 10
+            done
+            if [ -z "$RUN_ID" ]; then
+              echo "::error::the dispatched close-gate run never appeared for PR #$PR_NUMBER"
               exit 1
             fi
-            sleep 20
+            echo "close-gate run: $RUN_ID"
+            # Wait for the run to complete (15-minute cap; the
+            # gate normally finishes in about a minute).
+            DEADLINE=$(( $(date +%s) + 900 ))
+            while : ; do
+              read -r STATUS CONCLUSION HEAD_SHA < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
+                --jq '[.status, (.conclusion // "-"), .head_sha] | @tsv')
+              if [ "$STATUS" = "completed" ]; then
+                if [ "$HEAD_SHA" != "$SHA" ]; then
+                  echo "::error::close-gate run $RUN_ID executed on $HEAD_SHA, not the candidate $SHA — refusing"
+                  exit 1
+                fi
+                if [ "$CONCLUSION" != "success" ]; then
+                  echo "::error::close-gate run $RUN_ID concluded $CONCLUSION for PR #$PR_NUMBER — refusing to merge"
+                  exit 1
+                fi
+                break
+              fi
+              if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+                echo "::error::close-gate run $RUN_ID did not complete within 15 minutes"
+                exit 1
+              fi
+              sleep 20
+            done
+            # The required context itself: the NEWEST close-gate
+            # check run on the candidate SHA must be the success —
+            # that is the state branch protection merges against.
+            NEWEST=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?per_page=100" \
+              --jq '[.check_runs[] | select(.name=="close-gate")] | sort_by(.created_at) | last | "\(.status)/\(.conclusion // "-")"')
+            if [ "$NEWEST" = "completed/success" ]; then
+              GATE_OK=1
+              echo "close-gate succeeded on $SHA and is its newest check (run $RUN_ID)"
+              break
+            fi
+            echo "::warning::newest close-gate check on $SHA is '$NEWEST', not completed/success — a later-created check shadows the dispatched success; re-dispatching"
+            sleep 10
           done
-          # Belt and braces: the required context itself must be a
-          # successful close-gate check run on the candidate SHA.
-          N=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?per_page=100" \
-            --jq '[.check_runs[] | select(.name=="close-gate" and .status=="completed" and .conclusion=="success")] | length')
-          if [ "$N" -lt 1 ]; then
-            echo "::error::no successful close-gate check run found on $SHA after the gate run — refusing to merge"
+          if [ -z "$GATE_OK" ]; then
+            echo "::error::the close-gate check on $SHA never became the newest successful check — refusing to merge"
             exit 1
           fi
-          echo "close-gate succeeded on $SHA (run $RUN_ID)"
 
       - name: Merge the PR (exact-head precondition)
         id: merge
@@ -299,24 +341,39 @@ jobs:
           PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
         run: |
           set -euo pipefail
-          if MERGE_SHA=$(gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/merge" \
-              -f merge_method=merge -f sha="$SHA" --jq .sha 2>/tmp/merge-err); then
-            echo "merge_sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
-            echo "Merged PR #$PR_NUMBER at $MERGE_SHA"
-          else
+          # Bounded retries: GitHub computes mergeability
+          # asynchronously and the required-check state can lag
+          # the gate step by seconds (PR #494's first relay,
+          # 2026-11-22: dispatched gate success verified, merge
+          # refused one second later, PR mergeable shortly
+          # after). Every attempt keeps the exact-head
+          # precondition; an already-merged PR reconciles at any
+          # attempt (an earlier relay merged, then crashed).
+          MERGED_SHA=""
+          for ATTEMPT in 1 2 3 4 5; do
+            if MERGE_SHA=$(gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/merge" \
+                -f merge_method=merge -f sha="$SHA" --jq .sha 2>/tmp/merge-err); then
+              MERGED_SHA="$MERGE_SHA"
+              echo "Merged PR #$PR_NUMBER at $MERGED_SHA (attempt $ATTEMPT)"
+              break
+            fi
             cat /tmp/merge-err || true
-            # Race/reconcile: the PR may already be merged (an
-            # earlier relay attempt merged, then crashed).
             read -r STATE MCS < <(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
               --jq '[.state, (.merge_commit_sha // "-")] | @tsv')
             if [ "$STATE" = "closed" ] && [ "$MCS" != "-" ] && [ -n "$MCS" ]; then
               MERGED=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq .merged)
               if [ "$MERGED" = "true" ]; then
-                echo "merge_sha=$MCS" >> "$GITHUB_OUTPUT"
+                MERGED_SHA="$MCS"
                 echo "PR #$PR_NUMBER was already merged at $MCS — reconciling."
-                exit 0
+                break
               fi
             fi
+            if [ "$ATTEMPT" -lt 5 ]; then
+              echo "merge attempt $ATTEMPT refused — retrying in 30s"
+              sleep 30
+            fi
+          done
+          if [ -z "$MERGED_SHA" ]; then
             # Superseded diagnosis (review finding on #491): two
             # envelopes staged from the same main both rewrite the
             # heartbeat, so once one merges, the other's PR
@@ -335,6 +392,7 @@ jobs:
             echo "::error::merge of PR #$PR_NUMBER failed and the PR is not merged"
             exit 1
           fi
+          echo "merge_sha=$MERGED_SHA" >> "$GITHUB_OUTPUT"
 
       - name: Verify the merge on main
         id: verify
