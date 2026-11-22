@@ -15,6 +15,16 @@ push, with retries for a rejected push); otherwise the slot stays
 un-done and the failure is recorded (ledger-failure.json +
 missed-<slot> marker).
 
+Issue #443 (2026-11-22) superseded the delivery half of (a):
+the direct heartbeat push was itself declined by branch
+protection (the close-gate cause), so the guard now stages an
+envelope on publish/ledger-<job-id> and the ledger-publish relay
+lands it; the done-gate principle — done only when the run's
+heartbeat is confirmed on main — is unchanged. The
+_write_guard_heartbeat / run_ledger_guard tests moved to
+worker/test_worker_443.py in envelope form; the pending-slot
+and watchdog halves of this file are unaffected.
+
 (b) The worker-side watchdog — the backstop for exactly this —
 never paged. `guard_pending_from_bus` treated any guard id in the
 append-only queue.json that was not done as "a guard run is
@@ -132,18 +142,6 @@ def make_checkout(base, remote):
     return co
 
 
-def main_heartbeat(remote):
-    r = git("--git-dir", str(remote), "show",
-            "main:ledger/guard-heartbeat.json")
-    return json.loads(r.stdout)
-
-
-def write_publisher(checkout, exit_code):
-    p = checkout / "scripts" / "ledger_publish.py"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(f"import sys\nsys.exit({exit_code})\n")
-
-
 def setup_bus(tmp, queue_entries, done_ids=(), claim_ids=()):
     worker.BUS = tmp / "bus"
     worker.OUT = tmp / "out"
@@ -219,261 +217,12 @@ def test_pending_future_slot_is_not_pending():
                                         [], [], now=NOW) is True)
 
 
-# --- (a) _write_guard_heartbeat --------------------------------------
-
-def test_heartbeat_push_lands_and_verifies():
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        ok = worker._write_guard_heartbeat(co, "ok", SLOT)
-        check("heartbeat: push lands and verifies", ok is True)
-        live = main_heartbeat(remote)
-        check("heartbeat: on-main run_id is the job id",
-              live.get("run_id") == SLOT)
-        check("heartbeat: on-main status is ok",
-              live.get("status") == "ok")
-
-
-def test_heartbeat_push_retries_after_rejection():
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        real_sh = worker.sh
-        pushes = {"n": 0}
-
-        def flaky_sh(cmd, cwd=None, env=None, timeout=3600):
-            if "push origin HEAD:main" in cmd:
-                pushes["n"] += 1
-                if pushes["n"] == 1:
-                    return subprocess.CompletedProcess(
-                        cmd, 1, "", "rejected: non-fast-forward")
-            return real_sh(cmd, cwd=cwd, env=env, timeout=timeout)
-
-        worker.sh = flaky_sh
-        try:
-            ok = worker._write_guard_heartbeat(co, "ok", SLOT)
-        finally:
-            worker.sh = real_sh
-        check("heartbeat: rejected push is retried and lands",
-              ok is True)
-        check("heartbeat: push attempted twice", pushes["n"] == 2)
-        check("heartbeat: retried push is on main",
-              main_heartbeat(remote).get("run_id") == SLOT)
-
-
-def test_heartbeat_total_push_failure_returns_false():
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        git("-C", str(co), "remote", "set-url", "origin",
-            str(base / "no-such-remote.git"))
-        ok = worker._write_guard_heartbeat(co, "ok", SLOT)
-        check("heartbeat: broken remote returns False", ok is False)
-        live = main_heartbeat(remote)
-        check("heartbeat: nothing landed on main after failure",
-              live.get("last_run_utc") == "2026-11-20T14:55:37Z")
-
-
-def test_heartbeat_failed_reset_does_not_stack_commit():
-    # CodeRabbit #440: after a rejected push the heartbeat commit
-    # stays at HEAD. If the next attempt's reset fails and the code
-    # carries on, the new heartbeat is committed on top of the
-    # rejected one and the next push publishes BOTH to main.
-    # Fixed: a failed fetch/reset stops the attempt, so the retry
-    # resets cleanly first. Remote main must hold exactly one new
-    # commit (seed + heartbeat), never the stacked pair.
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        real_sh = worker.sh
-        calls = {"push": 0, "reset": 0}
-        # Each attempt must stamp a different second, or the
-        # second attempt stages nothing and the old code's
-        # unverified empty-diff branch returns True vacuously —
-        # the stacked-commit failure would never be exercised.
-        start = datetime(2026, 11, 20, 18, 47, 30,
-                         tzinfo=timezone.utc)
-
-        class Advancing(datetime):
-            _t = [start]
-
-            @classmethod
-            def now(cls, tz=None):
-                t = cls._t[0]
-                cls._t[0] = t + timedelta(seconds=10)
-                return t
-
-        def flaky_sh(cmd, cwd=None, env=None, timeout=3600):
-            if "push origin HEAD:main" in cmd:
-                calls["push"] += 1
-                if calls["push"] == 1:
-                    return subprocess.CompletedProcess(
-                        cmd, 1, "", "rejected: non-fast-forward")
-            if "reset --hard origin/main" in cmd:
-                calls["reset"] += 1
-                if calls["reset"] == 2:
-                    return subprocess.CompletedProcess(
-                        cmd, 1, "", "fatal: unable to read tree")
-            return real_sh(cmd, cwd=cwd, env=env, timeout=timeout)
-
-        worker.sh = flaky_sh
-        real_dt = worker.datetime
-        worker.datetime = Advancing
-        try:
-            ok = worker._write_guard_heartbeat(co, "ok", SLOT)
-        finally:
-            worker.sh = real_sh
-            worker.datetime = real_dt
-        check("heartbeat: push-reject + reset-fail still lands",
-              ok is True)
-        check("heartbeat: push attempted twice", calls["push"] == 2)
-        n = git("--git-dir", str(remote), "rev-list", "--count",
-                "main").stdout.strip()
-        check("heartbeat: exactly one new commit on main (no "
-              "stacked rejected commit)", n == "2")
-        check("heartbeat: reset attempted three times",
-              calls["reset"] == 3)
-        check("heartbeat: on-main run_id is the job id",
-              main_heartbeat(remote).get("run_id") == SLOT)
-
-
-def test_heartbeat_fetch_failure_every_attempt_returns_false():
-    # CodeRabbit #440: a fetch that fails on every attempt must
-    # refuse the heartbeat, not commit-and-push against a stale
-    # origin/main ref. (Old code ignored the fetch return code and
-    # would land the heartbeat anyway.)
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        real_sh = worker.sh
-
-        def dead_fetch_sh(cmd, cwd=None, env=None, timeout=3600):
-            if "fetch origin main" in cmd:
-                return subprocess.CompletedProcess(
-                    cmd, 1, "", "fatal: unable to connect")
-            return real_sh(cmd, cwd=cwd, env=env, timeout=timeout)
-
-        worker.sh = dead_fetch_sh
-        try:
-            ok = worker._write_guard_heartbeat(co, "ok", SLOT)
-        finally:
-            worker.sh = real_sh
-        check("heartbeat: fetch failure on every attempt is False",
-              ok is False)
-        check("heartbeat: nothing landed on main after fetch "
-              "failure",
-              main_heartbeat(remote).get("last_run_utc")
-              == "2026-11-20T14:55:37Z")
-
-
-def test_heartbeat_empty_diff_only_counts_when_verified():
-    # Same job, same frozen second, healthy remote: the second
-    # write stages nothing — it counts only because the on-main
-    # content already matches. Break the remote afterwards and the
-    # same duplicate must NOT count (the old code returned True on
-    # the diff alone, unverified).
-    with tempfile.TemporaryDirectory() as td:
-        base = Path(td)
-        remote = make_remote(base)
-        co = make_checkout(base, remote)
-        frozen = datetime(2026, 11, 20, 18, 47, 30,
-                          tzinfo=timezone.utc)
-
-        class Frozen(datetime):
-            @classmethod
-            def now(cls, tz=None):
-                return frozen
-
-        real_dt = worker.datetime
-        worker.datetime = Frozen
-        try:
-            first = worker._write_guard_heartbeat(co, "ok", SLOT)
-            second = worker._write_guard_heartbeat(co, "ok", SLOT)
-        finally:
-            worker.datetime = real_dt
-        check("heartbeat: first write lands", first is True)
-        check("heartbeat: same-second duplicate verifies on main",
-              second is True)
-        git("-C", str(co), "remote", "set-url", "origin",
-            str(base / "no-such-remote.git"))
-        worker.datetime = Frozen
-        try:
-            third = worker._write_guard_heartbeat(co, "ok", SLOT)
-        finally:
-            worker.datetime = real_dt
-        check("heartbeat: duplicate with unverifiable remote is "
-              "False, not a free True", third is False)
-
-
-# --- (a) run_ledger_guard --------------------------------------------
-
-def _guard_setup(tmp, exit_code, break_remote=False):
-    base = Path(tmp)
-    remote = make_remote(base)
-    co = make_checkout(base, remote)
-    write_publisher(co, exit_code)
-    if break_remote:
-        git("-C", str(co), "remote", "set-url", "origin",
-            str(base / "no-such-remote.git"))
-    setup_bus(base / "bus-tmp", [])
-    worker._ensure_main_checkout = lambda: co
-    worker.scripts_match = lambda a, b, names: True
-    return co, remote
-
-
-def test_guard_returns_false_when_push_fails():
-    with tempfile.TemporaryDirectory() as td:
-        co, remote = _guard_setup(td, 0, break_remote=True)
-        job = {"id": SLOT, "job": "ledger-guard"}
-        ok = worker.run_ledger_guard(job)
-        check("guard: push failure refuses done", ok is False)
-        fail = json.loads(
-            (worker.BUS / "queue" / "ledger-failure.json").read_text())
-        check("guard: failure recorded as heartbeat-push-failed",
-              fail.get("kind") == "heartbeat-push-failed")
-        check("guard: failure record names the slot",
-              fail.get("job_id") == SLOT)
-        missed = worker.BUS / "queue" / "missed-2026-11-20T1847Z.json"
-        check("guard: missed marker written",
-              missed.exists())
-        check("guard: missed marker names the slot + #434",
-              SLOT in missed.read_text() and "#434" in missed.read_text())
-        check("guard: no heartbeat landed on main",
-              main_heartbeat(remote).get("last_run_utc")
-              == "2026-11-20T14:55:37Z")
-
-
-def test_guard_returns_true_when_push_lands():
-    with tempfile.TemporaryDirectory() as td:
-        co, remote = _guard_setup(td, 0)
-        job = {"id": SLOT, "job": "ledger-guard"}
-        ok = worker.run_ledger_guard(job)
-        check("guard: landed push is done", ok is True)
-        check("guard: no failure record on success",
-              not (worker.BUS / "queue"
-                   / "ledger-failure.json").exists())
-        check("guard: heartbeat on main carries the job id",
-              main_heartbeat(remote).get("run_id") == SLOT)
-
-
-def test_guard_publisher_failed_but_heartbeat_lands_is_done():
-    with tempfile.TemporaryDirectory() as td:
-        co, remote = _guard_setup(td, 1)
-        job = {"id": SLOT, "job": "ledger-guard"}
-        ok = worker.run_ledger_guard(job)
-        check("guard: publisher failed + heartbeat landed is done",
-              ok is True)
-        fail = json.loads(
-            (worker.BUS / "queue" / "ledger-failure.json").read_text())
-        check("guard: publisher failure still recorded",
-              fail.get("kind") == "publish-failed")
-        check("guard: failed-run heartbeat carries status failed",
-              main_heartbeat(remote).get("status") == "failed")
+# --- (a) guard heartbeat / run_ledger_guard -------------------------
+# Moved to worker/test_worker_443.py (issue #443): the direct-push
+# _write_guard_heartbeat no longer exists — the guard stages an
+# envelope on publish/ledger-<job-id> and confirms the relay's
+# merge on main. The #434 done-gate principle is unchanged and is
+# what the 443 tests assert.
 
 
 # --- (b) run_ledger_watchdog ------------------------------------------
@@ -615,15 +364,6 @@ TESTS = [
     test_pending_boundary,
     test_pending_unparsable_guard_id_is_not_pending,
     test_pending_future_slot_is_not_pending,
-    test_heartbeat_push_lands_and_verifies,
-    test_heartbeat_push_retries_after_rejection,
-    test_heartbeat_failed_reset_does_not_stack_commit,
-    test_heartbeat_fetch_failure_every_attempt_returns_false,
-    test_heartbeat_total_push_failure_returns_false,
-    test_heartbeat_empty_diff_only_counts_when_verified,
-    test_guard_returns_false_when_push_fails,
-    test_guard_returns_true_when_push_lands,
-    test_guard_publisher_failed_but_heartbeat_lands_is_done,
     test_watchdog_pages_when_stale_and_poison_slot_present,
     test_watchdog_suppressed_when_recent_guard_pending,
     test_watchdog_returns_false_when_alert_push_fails,

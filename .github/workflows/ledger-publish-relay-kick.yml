@@ -1,0 +1,45 @@
+name: ledger-publish-relay-kick
+
+# Issue #443: the push half of the ledger-publish relay.
+#
+# The publisher stages each guard publish on a per-run branch
+# publish/ledger-<run-id> (worker PAT pushes fire workflows
+# normally). All privileged relay logic lives in
+# ledger-publish-relay.yml and must execute from MAIN's reviewed
+# copy — never from the pushed branch, whose content is
+# candidate-controlled (INS-REVIEW-075 change C). This kick is
+# therefore the smallest possible push-triggered workflow: its
+# single action is dispatching the relay (workflow_dispatch runs
+# are exempt from the GITHUB_TOKEN no-trigger rule) with the
+# branch name. The relay re-validates everything about the
+# branch — prefix, ledger/**-only diff, exact-head merge — so a
+# tampered or stray kick can at worst dispatch a relay run that
+# refuses an invalid branch.
+#
+# The manual Actions guard (ledger-guard.yml) does NOT use this
+# kick: its staging push is made with GITHUB_TOKEN, and
+# GITHUB_TOKEN pushes do not fire workflows at all — it dispatches
+# the relay directly from its own final step.
+
+on:
+  push:
+    branches:
+      - 'publish/ledger-*'
+
+permissions:
+  actions: write
+
+jobs:
+  kick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch the ledger-publish relay on main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh workflow run ledger-publish-relay.yml \
+            --repo "$GITHUB_REPOSITORY" -f branch="$BRANCH"
+          echo "ledger-publish relay dispatched for $BRANCH"

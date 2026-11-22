@@ -145,6 +145,35 @@ archive tree, which locked in any incomplete ledger published before
 issue #116 (a missing sweep was never re-added until the tree moved
 again). Revalidation costs one ledger run per guard tick and keeps
 that lock-in impossible.
+
+Issue #443: main's branch protection requires the `close-gate`
+status check, which a commit pushed directly by the worker never
+carries — every direct publish was declined by the protected-branch
+hook, and the ledger went stale from 2026-11-20. The publisher
+therefore grew a staging mode (--publish-branch publish/ledger-<id>):
+the same compute / validate / retry cycle, but the commit is pushed
+to a per-run staging branch instead of main, and the ledger-publish
+relay (.github/workflows/ledger-publish-relay.yml) turns the branch
+into a PR, executes the real close-gate on the candidate SHA via
+workflow_dispatch, merges it, and only then is the publish landed.
+A staged publish is PENDING, not published: the digest section says
+so, and the #128 failure signal is NOT cleared here — clearing it
+is the relay's job, after a verified merge. The reset + recompute
+retry is unchanged, with one staging-only shortcut: a push rejected
+because an earlier attempt of this same run already staged the
+identical ledger outputs reconciles as staged (idempotent), and a
+staging branch that already exists with DIFFERENT ledger content
+fails immediately (branch collision) instead of burning retries —
+the run id was reused, and no recompute can fix that. With
+--guard-heartbeat the staged commit also carries a fresh
+ledger/guard-heartbeat.json (status ok, run id from LEDGER_RUN_ID
+/ GITHUB_RUN_ID): one guard run produces ONE envelope commit with
+the validated outputs plus its heartbeat, or the heartbeat alone
+when the outputs are unchanged. A failed run stages nothing here —
+the caller (worker / ledger-guard.yml) stages a failed-status
+heartbeat-only envelope instead, so invalid ledger data is never
+staged. The direct-push mode remains for the sweep path
+(orchestrate.yml), unchanged.
 """
 import argparse, json, os, random, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request, urllib.parse
 from datetime import datetime, timezone
@@ -469,6 +498,50 @@ def section_skipped(target):
             "until the next successful rerun.")
 
 
+def section_staged(new, branch):
+    """Issue #443: the staging-mode digest section. Staged is
+    PENDING, not published — the words must not claim the ledger
+    is on main before the relay's verified merge."""
+    sha = str(new["source"]["tree_sha"])[:8]
+    commit = str(new["source"].get("commit_sha") or "")[:8]
+    return ("## 📒 Calibration ledger\n\n"
+            f"Ledger rerun (archive tree `{sha}`, commit `{commit}`): "
+            f"{_counts_line(new)}. The update is staged on branch "
+            f"`{branch}` for PR-based publication to `main` — it is "
+            "PENDING the ledger-publish relay merge and is not on "
+            "main yet; the new weights take effect once the relay "
+            "lands it.")
+
+
+def guard_heartbeat_doc():
+    """The guard heartbeat document for a staged envelope (issue
+    #443; the file itself is issue #128's). Written into the staged
+    commit when --guard-heartbeat is passed, so one guard run
+    produces one envelope: validated ledger outputs + this
+    heartbeat, or the heartbeat alone when the outputs are
+    unchanged. Status is "ok" by construction — this is only
+    written on the success path, just before the commit; a failed
+    run's failed-status heartbeat is staged by the caller instead.
+    The run id comes from LEDGER_RUN_ID (the worker passes its job
+    id; ledger-guard.yml passes its run id) and falls back to
+    GITHUB_RUN_ID. It is a string on this path (the Actions
+    heartbeat step used to write an int; the watchdog reads only
+    last_run_utc + status, and the worker compares run ids as
+    strings)."""
+    run_id = os.environ.get("LEDGER_RUN_ID") or \
+        os.environ.get("GITHUB_RUN_ID") or None
+    return {
+        "last_run_utc": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"),
+        "run_id": run_id,
+        "status": "ok",
+        "workflow": "ledger-guard",
+        "note": ("Written by every completed ledger-guard run; the "
+                 "watchdog (ledger-guard-watchdog.yml) pages when "
+                 "this is older than 90 minutes."),
+    }
+
+
 def section_failed(reason):
     reason = " ".join(str(reason).split())[:220]
     return ("## ⚠️ Calibration ledger\n\n"
@@ -580,20 +653,22 @@ def ensure_clean_checkout():
                    ", ".join(paths[:5]))
 
 
-def git_publish(new_doc):
-    """Commit ledger/ and push to main. Returns True on success.
-    Issue #119: a timeout / interrupt anywhere in this path must
-    never strand the checkout mid-rebase — the wrapper aborts any
-    in-progress rebase (e.g. one left by a killed earlier run) and
-    returns False. NOTE: this function performs NO rebase itself
-    any more (see _git_publish): a rejected push is retried by
-    publish(), which resets to origin/main and recomputes.
-    Issue #127: a failure's cause is recorded in LAST_GIT_* (see
-    _record_git_failure) so publish() can name it in the digest
-    instead of asserting a push failure."""
+def git_publish(new_doc, branch=None):
+    """Commit ledger/ and push it — to main, or (issue #443
+    staging mode) to the per-run branch `branch`. Returns True on
+    success (in staging mode: staged, which is PENDING, not
+    published). Issue #119: a timeout / interrupt anywhere in this
+    path must never strand the checkout mid-rebase — the wrapper
+    aborts any in-progress rebase (e.g. one left by a killed
+    earlier run) and returns False. NOTE: this function performs
+    NO rebase itself any more (see _git_publish): a rejected push
+    is retried by publish(), which resets to origin/main and
+    recomputes. Issue #127: a failure's cause is recorded in
+    LAST_GIT_* (see _record_git_failure) so publish() can name it
+    in the digest instead of asserting a push failure."""
     global LAST_GIT_STAGE, LAST_GIT_DETAIL, LAST_GIT_ERROR
     try:
-        return _git_publish(new_doc)
+        return _git_publish(new_doc, branch)
     except (subprocess.TimeoutExpired, KeyboardInterrupt) as e:
         LAST_GIT_STAGE = "interrupted"
         LAST_GIT_DETAIL = f"{type(e).__name__} during git publish"
@@ -648,12 +723,57 @@ def _publish_fail_reason(stage, detail, cause):
     of asserting a push failure."""
     if stage == "push":
         return "git push of ledger/ to main failed: " + detail
+    if stage == "push-staging":
+        return "git push of ledger/ to the staging branch failed: " \
+            + detail
+    if stage == "branch-collision":
+        return ("ledger publish failed: the staging branch already "
+                "exists with different ledger content (the run id "
+                "was reused): " + detail)
     if stage:
         return f"ledger publish failed at git {stage}: {detail}"
     return cause or "ledger publish failed"
 
 
-def _git_publish(new_doc):
+def _remote_branch_sha(branch):
+    """HEAD sha of refs/heads/<branch> on origin, or None when the
+    branch does not exist (or cannot be read). Issue #443: the
+    staging-mode push uses this to tell a fresh branch apart from
+    an earlier attempt's envelope."""
+    r = git("ls-remote", "origin", f"refs/heads/{branch}")
+    if r.returncode != 0 or not r.stdout.strip():
+        return None
+    return r.stdout.split()[0]
+
+
+def _staged_tree_matches(branch):
+    """True when origin's staging branch already carries exactly
+    this checkout's HEAD ledger outputs (issue #443 idempotency:
+    an earlier attempt of this same run staged the identical
+    envelope and then died before reporting — reconcile as
+    staged, never duplicate, never treat as a failure). The
+    guard heartbeat is deliberately NOT compared: it is
+    rewritten with a fresh timestamp on every attempt, so it can
+    never match — the envelope's identity is the ledger outputs
+    (FILES). A file missing on both sides counts as matching;
+    missing on exactly one side does not."""
+    r = git("fetch", "origin",
+            f"+refs/heads/{branch}:refs/remotes/origin/{branch}")
+    if r.returncode != 0:
+        return False
+    for name in FILES:
+        a = git("rev-parse", f"HEAD:ledger/{name}")
+        b = git("rev-parse",
+                f"refs/remotes/origin/{branch}:ledger/{name}")
+        if (a.returncode == 0) != (b.returncode == 0):
+            return False
+        if a.returncode == 0 and \
+                a.stdout.strip() != b.stdout.strip():
+            return False
+    return True
+
+
+def _git_publish(new_doc, branch=None):
     global LAST_GIT_STAGE, LAST_GIT_DETAIL, LAST_GIT_ERROR
     LAST_GIT_STAGE = ""
     LAST_GIT_DETAIL = ""
@@ -672,19 +792,70 @@ def _git_publish(new_doc):
     if r.returncode != 0:
         _record_git_failure("commit", "git commit", r)
         return False
-    r = git("push", "origin", "HEAD:main")
+    if branch is None:
+        r = git("push", "origin", "HEAD:main")
+        if r.returncode == 0:
+            return True
+        # Push rejected — the actual stderr logged above IS the cause
+        # (a concurrent ledger publish is the common case, but only
+        # the push output says so — issue #127). Do NOT rebase here:
+        # the other commit rewrote the same ledger.json / ledger.md
+        # lines, so a rebase conflicts every time (proven live in run
+        # 43889942381 and reproduced locally against 2d33c27).
+        # publish() handles the retry: it discards this commit, resets
+        # to origin/main, recomputes the ledger from a fresh archive
+        # pin, and pushes that.
+        _record_git_failure("push", "git push origin HEAD:main", r)
+        log("leaving the retry to publish() "
+            "(reset to origin/main + recompute, never rebase)")
+        return False
+    # Issue #443 staging mode: the push CREATES the per-run
+    # branch — it never updates one. A fresh branch accepts the
+    # push outright (main moving underneath cannot reject it; the
+    # relay merges the branch, divergence is the merge's
+    # business). If the branch already exists, this run's envelope
+    # is either already there (identical ledger outputs: reconcile
+    # as staged) or the run id was reused with different content
+    # (a collision no recompute can fix — publish() fails it
+    # immediately, no retry). The existence check comes FIRST: a
+    # checkout still holding an earlier staged commit could
+    # otherwise fast-forward different outputs onto the existing
+    # branch and skip collision detection entirely (review
+    # finding on #491).
+    if _remote_branch_sha(branch) is not None:
+        if _staged_tree_matches(branch):
+            log(f"staging branch {branch} already carries these "
+                "exact ledger outputs — an earlier attempt staged "
+                "them; treating as staged (idempotent)")
+            return True
+        _record_git_failure(
+            "branch-collision",
+            f"git push origin HEAD:refs/heads/{branch}",
+            subprocess.CompletedProcess(
+                args=[], returncode=1, stdout="",
+                stderr="the staging branch already exists with "
+                       "different ledger content (run id reused)"))
+        return False
+    r = git("push", "origin", f"HEAD:refs/heads/{branch}")
     if r.returncode == 0:
         return True
-    # Push rejected — the actual stderr logged above IS the cause
-    # (a concurrent ledger publish is the common case, but only
-    # the push output says so — issue #127). Do NOT rebase here:
-    # the other commit rewrote the same ledger.json / ledger.md
-    # lines, so a rebase conflicts every time (proven live in run
-    # 43889942381 and reproduced locally against 2d33c27).
-    # publish() handles the retry: it discards this commit, resets
-    # to origin/main, recomputes the ledger from a fresh archive
-    # pin, and pushes that.
-    _record_git_failure("push", "git push origin HEAD:main", r)
+    # The push was rejected: either the branch appeared between
+    # the check and the push (a creation race — reconcile by
+    # content, exactly as above), or the push itself failed
+    # (auth, network) and publish()'s retry owns it.
+    if _staged_tree_matches(branch):
+        log(f"staging branch {branch} already carries these exact "
+            "ledger outputs — an earlier attempt staged them; "
+            "treating as staged (idempotent)")
+        return True
+    if _remote_branch_sha(branch) is not None:
+        _record_git_failure(
+            "branch-collision",
+            f"git push origin HEAD:refs/heads/{branch}", r)
+        return False
+    _record_git_failure(
+        "push-staging",
+        f"git push origin HEAD:refs/heads/{branch}", r)
     log("leaving the retry to publish() "
         "(reset to origin/main + recompute, never rebase)")
     return False
@@ -952,7 +1123,14 @@ def clear_failure_signal(ctx=None):
 
 
 def publish(commit, digest_path, fail_hard, sweep_target=None,
-            fail_push=False):
+            fail_push=False, publish_branch=None,
+            guard_heartbeat=False):
+    # Issue #443: publish_branch selects staging mode — the commit
+    # is pushed to that per-run branch (PENDING the relay merge),
+    # never directly to main, and the #128 failure signal is not
+    # cleared from here (the relay clears/comments it after a
+    # verified merge). guard_heartbeat adds the run's heartbeat to
+    # the staged commit (see guard_heartbeat_doc).
     # Issue #119: verify the checkout is clean BEFORE any `git add`
     # — and fail fast, before the expensive ledger rerun, when a
     # previous killed run left it mid-rebase or dirty.
@@ -1026,14 +1204,41 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                 if not os.path.exists(oldp) or \
                         open(newp, "rb").read() != open(oldp, "rb").read():
                     changed.append(name)
-            if not changed:
+            # Issue #443: the guard envelope. The heartbeat is
+            # written into ledger/ BEFORE the change decision, on
+            # every attempt (a retry's reset --hard wipes it, so it
+            # is rewritten here, inside the loop): with it, a run
+            # whose outputs are unchanged still produces the
+            # heartbeat-only envelope commit. Its freshness (a new
+            # timestamp every run) is what makes the envelope
+            # differ from main's committed heartbeat.
+            hb_changed = False
+            if guard_heartbeat:
+                os.makedirs(LEDGER_DIR, exist_ok=True)
+                hb_path = os.path.join(LEDGER_DIR,
+                                       "guard-heartbeat.json")
+                hb_bytes = (json.dumps(guard_heartbeat_doc(),
+                                       indent=2) + "\n").encode()
+                old_hb = None
+                if os.path.exists(hb_path):
+                    with open(hb_path, "rb") as f:
+                        old_hb = f.read()
+                if old_hb != hb_bytes:
+                    with open(hb_path, "wb") as f:
+                        f.write(hb_bytes)
+                    hb_changed = True
+            if not changed and not hb_changed:
                 log("rerun produced byte-identical outputs — nothing to publish")
                 append_digest(digest_path, section_unchanged(new))
                 # Issue #128: the ledger is verified current — a recovery
-                # closes any open publish-failure signal.
-                ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
-                                 f"{new['counts']['matured']} matured)")
-                clear_failure_signal(ctx)
+                # closes any open publish-failure signal. Issue #443:
+                # in staging mode the signal lifecycle belongs to the
+                # relay (it comments the recovery evidence after a
+                # verified merge) — never clear it from here.
+                if publish_branch is None:
+                    ctx["counts"] = (f" ({new['counts']['forecasts']} forecasts, "
+                                     f"{new['counts']['matured']} matured)")
+                    clear_failure_signal(ctx)
                 return 0
             os.makedirs(LEDGER_DIR, exist_ok=True)
             for name in changed:
@@ -1050,7 +1255,25 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
                               section_published(old, new, old_w, new_w,
                                                 new_bench))
                 return 0
-            if git_publish(new):
+            # Direct mode keeps the historical one-argument call
+            # shape: the #394 regression harness stubs git_publish
+            # with a one-argument replacement.
+            if publish_branch is not None:
+                published = git_publish(new, publish_branch)
+            else:
+                published = git_publish(new)
+            if published:
+                if publish_branch is not None:
+                    # Issue #443: staged is PENDING, not published.
+                    # No digest "published" claim, no signal clear —
+                    # the relay owns completion (verified merge,
+                    # then the recovery evidence comment).
+                    log(f"staged on {publish_branch} — PENDING the "
+                        "ledger-publish relay merge; the ledger is "
+                        "not on main yet")
+                    append_digest(digest_path,
+                                  section_staged(new, publish_branch))
+                    return 0
                 append_digest(digest_path,
                               section_published(old, new, old_w, new_w,
                                                 new_bench))
@@ -1067,6 +1290,15 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             # overwrite them.
             stage, detail = LAST_GIT_STAGE, LAST_GIT_DETAIL
             cause = LAST_GIT_ERROR or "ledger publish failed (no cause recorded)"
+            # Issue #443: a staging branch collision (the run id
+            # was reused with different ledger content) cannot be
+            # fixed by recomputing — the recomputed commit would
+            # collide with the same branch again. Fail it now
+            # instead of burning the remaining attempts.
+            if publish_branch is not None and \
+                    stage == "branch-collision":
+                return fail(_publish_fail_reason(stage, detail, cause),
+                            digest_path, fail_hard or fail_push, ctx)
             # Retry, by reset + recompute — never by rebase (see the
             # #119 follow-up note at the top of this file). Issue #126:
             # bounded at PUBLISH_MAX_ATTEMPTS attempts with a jittered
@@ -1136,6 +1368,20 @@ def main():
                          "(issue #118: refuse to publish when the live "
                          "archive tree does not contain it; defaults to "
                          "LEDGER_SWEEP_TARGET)")
+    ap.add_argument("--publish-branch", default=None,
+                    help="stage the commit on this branch instead of "
+                         "pushing it to main (issue #443: the "
+                         "ledger-publish relay turns the branch into "
+                         "a PR, executes the required close-gate on "
+                         "the candidate commit and merges it). The "
+                         "publish is PENDING until the relay merges — "
+                         "the failure signal is not cleared here")
+    ap.add_argument("--guard-heartbeat", action="store_true",
+                    help="include a fresh ledger/guard-heartbeat.json "
+                         "(status ok) in the commit — the guard "
+                         "paths' run-bound envelope (issue #443); the "
+                         "run id comes from LEDGER_RUN_ID / "
+                         "GITHUB_RUN_ID")
     a = ap.parse_args()
     sweep_target = (a.sweep_target or
                     os.environ.get("LEDGER_SWEEP_TARGET") or None)
@@ -1143,7 +1389,8 @@ def main():
         sweep_target = sweep_target.strip() or None
     try:
         return publish(a.commit, a.digest, a.fail_hard, sweep_target,
-                       a.fail_push)
+                       a.fail_push, a.publish_branch,
+                       a.guard_heartbeat)
     except KeyboardInterrupt:
         # Issue #119: an interrupt used to propagate out uncaught
         # (and, mid-rebase, strand the checkout). git_publish
