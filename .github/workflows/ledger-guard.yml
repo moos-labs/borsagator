@@ -35,6 +35,23 @@ name: Ledger guard
 # heartbeat (ledger/guard-heartbeat.json) — the watchdog notices a
 # dead guard within 2h, so a missed schedule can never again go
 # unnoticed in-repo.
+# Issue #443 (2026-11-22): main's branch protection requires the
+# close-gate check, which a directly pushed commit never carries —
+# both pushes this workflow used to make (the publisher's ledger
+# commit and the heartbeat step's HEAD:main push) were declined by
+# the protected-branch hook. The publish now goes through the
+# staging relay, exactly like the worker guard: the publisher
+# stages ONE envelope commit (validated ledger + this run's
+# heartbeat, status ok) on publish/ledger-actions-<run-id>, the
+# fallback step stages a failed-status heartbeat-only envelope
+# when the publisher fails, and the final step dispatches
+# ledger-publish-relay.yml explicitly — this workflow's pushes
+# are made with GITHUB_TOKEN, and GITHUB_TOKEN pushes do not fire
+# workflows, so the relay's push kick cannot see them. The
+# heartbeat's run_id is the string "actions-<run-id>" (it used to
+# be the bare int run id; the watchdog reads only last_run_utc +
+# status, and the string form matches the staging branch suffix
+# the relay verifies).
 
 on:
   workflow_dispatch:
@@ -44,6 +61,8 @@ permissions:
   # Issue #128: the publisher files a durable ledger-failure signal
   # issue on failure — it needs issues: write on this path too.
   issues: write
+  # Issue #443: the final step dispatches the ledger-publish relay.
+  actions: write
 
 jobs:
   ledger-guard:
@@ -68,40 +87,51 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Issue #443: staging mode — the commit (ledger outputs +
+      # this run's heartbeat, via --guard-heartbeat) is pushed to
+      # the per-run staging branch, PENDING the relay merge. The
+      # publisher's exit code still carries the run's verdict: a
+      # failed validation publishes nothing and fails this step,
+      # and the fallback step below stages the failed heartbeat.
       - name: Publish the ledger if the archive moved
         id: publish
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/ledger_publish.py --commit --fail-hard
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LEDGER_RUN_ID: "actions-${{ github.run_id }}"
+        run: >-
+          python3 scripts/ledger_publish.py --commit --fail-hard
+          --publish-branch "publish/ledger-actions-${{ github.run_id }}"
+          --guard-heartbeat
 
-      # Issue #128: the guard schedule missed 9 straight ticks (#115)
-      # with nothing in-repo noticing. Every completed guard run
-      # writes a timestamped heartbeat to ledger/guard-heartbeat.json
-      # so the watchdog (ledger-guard-watchdog.yml, every 30 min) can
-      # notice a dead guard within 2h (90-minute staleness threshold).
-      # This step runs even when the publish failed — a failed run
-      # still proves the guard fired — and its status is recorded in
-      # the file. It resets to origin/main FIRST so an unpushed ledger
-      # commit from a failed publish is never smuggled onto main by
-      # the heartbeat push; the heartbeat push itself is non-fatal.
-      - name: Record the guard heartbeat
-        if: always()
+      # Issue #443: the failed run's liveness evidence. Runs only
+      # when the publisher step failed. If the publisher had
+      # already staged its envelope before dying, the branch
+      # exists and is left untouched (it is the truthful record);
+      # otherwise a failed-status heartbeat-only envelope is
+      # staged — never the invalid ledger outputs.
+      - name: Stage the failed-run heartbeat
+        id: fallback
+        if: ${{ failure() && steps.publish.outcome == 'failure' }}
         env:
-          GUARD_OUTCOME: ${{ steps.publish.outcome }}
-          GUARD_RUN_ID: ${{ github.run_id }}
+          GUARD_RUN_LABEL: "actions-${{ github.run_id }}"
         run: |
+          set -euo pipefail
+          BRANCH="publish/ledger-${GUARD_RUN_LABEL}"
+          if git ls-remote --exit-code origin "refs/heads/$BRANCH" >/dev/null 2>&1; then
+            echo "staging branch $BRANCH already exists — the publisher's envelope stands; nothing to stage"
+            exit 0
+          fi
           git config user.name "borsagator-ledger"
           git config user.email "moos@sherbeeny.com"
-          git fetch origin main || true
+          git fetch origin main
           git reset --hard origin/main
           python3 - <<'PYEOF'
           import json, os
           from datetime import datetime, timezone
-          outcome = os.environ.get("GUARD_OUTCOME", "unknown")
           doc = {
               "last_run_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "run_id": int(os.environ.get("GUARD_RUN_ID") or 0) or None,
-              "status": "ok" if outcome == "success" else "failed",
+              "run_id": os.environ["GUARD_RUN_LABEL"],
+              "status": "failed",
               "workflow": "ledger-guard",
               "note": "Written by every completed ledger-guard run; the watchdog (ledger-guard-watchdog.yml) pages when this is older than 90 minutes.",
           }
@@ -109,12 +139,27 @@ jobs:
           with open("ledger/guard-heartbeat.json", "w", encoding="utf-8") as f:
               json.dump(doc, f, indent=2)
               f.write("\n")
-          print(f"heartbeat: {doc['last_run_utc']} status={doc['status']}")
+          print(f"heartbeat: {doc['last_run_utc']} status=failed")
           PYEOF
           git add ledger/guard-heartbeat.json
           if git diff --cached --quiet; then
-            echo "heartbeat unchanged — nothing to commit"
-          else
-            git commit -m "Ledger guard heartbeat $(date -u +%Y-%m-%dT%H:%M:%SZ) (${GUARD_OUTCOME:-unknown})" || exit 0
-            git push origin HEAD:main || echo "heartbeat push failed (non-fatal)"
+            echo "heartbeat identical to main's — nothing to stage"
+            exit 0
           fi
+          git commit -m "Ledger guard heartbeat $(date -u +%Y-%m-%dT%H:%M:%SZ) (failed)"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "staged the failed-run heartbeat on $BRANCH"
+
+      # Issue #443: hand the staging branch to the relay. Our
+      # pushes use GITHUB_TOKEN and therefore fire no workflows —
+      # the dispatch is the hand-off. Runs whenever an envelope
+      # was staged (publisher success, or the fallback above).
+      - name: Dispatch the ledger-publish relay
+        if: ${{ always() && (steps.publish.outcome == 'success' || steps.fallback.outcome == 'success') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh workflow run ledger-publish-relay.yml \
+            -f branch="publish/ledger-actions-${{ github.run_id }}"
+          echo "relay dispatched for publish/ledger-actions-${{ github.run_id }}"

@@ -21,10 +21,30 @@ name: pr-close-gate
 # (it reopened #425 13s after the unverified close) plus the rule that a
 # close is only legitimate via the verified close-out; a label-change
 # re-run is the documented follow-up, not implemented here.
+#
+# Issue #443: a workflow_dispatch trigger (input: pr_number) lets the
+# ledger-publish relay execute this gate ON DEMAND against a staging
+# branch. A PR created by GITHUB_TOKEN only receives approval-required
+# pull_request runs, so "open PR, wait, merge" never runs unattended;
+# the explicit dispatch is the supported way to make the REAL gate
+# execute (INS-REVIEW-075 change A — no synthetic check runs, ever).
+# The dispatch runs this file at the staging ref, and the relay
+# verifies beforehand that the branch's diff against main is
+# ledger/** only, so the gate script executed is byte-identical to
+# main's reviewed copy. The resulting close-gate check run lands on
+# the branch tip — the PR head SHA — which is what branch
+# protection's required context evaluates. The script itself is
+# unchanged: it already takes PR_NUMBER from the environment.
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to check (ledger-publish relay, #443)"
+        required: true
+        type: string
 
 permissions:
   pull-requests: read
@@ -41,5 +61,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: python3 scripts/check_pr_close_keywords.py

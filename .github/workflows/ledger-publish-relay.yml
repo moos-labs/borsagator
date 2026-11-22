@@ -1,0 +1,417 @@
+name: ledger-publish-relay
+
+# Issue #443: turn a staged ledger publish into a merged PR.
+#
+# Why this exists: main's branch protection requires the
+# `close-gate` status check, and a commit pushed directly by the
+# worker never carries one — every direct ledger publish was
+# declined by the protected-branch hook and the ledger went stale
+# from 2026-11-20. The publisher (scripts/ledger_publish.py
+# --publish-branch) now pushes each publish as ONE envelope commit
+# (validated ledger outputs + the run's guard heartbeat) to a
+# per-run staging branch publish/ledger-<run-id>. This relay is
+# the only component that turns a staging branch into main:
+#
+#   verify the branch diff against main is ledger/** only
+#   -> open the PR (or reuse the one already open for this head)
+#   -> execute the REAL close-gate on the candidate SHA via an
+#      explicit workflow_dispatch of pr-close-gate.yml
+#   -> wait for that gate run to succeed
+#   -> merge with the exact-head precondition
+#   -> verify the merge (and the run's heartbeat) on main
+#   -> dispatch deploy-guard against main
+#   -> comment the recovery evidence (the full chain) on the open
+#      ledger-failure signal issue — comment only, never close:
+#      closing the signal stays with the verified-recovery process
+#   -> delete the staging branch (only after a verified merge;
+#      a failed deletion is bookkeeping debt, not a failed
+#      publication, and a failed relay NEVER deletes the branch)
+#
+# INS-REVIEW-075 bindings:
+# (A) A PR opened with GITHUB_TOKEN only receives
+#     approval-required pull_request workflow runs, so "open PR,
+#     wait, merge" does not run unattended. The gate is therefore
+#     executed by explicit dispatch, bound to the candidate SHA:
+#     the dispatch runs pr-close-gate.yml at the staging ref (its
+#     diff is verified ledger-only first, so the gate script is
+#     byte-identical to main's reviewed copy) and the resulting
+#     close-gate check run lands on the PR head SHA, satisfying
+#     the required context/app. No check run is ever synthesised.
+# (B) A landed staging push means PENDING, not published. Only a
+#     confirmed merge + verified main contents produce the
+#     recovery bookkeeping. A crash after merge reconciles as
+#     already-merged (the assess step finds the merged PR for
+#     this branch + head and re-verifies main) — never a
+#     duplicate PR.
+# (C) Integrity: the diff-scope check runs before any privileged
+#     step; the merge carries the exact-head sha precondition;
+#     head drift, a wrong base or unexpected paths refuse the
+#     relay. All privileged logic lives in THIS file and runs
+#     from main (see the trigger note below).
+# (D) A GITHUB_TOKEN merge does not fire push workflows on main,
+#     so deploy-guard is dispatched explicitly after the merge
+#     and its conclusion is recorded in the chain.
+# (E) Least-privilege permissions are declared below. Failed
+#     staging branches are retained for diagnosis.
+#
+# Trigger shape: this workflow is workflow_dispatch ONLY, always
+# executing main's reviewed copy. The push of a staging branch is
+# handled by ledger-publish-relay-kick.yml, a minimal workflow
+# whose single action is dispatching this relay with the branch
+# name — so no branch-controlled file ever executes with this
+# workflow's write credentials (change C). The manual Actions
+# guard (ledger-guard.yml) dispatches this relay directly,
+# because its staging push is made with GITHUB_TOKEN and
+# GITHUB_TOKEN pushes do not fire workflows at all.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Staging branch to relay (publish/ledger-<run-id>)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: borsagator-ledger-relay
+  cancel-in-progress: false
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Resolve the staging branch
+        id: resolve
+        env:
+          INPUT_BRANCH: ${{ inputs.branch }}
+        run: |
+          set -euo pipefail
+          case "$INPUT_BRANCH" in
+            publish/ledger-*) ;;
+            *) echo "::error::refusing to relay non-staging branch '$INPUT_BRANCH'"; exit 1 ;;
+          esac
+          echo "branch=$INPUT_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "run_id=${INPUT_BRANCH#publish/ledger-}" >> "$GITHUB_OUTPUT"
+          echo "Relaying $INPUT_BRANCH (run ${INPUT_BRANCH#publish/ledger-})"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Assess the staging branch
+        id: assess
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
+        run: |
+          set -euo pipefail
+          out() { echo "$1=$2" >> "$GITHUB_OUTPUT"; }
+          prs() {
+            gh pr list --head "$BRANCH" --state all --limit 10 \
+              --json number,state,headRefOid,mergeCommit,mergedAt
+          }
+          if git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null; then
+            SHA=$(git rev-parse "refs/remotes/origin/$BRANCH")
+            out sha "$SHA"
+            PATHS=$(git diff --name-only "origin/main...$SHA")
+            if [ -z "$PATHS" ]; then
+              # No changes vs main: either an earlier relay already
+              # merged this envelope and the branch was re-created
+              # empty (reconcile below), or the publisher staged
+              # nothing — which its envelope design never does.
+              MERGED=$(prs | jq -r '[.[] | select(.state=="MERGED")] | length')
+              if [ "$MERGED" -ge 1 ]; then
+                out mode reconciled
+                out merge_sha "$(prs | jq -r '[.[] | select(.state=="MERGED")][0].mergeCommit.oid')"
+                out pr_number "$(prs | jq -r '[.[] | select(.state=="MERGED")][0].number')"
+                echo "Branch carries no diff and a merged PR exists — reconciling as already-merged."
+                exit 0
+              fi
+              echo "::error::staging branch $BRANCH has an empty diff vs main and no merged PR — nothing to relay"
+              exit 1
+            fi
+            BAD=$(echo "$PATHS" | grep -v '^ledger/' || true)
+            if [ -n "$BAD" ]; then
+              echo "::error::staging branch $BRANCH touches paths outside ledger/** — refusing the relay:"
+              echo "$BAD"
+              exit 1
+            fi
+            echo "Diff scope verified (ledger/** only):"
+            echo "$PATHS"
+            J=$(prs)
+            MERGED_SHA=$(echo "$J" | jq -r --arg s "$SHA" '[.[] | select(.state=="MERGED" and .headRefOid==$s)][0].mergeCommit.oid // empty')
+            if [ -n "$MERGED_SHA" ]; then
+              out mode reconciled
+              out merge_sha "$MERGED_SHA"
+              out pr_number "$(echo "$J" | jq -r --arg s "$SHA" '[.[] | select(.state=="MERGED" and .headRefOid==$s)][0].number')"
+              echo "A merged PR for this exact head exists — reconciling as already-merged (change B)."
+              exit 0
+            fi
+            OPEN_N=$(echo "$J" | jq -r '[.[] | select(.state=="OPEN")] | length')
+            if [ "$OPEN_N" -ge 1 ]; then
+              OPEN_SHA=$(echo "$J" | jq -r '[.[] | select(.state=="OPEN")][0].headRefOid')
+              if [ "$OPEN_SHA" != "$SHA" ]; then
+                echo "::error::open PR head $OPEN_SHA has drifted from the staged head $SHA — refusing (change C)"
+                exit 1
+              fi
+              out mode fresh
+              out pr_number "$(echo "$J" | jq -r '[.[] | select(.state=="OPEN")][0].number')"
+              echo "Reusing the open PR for this head (idempotent)."
+              exit 0
+            fi
+            CLOSED_N=$(echo "$J" | jq -r '[.[] | select(.state=="CLOSED")] | length')
+            if [ "$CLOSED_N" -ge 1 ]; then
+              echo "::error::a closed-unmerged PR exists for $BRANCH — a human intervened; refusing to reopen the question automatically"
+              exit 1
+            fi
+            out mode fresh
+            out pr_number ""
+          else
+            # Branch gone: a previous relay run merged and deleted
+            # it, then crashed before finishing (change B), or the
+            # branch never existed (a dispatch error — fail loudly).
+            J=$(prs)
+            MERGED_N=$(echo "$J" | jq -r '[.[] | select(.state=="MERGED")] | length')
+            if [ "$MERGED_N" -ge 1 ]; then
+              out mode reconciled
+              out sha "$(echo "$J" | jq -r '[.[] | select(.state=="MERGED")][0].headRefOid')"
+              out merge_sha "$(echo "$J" | jq -r '[.[] | select(.state=="MERGED")][0].mergeCommit.oid')"
+              out pr_number "$(echo "$J" | jq -r '[.[] | select(.state=="MERGED")][0].number')"
+              echo "Branch is gone and a merged PR exists — reconciling as already-merged."
+              exit 0
+            fi
+            echo "::error::staging branch $BRANCH not found and no merged PR exists for it — nothing to relay"
+            exit 1
+          fi
+
+      - name: Open the PR
+        id: openpr
+        if: steps.assess.outputs.mode == 'fresh' && steps.assess.outputs.pr_number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          BODY=$(printf 'Automated ledger publish for run `%s`, staged on `%s` and relayed by ledger-publish-relay (issue #443).\n\nThe branch diff against main was verified ledger/** only before this PR was opened. The required close-gate is executed on the candidate commit by explicit workflow dispatch, and this PR is merged by the relay once that gate succeeds.\n\nRelated to #443.' "$RUN_ID" "$BRANCH")
+          NUM_URL=$(gh pr create --base main --head "$BRANCH" \
+                  --title "Publish calibration ledger (For #443)" \
+                  --body "$BODY")
+          NUM="${NUM_URL##*/}"
+          echo "pr_number=$NUM" >> "$GITHUB_OUTPUT"
+          echo "Opened PR #$NUM ($NUM_URL)"
+
+      - name: Execute the close-gate on the candidate SHA and wait
+        if: steps.assess.outputs.mode == 'fresh'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
+          SHA: ${{ steps.assess.outputs.sha }}
+          PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          BEFORE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          gh workflow run pr-close-gate.yml --ref "$BRANCH" -f pr_number="$PR_NUMBER"
+          echo "close-gate dispatched for PR #$PR_NUMBER on $BRANCH ($SHA)"
+          # Find the dispatched run (newest workflow_dispatch run of
+          # the gate on this branch created at/after the dispatch).
+          RUN_ID=""
+          for i in $(seq 1 12); do
+            RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pr-close-gate.yml/runs?branch=$BRANCH&event=workflow_dispatch&per_page=10" \
+              --jq --arg b "$BEFORE" '[.workflow_runs[] | select(.created_at >= $b)][0].id // empty')
+            [ -n "$RUN_ID" ] && break
+            sleep 10
+          done
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::the dispatched close-gate run never appeared for PR #$PR_NUMBER"
+            exit 1
+          fi
+          echo "close-gate run: $RUN_ID"
+          # Wait for the run to complete (15-minute cap; the gate
+          # normally finishes in about a minute).
+          DEADLINE=$(( $(date +%s) + 900 ))
+          while : ; do
+            read -r STATUS CONCLUSION HEAD_SHA < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
+              --jq '[.status, (.conclusion // "-"), .head_sha] | @tsv')
+            if [ "$STATUS" = "completed" ]; then
+              if [ "$HEAD_SHA" != "$SHA" ]; then
+                echo "::error::close-gate run $RUN_ID executed on $HEAD_SHA, not the candidate $SHA — refusing"
+                exit 1
+              fi
+              if [ "$CONCLUSION" != "success" ]; then
+                echo "::error::close-gate run $RUN_ID concluded $CONCLUSION for PR #$PR_NUMBER — refusing to merge"
+                exit 1
+              fi
+              break
+            fi
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+              echo "::error::close-gate run $RUN_ID did not complete within 15 minutes"
+              exit 1
+            fi
+            sleep 20
+          done
+          # Belt and braces: the required context itself must be a
+          # successful close-gate check run on the candidate SHA.
+          N=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/check-runs?per_page=100" \
+            --jq '[.check_runs[] | select(.name=="close-gate" and .status=="completed" and .conclusion=="success")] | length')
+          if [ "$N" -lt 1 ]; then
+            echo "::error::no successful close-gate check run found on $SHA after the gate run — refusing to merge"
+            exit 1
+          fi
+          echo "close-gate succeeded on $SHA (run $RUN_ID)"
+
+      - name: Merge the PR (exact-head precondition)
+        id: merge
+        if: steps.assess.outputs.mode == 'fresh'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ steps.assess.outputs.sha }}
+          PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          if MERGE_SHA=$(gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/merge" \
+              -f merge_method=merge -f sha="$SHA" --jq .sha 2>/tmp/merge-err); then
+            echo "merge_sha=$MERGE_SHA" >> "$GITHUB_OUTPUT"
+            echo "Merged PR #$PR_NUMBER at $MERGE_SHA"
+          else
+            cat /tmp/merge-err || true
+            # Race/reconcile: the PR may already be merged (an
+            # earlier relay attempt merged, then crashed).
+            read -r STATE MCS < <(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
+              --jq '[.state, (.merge_commit_sha // "-")] | @tsv')
+            if [ "$STATE" = "closed" ] && [ "$MCS" != "-" ] && [ -n "$MCS" ]; then
+              MERGED=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq .merged)
+              if [ "$MERGED" = "true" ]; then
+                echo "merge_sha=$MCS" >> "$GITHUB_OUTPUT"
+                echo "PR #$PR_NUMBER was already merged at $MCS — reconciling."
+                exit 0
+              fi
+            fi
+            echo "::error::merge of PR #$PR_NUMBER failed and the PR is not merged"
+            exit 1
+          fi
+
+      - name: Verify the merge on main
+        id: verify
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_SHA: ${{ steps.merge.outputs.merge_sha || steps.assess.outputs.merge_sha }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$MERGE_SHA" origin/main; then
+            echo "::error::merge commit $MERGE_SHA is not on main — publication NOT verified"
+            exit 1
+          fi
+          HB=$(git show origin/main:ledger/guard-heartbeat.json)
+          HB_RUN=$(echo "$HB" | jq -r '.run_id // ""')
+          HB_STATUS=$(echo "$HB" | jq -r '.status // ""')
+          HB_AT=$(echo "$HB" | jq -r '.last_run_utc // ""')
+          echo "heartbeat on main: run_id=$HB_RUN status=$HB_STATUS last_run_utc=$HB_AT"
+          if [ "$HB_RUN" != "$RUN_ID" ]; then
+            echo "::warning::main's heartbeat belongs to run $HB_RUN, not $RUN_ID — a newer envelope has superseded this one; the merge itself is verified, so this publish still counts as landed"
+          fi
+          echo "hb_run=$HB_RUN" >> "$GITHUB_OUTPUT"
+          echo "hb_status=$HB_STATUS" >> "$GITHUB_OUTPUT"
+          echo "hb_at=$HB_AT" >> "$GITHUB_OUTPUT"
+          echo "Publication verified on main at $MERGE_SHA"
+
+      - name: Dispatch deploy-guard against main
+        id: deployguard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          BEFORE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          if ! gh workflow run deploy-guard.yml --ref main; then
+            echo "conclusion=dispatch-failed" >> "$GITHUB_OUTPUT"
+            echo "::warning::deploy-guard dispatch failed — bookkeeping debt, recorded in the chain comment (the publication itself is verified)"
+            exit 0
+          fi
+          RUN_ID=""
+          for i in $(seq 1 6); do
+            RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy-guard.yml/runs?branch=main&event=workflow_dispatch&per_page=10" \
+              --jq --arg b "$BEFORE" '[.workflow_runs[] | select(.created_at >= $b)][0].id // empty')
+            [ -n "$RUN_ID" ] && break
+            sleep 10
+          done
+          if [ -z "$RUN_ID" ]; then
+            echo "conclusion=dispatched-unseen" >> "$GITHUB_OUTPUT"
+            echo "::warning::deploy-guard dispatched but its run did not appear within a minute"
+            exit 0
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          DEADLINE=$(( $(date +%s) + 300 ))
+          CONCLUSION="pending"
+          while : ; do
+            read -r STATUS C < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
+              --jq '[.status, (.conclusion // "-")] | @tsv')
+            if [ "$STATUS" = "completed" ]; then CONCLUSION="$C"; break; fi
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then break; fi
+            sleep 15
+          done
+          echo "conclusion=$CONCLUSION" >> "$GITHUB_OUTPUT"
+          echo "deploy-guard run $RUN_ID: $CONCLUSION (recorded in the chain; its own run is the alarm if red)"
+
+      - name: Comment the recovery evidence on the publish-failure signal
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+          STAGE_SHA: ${{ steps.assess.outputs.sha }}
+          PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
+          MERGE_SHA: ${{ steps.merge.outputs.merge_sha || steps.assess.outputs.merge_sha }}
+          HB_RUN: ${{ steps.verify.outputs.hb_run }}
+          HB_STATUS: ${{ steps.verify.outputs.hb_status }}
+          HB_AT: ${{ steps.verify.outputs.hb_at }}
+          DG_RUN: ${{ steps.deployguard.outputs.run_id }}
+          DG_CONCLUSION: ${{ steps.deployguard.outputs.conclusion }}
+        run: |
+          set -euo pipefail
+          # The open publish-failure signal (issue #128's label +
+          # title prefix — the same dedup key the publisher uses).
+          # Comment ONLY: closing the signal stays with the
+          # verified-recovery process, and guard-dead signals
+          # (the watchdog's kind) are never touched from here.
+          Q=$(python3 -c "import urllib.parse; print(urllib.parse.quote('repo:$GITHUB_REPOSITORY label:ledger-failure state:open', safe=''))")
+          NUMBERS=$(gh api "search/issues?q=$Q&per_page=20" \
+            --jq '[.items[] | select(.title | startswith("⚠️ Ledger publish failed"))] | .[].number')
+          if [ -z "$NUMBERS" ]; then
+            echo "No open publish-failure signal — nothing to comment."
+            exit 0
+          fi
+          BODY=$(printf '✅ **Ledger publish landed via the PR relay (issue #443).**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`\n\nThe committed ledger on `main` is current again. (This comment is the relay'\''s recovery evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
+            "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}")
+          for N in $NUMBERS; do
+            SEEN=$(gh api "repos/$GITHUB_REPOSITORY/issues/$N/comments?per_page=100" \
+              --jq --arg m "$MERGE_SHA" '[.[] | select(.body | contains($m))] | length')
+            if [ "$SEEN" -ge 1 ]; then
+              echo "Signal #$N already carries this merge — skipping (idempotent)."
+              continue
+            fi
+            gh issue comment "$N" --body "$BODY"
+            echo "Recovery evidence commented on signal #$N"
+          done
+
+      - name: Delete the staging branch
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
+        run: |
+          set -uo pipefail
+          if gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" 2>/tmp/del-err; then
+            echo "Deleted $BRANCH (merge verified above)."
+          else
+            cat /tmp/del-err || true
+            echo "::warning::could not delete $BRANCH after a verified merge — bookkeeping debt, not a failed publication; the branch is inert and a later cleanup can remove it"
+          fi

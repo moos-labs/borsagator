@@ -1229,15 +1229,27 @@ def run_schedule_check(now_override=None):
 
 
 # --- Issue #66 extension: ledger guard + watchdog execution -----------
-# The guard job runs scripts/ledger_publish.py --commit --fail-hard
-# (the exact command ledger-guard.yml runs) and then rewrites
-# ledger/guard-heartbeat.json on main, exactly as the workflow does.
+# The guard job runs scripts/ledger_publish.py in staging mode
+# (issue #443): the publisher validates the ledger in a dedicated
+# checkout of MAIN and pushes ONE envelope commit — the validated
+# ledger outputs (when changed) plus this run's heartbeat, or the
+# heartbeat alone when the outputs are unchanged — to a per-run
+# branch publish/ledger-<job-id>. The ledger-publish relay
+# (.github/workflows/ledger-publish-relay.yml, kicked by the push)
+# turns the branch into a PR, executes the required close-gate on
+# the candidate commit and merges it; the worker marks the slot
+# done only after the envelope's heartbeat is confirmed ON MAIN.
+# Before #443 the guard pushed the ledger and the heartbeat
+# directly to main; branch protection requires the close-gate
+# check, which a worker-pushed commit never carries, so every
+# push was declined ("protected branch hook declined") and the
+# ledger went stale from 2026-11-20.
 # The publisher needs a git checkout of MAIN with a push credential:
 # the release checkout (CODE) is an anonymous, detached checkout of
 # worker-release and can do neither, so the guard keeps a dedicated
 # checkout (ROOT/"main-ledger") cloned from GATOR_BUS_URL — the
-# worker PAT is borsagator-only Contents RW, which covers pushes to
-# main. D2 guard: the worker never EXECUTES main-tip code — before
+# worker PAT is borsagator-only Contents RW, which covers branch
+# pushes. D2 guard: the worker never EXECUTES main-tip code — before
 # running, the publisher scripts in the main checkout must be
 # byte-identical to the reviewed release checkout's copies, or the
 # run refuses loudly (and the heartbeat records the refusal).
@@ -1254,12 +1266,21 @@ GUARD_CHECKOUT = ROOT / "main-ledger"
 GUARD_SCRIPTS = ("scripts/ledger_publish.py", "scripts/ledger.py")
 WATCH_SCRIPTS = ("scripts/ledger_guard_watch.py",) + GUARD_SCRIPTS
 GUARD_HEARTBEAT_REL = "ledger/guard-heartbeat.json"
-# Issue #434: a heartbeat push gets this many attempts before the
-# guard admits the push did not land. A push is most often rejected
-# as non-fast-forward (a PR merged to main between our fetch and
-# our push); the retry re-fetches, rewrites with a fresh timestamp
-# and pushes again instead of failing the slot outright.
-GUARD_HEARTBEAT_ATTEMPTS = 3
+# Issue #443: the publisher subprocess gets the same 1800s bound
+# it effectively had, but now under sh_group (the whole process
+# group is killed and verified empty on timeout — see
+# run_ledger_guard's hang-proofing note) instead of a bare
+# subprocess.run whose timeout kills only the publisher process.
+GUARD_PUBLISH_TIMEOUT_S = 1800
+# Issue #443: after staging, the worker polls main for the run's
+# envelope heartbeat (the relay's merge is what lands it). The
+# relay normally completes in a few minutes; the bound is generous
+# so a slow relay queue never fails a healthy slot, and finite so
+# a dead relay cannot hang the guard: on expiry the slot stays
+# un-done and the failure is recorded (ledger-failure.json +
+# missed-<slot> marker), exactly the #434 refusal shape.
+GUARD_CONFIRM_TIMEOUT_S = 1500
+GUARD_CONFIRM_POLL_S = 30
 # Issue #434: a guard slot counts as "pending execution" only while
 # its slot time is within the claim-staleness horizon. queue.json is
 # append-only, so a slot that never completed (e.g. the 2026-11-19
@@ -1332,109 +1353,158 @@ def scripts_match(dir_a, dir_b, names):
     return True
 
 
-def _guard_heartbeat_on_main(checkout, doc):
-    """True when origin/main's heartbeat file is exactly `doc`
-    (same last_run_utc and run_id). The fetch-then-show is the
-    confirmation that the heartbeat commit landed — a bare push
-    returncode is not proof on its own (a push can report success
-    while the ref it updated is not the one the watchdog reads)."""
+def _guard_branch(job_id):
+    """The per-run staging branch for a guard job (issue #443).
+    Sanitized to a safe ref fragment: job ids are worker/scheduler
+    generated, but the queue is data — never let a crafted id
+    escape the publish/ledger- namespace or grow ref-illegal
+    characters."""
+    slug = re.sub(r"[^A-Za-z0-9._-]", "-", str(job_id)).strip(".")
+    return "publish/ledger-" + (slug or "run")
+
+
+def _guard_heartbeat_doc(status, job_id):
+    """The heartbeat document for one guard run (the file is issue
+    #128's; the watchdog reads only last_run_utc + status)."""
+    return {"last_run_utc": datetime.now(timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"),
+            "run_id": job_id,
+            "status": status,
+            "workflow": "ledger-guard",
+            "note": "Written by every completed worker ledger-guard "
+                    "run (issue #66 extension; formerly "
+                    "ledger-guard.yml); the watchdog pages when "
+                    "this is older than 90 minutes."}
+
+
+def _branch_exists_on_origin(checkout, branch):
+    """True when refs/heads/<branch> exists on origin. An
+    unreadable remote answers False — the staging push that
+    follows is the real test, and its failure is recorded."""
     try:
+        r = sh(f"git -C {checkout} ls-remote origin "
+               f"refs/heads/{branch}", timeout=60)
+    except Exception as e:
+        print(f"_branch_exists_on_origin: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return False
+    return r.returncode == 0 and bool(r.stdout.strip())
+
+
+def _stage_guard_heartbeat(checkout, branch, status, job_id):
+    """Stage a heartbeat-only envelope on the run's staging branch
+    (issue #443): the fallback for a publisher that failed or
+    refused, so the run still leaves its liveness evidence for
+    the relay to land — with a FAILED status, and never with the
+    (possibly invalid) ledger outputs the publisher rejected.
+
+    Returns True when the branch carries this run's heartbeat
+    afterwards. An already-existing branch is left untouched and
+    still counts: if the publisher staged its success envelope
+    and then died before reporting, that envelope is the truthful
+    record of the run, and overwriting it with a failed heartbeat
+    would falsify it (the caller's confirmation reads the status
+    off main and reconciles). A failed fetch/reset stops the
+    staging — CodeRabbit #440's stacked-commit lesson applies to
+    branches too: never commit on top of a state we failed to
+    reset. An empty staged diff means the heartbeat is already
+    byte-identical to main's (a same-second duplicate run): also
+    fine — the caller's confirmation verifies it on main."""
+    try:
+        if _branch_exists_on_origin(checkout, branch):
+            print(f"_stage_guard_heartbeat: {branch} already "
+                  "staged — leaving the existing envelope in place",
+                  flush=True)
+            return True
         if sh(f"git -C {checkout} fetch origin main",
               timeout=120).returncode != 0:
+            print("_stage_guard_heartbeat: fetch failed",
+                  file=sys.stderr, flush=True)
             return False
-        r = sh(f"git -C {checkout} show "
-               f"origin/main:{GUARD_HEARTBEAT_REL}", timeout=60)
-        if r.returncode != 0:
+        if sh(f"git -C {checkout} reset --hard origin/main",
+              timeout=60).returncode != 0:
+            print("_stage_guard_heartbeat: reset failed",
+                  file=sys.stderr, flush=True)
             return False
-        live = json.loads(r.stdout)
-        return (live.get("last_run_utc") == doc.get("last_run_utc")
-                and live.get("run_id") == doc.get("run_id"))
+        doc = _guard_heartbeat_doc(status, job_id)
+        p = Path(checkout) / GUARD_HEARTBEAT_REL
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(doc, indent=2) + "\n")
+        sh(f"git -C {checkout} config user.name borsagator-ledger",
+           timeout=30)
+        sh(f"git -C {checkout} config user.email moos@sherbeeny.com",
+           timeout=30)
+        sh(f"git -C {checkout} add {GUARD_HEARTBEAT_REL}", timeout=60)
+        if sh(f"git -C {checkout} diff --cached --quiet",
+              timeout=60).returncode == 0:
+            return True
+        msg = (f"Ledger guard heartbeat {doc['last_run_utc']} "
+               f"({status})")
+        if sh(f"git -C {checkout} commit -m {json.dumps(msg)}",
+              timeout=60).returncode != 0:
+            print("_stage_guard_heartbeat: commit failed",
+                  file=sys.stderr, flush=True)
+            return False
+        if sh(f"git -C {checkout} push origin "
+              f"HEAD:refs/heads/{branch}",
+              timeout=120).returncode != 0:
+            print("_stage_guard_heartbeat: staging push failed",
+                  file=sys.stderr, flush=True)
+            return False
+        return True
     except Exception as e:
-        print(f"_guard_heartbeat_on_main: {type(e).__name__}: {e}",
+        print(f"_stage_guard_heartbeat: {type(e).__name__}: {e}",
               file=sys.stderr, flush=True)
         return False
 
 
-def _write_guard_heartbeat(checkout, status, job_id=None):
-    """Rewrite ledger/guard-heartbeat.json on main and push it —
-    the worker twin of ledger-guard.yml's heartbeat step. Resets to
-    origin/main first so an unpushed ledger commit from a failed
-    publish is never smuggled onto main by the heartbeat push.
-    Issue #434: returns True ONLY when the heartbeat is confirmed
-    on main (fetch + compare after the push). A rejected push is
-    retried (fresh timestamp each attempt — the usual cause is a
-    concurrent main push making ours non-fast-forward); after the
-    attempts are exhausted the function returns False and the
-    caller must NOT mark the slot done. An empty staged diff means
-    this exact heartbeat is already on main (a same-second duplicate
-    run) — that still counts, but only after the on-main content
-    is verified to match, never on the diff alone."""
-    for attempt in range(1, GUARD_HEARTBEAT_ATTEMPTS + 1):
-        try:
-            # CodeRabbit #440: a failed fetch/reset must stop the
-            # attempt — otherwise a heartbeat commit is created on
-            # top of a rejected push's commit and the next push
-            # publishes both to main.
-            if sh(f"git -C {checkout} fetch origin main",
-                  timeout=120).returncode != 0:
-                print(f"_write_guard_heartbeat: attempt {attempt}: "
-                      "fetch failed", file=sys.stderr, flush=True)
-                continue
-            if sh(f"git -C {checkout} reset --hard origin/main",
-                  timeout=60).returncode != 0:
-                print(f"_write_guard_heartbeat: attempt {attempt}: "
-                      "reset failed", file=sys.stderr, flush=True)
-                continue
-            doc = {"last_run_utc": datetime.now(timezone.utc).strftime(
-                       "%Y-%m-%dT%H:%M:%SZ"),
-                   "run_id": job_id,
-                   "status": status,
-                   "workflow": "ledger-guard",
-                   "note": "Written by every completed worker ledger-guard "
-                           "run (issue #66 extension; formerly "
-                           "ledger-guard.yml); the watchdog pages when "
-                           "this is older than 90 minutes."}
-            p = Path(checkout) / GUARD_HEARTBEAT_REL
-            p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text(json.dumps(doc, indent=2) + "\n")
-            sh(f"git -C {checkout} config user.name borsagator-ledger",
-               timeout=30)
-            sh(f"git -C {checkout} config user.email moos@sherbeeny.com",
-               timeout=30)
-            sh(f"git -C {checkout} add {GUARD_HEARTBEAT_REL}", timeout=60)
-            if sh(f"git -C {checkout} diff --cached --quiet",
-                  timeout=60).returncode == 0:
-                if _guard_heartbeat_on_main(checkout, doc):
-                    return True
-                print(f"_write_guard_heartbeat: attempt {attempt}: "
-                      "nothing staged but on-main heartbeat differs; "
-                      "retrying with a fresh timestamp",
-                      file=sys.stderr, flush=True)
-                continue
-            msg = f"Ledger guard heartbeat {doc['last_run_utc']} ({status})"
-            if sh(f"git -C {checkout} commit -m {json.dumps(msg)}",
-                  timeout=60).returncode != 0:
-                print(f"_write_guard_heartbeat: attempt {attempt}: "
-                      "commit failed", file=sys.stderr, flush=True)
-                continue
-            if sh(f"git -C {checkout} push origin HEAD:main",
-                  timeout=120).returncode != 0:
-                print(f"_write_guard_heartbeat: attempt {attempt}: "
-                      "push rejected/failed", file=sys.stderr, flush=True)
-                continue
-            if _guard_heartbeat_on_main(checkout, doc):
-                return True
-            print(f"_write_guard_heartbeat: attempt {attempt}: push "
-                  "reported success but on-main heartbeat does not "
-                  "match; retrying", file=sys.stderr, flush=True)
-        except Exception as e:
-            print(f"_write_guard_heartbeat: attempt {attempt}: "
-                  f"{type(e).__name__}: {e}", file=sys.stderr, flush=True)
-    print(f"_write_guard_heartbeat: heartbeat did not land after "
-          f"{GUARD_HEARTBEAT_ATTEMPTS} attempts (job {job_id})",
-          file=sys.stderr, flush=True)
-    return False
+def _guard_envelope_on_main(checkout, job_id):
+    """The heartbeat doc on origin/main when it belongs to this
+    job (run_id match), else None. Fetch + show, never a push
+    returncode: the watchdog reads this file, so this file is
+    what confirmation means (issue #434). Run ids are compared
+    as strings — the publisher writes LEDGER_RUN_ID verbatim,
+    the Actions path historically wrote an int."""
+    try:
+        if sh(f"git -C {checkout} fetch origin main",
+              timeout=120).returncode != 0:
+            return None
+        r = sh(f"git -C {checkout} show "
+               f"origin/main:{GUARD_HEARTBEAT_REL}", timeout=60)
+        if r.returncode != 0:
+            return None
+        live = json.loads(r.stdout)
+        if str(live.get("run_id")) == str(job_id):
+            return live
+        return None
+    except Exception as e:
+        print(f"_guard_envelope_on_main: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return None
 
+
+def _confirm_guard_envelope(checkout, job_id, timeout_s=None,
+                            poll_s=None):
+    """Poll main for this run's envelope heartbeat until the
+    relay's merge lands it or the bound expires; returns the
+    on-main doc, or None. Bounded by construction — the
+    2026-11-22 guard stall (a claimed slot with no outcome for
+    over an hour) must never recur on this path. The bounds are
+    resolved from the module constants at call time (not bound
+    as argument defaults) so tests can shrink them."""
+    if timeout_s is None:
+        timeout_s = GUARD_CONFIRM_TIMEOUT_S
+    if poll_s is None:
+        poll_s = GUARD_CONFIRM_POLL_S
+    deadline = time.monotonic() + timeout_s
+    while True:
+        doc = _guard_envelope_on_main(checkout, job_id)
+        if doc is not None:
+            return doc
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return None
+        time.sleep(min(poll_s, remaining))
 
 def _write_bus_json(rel_name, payload, message):
     """Write one JSON file onto the queue branch (best-effort)."""
@@ -1450,90 +1520,180 @@ def _write_bus_json(rel_name, payload, message):
 
 
 def run_ledger_guard(job):
-    """Execute one `ledger-guard` job. Returns True ONLY when the
-    guard attempt completed AND its heartbeat commit is confirmed
-    on main — the caller then marks the slot done. Issue #434: the
-    old code returned True whenever the publisher had run, ignoring
-    whether the heartbeat push landed, so the 1547Z/1647Z/1747Z
-    slots of 2026-11-20 were marked done with no heartbeat on main
-    and no error anywhere. When the push does not land the slot
-    stays un-done (the claim goes stale in 6 h; the next hourly
-    slot retries the push) and the failure is recorded twice: a
-    `ledger-failure.json` bus record (kind heartbeat-push-failed,
-    the signal channel Moos's side reads) and a `missed-<slot>`
-    marker (the existing missed-slot convention). Returns False on
-    a setup refusal (no checkout / script mismatch): the slot stays
-    un-done, the claim goes stale in 6 h and the job can be retried;
-    the refusal is loud here and in the heartbeat file when one
-    could be written."""
+    """Execute one `ledger-guard` job (issue #443 envelope design).
+
+    Returns True ONLY when the run's envelope heartbeat is
+    confirmed on main — the caller then marks the slot done
+    (issue #434's done-gate, unchanged). The envelope is staged on
+    publish/ledger-<job-id>: by the publisher (validated ledger +
+    ok heartbeat, or the heartbeat alone when the ledger is
+    unchanged), or — when the publisher fails or refuses — by the
+    worker as a failed-status heartbeat-only envelope. The relay
+    lands it on main; a slot whose envelope never lands stays
+    un-done and is recorded (ledger-failure.json + missed-<slot>
+    marker).
+
+    Hang-proofing (2026-11-22 evidence: guard-2026-11-22T0847Z was
+    claimed at 08:50:57Z and produced NO outcome for over an hour
+    while the same worker completed other jobs — the old bare
+    subprocess.run(timeout=...) kills only the publisher process
+    on expiry, and a surviving grandchild holding the output
+    pipes can block the output collect indefinitely): the
+    publisher now runs under sh_group (the whole process group is
+    killed and verified empty on timeout), the confirmation wait
+    is bounded, every git call carries its own timeout, and ANY
+    exit from this function — success, failure, timeout,
+    unexpected exception — has either confirmed the heartbeat on
+    main or left a durable bus record. Silence is the one outcome
+    this function no longer produces."""
+    try:
+        return _run_ledger_guard(job)
+    except Exception as e:
+        print(f"run_ledger_guard: unexpected {type(e).__name__}: "
+              f"{e}", file=sys.stderr, flush=True)
+        try:
+            _write_bus_json(
+                "ledger-failure.json",
+                {"kind": "guard-error", "job_id": job.get("id"),
+                 "at": now(), "worker": os.uname().nodename,
+                 "detail": f"unexpected {type(e).__name__}: {e}"},
+                f"ledger guard error {job.get('id')}")
+        except Exception:
+            pass
+        return False
+
+
+def _run_ledger_guard(job):
+    job_id = job["id"]
+    branch = _guard_branch(job_id)
     checkout = _ensure_main_checkout()
     if checkout is None:
         print("run_ledger_guard: main checkout unavailable; refusing",
               file=sys.stderr, flush=True)
+        _write_bus_json(
+            "ledger-failure.json",
+            {"kind": "setup-failed", "job_id": job_id,
+             "at": now(), "worker": os.uname().nodename,
+             "detail": "main checkout unavailable; guard refused"},
+            f"ledger guard setup failed {job_id}")
         return False
     if not scripts_match(checkout, CODE, GUARD_SCRIPTS):
         print("run_ledger_guard: publisher scripts on main differ "
               "from the reviewed release copies; refusing to execute "
               "unreviewed code (D2)", file=sys.stderr, flush=True)
-        _write_guard_heartbeat(checkout, "failed", job["id"])
+        _write_bus_json(
+            "ledger-failure.json",
+            {"kind": "setup-failed", "job_id": job_id,
+             "at": now(), "worker": os.uname().nodename,
+             "detail": "publisher scripts on main differ from the "
+                       "reviewed release copies (D2); guard "
+                       "refused"},
+            f"ledger guard setup failed {job_id}")
+        # The refusal still leaves its liveness evidence for the
+        # relay to land (staged failed heartbeat, confirmed when
+        # it lands) — but the slot is NOT done either way: a D2
+        # refusal retries after adoption, as before.
+        if _stage_guard_heartbeat(checkout, branch, "failed",
+                                  job_id):
+            _confirm_guard_envelope(checkout, job_id)
         return False
     env = _guard_env()
+    env["LEDGER_RUN_ID"] = str(job_id)
     _assert_no_denied(env)
-    r = subprocess.run(
-        [sys.executable, str(checkout / "scripts" / "ledger_publish.py"),
-         "--commit", "--fail-hard"],
-        cwd=checkout, env=env, capture_output=True, text=True,
-        timeout=1800)
-    if r.stdout.strip():
-        print(r.stdout[-2000:], flush=True)
-    if r.stderr.strip():
-        print(r.stderr[-2000:], file=sys.stderr, flush=True)
-    status = "ok" if r.returncode == 0 else "failed"
-    publish_detail = (r.stdout + r.stderr)[-500:] if r.returncode != 0 \
-        else ""
-    if r.returncode != 0:
+    cmd = shlex.join(
+        [sys.executable,
+         str(checkout / "scripts" / "ledger_publish.py"),
+         "--commit", "--fail-hard",
+         "--publish-branch", branch, "--guard-heartbeat"])
+    timed_out = False
+    detail = ""
+    try:
+        r = sh_group(cmd, cwd=str(checkout), env=env,
+                     timeout=GUARD_PUBLISH_TIMEOUT_S)
+        rc = r.returncode
+        out, err = r.stdout or "", r.stderr or ""
+    except subprocess.TimeoutExpired as e:
+        timed_out = True
+        rc = -1
+        out, err = e.output or "", e.stderr or ""
+        if isinstance(out, bytes):
+            out = out.decode("utf-8", "replace")
+        if isinstance(err, bytes):
+            err = err.decode("utf-8", "replace")
+    if out.strip():
+        print(out[-2000:], flush=True)
+    if err.strip():
+        print(err[-2000:], file=sys.stderr, flush=True)
+    if timed_out:
+        detail = (f"publisher exceeded the "
+                  f"{GUARD_PUBLISH_TIMEOUT_S}s guard bound; its "
+                  "process group was killed and verified empty "
+                  "(issue #443 hang-proofing)")
+        _write_bus_json(
+            "ledger-failure.json",
+            {"kind": "publish-timeout", "job_id": job_id,
+             "at": now(), "worker": os.uname().nodename,
+             "detail": detail + "; publisher tail: "
+                       + (out + err)[-400:]},
+            f"ledger publish timed out {job_id}")
+    elif rc != 0:
         # The publisher's durable API signal needs an Issues-capable
         # token the worker PAT is not; mirror the failure to the bus
         # for Moos to file (see the section header above).
+        detail = (out + err)[-500:]
         _write_bus_json(
             "ledger-failure.json",
-            {"kind": "publish-failed", "job_id": job["id"],
+            {"kind": "publish-failed", "job_id": job_id,
              "at": now(), "worker": os.uname().nodename,
-             "detail": publish_detail},
-            f"ledger publish failed {job['id']}")
-    if not _write_guard_heartbeat(checkout, status, job["id"]):
+             "detail": detail},
+            f"ledger publish failed {job_id}")
+    if rc != 0:
+        # Failed-status heartbeat only — never stage the (possibly
+        # invalid) ledger outputs the publisher refused. When the
+        # publisher had in fact already staged its envelope before
+        # dying, _stage_guard_heartbeat leaves it untouched and the
+        # confirmation below reconciles on the on-main status.
+        _stage_guard_heartbeat(checkout, branch, "failed", job_id)
+    doc = _confirm_guard_envelope(checkout, job_id)
+    if doc is None:
         # Issue #434: the heartbeat is the guard run's archive — a
         # slot whose heartbeat never landed must not read done.
         # Record it on the bus (signal + missed marker) and refuse
-        # done; the next hourly slot retries the push.
-        print(f"run_ledger_guard: heartbeat push did not land for "
-              f"{job['id']}; refusing done",
+        # done; the next hourly slot retries.
+        print(f"run_ledger_guard: envelope for {job_id} not "
+              f"confirmed on main within "
+              f"{GUARD_CONFIRM_TIMEOUT_S}s; refusing done",
               file=sys.stderr, flush=True)
-        detail = ("heartbeat commit not confirmed on main "
-                  f"after {GUARD_HEARTBEAT_ATTEMPTS} attempts; "
-                  "slot not marked done")
-        if publish_detail:
-            # This record overwrites the publish-failed one above —
-            # keep the publisher's evidence in it.
-            detail += f"; publisher also failed: {publish_detail}"
+        detail2 = (f"staged envelope on {branch} not confirmed on "
+                   f"main after {GUARD_CONFIRM_TIMEOUT_S}s; slot "
+                   "not marked done")
+        if detail:
+            detail2 += f"; publisher outcome: {detail}"
         _write_bus_json(
             "ledger-failure.json",
-            {"kind": "heartbeat-push-failed", "job_id": job["id"],
+            {"kind": "envelope-unconfirmed", "job_id": job_id,
              "at": now(), "worker": os.uname().nodename,
-             "detail": detail},
-            f"ledger heartbeat push failed {job['id']}")
-        suffix = job["id"][len("guard-"):] \
-            if str(job["id"]).startswith("guard-") else job["id"]
+             "detail": detail2},
+            f"ledger envelope unconfirmed {job_id}")
+        suffix = job_id[len("guard-"):] \
+            if str(job_id).startswith("guard-") else job_id
         _write_bus_json(
             f"missed-{suffix}.json",
-            {"job_id": job["id"], "job": "ledger-guard",
+            {"job_id": job_id, "job": "ledger-guard",
              "at": now(), "worker": os.uname().nodename,
-             "reason": "guard ran but its heartbeat commit did not "
-                       "land on main — slot not marked done; the "
-                       "next hourly guard retries the push "
-                       "(issue #434)"},
-            f"missed guard heartbeat {job['id']}")
+             "reason": "guard ran but its envelope heartbeat did "
+                       "not land on main via the publish relay — "
+                       "slot not marked done; the next hourly "
+                       "guard retries (issues #434, #443)"},
+            f"missed guard envelope {job_id}")
         return False
+    if rc != 0 and str(doc.get("status")) == "ok":
+        # The publisher reported failure yet a success envelope
+        # landed (it staged, then died before reporting): main is
+        # the truth — the publish DID land.
+        print(f"run_ledger_guard: publisher rc={rc} but the ok "
+              f"envelope for {job_id} is confirmed on main — "
+              "counting the publish as landed", flush=True)
     return True
 
 
