@@ -400,6 +400,46 @@ def test_guard_unconfirmed_envelope_refuses_done():
               == "2026-11-20T14:55:37Z")
 
 
+def test_guard_stale_same_id_heartbeat_does_not_confirm():
+    # PR review finding on #491: an earlier attempt of the same
+    # job staged an envelope whose relay merge landed only AFTER
+    # that attempt's confirmation window expired, leaving a
+    # heartbeat with this run_id on main. A later attempt whose
+    # own envelope never lands must NOT confirm against that
+    # stale heartbeat — confirmation requires the on-main doc to
+    # be THIS attempt's staged envelope (run_id + last_run_utc).
+    with tempfile.TemporaryDirectory() as td:
+        co, remote, sim = _guard_setup(td, STUB_FAIL,
+                                       simulate_relay=False)
+        stale = Path(td) / "stale"
+        git("clone", str(remote), str(stale))
+        git("-C", str(stale), "config", "user.email",
+            "test@borsagator.local")
+        git("-C", str(stale), "config", "user.name", "gator-test")
+        (stale / "ledger" / "guard-heartbeat.json").write_text(
+            json.dumps(
+                {"last_run_utc": "2026-11-22T09:00:00Z",
+                 "run_id": SLOT, "status": "ok",
+                 "workflow": "ledger-guard",
+                 "note": "earlier attempt"}, indent=2) + "\n")
+        git("-C", str(stale), "add", "ledger/guard-heartbeat.json")
+        git("-C", str(stale), "commit", "-m", "stale heartbeat")
+        git("-C", str(stale), "push", "origin", "HEAD:main")
+        worker.GUARD_CONFIRM_TIMEOUT_S = 2
+        ok = worker.run_ledger_guard({"id": SLOT,
+                                      "job": "ledger-guard"})
+        check("guard: stale same-id heartbeat does not confirm "
+              "a later attempt", ok is False)
+        fail = json.loads(
+            (worker.BUS / "queue" / "ledger-failure.json").read_text())
+        check("guard: stale-confirm refusal recorded as "
+              "envelope-unconfirmed",
+              fail.get("kind") == "envelope-unconfirmed")
+        live = main_heartbeat(remote)
+        check("guard: main still carries the stale heartbeat",
+              live.get("last_run_utc") == "2026-11-22T09:00:00Z")
+
+
 def test_guard_d2_refusal_records_and_stages_failed_heartbeat():
     with tempfile.TemporaryDirectory() as td:
         co, remote, sim = _guard_setup(td, STUB_OK)
@@ -429,6 +469,7 @@ def main():
     test_guard_publisher_failure_stages_failed_envelope()
     test_guard_publisher_timeout_is_killed_and_recorded()
     test_guard_unconfirmed_envelope_refuses_done()
+    test_guard_stale_same_id_heartbeat_does_not_confirm()
     test_guard_d2_refusal_records_and_stages_failed_heartbeat()
     print(f"\n{PASSED} checks passed")
 

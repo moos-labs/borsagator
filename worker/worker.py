@@ -1458,13 +1458,41 @@ def _stage_guard_heartbeat(checkout, branch, status, job_id):
         return False
 
 
-def _guard_envelope_on_main(checkout, job_id):
-    """The heartbeat doc on origin/main when it belongs to this
-    job (run_id match), else None. Fetch + show, never a push
-    returncode: the watchdog reads this file, so this file is
-    what confirmation means (issue #434). Run ids are compared
-    as strings — the publisher writes LEDGER_RUN_ID verbatim,
-    the Actions path historically wrote an int."""
+def _staged_guard_heartbeat(checkout, branch):
+    """The heartbeat doc this attempt staged on the branch (written
+    by the publisher, or by the worker's fallback stager), or None
+    when the branch or the file cannot be read. Confirmation
+    compares against THIS doc: a same-run-id heartbeat left on
+    main by an earlier attempt (its relay merged after that
+    attempt's confirmation window expired) must never confirm a
+    later attempt whose own envelope did not land — the #434
+    false-done class (PR review finding on #491)."""
+    try:
+        if sh(f"git -C {checkout} fetch origin {branch}",
+              timeout=120).returncode != 0:
+            return None
+        r = sh(f"git -C {checkout} show "
+               f"FETCH_HEAD:{GUARD_HEARTBEAT_REL}", timeout=60)
+        if r.returncode != 0:
+            return None
+        doc = json.loads(r.stdout)
+        return doc if isinstance(doc, dict) else None
+    except Exception as e:
+        print(f"_staged_guard_heartbeat: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return None
+
+
+def _guard_envelope_on_main(checkout, job_id, expected=None):
+    """The heartbeat doc on origin/main when it is this attempt's
+    envelope, else None. Fetch + show, never a push returncode:
+    the watchdog reads this file, so this file is what
+    confirmation means (issue #434). With `expected` — the doc
+    this attempt staged — the on-main doc must match it exactly
+    (run_id AND last_run_utc, the pre-#443 comparison strength);
+    a bare run_id match is never sufficient on its own. Run ids
+    are compared as strings — the publisher writes LEDGER_RUN_ID
+    verbatim, the Actions path historically wrote an int."""
     try:
         if sh(f"git -C {checkout} fetch origin main",
               timeout=120).returncode != 0:
@@ -1474,20 +1502,28 @@ def _guard_envelope_on_main(checkout, job_id):
         if r.returncode != 0:
             return None
         live = json.loads(r.stdout)
-        if str(live.get("run_id")) == str(job_id):
-            return live
-        return None
+        if not isinstance(live, dict) \
+                or str(live.get("run_id")) != str(job_id):
+            return None
+        if expected is None \
+                or live.get("last_run_utc") \
+                != expected.get("last_run_utc"):
+            return None
+        return live
     except Exception as e:
         print(f"_guard_envelope_on_main: {type(e).__name__}: {e}",
               file=sys.stderr, flush=True)
         return None
 
 
-def _confirm_guard_envelope(checkout, job_id, timeout_s=None,
-                            poll_s=None):
-    """Poll main for this run's envelope heartbeat until the
+def _confirm_guard_envelope(checkout, job_id, branch,
+                            timeout_s=None, poll_s=None):
+    """Poll main for this attempt's envelope heartbeat until the
     relay's merge lands it or the bound expires; returns the
-    on-main doc, or None. Bounded by construction — the
+    on-main doc, or None. The expected doc is read back from the
+    staging branch (retried while unreadable) and the on-main
+    heartbeat must BE that envelope — see
+    _guard_envelope_on_main. Bounded by construction — the
     2026-11-22 guard stall (a claimed slot with no outcome for
     over an hour) must never recur on this path. The bounds are
     resolved from the module constants at call time (not bound
@@ -1497,10 +1533,15 @@ def _confirm_guard_envelope(checkout, job_id, timeout_s=None,
     if poll_s is None:
         poll_s = GUARD_CONFIRM_POLL_S
     deadline = time.monotonic() + timeout_s
+    expected = None
     while True:
-        doc = _guard_envelope_on_main(checkout, job_id)
-        if doc is not None:
-            return doc
+        if expected is None:
+            expected = _staged_guard_heartbeat(checkout, branch)
+        if expected is not None:
+            doc = _guard_envelope_on_main(checkout, job_id,
+                                          expected)
+            if doc is not None:
+                return doc
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             return None
@@ -1595,7 +1636,7 @@ def _run_ledger_guard(job):
         # refusal retries after adoption, as before.
         if _stage_guard_heartbeat(checkout, branch, "failed",
                                   job_id):
-            _confirm_guard_envelope(checkout, job_id)
+            _confirm_guard_envelope(checkout, job_id, branch)
         return False
     env = _guard_env()
     env["LEDGER_RUN_ID"] = str(job_id)
@@ -1654,7 +1695,7 @@ def _run_ledger_guard(job):
         # dying, _stage_guard_heartbeat leaves it untouched and the
         # confirmation below reconciles on the on-main status.
         _stage_guard_heartbeat(checkout, branch, "failed", job_id)
-    doc = _confirm_guard_envelope(checkout, job_id)
+    doc = _confirm_guard_envelope(checkout, job_id, branch)
     if doc is None:
         # Issue #434: the heartbeat is the guard run's archive — a
         # slot whose heartbeat never landed must not read done.
