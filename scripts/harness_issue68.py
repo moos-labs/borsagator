@@ -741,9 +741,10 @@ def case10_recommendation(archive_root, golden_model):
           and golden_model["levels"]["resistance"] == expect_resist
           and golden_model["levels"]["support"] == 7.1346
           and golden_model["levels"]["resistance"] == 11.5881)
-    check("10c levels carry the D2 note",
+    check("10c levels carry the model-range note",
           golden_model["levels"]["note"]
-          == "descriptive-conditional levels (D2); not a buy/sell "
+          == "model range: arithmetic on the forecast's own week "
+             "range; not support/resistance levels and not a buy/sell "
              "instruction")
     text = json.dumps(golden_model)
     check("10d no HOLD / buy / sell instruction line in the model",
@@ -765,11 +766,14 @@ def case10_recommendation(archive_root, golden_model):
     write_json(os.path.join(profiles, "POUL.CA.recommendation.json"),
                rec)
     code, out, m = run_compiler(staged, profiles_dir=profiles)
-    check("10e a matching profile is copied verbatim",
+    check("10e a matching profile is copied minus the advice fields "
+          "(panel-eval fix: action/buy_below/sell_above never ship)",
           code == 0 and m is not None
           and m["recommendation"] is not None
-          and m["recommendation"]["action"] == "hold"
-          and m["recommendation"]["buy_below"] == 7.13
+          and "action" not in m["recommendation"]
+          and "buy_below" not in m["recommendation"]
+          and "sell_above" not in m["recommendation"]
+          and m["recommendation"]["expected_week_pct"] == 16.73
           and m["recommendation"]["archive_commit"]
           == "archive-commit-test",
           f"exit={code} {out[:300]}")

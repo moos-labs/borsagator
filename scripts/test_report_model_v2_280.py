@@ -552,6 +552,38 @@ def test_compiler_legacy_fields_stable():
             if key in ("model_version", "schema",
                        "disclosure_events"):
                 continue
+            if key == "sharia":
+                # Panel-eval compliance fix (2026-11-23): the
+                # section gained the additive banner_en/banner_ar
+                # pair; every legacy field inside it is unchanged.
+                new = {k: v for k, v in v2[key].items()
+                       if k not in ("banner_en", "banner_ar")}
+                assert new == v1[key], "legacy field changed: sharia"
+                continue
+            if key == "recommendation":
+                # Panel-eval compliance fix (2026-11-23): the
+                # shipped model no longer carries the profile's
+                # action / buy_below / sell_above, and advice-worded
+                # notes are withheld. Everything else is identical
+                # to the v1 copy.
+                if v1[key] is None or v2[key] is None:
+                    assert v2[key] == v1[key], \
+                        "legacy field changed: recommendation"
+                    continue
+                old_rec = dict(v1[key])
+                for gone in ("action", "buy_below", "sell_above"):
+                    assert gone not in v2[key], \
+                        f"advice field shipped: {gone}"
+                    old_rec.pop(gone, None)
+                old_notes = old_rec.get("notes") or []
+                clean = [n for n in old_notes
+                         if not re.search(r"\b(buy|sell|hold)\b",
+                                          str(n), re.IGNORECASE)]
+                if clean != old_notes:
+                    old_rec["notes"] = clean
+                assert v2[key] == old_rec, \
+                    "legacy field changed: recommendation"
+                continue
             assert v2[key] == v1[key], f"legacy field changed: {key}"
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
