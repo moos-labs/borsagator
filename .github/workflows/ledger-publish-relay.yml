@@ -50,7 +50,13 @@ name: ledger-publish-relay
 #     from main (see the trigger note below).
 # (D) A GITHUB_TOKEN merge does not fire push workflows on main,
 #     so deploy-guard is dispatched explicitly after the merge
-#     and its conclusion is recorded in the chain.
+#     and its conclusion is recorded in the chain. Issue #502:
+#     the dispatch carries a correlation id and the merge commit
+#     as target_sha; deploy-guard verifies that exact commit and
+#     emits evidence as a run artifact, and the relay matches
+#     the evidence (run id, correlation, target, verified HEAD)
+#     before the chain comment may use recovered wording — a
+#     successful conclusion alone is not evidence.
 # (E) Least-privilege permissions are declared below. Failed
 #     staging branches are retained for diagnosis.
 #
@@ -137,10 +143,37 @@ jobs:
             gh pr list --head "$BRANCH" --state all --limit 10 \
               --json number,state,headRefOid,mergeCommit,mergedAt,baseRefName
           }
+          # Issue #500: pre-merge envelope validation against
+          # the envelope's DECLARED base (its single parent):
+          # base in main's history and equal to the merge-base,
+          # changed paths vs the base ledger/** only, parsed
+          # heartbeat ordering (not regressive vs the base, not
+          # superseded by main's current heartbeat). Unrelated
+          # main changes do NOT refuse the envelope — base-tip
+          # equality would over-reject them. The validator is
+          # scripts/check_relay_envelope.py from THIS main
+          # checkout (privileged logic never comes from the
+          # staged branch); the merge step re-runs it against
+          # the freshly fetched main before merging.
+          validate_envelope() {
+            if ! python3 scripts/check_relay_envelope.py \
+                --repo-dir . --stage "$SHA" \
+                --main-ref origin/main > /tmp/envcheck.json; then
+              cat /tmp/envcheck.json || true
+              echo "::error::envelope validation refused $BRANCH at $SHA (issue #500) — see the verdict above"
+              exit 1
+            fi
+            out base_sha "$(jq -r .base_sha /tmp/envcheck.json)"
+            out staged_at "$(jq -r '.staged_at // ""' /tmp/envcheck.json)"
+            echo "Envelope validation passed (issue #500): declared base $(jq -r .base_sha /tmp/envcheck.json), staged heartbeat $(jq -r '.staged_at // "none"' /tmp/envcheck.json)"
+          }
           if git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null; then
             SHA=$(git rev-parse "refs/remotes/origin/$BRANCH")
             out sha "$SHA"
-            PATHS=$(git diff --name-only "origin/main...$SHA")
+            # --no-renames + unquoted paths (PR #515 review):
+            # both sides of a rename face the scope check, and a
+            # non-ASCII path is checked as the path it is.
+            PATHS=$(git -c core.quotepath=false diff --no-renames --name-only "origin/main...$SHA")
             if [ -z "$PATHS" ]; then
               # No changes vs main: either an earlier relay already
               # merged this envelope and the branch was re-created
@@ -190,6 +223,7 @@ jobs:
                 echo "::error::open PR head $OPEN_SHA has drifted from the staged head $SHA — refusing (change C)"
                 exit 1
               fi
+              validate_envelope
               out mode fresh
               out pr_number "$(echo "$J" | jq -r '[.[] | select(.state=="OPEN")][0].number')"
               echo "Reusing the open PR for this head (idempotent)."
@@ -200,6 +234,7 @@ jobs:
               echo "::error::a closed-unmerged PR exists for $BRANCH — a human intervened; refusing to reopen the question automatically"
               exit 1
             fi
+            validate_envelope
             out mode fresh
             out pr_number ""
           else
@@ -225,13 +260,20 @@ jobs:
       # unapproved and then fail at merge time (the paired PR
       # Agent / pr-close-gate failures). A PR opened with the
       # Borsagator App's installation token is not held that way
-      # (proven live on test PR #523, 2026-11-23), so every step
-      # that acts on the PR (open, merge, comment, branch
-      # delete) uses the App token minted here. Steps that only
-      # dispatch workflows or read git state keep GITHUB_TOKEN.
+      # (proven live on test PR #523, 2026-11-23).
+      # INS-REVIEW-105 narrows the App's use to the one operation
+      # whose actor identity matters — CREATING the PR. The
+      # token is minted only when this run actually needs to
+      # create one (fresh mode, no existing PR): reconciled and
+      # existing-PR runs never touch the App key. Every other
+      # step (merge, evidence comment, branch delete, dispatches,
+      # reads) runs on GITHUB_TOKEN. The action is pinned to the
+      # full commit SHA of its v1 tag — a mutable major tag must
+      # not be able to change what runs with the App key.
       - name: Mint the Borsagator App token
         id: apptoken
-        uses: actions/create-github-app-token@v1
+        if: steps.assess.outputs.mode == 'fresh' && steps.assess.outputs.pr_number == ''
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547
         with:
           app-id: 5709364
           private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
@@ -356,7 +398,7 @@ jobs:
         id: merge
         if: steps.assess.outputs.mode == 'fresh'
         env:
-          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
           SHA: ${{ steps.assess.outputs.sha }}
           PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
@@ -370,6 +412,28 @@ jobs:
           # after). Every attempt keeps the exact-head
           # precondition; an already-merged PR reconciles at any
           # attempt (an earlier relay merged, then crashed).
+          # Issue #500: re-validate the envelope against the
+          # ACTUAL merge candidate — main as fetched NOW, not as
+          # the assess step saw it — before the first attempt and
+          # after every refused attempt, so a concurrent update
+          # (above all a newer envelope landing first) cannot
+          # slip a superseded or regressive envelope through.
+          recheck_envelope() {
+            # PR #515 review: this function is called under
+            # `if !`, which suspends errexit inside it — a
+            # failed fetch would otherwise fall through to
+            # validation against the STALE origin/main. Fail
+            # the recheck explicitly when the refresh fails.
+            git fetch origin main || return 1
+            python3 scripts/check_relay_envelope.py \
+              --repo-dir . --stage "$SHA" --main-ref origin/main \
+              > /tmp/recheck.json
+          }
+          if ! recheck_envelope; then
+            cat /tmp/recheck.json || true
+            echo "::error::envelope re-validation against current main refused the merge (issue #500)"
+            exit 1
+          fi
           MERGED_SHA=""
           for ATTEMPT in 1 2 3 4 5; do
             if MERGE_SHA=$(gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/merge" \
@@ -390,6 +454,11 @@ jobs:
               fi
             fi
             if [ "$ATTEMPT" -lt 5 ]; then
+              if ! recheck_envelope; then
+                cat /tmp/recheck.json || true
+                echo "::error::envelope became invalid while merging (issue #500 recheck) — refusing further attempts"
+                exit 1
+              fi
               echo "merge attempt $ATTEMPT refused — retrying in 30s"
               sleep 30
             fi
@@ -420,67 +489,288 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_SHA: ${{ steps.merge.outputs.merge_sha || steps.assess.outputs.merge_sha }}
+          STAGE_SHA: ${{ steps.assess.outputs.sha }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
+          BRANCH: ${{ steps.resolve.outputs.branch }}
         run: |
           set -euo pipefail
           git fetch origin main
+          # Make sure the staged commit itself is present
+          # locally for the blob comparison below (PR #515
+          # review): fetching main alone does not guarantee it
+          # in every mode. In reconciled mode the branch may
+          # already be deleted — the staged commit is then an
+          # ancestor of the merge and arrives with main — so a
+          # failed branch fetch is tolerated HERE; the listing
+          # capture below still fails closed if the commit
+          # cannot be listed.
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null || true
           if ! git merge-base --is-ancestor "$MERGE_SHA" origin/main; then
             echo "::error::merge commit $MERGE_SHA is not on main — publication NOT verified"
             exit 1
           fi
-          HB=$(git show origin/main:ledger/guard-heartbeat.json)
+          # INS-REVIEW-093: bind the landing to the expected merge.
+          # A relay merge must be a true merge of the staged
+          # envelope onto main: exactly two parents, with the
+          # second parent being the staged commit itself. A
+          # squash, a fast-forward, or a merge whose second
+          # parent is not $STAGE_SHA would land the wrong tree
+          # under the staged SHA's path scope and the
+          # blob-equality check below could still pass against
+          # the wrong content.
+          PARENTS=$(git rev-list --parents -n 1 "$MERGE_SHA")
+          PARENT_COUNT=$(echo "$PARENTS" | wc -w)
+          if [ "$PARENT_COUNT" -ne 3 ]; then
+            echo "::error::merge $MERGE_SHA has $PARENT_COUNT whitespace fields from rev-list --parents (expected 3: sha + 2 parents) — not a two-parent merge; publication NOT verified"
+            exit 1
+          fi
+          FIRST_PARENT=$(echo "$PARENTS" | awk '{print $2}')
+          STAGE_PARENT=$(echo "$PARENTS" | awk '{print $3}')
+          if [ "$STAGE_PARENT" != "$STAGE_SHA" ]; then
+            echo "::error::merge $MERGE_SHA's second parent is $STAGE_PARENT, not the staged commit $STAGE_SHA — the merge does not bind the staged envelope; publication NOT verified"
+            exit 1
+          fi
+          echo "merge $MERGE_SHA is a two-parent merge: first parent $FIRST_PARENT (main at merge time), second parent $STAGE_SHA (staged envelope)"
+          # INS-REVIEW-093: frozen manifest. The envelope's
+          # declared change set is the diff of the staged commit
+          # against its own parent (the base the publisher
+          # declared), captured with --no-renames and unquoted
+          # paths so a renamed or non-ASCII path is checked as
+          # the path it is. DELETED_PATHS is the --diff-filter=D
+          # subset of that manifest.
+          MANIFEST_PATHS=$(git -c core.quotepath=false diff --no-renames --name-only "$STAGE_SHA^" "$STAGE_SHA")
+          DELETED_PATHS=$(git -c core.quotepath=false diff --no-renames --name-only --diff-filter=D "$STAGE_SHA^" "$STAGE_SHA")
+          # INS-REVIEW-093: every path the envelope DELETED must
+          # be ABSENT at the merge. A deletion in the staged
+          # envelope is a contract: the file is gone. If the
+          # merge tree still carries it — main re-added it, or
+          # the merge resolved the deletion the other way — the
+          # envelope did not land as staged.
+          if [ -n "$DELETED_PATHS" ]; then
+            while IFS= read -r DEL_PATH; do
+              [ -z "$DEL_PATH" ] && continue
+              if git rev-parse -q --verify "$MERGE_SHA:$DEL_PATH" >/dev/null 2>&1; then
+                echo "::error::envelope deleted $DEL_PATH at $STAGE_SHA but it is still present at merge $MERGE_SHA — the staged deletion did not land; publication NOT verified"
+                exit 1
+              fi
+            done <<< "$DELETED_PATHS"
+            echo "all ${DELETED_PATHS//$'\n'/ }deleted manifest paths are absent at merge $MERGE_SHA"
+          fi
+          # INS-REVIEW-093: no unexpected introduced paths. Every
+          # path introduced by the merge (first-parent -> merge)
+          # must be a path the envelope itself changed. Main may
+          # independently have acquired identical content for a
+          # manifest path (a concurrent envelope), so the
+          # introduced set is a SUBSET of the manifest set, not
+          # an exact equality — a smaller introduced set is fine.
+          # A path outside the manifest means the merge brought
+          # in something the envelope never declared.
+          INTRODUCED=$(git -c core.quotepath=false diff --no-renames --name-only "$FIRST_PARENT" "$MERGE_SHA")
+          if [ -n "$INTRODUCED" ]; then
+            MANIFEST_SORTED=$(echo "$MANIFEST_PATHS" | sort)
+            while IFS= read -r INT_PATH; do
+              [ -z "$INT_PATH" ] && continue
+              if ! grep -Fxq "$INT_PATH" <<< "$MANIFEST_SORTED"; then
+                echo "::error::merge $MERGE_SHA introduces $INT_PATH, which is not a path the staged envelope changed — unexpected introduced path; publication NOT verified"
+                exit 1
+              fi
+            done <<< "$INTRODUCED"
+            echo "every introduced path at merge $MERGE_SHA is a member of the staged manifest"
+          fi
+          # INS-REVIEW-093: freshness against the ACTUAL first-parent
+          # state. The manifest above was computed from the staged
+          # commit's own declared base ($STAGE_SHA^); here the
+          # envelope is re-validated against the merge's real first
+          # parent — the main tip the relay merged onto — so a
+          # concurrent main update between the assess step and the
+          # merge cannot leave the landed envelope stale or
+          # regressive relative to the state it actually landed on.
+          # A refusal here is a real failure: exit 1, no success
+          # wording, no downstream dispatch.
+          if ! python3 scripts/check_relay_envelope.py \
+              --repo-dir . --stage "$STAGE_SHA" --main-ref "$FIRST_PARENT" \
+              > /tmp/verify-envelope.json 2>&1; then
+            cat /tmp/verify-envelope.json || true
+            echo "::error::envelope freshness refused for $STAGE_SHA against first parent $FIRST_PARENT (INS-REVIEW-093) — publication NOT verified"
+            exit 1
+          fi
+          echo "envelope freshness verified against first parent $FIRST_PARENT: $(jq -r '.base_sha // "n/a"' /tmp/verify-envelope.json)"
+          # Issue #498: the verdict is read at the ORIGINAL merge
+          # commit, never at the moving main tip. The heartbeat
+          # verified here is the one THIS merge landed (the staged
+          # envelope's own heartbeat, byte-identical in the merge
+          # tree), and the merge's full ledger tree must equal the
+          # staged commit's ledger tree — full expected-content
+          # equality, not a run-id spot check. Whatever main
+          # carries NOW (a later envelope may already have
+          # superseded this one) is reported separately below and
+          # never rewrites this verdict.
+          HB=$(git show "$MERGE_SHA:ledger/guard-heartbeat.json")
           HB_RUN=$(echo "$HB" | jq -r '.run_id // ""')
           HB_STATUS=$(echo "$HB" | jq -r '.status // ""')
           HB_AT=$(echo "$HB" | jq -r '.last_run_utc // ""')
-          echo "heartbeat on main: run_id=$HB_RUN status=$HB_STATUS last_run_utc=$HB_AT"
+          echo "heartbeat at merge $MERGE_SHA: run_id=$HB_RUN status=$HB_STATUS last_run_utc=$HB_AT"
           if [ "$HB_RUN" != "$RUN_ID" ]; then
-            echo "::warning::main's heartbeat belongs to run $HB_RUN, not $RUN_ID — a newer envelope has superseded this one; the merge itself is verified, so this publish still counts as landed"
+            echo "::error::the heartbeat landed by merge $MERGE_SHA belongs to run $HB_RUN, not $RUN_ID — publication NOT verified"
+            exit 1
           fi
+          # Full expected-content equality: every blob of the
+          # staged envelope must be present, byte-identical, at
+          # the same path in the merge tree. (Files main gained
+          # elsewhere in ledger/ are not this envelope's content
+          # and do not falsify its landing; no staged byte may be
+          # missing or altered.)
+          # PR #515 review: capture the staged listing in a
+          # plain assignment — inside process substitution a
+          # failed ls-tree was invisible (the loop read zero
+          # entries, MISMATCH stayed empty, and verification
+          # "passed" without comparing a single blob). Under
+          # set -e a failed capture aborts the step; an empty
+          # listing refuses explicitly.
+          STAGE_LISTING=$(git ls-tree -r "$STAGE_SHA" -- ledger/)
+          if [ -z "$STAGE_LISTING" ]; then
+            echo "::error::staged commit $STAGE_SHA lists no ledger content — the envelope cannot be verified, publication NOT verified"
+            exit 1
+          fi
+          MISMATCH=""
+          while IFS=$'\t' read -r META PATH_; do
+            STAGE_BLOB=$(echo "$META" | awk '{print $3}')
+            MERGE_BLOB=$(git rev-parse -q --verify "$MERGE_SHA:$PATH_" 2>/dev/null || echo "")
+            if [ "$MERGE_BLOB" != "$STAGE_BLOB" ]; then
+              MISMATCH="$MISMATCH $PATH_"
+            fi
+          done <<< "$STAGE_LISTING"
+          if [ -n "$MISMATCH" ]; then
+            echo "::error::merge $MERGE_SHA does not carry the staged envelope's content for:$MISMATCH — full-content equality failed, publication NOT verified"
+            exit 1
+          fi
+          echo "every staged envelope blob is present byte-identical in merge $MERGE_SHA"
           echo "hb_run=$HB_RUN" >> "$GITHUB_OUTPUT"
           echo "hb_status=$HB_STATUS" >> "$GITHUB_OUTPUT"
           echo "hb_at=$HB_AT" >> "$GITHUB_OUTPUT"
-          echo "Publication verified on main at $MERGE_SHA"
+          # Later main state, reported separately (issue #498):
+          # informational only — it never feeds the verdict or
+          # the recovery wording above. PR #515 review: this
+          # read is NON-FATAL — if a later commit removed or
+          # broke the heartbeat file, the original merge's
+          # verdict (already established above) must still
+          # reach the deploy + comment steps; report the later
+          # state as unavailable instead of aborting.
+          MAIN_HB_RUN=""
+          MAIN_HB_STATUS=""
+          MAIN_HB_AT=""
+          MAIN_HB=$(git show origin/main:ledger/guard-heartbeat.json 2>/dev/null || echo "")
+          if [ -n "$MAIN_HB" ]; then
+            MAIN_HB_RUN=$(echo "$MAIN_HB" | jq -r '.run_id // ""' 2>/dev/null || echo "")
+            MAIN_HB_STATUS=$(echo "$MAIN_HB" | jq -r '.status // ""' 2>/dev/null || echo "")
+            MAIN_HB_AT=$(echo "$MAIN_HB" | jq -r '.last_run_utc // ""' 2>/dev/null || echo "")
+          else
+            echo "later main state unavailable (heartbeat unreadable on current main) — the verdict above stands"
+          fi
+          echo "current main heartbeat (later state): run_id=$MAIN_HB_RUN status=$MAIN_HB_STATUS last_run_utc=$MAIN_HB_AT"
+          echo "main_hb_run=$MAIN_HB_RUN" >> "$GITHUB_OUTPUT"
+          echo "main_hb_status=$MAIN_HB_STATUS" >> "$GITHUB_OUTPUT"
+          echo "main_hb_at=$MAIN_HB_AT" >> "$GITHUB_OUTPUT"
+          echo "Publication verified at the original merge commit $MERGE_SHA"
 
       - name: Dispatch deploy-guard against main
         id: deployguard
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_SHA: ${{ steps.merge.outputs.merge_sha || steps.assess.outputs.merge_sha }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
         run: |
           set -uo pipefail
+          # Issue #502: the dispatch names its target — the
+          # merge commit this relay just verified — and carries
+          # a correlation id unique to this relay run + slot.
+          # deploy-guard checks the target out explicitly,
+          # verifies its actual HEAD, and emits evidence (run id,
+          # correlation, target, verified HEAD) as a run
+          # artifact; the evidence is matched below before the
+          # chain comment may use recovered wording. The run's
+          # head_sha is NOT evidence: with dispatch --ref main it
+          # identifies the workflow ref, not the target.
+          CORRELATION="relay-${{ github.run_id }}-$RUN_ID"
+          echo "correlation_id=$CORRELATION" >> "$GITHUB_OUTPUT"
           BEFORE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          if ! gh workflow run deploy-guard.yml --ref main; then
+          if ! gh workflow run deploy-guard.yml --ref main \
+              -f correlation_id="$CORRELATION" \
+              -f target_sha="$MERGE_SHA"; then
             echo "conclusion=dispatch-failed" >> "$GITHUB_OUTPUT"
+            echo "evidence=unverified" >> "$GITHUB_OUTPUT"
             echo "::warning::deploy-guard dispatch failed — bookkeeping debt, recorded in the chain comment (the publication itself is verified)"
             exit 0
           fi
+          # PR #515 review (INS-REVIEW-092): select the run by
+          # CORRELATION, not by timestamp alone. The old
+          # "newest run created after BEFORE" pick could select
+          # ANOTHER dispatch that landed after ours; its
+          # evidence then (correctly) mismatched and recovery
+          # stayed unverified despite our run's matching
+          # evidence existing. A deploy-guard run is ours when
+          # its evidence artifact carries our correlation id —
+          # keep scanning the completed candidates until one
+          # matches or the deadline passes.
           RUN_ID=""
-          for i in $(seq 1 6); do
-            RUN_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy-guard.yml/runs?branch=main&event=workflow_dispatch&per_page=10" \
-              --jq "[.workflow_runs[] | select(.created_at >= \"$BEFORE\")][0].id // empty")
-            [ -n "$RUN_ID" ] && break
-            sleep 10
-          done
-          if [ -z "$RUN_ID" ]; then
-            echo "conclusion=dispatched-unseen" >> "$GITHUB_OUTPUT"
-            echo "::warning::deploy-guard dispatched but its run did not appear within a minute"
-            exit 0
-          fi
-          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
-          DEADLINE=$(( $(date +%s) + 300 ))
-          CONCLUSION="pending"
+          DEADLINE=$(( $(date +%s) + 360 ))
           while : ; do
-            read -r STATUS C < <(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
-              --jq '[.status, (.conclusion // "-")] | @tsv')
-            if [ "$STATUS" = "completed" ]; then CONCLUSION="$C"; break; fi
+            CANDIDATES=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/deploy-guard.yml/runs?branch=main&event=workflow_dispatch&per_page=20" \
+              --jq "[.workflow_runs[] | select(.created_at >= \"$BEFORE\") | select(.status==\"completed\") | .id] | join(\" \")")
+            for CAND in $CANDIDATES; do
+              CAND_ART=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CAND/artifacts" \
+                --jq "[.artifacts[] | select(.name==\"deploy-guard-evidence-$CORRELATION\")][0].id // empty")
+              if [ -n "$CAND_ART" ]; then
+                RUN_ID="$CAND"
+                break
+              fi
+            done
+            [ -n "$RUN_ID" ] && break
             if [ "$(date +%s)" -ge "$DEADLINE" ]; then break; fi
             sleep 15
           done
+          if [ -z "$RUN_ID" ]; then
+            echo "conclusion=dispatched-unseen" >> "$GITHUB_OUTPUT"
+            echo "evidence=unverified" >> "$GITHUB_OUTPUT"
+            echo "::warning::deploy-guard dispatched but no completed run carrying correlation $CORRELATION appeared within six minutes"
+            exit 0
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          CONCLUSION=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" \
+            --jq '.conclusion // "unknown"')
           echo "conclusion=$CONCLUSION" >> "$GITHUB_OUTPUT"
-          echo "deploy-guard run $RUN_ID: $CONCLUSION (recorded in the chain; its own run is the alarm if red)"
+          # Issue #502: a successful run is not yet evidence.
+          # Match the run's evidence artifact against THIS
+          # dispatch: correlation id, target sha and verified
+          # HEAD must all be the merge commit, and the evidence
+          # run id must be this run. Only then may the chain
+          # comment use recovered wording.
+          EVIDENCE="unverified"
+          if [ "$CONCLUSION" = "success" ]; then
+            ART_ID=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" \
+              --jq "[.artifacts[] | select(.name==\"deploy-guard-evidence-$CORRELATION\")][0].id // empty")
+            if [ -n "$ART_ID" ] && gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ART_ID/zip" > /tmp/dg-evidence.zip 2>/dev/null \
+                && unzip -p /tmp/dg-evidence.zip deploy-guard-evidence.json > /tmp/dg-evidence.json 2>/dev/null; then
+              EV_RUN=$(jq -r '.run_id // ""' /tmp/dg-evidence.json)
+              EV_CORR=$(jq -r '.correlation_id // ""' /tmp/dg-evidence.json)
+              EV_TARGET=$(jq -r '.target_sha // ""' /tmp/dg-evidence.json)
+              EV_HEAD=$(jq -r '.verified_head // ""' /tmp/dg-evidence.json)
+              if [ "$EV_RUN" = "$RUN_ID" ] && [ "$EV_CORR" = "$CORRELATION" ] \
+                  && [ "$EV_TARGET" = "$MERGE_SHA" ] && [ "$EV_HEAD" = "$MERGE_SHA" ]; then
+                EVIDENCE="verified"
+              else
+                echo "::warning::deploy-guard evidence mismatch — run $EV_RUN, correlation $EV_CORR, target $EV_TARGET, verified HEAD $EV_HEAD; expected run $RUN_ID, correlation $CORRELATION, target/HEAD $MERGE_SHA"
+              fi
+            else
+              echo "::warning::deploy-guard run $RUN_ID succeeded but its evidence artifact could not be read — evidence unverified"
+            fi
+          fi
+          echo "evidence=$EVIDENCE" >> "$GITHUB_OUTPUT"
+          echo "deploy-guard run $RUN_ID: $CONCLUSION, evidence $EVIDENCE (recorded in the chain; its own run is the alarm if red)"
 
       - name: Comment the recovery evidence on the publish-failure signal
         env:
-          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
           STAGE_SHA: ${{ steps.assess.outputs.sha }}
@@ -489,8 +779,13 @@ jobs:
           HB_RUN: ${{ steps.verify.outputs.hb_run }}
           HB_STATUS: ${{ steps.verify.outputs.hb_status }}
           HB_AT: ${{ steps.verify.outputs.hb_at }}
+          MAIN_HB_RUN: ${{ steps.verify.outputs.main_hb_run }}
+          MAIN_HB_STATUS: ${{ steps.verify.outputs.main_hb_status }}
+          MAIN_HB_AT: ${{ steps.verify.outputs.main_hb_at }}
           DG_RUN: ${{ steps.deployguard.outputs.run_id }}
           DG_CONCLUSION: ${{ steps.deployguard.outputs.conclusion }}
+          DG_EVIDENCE: ${{ steps.deployguard.outputs.evidence }}
+          DG_CORRELATION: ${{ steps.deployguard.outputs.correlation_id }}
         run: |
           set -euo pipefail
           # The open publish-failure signal (issue #128's label +
@@ -510,21 +805,50 @@ jobs:
           # envelope updated the ledger; a failed-status envelope
           # is liveness evidence only and must never read as a
           # ledger recovery.
-          if [ "$HB_STATUS" = "ok" ]; then
-            BODY=$(printf '✅ **Ledger publish landed via the PR relay (issue #443).**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`\n\nThe committed ledger on `main` is current again. (This comment is the relay'\''s recovery evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
-              "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}")
+          if [ "$HB_STATUS" = "ok" ] && [ "$DG_EVIDENCE" = "verified" ]; then
+            BODY=$(printf '✅ **Ledger publish landed via the PR relay (issue #443).**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`, evidence verified (correlation `%s`, target + verified HEAD = the merge commit)\n\nThe committed ledger on `main` is current again. (This comment is the relay'\''s recovery evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
+              "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}" "${DG_CORRELATION:-none}")
+          elif [ "$HB_STATUS" = "ok" ]; then
+            # Issue #502: the envelope landed, but deploy-guard's
+            # evidence did not verify against this merge — the
+            # wording must NOT read as a confirmed recovery.
+            BODY=$(printf '⚠️ **Ledger publish landed via the PR relay (issue #443), but deploy verification evidence is UNVERIFIED — recovery is NOT confirmed.**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`, evidence `%s` (correlation `%s`)\n\nThe committed ledger on `main` carries this run'\''s envelope (verified at the merge commit), but the deploy-guard run dispatched against that merge did not produce matching evidence (correlation / target / verified HEAD), so this comment does not confirm the deploy side. (This comment is the relay'\''s evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
+              "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}" "${DG_EVIDENCE:-unverified}" "${DG_CORRELATION:-none}")
           else
-            BODY=$(printf '⚠️ **A failed-status guard heartbeat landed via the PR relay (issue #443) — the ledger outputs were NOT updated by this run.**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`\n\nThe guard'\''s liveness record on `main` is current again (the watchdog sees this run), but the publish failure itself stands until a later run lands an ok envelope. (This comment is the relay'\''s evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
-              "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}")
+            BODY=$(printf '⚠️ **A failed-status guard heartbeat landed via the PR relay (issue #443) — the ledger outputs were NOT updated by this run.**\n\n- Slot / run: `%s`\n- Staging branch: `%s` at `%s`\n- PR: #%s\n- Close-gate: executed by workflow dispatch on the candidate SHA — success\n- Merge commit: `%s`\n- Heartbeat on main: run `%s`, status `%s`, at `%s`\n- Deploy verification: deploy-guard run `%s` — `%s`, evidence `%s`\n\nThe guard'\''s liveness record on `main` is current again (the watchdog sees this run), but the publish failure itself stands until a later run lands an ok envelope. (This comment is the relay'\''s evidence; the signal itself is closed by the verified-recovery process, not by the relay.)' \
+              "$RUN_ID" "$BRANCH" "$STAGE_SHA" "$PR_NUMBER" "$MERGE_SHA" "$HB_RUN" "$HB_STATUS" "$HB_AT" "${DG_RUN:-none}" "${DG_CONCLUSION:-unknown}" "${DG_EVIDENCE:-unverified}")
+          fi
+          # Issue #498: when main has already moved past this
+          # merge, say so as a separate later-state line — the
+          # recovery wording above is the ORIGINAL merge's
+          # verdict (verified at $MERGE_SHA) and is not rewritten
+          # by the later state.
+          if [ -n "${MAIN_HB_RUN:-}" ] && [ "$MAIN_HB_RUN" != "$HB_RUN" ]; then
+            BODY=$(printf '%s\n\nLater main state (reported separately, issue #498): main now carries run `%s`, status `%s`, at `%s` — a later envelope has superseded this one on main; the verdict above stands as verified at its own merge.' \
+              "$BODY" "$MAIN_HB_RUN" "$MAIN_HB_STATUS" "$MAIN_HB_AT")
           fi
           for N in $NUMBERS; do
             # $MERGE_SHA is a hex git SHA — safe to interpolate
             # into the filter (gh api --jq has no --arg; see the
             # gate-discovery note above).
-            SEEN=$(gh api "repos/$GITHUB_REPOSITORY/issues/$N/comments?per_page=100" \
-              --jq "[.[] | select(.body | contains(\"$MERGE_SHA\"))] | length")
-            if [ "$SEEN" -ge 1 ]; then
-              echo "Signal #$N already carries this merge — skipping (idempotent)."
+            # PR #515 review: an existing comment for this merge
+            # is not automatically final — if it was posted with
+            # UNVERIFIED evidence and the evidence has since
+            # verified (a rerun obtained it), the signal must
+            # not keep saying "recovery is NOT confirmed".
+            # Identical body → skip (idempotent); different
+            # body for the same merge → UPDATE the existing
+            # comment in place.
+            EXISTING=$(gh api "repos/$GITHUB_REPOSITORY/issues/$N/comments?per_page=100" \
+              --jq "[.[] | select(.body | contains(\"$MERGE_SHA\"))] | .[0].id // empty")
+            if [ -n "$EXISTING" ]; then
+              CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/issues/comments/$EXISTING" --jq .body)
+              if [ "$CURRENT" = "$BODY" ]; then
+                echo "Signal #$N already carries this merge with the current body — skipping (idempotent)."
+                continue
+              fi
+              gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$EXISTING" -f body="$BODY" > /dev/null
+              echo "Updated the existing relay comment on signal #$N for merge $MERGE_SHA (the evidence changed)."
               continue
             fi
             gh issue comment "$N" --body "$BODY"
@@ -534,10 +858,18 @@ jobs:
       - name: Delete the staging branch
         if: success()
         env:
-          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
         run: |
           set -uo pipefail
+          # Issue #499: deletion is safe ONLY because the done
+          # evidence does not live on this branch — the verify
+          # step above judged the retained merge commit, the
+          # chain comment records the staging commit + merge
+          # commit, and the worker persists the expected envelope
+          # (heartbeat content, blob hashes, envelope commit) on
+          # its bus before confirmation. This step runs last,
+          # after all of that; never move it earlier.
           if gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$BRANCH" 2>/tmp/del-err; then
             echo "Deleted $BRANCH (merge verified above)."
           else
