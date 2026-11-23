@@ -65,6 +65,12 @@ BUS = ROOT / "bus"            # borsagator clone (token remote), queue branch
 # fetch/reset/write/add/commit/push transaction - so marker
 # publication must not share that clone.
 PENDING_DONE = ROOT / "pending-done"
+# PR #515 review (#499 follow-up): durable local copies of guard
+# envelope records, outside the resettable bus clone (the #216
+# pattern) — a record whose bus push was rejected survives
+# sync_bus and restarts here until its publication on
+# origin/queue is verified.
+PENDING_ENVELOPES = ROOT / "pending-envelopes"
 # #231: pre-effect intents and fallback completion receipts. This is
 # outside both resettable clones, NOT an independent failure domain.
 JOB_STATE = ROOT / "job-state"
@@ -1377,21 +1383,59 @@ def _guard_heartbeat_doc(status, job_id):
                     "this is older than 90 minutes."}
 
 
-def _branch_exists_on_origin(checkout, branch):
-    """True when refs/heads/<branch> exists on origin. An
-    unreadable remote answers False — the staging push that
-    follows is the real test, and its failure is recorded."""
+BRANCH_PRESENT = "present"
+BRANCH_ABSENT = "absent"
+BRANCH_UNKNOWN = "unknown"
+# Issue #501: the last branch lookup's error, recorded whenever
+# the state comes back UNKNOWN (None after a definitive answer).
+BRANCH_LOOKUP_ERROR = None
+
+
+def _branch_state_on_origin(checkout, branch):
+    """Tri-state branch lookup (issue #501): (BRANCH_PRESENT,
+    None) when refs/heads/<branch> exists on origin;
+    (BRANCH_ABSENT, None) when ls-remote succeeds and lists no
+    such ref — git's definitive absence answer; (BRANCH_UNKNOWN,
+    error) when the lookup itself failed (auth, network, command
+    error). A failed lookup is UNKNOWN, never absence: callers
+    must fail closed on it, because reading an error as 'branch
+    absent' is how a staging push could overwrite an envelope
+    it failed to see. The error is also recorded in
+    BRANCH_LOOKUP_ERROR."""
+    global BRANCH_LOOKUP_ERROR
     try:
         r = sh(f"git -C {checkout} ls-remote origin "
                f"refs/heads/{branch}", timeout=60)
     except Exception as e:
-        print(f"_branch_exists_on_origin: {type(e).__name__}: {e}",
+        BRANCH_LOOKUP_ERROR = f"{type(e).__name__}: {e}"
+        print(f"_branch_state_on_origin: {BRANCH_LOOKUP_ERROR}",
               file=sys.stderr, flush=True)
-        return False
-    return r.returncode == 0 and bool(r.stdout.strip())
+        return BRANCH_UNKNOWN, BRANCH_LOOKUP_ERROR
+    if r.returncode != 0:
+        err = (r.stderr or "").strip() or (r.stdout or "").strip()
+        BRANCH_LOOKUP_ERROR = " ".join(err.split())[-200:] \
+            or f"ls-remote exited {r.returncode}"
+        print(f"_branch_state_on_origin: lookup failed: "
+              f"{BRANCH_LOOKUP_ERROR}",
+              file=sys.stderr, flush=True)
+        return BRANCH_UNKNOWN, BRANCH_LOOKUP_ERROR
+    BRANCH_LOOKUP_ERROR = None
+    if r.stdout.strip():
+        return BRANCH_PRESENT, None
+    return BRANCH_ABSENT, None
 
 
-def _stage_guard_heartbeat(checkout, branch, status, job_id):
+def _branch_exists_on_origin(checkout, branch):
+    """True only when refs/heads/<branch> is POSITIVELY present
+    on origin (issue #501 tri-state: see _branch_state_on_origin
+    — an errored lookup is not absence and does not read as
+    existence either)."""
+    state, _ = _branch_state_on_origin(checkout, branch)
+    return state == BRANCH_PRESENT
+
+
+def _stage_guard_heartbeat(checkout, branch, status, job_id,
+                           attempt_id=None):
     """Stage a heartbeat-only envelope on the run's staging branch
     (issue #443): the fallback for a publisher that failed or
     refused, so the run still leaves its liveness evidence for
@@ -1411,10 +1455,56 @@ def _stage_guard_heartbeat(checkout, branch, status, job_id):
     byte-identical to main's (a same-second duplicate run): also
     fine — the caller's confirmation verifies it on main."""
     try:
-        if _branch_exists_on_origin(checkout, branch):
+        state, lookup_err = _branch_state_on_origin(checkout,
+                                                    branch)
+        if state == BRANCH_UNKNOWN:
+            # Issue #501: fail closed — a lookup error is not
+            # absence, so no staging push may be attempted on its
+            # strength (it could overwrite an envelope this call
+            # failed to see). The error is recorded above and in
+            # BRANCH_LOOKUP_ERROR.
+            print(f"_stage_guard_heartbeat: branch lookup for "
+                  f"{branch} failed ({lookup_err}) — failing "
+                  "closed, no staging push attempted",
+                  file=sys.stderr, flush=True)
+            return False
+        if state == BRANCH_PRESENT:
             print(f"_stage_guard_heartbeat: {branch} already "
                   "staged — leaving the existing envelope in place",
                   flush=True)
+            # Issue #499: persist the expected envelope before
+            # confirmation relies on the (deletable) branch.
+            # INS-REVIEW-093: a required durable record that
+            # cannot be established blocks the handoff — this
+            # path must not report success without it.
+            # INS-REVIEW-105: adoption is bound to the producing
+            # attempt — an existing branch staged by a DIFFERENT
+            # attempt (or by an unknown producer) is never
+            # adopted or rebound to this attempt, and an
+            # unreadable envelope on an existing branch fails
+            # closed instead of reporting staged.
+            env = _staged_guard_envelope(checkout, branch)
+            if env is None:
+                print("_stage_guard_heartbeat: the envelope on "
+                      "the existing branch could not be read — "
+                      "failing closed, not handing off",
+                      file=sys.stderr, flush=True)
+                return False
+            if not _branch_envelope_producer_ok(
+                    job_id, env, attempt_id):
+                print("_stage_guard_heartbeat: the existing "
+                      "branch was not produced by this attempt "
+                      "— refusing adoption",
+                      file=sys.stderr, flush=True)
+                return False
+            if _persist_guard_envelope(
+                    job_id, branch, env,
+                    attempt_id=attempt_id) is None:
+                print("_stage_guard_heartbeat: the durable "
+                      "envelope record could not be established "
+                      "— failing closed, not handing off",
+                      file=sys.stderr, flush=True)
+                return False
             return True
         if sh(f"git -C {checkout} fetch origin main",
               timeout=120).returncode != 0:
@@ -1437,12 +1527,53 @@ def _stage_guard_heartbeat(checkout, branch, status, job_id):
         sh(f"git -C {checkout} add {GUARD_HEARTBEAT_REL}", timeout=60)
         if sh(f"git -C {checkout} diff --cached --quiet",
               timeout=60).returncode == 0:
+            # The envelope is already byte-identical on main;
+            # persist it so confirmation has its record (issue
+            # #499) even though no branch was created.
+            # INS-REVIEW-093: the durable record is a handoff
+            # precondition here too — without it (or without a
+            # readable ledger tree to record) this path must not
+            # report success.
+            blobs = _ledger_tree_map(checkout, "HEAD")
+            c = sh(f"git -C {checkout} rev-parse HEAD", timeout=60)
+            if blobs is None or _persist_guard_envelope(
+                    job_id, branch,
+                    {"heartbeat": doc, "blobs": blobs,
+                     "commit": c.stdout.strip()
+                     if c.returncode == 0 else None},
+                    attempt_id=attempt_id) is None:
+                print("_stage_guard_heartbeat: the durable "
+                      "envelope record could not be established "
+                      "— failing closed, not handing off",
+                      file=sys.stderr, flush=True)
+                return False
             return True
         msg = (f"Ledger guard heartbeat {doc['last_run_utc']} "
                f"({status})")
         if sh(f"git -C {checkout} commit -m {json.dumps(msg)}",
               timeout=60).returncode != 0:
             print("_stage_guard_heartbeat: commit failed",
+                  file=sys.stderr, flush=True)
+            return False
+        # Issue #499 + INS-REVIEW-093: persist the expected
+        # envelope (heartbeat content, blob hashes, envelope
+        # commit) BEFORE the staging push — never after it. The
+        # relay may delete this branch at any point after its
+        # merge, and the persisted record plus the PR/merge
+        # evidence is what confirmation stands on; a required
+        # durable record that cannot be established blocks the
+        # handoff, so no push is attempted without it.
+        blobs = _ledger_tree_map(checkout, "HEAD")
+        c = sh(f"git -C {checkout} rev-parse HEAD", timeout=60)
+        if blobs is None or _persist_guard_envelope(
+                job_id, branch,
+                {"heartbeat": doc, "blobs": blobs,
+                 "commit": c.stdout.strip()
+                 if c.returncode == 0 else None},
+                attempt_id=attempt_id) is None:
+            print("_stage_guard_heartbeat: the durable envelope "
+                  "record could not be established — failing "
+                  "closed, no staging push attempted",
                   file=sys.stderr, flush=True)
             return False
         if sh(f"git -C {checkout} push origin "
@@ -1458,15 +1589,41 @@ def _stage_guard_heartbeat(checkout, branch, status, job_id):
         return False
 
 
-def _staged_guard_heartbeat(checkout, branch):
-    """The heartbeat doc this attempt staged on the branch (written
-    by the publisher, or by the worker's fallback stager), or None
-    when the branch or the file cannot be read. Confirmation
-    compares against THIS doc: a same-run-id heartbeat left on
-    main by an earlier attempt (its relay merged after that
-    attempt's confirmation window expired) must never confirm a
-    later attempt whose own envelope did not land — the #434
-    false-done class (PR review finding on #491)."""
+def _ledger_tree_map(checkout, ref):
+    """Map of ledger/** path -> blob sha at `ref`, or None when the
+    ref or its ledger tree cannot be read. The envelope's identity
+    is its full content (issue #498): the heartbeat alone does not
+    prove the validated ledger outputs landed with it."""
+    try:
+        r = sh(f"git -C {checkout} ls-tree -r {ref} -- ledger/",
+               timeout=60)
+        if r.returncode != 0:
+            return None
+        out = {}
+        for line in r.stdout.splitlines():
+            meta, _, path = line.partition("\t")
+            parts = meta.split()
+            if len(parts) == 3 and parts[1] == "blob" and path:
+                out[path] = parts[2]
+        return out
+    except Exception as e:
+        print(f"_ledger_tree_map: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return None
+
+
+def _staged_guard_envelope(checkout, branch):
+    """The full envelope this attempt staged on the branch: the
+    heartbeat doc plus the blob sha of every ledger/** file in the
+    staged commit (issue #498), or None when the branch or the
+    envelope cannot be read. Confirmation compares main against
+    THIS envelope: a same-run-id heartbeat left on main by an
+    earlier attempt (its relay merged after that attempt's
+    confirmation window expired) must never confirm a later
+    attempt whose own envelope did not land — the #434 false-done
+    class (PR review finding on #491) — and a heartbeat that
+    landed without this attempt's ledger outputs must not confirm
+    either."""
     try:
         if sh(f"git -C {checkout} fetch origin {branch}",
               timeout=120).returncode != 0:
@@ -1476,23 +1633,341 @@ def _staged_guard_heartbeat(checkout, branch):
         if r.returncode != 0:
             return None
         doc = json.loads(r.stdout)
-        return doc if isinstance(doc, dict) else None
+        if not isinstance(doc, dict):
+            return None
+        blobs = _ledger_tree_map(checkout, "FETCH_HEAD")
+        if blobs is None:
+            return None
+        c = sh(f"git -C {checkout} rev-parse FETCH_HEAD",
+               timeout=60)
+        commit = c.stdout.strip() if c.returncode == 0 else None
+        return {"heartbeat": doc, "blobs": blobs, "commit": commit}
     except Exception as e:
-        print(f"_staged_guard_heartbeat: {type(e).__name__}: {e}",
+        print(f"_staged_guard_envelope: {type(e).__name__}: {e}",
               file=sys.stderr, flush=True)
         return None
+
+
+def _staged_guard_heartbeat(checkout, branch):
+    """The heartbeat doc this attempt staged on the branch (written
+    by the publisher, or by the worker's fallback stager), or None
+    when the branch or the file cannot be read."""
+    env = _staged_guard_envelope(checkout, branch)
+    return env["heartbeat"] if env is not None else None
+
+
+def _guard_envelope_record_path(job_id):
+    return BUS / "queue" / "envelopes" / f"{job_id}.json"
+
+
+def _pending_envelope_path(job_id):
+    return PENDING_ENVELOPES / f"{job_id}.json"
+
+
+def _guard_attempt_id(job_id):
+    """The immutable identifier of THIS execution attempt of a
+    guard job: the claim record (worker + claim time) written
+    when the job was claimed. A reclaim writes a new claim, so a
+    re-executed job is a different attempt; the same attempt
+    resuming (restart under the same claim) keeps the same id.
+    PR #515 review: persisted envelope records are bound to this
+    id — exact-content equality proves which content is on main,
+    not which attempt produced it, so a later attempt must never
+    confirm on an earlier attempt's record. None when no claim
+    record can be read (direct/test execution)."""
+    try:
+        p = BUS / "queue" / "claims" / f"{job_id}.json"
+        claim = json.loads(p.read_text())
+        worker_name = claim.get("worker")
+        at = claim.get("at")
+        if worker_name and at:
+            return f"{worker_name}@{at}"
+    except Exception:
+        pass
+    return None
+
+
+def _remote_envelope_record(job_id):
+    """The envelope record stored on origin/queue for job_id,
+    fetched fresh and read from FETCH_HEAD (never from the
+    resettable working tree), or None when it cannot be read
+    or parsed."""
+    try:
+        if git_bus("fetch origin queue",
+                   timeout=120).returncode != 0:
+            return None
+        r = git_bus(f"show "
+                    f"FETCH_HEAD:queue/envelopes/{job_id}.json",
+                    timeout=60)
+        if r.returncode != 0:
+            return None
+        rec = json.loads(r.stdout)
+        return rec if isinstance(rec, dict) else None
+    except Exception:
+        return None
+
+
+def _envelope_records_match(a, b):
+    """Identity equality of two envelope records (INS-REVIEW-105):
+    same job, branch, producing attempt, envelope commit,
+    heartbeat content and blob map. persisted_at is metadata,
+    not identity."""
+    if not isinstance(a, dict) or not isinstance(b, dict):
+        return False
+    return all(a.get(k) == b.get(k) for k in
+               ("job_id", "branch", "attempt_id",
+                "envelope_commit", "heartbeat", "blobs"))
+
+
+def _envelope_record_on_remote(job_id, record=None):
+    """True when origin/queue verifiably carries the envelope
+    record for job_id. With `record` (INS-REVIEW-105) the remote
+    copy must EQUAL that exact record — existence of SOME record
+    at the path proves nothing: a rejected push can leave an
+    earlier attempt's record on the remote under the same job
+    id, and existence-only read-back then deleted the newer
+    attempt's durable local copy. Without `record`, legacy
+    existence semantics (test/direct callers only)."""
+    remote = _remote_envelope_record(job_id)
+    if remote is None:
+        return False
+    if record is None:
+        return True
+    return _envelope_records_match(remote, record)
+
+
+def _publish_envelope_record(job_id, record=None):
+    """Publish the bus copy of an envelope record and VERIFY it
+    on origin/queue (PR #515 review). push_bus commits locally
+    before pushing, so a rejected push can leave the record
+    committed-but-unpushed: the retry therefore also tries a
+    bare push, and only a verified read-back counts as
+    published. With `record`, the read-back must equal that
+    exact record (INS-REVIEW-105) — a different record at the
+    same path is not publication of this one. Bounded; returns
+    False when publication could not be verified (the durable
+    local copy remains)."""
+    for _ in range(3):
+        try:
+            push_bus(f"guard envelope record {job_id}")
+        except Exception:
+            pass
+        if _envelope_record_on_remote(job_id, record):
+            return True
+        try:
+            git_bus("push origin queue", timeout=120)
+        except Exception:
+            pass
+        if _envelope_record_on_remote(job_id, record):
+            return True
+    return False
+
+
+def _persist_guard_envelope(job_id, branch, envelope,
+                            attempt_id=None):
+    """Persist the expected envelope — heartbeat content, blob
+    hashes and the envelope commit — on the bus BEFORE
+    confirmation relies on it (issue #499). The relay deletes the
+    staging branch after a verified merge, so the branch is not
+    evidence: the retained record plus the PR/merge evidence is.
+    The envelope commit names an immutable git object that stays
+    reachable through the merge commit even after the branch is
+    gone.
+
+    PR #515 review, two bindings added: the record is bound to
+    the attempt that produced it (attempt_id — a later attempt
+    of the same job must not confirm on it), and publication is
+    durable: a local copy is kept OUTSIDE the resettable bus
+    clone (PENDING_ENVELOPES, the #216 pattern) until the exact
+    record is verified on origin/queue — a rejected bus push no
+    longer silently strands the only copy inside a clone that
+    sync_bus resets.
+
+    INS-REVIEW-093 hardens the return contract: the record is
+    returned ONLY when the durable local copy was actually
+    established. Bus publication stays secondary (best-effort,
+    verified opportunistically, retried at load) — but a failed
+    DURABLE write returns None, and callers that stage or hand
+    off an envelope must not report success without the record:
+    the earlier 'persistence must never fail staging' rule let
+    a dead durable write plus a failed bus publication still
+    report a successful handoff, stranding the envelope with no
+    record anywhere."""
+    if not isinstance(envelope, dict) \
+            or "heartbeat" not in envelope \
+            or "blobs" not in envelope:
+        return None
+    record = {"job_id": str(job_id), "branch": branch,
+              "envelope_commit": envelope.get("commit"),
+              "heartbeat": envelope["heartbeat"],
+              "blobs": envelope["blobs"],
+              "attempt_id": attempt_id,
+              "persisted_at": now()}
+    durable = False
+    try:
+        lp = _pending_envelope_path(job_id)
+        lp.parent.mkdir(parents=True, exist_ok=True)
+        lp.write_text(json.dumps(record, indent=1))
+        durable = True
+    except Exception as e:
+        print(f"_persist_guard_envelope (local copy): "
+              f"{type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+    try:
+        p = _guard_envelope_record_path(job_id)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(record, indent=1))
+        if _publish_envelope_record(job_id, record):
+            # Verified on origin/queue as THIS exact record
+            # (INS-REVIEW-105) — the durable local copy's job
+            # is done. An existence-only read-back is not
+            # enough: the remote may carry an earlier attempt's
+            # record at this path while this push was rejected.
+            try:
+                _pending_envelope_path(job_id).unlink(
+                    missing_ok=True)
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"_persist_guard_envelope: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+    return record if durable else None
+
+
+def _load_persisted_guard_envelope(job_id, attempt_id=None):
+    """The persisted expected envelope for a job (issue #499), or
+    None when no record exists or it is malformed. This is the
+    confirmation source once the staging branch has been deleted
+    (by the relay, or by cleanup) — confirmation must not depend
+    on a deletable branch.
+
+    PR #515 review: the record must belong to THIS attempt —
+    when attempt_id is given, a record bound to a different
+    attempt (an earlier attempt whose envelope landed late) is
+    NOT this attempt's evidence and returns None. When the bus
+    copy is missing but the durable local copy survives (its
+    bus push was rejected earlier), the local copy is used and
+    its publication is retried — without rerunning the job."""
+    # INS-REVIEW-105: every candidate is validated on its own
+    # before it may suppress the other. The bus working copy can
+    # be STALE (sync_bus resets the clone to an older committed
+    # record) while the durable local copy is this attempt's —
+    # reading the bus copy first and applying the attempt check
+    # only to the winner hid the valid local record behind the
+    # stale one. Candidates: durable local copy first (it lives
+    # outside the resettable clone), then the bus copy; the
+    # first candidate that is well-formed AND bound to this
+    # attempt wins.
+    selected = None
+    selected_local = False
+    for source in ("local", "bus"):
+        try:
+            p = _pending_envelope_path(job_id) \
+                if source == "local" \
+                else _guard_envelope_record_path(job_id)
+            if not p.exists():
+                continue
+            cand = json.loads(p.read_text())
+        except Exception as e:
+            print(f"_load_persisted_guard_envelope ({source}): "
+                  f"{type(e).__name__}: {e}",
+                  file=sys.stderr, flush=True)
+            continue
+        if not isinstance(cand, dict) \
+                or not isinstance(cand.get("heartbeat"), dict) \
+                or not isinstance(cand.get("blobs"), dict):
+            continue
+        if attempt_id is not None \
+                and cand.get("attempt_id") != attempt_id:
+            print(f"_load_persisted_guard_envelope: {source} "
+                  f"record for {job_id} belongs to attempt "
+                  f"{cand.get('attempt_id')}, not this attempt "
+                  f"({attempt_id}) — not this attempt's evidence",
+                  file=sys.stderr, flush=True)
+            continue
+        selected = cand
+        selected_local = source == "local"
+        break
+    if selected is None:
+        return None
+    if selected_local:
+        # Retry publication of the surviving copy; the local
+        # copy is unlinked only when the remote verifiably
+        # carries THIS record (INS-REVIEW-105).
+        try:
+            p = _guard_envelope_record_path(job_id)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(json.dumps(selected, indent=1))
+            if _publish_envelope_record(job_id, selected):
+                try:
+                    _pending_envelope_path(job_id).unlink(
+                        missing_ok=True)
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"_load_persisted_guard_envelope (publish): "
+                  f"{type(e).__name__}: {e}",
+                  file=sys.stderr, flush=True)
+    return selected
+
+
+def _existing_envelope_record(job_id):
+    """The persisted envelope record for a job, whichever copy
+    survives (durable local first, then the bus working copy),
+    WITHOUT attempt filtering — the producing-attempt evidence
+    _branch_envelope_producer_ok validates against. None when
+    no well-formed record exists."""
+    for path in (_pending_envelope_path(job_id),
+                 _guard_envelope_record_path(job_id)):
+        try:
+            if path.exists():
+                rec = json.loads(path.read_text())
+                if isinstance(rec, dict) \
+                        and isinstance(rec.get("heartbeat"), dict) \
+                        and isinstance(rec.get("blobs"), dict):
+                    return rec
+        except Exception:
+            continue
+    return None
+
+
+def _branch_envelope_producer_ok(job_id, env, attempt_id):
+    """INS-REVIEW-105: an envelope read from an existing staging
+    branch may be adopted by this attempt only when the
+    persisted record — written by the producing attempt BEFORE
+    its push — proves the branch is this attempt's own work:
+    same attempt id AND same envelope commit. A different or
+    unknown producer is rejected: exact-content equality proves
+    which content is staged, not whose attempt staged it, and
+    rebinding an earlier attempt's branch to a later attempt
+    rewrites the recovery record under the wrong identity.
+    Direct/test execution (attempt_id None) has no claim to
+    bind against and keeps the legacy adoption."""
+    if attempt_id is None:
+        return True
+    rec = _existing_envelope_record(job_id)
+    if rec is None:
+        return False
+    return rec.get("attempt_id") == attempt_id \
+        and rec.get("envelope_commit") == env.get("commit")
 
 
 def _guard_envelope_on_main(checkout, job_id, expected=None):
     """The heartbeat doc on origin/main when it is this attempt's
     envelope, else None. Fetch + show, never a push returncode:
     the watchdog reads this file, so this file is what
-    confirmation means (issue #434). With `expected` — the doc
-    this attempt staged — the on-main doc must match it exactly
-    (run_id AND last_run_utc, the pre-#443 comparison strength);
-    a bare run_id match is never sufficient on its own. Run ids
-    are compared as strings — the publisher writes LEDGER_RUN_ID
-    verbatim, the Actions path historically wrote an int."""
+    confirmation means (issue #434). With `expected` — the full
+    envelope this attempt staged, as returned by
+    _staged_guard_envelope (a bare heartbeat doc is also accepted
+    for callers that only have the doc) — confirmation requires
+    FULL expected-content equality (issue #498): the on-main
+    heartbeat doc must equal the staged doc in every field, and
+    every ledger/** blob of the staged envelope must be present
+    on main with the identical blob sha. A bare run_id match, or
+    a heartbeat that landed without this attempt's ledger
+    outputs, is never sufficient. Run ids are compared as
+    strings — the publisher writes LEDGER_RUN_ID verbatim, the
+    Actions path historically wrote an int."""
     try:
         if sh(f"git -C {checkout} fetch origin main",
               timeout=120).returncode != 0:
@@ -1505,10 +1980,39 @@ def _guard_envelope_on_main(checkout, job_id, expected=None):
         if not isinstance(live, dict) \
                 or str(live.get("run_id")) != str(job_id):
             return None
-        if expected is None \
-                or live.get("last_run_utc") \
-                != expected.get("last_run_utc"):
+        if expected is None:
             return None
+        exp_doc = expected.get("heartbeat") \
+            if isinstance(expected, dict) else None
+        if exp_doc is None and isinstance(expected, dict) \
+                and "run_id" in expected:
+            exp_doc = expected
+        if exp_doc is None or live != exp_doc:
+            return None
+        blobs = expected.get("blobs") \
+            if isinstance(expected, dict) else None
+        if blobs is not None:
+            live_blobs = _ledger_tree_map(checkout, "origin/main")
+            if live_blobs is None:
+                return None
+            for path, blob_sha in blobs.items():
+                if live_blobs.get(path) != blob_sha:
+                    return None
+            # INS-REVIEW-105: presence of the staged blobs is
+            # not the whole envelope — a path the envelope
+            # DELETED (present in its base, absent in its tree)
+            # must be absent here too. A landing that retains a
+            # deleted file kept every staged blob and still is
+            # not this envelope; the relay refuses it, and the
+            # worker's tip check passed it.
+            if _expected_stage_commit(expected):
+                manifest = _envelope_manifest(checkout, expected)
+                if manifest is None:
+                    return None
+                _, deleted = manifest
+                for path in deleted:
+                    if path in live_blobs:
+                        return None
         return live
     except Exception as e:
         print(f"_guard_envelope_on_main: {type(e).__name__}: {e}",
@@ -1516,8 +2020,154 @@ def _guard_envelope_on_main(checkout, job_id, expected=None):
         return None
 
 
+def _expected_stage_commit(expected):
+    """The staged envelope's commit, from a branch-read envelope
+    ("commit") or a persisted record ("envelope_commit")."""
+    if not isinstance(expected, dict):
+        return None
+    return expected.get("commit") or expected.get("envelope_commit")
+
+
+def _envelope_manifest(checkout, expected):
+    """The staged envelope's change manifest against its
+    declared base (its single parent): (changed, deleted)
+    ledger/** path sets — changed = added or modified by the
+    envelope, deleted = present in the base and absent from the
+    envelope's tree. None when the envelope names no commit,
+    the commit does not have exactly one parent, or either
+    tree cannot be read."""
+    try:
+        stage = _expected_stage_commit(expected)
+        blobs = expected.get("blobs") \
+            if isinstance(expected, dict) else None
+        if not stage or not isinstance(blobs, dict):
+            return None
+        r = sh(f"git -C {checkout} rev-list --parents -n 1 "
+               f"{stage}", timeout=60)
+        if r.returncode != 0:
+            return None
+        parts = r.stdout.split()
+        if len(parts) != 2:
+            return None
+        base_map = _ledger_tree_map(checkout, parts[1])
+        if base_map is None:
+            return None
+        changed = {p for p, s in blobs.items()
+                   if base_map.get(p) != s}
+        deleted = {p for p in base_map if p not in blobs}
+        return changed, deleted
+    except Exception as e:
+        print(f"_envelope_manifest: {type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return None
+
+
+def _envelope_matches_at(checkout, ref, job_id, expected,
+                         deleted):
+    """Full envelope equality at one commit: the heartbeat doc
+    equals the staged doc (and names this job), every staged
+    blob is present with the identical sha, and every manifest
+    deletion is absent. Returns the doc, or None."""
+    try:
+        exp_doc = expected.get("heartbeat")
+        blobs = expected.get("blobs")
+        d = sh(f"git -C {checkout} show "
+               f"{ref}:{GUARD_HEARTBEAT_REL}", timeout=60)
+        if d.returncode != 0:
+            return None
+        doc = json.loads(d.stdout)
+        if not isinstance(doc, dict) or doc != exp_doc \
+                or str(doc.get("run_id")) != str(job_id):
+            return None
+        tree = _ledger_tree_map(checkout, ref)
+        if tree is None:
+            return None
+        if any(tree.get(p) != s for p, s in blobs.items()):
+            return None
+        if any(p in tree for p in deleted):
+            return None
+        return doc
+    except Exception:
+        return None
+
+
+def _guard_envelope_in_main_history(checkout, job_id, expected):
+    """Confirm-at-M (PR #515 review, INS-REVIEW-092; landing
+    binding hardened by INS-REVIEW-105): full-content equality
+    as in _guard_envelope_on_main, evaluated at the commit
+    where this envelope WAS main's state — its landing —
+    instead of only at the moving tip, so a later envelope
+    superseding it does not rewrite this attempt's verdict.
+
+    The landing must be a REAL first-parent landing: either the
+    recorded stage commit itself sits on main's first-parent
+    chain (main passed through the exact staged tree), or a
+    first-parent merge commit M with exactly two parents whose
+    second parent IS the recorded stage commit, with M's tree
+    carrying the full envelope (doc equality, every blob,
+    manifest deletions absent) and no ledger path introduced
+    by M outside the envelope's manifest. A stage commit merely
+    REACHABLE from main — via a merge whose resulting tree
+    dropped, altered or retained-around the payload — is not a
+    landing: the previous implementation searched plain
+    `git log` (which traverses side parents) and confirmed at
+    the side-parent stage commit itself, accepting landings
+    the relay had refused. Returns the heartbeat doc, or
+    None."""
+    try:
+        if not isinstance(expected, dict):
+            return None
+        exp_doc = expected.get("heartbeat")
+        blobs = expected.get("blobs")
+        stage = _expected_stage_commit(expected)
+        if not isinstance(exp_doc, dict) \
+                or not isinstance(blobs, dict) or not stage:
+            return None
+        manifest = _envelope_manifest(checkout, expected)
+        if manifest is None:
+            return None
+        changed, deleted = manifest
+        manifest_paths = changed | deleted
+        r = sh(f"git -C {checkout} rev-list --first-parent "
+               f"--parents -n 400 origin/main", timeout=120)
+        if r.returncode != 0:
+            return None
+        for line in r.stdout.splitlines():
+            parts = line.split()
+            if not parts:
+                continue
+            commit, parents = parts[0], parts[1:]
+            if commit == stage:
+                doc = _envelope_matches_at(
+                    checkout, commit, job_id, expected, deleted)
+                if doc is not None:
+                    return doc
+                continue
+            if len(parents) != 2 or parents[1] != stage:
+                continue
+            doc = _envelope_matches_at(
+                checkout, commit, job_id, expected, deleted)
+            if doc is None:
+                continue
+            fp_map = _ledger_tree_map(checkout, parents[0])
+            m_map = _ledger_tree_map(checkout, commit)
+            if fp_map is None or m_map is None:
+                continue
+            introduced = {p for p in set(fp_map) | set(m_map)
+                          if fp_map.get(p) != m_map.get(p)}
+            if introduced <= manifest_paths:
+                return doc
+        return None
+    except Exception as e:
+        print(f"_guard_envelope_in_main_history: "
+              f"{type(e).__name__}: {e}",
+              file=sys.stderr, flush=True)
+        return None
+
+
 def _confirm_guard_envelope(checkout, job_id, branch,
-                            timeout_s=None, poll_s=None):
+                            timeout_s=None, poll_s=None,
+                            attempt_id=None):
     """Poll main for this attempt's envelope heartbeat until the
     relay's merge lands it or the bound expires; returns the
     on-main doc, or None. The expected doc is read back from the
@@ -1532,15 +2182,72 @@ def _confirm_guard_envelope(checkout, job_id, branch,
         timeout_s = GUARD_CONFIRM_TIMEOUT_S
     if poll_s is None:
         poll_s = GUARD_CONFIRM_POLL_S
+    if attempt_id is None:
+        attempt_id = _guard_attempt_id(job_id)
     deadline = time.monotonic() + timeout_s
     expected = None
     while True:
         if expected is None:
-            expected = _staged_guard_heartbeat(checkout, branch)
+            staged = _staged_guard_envelope(checkout, branch)
+            if staged is not None:
+                if not _branch_envelope_producer_ok(
+                        job_id, staged, attempt_id):
+                    # INS-REVIEW-105: the branch carries another
+                    # (or an unknown) attempt's envelope — never
+                    # adopt it, and never rebind its record to
+                    # this attempt; stand on this attempt's own
+                    # persisted record only (loaded below).
+                    print(f"_confirm_guard_envelope: the staged "
+                          f"branch for {job_id} was not produced "
+                          f"by this attempt — refusing adoption",
+                          file=sys.stderr, flush=True)
+                    staged = None
+                elif _persist_guard_envelope(
+                        job_id, branch, staged,
+                        attempt_id=attempt_id) is None:
+                    # Issue #499: persist before confirmation
+                    # relies on it — the relay deletes the branch
+                    # after its merge, possibly before a later
+                    # poll or a worker restart needs the expected
+                    # content again. INS-REVIEW-105: a required
+                    # persistence failure here fails closed —
+                    # the earlier code ignored the None and went
+                    # on to confirm an envelope with no durable
+                    # record anywhere.
+                    print(f"_confirm_guard_envelope: the durable "
+                          f"envelope record for {job_id} could "
+                          f"not be established — failing closed",
+                          file=sys.stderr, flush=True)
+                    return None
+                else:
+                    expected = staged
+            if expected is None:
+                # Branch already gone (relay merged + deleted, or
+                # a restart): stand on the persisted record plus
+                # the PR/merge evidence, not the branch. The
+                # record must belong to THIS attempt (PR #515
+                # review) — an earlier attempt's landed envelope
+                # is not this attempt's confirmation.
+                expected = _load_persisted_guard_envelope(
+                    job_id, attempt_id=attempt_id)
         if expected is not None:
             doc = _guard_envelope_on_main(checkout, job_id,
                                           expected)
+            if doc is None:
+                # Confirm at M, not only at the tip (PR #515
+                # review): a later envelope may already have
+                # superseded this one on main — the verdict is
+                # read where this envelope landed.
+                doc = _guard_envelope_in_main_history(
+                    checkout, job_id, expected)
             if doc is not None:
+                # PR #515 review: the bound is honoured BEFORE
+                # accepting a document — the persist + fetch
+                # above can themselves consume the remaining
+                # budget, and a pass that started inside the
+                # bound must not return success after it.
+                if time.monotonic() > deadline:
+                    return None
                 return doc
         remaining = deadline - time.monotonic()
         if remaining <= 0:
@@ -1607,6 +2314,11 @@ def run_ledger_guard(job):
 def _run_ledger_guard(job):
     job_id = job["id"]
     branch = _guard_branch(job_id)
+    # PR #515 review: this execution's attempt identity (from
+    # the claim record) — envelope records persisted below are
+    # bound to it, and confirmation accepts only this attempt's
+    # record as fallback evidence.
+    attempt_id = _guard_attempt_id(job_id)
     checkout = _ensure_main_checkout()
     if checkout is None:
         print("run_ledger_guard: main checkout unavailable; refusing",
@@ -1635,11 +2347,21 @@ def _run_ledger_guard(job):
         # it lands) — but the slot is NOT done either way: a D2
         # refusal retries after adoption, as before.
         if _stage_guard_heartbeat(checkout, branch, "failed",
-                                  job_id):
-            _confirm_guard_envelope(checkout, job_id, branch)
+                                  job_id, attempt_id=attempt_id):
+            _confirm_guard_envelope(checkout, job_id, branch,
+                                    attempt_id=attempt_id)
         return False
     env = _guard_env()
     env["LEDGER_RUN_ID"] = str(job_id)
+    # INS-REVIEW-093: the publisher establishes the durable
+    # envelope record BEFORE its own staging push, in the same
+    # pending-envelopes dir and bound to this attempt — so the
+    # record exists even when the publisher dies before the
+    # capture below, and even when this process dies before
+    # writing its own copy.
+    env["GATOR_PENDING_ENVELOPES"] = str(PENDING_ENVELOPES)
+    if attempt_id is not None:
+        env["LEDGER_ATTEMPT_ID"] = attempt_id
     _assert_no_denied(env)
     cmd = shlex.join(
         [sys.executable,
@@ -1688,14 +2410,47 @@ def _run_ledger_guard(job):
              "at": now(), "worker": os.uname().nodename,
              "detail": detail},
             f"ledger publish failed {job_id}")
+    # PR #515 review (persist-before-handoff): capture the
+    # envelope the publisher staged — read back from the REMOTE
+    # branch, i.e. the commit the publisher actually pushed and
+    # accepted, never the local HEAD — and persist it NOW,
+    # before any fallback staging or confirmation. The relay
+    # may merge and delete the branch before the worker's first
+    # confirmation fetch; without this capture a successful
+    # publisher leaves no envelope record, and the worker would
+    # skip verification and mark the slot missed even when main
+    # contains the exact envelope.
+    pub_env = _staged_guard_envelope(checkout, branch)
+    if pub_env is not None and _persist_guard_envelope(
+            job_id, branch, pub_env,
+            attempt_id=attempt_id) is None:
+        # INS-REVIEW-093: a required durable record that cannot
+        # be established blocks the handoff — no fallback staging
+        # and no confirmation may proceed on an envelope whose
+        # record does not exist.
+        print(f"run_ledger_guard: the durable envelope record "
+              f"for {job_id} could not be established — failing "
+              "closed, handoff blocked", file=sys.stderr,
+              flush=True)
+        _write_bus_json(
+            "ledger-failure.json",
+            {"kind": "envelope-record-failed", "job_id": job_id,
+             "at": now(), "worker": os.uname().nodename,
+             "detail": "the durable envelope record could not "
+                       "be established after the publisher "
+                       "staged; handoff blocked (INS-REVIEW-093)"},
+            f"ledger envelope record failed {job_id}")
+        return False
     if rc != 0:
         # Failed-status heartbeat only — never stage the (possibly
         # invalid) ledger outputs the publisher refused. When the
         # publisher had in fact already staged its envelope before
         # dying, _stage_guard_heartbeat leaves it untouched and the
         # confirmation below reconciles on the on-main status.
-        _stage_guard_heartbeat(checkout, branch, "failed", job_id)
-    doc = _confirm_guard_envelope(checkout, job_id, branch)
+        _stage_guard_heartbeat(checkout, branch, "failed", job_id,
+                               attempt_id=attempt_id)
+    doc = _confirm_guard_envelope(checkout, job_id, branch,
+                                  attempt_id=attempt_id)
     if doc is None:
         # Issue #434: the heartbeat is the guard run's archive — a
         # slot whose heartbeat never landed must not read done.
@@ -3297,172 +4052,6 @@ def run_diag_egx_ab(job, workdir):
             for leg in legs):
         return {"diag-egx-ab": "record-invalid"}
     return {"diag-egx-ab": "ok"}
-
-
-# --- Diagnose: publish a named job's local records ---------------
-# Born from guard slot 2026-11-22T0847Z: its publish leg provably
-# never landed, but whether the run hung, crashed after the rejected
-# push, or finished locally without publishing its terminal record
-# lives ONLY in this host's local state (the job-state intent, the
-# pending receipts, the OUT tree, the systemd journal) — none of it
-# readable from the bus. A `diagnose <job_id>` job makes the worker
-# publish that state itself: the bundle rides the archive publish
-# like every sibling diagnostic, and a copy lands on the queue
-# branch under queue/diagnostics/<target>.json for quick reads.
-# Read-only with respect to the target: diagnose never deletes,
-# reclaims or re-executes anything.
-
-DIAGNOSE_EXCERPT_CAP = 64 * 1024
-DIAGNOSE_FILE_CAP = 16 * 1024
-
-
-def parse_diagnose_job(job):
-    """Parse a `diagnose` job string: exactly `diagnose <job_id>`
-    with the target satisfying JOB_ID_RE, else None (fail closed,
-    like parse_diag_egx_ab_job)."""
-    parts = (job if isinstance(job, str) else "").split()
-    if len(parts) != 2 or parts[0] != "diagnose":
-        return None
-    if not JOB_ID_RE.fullmatch(parts[1]):
-        return None
-    return {"target": parts[1]}
-
-
-def _diagnose_read(path, cap=DIAGNOSE_FILE_CAP):
-    """Read a local record file as text, capped; None when absent.
-    Unreadable is recorded, never raised — the bundle is evidence,
-    including evidence of absence."""
-    try:
-        if not path.is_file():
-            return None
-        data = path.read_bytes()[:cap]
-        return data.decode("utf-8", errors="replace")
-    except OSError as e:
-        return f"<unreadable: {type(e).__name__}: {e}>"
-
-
-def _diagnose_journal(target, intent_text):
-    """Best-effort journald excerpt for the target job id. The
-    worker is a systemd service, so its print() output — the only
-    narrative log of a guard run — lives in the journal. Window:
-    the intent's `started` (or the guard slot encoded in the id)
-    minus 10 min, plus 3 h. Returns (status, excerpt): status is
-    ok / unavailable / exit-N / no-window; the excerpt is capped
-    and filtered to lines naming the target."""
-    from datetime import timedelta
-    since = None
-    if intent_text:
-        try:
-            started = json.loads(intent_text).get("started")
-            since = datetime.fromisoformat(
-                str(started).replace("Z", "+00:00"))
-        except Exception:  # noqa: BLE001 - fall through to id window
-            since = None
-    if since is None:
-        m = re.match(r"^guard-(\d{4}-\d{2}-\d{2}T\d{2})(\d{2})Z$",
-                     target)
-        if m:
-            try:
-                since = datetime.strptime(
-                    m.group(1) + m.group(2), "%Y-%m-%dT%H%M"
-                ).replace(tzinfo=timezone.utc)
-            except ValueError:
-                since = None
-    if since is None:
-        return "no-window", ""
-    fmt = "%Y-%m-%d %H:%M:%S"
-    cmd = ["journalctl", "-u", "borsagator-worker", "--no-pager",
-           "-o", "cat",
-           "--since", (since - timedelta(minutes=10)).strftime(fmt),
-           "--until", (since + timedelta(hours=3)).strftime(fmt)]
-    try:
-        r = subprocess.run(cmd, capture_output=True, text=True,
-                           timeout=120)
-    except FileNotFoundError:
-        return "unavailable", ""
-    except Exception as e:  # noqa: BLE001 - evidence, not a crash
-        return f"error-{type(e).__name__}", ""
-    if r.returncode != 0:
-        detail = (r.stderr or "").strip().splitlines()
-        return f"exit-{r.returncode}", (detail[0] if detail else "")
-    lines = [ln for ln in r.stdout.splitlines() if target in ln]
-    return "ok", "\n".join(lines)[-DIAGNOSE_EXCERPT_CAP:]
-
-
-def run_diagnose(job, workdir):
-    """Collect the target job's local records into workdir/diagnose/
-    (rides the archive publish) and mirror the bundle JSON to
-    queue/diagnostics/<target>.json on the bus. Returns
-    {"diagnose": status}: ok when the bundle was built (absent
-    pieces are recorded as absent — absence is the finding, not a
-    failure), bad-job when the job string does not parse."""
-    plan = parse_diagnose_job(job_text(job))
-    run_dir = Path(workdir) / "diagnose"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    if plan is None:
-        (run_dir / "diagnose.log").write_text(
-            "bad job: %r\n" % job["job"])
-        return {"diagnose": "bad-job"}
-    target = plan["target"]
-    bundle = {"target": target, "diagnosed_at": now(),
-              "worker": os.uname().nodename}
-    intent_text = _diagnose_read(_intent_path(target))
-    bundle["intent"] = intent_text
-    if intent_text is not None \
-            and not intent_text.startswith("<unreadable"):
-        bundle["intent_sha256"] = hashlib.sha256(
-            intent_text.encode("utf-8", errors="replace")).hexdigest()
-    receipts = {}
-    for base in _completion_dirs():
-        try:
-            names = sorted(p.name for p in base.glob(f"{target}*"))
-        except OSError:
-            names = []
-        for name in names:
-            if name == f"{target}.intent":
-                continue
-            receipts[name] = _diagnose_read(base / name)
-    bundle["receipts"] = receipts
-    try:
-        sync_bus()
-    except Exception:  # noqa: BLE001 - bus copies are best-effort
-        pass
-    bus = {}
-    for rel in (f"queue/claims/{target}.json",
-                f"queue/claims/{target}.error.json",
-                f"queue/done/{target}.json"):
-        bus[rel] = _diagnose_read(BUS / rel)
-    bundle["bus"] = bus
-    out_dir = OUT / target
-    listing = []
-    if out_dir.is_dir():
-        for p in sorted(out_dir.rglob("*"))[:200]:
-            if p.is_file():
-                listing.append({"path": str(p.relative_to(out_dir)),
-                                "size": p.stat().st_size})
-    bundle["out_listing"] = listing
-    bundle["out_manifest"] = _diagnose_read(out_dir / "manifest.json")
-    jstatus, excerpt = _diagnose_journal(target, intent_text)
-    bundle["journal_status"] = jstatus
-    bundle["journal_excerpt"] = excerpt
-    queue_status = "failed"
-    try:
-        dest = BUS / "queue" / "diagnostics" / f"{target}.json"
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(json.dumps(bundle, indent=1))
-        queue_status = "ok" if push_bus(
-            f"diagnostics {target}") else "failed"
-    except Exception:  # noqa: BLE001 - archive copy still lands
-        queue_status = "failed"
-    bundle["queue_publish"] = queue_status
-    (run_dir / "diagnostics.json").write_text(
-        json.dumps(bundle, indent=1))
-    (run_dir / "diagnose.log").write_text(
-        f"diagnose {target}: intent="
-        f"{'present' if intent_text is not None else 'absent'} "
-        f"receipts={len(receipts)} journal={jstatus} "
-        f"queue={queue_status}\n")
-    return {"diagnose": "ok"}
 
 
 # --- Issue #446: walk-forward backtest cells (design #436 §6.4) --
@@ -5156,20 +5745,6 @@ def _execute_body(job):
     # failure and marks done (done means executed + archived, as
     # for diag-egx-ab); only a failed publish leaves the job
     # unmarked.
-    # Diagnose: same dispatch shape as diag-egx-ab above (before
-    # parse_job; the registry has no diagnose tool). A bad job
-    # string still publishes its named failure and marks done; only
-    # a failed publish leaves the job unmarked.
-    if text.split()[:1] == ["diagnose"]:
-        manifest["tools"] = run_diagnose(job, workdir)
-        manifest["finished"] = now()
-        archive_sha = publish(job, workdir, manifest)
-        if not archive_sha:
-            _record_publish_failure(job)
-        else:
-            # Issue #149: only a successful publish marks the job done.
-            _mark_done(job, archive_sha)
-        return
     if text.split()[:2] == ["run", "backtest"]:
         manifest["tools"] = run_backtest(job, workdir)
         manifest["finished"] = now()
