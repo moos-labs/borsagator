@@ -1,0 +1,18 @@
+{
+ "target": "guard-2026-11-22T0847Z",
+ "diagnosed_at": "2026-11-23T14:27:01.929739+00:00",
+ "worker": "borsagator-worker-5",
+ "intent": "{\"job\": \"ledger-guard\", \"started\": \"2026-11-22T08:50:58.987563+00:00\"}",
+ "intent_sha256": "372878a7b18886b8a992985cc453a9de1a6b6a97402d442cd1a455ad03933157",
+ "receipts": {},
+ "bus": {
+  "queue/claims/guard-2026-11-22T0847Z.json": null,
+  "queue/claims/guard-2026-11-22T0847Z.error.json": null,
+  "queue/done/guard-2026-11-22T0847Z.json": null
+ },
+ "out_listing": [],
+ "out_manifest": null,
+ "journal_status": "exit-1",
+ "journal_excerpt": "No journal files were opened due to insufficient permissions.",
+ "queue_publish": "ok"
+}
