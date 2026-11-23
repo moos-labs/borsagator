@@ -1,0 +1,109 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "COMI.CA",
+ "base_price": 84.5,
+ "base_source": "pandas-ta/indicators.csv",
+ "base_date": "2024-09-30",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "pandas-ta/indicators.csv": 84.5,
+   "talib/indicators.csv": 84.5
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2024-09-30",
+  "base_used": 84.5,
+  "base_source_used": "pandas-ta/indicators.csv",
+  "base_date": "2024-09-30",
+  "latest_collected_date": "2024-09-30",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0109,
+ "sigma_source": "pandas-ta/indicators.csv (σ60=0.0109, σ10=0.0081)",
+ "sessions_per_calendar_day": 0.652,
+ "date": "2024-09-30",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": [
+   "2-family backtest: news risk overlay disabled (issue #436)"
+  ]
+ },
+ "weights_source": "base-v1",
+ "applied_weights": {
+  "source": "base-v1",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.2,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": 0.116
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.47,
+   "range_low_pct": -0.32,
+   "range_high_pct": 3.25,
+   "confidence": 0.44,
+   "net_score": 0.471,
+   "families": {
+    "technicals": -0.2,
+    "price-forecast": 0.918
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 2.0059,
+   "vol_h_pct": 1.0931
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 3.82,
+   "range_low_pct": 0.71,
+   "range_high_pct": 6.93,
+   "confidence": 0.44,
+   "net_score": 0.6,
+   "families": {
+    "technicals": -0.2,
+    "price-forecast": 1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 5.4001,
+   "vol_h_pct": 1.8933
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.65,
+   "range_low_pct": -4.95,
+   "range_high_pct": 6.24,
+   "confidence": 0.6,
+   "net_score": 0.037,
+   "families": {
+    "technicals": -0.2,
+    "price-forecast": 0.116
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 0.9511,
+   "vol_h_pct": 4.0901
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
