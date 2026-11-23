@@ -1,0 +1,61 @@
+{
+ "ticker": "NVDA",
+ "date": "2024-09-30",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 78.3181
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "NVDA",
+     "as_of": "2024-09-30",
+     "date": "2024-09-30",
+     "open": 118.31,
+     "high": 121.5,
+     "low": 118.15,
+     "close": 121.44,
+     "rsi_14": 54.9519,
+     "macd": 1.4131,
+     "macd_signal": 0.4945,
+     "macd_hist": 0.9186,
+     "ema_20": 118.264,
+     "ema_50": 116.9119,
+     "ema_200": 97.0991,
+     "adx_14": 14.3399,
+     "bb_upper": 127.553,
+     "bb_mid": 115.055,
+     "bb_lower": 102.557,
+     "bb_pctb": 0.7554,
+     "atr_14": 5.2903,
+     "stoch_k": 75.5001,
+     "stoch_d": 83.5829,
+     "rows_fetched": 7003,
+     "rows_used": 1446,
+     "first_date_used": "2019-01-02",
+     "last_date": "2024-09-30",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 121.44000244140625
+    }
+   }
+  }
+ ]
+}
