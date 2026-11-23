@@ -1,0 +1,125 @@
+walk-forward backtest cell 2024-03-31 SWDY.CA
+gate: {"ticker": "SWDY.CA", "passed": true, "reasons": [], "rows": 1892, "first_date": "2019-01-01", "last_date": "2026-09-30", "history_needed_from": "2023-09-28", "max_gap_days": 10, "max_gap_sessions_est": 6, "longest_flat_run": 6, "events_available": true, "events_parse_error": null, "series_start": null, "history_floor": "2019-01-01", "full_history_rows": 5058, "full_history_first_date": "2006-05-31", "full_history_longest_flat_run": 37, "full_history_max_gap_days": 10, "full_history_max_gap_sessions_est": 6, "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."}
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker SWDY.CA --pred-len 21 --as-of 2024-03-31 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=5093
+[as-of] cutoff=2024-03-31 rows_on_or_before=1294 last_session=2024-03-31
+[data] cleaned_rows=1294 range=2019-01-01..2024-03-31
+[context] preferred_sessions=1294 using=1294 fallback=False
+[context] supplied=1294 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=31.5 date=2024-03-31 pct_change=-7.85%
+[result] forecasted_closes=[30.6937, 30.6639, 30.2952, 30.8, 32.2978, 32.1093, 30.6012, 30.021, 29.3341, 27.8044, 28.0286, 29.8805, 30.3552, 29.5869, 28.7389, 30.1416, 29.386, 28.5959, 27.1665, 29.1086, 29.0274]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.15it/s]
+ 10%|▉         | 2/21 [00:00<00:08,  2.18it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.19it/s]
+ 19%|█▉        | 4/21 [00:01<00:07,  2.19it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.19it/s]
+ 29%|██▊       | 6/21 [00:02<00:06,  2.19it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.19it/s]
+ 38%|███▊      | 8/21 [00:03<00:05,  2.20it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.19it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.19it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.20it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.20it/s]
+ 62%|██████▏   | 13/21 [00:05<00:03,  2.20it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.19it/s]
+ 71%|███████▏  | 15/21 [00:06<00:02,  2.19it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.19it/s]
+ 81%|████████  | 17/21 [00:07<00:01,  2.20it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.20it/s]
+ 90%|█████████ | 19/21 [00:08<00:00,  2.20it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.19it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.19it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.19it/s]
+[rc=0]
+
+$ /opt/gator/venvs/pandas-ta/bin/python /opt/gator/runners/pandas-ta/scripts/ta_snapshot.py --ticker SWDY.CA --as-of 2024-03-31 (cwd=/opt/gator/runners/pandas-ta)
+[data] SWDY.CA: 5093 rows, 2006-05-31 -> 2026-11-22, last close 114.05000305175781
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2024-03-31 rows_on_or_before=1294 last_session=2024-03-31
+[done] snapshot for SWDY.CA on 2024-03-31: close 31.5, RSI 40.2775, MACD -0.9666 vs signal 0.1295
+[rc=0]
+
+$ /opt/gator/venvs/talib/bin/python /opt/gator/runners/talib/scripts/ta.py SWDY.CA --as-of 2024-03-31 (cwd=/opt/gator/runners/talib)
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2024-03-31 rows_on_or_before=1294 last_session=2024-03-31
+{
+  "ticker": "SWDY.CA",
+  "as_of": "2024-03-31",
+  "drop_before": "2019-01-01",
+  "rows_fetched": 5093,
+  "rows_used": 1294,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2024-03-31"
+  },
+  "last_date": "2024-03-31",
+  "last_close": 31.5,
+  "indicators": {
+    "RSI_14": 40.277513239908025,
+    "MACD": -0.9666458162192484,
+    "MACD_signal": 0.12950355949417217,
+    "MACD_hist": -1.0961493757134206,
+    "EMA_20": 35.42922656989963,
+    "EMA_50": 34.63769885469324,
+    "ADX_14": 18.43125134218143
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2024-03-19",
+    "CDLENGULFING": "2024-03-26",
+    "CDLHAMMER": "2024-03-19",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-cell-rk97cwxx, 2-family mode)
+ensemble v2: written for SWDY.CA | sigma 0.0511 | horizons: ['day', 'week', 'month']
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker SWDY.CA --pred-len 21 --as-of 2024-03-31 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=5093
+[as-of] cutoff=2024-03-31 rows_on_or_before=1294 last_session=2024-03-31
+[data] cleaned_rows=1294 range=2019-01-01..2024-03-31
+[context] preferred_sessions=1294 using=1294 fallback=False
+[context] supplied=1294 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=31.5 date=2024-03-31 pct_change=-7.85%
+[result] forecasted_closes=[30.6937, 30.6639, 30.2952, 30.8, 32.2978, 32.1093, 30.6012, 30.021, 29.3341, 27.8044, 28.0286, 29.8805, 30.3552, 29.5869, 28.7389, 30.1416, 29.386, 28.5959, 27.1665, 29.1086, 29.0274]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.03it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.06it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.07it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.07it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.08it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.07it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.07it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.08it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.09it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.09it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.09it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.09it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.09it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.08it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.08it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.07it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.08it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.09it/s]
+ 90%|█████████ | 19/21 [00:09<00:00,  2.09it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.08it/s]
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-repeat-ur5w2h4d, 2-family mode)
+ensemble v2: written for SWDY.CA | sigma 0.0511 | horizons: ['day', 'week', 'month']
