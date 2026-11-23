@@ -187,6 +187,7 @@ SITES = [
     ("risk.corporate", "Corporate action: dividend", "إجراء مؤسسي: توزيع نقدي"),
     ("chart.legend", "Solid: recorded closes", "متصل: إغلاقات مسجلة"),
     ("sec.llm", "LLM provenance", "مصدر النماذج اللغوية"),
+    ("sec.sharia", "Sharia screening", "الفحص الشرعي"),
     ("llm.none", "Model not recorded (pre-#74 run).",
      "النموذج غير مسجل (تشغيل قبل #74)."),
     ("ledger.counts", "Ledger counts — sweeps: 48", "أعداد السجل — المسوح: 48"),
@@ -296,6 +297,22 @@ def classify_ar_leftovers(ar_html, model, sweep_dir):
                 allowed.append(re.sub(r"\s+", " ", leaf))
     for leaf in _str_leaves(model.get("disclosure_events")):
         if len(leaf) >= 2:
+            allowed.append(re.sub(r"\s+", " ", leaf))
+    # Sharia banner / framing lines are model data too (#555):
+    # they render verbatim in both twins, like the
+    # disclosure-events block above. Only the four prose fields
+    # are added — never the whole block's string leaves: the
+    # standards entries carry two-letter code leaves ("le") that
+    # would substring-match unrelated nodes and neuter the check
+    # (is_quoted matches any leaf as a substring). Without this,
+    # the EN banner in the AR view is misflagged as chrome English
+    # ("sharia", "advice" are CHROME_WATCH words). The per-standard
+    # verdict lines need no entry: their tokens are all-caps
+    # standards or hyphenated verdicts, both skipped by the token
+    # rules below.
+    for key in ("banner_en", "banner_ar", "framing_en", "framing_ar"):
+        leaf = (model.get("sharia") or {}).get(key)
+        if isinstance(leaf, str) and len(leaf) >= 2:
             allowed.append(re.sub(r"\s+", " ", leaf))
     allowed_norm = [re.sub(r"\s+", " ", re.sub(r"[*`#]", "", a))
                     for a in allowed]

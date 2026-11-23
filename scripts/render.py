@@ -1548,6 +1548,42 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         f_md.append("Degraded: %s" % degraded)
     sections.append(("flags", "sec.flags", "\n".join(f_html), "\n".join(f_md)))
 
+    # §14b Sharia screening (#555): the compiled model has carried
+    # banner_en/banner_ar since #553, but render.py had no consumer
+    # — the banner lived only in the embedded JSON island, and
+    # Markdown lacked it entirely. Render the banner visibly in both
+    # twins whenever the fields are set, plus the framing lines and
+    # the per-standard verdicts (verbatim model data, like news
+    # titles). A model with no sharia block says so explicitly —
+    # never an empty screening (report-model v1 carries the block
+    # only optionally; see report_model.py).
+    sh = model.get("sharia")
+    sh_html, sh_md = [], ["## Sharia screening"]
+    if not isinstance(sh, dict):
+        sh_html.append('<p data-i18n="sharia.not-recorded">%s</p>'
+                       % esc(i18n["sharia.not-recorded"]["en"]))
+        sh_md.append(i18n["sharia.not-recorded"]["en"])
+    else:
+        if sh.get("banner_en"):
+            sh_html.append('<p class="banner">%s</p>' % esc(sh["banner_en"]))
+            sh_md.append(sh["banner_en"])
+        if sh.get("banner_ar"):
+            sh_html.append('<p class="banner" lang="ar" dir="rtl">%s</p>'
+                           % esc(sh["banner_ar"]))
+            sh_md.append(sh["banner_ar"])
+        if sh.get("framing_en"):
+            sh_html.append('<p class="framing">%s</p>' % esc(sh["framing_en"]))
+            sh_md.append("> %s" % sh["framing_en"])
+        if sh.get("framing_ar"):
+            sh_html.append('<p class="framing" lang="ar" dir="rtl">%s</p>'
+                           % esc(sh["framing_ar"]))
+            sh_md.append("> %s" % sh["framing_ar"])
+        for std in sorted((sh.get("verdicts") or {}).keys()):
+            verdict = (sh.get("verdicts") or {})[std]
+            sh_html.append("<p>%s: %s</p>" % (esc(std), esc(str(verdict))))
+            sh_md.append("- %s: %s" % (std, verdict))
+    sections.append(("sharia", "sec.sharia", "\n".join(sh_html), "\n".join(sh_md)))
+
     # §15 provenance + disclaimer footer.
     prov = model.get("provenance") or {}
     p_html, p_md = [], ["## Provenance"]
