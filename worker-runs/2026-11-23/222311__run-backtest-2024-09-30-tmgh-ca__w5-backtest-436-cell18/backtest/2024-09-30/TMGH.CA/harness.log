@@ -1,0 +1,125 @@
+walk-forward backtest cell 2024-09-30 TMGH.CA
+gate: {"ticker": "TMGH.CA", "passed": true, "reasons": [], "rows": 1892, "first_date": "2019-01-01", "last_date": "2026-09-30", "history_needed_from": "2023-09-28", "max_gap_days": 10, "max_gap_sessions_est": 6, "longest_flat_run": 6, "events_available": true, "events_parse_error": null, "series_start": null, "history_floor": "2019-01-01", "full_history_rows": 4669, "full_history_first_date": "2007-11-28", "full_history_longest_flat_run": 37, "full_history_max_gap_days": 10, "full_history_max_gap_sessions_est": 6, "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."}
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker TMGH.CA --pred-len 21 --as-of 2024-09-30 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=4704
+[as-of] cutoff=2024-09-30 rows_on_or_before=1407 last_session=2024-09-30
+[data] cleaned_rows=1407 range=2019-01-01..2024-09-30
+[context] preferred_sessions=1407 using=1407 fallback=False
+[context] supplied=1407 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=63.70000076293945 date=2024-09-30 pct_change=-11.00%
+[result] forecasted_closes=[62.348, 63.8335, 64.4521, 63.9295, 70.4769, 74.3923, 74.8049, 72.2864, 73.2173, 63.5105, 56.959, 59.5277, 63.5666, 58.7079, 60.5255, 59.1246, 57.7087, 57.6978, 54.3738, 53.2248, 56.6904]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.04it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.06it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.08it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.08it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.09it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.09it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.09it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.09it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.09it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.09it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.09it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.09it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.09it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.09it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.09it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.09it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.09it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.09it/s]
+ 90%|█████████ | 19/21 [00:09<00:00,  2.09it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+[rc=0]
+
+$ /opt/gator/venvs/pandas-ta/bin/python /opt/gator/runners/pandas-ta/scripts/ta_snapshot.py --ticker TMGH.CA --as-of 2024-09-30 (cwd=/opt/gator/runners/pandas-ta)
+[data] TMGH.CA: 4704 rows, 2007-11-28 -> 2026-11-22, last close 79.0
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2024-09-30 rows_on_or_before=1407 last_session=2024-09-30
+[done] snapshot for TMGH.CA on 2024-09-30: close 63.7, RSI 67.8212, MACD 1.0708 vs signal 0.6873
+[rc=0]
+
+$ /opt/gator/venvs/talib/bin/python /opt/gator/runners/talib/scripts/ta.py TMGH.CA --as-of 2024-09-30 (cwd=/opt/gator/runners/talib)
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2024-09-30 rows_on_or_before=1407 last_session=2024-09-30
+{
+  "ticker": "TMGH.CA",
+  "as_of": "2024-09-30",
+  "drop_before": "2019-01-01",
+  "rows_fetched": 4704,
+  "rows_used": 1407,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2024-09-30"
+  },
+  "last_date": "2024-09-30",
+  "last_close": 63.70000076293945,
+  "indicators": {
+    "RSI_14": 67.82120323794945,
+    "MACD": 1.0708229260424886,
+    "MACD_signal": 0.6873153339753176,
+    "MACD_hist": 0.383507592067171,
+    "EMA_20": 59.995279573854425,
+    "EMA_50": 58.83570968309812,
+    "ADX_14": 18.69763581363977
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2024-09-26",
+    "CDLENGULFING": "2024-09-23",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "2024-09-24",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-cell-cmcd9r6j, 2-family mode)
+ensemble v2: written for TMGH.CA | sigma 0.0196 | horizons: ['day', 'week', 'month']
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker TMGH.CA --pred-len 21 --as-of 2024-09-30 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=4704
+[as-of] cutoff=2024-09-30 rows_on_or_before=1407 last_session=2024-09-30
+[data] cleaned_rows=1407 range=2019-01-01..2024-09-30
+[context] preferred_sessions=1407 using=1407 fallback=False
+[context] supplied=1407 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=63.70000076293945 date=2024-09-30 pct_change=-11.00%
+[result] forecasted_closes=[62.348, 63.8335, 64.4521, 63.9295, 70.4769, 74.3923, 74.8049, 72.2864, 73.2173, 63.5105, 56.959, 59.5277, 63.5666, 58.7079, 60.5255, 59.1246, 57.7087, 57.6978, 54.3738, 53.2248, 56.6904]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.04it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.06it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.08it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.08it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.08it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.09it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.09it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.08it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.08it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.08it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.08it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.08it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.09it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.08it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.09it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.08it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.08it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.08it/s]
+ 90%|█████████ | 19/21 [00:09<00:00,  2.08it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.08it/s]
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-repeat-4iw5kyou, 2-family mode)
+ensemble v2: written for TMGH.CA | sigma 0.0196 | horizons: ['day', 'week', 'month']
