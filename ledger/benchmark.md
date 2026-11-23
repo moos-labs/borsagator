@@ -1,6 +1,6 @@
 # 🐊 Borsagator — forward quality benchmark (issue #79)
 
-Source: `moos-labs/borsagator` branch `archive` (tree c638c247, commit c638c247). Sweeps archived: 52 (8 with a benchmark freeze).
+Source: `moos-labs/borsagator` branch `archive` (tree 8348b9c3, commit 8348b9c3). Sweeps archived: 52 (8 with a benchmark freeze).
 
 **Benchmark rows: 144 · matured: 36 · pending: 90 · invalid: 18 · excluded gap-flagged: 0**
 
