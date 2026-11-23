@@ -117,12 +117,15 @@ def make_repo(base):
     return remote, repo
 
 
-def run_publisher(repo, *args, variant="1", run_id="test-1"):
+def run_publisher(repo, *args, variant="1", run_id="test-1",
+                  extra_env=None):
     env = dict(os.environ)
     env.pop("GH_TOKEN", None)
     env.pop("GITHUB_TOKEN", None)
     env["LEDGER_STUB_VARIANT"] = variant
     env["LEDGER_RUN_ID"] = run_id
+    if extra_env:
+        env.update(extra_env)
     return subprocess.run(
         [sys.executable, str(repo / "scripts" / "ledger_publish.py"),
          *args],
@@ -287,7 +290,165 @@ def test_staging_unchanged_and_heartbeat_only():
               hb.get("run_id") == "test-3")
 
 
+def test_staging_branch_lookup_error_fails_closed():
+    # Issue #501: an errored ls-remote is UNKNOWN, not absence.
+    # The publisher must fail closed and record the error — never
+    # push on the strength of a lookup that did not happen.
+    with tempfile.TemporaryDirectory() as td:
+        remote, repo = make_repo(Path(td))
+        seed_main = remote_ref(remote, "main")
+        git("-C", str(repo), "remote", "set-url", "origin",
+            str(Path(td) / "no-such-remote.git"))
+        r = run_publisher(repo, "--commit", "--fail-hard",
+                          "--publish-branch", BRANCH,
+                          "--guard-heartbeat")
+        check("lookup: errored lookup fails the publish",
+              r.returncode == 1)
+        check("lookup: failure names the lookup, not a push",
+              "staging-branch lookup errored"
+              in (r.stdout + r.stderr))
+        check("lookup: failure states the fail-closed rule",
+              "fail-closed" in (r.stdout + r.stderr))
+        check("lookup: nothing reached the real remote",
+              remote_ref(remote, "main") == seed_main
+              and remote_ref(remote, BRANCH) is None)
+
+
+def test_branch_lookup_timeout_is_a_lookup_error():
+    # PR #515 review: an ls-remote TIMEOUT inside
+    # _remote_branch_sha used to raise through publish()'s
+    # outer wrapper and be recorded as a generic interruption
+    # (reset + recompute), instead of the fail-closed
+    # branch-lookup error. Unit-level: import the publisher and
+    # make its git() raise TimeoutExpired for ls-remote.
+    sys.path.insert(0, str(_HERE))
+    import ledger_publish as publisher
+    orig_git = publisher.git
+
+    def timing_out_git(*args):
+        if args and args[0] == "ls-remote":
+            raise subprocess.TimeoutExpired(cmd="git ls-remote",
+                                            timeout=120)
+        return orig_git(*args)
+
+    publisher.git = timing_out_git
+    try:
+        sha, err = publisher._remote_branch_sha(BRANCH)
+    finally:
+        publisher.git = orig_git
+    check("lookup-timeout: timed-out lookup returns no sha",
+          sha is None)
+    check("lookup-timeout: timed-out lookup returns a lookup "
+          "error (fail-closed), not an exception",
+          err is not None and "timed out" in err)
+
+
+def test_publisher_record_precedes_staging_push():
+    # INS-REVIEW-093: the publisher establishes its OWN durable
+    # envelope record BEFORE its staging push, in a directory
+    # outside the resettable clone (named by the worker via
+    # GATOR_PENDING_ENVELOPES). If the publisher then dies before
+    # the worker captures the staged envelope, the record still
+    # exists. And a required record that cannot be written
+    # blocks the push entirely.
+    with tempfile.TemporaryDirectory() as td:
+        remote, repo = make_repo(Path(td))
+        records = Path(td) / "pending-envelopes"
+        os.environ["GATOR_PENDING_ENVELOPES"] = str(records)
+        try:
+            r = run_publisher(repo, "--commit", "--fail-hard",
+                              "--publish-branch", BRANCH,
+                              "--guard-heartbeat")
+        finally:
+            os.environ.pop("GATOR_PENDING_ENVELOPES", None)
+        check("093: publisher exits 0 with a record dir named",
+              r.returncode == 0)
+        rec_path = records / "test-1.json"
+        check("093: publisher-side record exists after the run "
+              "(publisher death before worker capture still "
+              "leaves it)", rec_path.exists())
+        record = json.loads(rec_path.read_text())
+        check("093: record names the staged envelope commit",
+              record.get("envelope_commit")
+              == remote_ref(remote, BRANCH))
+        check("093: record carries the envelope heartbeat",
+              record.get("heartbeat", {}).get("run_id")
+              == "test-1")
+        check("093: record carries the envelope blobs",
+              "ledger/guard-heartbeat.json"
+              in record.get("blobs", {}))
+    with tempfile.TemporaryDirectory() as td:
+        remote, repo = make_repo(Path(td))
+        blocker = Path(td) / "blocker"
+        blocker.write_text("a file, not a directory\n")
+        os.environ["GATOR_PENDING_ENVELOPES"] = str(blocker)
+        try:
+            r = run_publisher(repo, "--commit", "--fail-hard",
+                              "--publish-branch", BRANCH,
+                              "--guard-heartbeat")
+        finally:
+            os.environ.pop("GATOR_PENDING_ENVELOPES", None)
+        check("093: a failed required record fails the publish",
+              r.returncode != 0)
+        check("093: no staging push after the record failure",
+              remote_ref(remote, BRANCH) is None)
+
+
+def test_idempotent_adoption_attempt_binding():
+    # INS-REVIEW-105: idempotent adoption is bound to the
+    # producing attempt. Attempt A stages (its durable record
+    # lands before the push); attempt B re-running the same
+    # publish must NOT adopt A's branch or rewrite the record
+    # under B's identity; attempt A re-running reconciles.
+    with tempfile.TemporaryDirectory() as td:
+        remote, repo = make_repo(Path(td))
+        pending = str(Path(td) / "pending")
+        env_a = {"GATOR_PENDING_ENVELOPES": pending,
+                 "LEDGER_ATTEMPT_ID":
+                 "worker-5@2026-11-22T10:00:00Z"}
+        env_b = {"GATOR_PENDING_ENVELOPES": pending,
+                 "LEDGER_ATTEMPT_ID":
+                 "worker-5@2026-11-22T11:00:00Z"}
+        r1 = run_publisher(repo, "--commit", "--fail-hard",
+                           "--publish-branch", BRANCH,
+                           "--guard-heartbeat", extra_env=env_a)
+        check("105: attempt A stages", r1.returncode == 0)
+        rec_path = Path(pending) / "test-1.json"
+        check("105: A's durable record exists, bound to A",
+              rec_path.exists()
+              and json.loads(rec_path.read_text())["attempt_id"]
+              == "worker-5@2026-11-22T10:00:00Z")
+        tip = remote_ref(remote, BRANCH)
+        git("-C", str(repo), "reset", "--hard", "origin/main")
+        time.sleep(1.1)
+        r2 = run_publisher(repo, "--commit", "--fail-hard",
+                           "--publish-branch", BRANCH,
+                           "--guard-heartbeat", extra_env=env_b)
+        check("105: attempt B cannot adopt A's branch",
+              r2.returncode == 1)
+        check("105: B's refusal names the producing attempt",
+              "produced by attempt" in (r2.stdout + r2.stderr))
+        check("105: the record still belongs to A",
+              json.loads(rec_path.read_text())["attempt_id"]
+              == "worker-5@2026-11-22T10:00:00Z")
+        check("105: the branch tip is unchanged",
+              remote_ref(remote, BRANCH) == tip)
+        git("-C", str(repo), "reset", "--hard", "origin/main")
+        time.sleep(1.1)
+        r3 = run_publisher(repo, "--commit", "--fail-hard",
+                           "--publish-branch", BRANCH,
+                           "--guard-heartbeat", extra_env=env_a)
+        check("105: attempt A re-running reconciles as staged",
+              r3.returncode == 0
+              and "already carries these exact ledger outputs"
+              in r3.stdout)
+
+
 def main():
+    test_idempotent_adoption_attempt_binding()
+    test_publisher_record_precedes_staging_push()
+    test_branch_lookup_timeout_is_a_lookup_error()
+    test_staging_branch_lookup_error_fails_closed()
     test_staging_lands_on_branch_not_main()
     test_staging_identical_outputs_reconcile()
     test_staging_collision_fails_immediately()

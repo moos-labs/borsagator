@@ -730,20 +730,180 @@ def _publish_fail_reason(stage, detail, cause):
         return ("ledger publish failed: the staging branch already "
                 "exists with different ledger content (the run id "
                 "was reused): " + detail)
+    if stage == "branch-lookup":
+        return ("ledger publish failed: the staging-branch lookup "
+                "errored, so the branch's absence could not be "
+                "established — fail-closed, nothing was pushed "
+                "on the strength of that lookup: " + detail)
+    if stage == "envelope-record":
+        return ("ledger publish failed: the durable envelope "
+                "record could not be established before the "
+                "staging push — fail-closed, nothing was pushed "
+                "on the strength of a record that does not "
+                "exist: " + detail)
     if stage:
         return f"ledger publish failed at git {stage}: {detail}"
     return cause or "ledger publish failed"
 
 
 def _remote_branch_sha(branch):
-    """HEAD sha of refs/heads/<branch> on origin, or None when the
-    branch does not exist (or cannot be read). Issue #443: the
-    staging-mode push uses this to tell a fresh branch apart from
-    an earlier attempt's envelope."""
-    r = git("ls-remote", "origin", f"refs/heads/{branch}")
-    if r.returncode != 0 or not r.stdout.strip():
+    """(sha, error) for refs/heads/<branch> on origin (issue
+    #501): (sha, None) when the branch is present; (None, None)
+    when it is POSITIVELY absent — ls-remote succeeds and lists
+    no such ref, which is git's definitive absence answer;
+    (None, error) when the lookup itself failed (auth, network,
+    command error). Issue #443: the staging-mode push uses this
+    to tell a fresh branch apart from an earlier attempt's
+    envelope. Callers must treat an error as UNKNOWN, never as
+    absence: reading a failed lookup as 'branch absent' is how
+    a push could overwrite an existing envelope it failed to
+    see, so every caller fails closed and records the error."""
+    try:
+        r = git("ls-remote", "origin", f"refs/heads/{branch}")
+    except subprocess.TimeoutExpired:
+        # PR #515 review: a timed-out lookup raised through
+        # publish()'s outer wrapper, which recorded it as a
+        # generic interruption — publish() could then reset and
+        # recompute instead of taking the fail-closed
+        # branch-lookup exit. A timeout IS a lookup error:
+        # return it as one.
+        return None, (f"git ls-remote origin refs/heads/{branch} "
+                      "timed out — the lookup did not complete")
+    except OSError as e:
+        return None, (f"git ls-remote origin refs/heads/{branch} "
+                      f"could not run: {e}")
+    if r.returncode != 0:
+        return None, _git_err(r)
+    if not r.stdout.strip():
+        return None, None
+    return r.stdout.split()[0], None
+
+
+def _record_lookup_failure(branch, error):
+    """Record a failed staging-branch lookup as this publish's
+    failure cause (issue #501): stage 'branch-lookup', which
+    publish() fails immediately — no recompute can fix a lookup
+    that cannot be performed, and retrying must never turn an
+    unknown into an assumed absence."""
+    _record_git_failure(
+        "branch-lookup",
+        f"git ls-remote origin refs/heads/{branch}",
+        subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="", stderr=error))
+
+
+def _persist_envelope_record(branch, commit):
+    """Issue #499, hardened by INS-REVIEW-093: establish the
+    durable envelope record BEFORE the staging push. The worker
+    names the durable directory (GATOR_PENDING_ENVELOPES — its
+    pending-envelopes dir, outside every resettable clone) and
+    this run's attempt (LEDGER_ATTEMPT_ID) in the publisher's
+    environment; the record written here has exactly the worker's
+    own record shape, so worker confirmation can stand on it
+    even when the publisher dies before the worker captures the
+    staged envelope — and even when the worker dies before
+    writing its own copy. The earlier design persisted only
+    AFTER the push (worker-side capture), and swallowed the
+    failure: a dead durable write plus a failed bus publication
+    still reported a successful handoff.
+
+    Returns True when no record is required (the publisher was
+    not invoked by the worker guard — no directory named) or the
+    record is durably written. On a required-but-failed write it
+    records the 'envelope-record' stage and returns False: the
+    caller must NOT push — a required durable-record failure
+    blocks the handoff."""
+    d = os.environ.get("GATOR_PENDING_ENVELOPES", "").strip()
+    if not d:
+        return True
+    job_id = os.environ.get("LEDGER_RUN_ID") or \
+        os.environ.get("GITHUB_RUN_ID")
+    try:
+        if not job_id:
+            raise ValueError("no LEDGER_RUN_ID / GITHUB_RUN_ID "
+                             "to key the envelope record")
+        hb = git("show", f"{commit}:ledger/guard-heartbeat.json")
+        if hb.returncode != 0:
+            raise ValueError("the staged heartbeat cannot be "
+                             "read back from the envelope commit")
+        heartbeat = json.loads(hb.stdout)
+        r = git("ls-tree", "-r", commit, "--", "ledger/")
+        if r.returncode != 0:
+            raise ValueError("the staged ledger tree cannot be "
+                             "listed")
+        blobs = {}
+        for line in r.stdout.splitlines():
+            meta, _, path = line.partition("\t")
+            parts = meta.split()
+            if len(parts) == 3 and parts[1] == "blob" and path:
+                blobs[path] = parts[2]
+        if "ledger/guard-heartbeat.json" not in blobs:
+            raise ValueError("the staged tree carries no guard "
+                             "heartbeat blob")
+        record = {
+            "job_id": str(job_id), "branch": branch,
+            "envelope_commit": commit, "heartbeat": heartbeat,
+            "blobs": blobs,
+            "attempt_id": os.environ.get("LEDGER_ATTEMPT_ID")
+            or None,
+            "persisted_at": datetime.now(
+                timezone.utc).isoformat(),
+        }
+        os.makedirs(d, exist_ok=True)
+        p = os.path.join(d, f"{job_id}.json")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(json.dumps(record, indent=1))
+        log(f"envelope record for {job_id} persisted at {p} "
+            "before the staging push (INS-REVIEW-093)")
+        return True
+    except Exception as e:
+        _record_git_failure(
+            "envelope-record", "_persist_envelope_record",
+            subprocess.CompletedProcess(
+                args=[], returncode=1, stdout="",
+                stderr=f"{type(e).__name__}: {e}"))
+        return False
+
+
+def _producing_attempt_conflict():
+    """INS-REVIEW-105: idempotent adoption is bound to the
+    producing attempt. When the worker named a durable record
+    directory (GATOR_PENDING_ENVELOPES), the producing attempt's
+    envelope record is already there — it is written before the
+    staging push (see _persist_envelope_record). If that record
+    names a different attempt than this run's LEDGER_ATTEMPT_ID,
+    the existing branch is another attempt's work: adopting it
+    would rewrite the recovery record under this attempt's
+    identity. A record that exists but cannot be read, or that
+    names no attempt while this run has one, is an unknown
+    producer — also a conflict. Returns a description, or None
+    when adoption may proceed (no directory named, no record
+    yet, or the record is this attempt's own)."""
+    d = os.environ.get("GATOR_PENDING_ENVELOPES", "").strip()
+    if not d:
         return None
-    return r.stdout.split()[0]
+    job_id = os.environ.get("LEDGER_RUN_ID") or \
+        os.environ.get("GITHUB_RUN_ID")
+    if not job_id:
+        return None
+    p = os.path.join(d, f"{job_id}.json")
+    if not os.path.exists(p):
+        return None
+    current = os.environ.get("LEDGER_ATTEMPT_ID") or None
+    if current is None:
+        return None
+    try:
+        with open(p, encoding="utf-8") as f:
+            rec = json.load(f)
+        producer = rec.get("attempt_id")
+    except Exception as e:
+        return (f"the durable envelope record at {p} cannot be "
+                f"read ({type(e).__name__}: {e}) — the producing "
+                "attempt is unknown")
+    if producer != current:
+        return (f"the staging branch was produced by attempt "
+                f"{producer!r}, not this attempt ({current!r})")
+    return None
 
 
 def _staged_tree_matches(branch):
@@ -822,8 +982,33 @@ def _git_publish(new_doc, branch=None):
     # otherwise fast-forward different outputs onto the existing
     # branch and skip collision detection entirely (review
     # finding on #491).
-    if _remote_branch_sha(branch) is not None:
+    existing, lookup_err = _remote_branch_sha(branch)
+    if lookup_err is not None:
+        # Issue #501: a failed lookup is UNKNOWN, not absence —
+        # fail closed and record it; never push on its strength.
+        _record_lookup_failure(branch, lookup_err)
+        return False
+    if existing is not None:
         if _staged_tree_matches(branch):
+            # INS-REVIEW-105: adoption is bound to the producing
+            # attempt — another (or an unknown) attempt's branch
+            # is never adopted or rebound to this attempt.
+            conflict = _producing_attempt_conflict()
+            if conflict is not None:
+                _record_git_failure(
+                    "branch-collision",
+                    f"git push origin HEAD:refs/heads/{branch}",
+                    subprocess.CompletedProcess(
+                        args=[], returncode=1, stdout="",
+                        stderr=conflict + " — refusing idempotent "
+                               "adoption of another attempt's "
+                               "envelope"))
+                return False
+            # INS-REVIEW-093: even on the idempotent path the
+            # durable record is (re-)established before this
+            # attempt reports the envelope as handed off.
+            if not _persist_envelope_record(branch, existing):
+                return False
             log(f"staging branch {branch} already carries these "
                 "exact ledger outputs — an earlier attempt staged "
                 "them; treating as staged (idempotent)")
@@ -836,6 +1021,16 @@ def _git_publish(new_doc, branch=None):
                 stderr="the staging branch already exists with "
                        "different ledger content (run id reused)"))
         return False
+    # INS-REVIEW-093: the durable envelope record is established
+    # BEFORE the staging push — never after it. A required
+    # record that cannot be written blocks the handoff: no push
+    # is attempted on the strength of a record that does not
+    # exist.
+    head = git("rev-parse", "HEAD")
+    if not _persist_envelope_record(
+            branch,
+            head.stdout.strip() if head.returncode == 0 else ""):
+        return False
     r = git("push", "origin", f"HEAD:refs/heads/{branch}")
     if r.returncode == 0:
         return True
@@ -844,11 +1039,56 @@ def _git_publish(new_doc, branch=None):
     # content, exactly as above), or the push itself failed
     # (auth, network) and publish()'s retry owns it.
     if _staged_tree_matches(branch):
+        # INS-REVIEW-105: the race-reconcile path is an adoption
+        # too — bound to the producing attempt exactly as above.
+        # This attempt's own record was already written (before
+        # its push), so the binding here is the commit: the
+        # branch tip must be the very commit this attempt pushed.
+        # A different commit carrying identical ledger files is
+        # another attempt's envelope, not this one's.
+        conflict = _producing_attempt_conflict()
+        if conflict is not None:
+            _record_git_failure(
+                "branch-collision",
+                f"git push origin HEAD:refs/heads/{branch}",
+                subprocess.CompletedProcess(
+                    args=[], returncode=1, stdout="",
+                    stderr=conflict + " — refusing idempotent "
+                           "adoption of another attempt's "
+                           "envelope"))
+            return False
+        tip, tip_err = _remote_branch_sha(branch)
+        own = git("rev-parse", "HEAD")
+        own_sha = own.stdout.strip() \
+            if own.returncode == 0 else None
+        if tip is not None and own_sha is not None \
+                and tip != own_sha:
+            _record_git_failure(
+                "branch-collision",
+                f"git push origin HEAD:refs/heads/{branch}",
+                subprocess.CompletedProcess(
+                    args=[], returncode=1, stdout="",
+                    stderr="the staging branch appeared with a "
+                           "different envelope commit than this "
+                           "attempt pushed — refusing idempotent "
+                           "adoption of another attempt's "
+                           "envelope"))
+            return False
+        if tip is not None and not _persist_envelope_record(
+                branch, tip):
+            return False
         log(f"staging branch {branch} already carries these exact "
             "ledger outputs — an earlier attempt staged them; "
             "treating as staged (idempotent)")
         return True
-    if _remote_branch_sha(branch) is not None:
+    existing, lookup_err = _remote_branch_sha(branch)
+    if lookup_err is not None:
+        # Issue #501: the push failed AND the follow-up lookup
+        # errored — the outcome is unknown, not a collision and
+        # not an absence; record the lookup error and fail closed.
+        _record_lookup_failure(branch, lookup_err)
+        return False
+    if existing is not None:
         _record_git_failure(
             "branch-collision",
             f"git push origin HEAD:refs/heads/{branch}", r)
@@ -1294,9 +1534,16 @@ def publish(commit, digest_path, fail_hard, sweep_target=None,
             # was reused with different ledger content) cannot be
             # fixed by recomputing — the recomputed commit would
             # collide with the same branch again. Fail it now
-            # instead of burning the remaining attempts.
+            # instead of burning the remaining attempts. Issue
+            # #501: a branch-lookup error fails immediately too —
+            # absence was never established, so no retry may treat
+            # the branch as absent. INS-REVIEW-093: an
+            # envelope-record failure fails immediately too — no
+            # recompute can establish a durable record the disk
+            # refused, and no retry may push without one.
             if publish_branch is not None and \
-                    stage == "branch-collision":
+                    stage in ("branch-collision", "branch-lookup",
+                              "envelope-record"):
                 return fail(_publish_fail_reason(stage, detail, cause),
                             digest_path, fail_hard or fail_push, ctx)
             # Retry, by reset + recompute — never by rebase (see the

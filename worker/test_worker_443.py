@@ -295,6 +295,31 @@ def test_stage_heartbeat_never_overwrites_existing_branch():
               branch_heartbeat(remote, BRANCH).get("status") == "ok")
 
 
+def test_branch_state_tristate():
+    # Issue #501: present / positively absent / lookup error are
+    # three different answers, and the error is recorded.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        state, err = worker._branch_state_on_origin(co, BRANCH)
+        check("501: missing branch is positively ABSENT",
+              state == worker.BRANCH_ABSENT and err is None)
+        check("501: staging lands",
+              worker._stage_guard_heartbeat(co, BRANCH, "ok", SLOT)
+              is True)
+        state, err = worker._branch_state_on_origin(co, BRANCH)
+        check("501: staged branch is PRESENT",
+              state == worker.BRANCH_PRESENT and err is None)
+        git("-C", str(co), "remote", "set-url", "origin",
+            str(base / "no-such-remote.git"))
+        state, err = worker._branch_state_on_origin(co, BRANCH)
+        check("501: broken remote is UNKNOWN, never absent",
+              state == worker.BRANCH_UNKNOWN and err)
+        check("501: the lookup error is recorded",
+              worker.BRANCH_LOOKUP_ERROR == err)
+
+
 def test_stage_heartbeat_broken_remote_returns_false():
     with tempfile.TemporaryDirectory() as td:
         base = Path(td)
@@ -305,6 +330,148 @@ def test_stage_heartbeat_broken_remote_returns_false():
         check("stage: broken remote returns False",
               worker._stage_guard_heartbeat(co, BRANCH, "failed",
                                             SLOT) is False)
+
+
+def _stage_full_envelope(base, remote, ledger_doc):
+    """Stage an envelope (heartbeat + ledger.json) on BRANCH from
+    a scratch clone; returns the heartbeat doc staged."""
+    scratch = base / "stage"
+    git("clone", str(remote), str(scratch))
+    git("-C", str(scratch), "config", "user.email",
+        "test@borsagator.local")
+    git("-C", str(scratch), "config", "user.name", "gator-test")
+    hb = {"last_run_utc": "2026-11-22T10:47:05Z", "run_id": SLOT,
+          "status": "ok", "workflow": "ledger-guard",
+          "note": "full envelope"}
+    (scratch / "ledger" / "guard-heartbeat.json").write_text(
+        json.dumps(hb, indent=2) + "\n")
+    (scratch / "ledger" / "ledger.json").write_text(
+        json.dumps(ledger_doc, indent=2) + "\n")
+    git("-C", str(scratch), "add", "ledger/")
+    git("-C", str(scratch), "commit", "-m", "stage envelope")
+    git("-C", str(scratch), "push", "origin",
+        f"HEAD:refs/heads/{BRANCH}")
+    return hb
+
+
+def test_guard_envelope_full_content_equality():
+    # Issue #498: confirmation enforces FULL expected-content
+    # equality — the staged heartbeat landing on main is not
+    # enough when the envelope's ledger outputs did not land
+    # byte-identical with it.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        hb = _stage_full_envelope(base, remote, {"v": 1})
+        expected = worker._staged_guard_envelope(co, BRANCH)
+        check("498: staged envelope read back with its blobs",
+              expected is not None
+              and expected["heartbeat"] == hb
+              and "ledger/ledger.json" in expected["blobs"]
+              and "ledger/guard-heartbeat.json" in expected["blobs"])
+        # Land the heartbeat exactly, but a DIFFERENT ledger.json.
+        land = base / "land"
+        git("clone", str(remote), str(land))
+        git("-C", str(land), "config", "user.email",
+            "test@borsagator.local")
+        git("-C", str(land), "config", "user.name", "gator-test")
+        (land / "ledger" / "guard-heartbeat.json").write_text(
+            json.dumps(hb, indent=2) + "\n")
+        (land / "ledger" / "ledger.json").write_text(
+            json.dumps({"v": 2}, indent=2) + "\n")
+        git("-C", str(land), "add", "ledger/")
+        git("-C", str(land), "commit", "-m", "tampered landing")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        check("498: heartbeat landed but ledger content differs "
+              "— not confirmed",
+              worker._guard_envelope_on_main(co, SLOT, expected)
+              is None)
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        hb = _stage_full_envelope(base, remote, {"v": 1})
+        expected = worker._staged_guard_envelope(co, BRANCH)
+        # Land the exact envelope (fast-forward main to it).
+        land = base / "land"
+        git("clone", str(remote), str(land))
+        git("-C", str(land), "fetch", "origin",
+            f"+refs/heads/{BRANCH}:refs/remotes/origin/stage")
+        git("-C", str(land), "reset", "--hard",
+            "refs/remotes/origin/stage")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        doc = worker._guard_envelope_on_main(co, SLOT, expected)
+        check("498: exact envelope landing confirms",
+              doc is not None and doc == hb)
+        # A later main commit altering a ledger output (a newer
+        # envelope superseding this one): the TIP no longer
+        # carries this envelope — but PR #515 review
+        # (INS-REVIEW-092, confirm at M not the tip) rules that
+        # the later state must not rewrite this attempt's
+        # verdict either: the envelope landed, in full, at its
+        # merge commit, and history confirmation finds it there.
+        (land / "ledger" / "ledger.json").write_text(
+            json.dumps({"v": 3}, indent=2) + "\n")
+        git("-C", str(land), "add", "ledger/")
+        git("-C", str(land), "commit", "-m", "later envelope")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        check("498: later main state removes the envelope from "
+              "the tip check",
+              worker._guard_envelope_on_main(co, SLOT, expected)
+              is None)
+        doc = worker._guard_envelope_in_main_history(
+            co, SLOT, expected)
+        check("515: confirmation stands at the merge commit "
+              "despite the later main state",
+              doc is not None and doc == hb)
+
+
+def test_guard_envelope_persisted_survives_branch_deletion():
+    # Issue #499: the expected envelope is persisted (heartbeat
+    # content, blob hashes, envelope commit) before confirmation,
+    # and confirmation stands on that record + the merge evidence
+    # after the relay deletes the staging branch.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        check("499: staging lands",
+              worker._stage_guard_heartbeat(co, BRANCH, "ok", SLOT)
+              is True)
+        record = worker._load_persisted_guard_envelope(SLOT)
+        tip = git("--git-dir", str(remote), "rev-parse",
+                  BRANCH).stdout.strip()
+        check("499: envelope record persisted at staging time",
+              record is not None)
+        check("499: record names the envelope commit",
+              record.get("envelope_commit") == tip)
+        check("499: record carries heartbeat content + blob hashes",
+              record["heartbeat"].get("run_id") == SLOT
+              and record["heartbeat"].get("status") == "ok"
+              and "ledger/guard-heartbeat.json" in record["blobs"])
+        # Land the envelope on main, then delete the branch —
+        # the relay's order (merge, evidence, delete).
+        land = base / "land"
+        git("clone", str(remote), str(land))
+        git("-C", str(land), "fetch", "origin",
+            f"+refs/heads/{BRANCH}:refs/remotes/origin/stage")
+        git("-C", str(land), "reset", "--hard",
+            "refs/remotes/origin/stage")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        git("--git-dir", str(remote), "update-ref", "-d",
+            f"refs/heads/{BRANCH}")
+        check("499: branch is gone after deletion",
+              git("--git-dir", str(remote), "rev-parse", BRANCH,
+                  check_rc=False).returncode != 0)
+        check("499: staged read can no longer see the envelope",
+              worker._staged_guard_envelope(co, BRANCH) is None)
+        doc = worker._confirm_guard_envelope(
+            co, SLOT, BRANCH, timeout_s=5, poll_s=0.2)
+        check("499: confirmation stands on the persisted record",
+              doc is not None and doc.get("run_id") == SLOT
+              and doc.get("status") == "ok")
 
 
 # --- run_ledger_guard ----------------------------------------------------
@@ -460,17 +627,536 @@ def test_guard_d2_refusal_records_and_stages_failed_heartbeat():
               and live.get("status") == "failed")
 
 
+def test_guard_envelope_attempt_binding():
+    # PR #515 review: a persisted envelope record is bound to
+    # the attempt that produced it. Exact-content equality
+    # proves which content is on main, not which attempt
+    # produced it — a later attempt (reclaim, new claim) whose
+    # own envelope never lands must NOT confirm on the earlier
+    # attempt's record.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        claims = worker.BUS / "queue" / "claims"
+        (claims / f"{SLOT}.json").write_text(json.dumps(
+            {"worker": "worker-5", "at": "2026-11-22T10:00:00Z",
+             "job": "ledger-guard"}))
+        attempt_a = worker._guard_attempt_id(SLOT)
+        check("515: attempt id comes from the claim record",
+              attempt_a == "worker-5@2026-11-22T10:00:00Z")
+        check("515: staging lands",
+              worker._stage_guard_heartbeat(
+                  co, BRANCH, "ok", SLOT, attempt_id=attempt_a)
+              is True)
+        record = worker._load_persisted_guard_envelope(
+            SLOT, attempt_id=attempt_a)
+        check("515: the producing attempt can load its record",
+              record is not None
+              and record.get("attempt_id") == attempt_a)
+        other = "worker-5@2026-11-22T11:00:00Z"
+        check("515: a later attempt cannot load the earlier "
+              "attempt's record",
+              worker._load_persisted_guard_envelope(
+                  SLOT, attempt_id=other) is None)
+
+
+def test_guard_envelope_local_copy_survives_rejected_push():
+    # PR #515 review: when the bus push is rejected, the record
+    # must survive OUTSIDE the resettable bus clone, and loading
+    # it retries publication without rerunning the job.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        local = worker._pending_envelope_path(SLOT)
+        local.unlink(missing_ok=True)
+        env = {"heartbeat": {"run_id": SLOT, "status": "ok",
+                             "last_run_utc":
+                             "2026-11-22T10:47:05Z"},
+               "blobs": {"ledger/guard-heartbeat.json": "a" * 40},
+               "commit": "b" * 40}
+        worker.push_bus = lambda message: False
+        try:
+            worker._persist_guard_envelope(SLOT, BRANCH, env)
+        finally:
+            worker.push_bus = fake_push_bus
+        check("515: rejected bus push leaves the durable local "
+              "copy in place", local.exists())
+        # The bus copy never landed (and a sync would reset it
+        # away): remove it to simulate the reset.
+        worker._guard_envelope_record_path(SLOT).unlink(
+            missing_ok=True)
+        record = worker._load_persisted_guard_envelope(SLOT)
+        check("515: load falls back to the durable local copy",
+              record is not None
+              and record["heartbeat"]["run_id"] == SLOT)
+        check("515: load retried publication onto the bus",
+              worker._guard_envelope_record_path(SLOT).exists())
+
+
+def test_guard_confirm_deadline_honoured_before_accepting():
+    # PR #515 review: a confirmation pass that finds the
+    # document only AFTER its deadline must not return success.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        co = base / "checkout"
+        co.mkdir()
+        env = {"heartbeat": {"run_id": SLOT, "status": "ok"},
+               "blobs": {}, "commit": "c" * 40}
+        orig_staged = worker._staged_guard_envelope
+        orig_persist = worker._persist_guard_envelope
+        orig_on_main = worker._guard_envelope_on_main
+
+        def slow_on_main(checkout, job_id, expected):
+            time.sleep(0.4)
+            return {"run_id": SLOT, "status": "ok"}
+
+        worker._staged_guard_envelope = lambda c, b: env
+        worker._persist_guard_envelope = lambda *a, **k: env
+        worker._guard_envelope_on_main = slow_on_main
+        try:
+            doc = worker._confirm_guard_envelope(
+                co, SLOT, BRANCH, timeout_s=0.1, poll_s=0.05)
+        finally:
+            worker._staged_guard_envelope = orig_staged
+            worker._persist_guard_envelope = orig_persist
+            worker._guard_envelope_on_main = orig_on_main
+        check("515: document found after the deadline is NOT "
+              "accepted", doc is None)
+
+
+def test_persist_failure_blocks_handoff():
+    # INS-REVIEW-093: a required durable local write failure
+    # must BLOCK the handoff, not be swallowed — _persist
+    # returns None and staging reports failure without pushing.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        blocker = base / "blocker"
+        blocker.write_text("a file, not a directory\n")
+        orig = worker._pending_envelope_path
+        worker._pending_envelope_path = \
+            lambda job_id: blocker / f"{job_id}.json"
+        try:
+            env = {"heartbeat": {"run_id": SLOT, "status": "ok",
+                                 "last_run_utc":
+                                 "2026-11-22T10:47:05Z"},
+                   "blobs": {"ledger/guard-heartbeat.json":
+                             "a" * 40},
+                   "commit": "b" * 40}
+            check("093: failed durable write makes _persist "
+                  "return None",
+                  worker._persist_guard_envelope(
+                      SLOT, BRANCH, env) is None)
+            check("093: staging refuses the handoff when the "
+                  "durable record cannot be established",
+                  worker._stage_guard_heartbeat(
+                      co, BRANCH, "failed", SLOT) is False)
+            r = git("--git-dir", str(remote), "rev-parse",
+                    "--verify", "-q", BRANCH, check_rc=False)
+            check("093: no staging push happened after the "
+                  "persistence failure", r.returncode != 0)
+        finally:
+            worker._pending_envelope_path = orig
+
+
+def _seed_extra_ledger_file(base, remote, name="ledger/old.json",
+                            doc=None):
+    """Add an extra ledger file to main — the pre-envelope state
+    a deletion envelope later removes."""
+    seed = base / "seed-extra"
+    git("clone", str(remote), str(seed))
+    git("-C", str(seed), "config", "user.email",
+        "test@borsagator.local")
+    git("-C", str(seed), "config", "user.name", "gator-test")
+    p = seed / name
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(doc or {"legacy": True}, indent=2)
+                 + "\n")
+    git("-C", str(seed), "add", name)
+    git("-C", str(seed), "commit", "-m", "seed extra ledger file")
+    git("-C", str(seed), "push", "origin", "HEAD:main")
+
+
+def _stage_envelope(base, remote, ledger_doc, delete=()):
+    """Stage an envelope on BRANCH from a scratch clone: fresh
+    heartbeat + ledger.json, minus the `delete` paths. Returns
+    (heartbeat doc, stage tip, staged ledger blob map)."""
+    scratch = base / "stage2"
+    git("clone", str(remote), str(scratch))
+    git("-C", str(scratch), "config", "user.email",
+        "test@borsagator.local")
+    git("-C", str(scratch), "config", "user.name", "gator-test")
+    hb = {"last_run_utc": "2026-11-22T10:47:05Z", "run_id": SLOT,
+          "status": "ok", "workflow": "ledger-guard",
+          "note": "deleting envelope"}
+    (scratch / "ledger" / "guard-heartbeat.json").write_text(
+        json.dumps(hb, indent=2) + "\n")
+    (scratch / "ledger" / "ledger.json").write_text(
+        json.dumps(ledger_doc, indent=2) + "\n")
+    for rel in delete:
+        git("-C", str(scratch), "rm", "-q", rel)
+    git("-C", str(scratch), "add", "ledger/")
+    git("-C", str(scratch), "commit", "-m", "stage envelope")
+    git("-C", str(scratch), "push", "origin",
+        f"HEAD:refs/heads/{BRANCH}")
+    tip = git("--git-dir", str(remote), "rev-parse",
+              BRANCH).stdout.strip()
+    blobs = {}
+    r = git("--git-dir", str(remote), "ls-tree", "-r", tip,
+            "--", "ledger/")
+    for line in r.stdout.splitlines():
+        meta, _, path = line.partition("\t")
+        parts = meta.split()
+        if len(parts) == 3 and parts[1] == "blob" and path:
+            blobs[path] = parts[2]
+    return hb, tip, blobs
+
+
+def _merge_clone(base, remote):
+    land = base / "land2"
+    git("clone", str(remote), str(land))
+    git("-C", str(land), "config", "user.email",
+        "test@borsagator.local")
+    git("-C", str(land), "config", "user.name", "gator-test")
+    git("-C", str(land), "fetch", "origin",
+        f"+refs/heads/{BRANCH}:refs/remotes/origin/stage")
+    return land
+
+
+def test_history_retained_deletion_merge_refused():
+    # INS-REVIEW-105 item 1: a real two-parent merge whose tree
+    # RETAINS a file the envelope deleted. Every staged blob is
+    # present at the merge, so presence-only equality passes —
+    # but the relay refuses this landing, and worker
+    # confirmation accepted it via the side-parent stage commit
+    # (plain git log traverses side parents). Tip and history
+    # must both refuse.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        _seed_extra_ledger_file(base, remote)
+        hb, tip, _ = _stage_envelope(
+            base, remote, {"v": 1}, delete=("ledger/old.json",))
+        expected = worker._staged_guard_envelope(co, BRANCH)
+        check("105: staged envelope read back with its commit",
+              expected is not None and expected["commit"] == tip)
+        land = _merge_clone(base, remote)
+        git("-C", str(land), "merge", "--no-commit", "--no-ff",
+            "refs/remotes/origin/stage")
+        # Retain the deleted file in the merge result.
+        git("-C", str(land), "checkout", "HEAD", "--",
+            "ledger/old.json")
+        git("-C", str(land), "commit", "-m",
+            "merge retaining the deletion")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        parents = git("--git-dir", str(remote), "rev-list",
+                      "--parents", "-n", "1",
+                      "main").stdout.split()
+        check("105: fixture landing is a two-parent merge of "
+              "the stage commit",
+              len(parents) == 3 and parents[2] == tip)
+        check("105: tip check refuses a landing that retains "
+              "a deleted file",
+              worker._guard_envelope_on_main(co, SLOT, expected)
+              is None)
+        check("105: history refuses the retained-deletion "
+              "merge (no side-parent confirmation)",
+              worker._guard_envelope_in_main_history(
+                  co, SLOT, expected) is None)
+
+
+def test_history_reachable_stage_without_landing_refused():
+    # INS-REVIEW-105 item 1: the stage commit is the second
+    # parent of a first-parent merge whose tree (merge -s ours)
+    # never carried the envelope. Reachability — even as a
+    # merge's second parent — is not a landing when the merge's
+    # own tree does not carry the envelope.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        hb, tip, _ = _stage_envelope(base, remote, {"v": 1})
+        expected = worker._staged_guard_envelope(co, BRANCH)
+        land = _merge_clone(base, remote)
+        git("-C", str(land), "merge", "-s", "ours", "--no-ff",
+            "refs/remotes/origin/stage", "-m", "merge (ours)")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        r = git("--git-dir", str(remote), "merge-base",
+                "--is-ancestor", tip, "main", check_rc=False)
+        check("105: fixture really has the stage reachable "
+              "from main", r.returncode == 0)
+        check("105: tip carries no envelope (fixture sanity)",
+              worker._guard_envelope_on_main(co, SLOT, expected)
+              is None)
+        check("105: history refuses a merely reachable stage "
+              "commit",
+              worker._guard_envelope_in_main_history(
+                  co, SLOT, expected) is None)
+
+
+def test_history_real_merge_confirms_and_survives_supersede():
+    # INS-REVIEW-105 item 1, positive control: a genuine merge
+    # landing (two parents, second parent = the stage commit,
+    # deletions absent, nothing introduced beyond the manifest)
+    # confirms — and still confirms at M after a later envelope
+    # supersedes it on the tip.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        _seed_extra_ledger_file(base, remote)
+        hb, tip, _ = _stage_envelope(
+            base, remote, {"v": 1}, delete=("ledger/old.json",))
+        expected = worker._staged_guard_envelope(co, BRANCH)
+        land = _merge_clone(base, remote)
+        git("-C", str(land), "merge", "--no-ff",
+            "refs/remotes/origin/stage", "-m", "merge envelope")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        doc = worker._guard_envelope_on_main(co, SLOT, expected)
+        check("105: a real merge landing confirms at the tip",
+              doc is not None and doc == hb)
+        (land / "ledger" / "ledger.json").write_text(
+            json.dumps({"v": 2}, indent=2) + "\n")
+        git("-C", str(land), "add", "ledger/")
+        git("-C", str(land), "commit", "-m", "later envelope")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        check("105: superseded envelope leaves the tip check",
+              worker._guard_envelope_on_main(co, SLOT, expected)
+              is None)
+        doc = worker._guard_envelope_in_main_history(
+            co, SLOT, expected)
+        check("105: confirmation stands at the verified merge "
+              "after supersede", doc is not None and doc == hb)
+
+
+def test_existing_branch_cross_attempt_adoption_refused():
+    # INS-REVIEW-105 item 2: attempt A stages a branch and its
+    # record; attempt B (a reclaim) must not adopt the branch,
+    # rebind the record, or confirm on A's envelope.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        claims = worker.BUS / "queue" / "claims"
+        (claims / f"{SLOT}.json").write_text(json.dumps(
+            {"worker": "worker-5", "at": "2026-11-22T10:00:00Z",
+             "job": "ledger-guard"}))
+        attempt_a = worker._guard_attempt_id(SLOT)
+        attempt_b = "worker-5@2026-11-22T11:00:00Z"
+        check("105: attempt A stages its envelope",
+              worker._stage_guard_heartbeat(
+                  co, BRANCH, "ok", SLOT, attempt_id=attempt_a)
+              is True)
+        tip = git("--git-dir", str(remote), "rev-parse",
+                  BRANCH).stdout.strip()
+        check("105: attempt B cannot adopt A's existing branch",
+              worker._stage_guard_heartbeat(
+                  co, BRANCH, "failed", SLOT,
+                  attempt_id=attempt_b) is False)
+        check("105: the branch is untouched by B's refusal",
+              git("--git-dir", str(remote), "rev-parse",
+                  BRANCH).stdout.strip() == tip
+              and branch_heartbeat(remote, BRANCH).get("status")
+              == "ok")
+        record = worker._existing_envelope_record(SLOT)
+        check("105: the record still belongs to attempt A",
+              record is not None
+              and record.get("attempt_id") == attempt_a)
+        check("105: attempt B cannot confirm on A's envelope",
+              worker._confirm_guard_envelope(
+                  co, SLOT, BRANCH, timeout_s=1.5, poll_s=0.2,
+                  attempt_id=attempt_b) is None)
+
+
+def test_confirm_persist_failure_returns_none():
+    # INS-REVIEW-105 item 4: _confirm_guard_envelope ignored a
+    # None from _persist_guard_envelope and confirmed anyway.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        co = base / "checkout"
+        co.mkdir()
+        env = {"heartbeat": {"run_id": SLOT, "status": "ok"},
+               "blobs": {}, "commit": "c" * 40}
+        orig_staged = worker._staged_guard_envelope
+        orig_persist = worker._persist_guard_envelope
+        orig_on_main = worker._guard_envelope_on_main
+        worker._staged_guard_envelope = lambda c, b: env
+        worker._persist_guard_envelope = lambda *a, **k: None
+        worker._guard_envelope_on_main = \
+            lambda c, j, e: {"run_id": SLOT, "status": "ok"}
+        try:
+            doc = worker._confirm_guard_envelope(
+                co, SLOT, BRANCH, timeout_s=5, poll_s=0.05)
+        finally:
+            worker._staged_guard_envelope = orig_staged
+            worker._persist_guard_envelope = orig_persist
+            worker._guard_envelope_on_main = orig_on_main
+        check("105: confirmation fails closed when the durable "
+              "record cannot be established", doc is None)
+
+
+def test_publisher_death_record_recovery():
+    # INS-REVIEW-105 item 4: the publisher writes its durable
+    # record BEFORE its staging push, so when the publisher is
+    # interrupted (killed) before the worker captures the staged
+    # envelope — no worker-written record, no bus copy — the
+    # publisher's own record still lets a restarted worker
+    # confirm the landing. (The 093 test only checked the
+    # record existed after a NORMAL publisher completion.)
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        setup_bus(base)
+        remote = make_remote(base)
+        co = make_checkout(base, remote)
+        _seed_extra_ledger_file(base, remote)
+        hb, tip, blobs = _stage_envelope(
+            base, remote, {"v": 1}, delete=("ledger/old.json",))
+        # The publisher's record, in exactly the shape
+        # scripts/ledger_publish.py writes before its push.
+        attempt = "worker-5@2026-11-22T10:00:00Z"
+        record = {"job_id": SLOT, "branch": BRANCH,
+                  "envelope_commit": tip, "heartbeat": hb,
+                  "blobs": blobs, "attempt_id": attempt,
+                  "persisted_at": "2026-11-22T10:47:01Z"}
+        lp = worker._pending_envelope_path(SLOT)
+        lp.parent.mkdir(parents=True, exist_ok=True)
+        lp.write_text(json.dumps(record, indent=1))
+        check("105: no bus copy of the publisher's record "
+              "exists (the worker never captured it)",
+              not worker._guard_envelope_record_path(
+                  SLOT).exists())
+        # The relay lands the envelope and deletes the branch.
+        land = _merge_clone(base, remote)
+        git("-C", str(land), "merge", "--no-ff",
+            "refs/remotes/origin/stage", "-m", "merge envelope")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        git("--git-dir", str(remote), "update-ref", "-d",
+            f"refs/heads/{BRANCH}")
+        # A later envelope supersedes it on the tip, so only
+        # the verified merge in history can confirm it.
+        (land / "ledger" / "ledger.json").write_text(
+            json.dumps({"v": 2}, indent=2) + "\n")
+        git("-C", str(land), "add", "ledger/")
+        git("-C", str(land), "commit", "-m", "later envelope")
+        git("-C", str(land), "push", "origin", "HEAD:main")
+        doc = worker._confirm_guard_envelope(
+            co, SLOT, BRANCH, timeout_s=5, poll_s=0.2,
+            attempt_id=attempt)
+        check("105: confirmation recovers from the dead "
+              "publisher's durable record alone",
+              doc is not None and doc == hb)
+
+
+def test_remote_record_mismatch_keeps_local_copy():
+    # INS-REVIEW-105 item 3: origin/queue already carries
+    # attempt A's record at this job's path. Attempt B persists
+    # its own record; B's bus push never lands it (fake push),
+    # and the existence-only read-back used to see A's record
+    # and delete B's durable local copy. The local copy must
+    # survive, and a later load for B must not be hidden by the
+    # stale bus record.
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        remote = base / "bus-remote.git"
+        git("init", "--bare", "-b", "queue", str(remote))
+        seed = base / "bus-seed"
+        git("clone", str(remote), str(seed))
+        git("-C", str(seed), "config", "user.email",
+            "test@borsagator.local")
+        git("-C", str(seed), "config", "user.name", "gator-test")
+        rec_a = {"job_id": SLOT, "branch": BRANCH,
+                 "envelope_commit": "a" * 40,
+                 "heartbeat": {"run_id": SLOT, "status": "ok"},
+                 "blobs": {"ledger/guard-heartbeat.json":
+                           "a" * 40},
+                 "attempt_id": "worker-5@2026-11-22T10:00:00Z",
+                 "persisted_at": "2026-11-22T10:00:01Z"}
+        p = seed / "queue" / "envelopes" / f"{SLOT}.json"
+        p.parent.mkdir(parents=True)
+        p.write_text(json.dumps(rec_a, indent=1))
+        (seed / "queue" / "claims").mkdir(exist_ok=True)
+        (seed / "queue" / "done").mkdir(exist_ok=True)
+        (seed / "queue" / "queue.json").write_text("[]")
+        git("-C", str(seed), "add", "queue/")
+        git("-C", str(seed), "commit", "-m", "seed bus")
+        git("-C", str(seed), "push", "origin", "HEAD:queue")
+        bus = base / "busclone"
+        git("clone", "-b", "queue", "--single-branch",
+            str(remote), str(bus))
+        worker.BUS = bus
+        worker.OUT = base / "out"
+        worker.push_bus = fake_push_bus
+        PUSHED.clear()
+        local = worker._pending_envelope_path(SLOT)
+        local.unlink(missing_ok=True)
+        env_b = {"heartbeat": {"run_id": SLOT, "status": "ok",
+                               "last_run_utc":
+                               "2026-11-22T11:47:05Z"},
+                 "blobs": {"ledger/guard-heartbeat.json":
+                           "b" * 40},
+                 "commit": "b" * 40}
+        rec = worker._persist_guard_envelope(
+            SLOT, BRANCH, env_b,
+            attempt_id="worker-5@2026-11-22T11:00:00Z")
+        check("105: persist returns B's record", rec is not None)
+        check("105: B's durable local copy survives the remote "
+              "holding A's record", local.exists()
+              and json.loads(local.read_text()).get("attempt_id")
+              == "worker-5@2026-11-22T11:00:00Z")
+        remote_rec = worker._remote_envelope_record(SLOT)
+        check("105: the remote still carries A's record",
+              remote_rec is not None
+              and remote_rec.get("attempt_id")
+              == "worker-5@2026-11-22T10:00:00Z")
+        # Simulate sync_bus resetting the bus clone to the
+        # committed (stale A) state.
+        git("-C", str(bus), "reset", "--hard", "origin/queue")
+        got_b = worker._load_persisted_guard_envelope(
+            SLOT, attempt_id="worker-5@2026-11-22T11:00:00Z")
+        check("105: stale bus record does not hide B's local "
+              "record", got_b is not None
+              and got_b.get("envelope_commit") == "b" * 40)
+        git("-C", str(bus), "reset", "--hard", "origin/queue")
+        got_a = worker._load_persisted_guard_envelope(
+            SLOT, attempt_id="worker-5@2026-11-22T10:00:00Z")
+        check("105: attempt A still loads its own record",
+              got_a is not None
+              and got_a.get("envelope_commit") == "a" * 40)
+
+
 def main():
     test_branch_names()
+    test_persist_failure_blocks_handoff()
+    test_guard_envelope_attempt_binding()
+    test_guard_envelope_local_copy_survives_rejected_push()
+    test_guard_confirm_deadline_honoured_before_accepting()
+    test_branch_state_tristate()
     test_stage_heartbeat_lands_branch()
     test_stage_heartbeat_never_overwrites_existing_branch()
     test_stage_heartbeat_broken_remote_returns_false()
+    test_guard_envelope_full_content_equality()
+    test_guard_envelope_persisted_survives_branch_deletion()
     test_guard_success_envelope_confirmed_is_done()
     test_guard_publisher_failure_stages_failed_envelope()
     test_guard_publisher_timeout_is_killed_and_recorded()
     test_guard_unconfirmed_envelope_refuses_done()
     test_guard_stale_same_id_heartbeat_does_not_confirm()
     test_guard_d2_refusal_records_and_stages_failed_heartbeat()
+    test_history_real_merge_confirms_and_survives_supersede()
+    test_history_retained_deletion_merge_refused()
+    test_history_reachable_stage_without_landing_refused()
+    test_existing_branch_cross_attempt_adoption_refused()
+    test_confirm_persist_failure_returns_none()
+    test_publisher_death_record_recovery()
+    test_remote_record_mismatch_keeps_local_copy()
     print(f"\n{PASSED} checks passed")
 
 

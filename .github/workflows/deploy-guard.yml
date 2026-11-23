@@ -20,6 +20,16 @@ name: deploy-guard
 # ref: main and fetches the archive tip only as DATA to compare, so
 # archive-controlled content is never executed as the guard.
 #
+# Issue #502: a dispatched run names its target — the
+# correlation_id + target_sha inputs below. The target is
+# checked out explicitly and the actual HEAD verified against
+# it before the parity check runs, and the run emits evidence
+# (run id, correlation, target, verified HEAD) as a run
+# artifact, which the dispatcher (the ledger-publish relay)
+# matches before it may use recovered wording. Untargeted runs
+# (push/schedule) verify the main tip they checked out and
+# still emit evidence under a run-scoped correlation id.
+#
 # Trigger coverage, stated per the official GitHub event docs: a
 # push event runs the workflow file as it exists on the PUSHED ref
 # (GITHUB_SHA is the tip commit pushed to the ref, GITHUB_REF the
@@ -52,6 +62,15 @@ on:
   schedule:
     - cron: "23 * * * *"
   workflow_dispatch:
+    inputs:
+      correlation_id:
+        description: "Correlation id from the dispatcher (issue #502)"
+        required: false
+        type: string
+      target_sha:
+        description: "Commit this run must verify — checked out explicitly and HEAD-verified (issue #502)"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -59,12 +78,98 @@ permissions:
 jobs:
   helper-blob-parity:
     runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.evidence.outputs.run_id }}
+      correlation_id: ${{ steps.evidence.outputs.correlation_id }}
+      target_sha: ${{ steps.evidence.outputs.target_sha }}
+      verified_head: ${{ steps.evidence.outputs.verified_head }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
+      - name: Resolve and verify the target commit
+        id: target
+        env:
+          INPUT_TARGET: ${{ inputs.target_sha }}
+          INPUT_CORRELATION: ${{ inputs.correlation_id }}
+        run: |
+          set -euo pipefail
+          # Issue #502: a dispatched verification names its
+          # target. The checkout above lands on main's tip; when
+          # a target is given, check it out EXPLICITLY and verify
+          # the actual HEAD is that commit — never assume the ref
+          # implies the target (with dispatch --ref main, the
+          # run's head_sha identifies the workflow ref, not any
+          # target). No target (push/schedule runs): the target
+          # is the checked-out main tip itself.
+          TARGET="$INPUT_TARGET"
+          if [ -z "$TARGET" ]; then
+            TARGET=$(git rev-parse HEAD)
+          else
+            git checkout -q --detach "$TARGET"
+          fi
+          ACTUAL=$(git rev-parse HEAD)
+          if [ "$ACTUAL" != "$TARGET" ]; then
+            echo "::error::deploy-guard checked out $ACTUAL, not the target $TARGET — refusing to verify the wrong commit (issue #502)"
+            exit 1
+          fi
+          CORRELATION="$INPUT_CORRELATION"
+          if [ -z "$CORRELATION" ]; then
+            CORRELATION="run-${{ github.run_id }}"
+          fi
+          echo "target_sha=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "correlation_id=$CORRELATION" >> "$GITHUB_OUTPUT"
+          echo "verified_head=$ACTUAL" >> "$GITHUB_OUTPUT"
+          echo "deploy-guard target verified: HEAD $ACTUAL (correlation $CORRELATION)"
       - name: Fetch the archive tip for comparison
         run: git fetch origin "+refs/heads/archive:refs/remotes/origin/archive"
-      - name: Helper blob parity (main vs archive)
-        run: python3 scripts/check_helper_blob_parity.py --repo-dir .
+      - name: Helper blob parity (verified target vs archive)
+        id: parity
+        # PR #515 review: compare the VERIFIED TARGET (HEAD —
+        # the commit the target step checked out and verified),
+        # not origin/main. The checker's defaults are
+        # origin/main + origin/archive; when a target_sha was
+        # dispatched, HEAD is the target while origin/main may
+        # already have moved past it, and comparing origin/main
+        # would emit successful evidence for a commit this run
+        # never inspected. Untargeted runs check out main's tip,
+        # so HEAD is exactly what origin/main meant there.
+        run: python3 scripts/check_helper_blob_parity.py --repo-dir . --refs HEAD origin/archive
+      - name: Emit deploy evidence
+        id: evidence
+        if: always()
+        env:
+          CORRELATION: ${{ steps.target.outputs.correlation_id }}
+          TARGET: ${{ steps.target.outputs.target_sha }}
+          VERIFIED_HEAD: ${{ steps.target.outputs.verified_head }}
+          PARITY_OUTCOME: ${{ steps.parity.outcome }}
+        run: |
+          set -euo pipefail
+          # Issue #502: the evidence a dispatcher (the ledger
+          # relay) matches before it may use recovered wording:
+          # this run's id, the dispatcher's correlation id, the
+          # target it was given, and the HEAD it actually
+          # verified. Emitted as a run artifact so the matcher
+          # reads values, not run-list metadata.
+          jq -n \
+            --arg run_id "${{ github.run_id }}" \
+            --arg correlation_id "$CORRELATION" \
+            --arg target_sha "$TARGET" \
+            --arg verified_head "$VERIFIED_HEAD" \
+            --arg parity "$PARITY_OUTCOME" \
+            '{run_id: $run_id, correlation_id: $correlation_id,
+              target_sha: $target_sha, verified_head: $verified_head,
+              parity: $parity}' > deploy-guard-evidence.json
+          cat deploy-guard-evidence.json
+          echo "run_id=${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+          echo "correlation_id=$CORRELATION" >> "$GITHUB_OUTPUT"
+          echo "target_sha=$TARGET" >> "$GITHUB_OUTPUT"
+          echo "verified_head=$VERIFIED_HEAD" >> "$GITHUB_OUTPUT"
+          echo "deploy-guard evidence: run ${{ github.run_id }}, correlation $CORRELATION, target $TARGET, verified HEAD $VERIFIED_HEAD, parity $PARITY_OUTCOME" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deploy-guard-evidence-${{ steps.target.outputs.correlation_id }}
+          path: deploy-guard-evidence.json
+          if-no-files-found: error
