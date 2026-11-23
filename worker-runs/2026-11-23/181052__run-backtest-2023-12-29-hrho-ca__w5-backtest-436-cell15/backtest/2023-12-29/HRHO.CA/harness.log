@@ -1,0 +1,125 @@
+walk-forward backtest cell 2023-12-29 HRHO.CA
+gate: {"ticker": "HRHO.CA", "passed": true, "reasons": [], "rows": 1892, "first_date": "2019-01-01", "last_date": "2026-09-30", "history_needed_from": "2023-09-28", "max_gap_days": 10, "max_gap_sessions_est": 6, "longest_flat_run": 6, "events_available": true, "events_parse_error": null, "series_start": null, "history_floor": "2019-01-01", "full_history_rows": 6101, "full_history_first_date": "2002-06-10", "full_history_longest_flat_run": 37, "full_history_max_gap_days": 10, "full_history_max_gap_sessions_est": 6, "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."}
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker HRHO.CA --pred-len 21 --as-of 2023-12-29 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=6136
+[as-of] cutoff=2023-12-29 rows_on_or_before=1231 last_session=2023-12-28
+[data] cleaned_rows=1231 range=2019-01-01..2023-12-28
+[context] preferred_sessions=1231 using=1231 fallback=False
+[context] supplied=1231 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=16.670000076293945 date=2023-12-28 pct_change=+3.03%
+[result] forecasted_closes=[17.1806, 17.207, 16.9613, 17.1381, 17.559, 17.4947, 17.0187, 16.8968, 16.6036, 16.5078, 15.6442, 15.0294, 15.1759, 15.7995, 16.1435, 16.4131, 16.4579, 16.2695, 16.0915, 16.5731, 17.1746]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.15it/s]
+ 10%|▉         | 2/21 [00:00<00:08,  2.17it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.17it/s]
+ 19%|█▉        | 4/21 [00:01<00:07,  2.15it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.17it/s]
+ 29%|██▊       | 6/21 [00:02<00:06,  2.18it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.19it/s]
+ 38%|███▊      | 8/21 [00:03<00:05,  2.20it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.20it/s]
+ 48%|████▊     | 10/21 [00:04<00:04,  2.21it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.21it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.21it/s]
+ 62%|██████▏   | 13/21 [00:05<00:03,  2.21it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.21it/s]
+ 71%|███████▏  | 15/21 [00:06<00:02,  2.21it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.21it/s]
+ 81%|████████  | 17/21 [00:07<00:01,  2.21it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.21it/s]
+ 90%|█████████ | 19/21 [00:08<00:00,  2.20it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.20it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.21it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.20it/s]
+[rc=0]
+
+$ /opt/gator/venvs/pandas-ta/bin/python /opt/gator/runners/pandas-ta/scripts/ta_snapshot.py --ticker HRHO.CA --as-of 2023-12-29 (cwd=/opt/gator/runners/pandas-ta)
+[data] HRHO.CA: 6136 rows, 2002-06-10 -> 2026-11-22, last close 25.5
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2023-12-29 rows_on_or_before=1231 last_session=2023-12-28
+[done] snapshot for HRHO.CA on 2023-12-28: close 16.67, RSI 36.413, MACD -0.2843 vs signal -0.1428
+[rc=0]
+
+$ /opt/gator/venvs/talib/bin/python /opt/gator/runners/talib/scripts/ta.py HRHO.CA --as-of 2023-12-29 (cwd=/opt/gator/runners/talib)
+[data] after drop-before 2019-01-01: 1927 rows
+[as-of] cutoff=2023-12-29 rows_on_or_before=1231 last_session=2023-12-28
+{
+  "ticker": "HRHO.CA",
+  "as_of": "2023-12-29",
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6136,
+  "rows_used": 1231,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2023-12-28"
+  },
+  "last_date": "2023-12-28",
+  "last_close": 16.670000076293945,
+  "indicators": {
+    "RSI_14": 36.4129829075022,
+    "MACD": -0.2843134520233157,
+    "MACD_signal": -0.14276629965443008,
+    "MACD_hist": -0.14154715236888563,
+    "EMA_20": 17.321886801804073,
+    "EMA_50": 17.270355622180418,
+    "ADX_14": 20.158581064263956
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2023-12-28",
+    "CDLENGULFING": "2023-11-22",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-cell-ytv_hbxq, 2-family mode)
+ensemble v2: written for HRHO.CA | sigma 0.0203 | horizons: ['day', 'week', 'month']
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker HRHO.CA --pred-len 21 --as-of 2023-12-29 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=6136
+[as-of] cutoff=2023-12-29 rows_on_or_before=1231 last_session=2023-12-28
+[data] cleaned_rows=1231 range=2019-01-01..2023-12-28
+[context] preferred_sessions=1231 using=1231 fallback=False
+[context] supplied=1231 used=512 max_context=512
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=16.670000076293945 date=2023-12-28 pct_change=+3.03%
+[result] forecasted_closes=[17.1806, 17.207, 16.9613, 17.1381, 17.559, 17.4947, 17.0187, 16.8968, 16.6036, 16.5078, 15.6442, 15.0294, 15.1759, 15.7995, 16.1435, 16.4131, 16.4579, 16.2695, 16.0915, 16.5731, 17.1746]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.03it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.06it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.08it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.08it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.09it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.09it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.09it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.09it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.09it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.09it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.09it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.09it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.09it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.09it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.09it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.09it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.09it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.09it/s]
+ 90%|█████████ | 19/21 [00:09<00:00,  2.08it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.08it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.09it/s]
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-repeat-it8_vil5, 2-family mode)
+ensemble v2: written for HRHO.CA | sigma 0.0203 | horizons: ['day', 'week', 'month']
