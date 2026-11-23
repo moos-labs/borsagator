@@ -741,9 +741,10 @@ def case10_recommendation(archive_root, golden_model):
           and golden_model["levels"]["resistance"] == expect_resist
           and golden_model["levels"]["support"] == 7.1346
           and golden_model["levels"]["resistance"] == 11.5881)
-    check("10c levels carry the D2 note",
+    check("10c levels carry the model-range note",
           golden_model["levels"]["note"]
-          == "descriptive-conditional levels (D2); not a buy/sell "
+          == "model range: arithmetic on the forecast's own week "
+             "range; not support/resistance levels and not a buy/sell "
              "instruction")
     text = json.dumps(golden_model)
     check("10d no HOLD / buy / sell instruction line in the model",

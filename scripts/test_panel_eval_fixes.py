@@ -281,9 +281,43 @@ def test_public_benchmark_anonymised():
     assert sb.PUBLIC_SOURCE_LABELS["ostool"] == "Source C"
 
 
+def test_model_range_rename():
+    # Muhammad, 2026-11-23 (superseding the D2 wording after the
+    # panel evaluation): the bands are arithmetic on the forecast's
+    # own range, so the shipped report calls them a model range and
+    # must not claim support/resistance levels in either language.
+    # The levels JSON keys (support/resistance) stay as internal
+    # field names; only the displayed labels change.
+    table = json.load(open(os.path.join(
+        SCRIPTS, "render_i18n.json"), encoding="utf-8"))
+    for key in ("sec.bands", "bands.support", "bands.resistance",
+                "bands.none", "bands.note.oneside"):
+        for lang in ("en", "ar"):
+            value = table[key][lang]
+            assert "support" not in value.lower(), (key, lang, value)
+            assert "resistance" not in value.lower(), (key, lang, value)
+            assert "الدعم" not in value, (key, lang, value)
+            assert "المقاومة" not in value, (key, lang, value)
+    assert table["sec.bands"]["en"] == "Model range (from the forecast)"
+    assert table["sec.bands"]["ar"] == "النطاق النموذجي (من التوقع)"
+    assert table["bands.support"]["ar"] == "الحد الأدنى للنطاق النموذجي عند"
+    assert table["bands.resistance"]["ar"] == "الحد الأعلى للنطاق النموذجي عند"
+    # The compiled model's levels note matches the honest naming.
+    tmp, profiles = _sweep_and_profiles(["ensemble as of 2026-11-18"])
+    try:
+        model = compile_model.compile_sweep(tmp, profiles_dir=profiles)
+        note = (model.get("levels") or {}).get("note") or ""
+        assert "model range" in note, note
+        assert "(D2)" not in note, note
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     check("fix1: AR disclaimer carries no «التوصيات»",
           test_ar_disclaimer_no_recommendations_word)
+    check("fix6: bands renamed to an honest model range",
+          test_model_range_rename)
     check("fix2: shipped model has no action/buy_below/sell_above",
           test_shipped_model_has_no_advice_fields)
     check("fix3: advice-worded notes withheld + flagged",

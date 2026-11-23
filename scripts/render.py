@@ -797,7 +797,7 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # §1 D2 bands.
     support, resistance, basis, computed = band_levels(model)
     rec = model.get("recommendation")
-    bands_md = ["## Technical Support / Resistance Levels"]
+    bands_md = ["## Model range (from the forecast)"]
     bands_html = []
     if no_forecast:
         # §2j: forecast sections are omitted with the placeholder in
@@ -807,14 +807,14 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         bands_md.append(i18n[no_forecast_key]["en"])
     else:
         if support is None:
-            bands_html.append('<p data-i18n="bands.none">No levels available for this sweep.</p>')
-            bands_md.append("No levels available for this sweep.")
+            bands_html.append('<p data-i18n="bands.none">No range available for this sweep.</p>')
+            bands_md.append("No range available for this sweep.")
         else:
             bands_html.append(
-                '<p><span data-i18n="bands.support">Technical Support Level at</span> '
+                '<p><span data-i18n="bands.support">Model range low at</span> '
                 '<span class="num">%s</span></p>' % fmt_price(support))
             bands_html.append(
-                '<p><span data-i18n="bands.resistance">Technical Resistance Level at</span> '
+                '<p><span data-i18n="bands.resistance">Model range high at</span> '
                 '<span class="num">%s</span></p>' % fmt_price(resistance))
             # The basis is a model-carried display string: the two
             # known values map through display.levels-basis; anything
@@ -826,13 +826,13 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
                 bands_html.append('<p class="dim" data-i18n="bands.computed">'
                                    'Computed by the renderer from the week horizon range.</p>')
                 bands_md.append("_Computed by the renderer from the week horizon range._")
-            bands_md.append("Technical Support Level at %s" % fmt_price(support))
-            bands_md.append("Technical Resistance Level at %s" % fmt_price(resistance))
+            bands_md.append("Model range low at %s" % fmt_price(support))
+            bands_md.append("Model range high at %s" % fmt_price(resistance))
             bands_md.append("Basis: %s" % basis)
             base = price.get("base_price")
             if base is not None and not (support < base < resistance):
-                bands_html.append('<p class="dim" data-i18n="bands.note.oneside">Both levels sit on one side of the current price — the range does not straddle the base.</p>')
-                bands_md.append("Both levels sit on one side of the current price — the range does not straddle the base.")
+                bands_html.append('<p class="dim" data-i18n="bands.note.oneside">Both ends of the range sit on one side of the current price — the range does not straddle the base.</p>')
+                bands_md.append("Both ends of the range sit on one side of the current price — the range does not straddle the base.")
         bands_html.append(
             '<p class="framing" data-i18n="framing">This is a description of a computed '
             'model output, not a recommendation to buy, sell, or hold any security. '

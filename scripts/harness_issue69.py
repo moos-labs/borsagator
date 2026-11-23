@@ -371,7 +371,7 @@ def case1_golden(ctx):
           "calibrated (ledger skill factors applied)" in vis)
     check("1 no hardcoded provisional line",
           "Confidence is provisional" not in vis)
-    check("1 md bands", "Technical Support Level at 7.13" in m)
+    check("1 md bands", "Model range low at 7.13" in m)
     # Ported from the render-69 build (its case 1): corporate
     # actions, the ledger pin and the sharia flags on the golden.
     vis_n = re.sub(r"\s+", " ", vis)
@@ -600,8 +600,8 @@ def case9_d2_gate(ctx, out):
     sweep = os.path.join(ctx["archive"], SWEEPS["141124"])
     model = load_json(os.path.join(ctx["stage"], "model-141124.json"))
     check("9 bands present",
-          re.search(r"Technical Support Level at\s+7\.13", vis_n) is not None
-          and re.search(r"Technical Resistance Level at\s+11\.59", vis_n) is not None)
+          re.search(r"Model range low at\s+7\.13", vis_n) is not None
+          and re.search(r"Model range high at\s+11\.59", vis_n) is not None)
     check("9 no HOLD line", "HOLD" not in vis and "HOLD" not in m)
     check("9 no buy/sell lines",
           "buy at/below" not in vis.lower() and "sell/trim" not in vis.lower()
@@ -941,7 +941,7 @@ def case17_twin_parity(ctx, out):
                if not any(abs(n - x) <= 0.011 for x in numbers_in(vis))]
     check("17 every MD number appears in the HTML", missing == [],
           "missing: %s" % missing[:5])
-    check("17 same bands in MD", "Technical Support Level at 7.13" in m)
+    check("17 same bands in MD", "Model range low at 7.13" in m)
     check("17 same footer in MD",
           "Deterministic glue over the ensemble" in m)
     check("17 MD has no imperative line",

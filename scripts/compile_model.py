@@ -815,10 +815,13 @@ def build_llm(tools, family_scores):
 
 
 def build_levels(ensemble):
-    """D-5 / #77 D2: support / resistance as price levels from the
-    WEEK horizon range: base x (1 + pct/100). A unit conversion of
-    fields the model already carries, not a forecast. Returns
-    (levels_or_None, flag_or_None)."""
+    """D-5 / #77: the model range as price levels from the WEEK
+    horizon range: base x (1 + pct/100). A unit conversion of fields
+    the model already carries, not a forecast. The levels ship under
+    the honest "Model range" label (Muhammad, 2026-11-23, superseding
+    the D2 support/resistance wording after the panel evaluation);
+    the support/resistance JSON keys stay as internal field names.
+    Returns (levels_or_None, flag_or_None)."""
     if not ensemble:
         return None, "levels-unavailable: no ensemble"
     base = _fnum(ensemble.get("base_price"))
@@ -831,8 +834,9 @@ def build_levels(ensemble):
             "resistance": round(base * (1.0 + high / 100.0), 4),
             "basis": ("week horizon range_low_pct / range_high_pct "
                       "(expected_move_pct +/- half-range, % of base)"),
-            "note": ("descriptive-conditional levels (D2); not a "
-                     "buy/sell instruction")}, None
+            "note": ("model range: arithmetic on the forecast's own "
+                     "week range; not support/resistance levels and "
+                     "not a buy/sell instruction")}, None
 
 
 def build_benchmark(sweep_dir):
