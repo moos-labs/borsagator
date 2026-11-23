@@ -220,11 +220,27 @@ jobs:
             exit 1
           fi
 
+      # Issue #503: a PR opened with GITHUB_TOKEN only receives
+      # approval-required pull_request workflow runs, which sit
+      # unapproved and then fail at merge time (the paired PR
+      # Agent / pr-close-gate failures). A PR opened with the
+      # Borsagator App's installation token is not held that way
+      # (proven live on test PR #523, 2026-11-23), so every step
+      # that acts on the PR (open, merge, comment, branch
+      # delete) uses the App token minted here. Steps that only
+      # dispatch workflows or read git state keep GITHUB_TOKEN.
+      - name: Mint the Borsagator App token
+        id: apptoken
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: 5709364
+          private-key: ${{ secrets.BORSAGATOR_APP_PRIVATE_KEY }}
+
       - name: Open the PR
         id: openpr
         if: steps.assess.outputs.mode == 'fresh' && steps.assess.outputs.pr_number == ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
         run: |
@@ -246,9 +262,9 @@ jobs:
           PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
         run: |
           set -euo pipefail
-          # Settle: a just-opened PR's own pull_request gate run is
-          # approval-required (the PR was created with
-          # GITHUB_TOKEN) and its check run materializes a few
+          # Settle: a just-opened PR's own pull_request gate run
+          # materializes a few seconds after the open (with
+          # GITHUB_TOKEN it was also approval-required — #503) and
           # seconds after the open. Branch protection reads the
           # NEWEST close-gate check on the candidate SHA, so the
           # dispatched run's check must be created after it —
@@ -340,7 +356,7 @@ jobs:
         id: merge
         if: steps.assess.outputs.mode == 'fresh'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
           SHA: ${{ steps.assess.outputs.sha }}
           PR_NUMBER: ${{ steps.openpr.outputs.pr_number || steps.assess.outputs.pr_number }}
@@ -464,7 +480,7 @@ jobs:
 
       - name: Comment the recovery evidence on the publish-failure signal
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
           STAGE_SHA: ${{ steps.assess.outputs.sha }}
@@ -518,7 +534,7 @@ jobs:
       - name: Delete the staging branch
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.apptoken.outputs.token }}
           BRANCH: ${{ steps.resolve.outputs.branch }}
         run: |
           set -uo pipefail
