@@ -1,0 +1,109 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "SWDY.CA",
+ "base_price": 28.610000610351562,
+ "base_source": "pandas-ta/indicators.csv",
+ "base_date": "2023-12-28",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "pandas-ta/indicators.csv": 28.610000610351562,
+   "talib/indicators.csv": 28.610000610351562
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2023-12-28",
+  "base_used": 28.610000610351562,
+  "base_source_used": "pandas-ta/indicators.csv",
+  "base_date": "2023-12-28",
+  "latest_collected_date": "2023-12-28",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0274,
+ "sigma_source": "pandas-ta/indicators.csv (σ60=0.0274, σ10=0.0196)",
+ "sessions_per_calendar_day": 0.666,
+ "date": "2023-12-29",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": [
+   "2-family backtest: news risk overlay disabled (issue #436)"
+  ]
+ },
+ "weights_source": "base-v1",
+ "applied_weights": {
+  "source": "base-v1",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": 0.3,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": -1.0
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 4.8,
+   "range_low_pct": -2.22,
+   "range_high_pct": 11.83,
+   "confidence": 0.54,
+   "net_score": 0.72,
+   "families": {
+    "technicals": 0.3,
+    "price-forecast": 1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 6.3212,
+   "vol_h_pct": 2.744
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 4.22,
+   "range_low_pct": -2.21,
+   "range_high_pct": 10.65,
+   "confidence": 0.6,
+   "net_score": 0.462,
+   "families": {
+    "technicals": 0.3,
+    "price-forecast": 0.543
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 5.1618,
+   "vol_h_pct": 4.7527
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -31.3,
+   "range_low_pct": -48.14,
+   "range_high_pct": -14.46,
+   "confidence": 0.44,
+   "net_score": -0.675,
+   "families": {
+    "technicals": 0.3,
+    "price-forecast": -1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": -46.2506,
+   "vol_h_pct": 10.2671
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
