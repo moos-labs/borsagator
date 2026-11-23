@@ -1155,6 +1155,23 @@ def build_sharia_section(ticker, requested, standards, tables,
             })
             if entry["verdict"] == "insufficient-data":
                 flags.append(f"sharia-insufficient-data: {std}")
+            # Panel-eval compliance fix: a stored row whose ratio
+            # legs include an unresolved leg (value None -- e.g.
+            # the deposits leg could not be disaggregated) must
+            # not ship a determinate verdict. Force the entry to
+            # "indeterminate" and name the unresolved legs, rather
+            # than letting the stored verdict stand by default.
+            unresolved = [r.get("id") for r in entry["ratios"]
+                          if r.get("value") is None]
+            if unresolved and entry["verdict"] in (
+                    "compliant", "compliant-with-purification",
+                    "non-compliant"):
+                entry["verdict"] = "indeterminate"
+                entry["missing_inputs"] = list(
+                    entry["missing_inputs"]) + [
+                        f"unresolved ratio leg: {leg}"
+                        for leg in unresolved]
+                flags.append(f"sharia-verdict-indeterminate: {std}")
         entries.append(entry)
 
         # Average-purification membership is decided here, where
@@ -1178,10 +1195,11 @@ def build_sharia_section(ticker, requested, standards, tables,
                              "ratio": purification["ratio"]})
 
     # Disagreement is judged on determinate verdicts only: an
-    # insufficient-data entry is an absence of a verdict, not a
-    # dissenting one.
+    # insufficient-data or indeterminate entry is an absence of a
+    # verdict, not a dissenting one.
     determinate = [e["verdict"] for e in entries
-                   if e["verdict"] != "insufficient-data"]
+                   if e["verdict"] not in ("insufficient-data",
+                                           "indeterminate")]
     disagreement = len(set(determinate)) > 1
 
     average = None
@@ -1207,6 +1225,8 @@ def build_sharia_section(ticker, requested, standards, tables,
         },
         "framing_en": engine.FRAMING_EN,
         "framing_ar": engine.FRAMING_AR,
+        "banner_en": engine.BANNER_EN,
+        "banner_ar": engine.BANNER_AR,
     }
     return section, flags
 
@@ -1742,18 +1762,30 @@ def compile_sweep(sweep_dir, repo_root=None, archive_sha=None,
             f"{digest.get('date')} base "
             f"{(ensemble or {}).get('base_price')}")
     else:
+        # Panel-eval compliance fix: the shipped model must not
+        # carry the profile's explicit trading instruction
+        # (action / buy_below / sell_above). recommend.py keeps
+        # computing them in the internal profile store; the
+        # exported/copied report model drops them here, at the
+        # copy boundary.
         recommendation = {
             key: rec.get(key) for key in (
                 "ticker", "as_of", "archive_commit", "base_price",
-                "reference_price", "action", "buy_below",
-                "sell_above", "expected_week_pct", "nudge_pct",
+                "reference_price", "expected_week_pct", "nudge_pct",
                 "expected_week_adj_pct", "confidence", "risk",
                 "weights_source", "notes")}
         # R-10: audit the copied notes for imperative wording.
+        # Panel-eval compliance fix: an advice-worded note is not
+        # merely flagged -- it is withheld from the shipped model,
+        # so it can never render in the report.
         notes = recommendation.get("notes") or []
-        if any(re.search(r"\b(buy|sell|hold)\b", str(n),
-                         re.IGNORECASE) for n in notes):
+        clean_notes = [
+            n for n in notes
+            if not re.search(r"\b(buy|sell|hold)\b", str(n),
+                             re.IGNORECASE)]
+        if len(clean_notes) != len(notes):
             flags.append("recommendation-notes-carry-advice-wording")
+            recommendation["notes"] = clean_notes
     levels, levels_flag = build_levels(ensemble)
     if levels_flag:
         flags.append(levels_flag)

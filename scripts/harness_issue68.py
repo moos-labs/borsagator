@@ -765,11 +765,14 @@ def case10_recommendation(archive_root, golden_model):
     write_json(os.path.join(profiles, "POUL.CA.recommendation.json"),
                rec)
     code, out, m = run_compiler(staged, profiles_dir=profiles)
-    check("10e a matching profile is copied verbatim",
+    check("10e a matching profile is copied minus the advice fields "
+          "(panel-eval fix: action/buy_below/sell_above never ship)",
           code == 0 and m is not None
           and m["recommendation"] is not None
-          and m["recommendation"]["action"] == "hold"
-          and m["recommendation"]["buy_below"] == 7.13
+          and "action" not in m["recommendation"]
+          and "buy_below" not in m["recommendation"]
+          and "sell_above" not in m["recommendation"]
+          and m["recommendation"]["expected_week_pct"] == 16.73
           and m["recommendation"]["archive_commit"]
           == "archive-commit-test",
           f"exit={code} {out[:300]}")

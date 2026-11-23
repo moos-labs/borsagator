@@ -108,6 +108,15 @@ FRAMING_EN = ("Screening result under the named standard only, computed "
 FRAMING_AR = ("نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية "
               "المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.")
 
+# Section banner for the report's Sharia section (panel-eval
+# compliance fix): the framing lines describe each result; this
+# banner heads the section and states the certification position
+# explicitly -- no Sharia Board certifies these outputs.
+BANNER_EN = ("NOT A FATWA — screening results per the selected "
+             "standard; no Sharia Board certification.")
+BANNER_AR = ("ليست فتوى — نتائج فحص وفق المعيار المختار؛ "
+             "لا توجد شهادة من هيئة رقابة شرعية.")
+
 VERDICTS = ("compliant", "compliant-with-purification",
             "non-compliant", "insufficient-data")
 ACTIVITY_VALUES = ("permissible", "prohibited")

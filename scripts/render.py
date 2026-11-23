@@ -320,6 +320,8 @@ _FLAG_RES = [
      "flag.sharia-table-missing", ("std",), None),
     (re.compile(r"^sharia-insufficient-data: (\S+)$"),
      "flag.sharia-insufficient-data", ("std",), None),
+    (re.compile(r"^sharia-verdict-indeterminate: (\S+)$"),
+     "flag.sharia-verdict-indeterminate", ("std",), None),
     (re.compile(r"^disclosure-events-unavailable: (\S+): (.+)$"),
      "flag.disclosure-events-unavailable", ("file", "reason"), None),
     (re.compile(r"^disclosure-events-stale: (.+)$"),
