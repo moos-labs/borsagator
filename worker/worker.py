@@ -3299,6 +3299,172 @@ def run_diag_egx_ab(job, workdir):
     return {"diag-egx-ab": "ok"}
 
 
+# --- Diagnose: publish a named job's local records ---------------
+# Born from guard slot 2026-11-22T0847Z: its publish leg provably
+# never landed, but whether the run hung, crashed after the rejected
+# push, or finished locally without publishing its terminal record
+# lives ONLY in this host's local state (the job-state intent, the
+# pending receipts, the OUT tree, the systemd journal) — none of it
+# readable from the bus. A `diagnose <job_id>` job makes the worker
+# publish that state itself: the bundle rides the archive publish
+# like every sibling diagnostic, and a copy lands on the queue
+# branch under queue/diagnostics/<target>.json for quick reads.
+# Read-only with respect to the target: diagnose never deletes,
+# reclaims or re-executes anything.
+
+DIAGNOSE_EXCERPT_CAP = 64 * 1024
+DIAGNOSE_FILE_CAP = 16 * 1024
+
+
+def parse_diagnose_job(job):
+    """Parse a `diagnose` job string: exactly `diagnose <job_id>`
+    with the target satisfying JOB_ID_RE, else None (fail closed,
+    like parse_diag_egx_ab_job)."""
+    parts = (job if isinstance(job, str) else "").split()
+    if len(parts) != 2 or parts[0] != "diagnose":
+        return None
+    if not JOB_ID_RE.fullmatch(parts[1]):
+        return None
+    return {"target": parts[1]}
+
+
+def _diagnose_read(path, cap=DIAGNOSE_FILE_CAP):
+    """Read a local record file as text, capped; None when absent.
+    Unreadable is recorded, never raised — the bundle is evidence,
+    including evidence of absence."""
+    try:
+        if not path.is_file():
+            return None
+        data = path.read_bytes()[:cap]
+        return data.decode("utf-8", errors="replace")
+    except OSError as e:
+        return f"<unreadable: {type(e).__name__}: {e}>"
+
+
+def _diagnose_journal(target, intent_text):
+    """Best-effort journald excerpt for the target job id. The
+    worker is a systemd service, so its print() output — the only
+    narrative log of a guard run — lives in the journal. Window:
+    the intent's `started` (or the guard slot encoded in the id)
+    minus 10 min, plus 3 h. Returns (status, excerpt): status is
+    ok / unavailable / exit-N / no-window; the excerpt is capped
+    and filtered to lines naming the target."""
+    from datetime import timedelta
+    since = None
+    if intent_text:
+        try:
+            started = json.loads(intent_text).get("started")
+            since = datetime.fromisoformat(
+                str(started).replace("Z", "+00:00"))
+        except Exception:  # noqa: BLE001 - fall through to id window
+            since = None
+    if since is None:
+        m = re.match(r"^guard-(\d{4}-\d{2}-\d{2}T\d{2})(\d{2})Z$",
+                     target)
+        if m:
+            try:
+                since = datetime.strptime(
+                    m.group(1) + m.group(2), "%Y-%m-%dT%H%M"
+                ).replace(tzinfo=timezone.utc)
+            except ValueError:
+                since = None
+    if since is None:
+        return "no-window", ""
+    fmt = "%Y-%m-%d %H:%M:%S"
+    cmd = ["journalctl", "-u", "borsagator-worker", "--no-pager",
+           "-o", "cat",
+           "--since", (since - timedelta(minutes=10)).strftime(fmt),
+           "--until", (since + timedelta(hours=3)).strftime(fmt)]
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True,
+                           timeout=120)
+    except FileNotFoundError:
+        return "unavailable", ""
+    except Exception as e:  # noqa: BLE001 - evidence, not a crash
+        return f"error-{type(e).__name__}", ""
+    if r.returncode != 0:
+        detail = (r.stderr or "").strip().splitlines()
+        return f"exit-{r.returncode}", (detail[0] if detail else "")
+    lines = [ln for ln in r.stdout.splitlines() if target in ln]
+    return "ok", "\n".join(lines)[-DIAGNOSE_EXCERPT_CAP:]
+
+
+def run_diagnose(job, workdir):
+    """Collect the target job's local records into workdir/diagnose/
+    (rides the archive publish) and mirror the bundle JSON to
+    queue/diagnostics/<target>.json on the bus. Returns
+    {"diagnose": status}: ok when the bundle was built (absent
+    pieces are recorded as absent — absence is the finding, not a
+    failure), bad-job when the job string does not parse."""
+    plan = parse_diagnose_job(job_text(job))
+    run_dir = Path(workdir) / "diagnose"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    if plan is None:
+        (run_dir / "diagnose.log").write_text(
+            "bad job: %r\n" % job["job"])
+        return {"diagnose": "bad-job"}
+    target = plan["target"]
+    bundle = {"target": target, "diagnosed_at": now(),
+              "worker": os.uname().nodename}
+    intent_text = _diagnose_read(_intent_path(target))
+    bundle["intent"] = intent_text
+    if intent_text is not None \
+            and not intent_text.startswith("<unreadable"):
+        bundle["intent_sha256"] = hashlib.sha256(
+            intent_text.encode("utf-8", errors="replace")).hexdigest()
+    receipts = {}
+    for base in _completion_dirs():
+        try:
+            names = sorted(p.name for p in base.glob(f"{target}*"))
+        except OSError:
+            names = []
+        for name in names:
+            if name == f"{target}.intent":
+                continue
+            receipts[name] = _diagnose_read(base / name)
+    bundle["receipts"] = receipts
+    try:
+        sync_bus()
+    except Exception:  # noqa: BLE001 - bus copies are best-effort
+        pass
+    bus = {}
+    for rel in (f"queue/claims/{target}.json",
+                f"queue/claims/{target}.error.json",
+                f"queue/done/{target}.json"):
+        bus[rel] = _diagnose_read(BUS / rel)
+    bundle["bus"] = bus
+    out_dir = OUT / target
+    listing = []
+    if out_dir.is_dir():
+        for p in sorted(out_dir.rglob("*"))[:200]:
+            if p.is_file():
+                listing.append({"path": str(p.relative_to(out_dir)),
+                                "size": p.stat().st_size})
+    bundle["out_listing"] = listing
+    bundle["out_manifest"] = _diagnose_read(out_dir / "manifest.json")
+    jstatus, excerpt = _diagnose_journal(target, intent_text)
+    bundle["journal_status"] = jstatus
+    bundle["journal_excerpt"] = excerpt
+    queue_status = "failed"
+    try:
+        dest = BUS / "queue" / "diagnostics" / f"{target}.json"
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(json.dumps(bundle, indent=1))
+        queue_status = "ok" if push_bus(
+            f"diagnostics {target}") else "failed"
+    except Exception:  # noqa: BLE001 - archive copy still lands
+        queue_status = "failed"
+    bundle["queue_publish"] = queue_status
+    (run_dir / "diagnostics.json").write_text(
+        json.dumps(bundle, indent=1))
+    (run_dir / "diagnose.log").write_text(
+        f"diagnose {target}: intent="
+        f"{'present' if intent_text is not None else 'absent'} "
+        f"receipts={len(receipts)} journal={jstatus} "
+        f"queue={queue_status}\n")
+    return {"diagnose": "ok"}
+
+
 # --- Issue #446: walk-forward backtest cells (design #436 §6.4) --
 # PR #441 shipped the harness (scripts/backtest.py) but no worker
 # dispatch: parse_job's grammar has no backtest tool, so the
@@ -4990,6 +5156,20 @@ def _execute_body(job):
     # failure and marks done (done means executed + archived, as
     # for diag-egx-ab); only a failed publish leaves the job
     # unmarked.
+    # Diagnose: same dispatch shape as diag-egx-ab above (before
+    # parse_job; the registry has no diagnose tool). A bad job
+    # string still publishes its named failure and marks done; only
+    # a failed publish leaves the job unmarked.
+    if text.split()[:1] == ["diagnose"]:
+        manifest["tools"] = run_diagnose(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
     if text.split()[:2] == ["run", "backtest"]:
         manifest["tools"] = run_backtest(job, workdir)
         manifest["finished"] = now()
