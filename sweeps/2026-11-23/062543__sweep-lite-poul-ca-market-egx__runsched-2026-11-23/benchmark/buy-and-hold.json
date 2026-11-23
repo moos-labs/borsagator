@@ -1,0 +1,81 @@
+{
+ "as_of": "2026-11-23",
+ "base_date": "2026-11-22",
+ "base_price": 7.03,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "announced": "2026-11-02",
+   "coupon_number": "42",
+   "date_basis": "verbatim:ex-date",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -27.03,
+   "source": "disclosure-event",
+   "title": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15;",
+   "type": "dividend",
+   "verification_status": "verified"
+  }
+ ],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-23T06:25:44.278324+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 8.78,
+   "range_low_pct": -8.78,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 32.85,
+   "range_low_pct": -32.85,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 15.21,
+   "range_low_pct": -15.21,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "90df379aada374462b0149024fc958feb8d256812403df646e65646439345bb7",
+  "ensemble.json": "b835eb0522e47b4b58eb9b4b705afaa736d8507f4772ebc40d4dca77d215c32f"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.66,
+ "sigma_daily": 0.0686,
+ "status": "present",
+ "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
