@@ -4,31 +4,31 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "3d97d4b18f9a6f6a69a6e76a2f8184f7edd068a9",
-  "commit_sha": "3d97d4b18f9a6f6a69a6e76a2f8184f7edd068a9",
+  "tree_sha": "c638c247d44deb36eafdf1e610e93a9df55e77f9",
+  "commit_sha": "c638c247d44deb36eafdf1e610e93a9df55e77f9",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 51,
-  "sweeps_with_freeze": 7,
-  "entrant_rows": 126,
-  "matured": 24,
-  "pending": 102,
-  "invalid": 0,
+  "sweeps": 52,
+  "sweeps_with_freeze": 8,
+  "entrant_rows": 144,
+  "matured": 36,
+  "pending": 90,
+  "invalid": 18,
   "excluded_flagged": 0
  },
  "by_entrant": {
   "ensemble": {
    "day": {
-    "n": 18,
+    "n": 20,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 10.71,
-    "range_coverage": 0.556
+    "mean_abs_error_pp": 11.2,
+    "range_coverage": 0.5
    },
    "week": {
-    "n": 8,
+    "n": 9,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 15.6,
+    "mean_abs_error_pp": 15.14,
     "range_coverage": 1.0
    },
    "month": {
@@ -40,10 +40,10 @@
   },
   "buy-and-hold": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 1.37,
-    "range_coverage": 1.0
+    "mean_abs_error_pp": 3.81,
+    "range_coverage": 0.667
    },
    "week": {
     "n": 0,
@@ -80,9 +80,9 @@
   },
   "family-fundamentals": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 2.75,
+    "mean_abs_error_pp": 5.2,
     "range_coverage": 1.0
    },
    "week": {
@@ -100,10 +100,10 @@
   },
   "family-price-forecast": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 9.66,
-    "range_coverage": 1.0
+    "mean_abs_error_pp": 12.04,
+    "range_coverage": 0.667
    },
    "week": {
     "n": 0,
@@ -120,9 +120,9 @@
   },
   "family-sentiment": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 1.21,
+    "mean_abs_error_pp": 3.66,
     "range_coverage": 1.0
    },
    "week": {
@@ -140,9 +140,9 @@
   },
   "family-technicals": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 2.75,
+    "mean_abs_error_pp": 5.19,
     "range_coverage": 1.0
    },
    "week": {
@@ -160,9 +160,9 @@
   },
   "kronos-alone": {
    "day": {
-    "n": 4,
+    "n": 6,
     "hit_rate": 0.0,
-    "mean_abs_error_pp": 11.06,
+    "mean_abs_error_pp": 13.44,
     "range_coverage": 0.0
    },
    "week": {
@@ -236,7 +236,7 @@
    "in_range": true,
    "family_skill": {},
    "net_skill": null,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -263,7 +263,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T12:37:09.812933+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -290,7 +290,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T12:37:09.812933+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -332,7 +332,7 @@
     "fundamentals": -0.4
    },
    "net_skill": -0.4,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -361,7 +361,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T12:37:09.801253+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -390,7 +390,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T12:37:09.801253+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -432,7 +432,7 @@
     "price-forecast": -0.765
    },
    "net_skill": -0.765,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -461,7 +461,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T12:37:09.800206+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -490,7 +490,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T12:37:09.800206+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -532,7 +532,7 @@
     "sentiment": 0.028
    },
    "net_skill": 0.028,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -561,7 +561,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T12:37:09.800846+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -590,7 +590,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T12:37:09.800846+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -632,7 +632,7 @@
     "technicals": -0.397
    },
    "net_skill": -0.397,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -661,7 +661,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T12:37:09.800597+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -690,7 +690,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T12:37:09.800597+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -732,7 +732,7 @@
     "price-forecast": -0.765
    },
    "net_skill": -0.765,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -761,7 +761,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T12:37:09.801515+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -790,7 +790,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T12:37:09.801515+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -828,7 +828,7 @@
    "in_range": true,
    "family_skill": {},
    "net_skill": null,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -855,7 +855,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T14:05:22.726456+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -882,7 +882,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T14:05:22.726456+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -924,7 +924,7 @@
     "fundamentals": -0.4
    },
    "net_skill": -0.4,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -953,7 +953,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T14:05:22.714657+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -982,7 +982,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T14:05:22.714657+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1024,7 +1024,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1053,7 +1053,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T14:05:22.713571+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1082,7 +1082,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T14:05:22.713571+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1124,7 +1124,7 @@
     "sentiment": 0.033
    },
    "net_skill": 0.033,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1153,7 +1153,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T14:05:22.714209+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1182,7 +1182,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T14:05:22.714209+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1224,7 +1224,7 @@
     "technicals": -0.397
    },
    "net_skill": -0.397,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1253,7 +1253,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T14:05:22.713968+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1282,7 +1282,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T14:05:22.713968+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1324,7 +1324,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1353,7 +1353,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T14:05:22.715044+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1382,7 +1382,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T14:05:22.715044+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1420,7 +1420,7 @@
    "in_range": true,
    "family_skill": {},
    "net_skill": null,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1447,7 +1447,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T20:25:44.412528+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1474,7 +1474,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T20:25:44.412528+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1516,7 +1516,7 @@
     "fundamentals": -0.4
    },
    "net_skill": -0.4,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1545,7 +1545,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T20:25:44.400911+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1574,7 +1574,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T20:25:44.400911+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1616,7 +1616,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1645,7 +1645,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T20:25:44.399844+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1674,7 +1674,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T20:25:44.399844+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1716,7 +1716,7 @@
     "sentiment": 0.065
    },
    "net_skill": 0.065,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1745,7 +1745,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T20:25:44.400505+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1774,7 +1774,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T20:25:44.400505+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1816,7 +1816,7 @@
     "technicals": -0.397
    },
    "net_skill": -0.397,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1845,7 +1845,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T20:25:44.400232+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1874,7 +1874,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T20:25:44.400232+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1916,7 +1916,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1945,7 +1945,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T20:25:44.401351+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -1974,7 +1974,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T20:25:44.401351+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2012,7 +2012,7 @@
    "in_range": true,
    "family_skill": {},
    "net_skill": null,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2039,7 +2039,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T22:20:37.404450+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2066,7 +2066,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-18T22:20:37.404450+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2108,7 +2108,7 @@
     "fundamentals": -0.4
    },
    "net_skill": -0.4,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2137,7 +2137,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T22:20:37.392780+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2166,7 +2166,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-18T22:20:37.392780+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2208,7 +2208,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2237,7 +2237,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T22:20:37.391702+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2266,7 +2266,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-18T22:20:37.391702+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2308,7 +2308,7 @@
     "sentiment": 0.058
    },
    "net_skill": 0.058,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2337,7 +2337,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T22:20:37.392340+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2366,7 +2366,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-18T22:20:37.392340+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2408,7 +2408,7 @@
     "technicals": -0.397
    },
    "net_skill": -0.397,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2437,7 +2437,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T22:20:37.392099+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2466,7 +2466,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-18T22:20:37.392099+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2508,7 +2508,7 @@
     "price-forecast": -0.697
    },
    "net_skill": -0.697,
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2537,7 +2537,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T22:20:37.393199+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2566,7 +2566,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-18T22:20:37.393199+00:00",
    "status": "pending",
-   "sessions_available": 1
+   "sessions_available": 2
   },
   {
    "ticker": "POUL.CA",
@@ -2592,8 +2592,19 @@
    ],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T06:22:55.389752+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 8.7,
+   "in_range": false,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2620,7 +2631,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T06:22:55.389752+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2647,7 +2658,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T06:22:55.389752+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2675,8 +2686,21 @@
    ],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T06:22:55.378317+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 10.09,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.4
+   },
+   "net_skill": -0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2705,7 +2729,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T06:22:55.378317+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2734,7 +2758,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T06:22:55.378317+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2762,8 +2786,21 @@
    ],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T06:22:55.377174+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 16.81,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.697
+   },
+   "net_skill": -0.697,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2792,7 +2829,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T06:22:55.377174+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2821,7 +2858,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T06:22:55.377174+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2849,8 +2886,21 @@
    ],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T06:22:55.377927+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 8.52,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.051
+   },
+   "net_skill": 0.051,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2879,7 +2929,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T06:22:55.377927+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2908,7 +2958,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T06:22:55.377927+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2936,8 +2986,21 @@
    ],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T06:22:55.377670+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 10.08,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.397
+   },
+   "net_skill": -0.397,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2966,7 +3029,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T06:22:55.377670+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -2995,7 +3058,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T06:22:55.377670+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3023,8 +3086,21 @@
    ],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T06:22:55.378753+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 18.18,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.697
+   },
+   "net_skill": -0.697,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3053,7 +3129,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T06:22:55.378753+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3082,7 +3158,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T06:22:55.378753+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3108,8 +3184,19 @@
    ],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T07:52:06.711021+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 8.7,
+   "in_range": false,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3136,7 +3223,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T07:52:06.711021+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3163,7 +3250,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-19T07:52:06.711021+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3191,8 +3278,21 @@
    ],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T07:52:06.698951+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 10.09,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.4
+   },
+   "net_skill": -0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3221,7 +3321,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T07:52:06.698951+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3250,7 +3350,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-19T07:52:06.698951+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3278,8 +3378,21 @@
    ],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T07:52:06.697855+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 16.81,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.697
+   },
+   "net_skill": -0.697,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3308,7 +3421,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T07:52:06.697855+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3337,7 +3450,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-19T07:52:06.697855+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3365,8 +3478,21 @@
    ],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T07:52:06.698536+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 8.63,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.019
+   },
+   "net_skill": 0.019,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3395,7 +3521,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T07:52:06.698536+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3424,7 +3550,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-19T07:52:06.698536+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3452,8 +3578,21 @@
    ],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T07:52:06.698246+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 10.08,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.397
+   },
+   "net_skill": -0.397,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3482,7 +3621,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T07:52:06.698246+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3511,7 +3650,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-19T07:52:06.698246+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3539,8 +3678,21 @@
    ],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T07:52:06.699336+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-22",
+   "close_at_maturity": 7.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -8.7,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 18.18,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.697
+   },
+   "net_skill": -0.697,
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3569,7 +3721,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T07:52:06.699336+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3598,7 +3750,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-19T07:52:06.699336+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "POUL.CA",
@@ -3624,8 +3776,8 @@
    ],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-22T06:22:08.082380+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3651,8 +3803,8 @@
    ],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-22T06:22:08.082380+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3678,8 +3830,8 @@
    ],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-22T06:22:08.082380+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3707,8 +3859,8 @@
    ],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-22T06:22:08.071276+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3736,8 +3888,8 @@
    ],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-22T06:22:08.071276+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3765,8 +3917,8 @@
    ],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-22T06:22:08.071276+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3794,8 +3946,8 @@
    ],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-22T06:22:08.070215+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3823,8 +3975,8 @@
    ],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-22T06:22:08.070215+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3852,8 +4004,8 @@
    ],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-22T06:22:08.070215+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3881,8 +4033,8 @@
    ],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-22T06:22:08.070889+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3910,8 +4062,8 @@
    ],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-22T06:22:08.070889+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3939,8 +4091,8 @@
    ],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-22T06:22:08.070889+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3968,8 +4120,8 @@
    ],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-22T06:22:08.070631+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -3997,8 +4149,8 @@
    ],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-22T06:22:08.070631+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -4026,8 +4178,8 @@
    ],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-22T06:22:08.070631+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -4055,8 +4207,8 @@
    ],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-22T06:22:08.071576+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -4084,8 +4236,8 @@
    ],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-22T06:22:08.071576+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
   },
   {
    "ticker": "POUL.CA",
@@ -4113,6 +4265,522 @@
    ],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-22T06:22:08.071576+00:00",
+   "status": "invalid",
+   "invalid_reason": "base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87)"
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -8.78,
+   "range_high_pct": 8.78,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 7.03,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-23T06:25:44.278324+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -15.21,
+   "range_high_pct": 15.21,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 7.03,
+   "families": {},
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-23T06:25:44.278324+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -32.85,
+   "range_high_pct": 32.85,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 7.03,
+   "families": {},
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-23T06:25:44.278324+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.4,
+   "range_low_pct": -9.13,
+   "range_high_pct": 11.94,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 7.03,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-23T06:25:44.266831+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.43,
+   "range_low_pct": -15.82,
+   "range_high_pct": 20.68,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 7.03,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-23T06:25:44.266831+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 5.26,
+   "range_low_pct": -34.17,
+   "range_high_pct": 44.68,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 7.03,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-23T06:25:44.266831+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 12.31,
+   "range_low_pct": 1.78,
+   "range_high_pct": 22.85,
+   "confidence": 0.45,
+   "net_score": 1.0,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 1.0
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-price-forecast",
+   "frozen_at": "2026-11-23T06:25:44.265724+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 18.49,
+   "range_low_pct": 0.24,
+   "range_high_pct": 36.74,
+   "confidence": 0.45,
+   "net_score": 0.909,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 0.909
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-price-forecast",
+   "frozen_at": "2026-11-23T06:25:44.265724+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 22.94,
+   "range_low_pct": -16.49,
+   "range_high_pct": 62.36,
+   "confidence": 0.45,
+   "net_score": 0.522,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 0.522
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-price-forecast",
+   "frozen_at": "2026-11-23T06:25:44.265724+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.16,
+   "range_low_pct": -10.38,
+   "range_high_pct": 10.7,
+   "confidence": 0.45,
+   "net_score": 0.045,
+   "base_price": 7.03,
+   "families": {
+    "sentiment": 0.045
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-23T06:25:44.266363+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.27,
+   "range_low_pct": -17.98,
+   "range_high_pct": 18.52,
+   "confidence": 0.45,
+   "net_score": 0.045,
+   "base_price": 7.03,
+   "families": {
+    "sentiment": 0.045
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-23T06:25:44.266363+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.59,
+   "range_low_pct": -38.83,
+   "range_high_pct": 40.02,
+   "confidence": 0.45,
+   "net_score": 0.045,
+   "base_price": 7.03,
+   "families": {
+    "sentiment": 0.045
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-23T06:25:44.266363+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.75,
+   "range_low_pct": -8.79,
+   "range_high_pct": 12.28,
+   "confidence": 0.45,
+   "net_score": 0.497,
+   "base_price": 7.03,
+   "families": {
+    "technicals": 0.497
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-23T06:25:44.266113+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 3.02,
+   "range_low_pct": -15.23,
+   "range_high_pct": 21.27,
+   "confidence": 0.45,
+   "net_score": 0.497,
+   "base_price": 7.03,
+   "families": {
+    "technicals": 0.497
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-23T06:25:44.266113+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 6.53,
+   "range_low_pct": -32.89,
+   "range_high_pct": 45.96,
+   "confidence": 0.45,
+   "net_score": 0.497,
+   "base_price": 7.03,
+   "families": {
+    "technicals": 0.497
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-23T06:25:44.266113+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 14.67,
+   "range_low_pct": 11.89,
+   "range_high_pct": 17.09,
+   "confidence": null,
+   "net_score": 1.0,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 1.0
+   },
+   "sessions": 1,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-23T06:25:44.267230+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 21.6,
+   "range_low_pct": 19.86,
+   "range_high_pct": 25.45,
+   "confidence": null,
+   "net_score": 0.909,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 0.909
+   },
+   "sessions": 3,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-23T06:25:44.267230+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "POUL.CA",
+   "as_of": "2026-11-23",
+   "sweep": "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 26.8,
+   "range_low_pct": 25.69,
+   "range_high_pct": 30.12,
+   "confidence": null,
+   "net_score": 0.522,
+   "base_price": 7.03,
+   "families": {
+    "price-forecast": 0.522
+   },
+   "sessions": 14,
+   "corporate_actions": [
+    {
+     "dps": 1.8999999998,
+     "ex_date": "2026-11-16",
+     "entitlement_end": "2026-11-15",
+     "mechanical_pct": -27.03
+    }
+   ],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-23T06:25:44.267230+00:00",
    "status": "pending",
    "sessions_available": 0
   }
@@ -4131,7 +4799,10 @@
   "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002: family-agent absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-19/075206__sweep-lite-poul-ca-market-egx__runmanual-sweep-lite-2026-11-19-002: raw-llm-cohere absent (llm-key-absent) — no rows",
   "sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22: family-agent absent (family-did-not-vote) — no rows",
-  "sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22: raw-llm-cohere absent (llm-key-absent) — no rows"
+  "sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22: raw-llm-cohere absent (llm-key-absent) — no rows",
+  "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-23/062543__sweep-lite-poul-ca-market-egx__runsched-2026-11-23: raw-llm-cohere absent (llm-key-absent) — no rows",
+  "18 benchmark row(s) invalidated (validation mismatch or the issue-#87 guard) — never scored: buy-and-hold POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22"
  ],
  "warnings": []
 }
