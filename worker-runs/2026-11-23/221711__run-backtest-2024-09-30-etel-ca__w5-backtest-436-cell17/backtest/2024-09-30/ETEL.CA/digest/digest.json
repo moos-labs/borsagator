@@ -1,0 +1,61 @@
+{
+ "ticker": "ETEL.CA",
+ "date": "2024-09-30",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 37.5221
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "ETEL.CA",
+     "as_of": "2024-09-30",
+     "date": "2024-09-30",
+     "open": 33.91,
+     "high": 34.49,
+     "low": 33.6,
+     "close": 33.77,
+     "rsi_14": 51.0552,
+     "macd": 0.3879,
+     "macd_signal": 0.4605,
+     "macd_hist": -0.0726,
+     "ema_20": 33.8492,
+     "ema_50": 33.3037,
+     "ema_200": 33.1851,
+     "adx_14": 15.7356,
+     "bb_upper": 35.5864,
+     "bb_mid": 33.89,
+     "bb_lower": 32.1936,
+     "bb_pctb": 0.4646,
+     "atr_14": 0.9866,
+     "stoch_k": 48.4142,
+     "stoch_d": 54.5972,
+     "rows_fetched": 5216,
+     "rows_used": 1407,
+     "first_date_used": "2019-01-01",
+     "last_date": "2024-09-30",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 33.77000045776367
+    }
+   }
+  }
+ ]
+}

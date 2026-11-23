@@ -1,0 +1,70 @@
+{
+ "tool": "walkforward-backtest",
+ "version": 1,
+ "issue": 436,
+ "ticker": "ETEL.CA",
+ "cutoff": "2024-09-30",
+ "status": "ok",
+ "gate": {
+  "ticker": "ETEL.CA",
+  "passed": true,
+  "reasons": [],
+  "rows": 1892,
+  "first_date": "2019-01-01",
+  "last_date": "2026-09-30",
+  "history_needed_from": "2023-09-28",
+  "max_gap_days": 10,
+  "max_gap_sessions_est": 6,
+  "longest_flat_run": 6,
+  "events_available": true,
+  "events_parse_error": null,
+  "series_start": null,
+  "history_floor": "2019-01-01",
+  "full_history_rows": 5181,
+  "full_history_first_date": "2005-12-14",
+  "full_history_longest_flat_run": 37,
+  "full_history_max_gap_days": 10,
+  "full_history_max_gap_sessions_est": 6,
+  "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."
+ },
+ "warmup_sessions": 1407,
+ "weights_source": "base-v1",
+ "base_price": 33.77000045776367,
+ "base_date": "2024-09-30",
+ "runner_refs": {
+  "kronos": "1b57f98bf34ac916f70f5bdbbe74d8dfd44380fe",
+  "pandas-ta": "cddf15f3b7fd601eac85cf37a6385996e2b4ed10",
+  "talib": "d41956ca272c430c58c49a743eacc43fcbebc8e4"
+ },
+ "kronos": {
+  "seed": 42,
+  "pred_len": 21,
+  "context_start": "2019-01-01"
+ },
+ "determinism": {
+  "rerun": true,
+  "diffs": []
+ },
+ "realised": {
+  "maturity_date": "2024-10-21",
+  "index_ticker": "^EGX30"
+ },
+ "audit": {
+  "passed": true,
+  "violations": []
+ },
+ "files": {
+  "harness.log": "63280be6c4a86b80730e2744fa6ae18523e55e5a73003e86e15b7c90cfcd147e",
+  "price.csv": "a7b059a7b5b1f816eae22a3287159bcf7d27ef2346370e56cde19b18b335bf8a",
+  "realised.json": "7f0e7b5bb89573079dc3c2764e0670be8f63699f1fbd18e95706e91013c04b55",
+  "collected/pandas-ta/indicators.csv": "db2c0ee26d6ae7d6ab0d257ea69b6a6f5cb2639c9e0225de8abc28dc0a476485",
+  "collected/pandas-ta/ta_snapshot.json": "39cce7f610247a5f4c3e2cc4a76a00847f9055653f9982d6cf17348d610ed8cc",
+  "collected/talib/indicators.csv": "85209ee66b5031ca5f08eaf2574609f576a80f91b147778ccd17655b70ddffe5",
+  "collected/talib/ta_latest.json": "2cc965629618e32b71d4d0c15d2f1c87654372459186cddab027459c207ea651",
+  "collected/kronos/forecast.csv": "545162cc2b683ba09c659ba28360aa5ac42d7a135028508d2e765360bf60882b",
+  "collected/kronos/report.md": "ccbd76b4637c957ad4c39db82df4e42132cb9adf0700c2309018f588fec764f7",
+  "digest/digest.json": "34a60ee8ceeb53457deb621ac798cb492af357c76b297217f89acbf3dc0e473f",
+  "digest/digest.md": "db4eb3be2ea6b08fb75562b9bd8f1b9224ad8d55c371b78fb13aec8a6b031939",
+  "digest/ensemble.json": "31c24a1070efa590fc8002ade21c1b7b46812543c71ad664bb09572f973ed529"
+ }
+}
