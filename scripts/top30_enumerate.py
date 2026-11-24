@@ -45,6 +45,14 @@ import urllib.error
 import urllib.request
 from datetime import date
 
+try:
+    import challenge_store
+except Exception:  # noqa: BLE001 — private capture is optional
+    # A staging that copies this file without its sibling module
+    # (cf. worker/test_worker_328.py) must still enumerate: the
+    # capture hook then records state "failed" and moves on.
+    challenge_store = None
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 
@@ -467,7 +475,12 @@ def enumerate_listing(listing, fetcher, max_pages=MAX_PAGES):
                 "reason": "page served a bot-defence/challenge shell "
                           "or near-empty body (not an empty result set)",
                 "evidence": "url=%s raw_sha256=%s"
-                            % (url, parsed["raw_sha256"])})
+                            % (url, parsed["raw_sha256"]),
+                # The body itself goes to the private store
+                # (issue #589); only the metadata sub-record
+                # joins this public failure record.
+                "private_capture": _private_capture(
+                    url, resp.get("status"), resp.get("body", ""))})
             return rec
         if parsed["source_total"] is not None:
             if rec["source_total"] is None:
@@ -720,6 +733,25 @@ def _probe_record_fields(rec, url, status, body):
     return parsed
 
 
+def _private_capture(url, status, body):
+    """Hand a challenge body to the private store (issue #589)
+    and return the PUBLIC sub-record: capture state plus the
+    stored side's digest, byte count and truncation flag —
+    metadata only, never body content and never the stored
+    filename. The store is disabled unless
+    BORSAGATOR_CHALLENGE_STORE_DIR is configured; the returned
+    state says so explicitly. Never raises."""
+    if challenge_store is None:
+        return {"state": "failed", "stored_sha256": None,
+                "stored_bytes": None, "truncated": False}
+    meta = challenge_store.capture_challenge_body(url, status,
+                                                  body)
+    return {"state": meta["state"],
+            "stored_sha256": meta["stored_sha256"],
+            "stored_bytes": meta["stored_bytes"],
+            "truncated": meta["truncated"]}
+
+
 def probe_live_access(fetcher=None):
     """One pilot probe (POUL control, ISIN EGS02051C018) to establish
     whether this machine can reach EGX NewsSearch at all. Returns
@@ -750,7 +782,11 @@ def probe_live_access(fetcher=None):
     ("fetch_failed" / "body_unreadable" / "probe_error") and keeps
     the original probe result (reachable False, detail with the
     error). The legacy detail string is kept for compatibility:
-    run_probe_mode embeds it in failure reasons."""
+    run_probe_mode embeds it in failure reasons. When the body
+    is a challenge shell, it is also handed to the private
+    challenge-body store (issue #589) and ``private_capture``
+    carries that store's metadata sub-record (state, stored
+    digest, stored bytes, truncation) — still never the body."""
     fetcher = fetcher or http_fetch
     url = search_url("EGS02051C018")
     rec = {"url": url,
@@ -759,13 +795,20 @@ def probe_live_access(fetcher=None):
            "status": None, "body_chars": None,
            "body_sha256": None, "body_hash_kind": None,
            "challenge": None, "challenge_markers": [],
-           "vendor_hint": None, "capture_state": "not_attempted"}
+           "vendor_hint": None, "capture_state": "not_attempted",
+           "private_capture": None}
     try:
         resp = fetcher(url)
         body = resp.get("body", "")
         parsed = _probe_record_fields(rec, url, resp.get("status"),
                                       body)
         rec["capture_state"] = "captured"
+        if parsed["is_challenge"]:
+            # The challenge body itself goes to the private
+            # store (issue #589); only its metadata sub-record
+            # joins this public record.
+            rec["private_capture"] = _private_capture(
+                url, rec["status"], body)
         rec["reachable"] = not parsed["is_challenge"]
         rec["detail"] = ("status=%s body_chars=%d challenge=%s"
                          % (rec["status"], rec["body_chars"],
@@ -785,8 +828,12 @@ def probe_live_access(fetcher=None):
             # a failed read is never recorded as a captured
             # empty body.
             if getattr(e, "body", None) is not None:
-                _probe_record_fields(rec, url, e.status, e.body)
+                parsed = _probe_record_fields(rec, url, e.status,
+                                              e.body)
                 rec["capture_state"] = "captured"
+                if parsed["is_challenge"]:
+                    rec["private_capture"] = _private_capture(
+                        url, rec["status"], e.body)
             else:
                 rec["status"] = e.status
                 rec["capture_state"] = "body_unreadable"
