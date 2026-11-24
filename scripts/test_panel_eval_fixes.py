@@ -32,9 +32,12 @@ Stdlib only, no network. Run:
     python3 scripts/test_panel_eval_fixes.py
 Exit 0 only when every test passes.
 """
+import html as html_mod
 import json
 import os
+import re
 import shutil
+import subprocess
 import sys
 import tempfile
 
@@ -237,6 +240,89 @@ def test_resolved_legs_keep_verdict():
                    for f in flags), flags
 
 
+def _visible_html(html_text):
+    """Visible text of a rendered report: scripts (including the
+    model-JSON data island), styles and the SVG chart stripped, tags
+    removed — the same extraction harness_issue69.visible_text
+    uses. The banner must show up HERE, not merely inside the
+    embedded JSON."""
+    txt = re.sub(r"<script.*?</script>", " ", html_text, flags=re.S)
+    txt = re.sub(r"<style.*?</style>", " ", txt, flags=re.S)
+    txt = re.sub(r"<svg.*?</svg>", " ", txt, flags=re.S)
+    txt = re.sub(r"<[^>]+>", " ", txt)
+    return html_mod.unescape(txt)
+
+
+def _render_model(model, tmp):
+    """Write the model and render it with scripts/render.py as a
+    subprocess (the real entry point, prose-audit included)."""
+    mpath = os.path.join(tmp, "model.json")
+    with open(mpath, "w", encoding="utf-8") as handle:
+        json.dump(model, handle)
+    out = os.path.join(tmp, "out")
+    proc = subprocess.run(
+        [sys.executable, os.path.join(SCRIPTS, "render.py"),
+         mpath, "--out-dir", out],
+        capture_output=True, text=True, timeout=120)
+    assert proc.returncode == 0, proc.stderr
+    html_text = open(os.path.join(out, "report.html"),
+                     encoding="utf-8").read()
+    md_text = open(os.path.join(out, "report.md"),
+                   encoding="utf-8").read()
+    return html_text, md_text
+
+
+def test_sharia_banner_rendered():
+    """#555: the banner must be VISIBLE in the rendered HTML and
+    Markdown twins — not only in the compiled JSON (the #553 gap:
+    render.py had no consumer, so the old test asserted the
+    dictionary only). The fixture sweep compiles against the real
+    Sharia tables, so the banner fields are set; the rendered
+    outputs must carry them outside the data island."""
+    tmp, profiles = _sweep_and_profiles(["ensemble as of 2026-11-18"])
+    try:
+        model = compile_model.compile_sweep(tmp, profiles_dir=profiles)
+        section = model["sharia"]
+        assert section["banner_en"] == se.BANNER_EN, section
+        assert section["banner_ar"] == se.BANNER_AR, section
+        html_text, md_text = _render_model(model, tmp)
+        visible = _visible_html(html_text)
+        assert se.BANNER_EN in visible, \
+            "banner_en missing from visible HTML"
+        assert se.BANNER_AR in visible, \
+            "banner_ar missing from visible HTML"
+        assert se.BANNER_EN in md_text, "banner_en missing from Markdown"
+        assert se.BANNER_AR in md_text, "banner_ar missing from Markdown"
+        # And inside the Sharia section itself, in both twins.
+        assert '<section id="sharia">' in html_text
+        assert "## Sharia screening" in md_text
+        assert "AAOIFI: insufficient-data" in visible
+        assert "- AAOIFI: insufficient-data" in md_text
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_sharia_block_absent_says_not_recorded():
+    """#555: a model with no sharia block (legal under report-model
+    v1, where the block is optional) renders an explicit
+    not-recorded line — never a silent empty section, never a
+    banner it does not carry."""
+    tmp, profiles = _sweep_and_profiles(["ensemble as of 2026-11-18"])
+    try:
+        model = compile_model.compile_sweep(tmp, profiles_dir=profiles)
+        model["sharia"] = None
+        html_text, md_text = _render_model(model, tmp)
+        visible = _visible_html(html_text)
+        assert "Sharia screening was not recorded in this model" \
+            in visible, visible
+        assert "Sharia screening was not recorded in this model" \
+            in md_text
+        assert se.BANNER_EN not in visible
+        assert se.BANNER_EN not in md_text
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 # ------------------------------------------------------------- fix 5
 
 def test_public_benchmark_anonymised():
@@ -326,6 +412,10 @@ def main():
           test_clean_notes_raise_no_flag)
     check("fix4: sharia section carries the NOT A FATWA banner",
           test_sharia_section_banner)
+    check("fix4/#555: banner visible in rendered HTML + Markdown",
+          test_sharia_banner_rendered)
+    check("fix4/#555: absent sharia block says not recorded",
+          test_sharia_block_absent_says_not_recorded)
     check("fix4: unresolved ratio leg forces indeterminate",
           test_unresolved_leg_forces_indeterminate)
     check("fix4: resolved legs keep their verdict",
