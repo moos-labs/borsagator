@@ -688,6 +688,53 @@ def score():
     return report
 
 
+# ---------------------------------------------------------------- public output
+# Panel-eval compliance fix: the generated markdown report is
+# public-facing benchmark material (it is committed to a public
+# repo). Competitor screeners are anonymised in that output --
+# naming them in published comparisons carries trademark /
+# disparagement / ToS risk. The JSON report and the frozen source
+# snapshots are internal records and keep the real source ids and
+# names untouched.
+PUBLIC_SOURCE_LABELS = {
+    "musaffa": "Source A",
+    "faisal": "Source B",
+    "ostool": "Source C",
+    "kashef": "Source D",
+    "nour_borsa": "Source E",
+}
+
+_PUBLIC_NAME_SUBS = [
+    ("Faisal Securities Brokerage", PUBLIC_SOURCE_LABELS["faisal"]),
+    ("Faisal Securities", PUBLIC_SOURCE_LABELS["faisal"]),
+    ("Ostool Securities", PUBLIC_SOURCE_LABELS["ostool"]),
+    ("Nour Borsa", PUBLIC_SOURCE_LABELS["nour_borsa"]),
+    ("Musaffa", PUBLIC_SOURCE_LABELS["musaffa"]),
+    ("Ostool", PUBLIC_SOURCE_LABELS["ostool"]),
+    ("Kashef", PUBLIC_SOURCE_LABELS["kashef"]),
+    ("Faisal", PUBLIC_SOURCE_LABELS["faisal"]),
+    ("Nour", PUBLIC_SOURCE_LABELS["nour_borsa"]),
+    ("nour_borsa", PUBLIC_SOURCE_LABELS["nour_borsa"]),
+    ("musaffa", PUBLIC_SOURCE_LABELS["musaffa"]),
+    ("ostool", PUBLIC_SOURCE_LABELS["ostool"]),
+    ("faisal", PUBLIC_SOURCE_LABELS["faisal"]),
+    ("kashef", PUBLIC_SOURCE_LABELS["kashef"]),
+]
+
+
+def anonymise_public(text):
+    """Replace competitor source ids/names with neutral labels.
+
+    Applied to the whole rendered markdown as the last step, so
+    free-text fields (notes, explanations, hypotheses) cannot leak
+    a name the structured fields were scrubbed of. Longest names
+    are substituted first (see _PUBLIC_NAME_SUBS ordering).
+    """
+    for name, label in _PUBLIC_NAME_SUBS:
+        text = text.replace(name, label)
+    return text
+
+
 def render_md(report):
     lines = []
     lines.append("# Sharia accuracy benchmark — first run "
@@ -758,7 +805,7 @@ def render_md(report):
     for n in report["method_notes"]:
         lines.append(f"- {n}")
     lines.append("")
-    return "\n".join(lines)
+    return anonymise_public("\n".join(lines))
 
 
 # ---------------------------------------------------------------- main

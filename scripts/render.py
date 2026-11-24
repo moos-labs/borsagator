@@ -320,6 +320,8 @@ _FLAG_RES = [
      "flag.sharia-table-missing", ("std",), None),
     (re.compile(r"^sharia-insufficient-data: (\S+)$"),
      "flag.sharia-insufficient-data", ("std",), None),
+    (re.compile(r"^sharia-verdict-indeterminate: (\S+)$"),
+     "flag.sharia-verdict-indeterminate", ("std",), None),
     (re.compile(r"^disclosure-events-unavailable: (\S+): (.+)$"),
      "flag.disclosure-events-unavailable", ("file", "reason"), None),
     (re.compile(r"^disclosure-events-stale: (.+)$"),
@@ -795,7 +797,7 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
     # §1 D2 bands.
     support, resistance, basis, computed = band_levels(model)
     rec = model.get("recommendation")
-    bands_md = ["## Technical Support / Resistance Levels"]
+    bands_md = ["## Model range (from the forecast)"]
     bands_html = []
     if no_forecast:
         # §2j: forecast sections are omitted with the placeholder in
@@ -805,14 +807,14 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
         bands_md.append(i18n[no_forecast_key]["en"])
     else:
         if support is None:
-            bands_html.append('<p data-i18n="bands.none">No levels available for this sweep.</p>')
-            bands_md.append("No levels available for this sweep.")
+            bands_html.append('<p data-i18n="bands.none">No range available for this sweep.</p>')
+            bands_md.append("No range available for this sweep.")
         else:
             bands_html.append(
-                '<p><span data-i18n="bands.support">Technical Support Level at</span> '
+                '<p><span data-i18n="bands.support">Model range low at</span> '
                 '<span class="num">%s</span></p>' % fmt_price(support))
             bands_html.append(
-                '<p><span data-i18n="bands.resistance">Technical Resistance Level at</span> '
+                '<p><span data-i18n="bands.resistance">Model range high at</span> '
                 '<span class="num">%s</span></p>' % fmt_price(resistance))
             # The basis is a model-carried display string: the two
             # known values map through display.levels-basis; anything
@@ -824,13 +826,13 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
                 bands_html.append('<p class="dim" data-i18n="bands.computed">'
                                    'Computed by the renderer from the week horizon range.</p>')
                 bands_md.append("_Computed by the renderer from the week horizon range._")
-            bands_md.append("Technical Support Level at %s" % fmt_price(support))
-            bands_md.append("Technical Resistance Level at %s" % fmt_price(resistance))
+            bands_md.append("Model range low at %s" % fmt_price(support))
+            bands_md.append("Model range high at %s" % fmt_price(resistance))
             bands_md.append("Basis: %s" % basis)
             base = price.get("base_price")
             if base is not None and not (support < base < resistance):
-                bands_html.append('<p class="dim" data-i18n="bands.note.oneside">Both levels sit on one side of the current price — the range does not straddle the base.</p>')
-                bands_md.append("Both levels sit on one side of the current price — the range does not straddle the base.")
+                bands_html.append('<p class="dim" data-i18n="bands.note.oneside">Both ends of the range sit on one side of the current price — the range does not straddle the base.</p>')
+                bands_md.append("Both ends of the range sit on one side of the current price — the range does not straddle the base.")
         bands_html.append(
             '<p class="framing" data-i18n="framing">This is a description of a computed '
             'model output, not a recommendation to buy, sell, or hold any security. '
@@ -1545,6 +1547,42 @@ def build_view(model, profile, delta, narrative, sweep_dir, i18n):
             tpl_text(i18n, "flags.degraded", {"value": str(degraded)})))
         f_md.append("Degraded: %s" % degraded)
     sections.append(("flags", "sec.flags", "\n".join(f_html), "\n".join(f_md)))
+
+    # §14b Sharia screening (#555): the compiled model has carried
+    # banner_en/banner_ar since #553, but render.py had no consumer
+    # — the banner lived only in the embedded JSON island, and
+    # Markdown lacked it entirely. Render the banner visibly in both
+    # twins whenever the fields are set, plus the framing lines and
+    # the per-standard verdicts (verbatim model data, like news
+    # titles). A model with no sharia block says so explicitly —
+    # never an empty screening (report-model v1 carries the block
+    # only optionally; see report_model.py).
+    sh = model.get("sharia")
+    sh_html, sh_md = [], ["## Sharia screening"]
+    if not isinstance(sh, dict):
+        sh_html.append('<p data-i18n="sharia.not-recorded">%s</p>'
+                       % esc(i18n["sharia.not-recorded"]["en"]))
+        sh_md.append(i18n["sharia.not-recorded"]["en"])
+    else:
+        if sh.get("banner_en"):
+            sh_html.append('<p class="banner">%s</p>' % esc(sh["banner_en"]))
+            sh_md.append(sh["banner_en"])
+        if sh.get("banner_ar"):
+            sh_html.append('<p class="banner" lang="ar" dir="rtl">%s</p>'
+                           % esc(sh["banner_ar"]))
+            sh_md.append(sh["banner_ar"])
+        if sh.get("framing_en"):
+            sh_html.append('<p class="framing">%s</p>' % esc(sh["framing_en"]))
+            sh_md.append("> %s" % sh["framing_en"])
+        if sh.get("framing_ar"):
+            sh_html.append('<p class="framing" lang="ar" dir="rtl">%s</p>'
+                           % esc(sh["framing_ar"]))
+            sh_md.append("> %s" % sh["framing_ar"])
+        for std in sorted((sh.get("verdicts") or {}).keys()):
+            verdict = (sh.get("verdicts") or {})[std]
+            sh_html.append("<p>%s: %s</p>" % (esc(std), esc(str(verdict))))
+            sh_md.append("- %s: %s" % (std, verdict))
+    sections.append(("sharia", "sec.sharia", "\n".join(sh_html), "\n".join(sh_md)))
 
     # §15 provenance + disclaimer footer.
     prov = model.get("provenance") or {}
