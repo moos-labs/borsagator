@@ -1,0 +1,11 @@
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:198: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+[data] source=yahooquery raw_rows=6527
+[data] cleaned_rows=1927 range=2019-01-01..2026-11-22
+[context] preferred_sessions=38 using=38 fallback=False
+[context] supplied=38 used=38 max_context=512
+  0%|          | 0/21 [00:00<?, ?it/s] 14%|█▍        | 3/21 [00:00<00:00, 21.19it/s] 29%|██▊       | 6/21 [00:00<00:00, 20.60it/s] 43%|████▎     | 9/21 [00:00<00:00, 20.44it/s] 57%|█████▋    | 12/21 [00:00<00:00, 19.99it/s] 71%|███████▏  | 15/21 [00:00<00:00, 19.61it/s] 81%|████████  | 17/21 [00:00<00:00, 18.99it/s] 90%|█████████ | 19/21 [00:00<00:00, 18.75it/s]100%|██████████| 21/21 [00:01<00:00, 18.39it/s]100%|██████████| 21/21 [00:01<00:00, 19.24it/s]
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=7.03000020980835 date=2026-11-22 pct_change=+34.34%
+[result] forecasted_closes=[7.1234, 7.1161, 7.2674, 7.4545, 7.4878, 7.6416, 7.5467, 7.6763, 8.6191, 8.7098, 8.4284, 8.4974, 8.3999, 8.5385, 8.4093, 8.449, 8.6438, 9.4238, 9.5579, 9.5803, 9.4439]

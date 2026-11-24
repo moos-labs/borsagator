@@ -1,0 +1,158 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "POUL.CA",
+ "base_price": 7.1,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_date": "2026-11-23",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_poul.csv": 7.03,
+   "openbb/poul_ca.csv": 7.03000020980835,
+   "pandas-ta/indicators.csv": 7.03000020980835,
+   "talib/indicators.csv": 7.03000020980835,
+   "yahooquery/poul.ca.csv": 7.03000020980835
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-22",
+  "base_used": 7.1,
+  "base_source_used": "egx-data/egxpy_poul.csv",
+  "base_date": "2026-11-23",
+  "latest_collected_date": "2026-11-23",
+  "base_stale": false
+ },
+ "corporate_actions": [
+  {
+   "type": "dividend",
+   "dps": 1.8999999998,
+   "ex_date": "2026-11-16",
+   "entitlement_end": "2026-11-15",
+   "date_basis": "verbatim:ex-date",
+   "mechanical_pct": -26.76,
+   "title": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15;",
+   "source": "disclosure-event",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "verification_status": "verified",
+   "announced": "2026-11-02",
+   "coupon_number": "42"
+  }
+ ],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0692,
+ "sigma_source": "egx-data/egxpy_poul.csv (σ60=0.0378, σ10=0.0692)",
+ "sessions_per_calendar_day": 0.66,
+ "date": "2026-11-24",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: Cairo Poultry stock: Nine-month net profit falls 38.3% - ad-hoc-news.de"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Cairo Poultry stock: Nine-month net profit falls 38.3% - ad-hoc-news.de"
+   }
+  ],
+  "move_z": {
+   "last": 0.14,
+   "max3": 1.09
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "38c627e9c898e07a32fe957c5e048ae3ade76c26e7006c117a1d131dcec42ff0",
+  "factors": {
+   "price-forecast": 0.5,
+   "technicals": 0.689,
+   "sentiment": 1.072,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.5,
+    "n": 27,
+    "skill": -0.569
+   },
+   "technicals": {
+    "factor": 0.689,
+    "n": 29,
+    "skill": -0.311
+   },
+   "sentiment": {
+    "factor": 1.072,
+    "n": 29,
+    "skill": 0.072
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.497,
+  "sentiment": 0.054,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.638
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.04,
+   "range_low_pct": -13.74,
+   "range_high_pct": 15.83,
+   "confidence": 0.3,
+   "net_score": 0.238,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": 0.054,
+    "price-forecast": 0.024
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 0.3296,
+   "vol_h_pct": 6.9185
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 4.82,
+   "range_low_pct": -20.4,
+   "range_high_pct": 30.03,
+   "confidence": 0.3,
+   "net_score": 0.251,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": 0.054,
+    "price-forecast": 0.228
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 5.462,
+   "vol_h_pct": 11.9831
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 25.29,
+   "range_low_pct": -28.35,
+   "range_high_pct": 78.92,
+   "confidence": 0.3,
+   "net_score": 0.413,
+   "families": {
+    "technicals": 0.497,
+    "sentiment": 0.054,
+    "fundamentals": 0.4,
+    "price-forecast": 0.638
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 33.0127,
+   "vol_h_pct": 25.8866
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}
