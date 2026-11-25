@@ -288,6 +288,32 @@ def test_feedback_loop_701():
           and bc.uncalibrated_view(cal_row()) is not None)
 
 
+def test_effective_n_703():
+    check("effective_n day identity 30->30",
+          bc.effective_n(30, "day") == 30, repr(bc.effective_n(30, "day")))
+    check("effective_n week 30->6",
+          bc.effective_n(30, "week") == 6, repr(bc.effective_n(30, "week")))
+    check("effective_n month 30->2 (ceil)",
+          bc.effective_n(30, "month") == 2, repr(bc.effective_n(30, "month")))
+    # entries carry n_eff
+    cal = bc.compute_calibration(rows(12, resid=-5.0, half=10.0))
+    e = cal["cells"][("AAA", "day")]
+    check("cell entry carries n_eff", e.get("n_eff") == bc.effective_n(e["n"], e["horizon"]),
+          repr(e))
+    # week cell raw n=30 but n_eff=6 does NOT alert
+    def cell(ticker, n, n_eff, cov):
+        return {"ticker": ticker, "horizon": "week", "n": n, "n_eff": n_eff,
+                "coverage_before": cov}
+    cal2 = {"cells": {("AAA", "week"): cell("AAA", 30, 6, 0.50)}}
+    alerts = bc.alert_cells(cal2)
+    check("week raw n=30 n_eff=6 does not alert", alerts == [], repr(alerts))
+    # table pin with extra column still matches
+    table = bc.calibration_table(
+        bc.compute_calibration(rows(12, resid=-5.0, half=10.0)))
+    check("table row keeps n then n_eff", table[2].startswith("| AAA | day | 12 |"),
+          repr(table))
+
+
 def test_real_ledger():
     path = os.path.join(ROOT, "ledger", "ledger.json")
     with open(path, encoding="utf-8") as f:
@@ -352,6 +378,7 @@ if __name__ == "__main__":
     test_window()
     test_formula_basis()
     test_apply_and_alerts()
+    test_effective_n_703()
     test_feedback_loop_701()
     test_real_ledger()
     test_ensemble_wiring()
