@@ -6010,11 +6010,26 @@ def self_update():
                         f"{type(e).__name__}: {e}; running old code")
 
 
+def _lane_sorted(jobs):
+    """Issue #610: priority lane — slot-bound ledger guard and
+    watchdog jobs claim before bulk FIFO work (sweeps, backtests),
+    which otherwise delays a :47 guard slot behind hours of queue.
+    Stable sort: FIFO order is preserved inside each lane."""
+    def lane(job):
+        if isinstance(job, dict):
+            cmd = str(job.get("job") or "").split()
+            if cmd and cmd[0] in ("ledger-guard", "ledger-watchdog"):
+                return 0
+        return 1
+    return sorted(jobs, key=lane)
+
+
 def main():
     RUNNERS.mkdir(parents=True, exist_ok=True)
     VENVS.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     while True:
+        worked = False
         try:
             self_update()
             sync_bus()
@@ -6042,7 +6057,8 @@ def main():
             # reason for non-dict entries; the #391 dict-entry
             # reasons (missing-or-invalid-id / missing-job) are
             # unchanged.
-            for job in _quarantine_non_object_entries(read_queue()):
+            for job in _lane_sorted(
+                    _quarantine_non_object_entries(read_queue())):
                 job_id = job.get("id") if isinstance(job, dict) else None
                 if not isinstance(job_id, str) or not JOB_ID_RE.match(job_id):
                     # Issue #391: quarantine with evidence instead
@@ -6060,12 +6076,16 @@ def main():
                     continue
                 if not claimed(job_id):
                     if claim(job):
+                        worked = True
                         execute(job)
                         break  # one job per cycle, then re-sync
         except Exception as e:  # the loop must survive anything
             print(f"worker cycle error: {type(e).__name__}: {e}",
                   file=sys.stderr, flush=True)
-        time.sleep(POLL_SECONDS)
+        # Issue #610: the poll sleep is for idle cycles only — after
+        # a job, loop at once (re-sync, then claim the next job);
+        # sleeping 300s after every job starved slot-bound work.
+        time.sleep(POLL_SECONDS if not worked else 1)
 
 
 if __name__ == "__main__":
