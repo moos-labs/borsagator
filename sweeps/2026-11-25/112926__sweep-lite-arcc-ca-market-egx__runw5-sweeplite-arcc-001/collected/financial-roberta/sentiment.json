@@ -1,0 +1,187 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 11,
+  "label_counts": {
+    "positive": 1,
+    "negative": 3,
+    "neutral": 7
+  },
+  "mean_probabilities": {
+    "positive": 0.08672367181068032,
+    "negative": 0.27255251435615885,
+    "neutral": 0.6407237961274487
+  },
+  "items": [
+    {
+      "text": "ARCC Nov 2026 15.000 put (ARCC261120P00015000) stock price, news, quote and history - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00027837924426421523,
+        "negative": 0.00023920538660604507,
+        "neutral": 0.9994823932647705
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994823932647705,
+        "positive": 0.00027837924426421523,
+        "negative": 0.00023920538660604507
+      }
+    },
+    {
+      "text": "Here is What to Know Beyond Why Ares Capital Corporation (ARCC) is a Trending Stock - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003088204830419272,
+        "negative": 0.00020134772057645023,
+        "neutral": 0.9994897842407227
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994897842407227,
+        "positive": 0.0003088204830419272,
+        "negative": 0.00020134772057645023
+      }
+    },
+    {
+      "text": "Ares Capital Corporation (ARCC) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0013148976722732186,
+        "negative": 0.00015981285832822323,
+        "neutral": 0.9985253214836121
+      },
+      "raw_probabilities": {
+        "neutral": 0.9985253214836121,
+        "positive": 0.0013148976722732186,
+        "negative": 0.00015981285832822323
+      }
+    },
+    {
+      "text": "Ares Capital: The Dividend Squeeze Is On - Seeking Alpha",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9423218965530396,
+        "negative": 0.00025618087965995073,
+        "neutral": 0.05742190033197403
+      },
+      "raw_probabilities": {
+        "positive": 0.9423218965530396,
+        "neutral": 0.05742190033197403,
+        "negative": 0.00025618087965995073
+      }
+    },
+    {
+      "text": "Ares Capital: The Rich Grow Richer (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.007064964156597853,
+        "negative": 0.000341600738465786,
+        "neutral": 0.9925934672355652
+      },
+      "raw_probabilities": {
+        "neutral": 0.9925934672355652,
+        "positive": 0.007064964156597853,
+        "negative": 0.000341600738465786
+      }
+    },
+    {
+      "text": "ARCC Students Staging 'Pride and Prejudice' - City of Coon Rapids, MN (.gov)",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007904224330559373,
+        "negative": 0.00046871035010553896,
+        "neutral": 0.9987408518791199
+      },
+      "raw_probabilities": {
+        "neutral": 0.9987408518791199,
+        "positive": 0.0007904224330559373,
+        "negative": 0.00046871035010553896
+      }
+    },
+    {
+      "text": "ARCC Misses on Q3 Earnings as Income Falls, Announces MidCap Buyout - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002689496905077249,
+        "negative": 0.9983640313148499,
+        "neutral": 0.001367025077342987
+      },
+      "raw_probabilities": {
+        "negative": 0.9983640313148499,
+        "neutral": 0.001367025077342987,
+        "positive": 0.0002689496905077249
+      }
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 2026 Earnings Call Transcript - The Motley Fool",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00042139802826568484,
+        "negative": 0.0001703616144368425,
+        "neutral": 0.9994082450866699
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994082450866699,
+        "positive": 0.00042139802826568484,
+        "negative": 0.0001703616144368425
+      }
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 Earnings: Taking a Look at Key Metrics Versus Estimates - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006534645799547434,
+        "negative": 0.0004367245710454881,
+        "neutral": 0.9989097118377686
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989097118377686,
+        "positive": 0.0006534645799547434,
+        "negative": 0.0004367245710454881
+      }
+    },
+    {
+      "text": "Ares Capital stock dips as slower transaction environment hits Q3 earnings (ARCC:NASDAQ) - Seeking Alpha",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00027549645164981484,
+        "negative": 0.9986398816108704,
+        "neutral": 0.0010846202494576573
+      },
+      "raw_probabilities": {
+        "negative": 0.9986398816108704,
+        "neutral": 0.0010846202494576573,
+        "positive": 0.00027549645164981484
+      }
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 Earnings and Revenues Miss Estimates - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002617006248328835,
+        "negative": 0.9987998008728027,
+        "neutral": 0.0009384367149323225
+      },
+      "raw_probabilities": {
+        "negative": 0.9987998008728027,
+        "neutral": 0.0009384367149323225,
+        "positive": 0.0002617006248328835
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "ARCC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ARCC.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 3088,
+    "rows_used": 1929,
+    "last_date": "2026-11-24",
+    "last_close": 67.02999877929688,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-24",
+    "indicators.csv_last_close": "67.02999877929688"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

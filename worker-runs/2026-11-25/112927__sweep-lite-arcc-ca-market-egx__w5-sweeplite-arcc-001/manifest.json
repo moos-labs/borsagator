@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w5-sweeplite-arcc-001",
+  "job": "sweep-lite ARCC.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T11:26:32.788690+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-arcc-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T11:26:32.788690+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ARCC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ARCC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T11:29:26.143871+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+  "model": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001/report-model.json",
+  "model_sha256": "028fb1971262e8bf6d8d8cb16716f5d74bda724d37c1cae0730d5201d1d98c1c",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/ARCC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ARCC.CA.json",
+   "sharia-row-missing: AAOIFI ARCC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ARCC.CA",
+   "sharia-row-missing: FTSE ARCC.CA",
+   "sharia-row-missing: ISLAMICLY ARCC.CA",
+   "sharia-row-missing: MSCI ARCC.CA",
+   "sharia-row-missing: MSCI_M ARCC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "48bde45207a7d2f8a87ced25d6dcaa54e0ad0f49",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 129709,
+    "sha256": "248d36e18a469dfded25f6c7688e775b673927b8161cc6a99fbae9de667d2db6"
+   },
+   {
+    "path": "report.md",
+    "bytes": 28044,
+    "sha256": "8e08d7eb12cab52a504d5449fda9adff4346278e40af24857a8a890854125ec5"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ARCC.CA"
+ }
+}

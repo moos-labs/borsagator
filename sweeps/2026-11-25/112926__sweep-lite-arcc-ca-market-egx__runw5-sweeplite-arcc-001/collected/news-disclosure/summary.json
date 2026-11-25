@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ARCC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ARCC.CA",
+    "fetched_at": "2026-11-25T11:29:24Z",
+    "tool": "news-disclosure",
+    "news_count": 12,
+    "disclosure_count": 0,
+    "arabic_headlines": 2,
+    "latest_news_date": "Wed, 25 Nov 2026 07:51:47 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.079,
+    "finbert_negative": 0.372,
+    "finbert_neutral": 0.55,
+    "finbert_scored": 10,
+    "multilingual_positive": 0.619,
+    "multilingual_negative": 0.005,
+    "multilingual_neutral": 0.377,
+    "multilingual_scored": 2,
+    "bodies_fetched": 7,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.026,
+    "translated_negative": 0.493,
+    "translated_neutral": 0.481,
+    "translated_scored": 2
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

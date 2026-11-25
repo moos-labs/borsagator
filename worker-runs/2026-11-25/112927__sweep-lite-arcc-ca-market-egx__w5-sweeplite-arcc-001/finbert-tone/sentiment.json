@@ -1,0 +1,301 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 11,
+  "label_counts": {
+    "positive": 0,
+    "negative": 3,
+    "neutral": 8
+  },
+  "label_counts_raw": {
+    "neutral": 8,
+    "negative": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.00010099802466033803,
+    "negative": 0.2739626055201308,
+    "neutral": 0.7259363966313779
+  },
+  "items": [
+    {
+      "text": "ARCC Nov 2026 15.000 put (ARCC261120P00015000) stock price, news, quote and history - Yahoo Finance UK",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.46318412123037e-08,
+        "negative": 7.492582199120079e-07,
+        "neutral": 0.9999991655349731
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999991655349731
+        },
+        {
+          "label": "Negative",
+          "score": 7.492582199120079e-07
+        },
+        {
+          "label": "Positive",
+          "score": 6.46318412123037e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Here is What to Know Beyond Why Ares Capital Corporation (ARCC) is a Trending Stock - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0964929060719442e-05,
+        "negative": 0.00012337698717601597,
+        "neutral": 0.9998656511306763
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998656511306763
+        },
+        {
+          "label": "Negative",
+          "score": 0.00012337698717601597
+        },
+        {
+          "label": "Positive",
+          "score": 1.0964929060719442e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital Corporation (ARCC) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.292430730856722e-06,
+        "negative": 1.2431048162397929e-05,
+        "neutral": 0.9999833106994629
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999833106994629
+        },
+        {
+          "label": "Negative",
+          "score": 1.2431048162397929e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.292430730856722e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital: The Dividend Squeeze Is On - Seeking Alpha",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00015649775741621852,
+        "negative": 0.013540428131818771,
+        "neutral": 0.9863030314445496
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9863030314445496
+        },
+        {
+          "label": "Negative",
+          "score": 0.013540428131818771
+        },
+        {
+          "label": "Positive",
+          "score": 0.00015649775741621852
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital: The Rich Grow Richer (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.000790902937296778,
+        "negative": 0.00011883648403454572,
+        "neutral": 0.9990901947021484
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9990901947021484
+        },
+        {
+          "label": "Positive",
+          "score": 0.000790902937296778
+        },
+        {
+          "label": "Negative",
+          "score": 0.00011883648403454572
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ARCC Students Staging 'Pride and Prejudice' - City of Coon Rapids, MN (.gov)",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.7409289436473045e-06,
+        "negative": 2.7827896701637655e-05,
+        "neutral": 0.9999674558639526
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999674558639526
+        },
+        {
+          "label": "Negative",
+          "score": 2.7827896701637655e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.7409289436473045e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ARCC Misses on Q3 Earnings as Income Falls, Announces MidCap Buyout - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 9.459636203246191e-07,
+        "negative": 0.9999977350234985,
+        "neutral": 1.3615408533951268e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999977350234985
+        },
+        {
+          "label": "Neutral",
+          "score": 1.3615408533951268e-06
+        },
+        {
+          "label": "Positive",
+          "score": 9.459636203246191e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 2026 Earnings Call Transcript - The Motley Fool",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2193547263450455e-05,
+        "negative": 4.308360439608805e-05,
+        "neutral": 0.999944806098938
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999944806098938
+        },
+        {
+          "label": "Negative",
+          "score": 4.308360439608805e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.2193547263450455e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 Earnings: Taking a Look at Key Metrics Versus Estimates - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.664506481181888e-07,
+        "negative": 1.3692047104996163e-05,
+        "neutral": 0.9999854564666748
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999854564666748
+        },
+        {
+          "label": "Negative",
+          "score": 1.3692047104996163e-05
+        },
+        {
+          "label": "Positive",
+          "score": 8.664506481181888e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital stock dips as slower transaction environment hits Q3 earnings (ARCC:NASDAQ) - Seeking Alpha",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.00012933566176798195,
+        "negative": 0.999710738658905,
+        "neutral": 0.00015990649990271777
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.999710738658905
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00015990649990271777
+        },
+        {
+          "label": "Positive",
+          "score": 0.00012933566176798195
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ares Capital (ARCC) Q3 Earnings and Revenues Miss Estimates - Yahoo Finance",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.730326744109334e-07,
+        "negative": 0.9999997615814209,
+        "neutral": 2.2963025259059577e-08
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999997615814209
+        },
+        {
+          "label": "Positive",
+          "score": 1.730326744109334e-07
+        },
+        {
+          "label": "Neutral",
+          "score": 2.2963025259059577e-08
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

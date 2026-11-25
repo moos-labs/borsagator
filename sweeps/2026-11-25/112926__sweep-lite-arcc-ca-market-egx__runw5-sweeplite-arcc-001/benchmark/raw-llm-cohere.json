@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 66.53,
+ "base_source": "egx-data/egxpy_arcc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:29:26.492182+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_arcc.csv": "3eaf9eb1e7df1e1430dbc21017131b29bc9f2bb5a89ea8d7243fca76d5e21b01",
+  "digest.json": "75170e7ebadba449d88f7c36995e6f6ad98f0a7454bfc0b1ddbb0c8366ef38e5",
+  "ensemble.json": "2a4f314dc97a95115d7d496a8ac969e1b55662d31cbd132678024e4f8d963886",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+ "ticker": "ARCC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

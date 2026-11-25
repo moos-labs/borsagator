@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 66.53,
+ "base_source": "egx-data/egxpy_arcc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T11:29:26.480241+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.37,
+   "families": {
+    "price-forecast": -0.075
+   },
+   "horizon_short": false,
+   "net_score": -0.075,
+   "range_high_pct": 5.2,
+   "range_low_pct": -5.94,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -2.28,
+   "families": {
+    "price-forecast": -0.123
+   },
+   "horizon_short": false,
+   "net_score": -0.123,
+   "range_high_pct": 18.56,
+   "range_low_pct": -23.11,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.09,
+   "families": {
+    "price-forecast": 0.01
+   },
+   "horizon_short": false,
+   "net_score": 0.01,
+   "range_high_pct": 9.73,
+   "range_low_pct": -9.56,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "45f8ebe67c6d47c4f7b05dc53db769055fbc8d8e1e606bf1135fc1d594694887",
+  "digest.json": "75170e7ebadba449d88f7c36995e6f6ad98f0a7454bfc0b1ddbb0c8366ef38e5",
+  "ensemble.json": "2a4f314dc97a95115d7d496a8ac969e1b55662d31cbd132678024e4f8d963886"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.029,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+ "ticker": "ARCC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

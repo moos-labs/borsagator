@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 66.53,
+ "base_source": "egx-data/egxpy_arcc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T11:29:26.481780+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.43,
+   "families": {
+    "price-forecast": -0.075
+   },
+   "horizon_short": false,
+   "net_score": -0.075,
+   "range_high_pct": 0.89,
+   "range_low_pct": -1.85,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -2.65,
+   "families": {
+    "price-forecast": -0.122
+   },
+   "horizon_short": false,
+   "net_score": -0.122,
+   "range_high_pct": -0.95,
+   "range_low_pct": -5.6,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.1,
+   "families": {
+    "price-forecast": 0.01
+   },
+   "horizon_short": false,
+   "net_score": 0.01,
+   "range_high_pct": 2.38,
+   "range_low_pct": -0.78,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "45f8ebe67c6d47c4f7b05dc53db769055fbc8d8e1e606bf1135fc1d594694887",
+  "digest.json": "75170e7ebadba449d88f7c36995e6f6ad98f0a7454bfc0b1ddbb0c8366ef38e5",
+  "ensemble.json": "2a4f314dc97a95115d7d496a8ac969e1b55662d31cbd132678024e4f8d963886"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.029,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+ "ticker": "ARCC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

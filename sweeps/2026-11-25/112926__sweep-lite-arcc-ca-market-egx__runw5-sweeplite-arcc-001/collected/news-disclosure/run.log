@@ -1,0 +1,23 @@
+WARN body http 404: https://uk.finance.yahoo.com/quote/ARCC261120P00015000/
+WARN body http 404: https://ca.finance.yahoo.com/quote/ARCC/seasonality/
+WARN body http 403: https://seekingalpha.com/article/4962033-ares-capital-the-dividend-squeeze-is-on
+WARN body http 403: https://seekingalpha.com/article/4961460-ares-capital-the-rich-grow-richer
+WARN body http 403: https://seekingalpha.com/news/4657707-ares-capital-stock-dips-as-slower-transaction-enviro
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 5, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/ARCC.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6520.00it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 18015.92it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17096.85it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5807.48it/s]
+{"tool": "news-disclosure", "ticker": "ARCC.CA", "news_count": 12, "disclosure_count": 0, "arabic_headlines": 2, "latest_news_date": "Wed, 25 Nov 2026 07:51:47 GMT", "latest_disclosure_date": "", "top_headline": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي", "llm_provider": "extractive", "finbert_positive": 0.079, "finbert_negative": 0.372, "finbert_neutral": 0.55, "finbert_scored": 10, "multilingual_positive": 0.619, "multilingual_negative": 0.005, "multilingual_neutral": 0.377, "multilingual_scored": 2, "bodies_fetched": 7, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.026, "translated_negative": 0.493, "translated_neutral": 0.481, "translated_scored": 2}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 07:51:47 GMT] (المشهد العربي) "آرك إنفستمنت" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم "إنفيديا" - المشهد العربي
+- [Fri, 20 Nov 2026 08:00:00 GMT] (Yahoo Finance UK) ARCC Nov 2026 15.000 put (ARCC261120P00015000) stock price, news, quote and history - Yahoo Finance UK
+- [Mon, 16 Nov 2026 08:00:00 GMT] (Yahoo Finance) Here is What to Know Beyond Why Ares Capital Corporation (ARCC) is a Trending Stock - Yahoo Finance
+- [Sat, 07 Nov 2026 01:27:32 GMT] (Yahoo! Finance Canada) Ares Capital Corporation (ARCC) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada
+- [Wed, 04 Nov 2026 08:00:00 GMT] (Sortir à Paris) ون بيس على ديزني+: آرك إيغ هيد يصل مدبلجًا بالفرنسية في ديسمبر 2026. - Sortir à Paris
+- [Wed, 04 Nov 2026 08:00:00 GMT] (Seeking Alpha) Ares Capital: The Dividend Squeeze Is On - Seeking Alpha
+- [Wed, 04 Nov 2026 08:00:00 GMT] (Seeking Alpha) Ares Capital: The Rich Grow Richer (NASDAQ:ARCC) - Seeking Alpha
+- [Wed, 28 Oct 2026 07:00:00 GMT] (Yahoo Finance) ARCC Misses on Q3 Earnings as Income Falls, Announces MidCap Buyout - Yahoo Finance
