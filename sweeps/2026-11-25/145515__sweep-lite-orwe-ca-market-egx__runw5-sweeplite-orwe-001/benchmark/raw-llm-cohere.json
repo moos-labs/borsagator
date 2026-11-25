@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 24.0,
+ "base_source": "egx-data/egxpy_orwe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T14:55:16.043820+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_orwe.csv": "097576906d4958531ff96cba321ee9d2f1567b40400ec25814c544143291321d",
+  "digest.json": "069027d9f89d0d717a660dd4f52ce48935023a241cf00f962351b14e65e4b635",
+  "ensemble.json": "43d424272cf83e1753360395d0a73e89bd4b2e1ae33b5424b7024133aea3e6a4",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001",
+ "ticker": "ORWE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

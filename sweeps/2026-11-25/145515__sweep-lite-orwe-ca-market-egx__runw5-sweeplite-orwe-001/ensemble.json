@@ -1,0 +1,143 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "ORWE.CA",
+ "base_price": 24.0,
+ "base_source": "egx-data/egxpy_orwe.csv",
+ "base_date": "2026-11-25",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_orwe.csv": 24.7,
+   "openbb/orwe_ca.csv": 24.700000762939453,
+   "pandas-ta/indicators.csv": 24.700000762939453,
+   "talib/indicators.csv": 24.700000762939453,
+   "yahooquery/orwe.ca.csv": 24.700000762939453
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-23",
+  "base_used": 24.0,
+  "base_source_used": "egx-data/egxpy_orwe.csv",
+  "base_date": "2026-11-25",
+  "latest_collected_date": "2026-11-25",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0243,
+ "sigma_source": "egx-data/egxpy_orwe.csv (σ60=0.0243, σ10=0.0145)",
+ "sessions_per_calendar_day": 0.665,
+ "date": "2026-11-25",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana"
+   }
+  ],
+  "move_z": {
+   "last": 1.18,
+   "max3": 1.18
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+  "factors": {
+   "price-forecast": 0.5,
+   "technicals": 0.67,
+   "sentiment": 1.063,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.5,
+    "n": 34,
+    "skill": -0.632
+   },
+   "technicals": {
+    "factor": 0.67,
+    "n": 36,
+    "skill": -0.33
+   },
+   "sentiment": {
+    "factor": 1.063,
+    "n": 36,
+    "skill": 0.063
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": -0.3,
+  "sentiment": -0.002,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.17
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 2.13,
+   "range_low_pct": -3.47,
+   "range_high_pct": 7.73,
+   "confidence": 0.3,
+   "net_score": 0.041,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.002,
+    "price-forecast": 0.712
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 3.465,
+   "vol_h_pct": 2.4326
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 2.6,
+   "range_low_pct": -6.74,
+   "range_high_pct": 11.93,
+   "confidence": 0.3,
+   "net_score": 0.025,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.002,
+    "price-forecast": 0.503
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 4.2383,
+   "vol_h_pct": 4.2133
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 2.82,
+   "range_low_pct": -16.88,
+   "range_high_pct": 22.53,
+   "confidence": 0.3,
+   "net_score": 0.208,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.002,
+    "fundamentals": 0.4,
+    "price-forecast": 0.17
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 3.0913,
+   "vol_h_pct": 9.1018
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

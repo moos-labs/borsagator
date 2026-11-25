@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 24.0,
+ "base_source": "egx-data/egxpy_orwe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-25T14:55:16.032840+00:00",
+ "inputs_sha256": {
+  "digest.json": "069027d9f89d0d717a660dd4f52ce48935023a241cf00f962351b14e65e4b635",
+  "ensemble.json": "43d424272cf83e1753360395d0a73e89bd4b2e1ae33b5424b7024133aea3e6a4"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001",
+ "ticker": "ORWE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 24.0,
+ "base_source": "egx-data/egxpy_orwe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T14:55:16.031991+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.96,
+   "families": {
+    "price-forecast": 0.712
+   },
+   "horizon_short": false,
+   "net_score": 0.712,
+   "range_high_pct": 7.63,
+   "range_low_pct": -1.7,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.65,
+   "families": {
+    "price-forecast": 0.17
+   },
+   "horizon_short": false,
+   "net_score": 0.17,
+   "range_high_pct": 20.1,
+   "range_low_pct": -14.81,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 3.63,
+   "families": {
+    "price-forecast": 0.503
+   },
+   "horizon_short": false,
+   "net_score": 0.503,
+   "range_high_pct": 11.71,
+   "range_low_pct": -4.45,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "66adaddcb00493fb5d497e86a51bb6c865a7d0fe34f20fe8fb06bca9792ae61f",
+  "digest.json": "069027d9f89d0d717a660dd4f52ce48935023a241cf00f962351b14e65e4b635",
+  "ensemble.json": "43d424272cf83e1753360395d0a73e89bd4b2e1ae33b5424b7024133aea3e6a4"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0243,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001",
+ "ticker": "ORWE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

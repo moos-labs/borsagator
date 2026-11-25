@@ -1,0 +1,50 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 4.238669930600736e-07,
+    "negative": 6.05420200372464e-06,
+    "neutral": 0.9999934434890747
+  },
+  "items": [
+    {
+      "text": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.238669930600736e-07,
+        "negative": 6.05420200372464e-06,
+        "neutral": 0.9999934434890747
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999934434890747
+        },
+        {
+          "label": "Negative",
+          "score": 6.05420200372464e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.238669930600736e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
