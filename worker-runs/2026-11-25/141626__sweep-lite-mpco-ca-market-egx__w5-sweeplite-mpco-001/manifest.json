@@ -1,0 +1,106 @@
+{
+ "job": {
+  "id": "w5-sweeplite-mpco-001",
+  "job": "sweep-lite MPCO.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T14:14:33.328517+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "exit-1",
+  "finbert-tone": "exit-1",
+  "financial-roberta": "exit-1",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-mpco-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T14:14:33.328517+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "MPCO"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['MPCO']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T14:16:25.344375+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/141625__sweep-lite-mpco-ca-market-egx__runw5-sweeplite-mpco-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/141625__sweep-lite-mpco-ca-market-egx__runw5-sweeplite-mpco-001",
+  "model": "sweeps/2026-11-25/141625__sweep-lite-mpco-ca-market-egx__runw5-sweeplite-mpco-001/report-model.json",
+  "model_sha256": "84da54f9167e3b6c857f41dfde40cfd858ef0f16daf2b04ec4bf8f0683137c29",
+  "degraded": {
+   "absent_families": [
+    "sentiment"
+   ],
+   "absent_tools": [
+    "finbert",
+    "finbert-tone",
+    "financial-roberta",
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: sentiment)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/MPCO.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/MPCO.CA.json",
+   "sharia-row-missing: AAOIFI MPCO.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 MPCO.CA",
+   "sharia-row-missing: FTSE MPCO.CA",
+   "sharia-row-missing: ISLAMICLY MPCO.CA",
+   "sharia-row-missing: MSCI MPCO.CA",
+   "sharia-row-missing: MSCI_M MPCO.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "0a3bf7cf0d222de9035778a4c608e37c7a6058d3",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/141625__sweep-lite-mpco-ca-market-egx__runw5-sweeplite-mpco-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 111519,
+    "sha256": "64ccc82b7d064088bbb1c59028ed6e3b8c2687158b50f7414c817a4be89159a6"
+   },
+   {
+    "path": "report.md",
+    "bytes": 21014,
+    "sha256": "41411b1b83f2860e97d21b4605792868cffab00f9e45e1255f6b6aec008ce404"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "MPCO.CA"
+ }
+}

@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "MPCO.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 5840,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 1.9199999570846558,
+  "indicators": {
+    "RSI_14": 45.86179195121696,
+    "MACD": -0.036298464232146,
+    "MACD_signal": -0.04244143037209153,
+    "MACD_hist": 0.006142966139945534,
+    "EMA_20": 1.9789000929401248,
+    "EMA_50": 2.0604202526139703,
+    "ADX_14": 19.974952646722752
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-12",
+    "CDLHAMMER": "2026-11-17",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
