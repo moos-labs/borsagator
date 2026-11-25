@@ -17,9 +17,10 @@ Covers, per the design and the step-2 brief:
     against benchmark_freeze.freeze_* on identical fixtures, agg values,
     index-baseline deltas, and the separation guard (no backtest file is
     ever read by ledger.py)
-  * ensemble 2-family mode — env-off output is byte-identical to the
-    pre-change golden; env-on votes only price-forecast + technicals,
-    risk none, weights_source base-v1
+  * ensemble 2-family mode — env-off output is byte-identical to
+    the v2 golden (#594: centre 0, frozen weights); env-on votes
+    only technicals on week/month and nothing on day, risk none,
+    weights_source base-v1
   * end-to-end smoke — the harness runs stub runners, stages a capture,
     audits it, and the scorer emits backtest.json/md carrying the §0
     flattery warning and the §5.2 exclusion statement
@@ -237,31 +238,41 @@ def run_ensemble(stage_dir, two_family=False, ensemble_path=None):
 
 
 # Golden ensemble output for the fixture above, produced by the
-# PRE-CHANGE scripts/ensemble.py (main 69185656) on 2026-11-20.
-# The 2-family-mode test asserts the env-off run still reproduces
+# v2 scripts/ensemble.py (issue #594) on 2026-11-25. The
+# 2-family-mode test asserts the env-off run still reproduces
 # this exactly, so a refactor of the combine cannot silently move
-# live numbers.
+# live numbers. Hand-verified against the v2 rules: fixture
+# sigma60 ≈ 0.001746 (recorded 0.0017 at 4dp), risk "unknown"
+# x1.3; day half = 1.15 x 0.001746 x 1 x 1.3 = 0.26%;
+# week half = 1.28 x 0.001746 x sqrt(5) x 1.3 = 0.65%, tilt =
+# 0.2 x 0.6 x 1.28 x (0.001746 x sqrt(5)) = 0.06%;
+# month half = 1.20 x 0.001746 x sqrt(21) x 1.3 = 1.25%, tilt =
+# 0.2 x 0.6 x 1.28 x (0.001746 x sqrt(21)) = 0.12%.
 GOLDEN = {
     "ticker": "COMI.CA",
     "base_price": 113.041,
     "base_date": "2025-06-30",
     "sigma_daily": 0.0017,
-    "weights_source": "builtin",
+    "sigma60_daily": 0.0017,
+    "weights_source": "frozen-v2",
     "family_scores": {"technicals": 0.6, "sentiment": None,
                       "agent": None, "fundamentals": None,
                       "price-forecast": 1.0},
     "horizons": {
-        "day": {"direction": "flat", "expected_move_pct": 0.1,
-                "range_low_pct": -0.74, "range_high_pct": 0.94,
-                "confidence": 0.35, "net_score": 0.429,
+        "day": {"direction": "flat", "expected_move_pct": 0.0,
+                "range_low_pct": -0.26, "range_high_pct": 0.26,
+                "confidence": 0.35, "net_score": None,
+                "tilt_centre_pct": 0.0,
                 "trading_sessions": 1},
-        "week": {"direction": "flat", "expected_move_pct": 0.42,
-                 "range_low_pct": -0.39, "range_high_pct": 1.23,
-                 "confidence": 0.35, "net_score": 0.671,
+        "week": {"direction": "flat", "expected_move_pct": 0.0,
+                 "range_low_pct": -0.65, "range_high_pct": 0.65,
+                 "confidence": 0.35, "net_score": 0.6,
+                 "tilt_centre_pct": 0.06,
                  "trading_sessions": 4},
-        "month": {"direction": "up", "expected_move_pct": 1.57,
-                  "range_low_pct": 0.34, "range_high_pct": 2.79,
-                  "confidence": 0.35, "net_score": 0.882,
+        "month": {"direction": "flat", "expected_move_pct": 0.0,
+                  "range_low_pct": -1.25, "range_high_pct": 1.25,
+                  "confidence": 0.35, "net_score": 0.6,
+                  "tilt_centre_pct": 0.12,
                   "trading_sessions": 15},
     },
 }
@@ -278,7 +289,7 @@ def test_ensemble_two_family():
         if ens is None:
             return
         for key in ("ticker", "base_price", "base_date", "sigma_daily",
-                    "weights_source"):
+                    "sigma60_daily", "weights_source"):
             check("golden %s" % key,
                   ens.get(key) == GOLDEN[key],
                   "got %r want %r" % (ens.get(key), GOLDEN[key]))
@@ -314,31 +325,51 @@ def test_ensemble_two_family():
               fams.get("technicals") == 0.6, "got %r" % (fams.get("technicals"),))
         check("2-family price-forecast votes",
               fams.get("price-forecast") is not None)
+        # Issue #594: the v2 headline needs no voting family —
+        # day has no voters at all (technicals day 0, Kronos 0)
+        # and week/month vote technicals only.
+        want_voters = {"day": [], "week": ["technicals"],
+                       "month": ["technicals"]}
         for h in ("day", "week", "month"):
             hb = (ens2.get("horizons") or {}).get(h) or {}
             voted = sorted((hb.get("families") or {}).keys())
             check("2-family horizon %s voters" % h,
-                  voted == ["price-forecast", "technicals"],
+                  voted == want_voters[h],
                   "got %r" % (voted,))
-        # The 2-family combine renormalises the live weights and
-        # drops the news price_mult (0.8 -> 1.0): day .45/.30 with
-        # the fixture's day price_score 0.286 (golden) and tech 0.6
-        # gives net = (.45*0.286 + .30*0.6)/.75 = 0.412.
+        # The v2 day horizon: no voters, so net is None, the
+        # headline is centre 0 and the tilt is 0.
         day = (ens2.get("horizons") or {}).get("day") or {}
-        check("2-family day net_score 0.412",
-              day.get("net_score") == 0.412,
+        check("2-family day net_score None",
+              day.get("net_score") is None,
               "got %r" % (day.get("net_score"),))
-        # expected = .6*kmove + .4*net*(1.28*vol_h), with kmove and
-        # vol_h read back from the horizon block's own emitted
-        # fields (no recomputation from rounded sigma).
+        check("2-family day expected 0.0",
+              day.get("expected_move_pct") == 0.0,
+              "got %r" % (day.get("expected_move_pct"),))
+        check("2-family day tilt 0.0",
+              day.get("tilt_centre_pct") == 0.0,
+              "got %r" % (day.get("tilt_centre_pct"),))
+        # The v2 week horizon: technicals tilt 0.2 x 0.6, band
+        # from the v2 rules — recomputed from the recorded
+        # sigma60_daily (0.0017, rounded) with a ±0.02 tolerance,
+        # because the live band used the unrounded ~0.001746.
+        # The 2-family run has risk none, so no 1.3x risk
+        # multiplier on the band (the GOLDEN env-off run has it).
+        week = (ens2.get("horizons") or {}).get("week") or {}
+        s60 = ens2.get("sigma60_daily") or 0.0
+        vol60_w = s60 * math.sqrt(5)
+        want_tilt = round(0.2 * 0.6 * 1.28 * vol60_w * 100, 2)
+        want_half = round(1.28 * vol60_w * 100, 2)
+        check("2-family week tilt matches v2 rule",
+              abs(week.get("tilt_centre_pct", 99) - want_tilt) <= 0.02,
+              "got %r want %r" % (week.get("tilt_centre_pct"), want_tilt))
+        check("2-family week half matches v2 rule",
+              abs(week.get("range_high_pct", 99) - want_half) <= 0.02,
+              "got %r want %r" % (week.get("range_high_pct"), want_half))
+        check("2-family week net_score 0.6",
+              week.get("net_score") == 0.6,
+              "got %r" % (week.get("net_score"),))
         kmove = (day.get("kronos_move_pct") or 0.0) / 100.0
         vol_h = (day.get("vol_h_pct") or 0.0) / 100.0
-        want_exp = round((0.6 * kmove
-                          + 0.4 * day.get("net_score", 0)
-                          * (1.28 * vol_h)) * 100, 2)
-        check("2-family day expected matches combine",
-              day.get("expected_move_pct") == want_exp,
-              "got %r want %r" % (day.get("expected_move_pct"), want_exp))
         check("2-family day kmove is first Kronos bar",
               abs(kmove - (kronos_rows[0]["close"]
                            / ens2["base_price"] - 1.0)) < 1e-6,
@@ -1814,28 +1845,44 @@ def test_scorer():
         cap, ens, base, after = _fixture_capture(tmp)
         rows, gaps = sc.score_capture(cap)
         check("scorer gaps empty", gaps == [], "; ".join(gaps))
-        check("scorer 15 rows (5 entrants x 3 horizons)",
-              len(rows) == 15, "got %d" % len(rows))
+        check("scorer 21 rows (7 entrants x 3 horizons)",
+              len(rows) == 21, "got %d" % len(rows))
         check("scorer all matured",
               all(r["status"] == "matured" for r in rows),
               str([(r["entrant"], r["horizon"], r["status"])
                    for r in rows if r["status"] != "matured"]))
         by = {(r["entrant"], r["horizon"]): r for r in rows}
-        # Ensemble day: predicted flat +0.10%, realised +1.00%.
+        # Ensemble day: predicted flat 0.0%, realised +1.00%.
         ed = by[("2-family-ensemble", "day")]
-        check("ensemble day expected 0.10",
-              ed["expected_move_pct"] == 0.10,
+        check("ensemble day expected 0.0",
+              ed["expected_move_pct"] == 0.0,
               "got %r" % ed["expected_move_pct"])
         check("ensemble day realised +1.00",
               ed["realized_move_pct"] == 1.00,
               "got %r" % ed["realized_move_pct"])
         check("ensemble day miss (flat vs up)",
               ed["direction_hit"] is False)
-        check("ensemble day error 0.90pp",
-              ed["move_error_pp"] == 0.90,
+        check("ensemble day error 1.00pp",
+              ed["move_error_pp"] == 1.00,
               "got %r" % ed["move_error_pp"])
         check("ensemble day sessions scored 1",
               ed["sessions"] == 1)
+        # Naive-range day (#594): 0 +/- 1.2816 x sigma60 x sqrt(1)
+        # — the gate baseline, scored on the same realised move.
+        nr = by[("naive-range", "day")]
+        check("naive-range day expected 0.0",
+              nr["expected_move_pct"] == 0.0)
+        check("naive-range day half is 1.2816 x sigma60",
+              abs(nr["range_high_pct"]
+                  - round(1.2816 * ens["sigma60_daily"] * 100, 2)) <= 0.02,
+              "got %r" % nr["range_high_pct"])
+        # Tilt-technicals week (#594): the v2 shadow tilt, expected
+        # = the ensemble's tilt_centre_pct, band re-centred on it.
+        tt = by[("tilt-technicals", "week")]
+        check("tilt-technicals week expected is the tilt",
+              tt["expected_move_pct"]
+              == ens["horizons"]["week"]["tilt_centre_pct"],
+              "got %r" % tt["expected_move_pct"])
         # Kronos-alone day: first forecast bar vs base (+0.10%).
         kd = by[("kronos-alone", "day")]
         check("kronos-alone day expected 0.10",
@@ -1924,8 +1971,8 @@ def test_scorer():
         # Full summary: warning + exclusions present, cells n=1.
         doc, md = sc.score_all(os.path.join(tmp, "backtest"))
         check("summary tool", doc["tool"] == "walkforward-backtest")
-        check("summary 15 forecasts",
-              doc["counts"]["forecasts"] == 15)
+        check("summary 21 forecasts",
+              doc["counts"]["forecasts"] == 21)
         check("summary no quality claim at n=1",
               all(not doc["by_entrant"][e][h]["quality_claim"]
                   for e in sc.ENTRANTS for h in ("day", "week", "month")))
@@ -1934,13 +1981,23 @@ def test_scorer():
         check("md carries exclusion statement",
               sc.EXCLUSION_STATEMENT in md)
         check("md carries no-claim note", "n < 10" in md)
+        # RangeSkill gate (#594): the doc carries the gate fields
+        # and the md carries the gate table.
+        gate = doc["by_entrant"]["2-family-ensemble"]["day"]
+        check("summary carries RangeSkill fields",
+              gate.get("range_skill") is not None
+              and gate.get("range_gate") in ("PASS", "FAIL", "n<30")
+              and gate.get("naive_interval_score") is not None,
+              str(gate))
+        check("md carries RangeSkill gate table",
+              "RangeSkill gate vs naive-range" in md)
         # Separation guard: ledger.py never mentions the backtest.
         src = open(os.path.join(HERE, "ledger.py"),
                    encoding="utf-8").read()
         check("ledger.py never reads backtest files",
               "backtest" not in src.lower())
         # An explicit index gap: the stock capture still scores
-        # (12 rows — the 4 stock entrants), but no index-baseline
+        # (18 rows — the 6 stock entrants), but no index-baseline
         # rows are emitted and the gap is recorded.
         cap2 = os.path.join(tmp, "backtest2", FIXTURE_CUTOFF,
                             FIXTURE_TICKER)
@@ -1953,8 +2010,8 @@ def test_scorer():
         json.dump(r2, open(os.path.join(cap2, "realised.json"), "w"),
                   indent=1)
         rows2, gaps2 = sc.score_capture(cap2)
-        check("index-gap capture scores 12 stock rows",
-              len(rows2) == 12, "got %d" % len(rows2))
+        check("index-gap capture scores 18 stock rows",
+              len(rows2) == 18, "got %d" % len(rows2))
         check("index-gap capture emits no index-baseline rows",
               all(r["entrant"] != "index-baseline" for r in rows2))
         check("index-gap capture records the gap",
@@ -1971,7 +2028,7 @@ def test_scorer():
         # [2] a missing index base with NO index_gap recorded:
         # the producer wrote index_base_close None (index fetch
         # returned no bar on/before the cutoff). The scorer must
-        # take the index-gap path — 12 stock rows, no
+        # take the index-gap path — 18 stock rows, no
         # index-baseline rows — not build index rows with a None
         # base that crash ledger.score_forecast (TypeError).
         cap3 = os.path.join(tmp, "backtest3", FIXTURE_CUTOFF,
@@ -1990,8 +2047,8 @@ def test_scorer():
             rows4, gaps4 = [], []
         check("missing index base does not crash the scorer",
               crashed is None, "TypeError: %s" % crashed)
-        check("missing index base scores 12 stock rows",
-              len(rows4) == 12, "got %d" % len(rows4))
+        check("missing index base scores 18 stock rows",
+              len(rows4) == 18, "got %d" % len(rows4))
         check("missing index base emits no index-baseline rows",
               all(r["entrant"] != "index-baseline" for r in rows4))
         check("missing index base records the gap",
@@ -2018,8 +2075,8 @@ def test_scorer():
         check("empty-string index base does not crash the scorer",
               crashed is None,
               "%s: %s" % (type(crashed).__name__, crashed))
-        check("empty-string index base scores 12 stock rows",
-              len(rows6) == 12, "got %d" % len(rows6))
+        check("empty-string index base scores 18 stock rows",
+              len(rows6) == 18, "got %d" % len(rows6))
         check("empty-string index base emits no index rows",
               all(r["entrant"] != "index-baseline" for r in rows6))
         check("empty-string index base records the gap",
@@ -2040,7 +2097,7 @@ def test_scorer():
                                 FIXTURE_TICKER))
         doc_a, _md_a = sc.score_all(alias_root)
         check("aliased capture counted once",
-              doc_a["counts"]["forecasts"] == 15,
+              doc_a["counts"]["forecasts"] == 21,
               "got %d" % doc_a["counts"]["forecasts"])
         # Assert the dedup-specific message, not the substring
         # "alias": the alias PATH itself contains "alias", so
@@ -2069,7 +2126,7 @@ def test_scorer():
                                 FIXTURE_TICKER))
         doc_e, _md_e = sc.score_all(early_root)
         check("earlier-sorting alias does not claim the capture",
-              doc_e["counts"]["forecasts"] == 15,
+              doc_e["counts"]["forecasts"] == 21,
               "got %d" % doc_e["counts"]["forecasts"])
         check("earlier-sorting alias reported as a gap",
               any("2025-03-31" in g for g in doc_e["gaps"]),
@@ -2084,6 +2141,79 @@ def test_scorer():
         check("manifest cutoff mismatch scores nothing",
               rows5 == [] and any("manifest" in g for g in gaps5),
               "; ".join(gaps5))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_scorer_v1_capture_missing_entrants():
+    """#592: score_all() over a v1 capture (no tilt_centre_pct, no
+    index leg) must not crash. The v2 scorer's agg() omitted
+    mean_interval_score for empty subsets, so score_all() raised
+    KeyError at the RangeSkill step for tilt-technicals and
+    index-baseline, which have zero rows on v1 captures
+    (score_capture itself was fine — the crash was purely in the
+    aggregation step)."""
+    print("== scorer v1 capture (missing entrants) ==")
+    sc = load_module(os.path.join(HERE, "backtest_score.py"),
+                     "backtest_score")
+    tmp = tempfile.mkdtemp(prefix="bt436-score-v1-")
+    try:
+        cap, ens, base, after = _fixture_capture(tmp)
+        # Strip the v2-only fields: v1 captures carry no
+        # tilt_centre_pct and no sigma60_daily (naive-range falls
+        # back to sigma_daily as proxy), and EGX v1 captures have
+        # no index leg (^EGX30 404s on Yahoo).
+        ens_path = os.path.join(cap, "digest/ensemble.json")
+        ens_v1 = json.load(open(ens_path, encoding="utf-8"))
+        ens_v1.pop("sigma60_daily", None)
+        for hb in (ens_v1.get("horizons") or {}).values():
+            if isinstance(hb, dict):
+                hb.pop("tilt_centre_pct", None)
+        json.dump(ens_v1, open(ens_path, "w"), indent=1)
+        r_path = os.path.join(cap, "realised.json")
+        r_v1 = json.load(open(r_path, encoding="utf-8"))
+        r_v1["index_gap"] = "index fetch failed: Yahoo chart error"
+        r_v1["index_base_close"] = None
+        r_v1["index_sessions"] = []
+        json.dump(r_v1, open(r_path, "w"), indent=1)
+        crashed = None
+        try:
+            doc, md = sc.score_all(os.path.join(tmp, "backtest"))
+        except Exception as e:  # noqa: BLE001 - any raise is the bug
+            crashed = e
+            doc, md = None, ""
+        check("v1 capture score_all does not crash",
+              crashed is None,
+              "%s: %s" % (type(crashed).__name__, crashed))
+        if doc is None:
+            return
+        check("v1 capture scores 15 rows (5 entrants x 3 horizons)",
+              doc["counts"]["forecasts"] == 15,
+              "got %d" % doc["counts"]["forecasts"])
+        check("v1 capture all matured",
+              doc["counts"]["matured"] == 15,
+              str(doc["counts"]))
+        for missing in ("tilt-technicals", "index-baseline"):
+            for h in ("day", "week", "month"):
+                cell = doc["by_entrant"][missing][h]
+                check("v1 %s %s n=0" % (missing, h),
+                      cell["n"] == 0)
+                check("v1 %s %s naive_interval_score None"
+                      % (missing, h),
+                      cell["naive_interval_score"] is None)
+                check("v1 %s %s range_skill None" % (missing, h),
+                      cell["range_skill"] is None)
+                check("v1 %s %s gate n<30" % (missing, h),
+                      cell["range_gate"] == "n<30")
+        # The present entrants still carry a naive baseline.
+        present = doc["by_entrant"]["2-family-ensemble"]["day"]
+        check("v1 ensemble day naive_interval_score present",
+              present["naive_interval_score"] is not None,
+              str(present))
+        # agg() itself carries the key on empty input.
+        check("agg([]) carries mean_interval_score",
+              "mean_interval_score" in sc.agg([])
+              and sc.agg([])["mean_interval_score"] is None)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -2332,6 +2462,7 @@ def run_backtest_checks(verbose=True):
     test_runner_skip_classification_in_cell()
     test_runner_python_override()
     test_scorer()
+    test_scorer_v1_capture_missing_entrants()
     return CHECKS["pass"], CHECKS["fail"], list(FAILURES)
 
 
