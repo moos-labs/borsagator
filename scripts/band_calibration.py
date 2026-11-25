@@ -15,10 +15,11 @@ deterministically from the ledger's matured rows:
 2. Centre correction: b = median(realised - expected) over the
    window, clamped to |b| <= the window's median half-width.
    Published centre c' = expected + b'.
-3. Width factor: k = 80th percentile (nearest-rank) of
+3. Width factor: k = 85th percentile (nearest-rank) of
    z_i = |(realised - expected) - b| / half_i, clamped to
    [0.5, 2.0]. The quantile construction puts in-window coverage
-   at ~0.80 by design.
+   at ~0.85 by design, so out-of-sample coverage lands inside
+   the 0.75-0.85 launch-gate tolerance.
 4. Shrinkage: k' = (n*k + 10*k_H) / (n+10), b' = (n*b + 10*b_H) /
    (n+10), with k_H / b_H the horizon-pooled fits. A cell with
    n < 10 falls back to the horizon pool; a pool with n < 10 falls
@@ -170,7 +171,7 @@ def _fit(rows):
 
     Returns {n, b, k, coverage} or None when no usable rows.
     b is the median residual clamped to the median half-width;
-    k is the 80th percentile of |residual - b| / half, clamped
+    k is the 85th percentile of |residual - b| / half, clamped
     to [K_MIN, K_MAX]; coverage is the as-published coverage
     (|residual| <= half)."""
     usable = [r for r in rows if is_clean_matured(r)]
