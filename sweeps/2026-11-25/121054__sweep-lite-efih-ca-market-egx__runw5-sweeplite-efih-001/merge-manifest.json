@@ -1,0 +1,24 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite EFIH.CA market=EGX",
+  "job_shape": "sweep-lite EFIH.CA market=EGX",
+  "claim_id": "w5-sweeplite-efih-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-efih-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/121054__sweep-lite-efih-ca-market-egx__runw5-sweeplite-efih-001",
+  "finished": "2026-11-25T12:10:54.612100+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "financial-roberta"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

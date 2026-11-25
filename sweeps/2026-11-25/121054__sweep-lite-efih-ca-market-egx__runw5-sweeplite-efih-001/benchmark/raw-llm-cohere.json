@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 25.0,
+ "base_source": "egx-data/egxpy_efih.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T12:10:54.918383+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_efih.csv": "c77fe412df484d52de07be2b7bda0fb56c873713f38a6cd8728e2dd50065ff79",
+  "digest.json": "dbfd13be2853cd5550a499e77494b9551c23761e275347aee0a3ea4f1b7b0b96",
+  "ensemble.json": "fb5d0df8be15178ab82f3123be82b79658dffbe63758f56a951fd64015567c46",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/121054__sweep-lite-efih-ca-market-egx__runw5-sweeplite-efih-001",
+ "ticker": "EFIH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

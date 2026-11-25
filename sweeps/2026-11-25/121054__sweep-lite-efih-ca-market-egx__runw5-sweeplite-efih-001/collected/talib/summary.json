@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "EFIH.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EFIH.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 1236,
+    "rows_used": 1236,
+    "last_date": "2026-11-24",
+    "last_close": 25.290000915527344,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-24",
+    "indicators.csv_last_close": "25.290000915527344"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

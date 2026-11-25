@@ -1,0 +1,14 @@
+bodies: 4/4 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EFIH.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5597.31it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14815.65it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 18223.72it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5765.03it/s]
+{"tool": "news-disclosure", "ticker": "EFIH.CA", "news_count": 4, "disclosure_count": 0, "arabic_headlines": 4, "latest_news_date": "Fri, 20 Nov 2026 00:42:45 GMT", "latest_disclosure_date": "", "top_headline": "جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك", "llm_provider": "extractive", "multilingual_positive": 0.033, "multilingual_negative": 0.4, "multilingual_neutral": 0.567, "multilingual_scored": 4, "bodies_fetched": 4, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.048, "translated_negative": 0.144, "translated_neutral": 0.808, "translated_scored": 4}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Fri, 20 Nov 2026 00:42:45 GMT] (جوَّك) جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك
+- [Sat, 07 Nov 2026 08:00:00 GMT] (فيتو) نادر صلاح الدين: كوميديا الموقف أصعب من الإفيه، ولكل نجم مدرسته الخاصة في صناعة الضحك - فيتو
+- [Mon, 02 Nov 2026 08:00:00 GMT] (جريدة المال) أشرف عبدالباقي يكشف آليات الإفيه الكوميدي ويتحدث عن مسرح مصر - جريدة المال
+- [Thu, 29 Oct 2026 07:00:00 GMT] (https://www.youlyou.com/) زلات لسان النجوم.. هاني رمزي بإفيه جريء ومحمد ثروت في أزمة بسبب «يا صيع» - https://www.youlyou.com/

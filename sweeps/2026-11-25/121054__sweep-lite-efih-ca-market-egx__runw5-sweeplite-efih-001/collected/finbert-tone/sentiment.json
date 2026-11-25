@@ -1,0 +1,50 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 0
+  },
+  "label_counts_raw": {
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.9997456669807434,
+    "negative": 2.1468454747264332e-07,
+    "neutral": 0.0002541081339586526
+  },
+  "items": [
+    {
+      "text": "EFIH: 9M net profit reached EGP2.216bn as shareholders approved the Tamweely acquisition - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9997456669807434,
+        "negative": 2.1468454747264332e-07,
+        "neutral": 0.0002541081339586526
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9997456669807434
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0002541081339586526
+        },
+        {
+          "label": "Negative",
+          "score": 2.1468454747264332e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

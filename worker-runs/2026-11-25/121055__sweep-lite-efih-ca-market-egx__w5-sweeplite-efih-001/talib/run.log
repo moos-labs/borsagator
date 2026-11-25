@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1236 rows
+{
+  "ticker": "EFIH.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 1236,
+  "rows_used": 1236,
+  "date_range": {
+    "first": "2021-10-20",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 25.290000915527344,
+  "indicators": {
+    "RSI_14": 59.698609757605055,
+    "MACD": 0.4929965854706211,
+    "MACD_signal": 0.39840208788454723,
+    "MACD_hist": 0.09459449758607386,
+    "EMA_20": 24.29550769597389,
+    "EMA_50": 23.77058322612124,
+    "ADX_14": 14.409136166438124
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-17",
+    "CDLENGULFING": "2026-11-22",
+    "CDLHAMMER": "2026-09-24",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

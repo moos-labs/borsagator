@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "EFIH.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EFIH.CA",
+    "fetched_at": "2026-11-25T12:10:53Z",
+    "tool": "news-disclosure",
+    "news_count": 4,
+    "disclosure_count": 0,
+    "arabic_headlines": 4,
+    "latest_news_date": "Fri, 20 Nov 2026 00:42:45 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك",
+    "llm_provider": "extractive",
+    "multilingual_positive": 0.033,
+    "multilingual_negative": 0.4,
+    "multilingual_neutral": 0.567,
+    "multilingual_scored": 4,
+    "bodies_fetched": 4,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.048,
+    "translated_negative": 0.144,
+    "translated_neutral": 0.808,
+    "translated_scored": 4
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
