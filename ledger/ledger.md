@@ -1,13 +1,14 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree da51e831, commit da51e831). Sweeps archived: 54 (33 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree fa8e081c, commit fa8e081c). Sweeps archived: 55 (34 with an ensemble).
 
-**Forecasts found: 93 · matured: 48 · pending: 33 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 96 · matured: 48 · pending: 36 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
 | Ticker | Found | Matured | Pending | Invalid | Series span |
 |---|---|---|---|---|---|
+| ACGC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
 | COMI.CA | 3 | 0 | 0 | 3 | 2018-01-01 → 2026-11-12 |
 | NVDA | 6 | 1 | 5 | 0 | 2021-11-15 → 2026-11-13 |
 | POUL.CA | 84 | 47 | 28 | 9 | 2014-06-04 → 2026-11-24 |
@@ -127,10 +128,14 @@ Source: `moos-labs/borsagator` branch `archive` (tree da51e831, commit da51e831)
 | POUL.CA | 2026-11-25 | day | up | +3.39 | — | — | — | — | | pending (0/1 sessions) |
 | POUL.CA | 2026-11-25 | week | up | +10.92 | — | — | — | — | | pending (0/3 sessions) |
 | POUL.CA | 2026-11-25 | month | up | +27.27 | — | — | — | — | | pending (0/14 sessions) |
+| ACGC.CA | 2026-11-25 | day | down | -1.01 | — | — | — | — | | pending (0/1 sessions) |
+| ACGC.CA | 2026-11-25 | week | flat | -0.14 | — | — | — | — | | pending (0/3 sessions) |
+| ACGC.CA | 2026-11-25 | month | down | -2.12 | — | — | — | — | | pending (0/14 sessions) |
 
 ## Data gaps & notes
 
 - 21 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667; sweeps/2026-11-13/175202__category-news-poul-ca__run43475305450; sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234; sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601; sweeps/2026-11-13/184846__category-agent-poul-ca__run43482153785; sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341; sweeps/2026-11-15/130920__run-kronos-nvda__run43717394637; sweeps/2026-11-15/131641__category-news-poul-ca__run43717400241; sweeps/2026-11-15/134248__category-agent-poul-ca__run43717405249; sweeps/2026-11-15/140746__sweep-nvda__run43717388468; sweeps/2026-11-16/040734__run-egx-data-comi-ca__run43801992894; sweeps/2026-11-16/041112__category-news-poul-ca__run43801982888; sweeps/2026-11-16/041429__run-talib-comi-ca__run43802798857; sweeps/2026-11-16/042354__category-news-poul-ca__run43802770319
+- ACGC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001/collected/egx-data/egxpy_acgc.csv)
 - COMI.CA: actuals series has 2180 sessions, 2018-01-01 → 2026-11-12 (last source: sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248/collected/quantstats/ohlc.csv)
 - NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)
 - POUL.CA: actuals series has 3052 sessions, 2014-06-04 → 2026-11-24 (last source: sweeps/2026-11-25/063413__sweep-lite-poul-ca-market-egx__runsched-2026-11-25/collected/egx-data/egxpy_poul.csv)
