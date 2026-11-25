@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 38.0,
+ "base_source": "egx-data/egxpy_cira.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-25T11:44:58.771186+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.62,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 4.73,
+   "range_low_pct": -3.5,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 2.31,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 17.71,
+   "range_low_pct": -13.09,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 1.07,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 8.2,
+   "range_low_pct": -6.06,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "f687e210c042f8cf25a7565ff30eda7a08a822a0b03f101ff444fd7b407eb3ea",
+  "ensemble.json": "02a5d88381f5e5ffcc011aac0a0079088931f72ca84ebbcf11e90753c737f3e4"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0268,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+ "ticker": "CIRA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

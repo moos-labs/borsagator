@@ -1,0 +1,92 @@
+{
+ "job": {
+  "id": "w5-sweeplite-cira-001",
+  "job": "sweep-lite CIRA.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T11:41:53.634059+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-cira-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T11:41:53.634059+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "CIRA"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['CIRA']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T11:44:58.456512+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+  "model": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001/report-model.json",
+  "model_sha256": "44e93991ad74a3d34b86650b864588b02168136b858c9089ca54634ff8c20a1a",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/CIRA.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/CIRA.CA.json",
+   "sharia-row-missing: AAOIFI CIRA.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 CIRA.CA",
+   "sharia-row-missing: FTSE CIRA.CA",
+   "sharia-row-missing: ISLAMICLY CIRA.CA",
+   "sharia-row-missing: MSCI CIRA.CA",
+   "sharia-row-missing: MSCI_M CIRA.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "a92465c08197a279ac126253a1dcddb3c99baf74",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 126048,
+    "sha256": "82e60fc708335702bbf78c0d7ea547295bec4364fa4a1aa8e1ce6d0d911f7e94"
+   },
+   {
+    "path": "report.md",
+    "bytes": 26039,
+    "sha256": "b73efd17092dea6e94d0f1ce2446fd6980beab91f6344c7755081e92801e435a"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "CIRA.CA"
+ }
+}

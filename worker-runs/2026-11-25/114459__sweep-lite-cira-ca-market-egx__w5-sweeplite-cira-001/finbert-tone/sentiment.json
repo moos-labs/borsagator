@@ -1,0 +1,200 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 7,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 7
+  },
+  "label_counts_raw": {
+    "neutral": 7
+  },
+  "mean_probabilities": {
+    "positive": 2.68957738163473e-06,
+    "negative": 1.2157929680662554e-05,
+    "neutral": 0.9999851328986031
+  },
+  "items": [
+    {
+      "text": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.3102528555464232e-06,
+        "negative": 4.863891717832303e-06,
+        "neutral": 0.9999938011169434
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999938011169434
+        },
+        {
+          "label": "Negative",
+          "score": 4.863891717832303e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.3102528555464232e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Faroe Islands select Hello Registry to power .FO domain operations - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1446956705185585e-05,
+        "negative": 1.904994496726431e-05,
+        "neutral": 0.999969482421875
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999969482421875
+        },
+        {
+          "label": "Negative",
+          "score": 1.904994496726431e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.1446956705185585e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Aspen Group, Inc. (ASPU) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.9584523158755474e-07,
+        "negative": 7.809819635440363e-07,
+        "neutral": 0.999998927116394
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999998927116394
+        },
+        {
+          "label": "Negative",
+          "score": 7.809819635440363e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.9584523158755474e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Voting Opens for the 9th Canadian Podcast Awards After a Record Year of Nominations - Podnews",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.807395263625949e-07,
+        "negative": 2.7643004614219535e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.7643004614219535e-06
+        },
+        {
+          "label": "Positive",
+          "score": 7.807395263625949e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CIRA Education stock: FY 2025/ 26 results released - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.433457322898903e-06,
+        "negative": 1.5878682688708068e-06,
+        "neutral": 0.9999949932098389
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999949932098389
+        },
+        {
+          "label": "Positive",
+          "score": 3.433457322898903e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.5878682688708068e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "83% of Canadians are putting local businesses on their shopping lists this holiday season, CIRA data shows - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2190275811008178e-06,
+        "negative": 5.142645932210144e-06,
+        "neutral": 0.9999936819076538
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999936819076538
+        },
+        {
+          "label": "Negative",
+          "score": 5.142645932210144e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.2190275811008178e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cavco Industries president Cira sells $1.59 million in stock - Investing.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.4076244876123383e-07,
+        "negative": 5.0915874453494325e-05,
+        "neutral": 0.9999486207962036
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999486207962036
+        },
+        {
+          "label": "Negative",
+          "score": 5.0915874453494325e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.4076244876123383e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

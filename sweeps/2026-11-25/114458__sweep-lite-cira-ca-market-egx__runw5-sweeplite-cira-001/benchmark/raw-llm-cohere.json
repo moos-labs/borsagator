@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 38.0,
+ "base_source": "egx-data/egxpy_cira.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:44:58.779263+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_cira.csv": "1c739d16c2ba6d840e74fab73b6674a105fd8dc09567e17f68e2177ce432f7ff",
+  "digest.json": "f687e210c042f8cf25a7565ff30eda7a08a822a0b03f101ff444fd7b407eb3ea",
+  "ensemble.json": "02a5d88381f5e5ffcc011aac0a0079088931f72ca84ebbcf11e90753c737f3e4",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+ "ticker": "CIRA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

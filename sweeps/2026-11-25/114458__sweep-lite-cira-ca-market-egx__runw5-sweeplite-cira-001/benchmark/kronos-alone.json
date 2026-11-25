@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 38.0,
+ "base_source": "egx-data/egxpy_cira.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T11:44:58.772258+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.74,
+   "families": {
+    "price-forecast": -0.137
+   },
+   "horizon_short": false,
+   "net_score": -0.137,
+   "range_high_pct": 0.97,
+   "range_low_pct": -2.53,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -1.0,
+   "families": {
+    "price-forecast": -0.05
+   },
+   "horizon_short": false,
+   "net_score": -0.05,
+   "range_high_pct": 0.35,
+   "range_low_pct": -3.44,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.12,
+   "families": {
+    "price-forecast": 0.013
+   },
+   "horizon_short": false,
+   "net_score": 0.013,
+   "range_high_pct": 1.71,
+   "range_low_pct": -2.05,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "8da600c8083cc522187cbeca5232243c1ab93f93af60d02fbf6482edaa0c84dc",
+  "digest.json": "f687e210c042f8cf25a7565ff30eda7a08a822a0b03f101ff444fd7b407eb3ea",
+  "ensemble.json": "02a5d88381f5e5ffcc011aac0a0079088931f72ca84ebbcf11e90753c737f3e4"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0268,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+ "ticker": "CIRA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

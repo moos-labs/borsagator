@@ -1,0 +1,20 @@
+WARN body http 404: https://ca.finance.yahoo.com/quote/ASPU/
+WARN body http 403: https://www.investing.com/news/insider-trading-news/cavco-industries-president-cira-sells-
+bodies: 7/9 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/CIRA.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6251.94it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14585.48it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16645.35it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5943.87it/s]
+{"tool": "news-disclosure", "ticker": "CIRA.CA", "news_count": 9, "disclosure_count": 0, "arabic_headlines": 3, "latest_news_date": "Wed, 25 Nov 2026 02:10:14 GMT", "latest_disclosure_date": "", "top_headline": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de", "llm_provider": "extractive", "finbert_positive": 0.041, "finbert_negative": 0.028, "finbert_neutral": 0.931, "finbert_scored": 6, "multilingual_positive": 0.511, "multilingual_negative": 0.008, "multilingual_neutral": 0.481, "multilingual_scored": 3, "bodies_fetched": 7, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.437, "translated_negative": 0.014, "translated_neutral": 0.549, "translated_scored": 3}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 02:10:14 GMT] (ad-hoc-news.de) CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de
+- [Tue, 24 Nov 2026 09:15:51 GMT] (alqhat.com) «فايف ستار» للاستقدام بالقطيف تتيح سيرًا ذاتية متنوعة لعاملات منزليات من الفلبين - alqhat.com
+- [Mon, 23 Nov 2026 11:00:00 GMT] (Yahoo Finance) Faroe Islands select Hello Registry to power .FO domain operations - Yahoo Finance
+- [Sat, 21 Nov 2026 09:02:40 GMT] (الاقتصادي نيوز) سيرا تقود التحالف المصري للتعليم بمشاركة البنك الأهلي وليبيا للاستثمار و9 كيانات أخرى - الاقتصادي نيوز
+- [Fri, 20 Nov 2026 21:00:00 GMT] (Yahoo! Finance Canada) Aspen Group, Inc. (ASPU) Stock Price, News, Quote & History - Yahoo! Finance Canada
+- [Wed, 18 Nov 2026 02:01:37 GMT] (ad-hoc-news.de) CIRA Education stock: FY 2025/ 26 results released - ad-hoc-news.de
+- [Mon, 16 Nov 2026 13:00:00 GMT] (Yahoo Finance) 83% of Canadians are putting local businesses on their shopping lists this holiday season, CIRA data shows - Yahoo Finance
+- [Sat, 14 Nov 2026 08:01:05 GMT] (Investing.com) Cavco Industries president Cira sells $1.59 million in stock - Investing.com
