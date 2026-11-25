@@ -1466,7 +1466,7 @@ def main():
               "Per-cell fit of the calibration layer (trailing "
               f"{_band_cal.WINDOW} clean matured rows per cell; "
               "centre correction b = median realised - expected, "
-              "width factor k = 80th percentile of |residual - b| "
+              "width factor k = 85th percentile of |residual - b| "
               "/ half, shrunk toward the horizon pool). A cell "
               "ships uncalibrated until it or its pool reaches "
               f"n >= {_band_cal.MIN_N}.", ""]

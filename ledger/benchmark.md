@@ -50,7 +50,7 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 
 ## Band calibration (issue #593)
 
-Per-cell fit of the calibration layer (trailing 30 clean matured rows per cell; centre correction b = median realised - expected, width factor k = 80th percentile of |residual - b| / half, shrunk toward the horizon pool). A cell ships uncalibrated until it or its pool reaches n >= 10.
+Per-cell fit of the calibration layer (trailing 30 clean matured rows per cell; centre correction b = median realised - expected, width factor k = 85th percentile of |residual - b| / half, shrunk toward the horizon pool). A cell ships uncalibrated until it or its pool reaches n >= 10.
 
 | Ticker | Horizon | n | Coverage (as published) | Coverage (calibrated, in-window) | k | b (pp) | Basis |
 |---|---|---|---|---|---|---|---|
