@@ -184,7 +184,7 @@
   },
   {
    "category": "forecast",
-   "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 21 2>&1 | tee results/run.log",
+   "command": "mkdir -p results\nset -o pipefail; python scripts/kronos_forecast.py --ticker {ticker} --pred-len 35 2>&1 | tee results/run.log",
    "id": "kronos",
    "repo": "kronos-runner",
    "ref": "6964de99501d6fb855f253150f9421635d820c36",

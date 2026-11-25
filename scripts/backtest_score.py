@@ -176,16 +176,17 @@ def build_entrants(ens, kronos_path, kronos_first_date):
     # the row's own high/low.
     out["kronos-alone"] = {}
     if kronos and base:
-        for h, bar in bf.HORIZONS.items():
+        for h, sessions in bf.HORIZONS.items():
             hb = (ens.get("horizons") or {}).get(h)
             if not isinstance(hb, dict):
                 continue
+            bar = bf.horizon_bars(sessions, density)
             ka = bf.kronos_at(kronos, base, bar)
             if ka is None:
                 continue
             h_eff = hb.get("trading_sessions")
             if not isinstance(h_eff, int) or h_eff <= 0:
-                h_eff = max(1, round(bar * density))
+                h_eff = sessions
             vol_h = sigma * math.sqrt(h_eff)
             price_score = (max(-1.0, min(1.0, ka["move"] / (2.0 * vol_h)))
                            if vol_h > 0 else 0.0)
@@ -204,13 +205,13 @@ def build_entrants(ens, kronos_path, kronos_first_date):
     out["family-technicals"] = {}
     tech = fnum(scores.get("technicals"))
     if tech is not None:
-        for h, bar in bf.HORIZONS.items():
+        for h, sessions in bf.HORIZONS.items():
             hb = (ens.get("horizons") or {}).get(h)
             if not isinstance(hb, dict):
                 continue
             h_eff = hb.get("trading_sessions")
             if not isinstance(h_eff, int) or h_eff <= 0:
-                h_eff = max(1, round(bar * density))
+                h_eff = sessions
             vol_h = sigma * math.sqrt(h_eff)
             expected = ens_mod.expected_move(0.0, tech, vol_h)
             half = max(1.28 * vol_h, 0.0) * risk_mult * 1.0
@@ -225,13 +226,13 @@ def build_entrants(ens, kronos_path, kronos_first_date):
     # Buy-and-hold: mirror freeze_buy_and_hold — flat 0% with a
     # pure ±1.28σ√h_eff range.
     out["buy-and-hold"] = {}
-    for h, bar in bf.HORIZONS.items():
+    for h, sessions in bf.HORIZONS.items():
         hb = (ens.get("horizons") or {}).get(h)
         if not isinstance(hb, dict):
             continue
         h_eff = hb.get("trading_sessions")
         if not isinstance(h_eff, int) or h_eff <= 0:
-            h_eff = max(1, round(bar * density))
+            h_eff = sessions
         half_pct = 1.28 * sigma * math.sqrt(h_eff) * 100
         out["buy-and-hold"][h] = _horizon_block(
             "flat", 0.0, -half_pct, half_pct, None, None, {}, hb,
@@ -241,7 +242,7 @@ def build_entrants(ens, kronos_path, kronos_first_date):
     # reference scored on the index's own realised closes — see
     # score_capture). No confidence, no families.
     out["index-baseline"] = {}
-    for h, bar in bf.HORIZONS.items():
+    for h, sessions in bf.HORIZONS.items():
         hb = (ens.get("horizons") or {}).get(h)
         if not isinstance(hb, dict):
             continue

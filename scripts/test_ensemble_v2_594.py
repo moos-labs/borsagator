@@ -50,6 +50,20 @@ def test_constants():
     check("V2_SESSIONS == ledger.DEFAULT_SESSIONS",
           ens.V2_SESSIONS == led.DEFAULT_SESSIONS,
           "%r vs %r" % (ens.V2_SESSIONS, led.DEFAULT_SESSIONS))
+    # Issue #666: the horizon lengths themselves are the ledger's
+    # session counts, and the Kronos bar count derives FROM them
+    # (at density 5/7: day 1 -> bar 1, week 5 -> bar 7,
+    # month 21 -> bar 29) — never the other way round.
+    check("HORIZONS == ledger.DEFAULT_SESSIONS",
+          ens.HORIZONS == led.DEFAULT_SESSIONS,
+          "%r vs %r" % (ens.HORIZONS, led.DEFAULT_SESSIONS))
+    check("horizon_bars derives bars from sessions",
+          ens.horizon_bars(1, 5 / 7) == 1
+          and ens.horizon_bars(5, 5 / 7) == 7
+          and ens.horizon_bars(21, 5 / 7) == 29
+          and ens.horizon_bars(5, 1.0) == 5
+          and ens.horizon_bars(5, 0) == 5,
+          repr([ens.horizon_bars(s, 5 / 7) for s in (1, 5, 21)]))
     # Kronos weight 0 at every horizon; technicals 0 on day and a
     # capped 0.2 tilt on week/month.
     check("Kronos weight 0 everywhere",
