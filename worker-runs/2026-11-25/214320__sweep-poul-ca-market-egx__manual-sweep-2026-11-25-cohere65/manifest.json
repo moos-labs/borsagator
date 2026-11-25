@@ -1,0 +1,124 @@
+{
+ "job": {
+  "id": "manual-sweep-2026-11-25-cohere65",
+  "job": "sweep POUL.CA market=EGX",
+  "added": "2026-11-25T17:06:37.905632+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-25T21:26:09.138323+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "tradingagents": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "7dbce1e4d54fdcf8e948e341da4d3973c3bf4d997a19edc8021948e8788d91a5",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "manual-sweep-2026-11-25-cohere65",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T21:26:09.138323+00:00",
+  "tickers": {
+   "POUL": {
+    "refresh": "refreshed",
+    "detail": "harvested_at=2026-11-25T21:27:48Z items=10",
+    "harvested_at": "2026-11-25T21:27:48Z",
+    "items": 10,
+    "cache_age_hours": 0.0
+   }
+  },
+  "status": "ok",
+  "refresh_status": "ok",
+  "extraction": {
+   "POUL": {
+    "status": "extracted",
+    "events_file": "disclosure-events/POUL-events.json",
+    "events": 5,
+    "verified": 4,
+    "candidates": 1,
+    "by_type": {
+     "board_decision": 2,
+     "dividend": 1,
+     "earnings": 2
+    },
+    "harvested_at": "2026-11-25T21:27:48Z",
+    "quarter": {
+     "start": "2026-08-27",
+     "end": "2026-11-25"
+    },
+    "sweep_id": "manual-sweep-2026-11-25-cohere65",
+    "pdf_verification": {
+     "status": "skipped-no-attachments",
+     "summary": {},
+     "verification_file": null,
+     "detail": "no attachments dir on disk for this sweep (refresh was cached, or the harvest captured none)"
+    }
+   }
+  }
+ },
+ "finished": "2026-11-25T21:43:14.806723+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/214314__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-25-cohere65"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/214314__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-25-cohere65",
+  "model": "sweeps/2026-11-25/214314__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-25-cohere65/report-model.json",
+  "model_sha256": "0dfd6c415491033a2a1b6844f0731fb6e5d07a0ed6cef719644aa584cdf4588e",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-stale: profile as_of 2026-11-13 base 10.15 != sweep 2026-11-25 base 6.73",
+   "llm-provenance-missing: agent vote without provider/model",
+   "sharia-insufficient-data: AAOIFI",
+   "sharia-table-missing: DJIM",
+   "sharia-insufficient-data: EGX33",
+   "sharia-insufficient-data: FTSE",
+   "sharia-insufficient-data: ISLAMICLY",
+   "sharia-insufficient-data: MSCI",
+   "sharia-insufficient-data: MSCI_M",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 15,
+  "archive_commit": "955f0493ed2e94e52dc28d4b25a23aadda99f867",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/214314__sweep-poul-ca-market-egx__runmanual-sweep-2026-11-25-cohere65",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 226905,
+    "sha256": "97055cfb504811c59ee0c955b25b7ca06d3a9b879dab6a0dd47931aa7e7bcf2e"
+   },
+   {
+    "path": "report.md",
+    "bytes": 56918,
+    "sha256": "afb94558cb617b3ccb5854777d0c90846b43fdb9372fc09f2546f38e70376f18"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "POUL.CA"
+ }
+}

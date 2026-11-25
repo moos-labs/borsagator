@@ -1,0 +1,43 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "POUL.CA",
+    "fetched_at": "2026-11-25T21:43:13Z",
+    "tool": "news-disclosure",
+    "news_count": 29,
+    "disclosure_count": 10,
+    "arabic_headlines": 33,
+    "latest_news_date": "Tue, 24 Nov 2026 08:23:00 GMT",
+    "latest_disclosure_date": "2026-11-12",
+    "top_headline": "القاهرة للدواجن (POUL.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.173,
+    "finbert_negative": 0.182,
+    "finbert_neutral": 0.645,
+    "finbert_scored": 6,
+    "multilingual_positive": 0.434,
+    "multilingual_negative": 0.066,
+    "multilingual_neutral": 0.5,
+    "multilingual_scored": 33,
+    "bodies_fetched": 9,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 10,
+    "egx_harvest_source": "local-file",
+    "translation_provider": "cohere",
+    "translated_positive": 0.15,
+    "translated_negative": 0.181,
+    "translated_neutral": 0.668,
+    "translated_scored": 33
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tool": "financetoolkit",
+  "ticker": "POUL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "company": "Cairo Poultry Company (EGX: POUL)",
+    "input_csv": "data/poul_statements.csv"
+  },
+  "files": [
+    "ratios.json",
+    "report.md",
+    "run.log"
+  ]
+}

@@ -1,0 +1,402 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 15,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 13
+  },
+  "label_counts_raw": {
+    "neutral": 13,
+    "negative": 1,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.06574782380232105,
+    "negative": 0.06672769085603629,
+    "neutral": 0.8675244725580948
+  },
+  "items": [
+    {
+      "text": "Poul Sejr Nielsen Service A/S and Poul Sejr Nielsen EL A/S are now part of InstallatørGruppen - The Manila Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.997725895819258e-08,
+        "negative": 2.999554453708697e-06,
+        "neutral": 0.9999970197677612
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999970197677612
+        },
+        {
+          "label": "Negative",
+          "score": 2.999554453708697e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.997725895819258e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Celebrating Poul Anderson at 100: Five Favorite Short Works - reactormag.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0008416661876253784,
+        "negative": 4.089840149390511e-05,
+        "neutral": 0.9991174340248108
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9991174340248108
+        },
+        {
+          "label": "Positive",
+          "score": 0.0008416661876253784
+        },
+        {
+          "label": "Negative",
+          "score": 4.089840149390511e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Poul Sejr Nielsen Service, Poul Sejr Nielsen El Join Installatørgruppen - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.309813744247549e-08,
+        "negative": 2.497559080438805e-06,
+        "neutral": 0.9999974966049194
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999974966049194
+        },
+        {
+          "label": "Negative",
+          "score": 2.497559080438805e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.309813744247549e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: Nine-month net profit falls 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 8.117237302940339e-05,
+        "negative": 0.9996263980865479,
+        "neutral": 0.00029240635922178626
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9996263980865479
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00029240635922178626
+        },
+        {
+          "label": "Positive",
+          "score": 8.117237302940339e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "St. Vincent de Paul High School (Petaluma, CA) Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.814344537062425e-08,
+        "negative": 8.068172974162735e-06,
+        "neutral": 0.999991774559021
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999991774559021
+        },
+        {
+          "label": "Negative",
+          "score": 8.068172974162735e-06
+        },
+        {
+          "label": "Positive",
+          "score": 9.814344537062425e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "WHL Hat-Tricks – Poul Andersen - Canadian Hockey League",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.5141844187382958e-06,
+        "negative": 9.449255594518036e-05,
+        "neutral": 0.9999039173126221
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999039173126221
+        },
+        {
+          "label": "Negative",
+          "score": 9.449255594518036e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.5141844187382958e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rand Paul | Biography & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.688606400624849e-05,
+        "negative": 0.0005428410950116813,
+        "neutral": 0.999430239200592
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999430239200592
+        },
+        {
+          "label": "Negative",
+          "score": 0.0005428410950116813
+        },
+        {
+          "label": "Positive",
+          "score": 2.688606400624849e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Videos - Cathedral Phantoms (Los Angeles, CA) Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.351381738208147e-07,
+        "negative": 4.0574818740424234e-06,
+        "neutral": 0.9999957084655762
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999957084655762
+        },
+        {
+          "label": "Negative",
+          "score": 4.0574818740424234e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.351381738208147e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rebels Poul Andersen scores overtime winner against Hurricanes - rdnewsnow.com",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.985231876373291,
+        "negative": 8.181282464647666e-05,
+        "neutral": 0.01468629576265812
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.985231876373291
+        },
+        {
+          "label": "Neutral",
+          "score": 0.01468629576265812
+        },
+        {
+          "label": "Negative",
+          "score": 8.181282464647666e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry Company S.A.E. Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.9936486498627346e-06,
+        "negative": 6.817581743234769e-05,
+        "neutral": 0.9999288320541382
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999288320541382
+        },
+        {
+          "label": "Negative",
+          "score": 6.817581743234769e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.9936486498627346e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo University Launches the 2nd Int'l Conference on Biotechnology and Sustainable Agricultural Development - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.3254743862489704e-05,
+        "negative": 7.491926794500614e-07,
+        "neutral": 0.9999860525131226
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999860525131226
+        },
+        {
+          "label": "Positive",
+          "score": 1.3254743862489704e-05
+        },
+        {
+          "label": "Negative",
+          "score": 7.491926794500614e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.49382731251535e-06,
+        "negative": 2.0036950445501134e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.0036950445501134e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.49382731251535e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "All About Paul McCartney’s 5 Children, Heather, Mary, Stella, James and Beatrice - People.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.91699494079512e-07,
+        "negative": 2.6575180527288467e-05,
+        "neutral": 0.9999724626541138
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999724626541138
+        },
+        {
+          "label": "Negative",
+          "score": 2.6575180527288467e-05
+        },
+        {
+          "label": "Positive",
+          "score": 9.91699494079512e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Paul Rosa Obituary - Edmonton, AB - Dignity Memorial",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4789237866352778e-05,
+        "negative": 0.00039342703530564904,
+        "neutral": 0.9995917677879333
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9995917677879333
+        },
+        {
+          "label": "Negative",
+          "score": 0.00039342703530564904
+        },
+        {
+          "label": "Positive",
+          "score": 1.4789237866352778e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Childcare paedophile Ashley Paul Griffith extradited to NSW - ABC News & Headlines – Australian Broadcasting Corporation",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.1233824415721756e-07,
+        "negative": 2.0366187527542934e-05,
+        "neutral": 0.9999792575836182
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999792575836182
+        },
+        {
+          "label": "Negative",
+          "score": 2.0366187527542934e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.1233824415721756e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
