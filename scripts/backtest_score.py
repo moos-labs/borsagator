@@ -159,13 +159,30 @@ def build_entrants(ens, kronos_path, kronos_first_date):
 
     # 2-family ensemble: the ensemble's own horizons, verbatim.
     out["2-family-ensemble"] = {}
+    # #689: skipped horizons recorded here as (entrant, horizon,
+    # reason) and drained into the capture's gaps by score_capture,
+    # so a skip is never silent.
+    build_entrants.range_gaps = []
     for h in ledger.HORIZONS:
         hb = (ens.get("horizons") or {}).get(h)
         if not isinstance(hb, dict):
             continue
+        # #689: the range fields go through fnum() — a NaN or a
+        # non-numeric string becomes None (the row then carries no
+        # range and no interval score) instead of crashing round()
+        # here or poisoning the Winkler score downstream. An
+        # inverted range skips the horizon with an explicit gap.
+        rlo, rhi = (fnum(hb.get("range_low_pct")),
+                    fnum(hb.get("range_high_pct")))
+        if rlo is not None and rhi is not None and rhi < rlo:
+            build_entrants.range_gaps.append((
+                "2-family-ensemble", h,
+                "inverted range (high %.2f < low %.2f) — horizon "
+                "skipped (#689)" % (rhi, rlo)))
+            continue
         out["2-family-ensemble"][h] = _horizon_block(
             hb.get("direction"), hb.get("expected_move_pct"),
-            hb.get("range_low_pct"), hb.get("range_high_pct"),
+            rlo, rhi,
             hb.get("confidence"), hb.get("net_score"),
             {k: fnum(v) for k, v in (hb.get("families") or {}).items()
              if fnum(v) is not None},
@@ -192,9 +209,20 @@ def build_entrants(ens, kronos_path, kronos_first_date):
                            if vol_h > 0 else 0.0)
             i = min(bar, len(kronos)) - 1
             _c, _h, _l = kronos[i]
+            klo, khi = (_l / base - 1) * 100, (_h / base - 1) * 100
+            # #689: a Kronos row with high < low is bad data — skip
+            # the horizon with an explicit gap instead of scoring a
+            # negative-width interval.
+            if khi < klo:
+                build_entrants.range_gaps.append((
+                    "kronos-alone", h,
+                    "inverted range from the Kronos row (high %.2f "
+                    "< low %.2f) — horizon skipped (#689)"
+                    % (khi, klo)))
+                continue
             out["kronos-alone"][h] = _horizon_block(
                 bf.direction_of(ka["move"]), ka["move"] * 100,
-                (_l / base - 1) * 100, (_h / base - 1) * 100,
+                klo, khi,
                 None, round(price_score, 3),
                 {"price-forecast": round(price_score, 3)},
                 hb, hb.get("trading_sessions"))
@@ -285,10 +313,31 @@ def build_entrants(ens, kronos_path, kronos_first_date):
             continue
         tilt = fnum(hb.get("tilt_centre_pct"))
         if tilt is None:
+            # #689: an explicit gap entry, not a silent skip.
+            build_entrants.range_gaps.append((
+                "tilt-technicals", h,
+                "no usable tilt_centre_pct — horizon skipped (#689)"))
             continue
-        half_pct = (hb.get("range_high_pct") - hb.get("range_low_pct")) / 2
-        if half_pct is None:
+        # #689: fnum() the band reads — the old raw subtraction
+        # crashed on a None field and let a NaN through into the
+        # scored range (the "if half_pct is None" check below was
+        # dead code: the subtraction raises before it).
+        rlo, rhi = (fnum(hb.get("range_low_pct")),
+                    fnum(hb.get("range_high_pct")))
+        if rlo is None or rhi is None:
+            build_entrants.range_gaps.append((
+                "tilt-technicals", h,
+                "ensemble range missing or non-finite (low %r, "
+                "high %r) — horizon skipped (#689)"
+                % (hb.get("range_low_pct"), hb.get("range_high_pct"))))
             continue
+        if rhi < rlo:
+            build_entrants.range_gaps.append((
+                "tilt-technicals", h,
+                "inverted ensemble range (high %.2f < low %.2f) — "
+                "horizon skipped (#689)" % (rhi, rlo)))
+            continue
+        half_pct = (rhi - rlo) / 2
         out["tilt-technicals"][h] = _horizon_block(
             bf.direction_of(tilt / 100), tilt,
             tilt - half_pct, tilt + half_pct, None,
@@ -397,6 +446,14 @@ def score_capture(capture_dir):
     kronos_path, kronos_first = read_kronos_path(
         os.path.join(capture_dir, "collected/kronos/forecast.csv"))
     entrants = build_entrants(ens, kronos_path, kronos_first)
+    # #689: explicit gap entries for every horizon build_entrants
+    # skipped (missing tilt, non-finite or inverted range); the
+    # generic "has no horizon" line below is suppressed for these
+    # so each skip is reported once, with its reason.
+    explained_skips = set()
+    for entrant, h, reason in getattr(build_entrants, "range_gaps", []):
+        gaps.append("%s: %s %s: %s" % (rel, entrant, h, reason))
+        explained_skips.add((entrant, h))
     if getattr(build_entrants, "naive_sigma60_gap", False):
         # The naive-range baseline fell back to sigma_daily because
         # the capture predates sigma60_daily (#594) — the gate
@@ -490,8 +547,9 @@ def score_capture(capture_dir):
         for h in ledger.HORIZONS:
             hb = (entrants.get(entrant) or {}).get(h)
             if not isinstance(hb, dict):
-                gaps.append("%s: %s has no %s horizon — no row"
-                            % (rel, entrant, h))
+                if (entrant, h) not in explained_skips:
+                    gaps.append("%s: %s has no %s horizon — no row"
+                                % (rel, entrant, h))
                 continue
             if entrant == "index-baseline" and index_gap:
                 continue  # no usable index evidence — see above
