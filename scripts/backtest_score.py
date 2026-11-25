@@ -23,7 +23,7 @@ itself):
   from the capture's index closes).
 
 Scoring is by the ledger's session counts (day 1 / week 5 /
-month 14, ledger.DEFAULT_SESSIONS), not the ensemble's Kronos
+month 21, ledger.DEFAULT_SESSIONS), not the ensemble's Kronos
 bars; the forecast's own session count is recorded per row as
 sessions_forecast (design §1.1).
 
@@ -308,7 +308,7 @@ def score_capture(capture_dir):
     kronos_path, kronos_first = read_kronos_path(
         os.path.join(capture_dir, "collected/kronos/forecast.csv"))
     entrants = build_entrants(ens, kronos_path, kronos_first)
-    # Series for scoring: the C close plus the 14 realised
+    # Series for scoring: the C close plus the 21 realised
     # sessions (design §1.4.4 — fetched separately, never visible
     # to the forecast). Provenance is a single backtest source;
     # own_sweep is a value that never appears in it, so every
