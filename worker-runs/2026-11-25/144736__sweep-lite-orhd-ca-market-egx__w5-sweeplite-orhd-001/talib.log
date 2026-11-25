@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "ORHD.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 4681,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 9.979999542236328,
+  "indicators": {
+    "RSI_14": 27.620372758513597,
+    "MACD": -1.489627096319552,
+    "MACD_signal": -2.065912737493774,
+    "MACD_hist": 0.5762856411742221,
+    "EMA_20": 10.768765343433156,
+    "EMA_50": 16.524038712160067,
+    "ADX_14": 56.89056609733437
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-22",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

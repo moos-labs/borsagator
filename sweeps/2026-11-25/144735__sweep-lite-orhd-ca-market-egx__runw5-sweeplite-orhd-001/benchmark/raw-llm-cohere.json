@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 10.38,
+ "base_source": "egx-data/egxpy_orhd.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T14:47:35.930304+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_orhd.csv": "2fa54a9222868d200c623223abbed3dc44fc9709352984fe62416783cbf81d5a",
+  "digest.json": "7b75c6e75e307c67c8930be5fdad9dcd12753f6ded8c452b26a0a9ac01f67a38",
+  "ensemble.json": "e38a23b8bddef1603ec7149bd2646356422c9782fc8647e0e76764bdf812e148",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/144735__sweep-lite-orhd-ca-market-egx__runw5-sweeplite-orhd-001",
+ "ticker": "ORHD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

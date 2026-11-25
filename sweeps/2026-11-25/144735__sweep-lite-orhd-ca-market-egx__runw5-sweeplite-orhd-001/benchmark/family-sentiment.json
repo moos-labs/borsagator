@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 10.38,
+ "base_source": "egx-data/egxpy_orhd.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: sentiment score null in every horizon",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-25T14:47:35.918653+00:00",
+ "inputs_sha256": {
+  "digest.json": "7b75c6e75e307c67c8930be5fdad9dcd12753f6ded8c452b26a0a9ac01f67a38",
+  "ensemble.json": "e38a23b8bddef1603ec7149bd2646356422c9782fc8647e0e76764bdf812e148"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/144735__sweep-lite-orhd-ca-market-egx__runw5-sweeplite-orhd-001",
+ "ticker": "ORHD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

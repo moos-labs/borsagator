@@ -1,0 +1,415 @@
+{
+  "job": "sweep-lite ORHD.CA market=EGX",
+  "ticker": "ORHD.CA",
+  "date": "2026-11-25",
+  "started": "2026-11-25T14:45:39.881295+00:00",
+  "finished": "2026-11-25T14:47:35.622636+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ORHD.CA.csv": 1208,
+          "ORHD.CA.csv_last_date": "2026-11-23",
+          "ORHD.CA.csv_last_close": "9.979999542236328"
+        },
+        "files": [
+          "ORHD.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ORHD_CA.csv": 484,
+          "ORHD_CA.csv_last_date": "2026-11-24",
+          "ORHD_CA.csv_last_close": "9.979999542236328"
+        },
+        "files": [
+          "ORHD_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ORHD.CA",
+          "symbol": "ORHD",
+          "rows_egxpy_orhd.csv": 3000,
+          "egxpy_orhd.csv_last_date": "2026-11-25",
+          "egxpy_orhd.csv_last_close": "10.38"
+        },
+        "files": [
+          "egxpy_orhd.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ORHD.CA",
+          "date": "2026-11-24",
+          "open": 9.98,
+          "high": 9.98,
+          "low": 9.98,
+          "close": 9.98,
+          "rsi_14": 27.6204,
+          "macd": -1.4896,
+          "macd_signal": -2.0659,
+          "macd_hist": 0.5763,
+          "ema_20": 10.7688,
+          "ema_50": 16.524,
+          "ema_200": 26.2799,
+          "adx_14": 56.8906,
+          "bb_upper": 10.7645,
+          "bb_mid": 10.114,
+          "bb_lower": 9.4635,
+          "bb_pctb": 0.397,
+          "atr_14": 0.5668,
+          "stoch_k": 40.0868,
+          "stoch_d": 52.1069,
+          "rows_fetched": 4681,
+          "rows_used": 1929,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "9.979999542236328"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ORHD.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 4681,
+          "rows_used": 1929,
+          "last_date": "2026-11-24",
+          "last_close": 9.979999542236328,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "9.979999542236328"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2436,
+          "poul_ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-22",
+          "forecast.csv_last_close": "9.9439"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "ORHD.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-orhd-001",
+      "claim_id": "w5-sweeplite-orhd-001",
+      "detail": "ERROR: no items fetched from any source"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ]
+  }
+}

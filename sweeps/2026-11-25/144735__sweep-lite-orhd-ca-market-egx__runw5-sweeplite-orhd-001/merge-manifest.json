@@ -1,0 +1,29 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite ORHD.CA market=EGX",
+  "job_shape": "sweep-lite ORHD.CA market=EGX",
+  "claim_id": "w5-sweeplite-orhd-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-orhd-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/144735__sweep-lite-orhd-ca-market-egx__runw5-sweeplite-orhd-001",
+  "finished": "2026-11-25T14:47:35.622636+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}
