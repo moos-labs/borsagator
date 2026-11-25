@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w5-sweeplite-acgc-001",
+  "job": "sweep-lite ACGC.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T10:58:09.606918+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-acgc-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T10:58:09.606918+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ACGC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ACGC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T11:00:09.401937+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001",
+  "model": "sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001/report-model.json",
+  "model_sha256": "0b8bb5e8248f9185f7ae9d2801e77b162e3b67ee2c53ac5a5e1774376624e4d0",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/ACGC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ACGC.CA.json",
+   "sharia-row-missing: AAOIFI ACGC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ACGC.CA",
+   "sharia-row-missing: FTSE ACGC.CA",
+   "sharia-row-missing: ISLAMICLY ACGC.CA",
+   "sharia-row-missing: MSCI ACGC.CA",
+   "sharia-row-missing: MSCI_M ACGC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "da51e831d10ba51f14c9f169540cc1b92ce394c4",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 115539,
+    "sha256": "c5b4111c924949f538d21b5853ed033a270a143dee32e8aef44426fd7c5fac6d"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23843,
+    "sha256": "dfbf62e2bae7a0ebc63d6b39748f1a9b33713190cea40801ab56d93ee56aef92"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ACGC.CA"
+ }
+}

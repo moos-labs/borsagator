@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 13.81,
+ "base_source": "egx-data/egxpy_acgc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:00:09.710115+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_acgc.csv": "9dfdb3442ebeaada134b0bd5d0ada2ed37e41e76d70392983f28eb44f4324334",
+  "digest.json": "df22c77d0c514da01f9b35cf7f1a61f1e11aa1b3e96b8bb330589fec2012217a",
+  "ensemble.json": "b9acc507a1ea3f3e9cbccb04bca9eeec5eb9f33be9f1dae2ec174c89120b4c47",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001",
+ "ticker": "ACGC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
