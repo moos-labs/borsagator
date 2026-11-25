@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 140.1,
+ "base_source": "egx-data/egxpy_etel.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-25T12:40:34.733927+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.58,
+   "range_low_pct": -3.58,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 13.41,
+   "range_low_pct": -13.41,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 6.21,
+   "range_low_pct": -6.21,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "959da09d55fcfcc02ee3477224a4165149545cf5766dd8106a3c93c6cb962d86",
+  "ensemble.json": "80515428e7dfe735863a04fa65eb99c3e747819622eedb226f2faf836c790696"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.028,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001",
+ "ticker": "ETEL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,702 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 27,
+  "label_counts": {
+    "positive": 7,
+    "negative": 1,
+    "neutral": 19
+  },
+  "label_counts_raw": {
+    "neutral": 19,
+    "positive": 7,
+    "negative": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.2661942138008297,
+    "negative": 0.03711100980504282,
+    "neutral": 0.6966947675226095
+  },
+  "items": [
+    {
+      "text": "Syria and Egypt explore telecom cooperation and digital infrastructure projects - Telecompaper",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.547272667172365e-05,
+        "negative": 8.775988135312218e-06,
+        "neutral": 0.9999357461929321
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999357461929321
+        },
+        {
+          "label": "Positive",
+          "score": 5.547272667172365e-05
+        },
+        {
+          "label": "Negative",
+          "score": 8.775988135312218e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Tamer El Mahdi - The CEO Magazine",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.525470310705714e-05,
+        "negative": 0.003244844963774085,
+        "neutral": 0.9967198967933655
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9967198967933655
+        },
+        {
+          "label": "Negative",
+          "score": 0.003244844963774085
+        },
+        {
+          "label": "Positive",
+          "score": 3.525470310705714e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The Wedding of Shlomo Baitman and Chana Etel Derkach Has Taken Place! Mazel Tov! - djc.com.ua",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.7902586225536652e-05,
+        "negative": 0.0010983400279656053,
+        "neutral": 0.998873770236969
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.998873770236969
+        },
+        {
+          "label": "Negative",
+          "score": 0.0010983400279656053
+        },
+        {
+          "label": "Positive",
+          "score": 2.7902586225536652e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt SAE (CAI:ETEL) (Q3 2026) Earnings Call Highlights: - GuruFocus",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00037584119127132,
+        "negative": 1.0719781130319461e-05,
+        "neutral": 0.9996134638786316
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9996134638786316
+        },
+        {
+          "label": "Positive",
+          "score": 0.00037584119127132
+        },
+        {
+          "label": "Negative",
+          "score": 1.0719781130319461e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Q3 2026 Results: Telecom Egypt Delivers Strong 9M 2026 Results as Strategy Execution Progresses - WebWire",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 2.461806092313168e-09,
+        "neutral": 7.26104731896271e-09
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Neutral",
+          "score": 7.26104731896271e-09
+        },
+        {
+          "label": "Negative",
+          "score": 2.461806092313168e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt's Net Profit Rises 44% to EGP 24.4 Billion - CairoScene",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999996423721313,
+        "negative": 3.72056838671142e-08,
+        "neutral": 3.206604333172436e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999996423721313
+        },
+        {
+          "label": "Neutral",
+          "score": 3.206604333172436e-07
+        },
+        {
+          "label": "Negative",
+          "score": 3.72056838671142e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Revenue Rises 19% to EGP 93.6 Billion in 9M 2026 - TechAfrica News",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999995231628418,
+        "negative": 1.2621033995685593e-08,
+        "neutral": 4.6802071551610425e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999995231628418
+        },
+        {
+          "label": "Neutral",
+          "score": 4.6802071551610425e-07
+        },
+        {
+          "label": "Negative",
+          "score": 1.2621033995685593e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Joins MSCI Global Standard Index for Emerging Markets - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.4266440707142465e-06,
+        "negative": 8.115574928524438e-06,
+        "neutral": 0.9999884366989136
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999884366989136
+        },
+        {
+          "label": "Negative",
+          "score": 8.115574928524438e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.4266440707142465e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt (EGS48031C016.CA) Q3 FY2026 earnings call transcript - Yahoo Finance",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.221656126901507e-06,
+        "negative": 4.045397145091556e-05,
+        "neutral": 0.999955415725708
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999955415725708
+        },
+        {
+          "label": "Negative",
+          "score": 4.045397145091556e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.221656126901507e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ETEL: Revenue, profit, and cash flow surged as digital infrastructure investment advanced - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 8.82412543035116e-09,
+        "neutral": 9.674451462160505e-09
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Neutral",
+          "score": 9.674451462160505e-09
+        },
+        {
+          "label": "Negative",
+          "score": 8.82412543035116e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Company Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.3501619378075702e-06,
+        "negative": 1.4382635526999366e-05,
+        "neutral": 0.9999842643737793
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999842643737793
+        },
+        {
+          "label": "Negative",
+          "score": 1.4382635526999366e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.3501619378075702e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "REG - Telecom Egypt S.A.E - TE Announced Q3 2026 FS & Earnings Release - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.0694872091553407e-06,
+        "negative": 3.166102715113084e-06,
+        "neutral": 0.9999947547912598
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999947547912598
+        },
+        {
+          "label": "Negative",
+          "score": 3.166102715113084e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.0694872091553407e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt's revenue increases 19% in Q3, EBITDA margin expands to 46% - Telecompaper",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 9.385026089603343e-10,
+        "neutral": 2.7029247728904693e-09
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Neutral",
+          "score": 2.7029247728904693e-09
+        },
+        {
+          "label": "Negative",
+          "score": 9.385026089603343e-10
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Arab Contractors FC vs WE SC live score, H2H and lineups - Sofascore",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.184697773889638e-06,
+        "negative": 5.874692760698963e-06,
+        "neutral": 0.9999849796295166
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999849796295166
+        },
+        {
+          "label": "Positive",
+          "score": 9.184697773889638e-06
+        },
+        {
+          "label": "Negative",
+          "score": 5.874692760698963e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Partners Suez Canal Zone to Expand Digital Services - TechAfrica News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.004470637533813715,
+        "negative": 3.041072704945691e-05,
+        "neutral": 0.9954989552497864
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9954989552497864
+        },
+        {
+          "label": "Positive",
+          "score": 0.004470637533813715
+        },
+        {
+          "label": "Negative",
+          "score": 3.041072704945691e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "SCZone brings in Telecom Egypt to end network downtime for factories and terminals across its ports and zones - EnterpriseAM",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 3.582885710784467e-06,
+        "negative": 0.9967940449714661,
+        "neutral": 0.0032023333478718996
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9967940449714661
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0032023333478718996
+        },
+        {
+          "label": "Positive",
+          "score": 3.582885710784467e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt pushes beyond connectivity - ITWeb Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.21705159544944763,
+        "negative": 0.0005750120617449284,
+        "neutral": 0.7823733687400818
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.7823733687400818
+        },
+        {
+          "label": "Positive",
+          "score": 0.21705159544944763
+        },
+        {
+          "label": "Negative",
+          "score": 0.0005750120617449284
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "SCZone, Telecom Egypt sign deal to upgrade digital services - Egyptian Gazette",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.676076736766845e-05,
+        "negative": 3.418167034396902e-05,
+        "neutral": 0.9998990297317505
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998990297317505
+        },
+        {
+          "label": "Positive",
+          "score": 6.676076736766845e-05
+        },
+        {
+          "label": "Negative",
+          "score": 3.418167034396902e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt outlines 2027 financial targets - Africa Business Communities",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.500730821950128e-07,
+        "negative": 3.3240235097764526e-07,
+        "neutral": 0.9999990463256836
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999990463256836
+        },
+        {
+          "label": "Positive",
+          "score": 5.500730821950128e-07
+        },
+        {
+          "label": "Negative",
+          "score": 3.3240235097764526e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Board Approves The 2027 Budget With KPI Guidance - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1994425221928395e-06,
+        "negative": 8.331866411026567e-06,
+        "neutral": 0.9999904632568359
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999904632568359
+        },
+        {
+          "label": "Negative",
+          "score": 8.331866411026567e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.1994425221928395e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt approves 2027 budget with low double-digit revenue growth guidance - Telecompaper",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9922588467597961,
+        "negative": 3.151592318317853e-05,
+        "neutral": 0.007709643803536892
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9922588467597961
+        },
+        {
+          "label": "Neutral",
+          "score": 0.007709643803536892
+        },
+        {
+          "label": "Negative",
+          "score": 3.151592318317853e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom Egypt Appoints Ashraf Abdeen as Executive Vice President, Chief International and Wholesale Officer - Telecom Review Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.493454864335945e-07,
+        "negative": 1.734565375954844e-05,
+        "neutral": 0.9999819993972778
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999819993972778
+        },
+        {
+          "label": "Negative",
+          "score": 1.734565375954844e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.493454864335945e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt committed to state asset sales after Banque du Caire’s record IPO: Madbouly - Economy - Business - Ahram Online",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00015444606833625585,
+        "negative": 5.472009797813371e-05,
+        "neutral": 0.9997908473014832
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997908473014832
+        },
+        {
+          "label": "Positive",
+          "score": 0.00015444606833625585
+        },
+        {
+          "label": "Negative",
+          "score": 5.472009797813371e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Prices for fixed-line internet packages in Egypt following the doubling of the base package - Egypt Independent",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9726094603538513,
+        "negative": 5.180439529794967e-06,
+        "neutral": 0.02738523855805397
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9726094603538513
+        },
+        {
+          "label": "Neutral",
+          "score": 0.02738523855805397
+        },
+        {
+          "label": "Negative",
+          "score": 5.180439529794967e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Telecom news: KCOM, Ofcom, Egypt Submarine Cable, Virgin Media O2 - TelecomLead",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.933292708145018e-07,
+        "negative": 8.334038170687563e-07,
+        "neutral": 0.999998927116394
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999998927116394
+        },
+        {
+          "label": "Negative",
+          "score": 8.334038170687563e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.933292708145018e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Banque du Caire’s EGP 36.4 bln flotation puts Egypt’s landmark IPOs in perspective - Economy - Business - Ahram Online",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00011195095430593938,
+        "negative": 7.675766937609296e-06,
+        "neutral": 0.9998804330825806
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998804330825806
+        },
+        {
+          "label": "Positive",
+          "score": 0.00011195095430593938
+        },
+        {
+          "label": "Negative",
+          "score": 7.675766937609296e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The 5 Largest Telecom Groups In Arab Markets In 2026 - Forbes Middle East",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1027004376273908e-07,
+        "negative": 2.9439620448101778e-06,
+        "neutral": 0.9999969005584717
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999969005584717
+        },
+        {
+          "label": "Negative",
+          "score": 2.9439620448101778e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.1027004376273908e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

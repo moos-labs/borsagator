@@ -1,0 +1,1725 @@
+{
+  "archive_commit": "cf521e842e9644c29766522f391a67bf93b8a6e0",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "2dbcff2068bcc6af31b928585023a42c16f687190a61cf55303d61ba9de9e408",
+      "family-agent.json": "da8fa74bcb656e342a091925a7485bdaa6ca6adb74fa1a46e85676fe4a47e615",
+      "family-fundamentals.json": "400a7376e4ca5fc11a67009b168f6cf59aa4fb9c86b817462211bd9ee3166b4e",
+      "family-price-forecast.json": "5e9241bdf69efcfe02c0c856dafe163a2a91f95ec1f31223a36801a687a87206",
+      "family-sentiment.json": "68d4ef0d2b52c7c90dcf8489bd9629c54d554be6c84095afeaa41cb4a883e25c",
+      "family-technicals.json": "097b788e8730f15bcf353c72463e278d15688780a03abd32f1bc6b1e611d3c32",
+      "kronos-alone.json": "abe28832979abec2b3bb27167cc996a2311a45fe4372f039ccbbdef43c80af0b",
+      "raw-llm-cohere.json": "154f06b6a60ba94a7f99a2f89faec37a902d57285b9f780223598fa106981567"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ETEL-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 140.1,
+    "base_source": "egx-data/egxpy_etel.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": 0.046,
+      "sentiment": 0.361,
+      "technicals": 0.3
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.25,
+        "families": {
+          "price-forecast": -0.03,
+          "sentiment": 0.361,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.1694,
+        "net_score": 0.242,
+        "range_high_pct": 6.04,
+        "range_low_pct": -5.55,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.8037
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.55,
+        "families": {
+          "fundamentals": 0.15,
+          "price-forecast": 0.046,
+          "sentiment": 0.361,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.9729,
+        "net_score": 0.181,
+        "range_high_pct": 22.68,
+        "range_low_pct": -19.57,
+        "trading_sessions": 14,
+        "vol_h_pct": 10.4904
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.29,
+        "families": {
+          "price-forecast": 0.104,
+          "sentiment": 0.361,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.0113,
+        "net_score": 0.275,
+        "range_high_pct": 11.09,
+        "range_low_pct": -8.51,
+        "trading_sessions": 3,
+        "vol_h_pct": 4.8561
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_etel.csv",
+      "base_stale": false,
+      "base_used": 140.1,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_etel.csv": 139.98,
+        "openbb/etel_ca.csv": 139.97999572753906,
+        "pandas-ta/indicators.csv": 139.97999572753906,
+        "talib/indicators.csv": 139.97999572753906,
+        "yahooquery/etel.ca.csv": 139.97999572753906
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "Tamer El Mahdi - The CEO Magazine",
+          "type": "management"
+        },
+        {
+          "severity": "high",
+          "title": "شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "management event: Tamer El Mahdi - The CEO Magazine",
+        "earnings event: شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.23,
+        "max3": 0.77
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.028,
+    "sigma_source": "egx-data/egxpy_etel.csv (σ60=0.0280, σ10=0.0223)",
+    "ticker": "ETEL.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": 0.046,
+    "sentiment": 0.361,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-25T12:40:34.375641+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ETEL.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ETEL.CA.json",
+    "sharia-row-missing: AAOIFI ETEL.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ETEL.CA",
+    "sharia-row-missing: FTSE ETEL.CA",
+    "sharia-row-missing: ISLAMICLY ETEL.CA",
+    "sharia-row-missing: MSCI ETEL.CA",
+    "sharia-row-missing: MSCI_M ETEL.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.25,
+      "families": {
+        "price-forecast": -0.03,
+        "sentiment": 0.361,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.1694,
+      "net_score": 0.242,
+      "range_high_pct": 6.04,
+      "range_low_pct": -5.55,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.8037
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.55,
+      "families": {
+        "fundamentals": 0.15,
+        "price-forecast": 0.046,
+        "sentiment": 0.361,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.9729,
+      "net_score": 0.181,
+      "range_high_pct": 22.68,
+      "range_low_pct": -19.57,
+      "trading_sessions": 14,
+      "vol_h_pct": 10.4904
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.29,
+      "families": {
+        "price-forecast": 0.104,
+        "sentiment": 0.361,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.0113,
+      "net_score": 0.275,
+      "range_high_pct": 11.09,
+      "range_low_pct": -8.51,
+      "trading_sessions": 3,
+      "vol_h_pct": 4.8561
+    }
+  },
+  "job": "sweep-lite ETEL.CA market=EGX",
+  "job_shape": "sweep-lite ETEL.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 155.6371,
+    "support": 128.1775
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 11,
+    "disclosure_items": [
+      {
+        "date": "Thu, 05 Nov 2026 07:31:27 GMT",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297084",
+        "key_type": "resolved_url",
+        "source": "Mubasher",
+        "title": "العنوان: المصرية للاتصالات (ETEL.CA) قرارات مجلس ادارة الشركةاسم الشركة: المصرية للاتصالاتكود الترقيم الدولي: EGS48031C016كود رويترز: - Mubasher"
+      },
+      {
+        "date": "Mon, 02 Nov 2026 08:00:00 GMT",
+        "identity_key": "d75f1b057fa10615",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "العنوان : المصرية للاتصالات (ETEL.CA) - بيان من الشركةاسم الشركة: المصرية للاتصالاتكود الترقيم الدولي: EGS48031C016كود رويترز: ETEL. - Mubasher"
+      },
+      {
+        "date": "2026-11-19",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=298225",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "بيان من المصرية للاتصالات (ETEL.CA) بخصوص إطارها التنظيمي"
+      },
+      {
+        "date": "2026-11-17",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=298078",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "المصرية للاتصالات (ETEL.CA) - تقرير الجهاز المركزي للمحاسبات"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297458",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "بيان من المصرية للاتصالات (ETEL.CA) بخصوص نتائج أعمال الشركة"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297457",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "المصرية للاتصالات (ETEL.CA) تعلن نتائج أعمالها المجمعة عن الفترة: من 01/01/2026 إلى 30/09/2026"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297453",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "المصرية للاتصالات (ETEL.CA) تعلن نتائج أعمالها المستقلة عن الفترة: من 01/01/2026 إلى 30/09/2026"
+      },
+      {
+        "date": "2026-11-12",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297445",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "المصرية للاتصالات (ETEL.CA) - قرارات مجلس إدارة الشركة"
+      },
+      {
+        "date": "2026-11-09",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297234",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "بيان من المصرية للاتصالات (ETEL.CA) بخصوص أحد الأخبار المنشورة"
+      },
+      {
+        "date": "2026-11-02",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296902",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "بيان من المصرية للاتصالات (ETEL.CA) بخصوص إطارها التنظيمي"
+      },
+      {
+        "date": "2026-11-02",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=296898",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "المصرية للاتصالات (ETEL.CA) - قرارات مجلس إدارة الشركة"
+      }
+    ],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": "2026-11-05T07:31:27Z",
+    "latest_disclosure_date_raw": "Thu, 05 Nov 2026 07:31:27 GMT",
+    "latest_news_date": "2026-11-24T08:45:13Z",
+    "latest_news_date_raw": "Tue, 24 Nov 2026 08:45:13 GMT",
+    "news_count": 40,
+    "news_items": [
+      {
+        "date": "Tue, 24 Nov 2026 08:45:13 GMT",
+        "identity_key": "https://www.telecompaper.com/news/syria-and-egypt-explore-telecom-cooperation-and-digital-infrastructure-projects--1589758",
+        "key_type": "resolved_url",
+        "source": "Telecompaper",
+        "title": "Syria and Egypt explore telecom cooperation and digital infrastructure projects - Telecompaper"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 07:07:05 GMT",
+        "identity_key": "3a0c34f749e033da",
+        "key_type": "title-date-hash",
+        "source": "The CEO Magazine",
+        "title": "Tamer El Mahdi - The CEO Magazine"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 21:36:00 GMT",
+        "identity_key": "https://www.masrawy.com/sports/sports_news/details/2026/11/22/3082941/%D8%B4%D9%83%D9%88%D9%8A-%D9%88%D8%A8%D9%8A%D8%A7%D9%86-%D8%B1%D8%B3%D9%85%D9%8A-%D9%85%D9%86-%D8%A7%D9%84%D8%AA%D8%B1%D8%B3%D8%A7%D9%86%D8%A9-%D8%B6%D8%AF-%D8%AD%D9%83%D9%85-%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%D8%A7%D8%AA-%D9%85%D8%A7%D8%B0%D8%A7-%D8%AD%D8%AF%D8%AB-",
+        "key_type": "resolved_url",
+        "source": "Masrawy",
+        "title": "شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 08:59:44 GMT",
+        "identity_key": "https://www.mubasher.info/news/21588645/6-%D8%A3%D8%B3%D9%87%D9%85-%D8%AA%D8%B1%D8%AA%D9%81%D8%B9-%D9%88%D8%AA%D8%AE%D8%A7%D9%84%D9%81-%D8%A7%D9%84%D8%A7%D8%AA%D8%AC%D8%A7%D9%87-%D8%A7%D9%84%D9%87%D8%A7%D8%A8%D8%B7-%D9%84%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%85%D8%B5%D8%B1-%D9%85%D9%86%D9%87%D8%A7-%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%D8%A7%D8%AA",
+        "key_type": "resolved_url",
+        "source": "Mubasher",
+        "title": "6 أسهم ترتفع وتخالف الاتجاه الهابط لبورصة مصر.. منها المصرية للاتصالات - Mubasher"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 21:02:34 GMT",
+        "identity_key": "https://www.zamaleksc.com/post.html?id\\=15940",
+        "key_type": "resolved_url",
+        "source": "الموقع الرسمي للنادي الزمالك",
+        "title": "سلة الزمالك تفوز على المصرية للاتصالات في دوري المرتبط - الموقع الرسمي للنادي الزمالك"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 16:04:00 GMT",
+        "identity_key": "https://www.zamaleksc.com/news/15927",
+        "key_type": "resolved_url",
+        "source": "الموقع الرسمي للنادي الزمالك",
+        "title": "نتيجة مباراة ناشئو سلة الزمالك تحت 16 سنة أمام المصرية للاتصالات في دوري المرتبط - الموقع الرسمي للنادي الزمالك"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 03:21:41 GMT",
+        "identity_key": "https://www.zamaleksc.com/post.html?id\\=15889",
+        "key_type": "resolved_url",
+        "source": "الموقع الرسمي للنادي الزمالك",
+        "title": "سلة الزمالك رجال تواجه المصرية للاتصالات غدًا في دوري المرتبط - الموقع الرسمي للنادي الزمالك"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 15:05:00 GMT",
+        "identity_key": "https://www.zamaleksc.com/news/15891",
+        "key_type": "resolved_url",
+        "source": "الموقع الرسمي للنادي الزمالك",
+        "title": "ناشئين سلة الزمالك يواجهون المصرية للاتصالات غدًا في دوري المرتبط - الموقع الرسمي للنادي الزمالك"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 16:24:00 GMT",
+        "identity_key": "https://www.masrawy.com/sports/sports_news/details/2026/11/19/3081357/%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%D8%A7%D8%AA-%D9%8A%D9%87%D8%B2%D9%85-%D8%A7%D9%84%D8%AA%D8%B1%D8%B3%D8%A7%D9%86%D8%A9-%D9%81%D9%8A-%D8%B9%D9%82%D8%B1-%D8%AF%D8%A7%D8%B1%D9%87-%D9%88%D9%8A%D8%B1%D8%AA%D9%82%D9%8A-%D8%A8%D8%AC%D8%AF%D9%88%D9%84-%D8%A7%D9%84%D8%AA%D8%B1%D8%AA%D9%8A%D8%A8",
+        "key_type": "resolved_url",
+        "source": "Masrawy",
+        "title": "المصرية للاتصالات يهزم الترسانة في عقر داره ويرتقي بجدول الترتيب - Masrawy"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 23:29:49 GMT",
+        "identity_key": "44ddf77934ef92f8",
+        "key_type": "title-date-hash",
+        "source": "بوابة الشروق",
+        "title": "المصرية للاتصالات: إنشاء شبكة ألياف ضوئية تغطي مدينة نيفيرا بالكامل - بوابة الشروق"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 21:24:00 GMT",
+        "identity_key": "0ab4cf8ef8227cd0",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات: نعمل مع مستثمري نيفيرا لتقديم حلول تكنولوجية متكاملة - اليوم السابع"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 19:42:01 GMT",
+        "identity_key": "34a86f5b719ad4e7",
+        "key_type": "title-date-hash",
+        "source": "بوابة أخبار اليوم الإلكترونية",
+        "title": "مدينة ذكية بخدمات متكاملة| المصرية للاتصالات تقود التحول التكنولوجي في «نيفيرا» - بوابة أخبار اليوم الإلكترونية"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 19:27:21 GMT",
+        "identity_key": "650bff765706e513",
+        "key_type": "title-date-hash",
+        "source": "جريدة حابي",
+        "title": "المصرية للاتصالات تتولى إنشاء شبكة ألياف ضوئية وتقديم خدمات رقمية بمشروع «نيفيرا» - جريدة حابي"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 19:15:00 GMT",
+        "identity_key": "298800ec5d12c041",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "من الألياف الضوئية إلى الحوسبة السحابية.. المصرية للاتصالات تبني منظومة رقمية متكاملة في «نيفيرا» - اليوم السابع"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 18:06:00 GMT",
+        "identity_key": "80bd4b72f502e4ae",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "المصرية للاتصالات تتولى البنية الرقمية لمشروع نيفيرا وتربطه بأوروبا وأمريكا - Masrawy"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 15:56:00 GMT",
+        "identity_key": "54adfac3e67cfa6c",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«المصرية للاتصالات» شريك التكنولوجيا لمشروع «نيفيرا مصر» - المصري اليوم"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 11:54:00 GMT",
+        "identity_key": "808dc50dc4c09470",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "كيف تخطط المصرية للاتصالات للتحول من صافي الدين إلى صافي النقدية خلال 5 سنوات؟ - اليوم السابع"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 11:50:00 GMT",
+        "identity_key": "b41390a60dcf7e0d",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "700 مليون دولار سنويًا.. كيف تؤمن المصرية للاتصالات احتياجاتها الدولارية؟ - اليوم السابع"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 17:37:30 GMT",
+        "identity_key": "ac66711e94a7904c",
+        "key_type": "title-date-hash",
+        "source": "GuruFocus",
+        "title": "Telecom Egypt SAE (CAI:ETEL) (Q3 2026) Earnings Call Highlights: - GuruFocus"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 14:11:37 GMT",
+        "identity_key": "7cd851cb5943112e",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "«المصرية للاتصالات» تخفض أرصدة القروض والتسهيلات الائتمانية إلى 56.7 مليار جنيه بنهاية سبتمبر 2026 - جريدة المال"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:50:32 GMT",
+        "identity_key": "06bf0fc89422faf3",
+        "key_type": "title-date-hash",
+        "source": "WebWire",
+        "title": "Q3 2026 Results: Telecom Egypt Delivers Strong 9M 2026 Results as Strategy Execution Progresses - WebWire"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "f22c4708ddc85f80",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "بالأرقام.. المصرية للاتصالات من طفرة الأرباح إلى تطوير البنية التحتية وقفزة السهم 150% - اليوم السابع"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "0cc0c59fc97dd6e3",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات يهزم كهرباء الإسماعيلية بهدف ويشعل دورى المحترفين - اليوم السابع"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 04:06:51 GMT",
+        "identity_key": "590ed5ea122a2fee",
+        "key_type": "title-date-hash",
+        "source": "CairoScene",
+        "title": "Telecom Egypt's Net Profit Rises 44% to EGP 24.4 Billion - CairoScene"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 19:30:34 GMT",
+        "identity_key": "780ac7f84b1816fd",
+        "key_type": "title-date-hash",
+        "source": "موقع الصفحة الأولى",
+        "title": "\"حماية الحقوق\" بين 14 مليون عميل واستثمارات بـ260 مليار فى المصرية للاتصالات - موقع الصفحة الأولى"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "a34e173bc767e314",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات تعلن خلو منصب الرئيس التنفيذي للشؤون التجارية للأفراد - اليوم السابع"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "7eaee3f6f0035c26",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "«المصرية للاتصالات» تنضم إلى مؤشر MSCI بعد ترقيتها في FTSE Russell - جريدة البورصة"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "4641490c8d6c2e57",
+        "key_type": "title-date-hash",
+        "source": "TechAfrica News",
+        "title": "Telecom Egypt Revenue Rises 19% to EGP 93.6 Billion in 9M 2026 - TechAfrica News"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 02:48:48 GMT",
+        "identity_key": "f22c73a95fbe9b9e",
+        "key_type": "title-date-hash",
+        "source": "Sada Elbalad English",
+        "title": "Telecom Egypt Joins MSCI Global Standard Index for Emerging Markets - Sada Elbalad English"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 09:55:37 GMT",
+        "identity_key": "ece9fa9edd2c56a6",
+        "key_type": "title-date-hash",
+        "source": "إرم بزنس",
+        "title": "أرباح «المصرية للاتصالات» تقفز 39% في الربع الثالث بدعم «فودافون» - إرم بزنس"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 09:41:00 GMT",
+        "identity_key": "26d9d73f097bcd7b",
+        "key_type": "title-date-hash",
+        "source": "العربية",
+        "title": "\"المصرية للاتصالات\": نستهدف توصيل الألياف الضوئية لـ10 ملايين منزل - العربية"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:51:00 GMT",
+        "identity_key": "6fc9e6c67646464c",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«المصرية للاتصالات»: مشتركي الإنترنت الثابت يقفزون 8% والمحمول 3% خلال التسعة أشهر الأولى من 2026 - المصري اليوم"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "9f6e32a318bdfbac",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات تدخل قائمة الشركات القياسية بمؤشر مورجان ستانلي - اليوم السابع"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "589fbc5e03a6c40a",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "أرباح \"المصرية للاتصالات\" تقفز 39% بدعم من الأنشطة و\"فودافون مصر\" - الشرق بلومبرغ"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "25f028276f1e06c2",
+        "key_type": "title-date-hash",
+        "source": "CNBC عربية",
+        "title": "الرئيس التنفيذي للشركة المصرية للاتصالات لـ CNBC عربية: أنجزنا في 2026 وحده ما يعادل ما أُنجز على مدى 10 سنوات - CNBC عربية"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "ba1a80698abf00c4",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "\"المصرية للاتصالات\" تتجه لشراكات عالمية ومحلية لتوسيع مراكز البيانات - الشرق بلومبرغ"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "4f387a724f025fbe",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "أرباح “المصرية للاتصالات” ترتفع 43.7% إلى 24.4 مليار جنيه خلال 9 أشهر - جريدة البورصة"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "33ad408106f86f4a",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات: نستهدف بناء كيان أكثر تنوعا ومرونة واستعدادا للمستقبل - اليوم السابع"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "c07e445603fb950d",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات تحقق 24.4 مليار جنيه صافي أرباح خلال 9 أشهر بنمو 44% - اليوم السابع"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "8ab9c81102be47da",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "المصرية للاتصالات تخفض نسبة صافي الدين إلى الأرباح إلى 0.8 مرة خلال 9 أشهر - اليوم السابع"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 140.1,
+    "base_source": "egx-data/egxpy_etel.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_etel.csv",
+      "base_stale": false,
+      "base_used": 140.1,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_etel.csv": 139.98,
+        "openbb/etel_ca.csv": 139.97999572753906,
+        "pandas-ta/indicators.csv": 139.97999572753906,
+        "talib/indicators.csv": 139.97999572753906,
+        "yahooquery/etel.ca.csv": 139.97999572753906
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.028,
+    "sigma_source": "egx-data/egxpy_etel.csv (σ60=0.0280, σ10=0.0223)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 140.1,
+      "last_date": "2026-11-25",
+      "last_high": 141.28,
+      "last_low": 138.51,
+      "last_open": 141.0,
+      "last_volume": 1657292.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_etel.csv",
+      "stale": false
+    },
+    {
+      "last_close": 141.0,
+      "last_date": "2026-11-24",
+      "last_high": 142.5,
+      "last_low": 139.5,
+      "last_open": 139.97999572753906,
+      "last_volume": 1974418.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ETEL_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 141.0,
+      "last_date": "2026-11-24",
+      "last_high": 142.5,
+      "last_low": 139.5,
+      "last_open": 139.97999572753906,
+      "last_volume": 1974418.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 141.0,
+      "last_date": "2026-11-24",
+      "last_high": 142.5,
+      "last_low": 139.5,
+      "last_open": 139.97999572753906,
+      "last_volume": 1974418.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 139.97999572753906,
+      "last_date": "2026-11-23",
+      "last_high": 140.0,
+      "last_low": 137.07000732421875,
+      "last_open": 137.0,
+      "last_volume": 2729696.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ETEL.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-etel-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-etel-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ETEL.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "Tamer El Mahdi - The CEO Magazine",
+        "type": "management"
+      },
+      {
+        "severity": "high",
+        "title": "شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "management event: Tamer El Mahdi - The CEO Magazine",
+      "earnings event: شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.23,
+      "max3": 0.77
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETEL.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T12:32:40.325143+00:00",
+  "sweep_dir": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001",
+  "ticker": "ETEL.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ETEL.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ETEL.CA.csv_last_close": 139.97999572753906,
+          "ETEL.CA.csv_last_date": "2026-11-23",
+          "rows_ETEL.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "a6b0012d2ae753302a3bea6e673f2227628328e72807b9d1c032c084d32e78cb",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ETEL_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ETEL_CA.csv_last_close": 141.0,
+          "ETEL_CA.csv_last_date": "2026-11-24",
+          "rows_ETEL_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "e2028fe18bbdb827913f6292554cadc6f95cb18eda31d8f47663d33d498294c4",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_etel.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_etel.csv_last_close": 140.1,
+          "egxpy_etel.csv_last_date": "2026-11-25",
+          "rows_egxpy_etel.csv": 3000,
+          "symbol": "ETEL",
+          "ticker": "ETEL.CA"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "451201e11e64073ea481979a8b62feba1c26fcd747110957711617f7a9ed2dda",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 19.6861,
+          "atr_14": 5.8148,
+          "bb_lower": 116.0646,
+          "bb_mid": 131.8045,
+          "bb_pctb": 0.7921,
+          "bb_upper": 147.5444,
+          "close": 141.0,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 135.5899,
+          "ema_200": 107.932,
+          "ema_50": 131.84,
+          "first_date_used": "2019-01-01",
+          "high": 142.5,
+          "indicators.csv_last_close": 141.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 139.5,
+          "macd": 2.2083,
+          "macd_hist": 1.0896,
+          "macd_signal": 1.1188,
+          "open": 139.98,
+          "rows_fetched": 5218,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 58.572,
+          "stoch_d": 71.3132,
+          "stoch_k": 72.1779,
+          "ticker": "ETEL.CA"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "596375d8823500a1dfe752e473b7c7342f107f82db297833210f6fff8d721cdc",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 141.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 141.0,
+          "last_date": "2026-11-24",
+          "rows_fetched": 5218,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "ETEL.CA"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "dbe628358aabe9f649d19b31a7fd2d33f3825c161b3a8a91f4b1a038b646108b",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "f36415e6a55bb7f177a2271b3b9ca1ac73bff956d1aed6409044bc995ffe1194",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "a92e92e67a17976714102e6983f96fde0f7f07b65a1761bf3537617f46405b8b",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "e45e4b9c37c9e1f31257c135e93d3c122eb6f26052f4f91b2b59916876b28350",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 27,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "6b29df85835b5468c50ee21ba7b751f6c3457b08236d076688ef97699bd837a6",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 27,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "4de491338031fadd07e7dbd7ab9a63bd874fe9b77fa55316f20803763979cc8c",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 27,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "018c851b0601c15e1fe10f4ac068abb40f9b004f3447efc39b68643ba7e624bc",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 141.463,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "ef20d3a32c3288931ffde340efdb414554f9a4d2f62c42e83f2104092b0c9ba6",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "95bf4d750587066e8d2c950ee33a21416594cc078a95df2fcbcf22235db94fc7",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-etel-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 44,
+          "bodies_fetched": 8,
+          "disclosure_count": 11,
+          "egx_bodies_attached": 1,
+          "egx_disclosures_added": 9,
+          "egx_harvest_source": "local-file",
+          "fetched_at": "2026-11-25T12:40:33Z",
+          "finbert_negative": 0.023,
+          "finbert_neutral": 0.511,
+          "finbert_positive": 0.466,
+          "finbert_scored": 7,
+          "latest_disclosure_date": "Thu, 05 Nov 2026 07:31:27 GMT",
+          "latest_news_date": "Tue, 24 Nov 2026 08:45:13 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.055,
+          "multilingual_neutral": 0.377,
+          "multilingual_positive": 0.569,
+          "multilingual_scored": 44,
+          "news_count": 40,
+          "ticker": "ETEL.CA",
+          "tool": "news-disclosure",
+          "translated_negative": 0.083,
+          "translated_neutral": 0.581,
+          "translated_positive": 0.336,
+          "translated_scored": 44,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "ETEL.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "7bbb7b07e15e2e5c1c3b1d8e847360a2ee4e2bf4e8b8700c043a4362f326df39",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-etel-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

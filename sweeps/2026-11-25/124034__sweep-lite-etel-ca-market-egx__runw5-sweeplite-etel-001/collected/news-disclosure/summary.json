@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ETEL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ETEL.CA",
+    "fetched_at": "2026-11-25T12:40:33Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 11,
+    "arabic_headlines": 44,
+    "latest_news_date": "Tue, 24 Nov 2026 08:45:13 GMT",
+    "latest_disclosure_date": "Thu, 05 Nov 2026 07:31:27 GMT",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.466,
+    "finbert_negative": 0.023,
+    "finbert_neutral": 0.511,
+    "finbert_scored": 7,
+    "multilingual_positive": 0.569,
+    "multilingual_negative": 0.055,
+    "multilingual_neutral": 0.377,
+    "multilingual_scored": 44,
+    "bodies_fetched": 8,
+    "egx_bodies_attached": 1,
+    "egx_disclosures_added": 9,
+    "egx_harvest_source": "local-file",
+    "translation_provider": "nllb",
+    "translated_positive": 0.336,
+    "translated_negative": 0.083,
+    "translated_neutral": 0.581,
+    "translated_scored": 44
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

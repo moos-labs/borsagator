@@ -1,0 +1,92 @@
+{
+ "job": {
+  "id": "w5-sweeplite-etel-001",
+  "job": "sweep-lite ETEL.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T12:32:40.325143+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-etel-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T12:32:40.325143+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ETEL"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ETEL']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T12:40:34.375641+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001",
+  "model": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001/report-model.json",
+  "model_sha256": "cd15ba5ad8045ba0e2c11b018fc57cf9d32628897a17da6bd194e255fd4ff616",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/ETEL.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ETEL.CA.json",
+   "sharia-row-missing: AAOIFI ETEL.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ETEL.CA",
+   "sharia-row-missing: FTSE ETEL.CA",
+   "sharia-row-missing: ISLAMICLY ETEL.CA",
+   "sharia-row-missing: MSCI ETEL.CA",
+   "sharia-row-missing: MSCI_M ETEL.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "cf521e842e9644c29766522f391a67bf93b8a6e0",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 159897,
+    "sha256": "4fba338d1905da2df4fc4455a3d3236c8cea1eafb929d57580f5f85a2b9c1ed9"
+   },
+   {
+    "path": "report.md",
+    "bytes": 38808,
+    "sha256": "9a2e54872fed6e5a80f6fe2a31c2b423d5bb2c15444f94a3c8b6aacf5a152a5d"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ETEL.CA"
+ }
+}

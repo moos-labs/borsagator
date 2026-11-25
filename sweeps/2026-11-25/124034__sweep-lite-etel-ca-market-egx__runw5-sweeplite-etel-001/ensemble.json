@@ -1,0 +1,149 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "ETEL.CA",
+ "base_price": 140.1,
+ "base_source": "egx-data/egxpy_etel.csv",
+ "base_date": "2026-11-25",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_etel.csv": 139.98,
+   "openbb/etel_ca.csv": 139.97999572753906,
+   "pandas-ta/indicators.csv": 139.97999572753906,
+   "talib/indicators.csv": 139.97999572753906,
+   "yahooquery/etel.ca.csv": 139.97999572753906
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-23",
+  "base_used": 140.1,
+  "base_source_used": "egx-data/egxpy_etel.csv",
+  "base_date": "2026-11-25",
+  "latest_collected_date": "2026-11-25",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.028,
+ "sigma_source": "egx-data/egxpy_etel.csv (σ60=0.0280, σ10=0.0223)",
+ "sessions_per_calendar_day": 0.665,
+ "date": "2026-11-25",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "management event: Tamer El Mahdi - The CEO Magazine",
+   "earnings event: شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy"
+  ],
+  "events": [
+   {
+    "type": "management",
+    "severity": "high",
+    "title": "Tamer El Mahdi - The CEO Magazine"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy"
+   }
+  ],
+  "move_z": {
+   "last": 0.23,
+   "max3": 0.77
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+  "factors": {
+   "price-forecast": 0.5,
+   "technicals": 0.679,
+   "sentiment": 1.068,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.5,
+    "n": 31,
+    "skill": -0.606
+   },
+   "technicals": {
+    "factor": 0.679,
+    "n": 33,
+    "skill": -0.321
+   },
+   "sentiment": {
+    "factor": 1.068,
+    "n": 33,
+    "skill": 0.068
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.3,
+  "sentiment": 0.361,
+  "agent": null,
+  "fundamentals": 0.15,
+  "price-forecast": 0.046
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.25,
+   "range_low_pct": -5.55,
+   "range_high_pct": 6.04,
+   "confidence": 0.3,
+   "net_score": 0.242,
+   "families": {
+    "technicals": 0.3,
+    "sentiment": 0.361,
+    "price-forecast": -0.03
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": -0.1694,
+   "vol_h_pct": 2.8037
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 1.29,
+   "range_low_pct": -8.51,
+   "range_high_pct": 11.09,
+   "confidence": 0.3,
+   "net_score": 0.275,
+   "families": {
+    "technicals": 0.3,
+    "sentiment": 0.361,
+    "price-forecast": 0.104
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 1.0113,
+   "vol_h_pct": 4.8561
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 1.55,
+   "range_low_pct": -19.57,
+   "range_high_pct": 22.68,
+   "confidence": 0.3,
+   "net_score": 0.181,
+   "families": {
+    "technicals": 0.3,
+    "sentiment": 0.361,
+    "fundamentals": 0.15,
+    "price-forecast": 0.046
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 0.9729,
+   "vol_h_pct": 10.4904
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

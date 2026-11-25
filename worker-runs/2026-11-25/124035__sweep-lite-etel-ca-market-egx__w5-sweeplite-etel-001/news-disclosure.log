@@ -1,0 +1,30 @@
+WARN body extract short (0 chars): https://www.mubasher.info/news/4696902/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 404: https://www.mubasher.info/news/4694594/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http 403: https://digitalmag.theceomagazine.com/tamer-el-mahdi/
+WARN body extract short (148 chars): https://www.shorouknews.com/mobile/news/view.aspx?cdate\=19112026\&id\=b037cb4f-1983-46a6-
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 2}
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6291.03it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16785.23it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17082.43it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6023.50it/s]
+{"tool": "news-disclosure", "ticker": "ETEL.CA", "news_count": 40, "disclosure_count": 11, "arabic_headlines": 44, "latest_news_date": "Tue, 24 Nov 2026 08:45:13 GMT", "latest_disclosure_date": "Thu, 05 Nov 2026 07:31:27 GMT", "top_headline": "العنوان: المصرية للاتصالات (ETEL.CA) قرارات مجلس ادارة الشركةاسم الشركة: المصرية للاتصالاتكود الترقيم الدولي: EGS48031C016كود رويترز: - Mubasher", "llm_provider": "extractive", "finbert_positive": 0.466, "finbert_negative": 0.023, "finbert_neutral": 0.511, "finbert_scored": 7, "multilingual_positive": 0.569, "multilingual_negative": 0.055, "multilingual_neutral": 0.377, "multilingual_scored": 44, "bodies_fetched": 8, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.336, "translated_negative": 0.083, "translated_neutral": 0.581, "translated_scored": 44}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 24 Nov 2026 08:45:13 GMT] (Telecompaper) Syria and Egypt explore telecom cooperation and digital infrastructure projects - Telecompaper
+- [Tue, 24 Nov 2026 07:07:05 GMT] (The CEO Magazine) Tamer El Mahdi - The CEO Magazine
+- [Sun, 22 Nov 2026 21:36:00 GMT] (Masrawy) شكوي وبيان رسمي من الترسانة ضد حكم مباراة المصرية للاتصالات.. ماذا حدث؟ - Masrawy
+- [Sun, 22 Nov 2026 08:59:44 GMT] (Mubasher) 6 أسهم ترتفع وتخالف الاتجاه الهابط لبورصة مصر.. منها المصرية للاتصالات - Mubasher
+- [Sat, 21 Nov 2026 21:02:34 GMT] (الموقع الرسمي للنادي الزمالك) سلة الزمالك تفوز على المصرية للاتصالات في دوري المرتبط - الموقع الرسمي للنادي الزمالك
+- [Sat, 21 Nov 2026 16:04:00 GMT] (الموقع الرسمي للنادي الزمالك) نتيجة مباراة ناشئو سلة الزمالك تحت 16 سنة أمام المصرية للاتصالات في دوري المرتبط - الموقع الرسمي للنادي الزمالك
+- [Sat, 21 Nov 2026 03:21:41 GMT] (الموقع الرسمي للنادي الزمالك) سلة الزمالك رجال تواجه المصرية للاتصالات غدًا في دوري المرتبط - الموقع الرسمي للنادي الزمالك
+- [Fri, 20 Nov 2026 15:05:00 GMT] (الموقع الرسمي للنادي الزمالك) ناشئين سلة الزمالك يواجهون المصرية للاتصالات غدًا في دوري المرتبط - الموقع الرسمي للنادي الزمالك
