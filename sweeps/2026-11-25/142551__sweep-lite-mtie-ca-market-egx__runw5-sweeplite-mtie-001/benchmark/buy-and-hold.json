@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 6.75,
+ "base_source": "egx-data/egxpy_mtie.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-25T14:25:51.523261+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.3,
+   "range_low_pct": -4.3,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 12.16,
+   "range_low_pct": -12.16,
+   "trading_sessions": 8
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 6.08,
+   "range_low_pct": -6.08,
+   "trading_sessions": 2
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "a147d0ecd73eefaa662c0e498977a2afee58de1b60292a55f9793c2cb1c21ce6",
+  "ensemble.json": "5e9641b76e3f8797e1d98c2d1b26b4a2ca07d73004102debb4fbf3c52c012f2f"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.4,
+ "sigma_daily": 0.0336,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/142551__sweep-lite-mtie-ca-market-egx__runw5-sweeplite-mtie-001",
+ "ticker": "MTIE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

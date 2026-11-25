@@ -1,0 +1,19 @@
+WARN body http 403: https://sa.investing.com/news/commodities-news/article-3451073
+bodies: 11/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/MTIE.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5745.39it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 13439.42it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16442.08it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5647.55it/s]
+{"tool": "news-disclosure", "ticker": "MTIE.CA", "news_count": 34, "disclosure_count": 0, "arabic_headlines": 34, "latest_news_date": "Wed, 25 Nov 2026 14:12:41 GMT", "latest_disclosure_date": "", "top_headline": "متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية", "llm_provider": "extractive", "multilingual_positive": 0.096, "multilingual_negative": 0.114, "multilingual_neutral": 0.79, "multilingual_scored": 34, "bodies_fetched": 11, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.077, "translated_negative": 0.123, "translated_neutral": 0.8, "translated_scored": 34}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 14:12:41 GMT] (شبكة تواصل الإخبارية) متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية
+- [Wed, 25 Nov 2026 03:00:00 GMT] (اليوم السابع) متى يزرع القمح ؟ رئيس مركز تغير المناخ يحدد الموعد الأنسب ويحذر من التبكير - اليوم السابع
+- [Tue, 24 Nov 2026 21:08:54 GMT] (السياسة) أموال القُصّر... متى يحتاج الولي إلى إذن المحكمة - السياسة
+- [Tue, 24 Nov 2026 16:00:00 GMT] (اليوم السابع) متى نشرح لأولادنا سبب رفض طالبتهم ومتى نقول نفذ وخلاص؟.. فيديو - اليوم السابع
+- [Tue, 24 Nov 2026 12:27:52 GMT] (جريدة المستقبل) متى تدخل محطة الضبعة الخدمة ومتى يبدأ سداد قرضها؟ وزير الكهرباء يجيب - جريدة المستقبل
+- [Tue, 24 Nov 2026 09:40:00 GMT] (annahar.com) لجنة أهالي المخطوفين والمفقودين في لبنان: إلى متى نبقى رهينة الانتظار؟ - annahar.com
+- [Tue, 24 Nov 2026 06:44:52 GMT] (تليجراف مصر) متى ينتهي فصل الخريف 2026؟.. الموعد الفلكي - تليجراف مصر
+- [Mon, 23 Nov 2026 19:48:00 GMT] (اليوم السابع) بعد التألق مع منتخب الناشئين.. متى ينتهى عقد أحمد صفوت مع الزمالك؟ - اليوم السابع

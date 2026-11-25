@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 6.75,
+ "base_source": "egx-data/egxpy_mtie.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-25T14:25:51.513207+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.34,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 6.11,
+   "range_low_pct": -6.8,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -0.97,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 17.27,
+   "range_low_pct": -19.22,
+   "trading_sessions": 8
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.49,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 8.64,
+   "range_low_pct": -9.61,
+   "trading_sessions": 2
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "a147d0ecd73eefaa662c0e498977a2afee58de1b60292a55f9793c2cb1c21ce6",
+  "ensemble.json": "5e9641b76e3f8797e1d98c2d1b26b4a2ca07d73004102debb4fbf3c52c012f2f"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.4,
+ "sigma_daily": 0.0336,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/142551__sweep-lite-mtie-ca-market-egx__runw5-sweeplite-mtie-001",
+ "ticker": "MTIE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

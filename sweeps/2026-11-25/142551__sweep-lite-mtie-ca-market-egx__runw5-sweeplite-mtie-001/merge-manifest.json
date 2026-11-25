@@ -1,0 +1,28 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite MTIE.CA market=EGX",
+  "job_shape": "sweep-lite MTIE.CA market=EGX",
+  "claim_id": "w5-sweeplite-mtie-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-mtie-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/142551__sweep-lite-mtie-ca-market-egx__runw5-sweeplite-mtie-001",
+  "finished": "2026-11-25T14:25:51.184738+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "MTIE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "MTIE.CA",
+    "fetched_at": "2026-11-25T14:25:49Z",
+    "tool": "news-disclosure",
+    "news_count": 34,
+    "disclosure_count": 0,
+    "arabic_headlines": 34,
+    "latest_news_date": "Wed, 25 Nov 2026 14:12:41 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية",
+    "llm_provider": "extractive",
+    "multilingual_positive": 0.096,
+    "multilingual_negative": 0.114,
+    "multilingual_neutral": 0.79,
+    "multilingual_scored": 34,
+    "bodies_fetched": 11,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.077,
+    "translated_negative": 0.123,
+    "translated_neutral": 0.8,
+    "translated_scored": 34
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

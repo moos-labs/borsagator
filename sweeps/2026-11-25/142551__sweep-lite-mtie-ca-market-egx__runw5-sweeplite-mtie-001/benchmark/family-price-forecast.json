@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 6.75,
+ "base_source": "egx-data/egxpy_mtie.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T14:25:51.512787+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -5.54,
+   "families": {
+    "price-forecast": -0.962
+   },
+   "horizon_short": false,
+   "net_score": -0.962,
+   "range_high_pct": 0.91,
+   "range_low_pct": -11.99,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.9,
+   "families": {
+    "price-forecast": 0.178
+   },
+   "horizon_short": false,
+   "net_score": 0.178,
+   "range_high_pct": 21.15,
+   "range_low_pct": -15.34,
+   "trading_sessions": 8
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -2.55,
+   "families": {
+    "price-forecast": -0.313
+   },
+   "horizon_short": false,
+   "net_score": -0.313,
+   "range_high_pct": 6.58,
+   "range_low_pct": -11.67,
+   "trading_sessions": 2
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "d3eef9f45650218b49d0923da831d4ae5bc7cdd560e686df2d318facea2b4df8",
+  "digest.json": "a147d0ecd73eefaa662c0e498977a2afee58de1b60292a55f9793c2cb1c21ce6",
+  "ensemble.json": "5e9641b76e3f8797e1d98c2d1b26b4a2ca07d73004102debb4fbf3c52c012f2f"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.4,
+ "sigma_daily": 0.0336,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/142551__sweep-lite-mtie-ca-market-egx__runw5-sweeplite-mtie-001",
+ "ticker": "MTIE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
