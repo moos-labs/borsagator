@@ -1,7 +1,7 @@
 {
- "kind": "envelope-unconfirmed",
- "job_id": "guard-2026-11-25T2047Z",
- "at": "2026-11-25T21:25:44.855587+00:00",
+ "kind": "setup-failed",
+ "job_id": "guard-2026-11-25T2147Z",
+ "at": "2026-11-25T21:55:30.722412+00:00",
  "worker": "borsagator-worker-6",
- "detail": "staged envelope on publish/ledger-guard-2026-11-25T2047Z not confirmed on main after 1500s; slot not marked done"
+ "detail": "publisher scripts on main differ from the reviewed release copies (D2); guard refused"
 }
