@@ -1,0 +1,109 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "HRHO.CA",
+ "base_price": 27.5,
+ "base_source": "pandas-ta/indicators.csv",
+ "base_date": "2025-03-27",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "pandas-ta/indicators.csv": 27.5,
+   "talib/indicators.csv": 27.5
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2025-03-27",
+  "base_used": 27.5,
+  "base_source_used": "pandas-ta/indicators.csv",
+  "base_date": "2025-03-27",
+  "latest_collected_date": "2025-03-27",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0184,
+ "sigma_source": "pandas-ta/indicators.csv (σ60=0.0184, σ10=0.0120)",
+ "sessions_per_calendar_day": 0.659,
+ "date": "2025-03-31",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": [
+   "2-family backtest: news risk overlay disabled (issue #436)"
+  ]
+ },
+ "weights_source": "base-v1",
+ "applied_weights": {
+  "source": "base-v1",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.233,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": -1.0
+ },
+ "horizons": {
+  "day": {
+   "direction": "down",
+   "expected_move_pct": -2.74,
+   "range_low_pct": -5.51,
+   "range_high_pct": 0.03,
+   "confidence": 0.53,
+   "net_score": -0.668,
+   "families": {
+    "technicals": -0.233,
+    "price-forecast": -0.958
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": -3.5175,
+   "vol_h_pct": 1.8353
+  },
+  "week": {
+   "direction": "down",
+   "expected_move_pct": -7.78,
+   "range_low_pct": -12.59,
+   "range_high_pct": -2.98,
+   "confidence": 0.53,
+   "net_score": -0.744,
+   "families": {
+    "technicals": -0.233,
+    "price-forecast": -1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": -10.952,
+   "vol_h_pct": 3.1789
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -14.7,
+   "range_low_pct": -24.95,
+   "range_high_pct": -4.45,
+   "confidence": 0.54,
+   "net_score": -0.808,
+   "families": {
+    "technicals": -0.233,
+    "price-forecast": -1.0
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": -19.7596,
+   "vol_h_pct": 6.8672
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
