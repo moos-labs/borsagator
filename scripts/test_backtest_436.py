@@ -601,7 +601,7 @@ def test_gate_history_floor():
     # 2018-09-04, so rows[0:85] are pre-2019 and rows[85] is
     # 2019-01-01. Flattening rows[20:45] plants a 26-session flat
     # run (rows[19:45] equal) entirely before the floor.
-    rows = synthetic_series(n=1800, cutoff="2025-07-28")
+    rows = synthetic_series(n=1800, cutoff="2025-08-04")
     for r in rows[20:45]:
         r["close"] = rows[19]["close"]
     window = [r for r in rows
@@ -1237,7 +1237,7 @@ def test_smoke_and_determinism():
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
     tmp = tempfile.mkdtemp(prefix="bt436-smoke-")
     try:
-        series = synthetic_series(n=820, cutoff="2025-07-28")
+        series = synthetic_series(n=820, cutoff="2025-08-04")
         index = [{"date": r["date"],
                   "close": round(30000.0 + 2.0 * i, 4),
                   "open": 0, "high": 0, "low": 0, "volume": 0}
@@ -1270,10 +1270,10 @@ def test_smoke_and_determinism():
         check("capture ensemble 2-family",
               (ens.get("risk") or {}).get("level") == "none"
               and ens.get("weights_source") == "base-v1")
-        check("capture realised has 14 sessions",
+        check("capture realised has 21 sessions",
               len(json.load(open(os.path.join(
                   cap, "realised.json"),
-                  encoding="utf-8"))["sessions"]) == 14)
+                  encoding="utf-8"))["sessions"]) == 21)
         # Non-deterministic Kronos: the repeat run flips the path,
         # so the cell must fail — not publish.
         cfg2 = _smoke_cfg(tmp + "-flip", series, index, flip=True)
@@ -1291,7 +1291,7 @@ def test_smoke_and_determinism():
         # would read back as a close.
         cfg3 = _smoke_cfg(tmp + "-nan", series, index)
         cfg3["repeat_kronos"] = False
-        after = [r for r in series if r["date"] > FIXTURE_CUTOFF][:14]
+        after = [r for r in series if r["date"] > FIXTURE_CUTOFF][:21]
         realised_nan = {
             "ticker": FIXTURE_TICKER, "cutoff": FIXTURE_CUTOFF,
             "base_close": [r for r in series
@@ -1418,7 +1418,7 @@ def test_cell_guards():
               bt.check_ensemble_base_date(
                   None, "2025-06-30", "2025-06-30") != "")
 
-        series = synthetic_series(n=820, cutoff="2025-07-28")
+        series = synthetic_series(n=820, cutoff="2025-08-04")
         index = [{"date": r["date"],
                   "close": round(30000.0 + 2.0 * i, 4),
                   "open": 0, "high": 0, "low": 0, "volume": 0}
@@ -1677,7 +1677,7 @@ def test_runner_skip_classification_in_cell():
         # 800 sessions before the cutoff: warm-up passes, but the
         # talib stub is told to demand 900 — its refusal must come
         # back as skipped-with-reason, not an error.
-        series = synthetic_series(n=820, cutoff="2025-07-28")
+        series = synthetic_series(n=820, cutoff="2025-08-04")
         index = [{"date": r["date"], "close": 30000.0,
                   "open": 0, "high": 0, "low": 0, "volume": 0}
                  for r in series]
@@ -1767,8 +1767,8 @@ def _fixture_capture(tmp):
     after = []
     c = date.fromisoformat(FIXTURE_CUTOFF)
     d = c
-    moves = {1: 0.010, 5: 0.020, 14: -0.010}
-    for i in range(1, 15):
+    moves = {1: 0.010, 5: 0.020, 21: -0.010}
+    for i in range(1, 22):
         d += timedelta(days=1)
         while d.weekday() >= 5:
             d += timedelta(days=1)
@@ -1787,8 +1787,8 @@ def _fixture_capture(tmp):
                     for s, mv in zip(
                         after,
                         [0.005 if i == 1 else 0.010 if i == 5
-                         else 0.005 if i == 14 else 0.001
-                         for i in range(1, 15)])],
+                         else 0.005 if i == 21 else 0.001
+                         for i in range(1, 22)])],
                 "actions": [], "splits": [],
                 "fetched_at": FIXTURE_CUTOFF}
     json.dump(realised, open(os.path.join(cap, "realised.json"), "w"),
@@ -2096,12 +2096,12 @@ def test_realised_dropped_close():
     import datetime as _dt
     import urllib.request as _urlreq
 
-    # Mon-Fri bars 2025-06-23 .. 2025-07-25; the cutoff is
+    # Mon-Fri bars 2025-06-23 .. 2025-08-01; the cutoff is
     # 2025-06-30, so the first realised session is 2025-07-01
-    # and the 14th is 2025-07-18.
+    # and the 21st is 2025-07-29.
     days = []
     d = date(2025, 6, 23)
-    while d <= date(2025, 7, 25):
+    while d <= date(2025, 8, 1):
         if d.weekday() < 5:
             days.append(d)
         d += timedelta(days=1)
@@ -2152,7 +2152,7 @@ def test_realised_dropped_close():
     real_urlopen = _urlreq.urlopen
     try:
         _urlreq.urlopen = _fake_urlopen
-        # Control: a clean feed publishes the true first 14
+        # Control: a clean feed publishes the true first 21
         # sessions, starting 2025-07-01.
         holder["null_date"] = None
         ok_realised, ok_err = bt.fetch_realised(
@@ -2163,8 +2163,8 @@ def test_realised_dropped_close():
             check("clean feed starts at the first session",
                   ok_realised["sessions"][0]["date"] == "2025-07-01",
                   "got %r" % (ok_realised["sessions"][0],))
-            check("clean feed maturity is the 14th session",
-                  ok_realised["maturity_date"] == "2025-07-18",
+            check("clean feed maturity is the 21st session",
+                  ok_realised["maturity_date"] == "2025-07-29",
                   "got %r" % (ok_realised["maturity_date"],))
         # A null close on the FIRST realised session: the bar
         # existed but its close is unusable. Counting the next
@@ -2181,10 +2181,10 @@ def test_realised_dropped_close():
         check("block reason names the missing session",
               bad_realised is None and "2025-07-01" in bad_err,
               "err=%r" % (bad_err,))
-        # A null close AFTER the 14-session window does not
+        # A null close AFTER the 21-session window does not
         # touch any scored horizon: the capture still publishes
-        # with the true first 14 sessions.
-        holder["null_date"] = "2025-07-23"
+        # with the true first 21 sessions.
+        holder["null_date"] = "2025-07-31"
         late_realised, late_err = bt.fetch_realised(
             FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
         check("dropped close past the window still publishes",
@@ -2192,7 +2192,7 @@ def test_realised_dropped_close():
         if late_realised is not None:
             check("past-window drop keeps the true sessions",
                   late_realised["sessions"][0]["date"] == "2025-07-01"
-                  and late_realised["maturity_date"] == "2025-07-18",
+                  and late_realised["maturity_date"] == "2025-07-29",
                   "got %r .. %r" % (late_realised["sessions"][0],
                                     late_realised["maturity_date"]))
         # Index side: a dropped index close on a realised
@@ -2244,7 +2244,7 @@ def test_realised_dropped_close():
                      base_idx.get("index_sessions")))
         # Control: a dropped index close AFTER the window
         # touches no scored session — no gap, full evidence.
-        holder["index_null_date"] = "2025-07-23"
+        holder["index_null_date"] = "2025-07-31"
         late_idx, late_idx_err = bt.fetch_realised(
             FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=gate.fetch_chart)
         check("past-window index drop keeps the capture",
@@ -2252,7 +2252,7 @@ def test_realised_dropped_close():
         if late_idx is not None:
             check("past-window index drop records no gap",
                   late_idx.get("index_gap") is None
-                  and len(late_idx.get("index_sessions") or []) == 14,
+                  and len(late_idx.get("index_sessions") or []) == 21,
                   "gap=%r sessions=%r"
                   % (late_idx.get("index_gap"),
                      len(late_idx.get("index_sessions") or [])))
@@ -2263,7 +2263,7 @@ def test_realised_dropped_close():
 def test_realised_index_window():
     print("== realised index window (flat index = gap) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
-    series = synthetic_series(n=820, cutoff="2025-07-28")
+    series = synthetic_series(n=820, cutoff="2025-08-04")
     index_full = [{"date": r["date"],
                    "close": round(30000.0 + 2.0 * i, 4)}
                   for i, r in enumerate(series)]
@@ -2285,8 +2285,8 @@ def test_realised_index_window():
         check("flat index feed emits no index sessions",
               realised.get("index_sessions") == [],
               "got %r" % (realised.get("index_sessions"),))
-        check("flat index feed keeps 14 stock sessions",
-              len(realised.get("sessions") or []) == 14)
+        check("flat index feed keeps 21 stock sessions",
+              len(realised.get("sessions") or []) == 21)
     # Control: an index trading through the window scores.
     realised2, err2 = bt.fetch_realised(
         FIXTURE_TICKER, FIXTURE_CUTOFF,
@@ -2297,8 +2297,8 @@ def test_realised_index_window():
         check("live index feed has no index gap",
               realised2.get("index_gap") is None,
               "gap=%r" % (realised2.get("index_gap"),))
-        check("live index feed emits 14 index sessions",
-              len(realised2.get("index_sessions") or []) == 14)
+        check("live index feed emits 21 index sessions",
+              len(realised2.get("index_sessions") or []) == 21)
     # A single in-window index close still counts as evidence:
     # the other sessions carry the latest observed close.
     after = [r for r in series if r["date"] > FIXTURE_CUTOFF]
@@ -2313,8 +2313,8 @@ def test_realised_index_window():
         check("sparse index feed has no index gap",
               realised3.get("index_gap") is None,
               "gap=%r" % (realised3.get("index_gap"),))
-        check("sparse index feed emits 14 index sessions",
-              len(realised3.get("index_sessions") or []) == 14)
+        check("sparse index feed emits 21 index sessions",
+              len(realised3.get("index_sessions") or []) == 21)
 
 
 def run_backtest_checks(verbose=True):

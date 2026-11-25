@@ -72,7 +72,7 @@ HELPER = os.path.normpath(os.path.join(
     "..", "custom-connectors", "custom.github", "bin", "github_api.py"))
 
 HORIZONS = ("day", "week", "month")
-DEFAULT_SESSIONS = {"day": 1, "week": 5, "month": 14}
+DEFAULT_SESSIONS = {"day": 1, "week": 5, "month": 21}
 FLAT_BAND_PCT = 0.75          # |realized| below this counts as "flat"
 VALID_TOL = 0.03              # 3% close-vs-base validation tolerance
 # Issue #79: the fixed benchmark entrant registry. The ensemble

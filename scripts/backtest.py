@@ -71,7 +71,7 @@ TICKERS_V1 = ["COMI.CA", "ETEL.CA", "ORAS.CA", "TMGH.CA", "NVDA",
 SERIES_START = {"POUL.CA": "2026-09-28"}
 CONTEXT_START = {"POUL.CA": "2026-09-28"}
 INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
-SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 14
+SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
 # the runner; Kronos enforces --min-context). Match the refusal
@@ -584,7 +584,7 @@ def validate_capture_path(out_root, cutoff, ticker):
 # Realised closes (scoring input, fetched separately — §1.4.4)
 # --------------------------------------------------------------------------
 def fetch_realised(ticker, cutoff, fetcher=None):
-    """Realised closes for scoring: the C row plus the first 14
+    """Realised closes for scoring: the C row plus the first 21
     sessions after C, the index closes on the same dates, and the
     dividend/split events inside the horizon. Fetched in a
     separate step from the forecast, stored in a separate file,
