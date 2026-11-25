@@ -1,0 +1,109 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "ETEL.CA",
+ "base_price": 38.0,
+ "base_source": "pandas-ta/indicators.csv",
+ "base_date": "2025-06-30",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "pandas-ta/indicators.csv": 38.0,
+   "talib/indicators.csv": 38.0
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2025-06-30",
+  "base_used": 38.0,
+  "base_source_used": "pandas-ta/indicators.csv",
+  "base_date": "2025-06-30",
+  "latest_collected_date": "2025-06-30",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0151,
+ "sigma_source": "pandas-ta/indicators.csv (σ60=0.0151, σ10=0.0129)",
+ "sessions_per_calendar_day": 0.648,
+ "date": "2025-06-30",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": [
+   "2-family backtest: news risk overlay disabled (issue #436)"
+  ]
+ },
+ "weights_source": "base-v1",
+ "applied_weights": {
+  "source": "base-v1",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": 0.2,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": null,
+  "price-forecast": -0.626
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.29,
+   "range_low_pct": -1.68,
+   "range_high_pct": 2.27,
+   "confidence": 0.6,
+   "net_score": 0.141,
+   "families": {
+    "technicals": 0.2,
+    "price-forecast": 0.102
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 0.3066,
+   "vol_h_pct": 1.5075
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.06,
+   "range_low_pct": -3.45,
+   "range_high_pct": 3.56,
+   "confidence": 0.6,
+   "net_score": 0.061,
+   "families": {
+    "technicals": 0.2,
+    "price-forecast": -0.008
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": -0.0416,
+   "vol_h_pct": 2.611
+  },
+  "month": {
+   "direction": "down",
+   "expected_move_pct": -5.45,
+   "range_low_pct": -13.96,
+   "range_high_pct": 3.06,
+   "confidence": 0.53,
+   "net_score": -0.419,
+   "families": {
+    "technicals": 0.2,
+    "price-forecast": -0.626
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": -7.0608,
+   "vol_h_pct": 5.6404
+  }
+ },
+ "confidence_basis": "provisional (uncalibrated — no scoring history yet)"
+}
