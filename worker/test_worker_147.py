@@ -247,10 +247,11 @@ def main():
     write_csv(collected / "yahooquery" / "POUL.CA.csv",
               [9.0 if i % 2 else 10.0 for i in range(60)],
               start=date(2026, 9, 18))
-    sigma_all, src_all, _ = ensemble.realized_sigma("POUL.CA", 10.0)
+    sigma_all, _s60_all, src_all, _ = ensemble.realized_sigma(
+        "POUL.CA", 10.0)
     check("ungated sigma is set by the stale anchored series",
           sigma_all > 0.05 and "yahooquery" in src_all)
-    sigma, src, _ = ensemble.realized_sigma("POUL.CA", 10.0, ok)
+    sigma, _s60, src, _ = ensemble.realized_sigma("POUL.CA", 10.0, ok)
     check("gated sigma comes from the ok tool only",
           sigma == 0.0 and "egx-data" in src)
 

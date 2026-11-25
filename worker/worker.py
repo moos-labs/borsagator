@@ -754,7 +754,7 @@ def _done_or_pending(job_id):
             or bool(_receipt_paths(job_id)))
 
 
-def _mark_done(job, archive_sha):
+def _mark_done(job, archive_sha, extra=None):
     """#149/#216/#231: mark completion only AFTER a successful effect.
     First stage exact completion bytes in the primary outbox. If that
     write fails, try JOB_STATE with the same crash-durable write, then
@@ -770,10 +770,18 @@ def _mark_done(job, archive_sha):
     concurrent workers sharing ROOT, and peer-host claim reclamation
     remain outside this local gate's guarantee. JOB_STATE is on the
     same filesystem by default, so fallback writes are NOT assumed
-    independent. Never turn an intent alone into a done marker."""
-    record = json.dumps(
-        {"worker": os.uname().nodename, "at": now(), "job": job["job"],
-         "archive": archive_sha, "id": job["id"]})
+    independent. Never turn an intent alone into a done marker.
+
+    Issue #610 item 4c: `extra` carries optional additional record
+    fields (e.g. the superseded markers from _mark_superseded). The
+    five RECEIPT_KEYS stay strings; _valid_receipt allows extra
+    keys, so a superseded record still validates as a receipt."""
+    record_dict = {"worker": os.uname().nodename, "at": now(),
+                   "job": job["job"], "archive": archive_sha,
+                   "id": job["id"]}
+    if extra:
+        record_dict.update(extra)
+    record = json.dumps(record_dict)
     receipt = None
     for directory in _completion_dirs():
         try:
@@ -809,6 +817,22 @@ def _mark_done(job, archive_sha):
              "is retained, outcome UNCERTAIN; manual reconciliation"),
           file=sys.stderr, flush=True)
     return False
+
+
+def _mark_superseded(job, archive_label, superseded_by, reason):
+    """Issue #610 item 4c: mark a slot-bound guard/watch job done
+    WITHOUT executing it, because a newer slot of the same kind
+    supersedes it (T4 spec). Reuses _mark_done — same publication
+    path, same receipt staging — with the superseded markers added
+    as extra record fields. The done record makes _done_or_pending
+    true afterwards, so the skipped job is never re-executed. The
+    archive label is the job kind's archive ("ledger-guard" /
+    "ledger-watchdog"), matching an executed slot's record shape."""
+    print(f"_mark_superseded {job['id']}: skipping, superseded by "
+          f"{superseded_by} ({reason})", flush=True)
+    return _mark_done(job, archive_label, extra={
+        "superseded": True, "superseded_by": superseded_by,
+        "reason": reason})
 
 
 def _malformed_name(job):
@@ -6010,6 +6034,88 @@ def self_update():
                         f"{type(e).__name__}: {e}; running old code")
 
 
+# Issue #610 item 4c: slot-bound guard/watch ids carry their slot
+# time (guard-YYYY-MM-DDTHHMMZ / watch-YYYY-MM-DDTHHMMZ). A slot
+# is superseded when a NEWER slot of the same kind is already
+# queued or has already landed (done) — the older slot's verdict
+# is stale, so executing it (~10.5 min) only delays the lane-1
+# work behind it. Slot times are compared as parsed datetimes,
+# never as strings alone.
+_SLOT_RE = re.compile(
+    r"^(guard|watch)-(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})Z$")
+_SLOT_KIND = {"ledger-guard": "guard", "ledger-watchdog": "watch"}
+
+
+def _slot_time(job_id):
+    """Parse a guard-/watch- slot id to an aware UTC datetime, or
+    None when the id is not a slot id or does not parse. Fail
+    closed: an unparseable id is never treated as a slot."""
+    m = _SLOT_RE.match(job_id) if isinstance(job_id, str) else None
+    if not m:
+        return None
+    try:
+        return datetime(int(m.group(2)), int(m.group(3)),
+                        int(m.group(4)), int(m.group(5)),
+                        int(m.group(6)), tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _superseded_slot(job_id, job_text, queue_jobs, done_ids):
+    """Issue #610 item 4c (T4 spec): True only for a `ledger-guard`
+    job with id `guard-<slot>` or a `ledger-watchdog` job with id
+    `watch-<slot>` when EITHER (a) another job of the same kind
+    with a strictly LATER slot time exists in the queue list and
+    is not done, OR (b) a done record exists for the same kind
+    with a strictly later slot time. Returns
+    (superseded, superseded_by, reason); superseded_by is the
+    NEWEST later slot id found (queued or done), or None.
+
+    NEVER superseded: the newest slot of its kind, any
+    `manual-guard-*` job, any `sched-*` job, any non-slot job, or
+    a job whose id does not parse as a slot time (fail closed).
+    Cross-kind never supersedes: a newer guard does not supersede
+    a watch, and vice versa. Pure: no I/O, no globals."""
+    kind = _SLOT_KIND.get(job_text) if isinstance(job_text, str) \
+        else None
+    if kind is None:
+        return (False, None, "")
+    slot = _slot_time(job_id)
+    if slot is None:
+        return (False, None, "")
+    done_set = set(done_ids) if done_ids else set()
+    best_id = None
+    best_slot = None
+    for other in queue_jobs or []:
+        if not isinstance(other, dict):
+            continue
+        other_id = other.get("id")
+        if not isinstance(other_id, str) or other_id == job_id:
+            continue
+        if other.get("job") != job_text:
+            continue  # same kind only
+        if other_id in done_set:
+            continue  # covered by the done-record branch below
+        other_slot = _slot_time(other_id)
+        if other_slot is not None and other_slot > slot and \
+                (best_slot is None or other_slot > best_slot):
+            best_slot, best_id = other_slot, other_id
+    for done_id in done_set:
+        if done_id == job_id:
+            continue
+        m = _SLOT_RE.match(done_id) if isinstance(done_id, str) \
+            else None
+        if not m or m.group(1) != kind:
+            continue  # same kind only (done ids carry no job text)
+        done_slot = _slot_time(done_id)
+        if done_slot is not None and done_slot > slot and \
+                (best_slot is None or done_slot > best_slot):
+            best_slot, best_id = done_slot, done_id
+    if best_id is None:
+        return (False, None, "")
+    return (True, best_id, f"superseded by {best_id}")
+
+
 def _lane_sorted(jobs):
     """Issue #610: priority lane — slot-bound ledger guard and
     watchdog jobs claim before bulk FIFO work (sweeps, backtests),
@@ -6057,8 +6163,18 @@ def main():
             # reason for non-dict entries; the #391 dict-entry
             # reasons (missing-or-invalid-id / missing-job) are
             # unchanged.
-            for job in _lane_sorted(
-                    _quarantine_non_object_entries(read_queue())):
+            # Issue #610 item 4c: done ids for the superseded-slot
+            # check — filenames under queue/done/ after this cycle's
+            # sync_bus, plus ids verified done by this process.
+            # Read once per cycle; the queue list below is the same
+            # snapshot the loop iterates.
+            _done_dir = BUS / "queue" / "done"
+            done_ids = {f.stem for f in _done_dir.glob("*.json")} \
+                if _done_dir.exists() else set()
+            done_ids |= _VERIFIED_DONE
+            queue_jobs = _lane_sorted(
+                _quarantine_non_object_entries(read_queue()))
+            for job in queue_jobs:
                 job_id = job.get("id") if isinstance(job, dict) else None
                 if not isinstance(job_id, str) or not JOB_ID_RE.match(job_id):
                     # Issue #391: quarantine with evidence instead
@@ -6073,6 +6189,26 @@ def main():
                     # any local completion evidence (valid or
                     # quarantined-corrupt receipt) also blocks
                     # re-execution on this host.
+                    continue
+                # Issue #610 item 4c: skip a late slot when a newer
+                # slot of the same kind is queued or has landed —
+                # write the done record WITHOUT claiming or
+                # executing, and continue WITHOUT break, so one
+                # cycle can skip many stale slots. The done record
+                # makes _done_or_pending true afterwards, so the
+                # skipped job is never re-executed. worked=True
+                # keeps the cycle looping at once (1s sleep) so
+                # the stale backlog drains fast.
+                superseded, superseded_by, reason = _superseded_slot(
+                    job_id, job.get("job"), queue_jobs, done_ids)
+                if superseded:
+                    _mark_superseded(
+                        job,
+                        "ledger-guard"
+                        if job.get("job") == "ledger-guard"
+                        else "ledger-watchdog",
+                        superseded_by, reason)
+                    worked = True
                     continue
                 if not claimed(job_id):
                     if claim(job):
