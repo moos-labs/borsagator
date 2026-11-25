@@ -285,10 +285,9 @@ def build_entrants(ens, kronos_path, kronos_first_date):
         tilt = fnum(hb.get("tilt_centre_pct"))
         if tilt is None:
             continue
-        hi, lo = hb.get("range_high_pct"), hb.get("range_low_pct")
-        if hi is None or lo is None:
+        half_pct = (hb.get("range_high_pct") - hb.get("range_low_pct")) / 2
+        if half_pct is None:
             continue
-        half_pct = (hi - lo) / 2
         out["tilt-technicals"][h] = _horizon_block(
             bf.direction_of(tilt / 100), tilt,
             tilt - half_pct, tilt + half_pct, None,
@@ -559,7 +558,7 @@ def agg(subset):
     n = len(subset)
     if not n:
         return {"n": 0, "hit_rate": None, "mean_abs_error_pp": None,
-                "range_coverage": None}
+                "range_coverage": None, "mean_interval_score": None}
     ranged = [r for r in subset if r.get("in_range") is not None]
     # Issue #594: the Winkler interval score (80%) per row, so
     # the RangeSkill gate can be computed per (entrant, horizon).

@@ -2145,45 +2145,75 @@ def test_scorer():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def test_scorer_tilt_missing_range():
-    print("== scorer tilt-technicals missing range fields (#673) ==")
+def test_scorer_v1_capture_missing_entrants():
+    """#592: score_all() over a v1 capture (no tilt_centre_pct, no
+    index leg) must not crash. The v2 scorer's agg() omitted
+    mean_interval_score for empty subsets, so score_all() raised
+    KeyError at the RangeSkill step for tilt-technicals and
+    index-baseline, which have zero rows on v1 captures
+    (score_capture itself was fine — the crash was purely in the
+    aggregation step)."""
+    print("== scorer v1 capture (missing entrants) ==")
     sc = load_module(os.path.join(HERE, "backtest_score.py"),
                      "backtest_score")
-    tmp = tempfile.mkdtemp(prefix="bt436-tilt673-")
+    tmp = tempfile.mkdtemp(prefix="bt436-score-v1-")
     try:
         cap, ens, base, after = _fixture_capture(tmp)
-        kronos, first_date = sc.read_kronos_path(
-            os.path.join(cap, "collected/kronos/forecast.csv"))
-        # A malformed/partial capture: tilt present on every
-        # horizon, but week carries NO range fields and month
-        # carries only range_high_pct. Both horizons must be
-        # skipped by the tilt-technicals entrant without raising
-        # (the old code subtracted before the None guard and
-        # raised TypeError).
-        broken = json.loads(json.dumps(ens))
-        week = broken["horizons"]["week"]
-        assert week.get("tilt_centre_pct") is not None
-        week.pop("range_high_pct", None)
-        week.pop("range_low_pct", None)
-        month = broken["horizons"]["month"]
-        assert month.get("tilt_centre_pct") is not None
-        month.pop("range_low_pct", None)
-        raised = None
+        # Strip the v2-only fields: v1 captures carry no
+        # tilt_centre_pct and no sigma60_daily (naive-range falls
+        # back to sigma_daily as proxy), and EGX v1 captures have
+        # no index leg (^EGX30 404s on Yahoo).
+        ens_path = os.path.join(cap, "digest/ensemble.json")
+        ens_v1 = json.load(open(ens_path, encoding="utf-8"))
+        ens_v1.pop("sigma60_daily", None)
+        for hb in (ens_v1.get("horizons") or {}).values():
+            if isinstance(hb, dict):
+                hb.pop("tilt_centre_pct", None)
+        json.dump(ens_v1, open(ens_path, "w"), indent=1)
+        r_path = os.path.join(cap, "realised.json")
+        r_v1 = json.load(open(r_path, encoding="utf-8"))
+        r_v1["index_gap"] = "index fetch failed: Yahoo chart error"
+        r_v1["index_base_close"] = None
+        r_v1["index_sessions"] = []
+        json.dump(r_v1, open(r_path, "w"), indent=1)
+        crashed = None
         try:
-            mine = sc.build_entrants(broken, kronos, first_date)
-        except Exception as exc:  # noqa: BLE001 - report, don't hide
-            raised = exc
-            mine = None
-        check("tilt missing range does not raise", raised is None,
-              repr(raised))
-        if mine is not None:
-            tt = mine["tilt-technicals"]
-            check("tilt week skipped when range fields absent",
-                  "week" not in tt, "got %s" % sorted(tt))
-            check("tilt month skipped when range_low_pct absent",
-                  "month" not in tt, "got %s" % sorted(tt))
-            check("tilt day still built from intact horizon",
-                  "day" in tt, "got %s" % sorted(tt))
+            doc, md = sc.score_all(os.path.join(tmp, "backtest"))
+        except Exception as e:  # noqa: BLE001 - any raise is the bug
+            crashed = e
+            doc, md = None, ""
+        check("v1 capture score_all does not crash",
+              crashed is None,
+              "%s: %s" % (type(crashed).__name__, crashed))
+        if doc is None:
+            return
+        check("v1 capture scores 15 rows (5 entrants x 3 horizons)",
+              doc["counts"]["forecasts"] == 15,
+              "got %d" % doc["counts"]["forecasts"])
+        check("v1 capture all matured",
+              doc["counts"]["matured"] == 15,
+              str(doc["counts"]))
+        for missing in ("tilt-technicals", "index-baseline"):
+            for h in ("day", "week", "month"):
+                cell = doc["by_entrant"][missing][h]
+                check("v1 %s %s n=0" % (missing, h),
+                      cell["n"] == 0)
+                check("v1 %s %s naive_interval_score None"
+                      % (missing, h),
+                      cell["naive_interval_score"] is None)
+                check("v1 %s %s range_skill None" % (missing, h),
+                      cell["range_skill"] is None)
+                check("v1 %s %s gate n<30" % (missing, h),
+                      cell["range_gate"] == "n<30")
+        # The present entrants still carry a naive baseline.
+        present = doc["by_entrant"]["2-family-ensemble"]["day"]
+        check("v1 ensemble day naive_interval_score present",
+              present["naive_interval_score"] is not None,
+              str(present))
+        # agg() itself carries the key on empty input.
+        check("agg([]) carries mean_interval_score",
+              "mean_interval_score" in sc.agg([])
+              and sc.agg([])["mean_interval_score"] is None)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -2432,7 +2462,7 @@ def run_backtest_checks(verbose=True):
     test_runner_skip_classification_in_cell()
     test_runner_python_override()
     test_scorer()
-    test_scorer_tilt_missing_range()
+    test_scorer_v1_capture_missing_entrants()
     return CHECKS["pass"], CHECKS["fail"], list(FAILURES)
 
 
