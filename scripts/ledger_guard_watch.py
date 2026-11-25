@@ -358,9 +358,12 @@ def calibration_title_body(alerts, now):
         lines.append(f"- {e['ticker']} {e['horizon']}: n={e['n']}, "
                      f"n_eff={n_eff}, as-published coverage "
                      f"{e['coverage_before']:.3f}")
-    body = (f"⚠️ {len(alerts)} calibration cell(s) at effective n >= 30 "
-            f"measure as-published coverage outside the 0.75-0.85 "
-            f"launch-gate tolerance.\n\n"
+    body = (f"⚠️ {len(alerts)} calibration cell(s) past the per-horizon "
+            f"gate (n_eff >= 30 day / 6 week / 2 month) trip the "
+            f"per-horizon exact-binomial page predicate on as-published "
+            f"coverage: day outside the 0.75-0.85 launch-gate "
+            f"tolerance, week low at <= 2/6, month at 0/2 (no "
+            f"high-side page for week/month).\n\n"
             + "\n".join(lines) + "\n\n"
             f"{_cells_line(alerts)}\n"
             f"**Checked:** {now.strftime('%Y-%m-%d %H:%M UTC')}\n\n"
@@ -384,8 +387,10 @@ def signal_calibration(token, alerts, now, signal_out=None):
         payload = {"action": "create", "title": title, "body": body,
                    "labels": [SIGNAL_LABEL], "issue_number": None,
                    "cells": cells,
-                   "reason": f"{len(cells)} calibration cell(s) outside "
-                             f"0.75-0.85"}
+                   "reason": f"{len(cells)} calibration cell(s) past "
+                             f"per-horizon gate (n_eff >= 30 day / "
+                             f"6 week / 2 month), exact-binomial "
+                             f"predicate"}
         with open(signal_out, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)
         log(f"dry run: calibration signal payload written to "

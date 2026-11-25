@@ -123,6 +123,10 @@ def test_title_body_names_cells_and_tolerance():
     assert "AAA day" in body and "1.000" in body, body
     assert "Cells: AAA/day" in body, body
     assert "0.75-0.85" in body, body
+    # #713: the alert text must name the per-horizon gate and the
+    # exact-binomial page predicate, not the old scalar n >= 30.
+    assert "n_eff >= 30 day / 6 week / 2 month" in body, body
+    assert "exact-binomial" in body, body
 
 
 def _run_cli(args, tmp):
