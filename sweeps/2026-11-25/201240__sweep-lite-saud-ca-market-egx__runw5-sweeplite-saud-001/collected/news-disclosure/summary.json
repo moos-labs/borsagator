@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "SAUD.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "SAUD.CA",
+    "fetched_at": "2026-11-25T20:12:38Z",
+    "tool": "news-disclosure",
+    "news_count": 22,
+    "disclosure_count": 0,
+    "arabic_headlines": 20,
+    "latest_news_date": "Wed, 25 Nov 2026 04:48:14 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "الحوثيون يهددون جدة وموانئ المملكة على البحر الأحمر في أعقاب ضربات الحديدة - houseofsaud.com",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.757,
+    "finbert_negative": 0.145,
+    "finbert_neutral": 0.098,
+    "finbert_scored": 2,
+    "multilingual_positive": 0.167,
+    "multilingual_negative": 0.499,
+    "multilingual_neutral": 0.334,
+    "multilingual_scored": 20,
+    "bodies_fetched": 12,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb+cohere",
+    "translated_positive": 0.055,
+    "translated_negative": 0.576,
+    "translated_neutral": 0.368,
+    "translated_scored": 20
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

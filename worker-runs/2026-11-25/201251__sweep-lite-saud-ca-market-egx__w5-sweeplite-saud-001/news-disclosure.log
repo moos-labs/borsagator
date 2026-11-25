@@ -1,0 +1,27 @@
+bodies: 12/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/SAUD.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6181.12it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16358.88it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 18752.86it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6199.85it/s]
+{"tool": "news-disclosure", "ticker": "SAUD.CA", "news_count": 22, "disclosure_count": 0, "arabic_headlines": 20, "latest_news_date": "Wed, 25 Nov 2026 04:48:14 GMT", "latest_disclosure_date": "", "top_headline": "الحوثيون يهددون جدة وموانئ المملكة على البحر الأحمر في أعقاب ضربات الحديدة - houseofsaud.com", "llm_provider": "cohere", "finbert_positive": 0.757, "finbert_negative": 0.145, "finbert_neutral": 0.098, "finbert_scored": 2, "multilingual_positive": 0.167, "multilingual_negative": 0.499, "multilingual_neutral": 0.334, "multilingual_scored": 20, "bodies_fetched": 12, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb+cohere", "translated_positive": 0.055, "translated_negative": 0.576, "translated_neutral": 0.368, "translated_scored": 20}
+BRIEF:
+- The Houthis have threatened the city of Jeddah and Saudi Arabia's ports on the Red Sea following strikes on Al-Hudaydah. This could potentially disrupt trade and shipping activities, impacting the country's economy and stock market.
+- US tech stocks are rebounding, led by Nvidia, which has restored momentum to global markets. This development opens opportunities for Saudi companies, especially in the tech sector, potentially attracting investment and impacting stock performance.
+- OPEC+ will meet on November 29th to determine production quotas for 2027 without a plan post-December. The meeting will decide on production levels without an approved framework, which could influence oil prices and, consequently, the stock market.
+- Oil flows through the Strait of Hormuz have decreased to 10 million barrels per day due to escalating November attacks. This disruption in oil supply could affect global energy markets and impact the performance of energy-related stocks.
+- The Saudi-led coalition intercepted two Houthi ballistic missiles over Jazan, with debris falling in Ash-Shuqayq. Such incidents highlight the ongoing conflict and its potential impact on regional stability, which could influence investor sentiment and stock prices.
+- The coalition struck Al-Hudaydah after a warning, and the Houthis threatened Jeddah's port. This exchange of threats puts major commercial ports at risk, affecting trade and potentially causing stock market volatility.
+- Crown Prince Mohammed bin Salman chaired the Saudi Cabinet meeting on war and the Strait of Hormuz in the absence of King Salman since October 20th. His leadership in addressing regional security issues and energy cooperation could shape Saudi Arabia's geopolitical position and impact investor confidence.
+- The Saudi-led coalition struck 60 targets in

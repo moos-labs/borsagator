@@ -1,0 +1,144 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "SAUD.CA",
+ "base_price": 21.95,
+ "base_source": "egx-data/egxpy_saud.csv",
+ "base_date": "2026-11-25",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_saud.csv": 22.65,
+   "openbb/saud_ca.csv": 22.6299991607666,
+   "pandas-ta/indicators.csv": 22.6299991607666,
+   "talib/indicators.csv": 22.6299991607666,
+   "yahooquery/saud.ca.csv": 22.6299991607666
+  },
+  "outliers": {},
+  "spread_pct": 0.09,
+  "common_date": "2026-11-23",
+  "base_used": 21.95,
+  "base_source_used": "egx-data/egxpy_saud.csv",
+  "base_date": "2026-11-25",
+  "latest_collected_date": "2026-11-25",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0246,
+ "sigma60_daily": 0.0246,
+ "sigma_source": "egx-data/egxpy_saud.csv (σ60=0.0246, σ10=0.0244)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.661,
+ "date": "2026-11-25",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "management event: US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ",
+   "earnings event: أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com"
+  ],
+  "events": [
+   {
+    "type": "management",
+    "severity": "high",
+    "title": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - "
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com"
+   }
+  ],
+  "move_z": {
+   "last": 0.57,
+   "max3": 0.71
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": 0.45,
+  "sentiment": 0.517,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.063
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.24,
+   "range_high_pct": 4.24,
+   "confidence": 0.3,
+   "net_score": 0.517,
+   "tilt_centre_pct": 0.24,
+   "families": {
+    "sentiment": 0.517
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 3.3959,
+   "vol_h_pct": 2.4555,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.54,
+   "range_high_pct": 10.54,
+   "confidence": 0.3,
+   "net_score": 0.479,
+   "tilt_centre_pct": 1.18,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.517
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": 2.3344,
+   "vol_h_pct": 5.4908,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -20.25,
+   "range_high_pct": 20.25,
+   "confidence": 0.3,
+   "net_score": 0.432,
+   "tilt_centre_pct": 3.11,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.517,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": -1.4264,
+   "vol_h_pct": 11.2527,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

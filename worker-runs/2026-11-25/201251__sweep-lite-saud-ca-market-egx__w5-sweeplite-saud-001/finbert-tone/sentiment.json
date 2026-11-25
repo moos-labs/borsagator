@@ -1,0 +1,126 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 3,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "positive": 3,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.7499860808334233,
+    "negative": 0.00029814405473072014,
+    "neutral": 0.2497158187391193
+  },
+  "items": [
+    {
+      "text": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999994039535522,
+        "negative": 3.298365669479608e-08,
+        "neutral": 5.65354241643945e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999994039535522
+        },
+        {
+          "label": "Neutral",
+          "score": 5.65354241643945e-07
+        },
+        {
+          "label": "Negative",
+          "score": 3.298365669479608e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Major Saudi Conferences to Proceed, Organisers Say, Despite Deadly Airport Attack - EnergyNow",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.7398628187947907e-05,
+        "negative": 0.0011563252191990614,
+        "neutral": 0.9988263249397278
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9988263249397278
+        },
+        {
+          "label": "Negative",
+          "score": 0.0011563252191990614
+        },
+        {
+          "label": "Positive",
+          "score": 1.7398628187947907e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Impressive Pakistan debutants leave Sri Lanka trailing by 320 runs in 1st cricket test - iNFOnews.ca",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999948740005493,
+        "negative": 4.4213994243591515e-08,
+        "neutral": 5.150446213519899e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999948740005493
+        },
+        {
+          "label": "Neutral",
+          "score": 5.150446213519899e-06
+        },
+        {
+          "label": "Negative",
+          "score": 4.4213994243591515e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Saudi Stocks Rebound 0.9%, Recouping Previous Session's Losses - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999326467514038,
+        "negative": 3.617380207288079e-05,
+        "neutral": 3.123421629425138e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999326467514038
+        },
+        {
+          "label": "Negative",
+          "score": 3.617380207288079e-05
+        },
+        {
+          "label": "Neutral",
+          "score": 3.123421629425138e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

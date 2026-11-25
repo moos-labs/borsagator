@@ -1,0 +1,1516 @@
+{
+  "archive_commit": "cc40edb618a94f4b72feb4def350f279a3837aa5",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "de9f7367b74ceaab12f57da5d5de3f52622b1e02ee9c501eabcf566c5871f203",
+      "family-agent.json": "39ae047ac05f27c257ad02df6c9df7aff96a03d4eed45ab3f55d582a7eb921c5",
+      "family-fundamentals.json": "cb0cecd9e19be6210d6646228ca955e86d97bfe983a3705fbdee95e4006dfc3c",
+      "family-price-forecast.json": "0d0afbdd31e4ad4baff986517f1041d8593e4cfb4861403db6dccf35c4db1e34",
+      "family-sentiment.json": "4b011a56761e5c8c75c32e1337c33c4bb9c5cc380509324a37841fcd0f880b2e",
+      "family-technicals.json": "6ff6c5375c9e3df9439e9ee26d9c15afa0e3915ec0f7ff3a3b0f823fbd5057f5",
+      "kronos-alone.json": "4fdb65fae30ac3823d0dfe7dc2247703ded56c38ee97dc241b761d69ae35807c",
+      "raw-llm-cohere.json": "61fb5f81dcadec5a2a0fa5a6543d1361972054b3216a99279638757a0ff3abec"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/SAUD-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 21.95,
+    "base_source": "egx-data/egxpy_saud.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": -0.063,
+      "sentiment": 0.517,
+      "technicals": 0.45
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.517
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.3959,
+        "net_score": 0.517,
+        "range_high_pct": 4.24,
+        "range_low_pct": -4.24,
+        "tilt_centre_pct": 0.24,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.4555
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": 0.517,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.4264,
+        "net_score": 0.432,
+        "range_high_pct": 20.25,
+        "range_low_pct": -20.25,
+        "tilt_centre_pct": 3.11,
+        "trading_sessions": 21,
+        "vol_h_pct": 11.2527
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.517,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.3344,
+        "net_score": 0.479,
+        "range_high_pct": 10.54,
+        "range_low_pct": -10.54,
+        "tilt_centre_pct": 1.18,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.4908
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_saud.csv",
+      "base_stale": false,
+      "base_used": 21.95,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.09,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_saud.csv": 22.65,
+        "openbb/saud_ca.csv": 22.6299991607666,
+        "pandas-ta/indicators.csv": 22.6299991607666,
+        "talib/indicators.csv": 22.6299991607666,
+        "yahooquery/saud.ca.csv": 22.6299991607666
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ",
+          "type": "management"
+        },
+        {
+          "severity": "high",
+          "title": "أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "management event: US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ",
+        "earnings event: أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.57,
+        "max3": 0.71
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.661,
+    "sigma60_daily": 0.0246,
+    "sigma_daily": 0.0246,
+    "sigma_source": "egx-data/egxpy_saud.csv (σ60=0.0246, σ10=0.0244)",
+    "ticker": "SAUD.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": -0.063,
+    "sentiment": 0.517,
+    "technicals": 0.45
+  },
+  "finished": "2026-11-25T20:12:40.028700+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/SAUD.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/SAUD.CA.json",
+    "sharia-row-missing: AAOIFI SAUD.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 SAUD.CA",
+    "sharia-row-missing: FTSE SAUD.CA",
+    "sharia-row-missing: ISLAMICLY SAUD.CA",
+    "sharia-row-missing: MSCI SAUD.CA",
+    "sharia-row-missing: MSCI_M SAUD.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.517
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.3959,
+      "net_score": 0.517,
+      "range_high_pct": 4.24,
+      "range_low_pct": -4.24,
+      "tilt_centre_pct": 0.24,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.4555
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": 0.517,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.4264,
+      "net_score": 0.432,
+      "range_high_pct": 20.25,
+      "range_low_pct": -20.25,
+      "tilt_centre_pct": 3.11,
+      "trading_sessions": 21,
+      "vol_h_pct": 11.2527
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.517,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.3344,
+      "net_score": 0.479,
+      "range_high_pct": 10.54,
+      "range_low_pct": -10.54,
+      "tilt_centre_pct": 1.18,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.4908
+    }
+  },
+  "job": "sweep-lite SAUD.CA market=EGX",
+  "job_shape": "sweep-lite SAUD.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 186,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 126,
+      "sweeps": 85,
+      "sweeps_with_ensemble": 64
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 24.2635,
+    "support": 19.6365
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb+cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T04:48:14Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 04:48:14 GMT",
+    "news_count": 22,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 04:48:14 GMT",
+        "identity_key": "https://houseofsaud.com/ar/houthi-jeddah-hodeidah-trap/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "الحوثيون يهددون جدة وموانئ المملكة على البحر الأحمر في أعقاب ضربات الحديدة - houseofsaud.com"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 19:16:55 GMT",
+        "identity_key": "https://english.aawsat.com/business/5345093-us-tech-stock-rebound-opens-opportunities-saudi-companies-humain-spotlight",
+        "key_type": "resolved_url",
+        "source": "ASHARQ AL-AWSAT English",
+        "title": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ASHARQ AL-AWSAT English"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 14:06:58 GMT",
+        "identity_key": "https://houseofsaud.com/ar/opec-nov29-2027-quotas/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 09:54:19 GMT",
+        "identity_key": "https://houseofsaud.com/ar/hormuz-oil-volumes-fall-november-2026/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "تراجع تدفقات النفط عبر هرمز إلى 10 ملايين برميل يومياً مع تصاعد هجمات نوفمبر - houseofsaud.com"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 01:33:29 GMT",
+        "identity_key": "https://houseofsaud.com/ar/houthis-jazan-missiles-al-shuqaiq-nov20/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "التحالف يعترض صاروخين باليستيين حوثيين فوق جازان وحطام يسقط في الشقيق - houseofsaud.com"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 19:46:26 GMT",
+        "identity_key": "https://houseofsaud.com/ar/coalition-strikes-hodeidah-houthis-threaten-jeddah-nov20/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "التحالف يضرب الحديدة عقب تحذير والحوثيون يهددون ميناء جدة - houseofsaud.com"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 21:55:38 GMT",
+        "identity_key": "https://houseofsaud.com/ar/mbs-cabinet-nov17-king-salman/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "محمد بن سلمان يرأس مجلس الوزراء السعودي بشأن الحرب وهرمز في غياب الملك سلمان منذ 20 أكتوبر - houseofsaud.com"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 13:47:59 GMT",
+        "identity_key": "https://houseofsaud.com/ar/coalition-strikes-60-targets-houthis-aden-nov18/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "التحالف يضرب 60 هدفاً في اليمن مع تقدم الحوثيين إلى مسافة 100 كم من عدن - houseofsaud.com"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://houseofsaud.com/ar/king-salman-removes-coalition-commander-al-ruwaili/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "الملك سلمان يُعفي قائد قوات التحالف ويُعيّن الرويلي - houseofsaud.com"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 17:47:02 GMT",
+        "identity_key": "https://houseofsaud.com/ar/iran-supertanker-sank-gulf-nov15/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "الحرس الثوري الإيراني يزعم غرق ناقلة نفط عملاقة كانت تحمل أكثر من 2 مليون برميل في الخليج - houseofsaud.com"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://houseofsaud.com/ar/coalition-intercepts-drone-eastern-saudi-arabia-nov13/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "التحالف يعترض طائرة مسيّرة فوق المنطقة الشرقية السعودية دون تسمية المهاجم - houseofsaud.com"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 01:21:40 GMT",
+        "identity_key": "https://houseofsaud.com/ar/saudi-tariff-reform-2027/",
+        "key_type": "resolved_url",
+        "source": "houseofsaud.com",
+        "title": "المملكة العربية السعودية ترفع تعريفات الكهرباء والمياه للعام 2027 وتُقرّ بدلاً شهرياً بقيمة 500 ريال - houseofsaud.com"
+      },
+      {
+        "date": "Wed, 11 Nov 2026 21:43:33 GMT",
+        "identity_key": "f7c9925438bfed64",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "ناقلة NCC Fajr في هجوم مشتبه به قرب مضيق هرمز فيما يدّعي الحرس الثوري الإيراني إصابة سفينتين بألغام - houseofsaud.com"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 15:52:27 GMT",
+        "identity_key": "5e8fc9c8508e1e08",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "التحالف يضرب منشأة غاز ومبنى شركة النفط في صنعاء، وفقاً للحوثيين - houseofsaud.com"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 08:00:00 GMT",
+        "identity_key": "3b2304bfbe32354e",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "رئيس الوزراء الكندي كارني يدين هجمات الحوثيين في اتصال بولي العهد السعودي - houseofsaud.com"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 08:00:00 GMT",
+        "identity_key": "2a6a3a3723ee92aa",
+        "key_type": "title-date-hash",
+        "source": "ASHARQ AL-AWSAT English",
+        "title": "Saudi Stocks Rebound 0.9%, Recouping Previous Session's Losses - ASHARQ AL-AWSAT English"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "8763ab7356fc8251",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "الاتحاد الآسيوي يؤجل كأس آسيا 2027 في السعودية 11 شهراً - houseofsaud.com"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "22a2135a2294d3d0",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "الحوثيون يدّعون ضربات بطائرات مسيّرة وصواريخ على مطار أبها وخميس مشيط - houseofsaud.com"
+      },
+      {
+        "date": "Mon, 02 Nov 2026 08:00:00 GMT",
+        "identity_key": "45db22d917522734",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "مستشار الأمن القومي السعودي العيبان يحمل رسالة محمد بن سلمان إلى شي جين بينغ بينما يدعو وانغ يي إلى تأمين مضيق هرمز - houseofsaud.com"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "8978e46de8b0e2f4",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "الولايات المتحدة تأمر موظفيها بمغادرة السعودية وسفارة الرياض تعمل بطاقم طارئ - houseofsaud.com"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "865b3ae3e1f60da8",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "الحوثيون يطلقون 3 صواريخ باليستية على السعودية والرياض تسمع 8 انفجارات - houseofsaud.com"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "ee05b5859c4a561a",
+        "key_type": "title-date-hash",
+        "source": "houseofsaud.com",
+        "title": "الحرس الثوري الإيراني يقول إن 3 ناقلات نفط اصطدمت بألغام في مضيق هرمز - houseofsaud.com"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 21.95,
+    "base_source": "egx-data/egxpy_saud.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_saud.csv",
+      "base_stale": false,
+      "base_used": 21.95,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.09,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_saud.csv": 22.65,
+        "openbb/saud_ca.csv": 22.6299991607666,
+        "pandas-ta/indicators.csv": 22.6299991607666,
+        "talib/indicators.csv": 22.6299991607666,
+        "yahooquery/saud.ca.csv": 22.6299991607666
+      }
+    },
+    "sessions_per_calendar_day": 0.661,
+    "sigma_daily": 0.0246,
+    "sigma_source": "egx-data/egxpy_saud.csv (σ60=0.0246, σ10=0.0244)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 21.95,
+      "last_date": "2026-11-25",
+      "last_high": 22.45,
+      "last_low": 21.95,
+      "last_open": 22.26,
+      "last_volume": 631151.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_saud.csv",
+      "stale": false
+    },
+    {
+      "last_close": 22.260000228881836,
+      "last_date": "2026-11-24",
+      "last_high": 22.940000534057617,
+      "last_low": 22.110000610351562,
+      "last_open": 22.6299991607666,
+      "last_volume": 202134.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/SAUD_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.260000228881836,
+      "last_date": "2026-11-24",
+      "last_high": 22.940000534057617,
+      "last_low": 22.110000610351562,
+      "last_open": 22.6299991607666,
+      "last_volume": 202134.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.260000228881836,
+      "last_date": "2026-11-24",
+      "last_high": 22.940000534057617,
+      "last_low": 22.110000610351562,
+      "last_open": 22.6299991607666,
+      "last_volume": 202134.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.6299991607666,
+      "last_date": "2026-11-23",
+      "last_high": 22.940000534057617,
+      "last_low": 22.31999969482422,
+      "last_open": 22.540000915527344,
+      "last_volume": 101905.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/SAUD.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-saud-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-saud-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    ],
+    "worker_code_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "worker_release_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "SAUD.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ",
+        "type": "management"
+      },
+      {
+        "severity": "high",
+        "title": "أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "management event: US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ",
+      "earnings event: أوبك+ تجتمع في 29 نوفمبر لتحديد حصص 2027 دون خطة بعد ديسمبر - houseofsaud.com"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.57,
+      "max3": 0.71
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SAUD.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T20:05:44.095090+00:00",
+  "sweep_dir": "sweeps/2026-11-25/201240__sweep-lite-saud-ca-market-egx__runw5-sweeplite-saud-001",
+  "ticker": "SAUD.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "SAUD.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "SAUD.CA.csv_last_close": 22.6299991607666,
+          "SAUD.CA.csv_last_date": "2026-11-23",
+          "rows_SAUD.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "edd58930a700cbdb42b6b23025505086af73c0b26e9cede2181d7ecd51cc9bb8",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "SAUD_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "SAUD_CA.csv_last_close": 22.260000228881836,
+          "SAUD_CA.csv_last_date": "2026-11-24",
+          "rows_SAUD_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "b242c3991a3928ce55d30cc94257de5ec08026879d28b9bdaa52f008f0ba5e8e",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_saud.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_saud.csv_last_close": 21.95,
+          "egxpy_saud.csv_last_date": "2026-11-25",
+          "rows_egxpy_saud.csv": 3000,
+          "symbol": "SAUD",
+          "ticker": "SAUD.CA"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "3a72188bb681c149e0b486afa0dc7388f9697cb802cf807c744336c91228965f",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 18.2197,
+          "atr_14": 0.8931,
+          "bb_lower": 19.4147,
+          "bb_mid": 21.7215,
+          "bb_pctb": 0.6167,
+          "bb_upper": 24.0283,
+          "close": 22.26,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 22.1445,
+          "ema_200": 20.8709,
+          "ema_50": 22.1281,
+          "first_date_used": "2019-01-01",
+          "high": 22.94,
+          "indicators.csv_last_close": 22.260000228881836,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 22.11,
+          "macd": 0.3119,
+          "macd_hist": 0.1456,
+          "macd_signal": 0.1663,
+          "open": 22.63,
+          "rows_fetched": 6528,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 51.5821,
+          "stoch_d": 73.9447,
+          "stoch_k": 67.0115,
+          "ticker": "SAUD.CA"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "96afdc925e70c94140d40b5e370e1395a7aebe65ce25bcd3a1cb9d8f0ffb9209",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 22.260000228881836,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 22.260000228881836,
+          "last_date": "2026-11-24",
+          "rows_fetched": 6528,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "SAUD.CA"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "1569168ad85fc90df29acc7f6b70d43dfe27bddc276b5e559870d568506b6806",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "954d249fa318ed6ca07c54a56a2e444edfff8a547758ba519f7af8f4db0f394a",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "3dc670f07b2742e49596b7978c5fbb54f045f06ae5aecf062d8151d1b5c0bb1c",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 13
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "b1771bef74f48a6b934d00f39f6369665e9cf68f599e59a31c90b4e0703cfe95",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "f530736545628361974066bcde5d6a68cfb92b6e56fee28eb76564a598106e7c",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "c17b305bc805ed113b2a3e83b92bae1d968b8ef3d2686ee14d87fdcba124a289",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "999581b8dfb3634aa968929fa2986c3b601949ed39650c7330e4b25515149273",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 21.6369,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "9c828a7ce09a696c879dfb0155a5b11ee0d649f03ac4cfc5bc9472581f85a92d",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "26b326c4f68e09ccc5194a550312b5f896d2eec54e915ed8e9b2d0f8d4812086",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-saud-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 20,
+          "bodies_fetched": 12,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T20:12:38Z",
+          "finbert_negative": 0.145,
+          "finbert_neutral": 0.098,
+          "finbert_positive": 0.757,
+          "finbert_scored": 2,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 04:48:14 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.499,
+          "multilingual_neutral": 0.334,
+          "multilingual_positive": 0.167,
+          "multilingual_scored": 20,
+          "news_count": 22,
+          "ticker": "SAUD.CA",
+          "tool": "news-disclosure",
+          "top_headline": "الحوثيون يهددون جدة وموانئ المملكة على البحر الأحمر في أعقاب ضربات الحديدة - houseofsaud.com",
+          "translated_negative": 0.576,
+          "translated_neutral": 0.368,
+          "translated_positive": 0.055,
+          "translated_scored": 20,
+          "translation_provider": "nllb+cohere"
+        },
+        "status": "ok",
+        "ticker": "SAUD.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "87a161433759b320bb234d388da2acb09c426c7f0078f45c1cf0a321cad0ad4f",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-saud-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

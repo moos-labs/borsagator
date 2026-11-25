@@ -1,0 +1,82 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 4,
+    "negative": 0,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.9586371332406998,
+    "negative": 0.0006025253096595407,
+    "neutral": 0.04076034526224248
+  },
+  "items": [
+    {
+      "text": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9979307651519775,
+        "negative": 0.0004591741890180856,
+        "neutral": 0.0016100608045235276
+      },
+      "raw_probabilities": {
+        "positive": 0.9979307651519775,
+        "neutral": 0.0016100608045235276,
+        "negative": 0.0004591741890180856
+      }
+    },
+    {
+      "text": "Major Saudi Conferences to Proceed, Organisers Say, Despite Deadly Airport Attack - EnergyNow",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.84394371509552,
+        "negative": 0.0005308438558131456,
+        "neutral": 0.15552546083927155
+      },
+      "raw_probabilities": {
+        "positive": 0.84394371509552,
+        "neutral": 0.15552546083927155,
+        "negative": 0.0005308438558131456
+      }
+    },
+    {
+      "text": "Impressive Pakistan debutants leave Sri Lanka trailing by 320 runs in 1st cricket test - iNFOnews.ca",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9949946403503418,
+        "negative": 0.0003939132147934288,
+        "neutral": 0.0046114432625472546
+      },
+      "raw_probabilities": {
+        "positive": 0.9949946403503418,
+        "neutral": 0.0046114432625472546,
+        "negative": 0.0003939132147934288
+      }
+    },
+    {
+      "text": "Saudi Stocks Rebound 0.9%, Recouping Previous Session's Losses - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976794123649597,
+        "negative": 0.0010261699790135026,
+        "neutral": 0.0012944161426275969
+      },
+      "raw_probabilities": {
+        "positive": 0.9976794123649597,
+        "neutral": 0.0012944161426275969,
+        "negative": 0.0010261699790135026
+      }
+    }
+  ]
+}

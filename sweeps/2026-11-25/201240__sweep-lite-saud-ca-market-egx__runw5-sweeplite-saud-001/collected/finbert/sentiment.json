@@ -1,0 +1,53 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 4,
+  "label_counts": {
+    "positive": 3,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.603785103186965,
+    "negative": 0.16174001898616552,
+    "neutral": 0.2344748880714178
+  },
+  "items": [
+    {
+      "text": "US Tech Stock Rebound Opens Opportunities for Saudi Companies, with HUMAIN in Spotlight - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.8418024182319641,
+        "negative": 0.020660333335399628,
+        "neutral": 0.13753728568553925
+      }
+    },
+    {
+      "text": "Major Saudi Conferences to Proceed, Organisers Say, Despite Deadly Airport Attack - EnergyNow",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.8226603865623474,
+        "negative": 0.05315888300538063,
+        "neutral": 0.12418071180582047
+      }
+    },
+    {
+      "text": "Impressive Pakistan debutants leave Sri Lanka trailing by 320 runs in 1st cricket test - iNFOnews.ca",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.07765337079763412,
+        "negative": 0.3042791187763214,
+        "neutral": 0.6180675625801086
+      }
+    },
+    {
+      "text": "Saudi Stocks Rebound 0.9%, Recouping Previous Session's Losses - ASHARQ AL-AWSAT English",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.6730242371559143,
+        "negative": 0.2688617408275604,
+        "neutral": 0.05811399221420288
+      }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 21.95,
+ "base_source": "egx-data/egxpy_saud.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T20:12:40.383799+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.4,
+   "families": {
+    "price-forecast": 0.69
+   },
+   "horizon_short": false,
+   "net_score": 0.69,
+   "range_high_pct": 4.58,
+   "range_low_pct": 1.87,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -1.43,
+   "families": {
+    "price-forecast": -0.063
+   },
+   "horizon_short": false,
+   "net_score": -0.063,
+   "range_high_pct": 0.42,
+   "range_low_pct": -3.23,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.33,
+   "families": {
+    "price-forecast": 0.212
+   },
+   "horizon_short": false,
+   "net_score": 0.212,
+   "range_high_pct": 4.5,
+   "range_low_pct": 1.15,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "f6c6ee01ebe8831aacaa2286c10ffd39f7e96743d325e6faf8af5978dba479c7",
+  "digest.json": "6fd650166f576d9b3f5d574a2dcd93fbc4f713be917ddf74a3cceb47e1101e5c",
+  "ensemble.json": "e1d47ca59e32c13fb5d69b4826fbbc76a1cb7bd8f07cc7fa4186271e06c8a7c9"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.661,
+ "sigma_daily": 0.0246,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/201240__sweep-lite-saud-ca-market-egx__runw5-sweeplite-saud-001",
+ "ticker": "SAUD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
