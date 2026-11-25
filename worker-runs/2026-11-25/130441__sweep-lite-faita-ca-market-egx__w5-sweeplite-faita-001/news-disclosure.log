@@ -1,0 +1,20 @@
+WARN body http 403: https://www.sofascore.com/ar/football/match/asp-vita-club-mokanda/TrkcsGhxi
+bodies: 0/1 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/FAITA.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5916.80it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 13673.75it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16378.63it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6156.88it/s]
+{"tool": "news-disclosure", "ticker": "FAITA.CA", "news_count": 1, "disclosure_count": 0, "arabic_headlines": 1, "latest_news_date": "Mon, 23 Nov 2026 00:16:52 GMT", "latest_disclosure_date": "", "top_headline": "فيتا كلوب موكاندا ضد أسب النتيجة المباشرة, المواجهات المباشرة والتشكيلات - Sofascore", "llm_provider": "extractive", "multilingual_positive": 0.074, "multilingual_negative": 0.003, "multilingual_neutral": 0.922, "multilingual_scored": 1, "bodies_fetched": 0, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.046, "translated_negative": 0.016, "translated_neutral": 0.938, "translated_scored": 1}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Mon, 23 Nov 2026 00:16:52 GMT] (Sofascore) فيتا كلوب موكاندا ضد أسب النتيجة المباشرة, المواجهات المباشرة والتشكيلات - Sofascore

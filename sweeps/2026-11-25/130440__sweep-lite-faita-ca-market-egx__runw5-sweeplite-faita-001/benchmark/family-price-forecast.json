@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 1.0,
+ "base_source": "egx-data/egxpy_faita.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:04:40.585801+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": 0.21,
+   "families": {
+    "price-forecast": 0.148
+   },
+   "horizon_short": false,
+   "net_score": 0.148,
+   "range_high_pct": 1.24,
+   "range_low_pct": -0.83,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "down",
+   "expected_move_pct": -0.9,
+   "families": {
+    "price-forecast": -0.173
+   },
+   "horizon_short": false,
+   "net_score": -0.173,
+   "range_high_pct": 2.98,
+   "range_low_pct": -4.78,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": 0.33,
+   "families": {
+    "price-forecast": 0.139
+   },
+   "horizon_short": false,
+   "net_score": 0.139,
+   "range_high_pct": 2.13,
+   "range_low_pct": -1.46,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "d1678ff55aae7d33d9268ffdce4bcfc99893b1913a92175e0cf21d68385da9d9",
+  "digest.json": "4dfd45c03a64fbe1b07d4af7397b8be340719664f2af675cd862c3b53b3a28d1",
+  "ensemble.json": "cf5b67a40025b23128dd9097ed5d3db6564b94174e8c182df185380235911a25"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0081,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/130440__sweep-lite-faita-ca-market-egx__runw5-sweeplite-faita-001",
+ "ticker": "FAITA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
