@@ -1,0 +1,135 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "ISPH.CA",
+ "base_price": 10.03,
+ "base_source": "egx-data/egxpy_isph.csv",
+ "base_date": "2026-11-25",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_isph.csv": 10.17,
+   "openbb/isph_ca.csv": 10.170000076293945,
+   "pandas-ta/indicators.csv": 10.170000076293945,
+   "talib/indicators.csv": 10.170000076293945,
+   "yahooquery/isph.ca.csv": 10.170000076293945
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-23",
+  "base_used": 10.03,
+  "base_source_used": "egx-data/egxpy_isph.csv",
+  "base_date": "2026-11-25",
+  "latest_collected_date": "2026-11-25",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0258,
+ "sigma_source": "egx-data/egxpy_isph.csv (σ60=0.0258, σ10=0.0165)",
+ "sessions_per_calendar_day": 0.664,
+ "date": "2026-11-25",
+ "risk": {
+  "level": "none",
+  "conf_cap": 0.6,
+  "price_mult": 1.0,
+  "flags": [],
+  "events": [],
+  "move_z": {
+   "last": 0.19,
+   "max3": 0.73
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+  "factors": {
+   "price-forecast": 0.5,
+   "technicals": 0.679,
+   "sentiment": 1.068,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.5,
+    "n": 31,
+    "skill": -0.606
+   },
+   "technicals": {
+    "factor": 0.679,
+    "n": 33,
+    "skill": -0.321
+   },
+   "sentiment": {
+    "factor": 1.068,
+    "n": 33,
+    "skill": 0.068
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": 0.15,
+  "sentiment": 0.242,
+  "agent": null,
+  "fundamentals": 0.15,
+  "price-forecast": -0.037
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.23,
+   "range_low_pct": -2.17,
+   "range_high_pct": 4.64,
+   "confidence": 0.6,
+   "net_score": 0.232,
+   "families": {
+    "technicals": 0.15,
+    "sentiment": 0.242,
+    "price-forecast": 0.3
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 1.5454,
+   "vol_h_pct": 2.5762
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 2.28,
+   "range_low_pct": -3.63,
+   "range_high_pct": 8.18,
+   "confidence": 0.6,
+   "net_score": 0.248,
+   "families": {
+    "technicals": 0.15,
+    "sentiment": 0.242,
+    "price-forecast": 0.319
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 2.8495,
+   "vol_h_pct": 4.462
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.09,
+   "range_low_pct": -12.83,
+   "range_high_pct": 13.01,
+   "confidence": 0.6,
+   "net_score": 0.106,
+   "families": {
+    "technicals": 0.15,
+    "sentiment": 0.242,
+    "fundamentals": 0.15,
+    "price-forecast": -0.037
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": -0.7139,
+   "vol_h_pct": 9.6391
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

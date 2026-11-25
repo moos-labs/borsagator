@@ -1,0 +1,25 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 5/6 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/ISPH.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6289.16it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 17062.44it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16950.29it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6051.91it/s]
+{"tool": "news-disclosure", "ticker": "ISPH.CA", "news_count": 6, "disclosure_count": 0, "arabic_headlines": 6, "latest_news_date": "Fri, 20 Nov 2026 21:20:28 GMT", "latest_disclosure_date": "", "top_headline": "ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ", "llm_provider": "extractive", "multilingual_positive": 0.167, "multilingual_negative": 0.644, "multilingual_neutral": 0.189, "multilingual_scored": 6, "bodies_fetched": 5, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.055, "translated_negative": 0.274, "translated_neutral": 0.671, "translated_scored": 6}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Fri, 20 Nov 2026 21:20:28 GMT] (الشرق بلومبرغ) ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ
+- [Wed, 18 Nov 2026 07:05:47 GMT] (Daily Beirut) حكم على آصف ميرشانت بالسجن 27 عامًا لمحاولة اغتيال ترامب · دايلي بيروت - Daily Beirut
+- [Wed, 18 Nov 2026 05:43:57 GMT] (زاكروس عربية) الحكم على الباكستاني آصف ميرشانت بالسجن 27 عاماً بتهمة التآمر لاغتيال ترامب - زاكروس عربية
+- [Sat, 14 Nov 2026 14:26:00 GMT] (ahdath24.com) مهرجان القاهرة السينمائي يقدّم لقاءات مع رامي إمام وآصف كاباديا - ahdath24.com
+- [Thu, 12 Nov 2026 08:00:00 GMT] (شبكة شام الإخبارية) توقيف العميد آصف وهبي قائد عمليات الفرقة 25 لدى النظام البائد بعملية أمنية في ريف حماة - شبكة شام الإخبارية
+- [Mon, 09 Nov 2026 19:07:00 GMT] (Lebanon Debate) د. آصف ملحم لـ "شرق وغرب": لو افترضنا أن ما سينتج عن المفاوضات الروسية – الأوكرانية – الأميركية المرتقبة هو "البدء" بإنهاء الحرب - Lebanon Debate

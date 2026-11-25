@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 10.03,
+ "base_source": "egx-data/egxpy_isph.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:35:18.790844+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 1.32,
+   "families": {
+    "price-forecast": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 4.63,
+   "range_low_pct": -1.98,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": -0.61,
+   "families": {
+    "price-forecast": -0.037
+   },
+   "horizon_short": false,
+   "net_score": -0.037,
+   "range_high_pct": 11.75,
+   "range_low_pct": -12.97,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 2.44,
+   "families": {
+    "price-forecast": 0.319
+   },
+   "horizon_short": false,
+   "net_score": 0.319,
+   "range_high_pct": 8.16,
+   "range_low_pct": -3.28,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "61f65d74a4076083c77fa352f93c9d4b24fa0df54b7ef63a13f5d434c09a6050",
+  "digest.json": "cace25b51334d6d98d7185573d18fa039b7a8630636bd7f1a9157c0f26511154",
+  "ensemble.json": "6cc4e240cb799069f30234c6032ef02839f18f93f3344afa1552fe3c91093977"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0258,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001",
+ "ticker": "ISPH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

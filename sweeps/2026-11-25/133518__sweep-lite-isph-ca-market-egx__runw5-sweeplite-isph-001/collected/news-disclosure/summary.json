@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ISPH.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ISPH.CA",
+    "fetched_at": "2026-11-25T13:35:17Z",
+    "tool": "news-disclosure",
+    "news_count": 6,
+    "disclosure_count": 0,
+    "arabic_headlines": 6,
+    "latest_news_date": "Fri, 20 Nov 2026 21:20:28 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ",
+    "llm_provider": "extractive",
+    "multilingual_positive": 0.167,
+    "multilingual_negative": 0.644,
+    "multilingual_neutral": 0.189,
+    "multilingual_scored": 6,
+    "bodies_fetched": 5,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.055,
+    "translated_negative": 0.274,
+    "translated_neutral": 0.671,
+    "translated_scored": 6
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w5-sweeplite-isph-001",
+  "job": "sweep-lite ISPH.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T13:32:11.210490+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-isph-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T13:32:11.210490+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ISPH"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ISPH']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T13:35:18.465442+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001",
+  "model": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001/report-model.json",
+  "model_sha256": "c39f2894a9481a36eb4c904802ffa878fead7af40c5dfc0330d7595c35284ca2",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/ISPH.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ISPH.CA.json",
+   "sharia-row-missing: AAOIFI ISPH.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ISPH.CA",
+   "sharia-row-missing: FTSE ISPH.CA",
+   "sharia-row-missing: ISLAMICLY ISPH.CA",
+   "sharia-row-missing: MSCI ISPH.CA",
+   "sharia-row-missing: MSCI_M ISPH.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "63390d29a4338777015d04056478ea45aac354d2",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 122494,
+    "sha256": "8a08bb5c83932da5e4e784af65f74b6f123469f26b42afb8339b94be66e56eab"
+   },
+   {
+    "path": "report.md",
+    "bytes": 24147,
+    "sha256": "ffc1278765f4747e044cac2382f303e01993258597f4797439aec46fe1427a7d"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ISPH.CA"
+ }
+}

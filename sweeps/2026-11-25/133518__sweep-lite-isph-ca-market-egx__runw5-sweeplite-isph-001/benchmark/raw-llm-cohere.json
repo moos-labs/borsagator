@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 10.03,
+ "base_source": "egx-data/egxpy_isph.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:35:18.800087+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_isph.csv": "4bcc1d055737a67544861f52c4792a8696aa3283f0faab4f99b2324ce47ab7f1",
+  "digest.json": "cace25b51334d6d98d7185573d18fa039b7a8630636bd7f1a9157c0f26511154",
+  "ensemble.json": "6cc4e240cb799069f30234c6032ef02839f18f93f3344afa1552fe3c91093977",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001",
+ "ticker": "ISPH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

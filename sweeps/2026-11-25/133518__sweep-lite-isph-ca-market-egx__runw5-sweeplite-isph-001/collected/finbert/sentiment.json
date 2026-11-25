@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.12788174922267595,
+    "negative": 0.03317708087464174,
+    "neutral": 0.8389411568641663
+  },
+  "items": [
+    {
+      "text": "NUV Faculty Make Their Mark at ISPH 2026 in Taiwan as Vadodara Prepares to Host ISPH 2027 - Business Standard",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.14339934289455414,
+        "negative": 0.012206418439745903,
+        "neutral": 0.8443942666053772
+      }
+    },
+    {
+      "text": "NUV to host ISPH conference in 2027 - The Times of India",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.057607319205999374,
+        "negative": 0.019316647201776505,
+        "neutral": 0.9230759739875793
+      }
+    },
+    {
+      "text": "Parker-Hannifin Stock: Is PH Outperforming the Industrial Sector? - Barchart.com",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.18263858556747437,
+        "negative": 0.0680081769824028,
+        "neutral": 0.7493532299995422
+      }
+    }
+  ]
+}
