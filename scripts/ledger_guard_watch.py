@@ -42,8 +42,11 @@ derived from the two job timeouts: sweep 350 min + guard 30 min
 
 Issue #593 follow-up (INS-DEV-004): the same run also pages on
 band-calibration coverage. band_calibration.alert_cells() lists the
-(ticker, horizon) cells at effective n >= 30 whose AS-PUBLISHED
-coverage sits outside the 0.75-0.85 launch-gate tolerance; until
+(ticker, horizon) cells past the per-horizon gate (n_eff >=
+PUBLIC_N[horizon]: 30 day / 6 week / 2 month) whose AS-PUBLISHED
+coverage trips the per-horizon exact-binomial page predicate: day
+outside the 0.75-0.85 launch-gate tolerance, week low at <= 2/6,
+month at 0/2 (no high-side page for week/month); until
 now that list only landed in ledger/benchmark.md, where nobody
 reads it. The watch now fits the calibration from the committed
 ledger (--ledger, default ledger/ledger.json) and files / updates a
