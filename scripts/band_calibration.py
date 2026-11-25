@@ -57,6 +57,19 @@ ALERT_BAND = (0.75, 0.85)   # launch-gate tolerance per ticker cell
 HORIZONS = ("day", "week", "month")
 
 
+def effective_n(n, horizon):
+    """Non-overlapping-block count for a cell: ceil(n / sessions),
+    where sessions are day=1, week=5, month=21. Day is unchanged."""
+    sessions = {"day": 1, "week": 5, "month": 21}.get(horizon, 1)
+    try:
+        n = int(n)
+    except (TypeError, ValueError):
+        return 0
+    if sessions <= 0:
+        sessions = 1
+    return math.ceil(n / sessions) if n > 0 else 0
+
+
 def _num(x):
     try:
         v = float(x)
@@ -243,6 +256,7 @@ def compute_calibration(rows, formula=None):
             b = (n * fit["b"] + PRIOR_N * prior_b) / (n + PRIOR_N)
             k = (n * fit["k"] + PRIOR_N * prior_k) / (n + PRIOR_N)
             entry = {"ticker": ticker, "horizon": horizon, "n": n,
+                     "n_eff": effective_n(n, horizon),
                      "b": b, "k": k, "calibrated": True, "basis": "cell",
                      "coverage_before": fit["coverage"],
                      "coverage_calibrated": _coverage(cell_rows, b, k),
@@ -250,6 +264,7 @@ def compute_calibration(rows, formula=None):
         elif pool["calibrated"]:
             entry = {"ticker": ticker, "horizon": horizon,
                      "n": fit["n"] if fit else 0,
+                     "n_eff": effective_n(fit["n"] if fit else 0, horizon),
                      "b": pool["b"], "k": pool["k"],
                      "calibrated": True, "basis": "pool",
                      "coverage_before": fit["coverage"] if fit else None,
@@ -259,6 +274,7 @@ def compute_calibration(rows, formula=None):
         else:
             entry = {"ticker": ticker, "horizon": horizon,
                      "n": fit["n"] if fit else 0,
+                     "n_eff": effective_n(fit["n"] if fit else 0, horizon),
                      "b": 0.0, "k": 1.0,
                      "calibrated": False, "basis": "none",
                      "coverage_before": fit["coverage"] if fit else None,
@@ -287,7 +303,10 @@ def alert_cells(calibration):
     out = []
     for entry in (calibration.get("cells") or {}).values():
         cov = entry.get("coverage_before")
-        if (entry.get("n", 0) >= PUBLIC_N and cov is not None
+        n_eff = entry.get("n_eff")
+        if n_eff is None:
+            n_eff = effective_n(entry.get("n", 0), entry.get("horizon"))
+        if (n_eff >= PUBLIC_N and cov is not None
                 and not (ALERT_BAND[0] <= cov <= ALERT_BAND[1])):
             out.append(entry)
     return sorted(out, key=lambda e: (str(e["ticker"]), str(e["horizon"])))
@@ -298,9 +317,9 @@ def calibration_table(calibration):
     pass emits into ledger/benchmark.md (triage step 6): one row
     per (ticker, horizon) cell with n, as-published coverage,
     calibrated in-window coverage, k and b."""
-    lines = ["| Ticker | Horizon | n | Coverage (as published) | "
+    lines = ["| Ticker | Horizon | n | n_eff | Coverage (as published) | "
              "Coverage (calibrated, in-window) | k | b (pp) | Basis |",
-             "|---|---|---|---|---|---|---|---|"]
+             "|---|---|---|---|---|---|---|---|---|"]
     cells = (calibration.get("cells") or {}).values()
     order = {h: i for i, h in enumerate(HORIZONS)}
     for e in sorted(cells, key=lambda e: (str(e["ticker"]),
@@ -308,8 +327,9 @@ def calibration_table(calibration):
         fmt = lambda v: "—" if v is None else "%.3f" % v
         basis = e["basis"] if e["calibrated"] else "uncalibrated"
         lines.append(
-            "| %s | %s | %d | %s | %s | %.3f | %+.2f | %s |" % (
+            "| %s | %s | %d | %d | %s | %s | %.3f | %+.2f | %s |" % (
                 e["ticker"], e["horizon"], e["n"],
+                e.get("n_eff", effective_n(e.get("n", 0), e.get("horizon"))),
                 fmt(e["coverage_before"]), fmt(e["coverage_calibrated"]),
                 e["k"], e["b"], basis))
     return lines
