@@ -522,6 +522,15 @@ def main():
         verified_triggers = []
     nudge, _nudge_note, _trigger = select_reaction_nudge(
         verified_triggers, events, fitted, asof)
+    # Issue #594: the reaction nudge is 0 in v2 — the reaction fit
+    # has no measured edge (its walk-forward never beat the naive
+    # baseline), so the selector still runs (and its trigger is
+    # still recorded) but the nudge is never applied. The would-be
+    # nudge is kept as shadow context in the notes.
+    if nudge:
+        notes.append("reaction nudge shadow %+g%% (%s — not applied, "
+                     "#594 v2: no measured edge)" % (nudge, _nudge_note))
+    nudge = 0.0
     if _nudge_note:
         notes.append(_nudge_note)
     wf = profile.get("walk_forward") or {}
@@ -529,7 +538,7 @@ def main():
             and wf["hits"] <= wf["baseline_hits"]):
         notes.append(
             "reaction fit walk-forward showed no edge over the naive "
-            "baseline yet — nudge kept at half weight, treat as context")
+            "baseline yet — nudge is 0 in v2 (#594), treat as context")
 
     # --- dividend mechanics -------------------------------------------
     # A dividend subtracts from the reference ONLY when its ex-date

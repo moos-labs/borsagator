@@ -315,13 +315,17 @@ class TestEndToEnd(unittest.TestCase):
                 "events": list(events)}
 
     def test_A_no_feed_legacy_only(self):
-        # Baseline: the legacy keyword path nudges on the 2026-11-02
-        # dividend story (age 3) — the verified path must match this
-        # value in run B, with authoritative provenance.
+        # Baseline: the legacy keyword path still SELECTS the
+        # 2026-11-02 dividend story (age 3) — the verified path
+        # must match this value in run B, with authoritative
+        # provenance — but the nudge is 0 in v2 (#594) and lives
+        # on as shadow context only.
         rec = self._run("2026-11-05", REAL_PROFILE, None)
-        self.assertEqual(rec["nudge_pct"], 1.73)
-        self.assertEqual(rec["expected_week_adj_pct"], 2.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertEqual(rec["expected_week_adj_pct"], 1.0)
         self.assertIsNone(rec["reaction_trigger"])
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         self.assertTrue(any("fresh dividend event (2026-11-02, 3d "
                             in n for n in rec["notes"]))
         self.assertNotIn("verified", " ".join(rec["notes"]))
@@ -330,8 +334,10 @@ class TestEndToEnd(unittest.TestCase):
         div = _event("golden_poul_dividend")
         rec = self._run("2026-11-05", REAL_PROFILE,
                         self._feed(div))
-        self.assertEqual(rec["nudge_pct"], 1.73)
-        self.assertEqual(rec["expected_week_adj_pct"], 2.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertEqual(rec["expected_week_adj_pct"], 1.0)
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         trig = rec["reaction_trigger"]
         self.assertEqual(trig["profile_type"], "dividend")
         self.assertEqual(trig["event_id"], div["event_id"])
@@ -361,7 +367,9 @@ class TestEndToEnd(unittest.TestCase):
         self.assertIsNone(rec["reaction_trigger"])
         div = _event("golden_poul_dividend")
         rec = self._run("2026-11-05", prof, self._feed(div))
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         self.assertEqual(rec["reaction_trigger"]["event_id"],
                          div["event_id"])
 
@@ -371,8 +379,10 @@ class TestEndToEnd(unittest.TestCase):
             {"earnings": {"n": 4, "median_r5_adj": -2.5,
                           "shrunk_r5_adj": -2.0}}, [])
         rec = self._run("2026-11-13", prof, self._feed(earn))
-        self.assertEqual(rec["nudge_pct"], -1.0)
-        self.assertEqual(rec["expected_week_adj_pct"], 0.0)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertEqual(rec["expected_week_adj_pct"], 1.0)
+        self.assertTrue(any("reaction nudge shadow -1%" in n
+                            for n in rec["notes"]))
         self.assertEqual(rec["reaction_trigger"]["profile_type"],
                          "earnings")
 
@@ -385,7 +395,9 @@ class TestEndToEnd(unittest.TestCase):
                           "shrunk_r5_adj": -2.0}},
             [{"date": "2026-11-03", "type": "earnings"}])
         rec = self._run("2026-11-05", prof, self._feed(div))
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         self.assertEqual(rec["reaction_trigger"]["event_id"],
                          div["event_id"])
 
@@ -396,7 +408,9 @@ class TestEndToEnd(unittest.TestCase):
             {"governance": {"n": 3, "median_r5_adj": 2.0,
                             "shrunk_r5_adj": 1.5}}, [])
         rec = self._run("2026-11-09", prof, self._feed(egm, cand))
-        self.assertEqual(rec["nudge_pct"], 0.75)
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertTrue(any("reaction nudge shadow +0.75%" in n
+                            for n in rec["notes"]))
         self.assertEqual(rec["reaction_trigger"]["profile_type"],
                          "governance")
         self.assertEqual(rec["reaction_trigger"]["event_id"],
@@ -404,11 +418,11 @@ class TestEndToEnd(unittest.TestCase):
 
     def test_G_malformed_feed_legacy_unchanged(self):
         rec = self._run("2026-11-05", REAL_PROFILE, "not json{{{")
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
         self.assertIsNone(rec["reaction_trigger"])
         rec = self._run("2026-11-05", REAL_PROFILE,
                         {"events": "not-a-list"})
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        self.assertEqual(rec["nudge_pct"], 0.0)
 
     def test_control_no_event_no_feed(self):
         prof = _crafted_profile({}, [])

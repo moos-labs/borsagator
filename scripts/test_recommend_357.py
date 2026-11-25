@@ -193,10 +193,14 @@ class TestF5EndToEnd(unittest.TestCase):
         raw = self._run("2026-11-05", REAL_PROFILE,
                         self._feed(div, shifted))
         rec = json.loads(raw)
-        # Legacy keyword path still nudges on the 2026-11-02 story
-        # (age 3, +1.73) — the dead feed never loses a recommendation.
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        # Issue #594: the legacy keyword path still SELECTS the
+        # 2026-11-02 story (age 3, +1.73) — the dead feed never
+        # loses a recommendation — but the nudge is 0 in v2 and the
+        # would-be nudge is recorded as shadow context only.
+        self.assertEqual(rec["nudge_pct"], 0.0)
         self.assertIsNone(rec["reaction_trigger"])
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         self.assertTrue(any("failed validation" in n
                             and "duplicate event_id" in n
                             for n in rec["notes"]))
@@ -205,7 +209,12 @@ class TestF5EndToEnd(unittest.TestCase):
         div = _golden_event("golden_poul_dividend")
         raw = self._run("2026-11-05", REAL_PROFILE, self._feed(div))
         rec = json.loads(raw)
-        self.assertEqual(rec["nudge_pct"], 1.73)
+        # Issue #594: the verified feed still SELECTS the trigger
+        # (the selector is unchanged), but the applied nudge is 0
+        # in v2 — the +1.73% lives on as shadow context.
+        self.assertEqual(rec["nudge_pct"], 0.0)
+        self.assertTrue(any("reaction nudge shadow +1.73%" in n
+                            for n in rec["notes"]))
         self.assertEqual(rec["reaction_trigger"]["event_id"],
                          div["event_id"])
 
