@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 20.38,
+ "base_source": "egx-data/egxpy_olfi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T14:40:23.659352+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_olfi.csv": "27adf0eda70b9c54be0219683a477ae07eb7ee915d8ce91786e93274b137648e",
+  "digest.json": "7b4ace1533f40fcae57a17fcf18d7d400f88c0d6d17f0ccda9a785a06d5ec8fc",
+  "ensemble.json": "c47e1fe7da5dfd2e4fd3f8e9b61bb877ca9e9a5eae7efcc06be9ed8a9d2a9e72",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001",
+ "ticker": "OLFI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

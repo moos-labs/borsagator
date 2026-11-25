@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 20.38,
+ "base_source": "egx-data/egxpy_olfi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T14:40:23.650266+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.36,
+   "families": {
+    "price-forecast": -0.104
+   },
+   "horizon_short": false,
+   "net_score": -0.104,
+   "range_high_pct": 1.17,
+   "range_low_pct": -1.43,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -4.44,
+   "families": {
+    "price-forecast": -0.347
+   },
+   "horizon_short": false,
+   "net_score": -0.347,
+   "range_high_pct": -1.94,
+   "range_low_pct": -5.67,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.66,
+   "families": {
+    "price-forecast": -0.112
+   },
+   "horizon_short": false,
+   "net_score": -0.112,
+   "range_high_pct": 1.15,
+   "range_low_pct": -2.2,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "79c3530960f33edcab1598ca80c70120dc95b32533ba9b63ecdc87de0af15553",
+  "digest.json": "7b4ace1533f40fcae57a17fcf18d7d400f88c0d6d17f0ccda9a785a06d5ec8fc",
+  "ensemble.json": "c47e1fe7da5dfd2e4fd3f8e9b61bb877ca9e9a5eae7efcc06be9ed8a9d2a9e72"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0171,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001",
+ "ticker": "OLFI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

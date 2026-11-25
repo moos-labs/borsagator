@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 20.38,
+ "base_source": "egx-data/egxpy_olfi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-25T14:40:23.649243+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.39,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 3.24,
+   "range_low_pct": -2.45,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 1.47,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 12.12,
+   "range_low_pct": -9.17,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.68,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 5.61,
+   "range_low_pct": -4.25,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "7b4ace1533f40fcae57a17fcf18d7d400f88c0d6d17f0ccda9a785a06d5ec8fc",
+  "ensemble.json": "c47e1fe7da5dfd2e4fd3f8e9b61bb877ca9e9a5eae7efcc06be9ed8a9d2a9e72"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0171,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001",
+ "ticker": "OLFI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

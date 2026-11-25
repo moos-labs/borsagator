@@ -1,0 +1,1248 @@
+{
+  "archive_commit": "4bffb8587d4aa7e3a18c750bf76688064821c20c",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "fae338f7a895b7ba9dc9ede942f837657654c1c743416ae4dbd2fecb83ec9067",
+      "family-agent.json": "fc7a1d8ccf49e2104e8d43fa7e7d1a314a1ed1ad206cf0b2233f3cd25ecb169f",
+      "family-fundamentals.json": "170a79782177034d664f8b0b25ff886f4d9accd7392fd95c335b27d01c9ca373",
+      "family-price-forecast.json": "dc905bc6c9e16f699f877de4ef7c2609a7424a403b120cd872473182fdc136c9",
+      "family-sentiment.json": "377887bf919ecc5ce6c31c999e17dc7a11f0657d603c069d00cadebaebf11412",
+      "family-technicals.json": "867021d7aa96bcb5dd9affc46eb68aa85ee1bc38ab5419fd48f35653be9406f8",
+      "kronos-alone.json": "53e8daa22d63c0319d892bf996365a8794716b517f343d685110a5c7a6de3ed6",
+      "raw-llm-cohere.json": "03ea39ce996de8e1c89edca578bf9703000ce0adc9bf81fc2452e33318d55327"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "absent",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/OLFI-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 20.38,
+    "base_source": "egx-data/egxpy_olfi.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": -0.348,
+      "sentiment": null,
+      "technicals": 0.45
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": -0.05,
+        "families": {
+          "price-forecast": -0.105,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.3567,
+        "net_score": 0.188,
+        "range_high_pct": 3.18,
+        "range_low_pct": -3.28,
+        "trading_sessions": 1,
+        "vol_h_pct": 1.706
+      },
+      "month": {
+        "confidence": 0.35,
+        "direction": "down",
+        "expected_move_pct": -2.47,
+        "families": {
+          "fundamentals": 0.15,
+          "price-forecast": -0.348,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -4.4367,
+        "net_score": 0.059,
+        "range_high_pct": 9.59,
+        "range_low_pct": -14.53,
+        "trading_sessions": 14,
+        "vol_h_pct": 6.3833
+      },
+      "week": {
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": -0.18,
+        "families": {
+          "price-forecast": -0.112,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.6639,
+        "net_score": 0.144,
+        "range_high_pct": 5.42,
+        "range_low_pct": -5.79,
+        "trading_sessions": 3,
+        "vol_h_pct": 2.9549
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_olfi.csv",
+      "base_stale": false,
+      "base_used": 20.38,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_olfi.csv": 20.38,
+        "openbb/olfi_ca.csv": 20.3799991607666,
+        "pandas-ta/indicators.csv": 20.3799991607666,
+        "talib/indicators.csv": 20.3799991607666,
+        "yahooquery/olfi.ca.csv": 20.3799991607666
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0171,
+    "sigma_source": "egx-data/egxpy_olfi.csv (σ60=0.0171, σ10=0.0123)",
+    "ticker": "OLFI.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": -0.348,
+    "sentiment": null,
+    "technicals": 0.45
+  },
+  "finished": "2026-11-25T14:40:23.362609+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: sentiment)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/OLFI.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/OLFI.CA.json",
+    "sharia-row-missing: AAOIFI OLFI.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 OLFI.CA",
+    "sharia-row-missing: FTSE OLFI.CA",
+    "sharia-row-missing: ISLAMICLY OLFI.CA",
+    "sharia-row-missing: MSCI OLFI.CA",
+    "sharia-row-missing: MSCI_M OLFI.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": -0.05,
+      "families": {
+        "price-forecast": -0.105,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.3567,
+      "net_score": 0.188,
+      "range_high_pct": 3.18,
+      "range_low_pct": -3.28,
+      "trading_sessions": 1,
+      "vol_h_pct": 1.706
+    },
+    "month": {
+      "confidence": 0.35,
+      "direction": "down",
+      "expected_move_pct": -2.47,
+      "families": {
+        "fundamentals": 0.15,
+        "price-forecast": -0.348,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -4.4367,
+      "net_score": 0.059,
+      "range_high_pct": 9.59,
+      "range_low_pct": -14.53,
+      "trading_sessions": 14,
+      "vol_h_pct": 6.3833
+    },
+    "week": {
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": -0.18,
+      "families": {
+        "price-forecast": -0.112,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.6639,
+      "net_score": 0.144,
+      "range_high_pct": 5.42,
+      "range_low_pct": -5.79,
+      "trading_sessions": 3,
+      "vol_h_pct": 2.9549
+    }
+  },
+  "job": "sweep-lite OLFI.CA market=EGX",
+  "job_shape": "sweep-lite OLFI.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 117,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 57,
+      "sweeps": 62,
+      "sweeps_with_ensemble": 41
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 21.4846,
+    "support": 19.2
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 20.38,
+    "base_source": "egx-data/egxpy_olfi.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_olfi.csv",
+      "base_stale": false,
+      "base_used": 20.38,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_olfi.csv": 20.38,
+        "openbb/olfi_ca.csv": 20.3799991607666,
+        "pandas-ta/indicators.csv": 20.3799991607666,
+        "talib/indicators.csv": 20.3799991607666,
+        "yahooquery/olfi.ca.csv": 20.3799991607666
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0171,
+    "sigma_source": "egx-data/egxpy_olfi.csv (σ60=0.0171, σ10=0.0123)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 20.38,
+      "last_date": "2026-11-25",
+      "last_high": 20.7,
+      "last_low": 20.23,
+      "last_open": 20.5,
+      "last_volume": 131388.0,
+      "note": null,
+      "rows": 2464,
+      "source": "egx-data/egxpy_olfi.csv",
+      "stale": false
+    },
+    {
+      "last_close": 20.3799991607666,
+      "last_date": "2026-11-24",
+      "last_high": 20.3799991607666,
+      "last_low": 20.3799991607666,
+      "last_open": 20.3799991607666,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/OLFI_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.3799991607666,
+      "last_date": "2026-11-24",
+      "last_high": 20.3799991607666,
+      "last_low": 20.3799991607666,
+      "last_open": 20.3799991607666,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.3799991607666,
+      "last_date": "2026-11-24",
+      "last_high": 20.3799991607666,
+      "last_low": 20.3799991607666,
+      "last_open": 20.3799991607666,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.3799991607666,
+      "last_date": "2026-11-23",
+      "last_high": 20.700000762939453,
+      "last_low": 19.899999618530273,
+      "last_open": 19.829999923706055,
+      "last_volume": 219060.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/OLFI.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-olfi-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-olfi-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    ],
+    "worker_code_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "worker_release_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "OLFI.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for OLFI.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T14:38:26.964328+00:00",
+  "sweep_dir": "sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001",
+  "ticker": "OLFI.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "OLFI.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "OLFI.CA.csv_last_close": 20.3799991607666,
+          "OLFI.CA.csv_last_date": "2026-11-23",
+          "rows_OLFI.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "727c54486a2512179dfd06d5a7cb04bcbef36090e0234d9e3b5a485b66e1c11d",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "OLFI_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "OLFI_CA.csv_last_close": 20.3799991607666,
+          "OLFI_CA.csv_last_date": "2026-11-24",
+          "rows_OLFI_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "df441fb2e60bf9dadf62602f7b86c2a1e40188cbd02721fcdad03969507c910d",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_olfi.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_olfi.csv_last_close": 20.38,
+          "egxpy_olfi.csv_last_date": "2026-11-25",
+          "rows_egxpy_olfi.csv": 2464,
+          "symbol": "OLFI",
+          "ticker": "OLFI.CA"
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "9e88ba2dc018b5bece6612fa400947e9c8cb704de7e67f88d3f06eac4d9473fd",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 33.9301,
+          "atr_14": 0.6847,
+          "bb_lower": 18.4576,
+          "bb_mid": 19.872,
+          "bb_pctb": 0.6796,
+          "bb_upper": 21.2864,
+          "close": 20.38,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 20.1829,
+          "ema_200": 21.7189,
+          "ema_50": 20.719,
+          "first_date_used": "2019-01-01",
+          "high": 20.38,
+          "indicators.csv_last_close": 20.3799991607666,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 20.38,
+          "macd": -0.0343,
+          "macd_hist": 0.1087,
+          "macd_signal": -0.1429,
+          "open": 20.38,
+          "rows_fetched": 2421,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 51.6352,
+          "stoch_d": 63.0386,
+          "stoch_k": 62.2934,
+          "ticker": "OLFI.CA"
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "ca194f8f727854b59a859caddda1a9dc80f4bf257adb998a847107befee6941d",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 20.3799991607666,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 20.3799991607666,
+          "last_date": "2026-11-24",
+          "rows_fetched": 2421,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "OLFI.CA"
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "d850e8a574208d69b23ee7377b9a34a0fc040ca7cf6f2601e88fd11ce76cad6f",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "9ec81fafe3536eff06fc154da0f6f445fbc5c3ceec60ff0889bc4478da56d29d",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "6261d830710806a591fedf24a5a6585380fd9af0cab2f1f46cc5e278c1d823da",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "415f9c744c417f40e0235ccf023f5029b601bb098325c6e22b1fb993ffd32a3c",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "OLFI.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "79e92b4ce1e54730cb08d6455331e241fb3f5ca0fda637fdd233af9c99ea462e",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-tone-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "OLFI.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "0e5eebf59b4b212b848343906ee8b2aa742931f7a552139fc0cbd3d5a62df1d3",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "OLFI.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "3184ed7253ea9e7f57be0353142212461d69c17ef80bce0cbb69f706c5df88d4",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 19.4758,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "48fb0bdb2403830915d43621e59a6e6247a4b2c15f90d0b181ce220562826bdc",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "OLFI.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "8370c0cbd23308d96e6984875440c13321421649c18b693b09605b001bde5e46",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-olfi-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "OLFI.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "4821527633fda1a996e0eeb9615a4b403db981f0a2b595a211ce614e6ef7093b",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-olfi-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert-tone"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "financial-roberta"
+    },
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

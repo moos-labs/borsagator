@@ -1,0 +1,54 @@
+{
+  "OLFI.CA": {
+    "ticker": "OLFI.CA",
+    "rows": 1208,
+    "first_date": "2021-11-25",
+    "last_date": "2026-11-23",
+    "first_close": 5.809999942779541,
+    "last_close": 20.3799991607666,
+    "info_obtained": {
+      "summary_detail": false,
+      "asset_profile": false,
+      "price": true
+    },
+    "info_fields": {
+      "summary_detail": [],
+      "asset_profile": [],
+      "price": [
+        "currency",
+        "currencySymbol",
+        "exchange",
+        "exchangeDataDelayedBy",
+        "exchangeName",
+        "fromCurrency",
+        "fulldayChange",
+        "fulldayChangePercent",
+        "fulldayPrice",
+        "lastMarket",
+        "longName",
+        "marketCap",
+        "marketState",
+        "maxAge",
+        "priceHint",
+        "quoteType",
+        "regularMarketChange",
+        "regularMarketChangePercent",
+        "regularMarketPreviousClose",
+        "regularMarketPrice",
+        "regularMarketSource",
+        "regularMarketTime",
+        "shortName",
+        "symbol",
+        "toCurrency",
+        "underlyingSymbol"
+      ]
+    },
+    "info_notes": {
+      "summary_detail": "non-dict payload (str): No fundamentals data found for symbol: OLFI.CA",
+      "asset_profile": "non-dict payload (str): No fundamentals data found for symbol: OLFI.CA"
+    },
+    "info_errors": {},
+    "error": null,
+    "csv_file": "OLFI.CA.csv"
+  }
+}
