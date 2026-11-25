@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 14.76,
+ "base_source": "egx-data/egxpy_skpc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T20:15:14.254185+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -2.83,
+   "families": {
+    "price-forecast": -0.632
+   },
+   "horizon_short": false,
+   "net_score": -0.632,
+   "range_high_pct": -0.59,
+   "range_low_pct": -3.96,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.48,
+   "families": {
+    "price-forecast": 0.072
+   },
+   "horizon_short": false,
+   "net_score": 0.072,
+   "range_high_pct": 3.02,
+   "range_low_pct": -0.01,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.64,
+   "families": {
+    "price-forecast": -0.064
+   },
+   "horizon_short": false,
+   "net_score": -0.064,
+   "range_high_pct": 1.13,
+   "range_low_pct": -2.37,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "e8ecddf25905027f06b49835d98b221f86090e814580690568e531b2510d3460",
+  "digest.json": "9c0873366ae1ab7e9fac9bb93b310f966acaf6d5c01652f256064f16968b589c",
+  "ensemble.json": "a95f16bc6d6362abea34f449bf3ce963b4f6a6e5c62a6ba133f99089c4fd0fc0"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0224,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/201513__sweep-lite-skpc-ca-market-egx__runw5-sweeplite-skpc-001",
+ "ticker": "SKPC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

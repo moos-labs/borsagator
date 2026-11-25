@@ -1,0 +1,1233 @@
+{
+  "archive_commit": "0deb79269d71cc3518538b89d611cbc051740875",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "365e67d24fb7c670ccf455e876c392a13055d050f63d2e0707bc5fac86345b70",
+      "family-agent.json": "4b8f7dd0acdd7bf5ee07ad28375ffdd96bbda149703f489ed878a310a13e0284",
+      "family-fundamentals.json": "8d1b14fdc6f7380fe50cc7adb3d94e144a627b6d91c7fc7e1fd402387129cf47",
+      "family-price-forecast.json": "76745a30758c3d3651b68aa839445f1f4845220b1db1ead71cb890cb492e84b8",
+      "family-sentiment.json": "bd7916bc8f283e6086521315ef0eca5672d64cebdf7c92f900679380cd745dbd",
+      "family-technicals.json": "e3dcf08c5edf32145fa9447ee1204c9178feb145d00e9b43dfbda390051cd894",
+      "kronos-alone.json": "4e2c7fdb63f68dbe048f933dafbbd68783873bbd1f95902730e7b43e643b1bd9",
+      "raw-llm-cohere.json": "4d9259d0065955bd529cae7eb86a7a990c500a71858314e4448e364d1bffdc21"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "absent",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/SKPC-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 14.76,
+    "base_source": "egx-data/egxpy_skpc.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": 0.072,
+      "sentiment": null,
+      "technicals": -0.2
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {},
+        "horizon_short": false,
+        "kronos_move_pct": -2.8299,
+        "net_score": null,
+        "range_high_pct": 3.35,
+        "range_low_pct": -3.35,
+        "tilt_centre_pct": 0.0,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.2389
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.1,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.481,
+        "net_score": -0.144,
+        "range_high_pct": 16.01,
+        "range_low_pct": -16.01,
+        "tilt_centre_pct": -0.85,
+        "trading_sessions": 21,
+        "vol_h_pct": 10.2598
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.645,
+        "net_score": -0.2,
+        "range_high_pct": 8.33,
+        "range_low_pct": -8.33,
+        "tilt_centre_pct": -0.26,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.0063
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_skpc.csv",
+      "base_stale": false,
+      "base_used": 14.76,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_skpc.csv": 14.18,
+        "openbb/skpc_ca.csv": 14.180000305175781,
+        "pandas-ta/indicators.csv": 14.180000305175781,
+        "talib/indicators.csv": 14.180000305175781,
+        "yahooquery/skpc.ca.csv": 14.180000305175781
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.0224,
+    "sigma_daily": 0.0224,
+    "sigma_source": "egx-data/egxpy_skpc.csv (σ60=0.0224, σ10=0.0217)",
+    "ticker": "SKPC.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": 0.072,
+    "sentiment": null,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-25T20:15:13.952530+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: sentiment)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/SKPC.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/SKPC.CA.json",
+    "sharia-row-missing: AAOIFI SKPC.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 SKPC.CA",
+    "sharia-row-missing: FTSE SKPC.CA",
+    "sharia-row-missing: ISLAMICLY SKPC.CA",
+    "sharia-row-missing: MSCI SKPC.CA",
+    "sharia-row-missing: MSCI_M SKPC.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {},
+      "horizon_short": false,
+      "kronos_move_pct": -2.8299,
+      "net_score": null,
+      "range_high_pct": 3.35,
+      "range_low_pct": -3.35,
+      "tilt_centre_pct": 0.0,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.2389
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.1,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.481,
+      "net_score": -0.144,
+      "range_high_pct": 16.01,
+      "range_low_pct": -16.01,
+      "tilt_centre_pct": -0.85,
+      "trading_sessions": 21,
+      "vol_h_pct": 10.2598
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.645,
+      "net_score": -0.2,
+      "range_high_pct": 8.33,
+      "range_low_pct": -8.33,
+      "tilt_centre_pct": -0.26,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.0063
+    }
+  },
+  "job": "sweep-lite SKPC.CA market=EGX",
+  "job_shape": "sweep-lite SKPC.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 186,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 126,
+      "sweeps": 85,
+      "sweeps_with_ensemble": 64
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 15.9895,
+    "support": 13.5305
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 14.76,
+    "base_source": "egx-data/egxpy_skpc.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_skpc.csv",
+      "base_stale": false,
+      "base_used": 14.76,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_skpc.csv": 14.18,
+        "openbb/skpc_ca.csv": 14.180000305175781,
+        "pandas-ta/indicators.csv": 14.180000305175781,
+        "talib/indicators.csv": 14.180000305175781,
+        "yahooquery/skpc.ca.csv": 14.180000305175781
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0224,
+    "sigma_source": "egx-data/egxpy_skpc.csv (σ60=0.0224, σ10=0.0217)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 14.76,
+      "last_date": "2026-11-25",
+      "last_high": 15.15,
+      "last_low": 14.76,
+      "last_open": 14.94,
+      "last_volume": 2165228.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_skpc.csv",
+      "stale": false
+    },
+    {
+      "last_close": 14.180000305175781,
+      "last_date": "2026-11-24",
+      "last_high": 14.180000305175781,
+      "last_low": 14.180000305175781,
+      "last_open": 14.180000305175781,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/SKPC_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.180000305175781,
+      "last_date": "2026-11-24",
+      "last_high": 14.180000305175781,
+      "last_low": 14.180000305175781,
+      "last_open": 14.180000305175781,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.180000305175781,
+      "last_date": "2026-11-24",
+      "last_high": 14.180000305175781,
+      "last_low": 14.180000305175781,
+      "last_open": 14.180000305175781,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.180000305175781,
+      "last_date": "2026-11-23",
+      "last_high": 14.390000343322754,
+      "last_low": 14.010000228881836,
+      "last_open": 14.119999885559082,
+      "last_volume": 998918.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/SKPC.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-skpc-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-skpc-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    ],
+    "worker_code_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "worker_release_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "SKPC.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for SKPC.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T20:13:06.036973+00:00",
+  "sweep_dir": "sweeps/2026-11-25/201513__sweep-lite-skpc-ca-market-egx__runw5-sweeplite-skpc-001",
+  "ticker": "SKPC.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "SKPC.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "SKPC.CA.csv_last_close": 14.180000305175781,
+          "SKPC.CA.csv_last_date": "2026-11-23",
+          "rows_SKPC.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "53619d13d1edc087b732fdcf4717d0886cfa2e73129ab4499cb6b20a6c874d97",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "SKPC_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "SKPC_CA.csv_last_close": 14.180000305175781,
+          "SKPC_CA.csv_last_date": "2026-11-24",
+          "rows_SKPC_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "b1adeba4c1f04f8729acf08a6afc4b6fba58cd0486141423f33e78360e542a23",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_skpc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_skpc.csv_last_close": 14.76,
+          "egxpy_skpc.csv_last_date": "2026-11-25",
+          "rows_egxpy_skpc.csv": 3000,
+          "symbol": "SKPC",
+          "ticker": "SKPC.CA"
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "5f2f9084b84df10b9f83b4ee60e897ba51409ed70cf17aea728196008f1847dd",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 20.5781,
+          "atr_14": 0.4436,
+          "bb_lower": 14.1234,
+          "bb_mid": 14.743,
+          "bb_pctb": 0.0456,
+          "bb_upper": 15.3626,
+          "close": 14.18,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 14.7706,
+          "ema_200": 16.7302,
+          "ema_50": 15.4329,
+          "first_date_used": "2019-01-01",
+          "high": 14.18,
+          "indicators.csv_last_close": 14.180000305175781,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 14.18,
+          "macd": -0.3289,
+          "macd_hist": -0.0185,
+          "macd_signal": -0.3103,
+          "open": 14.18,
+          "rows_fetched": 5343,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 35.2842,
+          "stoch_d": 22.0517,
+          "stoch_k": 19.375,
+          "ticker": "SKPC.CA"
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "bb4eb43342d9630c5c47e38d87059404477c94a5f78040eee5c42ba66c86fe2b",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 14.180000305175781,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 14.180000305175781,
+          "last_date": "2026-11-24",
+          "rows_fetched": 5343,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "SKPC.CA"
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "bc0d5fac0c575b9b6be5a232e3363d3cdd2ef6e9681b45cb7c846fada01ca74e",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "e5d6ef0c77e9b58a846eabf642cdd96cfef143fac57d0101807b0979b1a9b24c",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "b074fdb374c787f1e3b8955ef1563a3abdddfda6292da91e9c91d57f31540842",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "bb1ffb9f2191edba7771a4f39f757bdcd08f60d23d6328a380287e30a17982db",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "SKPC.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "19f19158e2c9342909b425a576b9fbd5b4a6e798d600b4cb5d36a8768819024f",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-tone-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "SKPC.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "021d13313abbabc92fd8cabcaab4d9cc76117fca06f4655ace0cbf1cc6bbc144",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "SKPC.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "b12571dd57ff05bc62ab8440133c2ca2cc02adacbba6ea42ca67b16b09799a12",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 14.9786,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "b5b1a3be0b464fbc4f49d3c10ea9c2ddc3ccafc138cf82a95304058b49b567ae",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "SKPC.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "8a6cd13230e858086435912b32fba05aa5b72f004d2e6baa77097cfed0191850",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-skpc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "SKPC.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "064dcea61aad025802b20dc73a400b96e0ce9454f933216f79f08b3a13869b63",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-skpc-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert-tone"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "financial-roberta"
+    },
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
