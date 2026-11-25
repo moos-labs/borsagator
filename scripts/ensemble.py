@@ -48,7 +48,33 @@ REGISTRY = os.path.join(ROOT, "registry", "tools.json")
 OUT_JSON = os.path.join(os.getcwd(), "digest", "ensemble.json")
 OUT_MD = os.path.join(os.getcwd(), "digest", "digest.md")
 
+# Horizon lengths in TRADING SESSIONS — the ledger's scoring
+# counts (ledger.DEFAULT_SESSIONS; V2_SESSIONS below pins the band
+# to the same table). The Kronos bar count for a horizon is DERIVED
+# from this session count (horizon_bars), never the other way round
+# (issue #666).
 HORIZONS = {"day": 1, "week": 5, "month": 21}
+
+
+def horizon_bars(sessions, density):
+    """The Kronos bar count spanning `sessions` TRADING sessions.
+    Kronos bars are calendar days and the price series carries
+    `density` sessions per calendar day, so the bar count derives
+    FROM the session count. The pre-#666 code inverted this —
+    round(bar x density) — so the week horizon spanned ~4 sessions
+    while the ledger scores it at 5 (and the month ~15 of 21): the
+    published range and the scored range covered different spans.
+    A 1-session horizon always reads the first predicted bar — it
+    is the forecast for the next session, and rounding 1/density
+    would make the day read jump a bar whenever density crosses
+    2/3 (the #79 F2 capture sits at 0.66)."""
+    if not density or density <= 0:
+        return sessions
+    if sessions <= 1:
+        return 1
+    return max(1, round(sessions / density))
+
+
 # Issue #594 (INS-PUSH T1, frozen 2026-11-25 on the 41 scored #436
 # cells — 6 tickers, 8 quarterly cutoffs 2023-12-29 to 2025-09-30):
 # the recalibrated ensemble "v2". Do NOT re-fit these numbers on the
@@ -1478,12 +1504,15 @@ def main():
                                  "provisional (uncalibrated — no scoring history yet)"))}
     fam_display = dict(fam_fixed)
     band_cal = _load_band_calibration()
-    for hname, bar in HORIZONS.items():
+    for hname, sessions in HORIZONS.items():
+        # Issue #666: the horizon IS `sessions` trading sessions
+        # (the ledger's scoring count); Kronos bars are CALENDAR
+        # days, so the bar count is derived from the session count
+        # via the series density. Sigma is per trading session, and
+        # it is the sessions that carry the volatility.
+        bar = horizon_bars(sessions, density)
         ka = kronos_at(bar)
-        # Kronos bars are CALENDAR days; sigma is per TRADING session.
-        # A horizon of `bar` calendar days contains ~bar*density sessions,
-        # and it is the sessions that carry the volatility.
-        h_eff = max(1, round(bar * density))
+        h_eff = sessions
         vol_h = sigma * math.sqrt(h_eff)        # 1-sigma move over the horizon
         # Issue #594: the v2 band uses sigma60 over the LEDGER's
         # scoring sessions (V2_SESSIONS), not vol_h — the published
@@ -1618,7 +1647,8 @@ def main():
     lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
              f"Base price {base} ({base_src}"
              + (f", {base_date}" if base_date else "") + f"). Daily volatility σ {sigma:.2%} ({sigma_src}). "
-             f"Kronos bars are calendar days — horizons are scaled to trading sessions "
+             f"Kronos bars are calendar days — horizons are the ledger's trading-session "
+             f"counts, and the Kronos bar count is derived from them "
              f"(density {density:.2f}/day). "
              f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",

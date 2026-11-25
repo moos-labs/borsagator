@@ -92,7 +92,7 @@ _RISK_MULT_FALLBACK = {"none": 1.0, "elevated": 1.2, "shock": 1.5,
 
 
 def _load_constants():
-    """HORIZONS bars + RISK_MULT from ensemble.py (one source of
+    """HORIZONS sessions + RISK_MULT from ensemble.py (one source of
     truth); pinned literals only when the import fails."""
     try:
         sys.path.insert(0, HERE)
@@ -238,6 +238,19 @@ def kronos_at(path, base, bar):
             "short": len(path) < bar}
 
 
+def horizon_bars(sessions, density):
+    """Mirror of ensemble.py's horizon_bars() (issue #666): the
+    Kronos bar count spanning `sessions` trading sessions, derived
+    from the session count via the capture's own density — so the
+    mirrors read the same Kronos row the ensemble read. A
+    1-session horizon always reads the first predicted bar."""
+    if not density or density <= 0:
+        return sessions
+    if sessions <= 1:
+        return 1
+    return max(1, round(sessions / density))
+
+
 def rescale_kronos(path, ens):
     """Issue #130 ex-date rescale, honoured exactly as the ensemble
     recorded it: applied=true + factor -> multiply the whole path.
@@ -354,7 +367,7 @@ def freeze_family_alone(ens, digest, fam, kronos, kronos_first_date,
     sigma = fnum((ens or {}).get("sigma_daily")) or 0.0
     density = fnum((ens or {}).get("sessions_per_calendar_day")) or (5 / 7)
     horizons = {}
-    for hname, bar in HORIZONS.items():
+    for hname, sessions in HORIZONS.items():
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
         if not isinstance(ens_h, dict):
             continue
@@ -367,13 +380,14 @@ def freeze_family_alone(ens, digest, fam, kronos, kronos_first_date,
             continue
         h_eff = ens_h.get("trading_sessions")
         if not isinstance(h_eff, int) or h_eff <= 0:
-            h_eff = max(1, round(bar * density))
+            h_eff = sessions
         vol_h = sigma * math.sqrt(h_eff)
         ka = None
         kmove = 0.0
         ka_band = 0.0
         if fam == "price-forecast":
-            ka = kronos_at(kronos, (ens or {}).get("base_price"), bar) \
+            ka = kronos_at(kronos, (ens or {}).get("base_price"),
+                           horizon_bars(sessions, density)) \
                 if kronos else None
             if ka is None:
                 continue
@@ -435,16 +449,17 @@ def freeze_kronos_alone(ens, digest, kronos, kronos_first_date,
     sigma = fnum((ens or {}).get("sigma_daily")) or 0.0
     density = fnum((ens or {}).get("sessions_per_calendar_day")) or (5 / 7)
     horizons = {}
-    for hname, bar in HORIZONS.items():
+    for hname, sessions in HORIZONS.items():
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
         if not isinstance(ens_h, dict):
             continue
+        bar = horizon_bars(sessions, density)
         ka = kronos_at(kronos, base, bar)
         if ka is None:
             continue
         h_eff = ens_h.get("trading_sessions")
         if not isinstance(h_eff, int) or h_eff <= 0:
-            h_eff = max(1, round(bar * density))
+            h_eff = sessions
         vol_h = sigma * math.sqrt(h_eff)
         price_score = (max(-1.0, min(1.0, ka["move"] / (2.0 * vol_h)))
                        if vol_h > 0 else 0.0)
@@ -692,7 +707,7 @@ def freeze_raw_llm(ens, digest, inputs):
             ens, digest, entrant, err, llm_inputs,
             "raw-llm-cohere-v1: bounded retry (3 attempts) exhausted")
     horizons = {}
-    for hname, bar in HORIZONS.items():
+    for hname, sessions in HORIZONS.items():
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
         if not isinstance(ens_h, dict):
             continue
@@ -729,13 +744,13 @@ def freeze_buy_and_hold(ens, digest, inputs):
     sigma = fnum((ens or {}).get("sigma_daily")) or 0.0
     density = fnum((ens or {}).get("sessions_per_calendar_day")) or (5 / 7)
     horizons = {}
-    for hname, bar in HORIZONS.items():
+    for hname, sessions in HORIZONS.items():
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
         if not isinstance(ens_h, dict):
             continue
         h_eff = ens_h.get("trading_sessions")
         if not isinstance(h_eff, int) or h_eff <= 0:
-            h_eff = max(1, round(bar * density))
+            h_eff = sessions
         half_pct = 1.28 * sigma * math.sqrt(h_eff) * 100
         horizons[hname] = horizon_block(
             ens_h, "flat", 0.0, -half_pct, half_pct, None, None, {},
