@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.00021875175298191607,
+    "negative": 0.9985421895980835,
+    "neutral": 0.0012390620540827513
+  },
+  "items": [
+    {
+      "text": "Cleopatra Hospitals stock flags delay in financial statements - ad-hoc-news.de",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00021875175298191607,
+        "negative": 0.9985421895980835,
+        "neutral": 0.0012390620540827513
+      },
+      "raw_probabilities": {
+        "negative": 0.9985421895980835,
+        "neutral": 0.0012390620540827513,
+        "positive": 0.00021875175298191607
+      }
+    }
+  ]
+}

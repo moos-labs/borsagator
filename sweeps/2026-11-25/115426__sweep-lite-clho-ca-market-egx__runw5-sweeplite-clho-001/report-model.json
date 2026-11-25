@@ -1,0 +1,1557 @@
+{
+  "archive_commit": "bdbeb979f0d0acb8cbaf6af4f821b1743acb85bd",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "f677a322376709edb9c687fa8136b886db80562be35ec89d563d6bd58fc323da",
+      "family-agent.json": "70b32d2f0856c9d12a5221cae0778e1baea5afc2032556ac07fc30051ab11dd3",
+      "family-fundamentals.json": "c1161faaefa1161589020739478f6ffe288848cf743f37a6ea0654270dffc12a",
+      "family-price-forecast.json": "914efd36eb7aac9af66219b23850bc0b997d107334fa907a22ac7e9e7499bce5",
+      "family-sentiment.json": "da96e473565ad0b60cda17ce2545c9428ce3ec13852419f49cac8fb817e825f4",
+      "family-technicals.json": "016530c04ea4b23c831294b177c91f466de21503f0f2b16e09747db7950cd3b3",
+      "kronos-alone.json": "1ea3bc4967a8db08554b5fd886e45ee5cf297968ed322232dcad7f97e87fb46f",
+      "raw-llm-cohere.json": "c48c1d8ea933d7264148be9cca1c5f001c5667b9e268a8d511e48bb6725d62e0"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/CLHO-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 14.34,
+    "base_source": "egx-data/egxpy_clho.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.35,
+      "price-forecast": -0.33,
+      "sentiment": -0.36,
+      "technicals": 0.45
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.23,
+        "families": {
+          "price-forecast": 0.064,
+          "sentiment": -0.36,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.2476,
+        "net_score": 0.083,
+        "range_high_pct": 3.71,
+        "range_low_pct": -3.24,
+        "trading_sessions": 1,
+        "vol_h_pct": 1.9431
+      },
+      "month": {
+        "confidence": 0.45,
+        "direction": "down",
+        "expected_move_pct": -3.76,
+        "families": {
+          "fundamentals": -0.35,
+          "price-forecast": -0.33,
+          "sentiment": -0.36,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -4.802,
+        "net_score": -0.236,
+        "range_high_pct": 8.94,
+        "range_low_pct": -16.46,
+        "trading_sessions": 14,
+        "vol_h_pct": 7.2703
+      },
+      "week": {
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": -0.64,
+        "families": {
+          "price-forecast": -0.142,
+          "sentiment": -0.36,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.9526,
+        "net_score": -0.042,
+        "range_high_pct": 5.39,
+        "range_low_pct": -6.68,
+        "trading_sessions": 3,
+        "vol_h_pct": 3.3655
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_clho.csv",
+      "base_stale": false,
+      "base_used": 14.34,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_clho.csv": 14.13,
+        "openbb/clho_ca.csv": 14.130000114440918,
+        "pandas-ta/indicators.csv": 14.130000114440918,
+        "talib/indicators.csv": 14.130000114440918,
+        "yahooquery/clho.ca.csv": 14.130000114440918
+      }
+    },
+    "risk": {
+      "conf_cap": 0.45,
+      "events": [],
+      "flags": [],
+      "level": "elevated",
+      "move_z": {
+        "last": 0.14,
+        "max3": 0.62
+      },
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0194,
+    "sigma_source": "egx-data/egxpy_clho.csv (σ60=0.0194, σ10=0.0150)",
+    "ticker": "CLHO.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.35,
+    "price-forecast": -0.33,
+    "sentiment": -0.36,
+    "technicals": 0.45
+  },
+  "finished": "2026-11-25T11:54:26.915603+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/CLHO.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/CLHO.CA.json",
+    "sharia-row-missing: AAOIFI CLHO.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 CLHO.CA",
+    "sharia-row-missing: FTSE CLHO.CA",
+    "sharia-row-missing: ISLAMICLY CLHO.CA",
+    "sharia-row-missing: MSCI CLHO.CA",
+    "sharia-row-missing: MSCI_M CLHO.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.23,
+      "families": {
+        "price-forecast": 0.064,
+        "sentiment": -0.36,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.2476,
+      "net_score": 0.083,
+      "range_high_pct": 3.71,
+      "range_low_pct": -3.24,
+      "trading_sessions": 1,
+      "vol_h_pct": 1.9431
+    },
+    "month": {
+      "confidence": 0.45,
+      "direction": "down",
+      "expected_move_pct": -3.76,
+      "families": {
+        "fundamentals": -0.35,
+        "price-forecast": -0.33,
+        "sentiment": -0.36,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -4.802,
+      "net_score": -0.236,
+      "range_high_pct": 8.94,
+      "range_low_pct": -16.46,
+      "trading_sessions": 14,
+      "vol_h_pct": 7.2703
+    },
+    "week": {
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": -0.64,
+      "families": {
+        "price-forecast": -0.142,
+        "sentiment": -0.36,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.9526,
+      "net_score": -0.042,
+      "range_high_pct": 5.39,
+      "range_low_pct": -6.68,
+      "trading_sessions": 3,
+      "vol_h_pct": 3.3655
+    }
+  },
+  "job": "sweep-lite CLHO.CA market=EGX",
+  "job_shape": "sweep-lite CLHO.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 15.1129,
+    "support": 13.3821
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T06:23:00Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 06:23:00 GMT",
+    "news_count": 30,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 06:23:00 GMT",
+        "identity_key": "https://www.elbalad.news/7193690",
+        "key_type": "resolved_url",
+        "source": "صدى البلد",
+        "title": "علي جمعة: من أيقن أن الوجود كله لله لم ير نفسه مالكا متسلطا بل عبدا مستخلفا - صدى البلد"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 00:38:52 GMT",
+        "identity_key": "https://besraha.com/287921",
+        "key_type": "resolved_url",
+        "source": "موقع بصراحة الإخباري",
+        "title": "«المحل كله قدامك خذ اللي أنت عايزه».. عراقي يفاجئ مصريًا بطلب الطعام ويجسد كرم أهل العراق - موقع بصراحة الإخباري"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 11:11:58 GMT",
+        "identity_key": "0d699219cd176dee",
+        "key_type": "title-date-hash",
+        "source": "الديار",
+        "title": "الخطيب في وداع المطران خضر: خسارته للبنان كلّه وندعو إلى وحدة اللبنانيين - الديار"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 10:49:51 GMT",
+        "identity_key": "4c3167c71f8e49f1",
+        "key_type": "title-date-hash",
+        "source": "أفريكا نيوز",
+        "title": "لنشد عضدنا بجيشنا ؛ فالعالم كله خطر ..! - أفريكا نيوز"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 00:14:06 GMT",
+        "identity_key": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/cleopatra-hospitals-stock-flags-delay-in-financial-statements/70544940",
+        "key_type": "resolved_url",
+        "source": "ad-hoc-news.de",
+        "title": "Cleopatra Hospitals stock flags delay in financial statements - ad-hoc-news.de"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 16:23:28 GMT",
+        "identity_key": "https://turkey-breaking.com/news/2026/11/22/%D8%B1%D8%AD%D9%84%D8%A7%D8%AA-%D8%A7%D9%84%D8%AE%D8%B7%D9%88%D8%B7-%D8%A7%D9%84%D8%AA%D8%B1%D9%83%D9%8A%D8%A9/",
+        "key_type": "resolved_url",
+        "source": "تركيا عاجل",
+        "title": "رحلات الخطوط التركية إلى خمس وجهات تتراجع.. والبلقان ليس كله سواء - تركيا عاجل"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 13:14:39 GMT",
+        "identity_key": "https://besraha.com/287500",
+        "key_type": "resolved_url",
+        "source": "موقع بصراحة الإخباري",
+        "title": "عمرو الليثي: ضياع الأمانة ضياع للمجتمع كله.. وعزة النفس أخت شقيقة للأمانة - موقع بصراحة الإخباري"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 13:07:20 GMT",
+        "identity_key": "efb922dbcc0cf576",
+        "key_type": "title-date-hash",
+        "source": "Lebanon Debate",
+        "title": "لبنان كلّه بفستان... إطلالة بيرلا تحمل رسالة - Lebanon Debate"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 22:06:22 GMT",
+        "identity_key": "https://al-sharq.com/opinion/22/11/2026/%D9%85%D9%86-%D8%A3%D8%B6%D8%A7%D8%B9-%D9%84%D8%BA%D8%AA%D9%87-%D8%A3%D8%B6%D8%A7%D8%B9-%D9%85%D9%81%D8%AA%D8%A7%D8%AD-%D8%A8%D9%8A%D8%AA%D9%87-%D9%88%D8%A5%D9%86-%D9%85%D9%84%D9%83-%D9%85%D9%81%D8%A7%D8%AA%D9%8A%D8%AD-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D9%83%D9%84%D9%87",
+        "key_type": "resolved_url",
+        "source": "جريدة الشرق",
+        "title": "من أضاع لغته أضاع مفتاح بيته وإن ملك مفاتيح العالم كله - جريدة الشرق"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 19:28:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/21/%D8%B5%D9%88%D8%AA%D9%87-%D9%83%D9%84%D9%87-%D8%AE%D8%B4%D9%88%D8%B9-%D9%88%D8%B4%D8%AC%D9%86-%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC-%D8%AF%D9%88%D9%84%D8%A9-%D8%A7%D9%84%D8%AA%D9%84%D8%A7%D9%88%D8%A9-%D9%8A%D8%AD%D8%AA%D9%81%D9%8A-%D8%A8%D8%A7%D9%84%D8%B4%D9%8A%D8%AE-%D9%85%D8%AD%D9%85%D8%AF/7618334",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "صوته كله خشوع وشجن.. برنامج دولة التلاوة يحتفي بالشيخ محمد ساعى نصر الجرزاوى - اليوم السابع"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 08:28:11 GMT",
+        "identity_key": "https://www.khaberni.com/news/869027-%D9%83%D9%84%D9%87-%D9%85%D8%AA%D8%B5%D9%88%D8%B1-%D9%85%D8%B1%D8%AA%D8%B6%D9%89-%D9%85%D9%86%D8%B5%D9%88%D8%B1-%D9%8A%D8%B1%D8%AF-%D8%B9%D9%84%D9%89-%D9%86%D9%81%D9%8A-%D8%AD%D8%B3%D8%A7%D9%85-%D8%AD%D8%B3%D9%86-%D8%AA%D8%B3%D9%84%D9%8A%D9%85-%D8%B5%D9%88%D8%B1-%D8%B7%D9%84%D9%8A%D9%82%D8%AA%D9%87",
+        "key_type": "resolved_url",
+        "source": "خبرني - ننقل لك أخبار الأردن والعالم بموثوقية وتميّز",
+        "title": "\"كله متصور\".. مرتضى منصور يرد على نفي حسام حسن تسليم صور طليقته - خبرني - ننقل لك أخبار الأردن والعالم بموثوقية وتميّز"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 19:51:00 GMT",
+        "identity_key": "225c5cab758013ff",
+        "key_type": "title-date-hash",
+        "source": "دار المعارف",
+        "title": "إلهام شاهين: مهرجان القاهرة السينمائي «عمري كله».. يجمع عشقي للسينما ومصر - دار المعارف"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 19:17:25 GMT",
+        "identity_key": "681e48e9b859385b",
+        "key_type": "title-date-hash",
+        "source": "بوابة الشروق",
+        "title": "إلهام شاهين: قضيت عمري كله في السينما.. وأتمنى تقديم عمل تاريخي عن الملكة حتشبسوت - بوابة الشروق"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 08:09:17 GMT",
+        "identity_key": "ffd0d35de7b55b56",
+        "key_type": "title-date-hash",
+        "source": "elmaser.com",
+        "title": "كانت بتعزم الكاست كله.. رانيا فريد شوقي تستعيد أجمل ذكرياتها مع خيرية أحمد في ذكرى رحيلها - elmaser.com"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 17:53:45 GMT",
+        "identity_key": "3908098844acc696",
+        "key_type": "title-date-hash",
+        "source": "العربي الجديد",
+        "title": "العالم كله يراهن على وول ستريت.. ماذا لو سقط السوق الأميركي؟ - العربي الجديد"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 15:05:11 GMT",
+        "identity_key": "01ddaffa32eaf85a",
+        "key_type": "title-date-hash",
+        "source": "سودان اندبندنت",
+        "title": "صقر واحد يغير طريق العمر كله.. متى تتحول سماء سيناء إلى منجم ذهب صور - سودان اندبندنت"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 15:12:00 GMT",
+        "identity_key": "331fee10746e29d9",
+        "key_type": "title-date-hash",
+        "source": "صدى البلد",
+        "title": "أحمد داش: العالمية الحقيقية هي توصيل فكر بلدي للعالم كله.. فيديو خاص - صدى البلد"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 00:10:34 GMT",
+        "identity_key": "5355b0c271fd0437",
+        "key_type": "title-date-hash",
+        "source": "أمد للإعلام",
+        "title": "العالم كله يسأل أين ذهبت التبرعات التى دخلت غزة - أمد للإعلام"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "2e4f321ae4634784",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«كله كان برضاهم».. دفاع صاحب «بيت فاطم» يرد على اتهامات الاتجار بالبشر وهتك عرض 4 فتيات - المصري اليوم"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "8a7625fdd36bc671",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "وائل عبد العزيز يعلن انفصاله للمرة الثالثة: «عمري كله أنصاص مشاوير» - المصري اليوم"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "7bf607da2af67763",
+        "key_type": "title-date-hash",
+        "source": "جريدة النهار المصرية",
+        "title": "حسام موافي: المرأة ليست نصف المجتمع بل المجتمع كله.. والأم صاحبة الدور الأكبر في تربية الأجيال - جريدة النهار المصرية"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 15:21:54 GMT",
+        "identity_key": "738704c418ecc2a9",
+        "key_type": "title-date-hash",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "رمضان عبد المعز: الخير كله بيد الله في كل أقداره - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 08:00:00 GMT",
+        "identity_key": "6e3c26ff7e545637",
+        "key_type": "title-date-hash",
+        "source": "https://www.akhbaralyawm.com/",
+        "title": "آيزنكوت إلى الحكم... هل يضع لبنان كله على طاولة الحرب؟ - https://www.akhbaralyawm.com/"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 08:00:00 GMT",
+        "identity_key": "36426b422dc69d80",
+        "key_type": "title-date-hash",
+        "source": "Facebook",
+        "title": "دار الإفتاء المصرية. . الحلقة الثالثة | أنس AI «محدش في البيت دا كله عاوز يساعدني»… جملة مشهورة في بيوت كتير، صح؟ هل أنس وأخته هيفهموا قيمة المشاركة؟ وهيساعدوا مامتهم في شغل البيت؟ تابعوا الحلقة وقولولنا: التعاون في البيت بيتعلَّم إزاي؟ - Facebook"
+      },
+      {
+        "date": "Sun, 08 Nov 2026 12:29:40 GMT",
+        "identity_key": "bc01de15aaa72b8d",
+        "key_type": "title-date-hash",
+        "source": "دار الهلال",
+        "title": "مجدي يعقوب: علينا بذل الجهد لتكون مصر قدوة للعالم كله في الأبحاث العلمية والتقدم - دار الهلال"
+      },
+      {
+        "date": "Sun, 08 Nov 2026 08:00:00 GMT",
+        "identity_key": "43b8679d6efc1d6b",
+        "key_type": "title-date-hash",
+        "source": "بلبريس",
+        "title": "بعد جدل صورة بنعبد داخل قسم كله تلميذات..الأستاذ المؤطر يكشف معطيات مثيرة - بلبريس"
+      },
+      {
+        "date": "Fri, 06 Nov 2026 04:00:44 GMT",
+        "identity_key": "7025a418c8f4595d",
+        "key_type": "title-date-hash",
+        "source": "نيوز رووم",
+        "title": "“كله دراما”.. حودة بندق يكشف عن ملامح ألبومه الجديد - نيوز رووم"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "2026e5ce7eddd1e4",
+        "key_type": "title-date-hash",
+        "source": "الواجهة - المربد",
+        "title": "مواطن: البصرة الجمال كله .. لكن نهر العشار ترمى فيه المجاري - الواجهة - المربد"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "6faf7be7028b5c6e",
+        "key_type": "title-date-hash",
+        "source": "جريدة الجزيرة",
+        "title": "الحوثيون.. إرهاب على العالم كله - جريدة الجزيرة"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "222d5fb4f5bb67d2",
+        "key_type": "title-date-hash",
+        "source": "وكالة أنباء سرايا الإخبارية - حرية سقفها السماء",
+        "title": "وكالة سرايا : مزارع يستغيث بعد تلف محصوله بالكامل جراء العواصف والبرد: \"الموسم كله راح .. ونطالب بالتعويض\" .. فيديو - وكالة أنباء سرايا الإخبارية - حرية سقفها السماء"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 14.34,
+    "base_source": "egx-data/egxpy_clho.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_clho.csv",
+      "base_stale": false,
+      "base_used": 14.34,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_clho.csv": 14.13,
+        "openbb/clho_ca.csv": 14.130000114440918,
+        "pandas-ta/indicators.csv": 14.130000114440918,
+        "talib/indicators.csv": 14.130000114440918,
+        "yahooquery/clho.ca.csv": 14.130000114440918
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0194,
+    "sigma_source": "egx-data/egxpy_clho.csv (σ60=0.0194, σ10=0.0150)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 14.34,
+      "last_date": "2026-11-25",
+      "last_high": 14.49,
+      "last_low": 14.06,
+      "last_open": 14.3,
+      "last_volume": 1016395.0,
+      "note": null,
+      "rows": 2575,
+      "source": "egx-data/egxpy_clho.csv",
+      "stale": false
+    },
+    {
+      "last_close": 14.130000114440918,
+      "last_date": "2026-11-24",
+      "last_high": 14.130000114440918,
+      "last_low": 14.130000114440918,
+      "last_open": 14.130000114440918,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/CLHO_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.130000114440918,
+      "last_date": "2026-11-24",
+      "last_high": 14.130000114440918,
+      "last_low": 14.130000114440918,
+      "last_open": 14.130000114440918,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.130000114440918,
+      "last_date": "2026-11-24",
+      "last_high": 14.130000114440918,
+      "last_low": 14.130000114440918,
+      "last_open": 14.130000114440918,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 14.130000114440918,
+      "last_date": "2026-11-23",
+      "last_high": 14.600000381469727,
+      "last_low": 13.739999771118164,
+      "last_open": 14.0,
+      "last_volume": 1970353.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/CLHO.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-clho-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-clho-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "CLHO.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.45,
+    "events": [],
+    "flags": [],
+    "level": "elevated",
+    "move_z": {
+      "last": 0.14,
+      "max3": 0.62
+    },
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CLHO.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T11:50:16.945769+00:00",
+  "sweep_dir": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+  "ticker": "CLHO.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "CLHO.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "CLHO.CA.csv_last_close": 14.130000114440918,
+          "CLHO.CA.csv_last_date": "2026-11-23",
+          "rows_CLHO.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "77a6eb2a3a966d48c36b2c2fc5fb8da07a9653b64ba134b9f47e12679ddea9f3",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "CLHO_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "CLHO_CA.csv_last_close": 14.130000114440918,
+          "CLHO_CA.csv_last_date": "2026-11-24",
+          "rows_CLHO_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "c0c7c89331e4f69ec3fd9344a42fd82b5883fba2f8771941454d952ed1d1f2a3",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_clho.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_clho.csv_last_close": 14.34,
+          "egxpy_clho.csv_last_date": "2026-11-25",
+          "rows_egxpy_clho.csv": 2575,
+          "symbol": "CLHO",
+          "ticker": "CLHO.CA"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "f308b45be615143d3ed84b229fd8774ab9691609e46dcd51238dd491910e9953",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 25.6758,
+          "atr_14": 0.5465,
+          "bb_lower": 12.9833,
+          "bb_mid": 13.892,
+          "bb_pctb": 0.6309,
+          "bb_upper": 14.8007,
+          "close": 14.13,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 14.0572,
+          "ema_200": 14.478,
+          "ema_50": 14.5713,
+          "first_date_used": "2019-01-01",
+          "high": 14.13,
+          "indicators.csv_last_close": 14.130000114440918,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 14.13,
+          "macd": -0.0873,
+          "macd_hist": 0.0813,
+          "macd_signal": -0.1686,
+          "open": 14.13,
+          "rows_fetched": 2461,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 49.6905,
+          "stoch_d": 50.1195,
+          "stoch_k": 51.3863,
+          "ticker": "CLHO.CA"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "816ae80ce33b9dcc8622c2f80db54b6a1bb00581edb07b252998dac16a4f0142",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 14.130000114440918,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 14.130000114440918,
+          "last_date": "2026-11-24",
+          "rows_fetched": 2461,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "CLHO.CA"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "341d2a26df43c7b5d05f63d8add90e911f6525df88bccc28fc03243295458e81",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "7909d9ffa5d3065c2ea2e319e7ec43f80208ecb185b7c63eb22b61329c4c372d",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "60a4034cff65e07f125c52fd240b12871182b0ebad9ad5549534015296e9cd92",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "43478ae76a08b2ad20e32a405212abce771db3dafd571a7a0365f97b58c1d8d2",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "ef06df5c5c998080c0a2123cfa9bc73fac9dd9938a0da102bbe4fe233d3d1b9f",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "09dbdb1a91383ad34122b49a899d915a639a4b0b768f291b92cc75621fc02965",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "f554389b6951fae7e0bef2d140ab55ad6c331824e22f3053522b0dad8b74d6f9",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 13.6514,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "b3ea13db248586ed3061ac0148f4fb39b6e0bc68001fdc4e44d740b4d9f67972",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "24928fd1121d1a88a5294d45fbf8be518a5d293475509fa2675791368eeeb9fe",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-clho-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 29,
+          "bodies_fetched": 8,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T11:54:25Z",
+          "finbert_negative": 0.302,
+          "finbert_neutral": 0.68,
+          "finbert_positive": 0.018,
+          "finbert_scored": 1,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 06:23:00 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.338,
+          "multilingual_neutral": 0.232,
+          "multilingual_positive": 0.43,
+          "multilingual_scored": 29,
+          "news_count": 30,
+          "ticker": "CLHO.CA",
+          "tool": "news-disclosure",
+          "top_headline": "علي جمعة: من أيقن أن الوجود كله لله لم ير نفسه مالكا متسلطا بل عبدا مستخلفا - صدى البلد",
+          "translated_negative": 0.199,
+          "translated_neutral": 0.708,
+          "translated_positive": 0.092,
+          "translated_scored": 29,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "CLHO.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "cd8f7e6820706e513cdde8579ef928e28897dc64945e4fe0eae6a64678261f3b",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-clho-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

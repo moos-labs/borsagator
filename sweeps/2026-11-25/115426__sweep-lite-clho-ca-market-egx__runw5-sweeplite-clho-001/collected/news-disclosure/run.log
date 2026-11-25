@@ -1,0 +1,22 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body extract short (92 chars): https://africanews.dz/%D9%84%D9%86%D8%B4%D8%AF-%D8%B9%D8%B6%D8%AF%D9%86%D8%A7-%D8%A8%D8%AC
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body http 403: https://daralmaref.com/News/2611050.aspx
+bodies: 8/12 fetched; failures by stage: {'decode': 0, 'http': 3, 'extract': 1}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/CLHO.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6082.47it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 13570.09it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16979.38it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6409.41it/s]
+{"tool": "news-disclosure", "ticker": "CLHO.CA", "news_count": 30, "disclosure_count": 0, "arabic_headlines": 29, "latest_news_date": "Wed, 25 Nov 2026 06:23:00 GMT", "latest_disclosure_date": "", "top_headline": "علي جمعة: من أيقن أن الوجود كله لله لم ير نفسه مالكا متسلطا بل عبدا مستخلفا - صدى البلد", "llm_provider": "extractive", "finbert_positive": 0.018, "finbert_negative": 0.302, "finbert_neutral": 0.68, "finbert_scored": 1, "multilingual_positive": 0.43, "multilingual_negative": 0.338, "multilingual_neutral": 0.232, "multilingual_scored": 29, "bodies_fetched": 8, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.092, "translated_negative": 0.199, "translated_neutral": 0.708, "translated_scored": 29}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 06:23:00 GMT] (صدى البلد) علي جمعة: من أيقن أن الوجود كله لله لم ير نفسه مالكا متسلطا بل عبدا مستخلفا - صدى البلد
+- [Wed, 25 Nov 2026 00:38:52 GMT] (موقع بصراحة الإخباري) «المحل كله قدامك خذ اللي أنت عايزه».. عراقي يفاجئ مصريًا بطلب الطعام ويجسد كرم أهل العراق - موقع بصراحة الإخباري
+- [Tue, 24 Nov 2026 11:11:58 GMT] (الديار) الخطيب في وداع المطران خضر: خسارته للبنان كلّه وندعو إلى وحدة اللبنانيين - الديار
+- [Tue, 24 Nov 2026 10:49:51 GMT] (أفريكا نيوز) لنشد عضدنا بجيشنا ؛ فالعالم كله خطر ..! - أفريكا نيوز
+- [Mon, 23 Nov 2026 00:14:06 GMT] (ad-hoc-news.de) Cleopatra Hospitals stock flags delay in financial statements - ad-hoc-news.de
+- [Sun, 22 Nov 2026 16:23:28 GMT] (تركيا عاجل) رحلات الخطوط التركية إلى خمس وجهات تتراجع.. والبلقان ليس كله سواء - تركيا عاجل
+- [Sun, 22 Nov 2026 13:14:39 GMT] (موقع بصراحة الإخباري) عمرو الليثي: ضياع الأمانة ضياع للمجتمع كله.. وعزة النفس أخت شقيقة للأمانة - موقع بصراحة الإخباري
+- [Sun, 22 Nov 2026 13:07:20 GMT] (Lebanon Debate) لبنان كلّه بفستان... إطلالة بيرلا تحمل رسالة - Lebanon Debate

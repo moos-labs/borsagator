@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "CLHO.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "CLHO.CA",
+    "fetched_at": "2026-11-25T11:54:25Z",
+    "tool": "news-disclosure",
+    "news_count": 30,
+    "disclosure_count": 0,
+    "arabic_headlines": 29,
+    "latest_news_date": "Wed, 25 Nov 2026 06:23:00 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "علي جمعة: من أيقن أن الوجود كله لله لم ير نفسه مالكا متسلطا بل عبدا مستخلفا - صدى البلد",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.018,
+    "finbert_negative": 0.302,
+    "finbert_neutral": 0.68,
+    "finbert_scored": 1,
+    "multilingual_positive": 0.43,
+    "multilingual_negative": 0.338,
+    "multilingual_neutral": 0.232,
+    "multilingual_scored": 29,
+    "bodies_fetched": 8,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.092,
+    "translated_negative": 0.199,
+    "translated_neutral": 0.708,
+    "translated_scored": 29
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

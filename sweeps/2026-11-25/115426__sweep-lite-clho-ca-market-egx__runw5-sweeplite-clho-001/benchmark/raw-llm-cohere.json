@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 14.34,
+ "base_source": "egx-data/egxpy_clho.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:54:27.255263+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_clho.csv": "daec387d016cf7604086ccfb2e7d6c22a786d8d2c463a94d35467498e06e5ef1",
+  "digest.json": "2495e31b0c27960be3492ce6c82187845dbacb3b6a05ad5f98bf4f0c127fdb8a",
+  "ensemble.json": "c20233b32dc52d63a423d0ee026224ea0e4cb51d8433d0d434f5cc04afe04808",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+ "ticker": "CLHO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
