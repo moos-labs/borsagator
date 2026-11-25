@@ -285,9 +285,10 @@ def build_entrants(ens, kronos_path, kronos_first_date):
         tilt = fnum(hb.get("tilt_centre_pct"))
         if tilt is None:
             continue
-        half_pct = (hb.get("range_high_pct") - hb.get("range_low_pct")) / 2
-        if half_pct is None:
+        hi, lo = hb.get("range_high_pct"), hb.get("range_low_pct")
+        if hi is None or lo is None:
             continue
+        half_pct = (hi - lo) / 2
         out["tilt-technicals"][h] = _horizon_block(
             bf.direction_of(tilt / 100), tilt,
             tilt - half_pct, tilt + half_pct, None,
