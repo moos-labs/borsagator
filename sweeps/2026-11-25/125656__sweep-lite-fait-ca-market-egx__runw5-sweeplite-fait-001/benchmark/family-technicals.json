@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 46.15,
+ "base_source": "egx-data/egxpy_fait.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-25T12:56:56.467152+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.3,
+   "families": {
+    "technicals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 3.28,
+   "range_low_pct": -2.68,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 1.11,
+   "families": {
+    "technicals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 12.26,
+   "range_low_pct": -10.03,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.52,
+   "families": {
+    "technicals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 5.68,
+   "range_low_pct": -4.65,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "dc09fe940a42c9c47741f7662b3c4fcee53ed09bf1cb97ddd34238010443aef3",
+  "ensemble.json": "7476ee6682d2e4ebb29f1e1b698b0c8b3f7ed2e900a76e02c37a249a44deef3c"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.661,
+ "sigma_daily": 0.0194,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/125656__sweep-lite-fait-ca-market-egx__runw5-sweeplite-fait-001",
+ "ticker": "FAIT.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

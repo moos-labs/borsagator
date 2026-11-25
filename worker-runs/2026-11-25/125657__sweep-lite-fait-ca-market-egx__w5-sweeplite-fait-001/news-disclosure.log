@@ -1,0 +1,31 @@
+WARN body http 403: https://roayahnews.com/%D9%85%D8%A7%D9%83%D8%B1%D9%88%D9%86-%D9%8A%D8%AF%D8%A7%D9%81%D8%B9
+WARN body http 403: https://francaisfacile.rfi.fr/ar/actualit%C3%A9/20261120-le-jeu-vid%C3%A9o-gta-fait-son-gr
+WARN body extract short (92 chars): https://elwatan.dz/lalgerie-rend-un-dernier-hommage-au-moudjahid-et-general-a-la-retraite-
+WARN body extract short (92 chars): https://elwatan.dz/panne-geante-chez-apple-lapp-store-icloud-et-apple-pay-paralyses-dans-u
+WARN body extract short (92 chars): https://elwatan.dz/industrie-automobile-stellantis-fait-dalger-son-nouveau-pole-strategiqu
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 3}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/FAIT.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5829.73it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16569.15it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 15718.09it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5772.77it/s]
+{"tool": "news-disclosure", "ticker": "FAIT.CA", "news_count": 16, "disclosure_count": 0, "arabic_headlines": 12, "latest_news_date": "Sat, 21 Nov 2026 20:44:47 GMT", "latest_disclosure_date": "", "top_headline": "ماكرون يدافع عن الصناعة الفرنسية: استعدنا 90 ألف وظيفة منذ 2017 - شبكة رؤية الإخبارية", "llm_provider": "extractive", "finbert_positive": 0.202, "finbert_negative": 0.026, "finbert_neutral": 0.771, "finbert_scored": 4, "multilingual_positive": 0.494, "multilingual_negative": 0.299, "multilingual_neutral": 0.207, "multilingual_scored": 12, "bodies_fetched": 7, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.275, "translated_negative": 0.245, "translated_neutral": 0.479, "translated_scored": 12}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Sat, 21 Nov 2026 20:44:47 GMT] (شبكة رؤية الإخبارية) ماكرون يدافع عن الصناعة الفرنسية: استعدنا 90 ألف وظيفة منذ 2017 - شبكة رؤية الإخبارية
+- [Fri, 20 Nov 2026 11:26:25 GMT] (Le français facile avec RFI) Le jeu vidéo GTA fait son grand retour! - Le français facile avec RFI
+- [Fri, 20 Nov 2026 00:49:10 GMT] (Vietnam.vn) التبرع بـ 300 طرد هدايا للأسر الفقيرة والمحرومة في كومونة ترونغ ها. - Vietnam.vn
+- [Thu, 19 Nov 2026 03:24:58 GMT] (linitiative.ca) مونتريال تضحك باللغة العربية: عندما تأخذك الفكاهة في رحلة إلى بلدك الأصلي - linitiative.ca
+- [Wed, 18 Nov 2026 18:49:59 GMT] (El Watan) L’Algérie rend un dernier hommage au moudjahid et général à la retraite Saïd Mekroud - El Watan
+- [Tue, 17 Nov 2026 18:35:11 GMT] (El Watan) Panne géante chez Apple : l’App Store, iCloud et Apple Pay paralysés dans un contexte de défaillances numériques en série - El Watan
+- [Tue, 17 Nov 2026 07:18:30 GMT] (Vietnam.vn) شارك أكثر من 700 عامل وشاب من كا ماو في المهرجان الثقافي لعام 2026. - Vietnam.vn
+- [Sat, 14 Nov 2026 08:00:00 GMT] (Hespress) أزمة الطماطم تجمع الوزير بالمنتجين - Hespress

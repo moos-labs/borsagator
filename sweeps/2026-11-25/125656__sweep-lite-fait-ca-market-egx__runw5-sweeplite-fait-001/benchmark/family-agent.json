@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 46.15,
+ "base_source": "egx-data/egxpy_fait.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-25T12:56:56.467618+00:00",
+ "inputs_sha256": {
+  "digest.json": "dc09fe940a42c9c47741f7662b3c4fcee53ed09bf1cb97ddd34238010443aef3",
+  "ensemble.json": "7476ee6682d2e4ebb29f1e1b698b0c8b3f7ed2e900a76e02c37a249a44deef3c"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/125656__sweep-lite-fait-ca-market-egx__runw5-sweeplite-fait-001",
+ "ticker": "FAIT.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

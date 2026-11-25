@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "FAIT.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "FAIT.CA",
+    "fetched_at": "2026-11-25T12:56:54Z",
+    "tool": "news-disclosure",
+    "news_count": 16,
+    "disclosure_count": 0,
+    "arabic_headlines": 12,
+    "latest_news_date": "Sat, 21 Nov 2026 20:44:47 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "ماكرون يدافع عن الصناعة الفرنسية: استعدنا 90 ألف وظيفة منذ 2017 - شبكة رؤية الإخبارية",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.202,
+    "finbert_negative": 0.026,
+    "finbert_neutral": 0.771,
+    "finbert_scored": 4,
+    "multilingual_positive": 0.494,
+    "multilingual_negative": 0.299,
+    "multilingual_neutral": 0.207,
+    "multilingual_scored": 12,
+    "bodies_fetched": 7,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.275,
+    "translated_negative": 0.245,
+    "translated_neutral": 0.479,
+    "translated_scored": 12
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

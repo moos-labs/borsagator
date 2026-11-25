@@ -1,0 +1,142 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 8,
+  "label_counts": {
+    "positive": 4,
+    "negative": 2,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.4687928061812272,
+    "negative": 0.24957901088237122,
+    "neutral": 0.2816281939885812
+  },
+  "items": [
+    {
+      "text": "La conjointe de PSPP publie une rare photo de famille et ça fait grandement réagir - Monde de Stars",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.7734031081199646,
+        "negative": 0.00038715373375453055,
+        "neutral": 0.22620968520641327
+      },
+      "raw_probabilities": {
+        "positive": 0.7734031081199646,
+        "neutral": 0.22620968520641327,
+        "negative": 0.00038715373375453055
+      }
+    },
+    {
+      "text": "Kedjevara - Ça Fait Mal (Mp3 Download) - TrendyHipHop",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006378759862855077,
+        "negative": 0.00038122295518405735,
+        "neutral": 0.9989809393882751
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989809393882751,
+        "positive": 0.0006378759862855077,
+        "negative": 0.00038122295518405735
+      }
+    },
+    {
+      "text": "California sues OpenAI over safety concerns after rogue agent hacking - The Guardian",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0008882368565537035,
+        "negative": 0.9951867461204529,
+        "neutral": 0.0039250729605555534
+      },
+      "raw_probabilities": {
+        "negative": 0.9951867461204529,
+        "neutral": 0.0039250729605555534,
+        "positive": 0.0008882368565537035
+      }
+    },
+    {
+      "text": "Team Canada wins silver at IIHF Women’s World Championship - Canadian Olympic Committee",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9975511431694031,
+        "negative": 0.0007605439750477672,
+        "neutral": 0.0016883386997506022
+      },
+      "raw_probabilities": {
+        "positive": 0.9975511431694031,
+        "neutral": 0.0016883386997506022,
+        "negative": 0.0007605439750477672
+      }
+    },
+    {
+      "text": "Gilonne Guigonnat : « je suis vraiment contente, ça a payé donc c'est cool ! » - ski-nordique.net",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9749828577041626,
+        "negative": 0.0001878337498055771,
+        "neutral": 0.024829378351569176
+      },
+      "raw_probabilities": {
+        "positive": 0.9749828577041626,
+        "neutral": 0.024829378351569176,
+        "negative": 0.0001878337498055771
+      }
+    },
+    {
+      "text": "Les vétérans s’illustrent à l’attaque, Larys fait le reste! Cataractes 3 Voltigeurs 6 - Canadian Hockey League",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00023026681446935982,
+        "negative": 0.9989327788352966,
+        "neutral": 0.00083695980720222
+      },
+      "raw_probabilities": {
+        "negative": 0.9989327788352966,
+        "neutral": 0.00083695980720222,
+        "positive": 0.00023026681446935982
+      }
+    },
+    {
+      "text": "Kamik relaunches back to its roots: Canada's original Bad Weather Boot company - PR Newswire Canada",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9911148548126221,
+        "negative": 0.000278366613201797,
+        "neutral": 0.008606759831309319
+      },
+      "raw_probabilities": {
+        "positive": 0.9911148548126221,
+        "neutral": 0.008606759831309319,
+        "negative": 0.000278366613201797
+      }
+    },
+    {
+      "text": "Consumer Confidence Canada: Monthly Update - Ipsos",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.011534105986356735,
+        "negative": 0.0005174410762265325,
+        "neutral": 0.9879484176635742
+      },
+      "raw_probabilities": {
+        "neutral": 0.9879484176635742,
+        "positive": 0.011534105986356735,
+        "negative": 0.0005174410762265325
+      }
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 8,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 7
+  },
+  "mean_probabilities": {
+    "positive": 0.12596368580125272,
+    "negative": 0.13616493402514607,
+    "neutral": 0.737871378660202
+  },
+  "items": [
+    {
+      "text": "La conjointe de PSPP publie une rare photo de famille et ça fait grandement réagir - Monde de Stars",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.14001458883285522,
+        "negative": 0.01768181100487709,
+        "neutral": 0.8423036336898804
+      }
+    },
+    {
+      "text": "Kedjevara - Ça Fait Mal (Mp3 Download) - TrendyHipHop",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.05767958611249924,
+        "negative": 0.01756560616195202,
+        "neutral": 0.924754798412323
+      }
+    },
+    {
+      "text": "California sues OpenAI over safety concerns after rogue agent hacking - The Guardian",
+      "predicted": "negative",
+      "probabilities": {
+        "positive": 0.017976893112063408,
+        "negative": 0.9249280095100403,
+        "neutral": 0.057095110416412354
+      }
+    },
+    {
+      "text": "Team Canada wins silver at IIHF Women’s World Championship - Canadian Olympic Committee",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.3249400556087494,
+        "negative": 0.03832535445690155,
+        "neutral": 0.6367345452308655
+      }
+    },
+    {
+      "text": "Gilonne Guigonnat : « je suis vraiment contente, ça a payé donc c'est cool ! » - ski-nordique.net",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.13953107595443726,
+        "negative": 0.025216327980160713,
+        "neutral": 0.835252583026886
+      }
+    },
+    {
+      "text": "Les vétérans s’illustrent à l’attaque, Larys fait le reste! Cataractes 3 Voltigeurs 6 - Canadian Hockey League",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.16372433304786682,
+        "negative": 0.02607535757124424,
+        "neutral": 0.8102002739906311
+      }
+    },
+    {
+      "text": "Kamik relaunches back to its roots: Canada's original Bad Weather Boot company - PR Newswire Canada",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.11689037084579468,
+        "negative": 0.011365865357220173,
+        "neutral": 0.8717437386512756
+      }
+    },
+    {
+      "text": "Consumer Confidence Canada: Monthly Update - Ipsos",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.04695258289575577,
+        "negative": 0.02816114015877247,
+        "neutral": 0.9248863458633423
+      }
+    }
+  ]
+}
