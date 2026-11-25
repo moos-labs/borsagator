@@ -135,7 +135,11 @@ class FamilyScorer:
                 if isinstance(r, dict) and r.get("tool"):
                     okmap[r["tool"]] = r.get("status") == "ok"
             ok = (lambda name: okmap.get(name, False)) if okmap else None
-            sigma, _src, _density = ens_mod.realized_sigma(
+            # ensemble.realized_sigma returns 4 values (sigma,
+            # sigma60, source, density) since the v2 band (#594);
+            # the old 3-value unpack raised ValueError here and the
+            # except below silently dropped sigma to None.
+            sigma, _sigma60, _src, _density = ens_mod.realized_sigma(
                 self.ens.get("ticker"), base=self.ens.get("base_price"),
                 ok=ok)
             return sigma or None
