@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 23.4,
+ "base_source": "egx-data/egxpy_ocdi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T14:33:12.059048+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.11,
+   "families": {
+    "price-forecast": 0.016
+   },
+   "horizon_short": false,
+   "net_score": 0.016,
+   "range_high_pct": 3.48,
+   "range_low_pct": -3.25,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 5.0,
+   "families": {
+    "price-forecast": 0.189
+   },
+   "horizon_short": false,
+   "net_score": 0.189,
+   "range_high_pct": 8.46,
+   "range_low_pct": 0.94,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.97,
+   "families": {
+    "price-forecast": 0.16
+   },
+   "horizon_short": false,
+   "net_score": 0.16,
+   "range_high_pct": 4.61,
+   "range_low_pct": -2.61,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "b5d59eb4d639c0b049a31c5fce15988b657e24d95af7755d72a69eaaa2324c1f",
+  "digest.json": "8e91fea8fb80ae8bc74ed41cdfccdf0a6532643ab56641455e526664143b9bb6",
+  "ensemble.json": "dd13bcdca10c8499337861dd5d98a06acdc23497a8ac85fd109114171446b1d8"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0354,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/143311__sweep-lite-ocdi-ca-market-egx__runw5-sweeplite-ocdi-001",
+ "ticker": "OCDI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

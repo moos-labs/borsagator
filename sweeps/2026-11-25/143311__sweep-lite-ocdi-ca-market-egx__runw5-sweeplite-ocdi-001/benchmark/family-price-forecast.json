@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 23.4,
+ "base_source": "egx-data/egxpy_ocdi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T14:33:12.057692+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.1,
+   "families": {
+    "price-forecast": 0.016
+   },
+   "horizon_short": false,
+   "net_score": 0.016,
+   "range_high_pct": 5.99,
+   "range_low_pct": -5.79,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 4.28,
+   "families": {
+    "price-forecast": 0.189
+   },
+   "horizon_short": false,
+   "net_score": 0.189,
+   "range_high_pct": 26.32,
+   "range_low_pct": -17.76,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 1.68,
+   "families": {
+    "price-forecast": 0.16
+   },
+   "horizon_short": false,
+   "net_score": 0.16,
+   "range_high_pct": 11.89,
+   "range_low_pct": -8.52,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "b5d59eb4d639c0b049a31c5fce15988b657e24d95af7755d72a69eaaa2324c1f",
+  "digest.json": "8e91fea8fb80ae8bc74ed41cdfccdf0a6532643ab56641455e526664143b9bb6",
+  "ensemble.json": "dd13bcdca10c8499337861dd5d98a06acdc23497a8ac85fd109114171446b1d8"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0354,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/143311__sweep-lite-ocdi-ca-market-egx__runw5-sweeplite-ocdi-001",
+ "ticker": "OCDI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

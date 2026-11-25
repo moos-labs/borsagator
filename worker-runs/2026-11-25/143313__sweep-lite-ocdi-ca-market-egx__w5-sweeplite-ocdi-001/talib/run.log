@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "OCDI.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6538,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 23.780000686645508,
+  "indicators": {
+    "RSI_14": 43.64840904390522,
+    "MACD": -0.465857488748199,
+    "MACD_signal": -0.4099918730508039,
+    "MACD_hist": -0.055865615697395066,
+    "EMA_20": 24.710716621298538,
+    "EMA_50": 25.85099334230632,
+    "ADX_14": 29.43399442680566
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-10-29",
+    "CDLENGULFING": "2026-11-19",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
