@@ -1,0 +1,21 @@
+WARN gnews failed (POUL.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=POUL.CA%20stock%20when%3A30d&hl=en&gl=US&ceid=US:en
+WARN body extract short (0 chars): https://www.mubasher.info/news/4697968/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%A7%D
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 8/12 fetched; failures by stage: {'decode': 2, 'http': 1, 'extract': 1}
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6064.23it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16030.10it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16481.07it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5976.53it/s]
+{"tool": "news-disclosure", "ticker": "POUL.CA", "news_count": 31, "disclosure_count": 10, "arabic_headlines": 35, "latest_news_date": "Tue, 24 Nov 2026 08:23:00 GMT", "latest_disclosure_date": "Sun, 08 Nov 2026 06:51:05 GMT", "top_headline": "العنوان: القاهرة للدواجن (POUL.CA) دعوة الجمعية العامة غير العادية المقرر انعقادها في 30/11/2026 في تمام الساعة 03:00 مساءًاسم الشركة: القاهرة ل - معلومات مباشر", "llm_provider": "extractive", "finbert_positive": 0.173, "finbert_negative": 0.182, "finbert_neutral": 0.645, "finbert_scored": 6, "multilingual_positive": 0.44, "multilingual_negative": 0.07, "multilingual_neutral": 0.489, "multilingual_scored": 35, "bodies_fetched": 8, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.123, "translated_negative": 0.221, "translated_neutral": 0.656, "translated_scored": 35}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 24 Nov 2026 08:23:00 GMT] (فيتو) "بيطري القاهرة" تناقش التغذية المتقدمة للدواجن وتكنولوجيا صناعة الأعلاف - فيتو
+- [Mon, 23 Nov 2026 01:12:31 GMT] (ad-hoc-news.de) Cairo Poultry stock: Nine-month net profit falls 38.3% - ad-hoc-news.de
+- [Thu, 19 Nov 2026 10:49:06 GMT] (TRT World) France raises bird flu risk to the highest level across mainland - TRT World
+- [Thu, 19 Nov 2026 06:59:00 GMT] (Investing.com) أسهم الأغذية في مصر: فوديكو تقفز 25% بعد حكم نهائي والقاهرة للدواجن توزع 1.9 جنيه - Investing.com
+- [Tue, 17 Nov 2026 23:15:43 GMT] (Masrawy) بالصور| بول ديفيز يكشف أسرار الصوت السينمائي في مهرجان القاهرة السينمائي - Masrawy
+- [Tue, 17 Nov 2026 16:07:06 GMT] (Sada Elbalad English) Russian House in Cairo Opens Agricultural Innovation Festival for 100 Egyptian Students - Sada Elbalad English
+- [Tue, 17 Nov 2026 15:11:00 GMT] (اليوم السابع) بول ديفيز بالقاهرة السينمائى: اكتشفت شغفى بتصميم الصوت فى سن الـ15 - اليوم السابع
+- [Tue, 17 Nov 2026 15:09:00 GMT] (اليوم السابع) بول ديفيز بمهرجان القاهرة السينمائي: تصميم الصوت ساعد في إقناع المنتجين برؤية مخرجة We Need to Talk About Kevin - اليوم السابع

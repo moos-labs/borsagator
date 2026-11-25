@@ -1,0 +1,117 @@
+{
+ "config_hash": "293a42df60417ec7",
+ "results": [
+  {
+   "config_hash": "293a42df60417ec7",
+   "detail": "no captured attachment to verify against (pointer statuses: no_attachment)",
+   "event_id": "ev_b89440084409130408c1",
+   "event_type": "earnings",
+   "fields": [],
+   "files_checked": [],
+   "pdf_only_fields": [],
+   "status": "skipped",
+   "verifier": "pdf-verify/1.1.0"
+  },
+  {
+   "config_hash": "293a42df60417ec7",
+   "detail": "no captured attachment to verify against (pointer statuses: no_attachment)",
+   "event_id": "ev_dc2d244b2f8fd4875e1c",
+   "event_type": "earnings",
+   "fields": [],
+   "files_checked": [],
+   "pdf_only_fields": [],
+   "status": "skipped",
+   "verifier": "pdf-verify/1.1.0"
+  },
+  {
+   "config_hash": "293a42df60417ec7",
+   "detail": "no captured attachment yielded readable text: attachments/297436.pdf (pypdf is not installed — install it (requirements.txt) to read PDF text); attachments/297436_2.pdf (pypdf is not installed — install it (requirements.txt) to read PDF text); attachments/297436_3.pdf (pypdf is not installed — install it (requirements.txt) to read PDF text)",
+   "event_id": "ev_a44eee4eb988411805a4",
+   "event_type": "board_decision",
+   "fields": [],
+   "files_checked": [
+    {
+     "detail": "pypdf is not installed — install it (requirements.txt) to read PDF text",
+     "engine": "pypdf",
+     "engine_version": null,
+     "pages": 0,
+     "path": "attachments/297436.pdf",
+     "sha256": "7c9a6caecaf05f2cbccffcbccd96b7b9b53d51ec2f333c2b34bef63128f7a167",
+     "status": "unsupported"
+    },
+    {
+     "detail": "pypdf is not installed — install it (requirements.txt) to read PDF text",
+     "engine": "pypdf",
+     "engine_version": null,
+     "pages": 0,
+     "path": "attachments/297436_2.pdf",
+     "sha256": "95bf71d79c93f313c5e7f89068f8e822267a91eb5a7008bfdd83d126907a8c51",
+     "status": "unsupported"
+    },
+    {
+     "detail": "pypdf is not installed — install it (requirements.txt) to read PDF text",
+     "engine": "pypdf",
+     "engine_version": null,
+     "pages": 0,
+     "path": "attachments/297436_3.pdf",
+     "sha256": "f86fa1ce3ad7b34968f1a267af39bf9ef33f5b63a1a9df800ba94be93039cb61",
+     "status": "unsupported"
+    }
+   ],
+   "pdf_only_fields": [],
+   "status": "inconclusive",
+   "verifier": "pdf-verify/1.1.0"
+  },
+  {
+   "config_hash": "293a42df60417ec7",
+   "detail": "no captured attachment yielded readable text: attachments/297135.pdf (pypdf is not installed — install it (requirements.txt) to read PDF text)",
+   "event_id": "ev_c8f760b067890b8c30f3",
+   "event_type": "board_decision",
+   "fields": [],
+   "files_checked": [
+    {
+     "detail": "pypdf is not installed — install it (requirements.txt) to read PDF text",
+     "engine": "pypdf",
+     "engine_version": null,
+     "pages": 0,
+     "path": "attachments/297135.pdf",
+     "sha256": "71313c46175e9084060a01f555cc82734faaaae653a7d94ebac5bd2496902e1e",
+     "status": "unsupported"
+    }
+   ],
+   "pdf_only_fields": [],
+   "status": "inconclusive",
+   "verifier": "pdf-verify/1.1.0"
+  },
+  {
+   "config_hash": "293a42df60417ec7",
+   "detail": "no captured attachment yielded readable text: attachments/296893.pdf (pypdf is not installed — install it (requirements.txt) to read PDF text)",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "event_type": "dividend",
+   "fields": [],
+   "files_checked": [
+    {
+     "detail": "pypdf is not installed — install it (requirements.txt) to read PDF text",
+     "engine": "pypdf",
+     "engine_version": null,
+     "pages": 0,
+     "path": "attachments/296893.pdf",
+     "sha256": "da2679eb92def311f827c4d66eeb4035c21bee577fb89c0b0674fd2df8e6379e",
+     "status": "unsupported"
+    }
+   ],
+   "pdf_only_fields": [],
+   "status": "inconclusive",
+   "verifier": "pdf-verify/1.1.0"
+  }
+ ],
+ "summary": {
+  "checked": 3,
+  "events": 5,
+  "failed": 3,
+  "inconclusive": 3,
+  "pdf_only_fields": 0,
+  "skipped": 2
+ },
+ "verifier": "pdf-verify/1.1.0"
+}

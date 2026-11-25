@@ -1,0 +1,327 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 12,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 10
+  },
+  "label_counts_raw": {
+    "negative": 1,
+    "neutral": 10,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.08316175746890409,
+    "negative": 0.08375802579951615,
+    "neutral": 0.833080205498239
+  },
+  "items": [
+    {
+      "text": "Cairo Poultry stock: Nine-month net profit falls 38.3% - ad-hoc-news.de",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 8.117237302940339e-05,
+        "negative": 0.9996263980865479,
+        "neutral": 0.00029240635922178626
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9996263980865479
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00029240635922178626
+        },
+        {
+          "label": "Positive",
+          "score": 8.117237302940339e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "St. Vincent de Paul High School (Petaluma, CA) Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.814344537062425e-08,
+        "negative": 8.068172974162735e-06,
+        "neutral": 0.999991774559021
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999991774559021
+        },
+        {
+          "label": "Negative",
+          "score": 8.068172974162735e-06
+        },
+        {
+          "label": "Positive",
+          "score": 9.814344537062425e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "WHL Hat-Tricks – Poul Andersen - Canadian Hockey League",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.5141844187382958e-06,
+        "negative": 9.449255594518036e-05,
+        "neutral": 0.9999039173126221
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999039173126221
+        },
+        {
+          "label": "Negative",
+          "score": 9.449255594518036e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.5141844187382958e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "France raises bird flu risk to the highest level across mainland - TRT World",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9975766539573669,
+        "negative": 0.0023507436271756887,
+        "neutral": 7.265037129400298e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9975766539573669
+        },
+        {
+          "label": "Negative",
+          "score": 0.0023507436271756887
+        },
+        {
+          "label": "Neutral",
+          "score": 7.265037129400298e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Russian House in Cairo Opens Agricultural Innovation Festival for 100 Egyptian Students - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00021865715098101646,
+        "negative": 4.72275132779032e-06,
+        "neutral": 0.9997765421867371
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997765421867371
+        },
+        {
+          "label": "Positive",
+          "score": 0.00021865715098101646
+        },
+        {
+          "label": "Negative",
+          "score": 4.72275132779032e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Videos - Cathedral Phantoms (Los Angeles, CA) Football - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.351381738208147e-07,
+        "negative": 4.0574818740424234e-06,
+        "neutral": 0.9999957084655762
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999957084655762
+        },
+        {
+          "label": "Negative",
+          "score": 4.0574818740424234e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.351381738208147e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Humble Bundle Sells 42 Poul Anderson Books for $20 to Mark His 100th Birthday - Fandom Pulse",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.2938618826628954e-07,
+        "negative": 1.0183465747104492e-05,
+        "neutral": 0.9999896287918091
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999896287918091
+        },
+        {
+          "label": "Negative",
+          "score": 1.0183465747104492e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.2938618826628954e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry Company S.A.E. Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.9936486498627346e-06,
+        "negative": 6.817581743234769e-05,
+        "neutral": 0.9999288320541382
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999288320541382
+        },
+        {
+          "label": "Negative",
+          "score": 6.817581743234769e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.9936486498627346e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo University Launches the 2nd Int'l Conference on Biotechnology and Sustainable Agricultural Development - Sada Elbalad English",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.3254743862489704e-05,
+        "negative": 7.491926794500614e-07,
+        "neutral": 0.9999860525131226
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999860525131226
+        },
+        {
+          "label": "Positive",
+          "score": 1.3254743862489704e-05
+        },
+        {
+          "label": "Negative",
+          "score": 7.491926794500614e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Paul McCartney Net Worth - Celebrity Net Worth",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.3451491870218888e-05,
+        "negative": 0.00036523447488434613,
+        "neutral": 0.9996113181114197
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9996113181114197
+        },
+        {
+          "label": "Negative",
+          "score": 0.00036523447488434613
+        },
+        {
+          "label": "Positive",
+          "score": 2.3451491870218888e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kathy Jean Grumbine - GettysburgTimes.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.1335581550374627e-05,
+        "negative": 0.0025614802725613117,
+        "neutral": 0.9974172115325928
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9974172115325928
+        },
+        {
+          "label": "Negative",
+          "score": 0.0025614802725613117
+        },
+        {
+          "label": "Positive",
+          "score": 2.1335581550374627e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Cairo Poultry stock: board backs EGP 1.9 dividend proposal - ad-hoc-news.de",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.49382731251535e-06,
+        "negative": 2.0036950445501134e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 2.0036950445501134e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.49382731251535e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

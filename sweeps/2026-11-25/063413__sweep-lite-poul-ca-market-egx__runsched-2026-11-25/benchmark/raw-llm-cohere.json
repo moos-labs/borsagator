@@ -1,0 +1,44 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-24",
+ "base_price": 6.86,
+ "base_source": "egx-data/egxpy_poul.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "announced": "2026-11-02",
+   "coupon_number": "42",
+   "date_basis": "verbatim:ex-date",
+   "dps": 1.8999999998,
+   "entitlement_end": "2026-11-15",
+   "event_id": "ev_bf7532c5c9185f9f113d",
+   "ex_date": "2026-11-16",
+   "mechanical_pct": -27.7,
+   "source": "disclosure-event",
+   "title": "POUL.CA cash dividend: coupon 42, EGP 1.8999999998 per share; entitlement ends 2026-11-15;",
+   "type": "dividend",
+   "verification_status": "verified"
+  }
+ ],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T06:34:13.930747+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_poul.csv": "1d67df7b6e9c0c8f32bf87ba915eefc45b2142b0bf6c764e68c27ab86e90029c",
+  "digest.json": "81fa0cf7ef6eea6ef7cfd1ddd657b2d87672f7c50dd82069eb6a6d077d161de8",
+  "ensemble.json": "7c1d531565a54198e8931e04bdc9d3c2c0f3643cfa5a321b35df6ff867e6e832",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/063413__sweep-lite-poul-ca-market-egx__runsched-2026-11-25",
+ "ticker": "POUL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

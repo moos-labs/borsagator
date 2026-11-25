@@ -1,0 +1,51 @@
+{
+ "sweep_id": "sched-2026-11-25",
+ "origin": "scheduled",
+ "mode": "sweep-live",
+ "intraday_alerting": false,
+ "started": "2026-11-25T06:26:42.136318+00:00",
+ "tickers": {
+  "POUL": {
+   "refresh": "refreshed",
+   "detail": "harvested_at=2026-11-25T06:28:40Z items=10",
+   "harvested_at": "2026-11-25T06:28:40Z",
+   "items": 10,
+   "cache_age_hours": 0.0
+  }
+ },
+ "status": "ok",
+ "refresh_status": "ok",
+ "extraction": {
+  "POUL": {
+   "status": "extracted",
+   "events_file": "disclosure-events/POUL-events.json",
+   "events": 5,
+   "verified": 4,
+   "candidates": 1,
+   "by_type": {
+    "board_decision": 2,
+    "dividend": 1,
+    "earnings": 2
+   },
+   "harvested_at": "2026-11-25T06:28:40Z",
+   "quarter": {
+    "start": "2026-08-27",
+    "end": "2026-11-25"
+   },
+   "sweep_id": "sched-2026-11-25",
+   "pdf_verification": {
+    "status": "with-failures",
+    "summary": {
+     "checked": 3,
+     "events": 5,
+     "failed": 3,
+     "inconclusive": 3,
+     "pdf_only_fields": 0,
+     "skipped": 2
+    },
+    "verification_file": "disclosure-events/POUL-verification.json",
+    "detail": "checked events with failures: inconclusive=3"
+   }
+  }
+ }
+}
