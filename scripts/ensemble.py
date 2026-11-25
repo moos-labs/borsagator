@@ -50,29 +50,14 @@ OUT_MD = os.path.join(os.getcwd(), "digest", "digest.md")
 
 # Horizon lengths in TRADING SESSIONS — the ledger's scoring
 # counts (ledger.DEFAULT_SESSIONS; V2_SESSIONS below pins the band
-# to the same table). The Kronos bar count for a horizon is DERIVED
-# from this session count (horizon_bars), never the other way round
-# (issue #666).
+# to the same table). The Kronos forecast path is read at
+# bar == sessions: kronos_forecast.py builds its path on
+# next_sessions() (Sun–Thu trading sessions), so each forecast row
+# IS one trading session and no calendar-day conversion applies
+# (issue #666; the first #666 fix wrongly derived the bar count as
+# sessions/density — corrected after Ins's review verified the
+# kronos-runner source).
 HORIZONS = {"day": 1, "week": 5, "month": 21}
-
-
-def horizon_bars(sessions, density):
-    """The Kronos bar count spanning `sessions` TRADING sessions.
-    Kronos bars are calendar days and the price series carries
-    `density` sessions per calendar day, so the bar count derives
-    FROM the session count. The pre-#666 code inverted this —
-    round(bar x density) — so the week horizon spanned ~4 sessions
-    while the ledger scores it at 5 (and the month ~15 of 21): the
-    published range and the scored range covered different spans.
-    A 1-session horizon always reads the first predicted bar — it
-    is the forecast for the next session, and rounding 1/density
-    would make the day read jump a bar whenever density crosses
-    2/3 (the #79 F2 capture sits at 0.66)."""
-    if not density or density <= 0:
-        return sessions
-    if sessions <= 1:
-        return 1
-    return max(1, round(sessions / density))
 
 
 # Issue #594 (INS-PUSH T1, frozen 2026-11-25 on the 41 scored #436
@@ -371,8 +356,8 @@ def realized_sigma(ticker, base=None, ok=None):
     sigma_10); sigma60 is the trailing 60-session stdev alone — the
     v2 band (#594) is calibrated on sigma60, not on the max, so both
     are returned; density = trading sessions per calendar day in
-    that series — Kronos emits calendar-day bars, so horizon maths
-    must convert.
+    that series (reported in the output only — the Kronos forecast
+    path is session-indexed, so no horizon conversion uses it).
     Series choice is ANCHORED on the verified base close when known:
     among candidates whose last close sits within 25% of base, take the
     longest (a stray foreign series must not set the volatility); with
@@ -1506,11 +1491,12 @@ def main():
     band_cal = _load_band_calibration()
     for hname, sessions in HORIZONS.items():
         # Issue #666: the horizon IS `sessions` trading sessions
-        # (the ledger's scoring count); Kronos bars are CALENDAR
-        # days, so the bar count is derived from the session count
-        # via the series density. Sigma is per trading session, and
-        # it is the sessions that carry the volatility.
-        bar = horizon_bars(sessions, density)
+        # (the ledger's scoring count), and the Kronos forecast
+        # path is session-indexed (next_sessions in
+        # kronos_forecast.py — each row is one trading session),
+        # so the row read is bar == sessions. Sigma is per trading
+        # session, and it is the sessions that carry the volatility.
+        bar = sessions
         ka = kronos_at(bar)
         h_eff = sessions
         vol_h = sigma * math.sqrt(h_eff)        # 1-sigma move over the horizon
@@ -1647,9 +1633,9 @@ def main():
     lines = ["", "---", "", "## 🎯 Ensemble forecast (synthesizer v2)", "",
              f"Base price {base} ({base_src}"
              + (f", {base_date}" if base_date else "") + f"). Daily volatility σ {sigma:.2%} ({sigma_src}). "
-             f"Kronos bars are calendar days — horizons are the ledger's trading-session "
-             f"counts, and the Kronos bar count is derived from them "
-             f"(density {density:.2f}/day). "
+             f"Kronos forecast rows are trading sessions — horizons read the "
+             f"row at the ledger's session count directly "
+             f"(price-series density {density:.2f}/day). "
              f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",
              "Ranges are the calibrated range (issue #594): centre 0, "

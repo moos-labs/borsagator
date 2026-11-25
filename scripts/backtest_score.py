@@ -180,7 +180,7 @@ def build_entrants(ens, kronos_path, kronos_first_date):
             hb = (ens.get("horizons") or {}).get(h)
             if not isinstance(hb, dict):
                 continue
-            bar = bf.horizon_bars(sessions, density)
+            bar = sessions
             ka = bf.kronos_at(kronos, base, bar)
             if ka is None:
                 continue
