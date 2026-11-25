@@ -1044,6 +1044,11 @@ def main():
                 sess = DEFAULT_SESSIONS[h]
             forecasts.append({
                 "ticker": t, "as_of": as_of, "sweep": s["dir"],
+                # Issue #593: the centre-formula tag of the
+                # producing ensemble — the band calibration layer
+                # fits a formula's centre correction only on rows
+                # of the same tag. Absent on pre-#593 sweeps.
+                "formula": ens.get("formula"),
                 "horizon": h, "direction": hb.get("direction"),
                 "expected_move_pct": num(hb.get("expected_move_pct")),
                 "range_low_pct": num(hb.get("range_low_pct")),
@@ -1432,6 +1437,45 @@ def main():
                          f"{fmt(a['mean_abs_error_pp'])} | "
                          f"{fmt(a['range_coverage'])} |")
         B += [""]
+    # Issue #593 (triage step 6): the band-calibration layer's
+    # per-cell table — n, as-published coverage, calibrated
+    # in-window coverage, k and b per (ticker, horizon) cell,
+    # fitted on the clean matured ensemble rows above. The
+    # ensemble applies a fit only to rows of its own centre
+    # formula; this table is the shipped-history diagnostic over
+    # all clean rows. Cells at n >= 30 measuring outside the
+    # 0.75-0.85 tolerance are listed as alerts (the guard pages
+    # on the same predicate, band_calibration.alert_cells).
+    try:
+        _scripts = os.path.dirname(os.path.abspath(__file__))
+        if _scripts not in sys.path:
+            sys.path.insert(0, _scripts)
+        import band_calibration as _band_cal
+        _cal = _band_cal.compute_calibration(
+            ledger["forecasts_detail"])
+        B += ["## Band calibration (issue #593)", "",
+              "Per-cell fit of the calibration layer (trailing "
+              f"{_band_cal.WINDOW} clean matured rows per cell; "
+              "centre correction b = median realised - expected, "
+              "width factor k = 80th percentile of |residual - b| "
+              "/ half, shrunk toward the horizon pool). A cell "
+              "ships uncalibrated until it or its pool reaches "
+              f"n >= {_band_cal.MIN_N}.", ""]
+        B += _band_cal.calibration_table(_cal)
+        B += [""]
+        _alerts = _band_cal.alert_cells(_cal)
+        if _alerts:
+            B += ["**Calibration alerts** — cells at n >= "
+                  f"{_band_cal.PUBLIC_N} with as-published coverage "
+                  "outside the 0.75-0.85 launch-gate tolerance:", ""]
+            for _e in _alerts:
+                B.append(f"- {_e['ticker']} {_e['horizon']}: "
+                         f"n={_e['n']}, coverage "
+                         f"{_e['coverage_before']:.3f}")
+            B += [""]
+    except Exception as e:  # the ledger must never crash a workflow
+        B += ["## Band calibration (issue #593)", "",
+              f"Calibration table unavailable this run: {e}", ""]
     if bench_gaps:
         B += ["## Benchmark gaps & notes", ""]
         for g in bench_gaps:
