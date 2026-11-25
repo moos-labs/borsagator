@@ -1,0 +1,27 @@
+WARN body http 404: https://sg.finance.yahoo.com/quote/EFID.CA/seasonality/
+WARN body http 404: https://ca.finance.yahoo.com/quote/EFID.CA/seasonality/
+WARN body http 403: https://ca.investing.com/news/company-news/edita-food-industries-sae-caiefid-q3-2026-earni
+bodies: 3/6 fetched; failures by stage: {'decode': 0, 'http': 3, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EFID.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5900.24it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14491.96it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16550.93it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6213.01it/s]
+{"tool": "news-disclosure", "ticker": "EFID.CA", "news_count": 4, "disclosure_count": 2, "arabic_headlines": 3, "latest_news_date": "Mon, 23 Nov 2026 20:40:44 GMT", "latest_disclosure_date": "Wed, 18 Nov 2026 19:05:53 GMT", "top_headline": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore", "llm_provider": "extractive", "finbert_positive": 0.096, "finbert_negative": 0.04, "finbert_neutral": 0.865, "finbert_scored": 3, "multilingual_positive": 0.943, "multilingual_negative": 0.004, "multilingual_neutral": 0.053, "multilingual_scored": 3, "bodies_fetched": 3, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.95, "translated_negative": 0.016, "translated_neutral": 0.034, "translated_scored": 3}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Mon, 23 Nov 2026 20:40:44 GMT] (Investing.com Canada) Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of EGP7. ... By GuruFocus - Investing.com Canada
+- [Wed, 18 Nov 2026 19:05:53 GMT] (Yahoo Finance Singapore) Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore
+- [Wed, 18 Nov 2026 17:54:15 GMT] (Yahoo! Finance Canada) Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada
+- [Mon, 16 Nov 2026 08:21:03 GMT] (جريدة المال) إيديتا للصناعات الغذائية تعلن نتائج الربع الثالث من عام 2026 - جريدة المال
+- [Mon, 16 Nov 2026 07:20:15 GMT] (https://www.youlyou.com/) إيديتا تحقق أعلى إيرادات فصلية في تاريخها بـ7.3 مليار جنيه بالربع الثالث 2026 - https://www.youlyou.com/
+- [Mon, 16 Nov 2026 07:04:48 GMT] (https://www.youlyou.com/) أرباح إيديتا تقفز 54% إلى 2.4 مليار جنيه بأول 9 شهور من 2026 - https://www.youlyou.com/

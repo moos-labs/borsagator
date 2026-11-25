@@ -1,0 +1,1398 @@
+{
+  "archive_commit": "ab7dcfcfa4bf3e2dabf6292509b1a14ba66c3199",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "a39159149bba2e82498b1361c2b765a0d39eabe3bea1f7d2bd210e177d64a450",
+      "family-agent.json": "1db1952d6ec01a8d4e8b1f89382715826a53aed6d5169af64ccbe3fe78bd8779",
+      "family-fundamentals.json": "50a8325af38c71f1054d56b6275018e2ccfd7f0330bfa1a71e2087f3331d8815",
+      "family-price-forecast.json": "045dc69157c8f12c764d9129992bd7d682b6aba494a88e1abf370b714ba634da",
+      "family-sentiment.json": "b321438138c5198ccfe706ee9c3f7696bd5fdae19f154c6a105d38193f784927",
+      "family-technicals.json": "de99755a905a001bf546b558f15db8b41c144cdbb100491760d738142822a5de",
+      "kronos-alone.json": "720fd9280eb84178fce79be9215d4f44610ae2b602ff9ce0831d0d519ea6ab45",
+      "raw-llm-cohere.json": "9249f516f955962020651524b9fd12a320204a9840f6c1f2c6900615edf94733"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/EFID-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 20.66,
+    "base_source": "egx-data/egxpy_efid.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": -0.323,
+      "sentiment": 0.624,
+      "technicals": 0.45
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": -0.04,
+        "families": {
+          "price-forecast": -0.166,
+          "sentiment": 0.624,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.0557,
+        "net_score": 0.363,
+        "range_high_pct": 6.97,
+        "range_low_pct": -7.06,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.1723
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "down",
+        "expected_move_pct": -4.4,
+        "families": {
+          "fundamentals": -0.1,
+          "price-forecast": -0.323,
+          "sentiment": 0.624,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -7.6626,
+        "net_score": 0.033,
+        "range_high_pct": 21.99,
+        "range_low_pct": -30.78,
+        "trading_sessions": 14,
+        "vol_h_pct": 11.8695
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.13,
+        "families": {
+          "price-forecast": -0.138,
+          "sentiment": 0.624,
+          "technicals": 0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.5194,
+        "net_score": 0.372,
+        "range_high_pct": 12.3,
+        "range_low_pct": -12.03,
+        "trading_sessions": 3,
+        "vol_h_pct": 5.4945
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_efid.csv",
+      "base_stale": false,
+      "base_used": 20.66,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_efid.csv": 20.4,
+        "openbb/efid_ca.csv": 20.399999618530273,
+        "pandas-ta/indicators.csv": 20.399999618530273,
+        "talib/indicators.csv": 20.399999618530273,
+        "yahooquery/efid.ca.csv": 20.399999618530273
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.48,
+        "max3": 0.88
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.663,
+    "sigma_daily": 0.0317,
+    "sigma_source": "egx-data/egxpy_efid.csv (σ60=0.0288, σ10=0.0317)",
+    "ticker": "EFID.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": -0.323,
+    "sentiment": 0.624,
+    "technicals": 0.45
+  },
+  "finished": "2026-11-25T12:02:34.709519+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/EFID.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/EFID.CA.json",
+    "sharia-row-missing: AAOIFI EFID.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 EFID.CA",
+    "sharia-row-missing: FTSE EFID.CA",
+    "sharia-row-missing: ISLAMICLY EFID.CA",
+    "sharia-row-missing: MSCI EFID.CA",
+    "sharia-row-missing: MSCI_M EFID.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": -0.04,
+      "families": {
+        "price-forecast": -0.166,
+        "sentiment": 0.624,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.0557,
+      "net_score": 0.363,
+      "range_high_pct": 6.97,
+      "range_low_pct": -7.06,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.1723
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "down",
+      "expected_move_pct": -4.4,
+      "families": {
+        "fundamentals": -0.1,
+        "price-forecast": -0.323,
+        "sentiment": 0.624,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -7.6626,
+      "net_score": 0.033,
+      "range_high_pct": 21.99,
+      "range_low_pct": -30.78,
+      "trading_sessions": 14,
+      "vol_h_pct": 11.8695
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.13,
+      "families": {
+        "price-forecast": -0.138,
+        "sentiment": 0.624,
+        "technicals": 0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.5194,
+      "net_score": 0.372,
+      "range_high_pct": 12.3,
+      "range_low_pct": -12.03,
+      "trading_sessions": 3,
+      "vol_h_pct": 5.4945
+    }
+  },
+  "job": "sweep-lite EFID.CA market=EGX",
+  "job_shape": "sweep-lite EFID.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 23.2012,
+    "support": 18.1746
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 2,
+    "disclosure_items": [
+      {
+        "date": "Wed, 18 Nov 2026 19:05:53 GMT",
+        "identity_key": "7eff64505b4d7567",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance Singapore",
+        "title": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 17:54:15 GMT",
+        "identity_key": "ab544930cc5737d6",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada"
+      }
+    ],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": "2026-11-18T19:05:53Z",
+    "latest_disclosure_date_raw": "Wed, 18 Nov 2026 19:05:53 GMT",
+    "latest_news_date": "2026-11-23T20:40:44Z",
+    "latest_news_date_raw": "Mon, 23 Nov 2026 20:40:44 GMT",
+    "news_count": 4,
+    "news_items": [
+      {
+        "date": "Mon, 23 Nov 2026 20:40:44 GMT",
+        "identity_key": "df299f3102b8d70e",
+        "key_type": "title-date-hash",
+        "source": "Investing.com Canada",
+        "title": "Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of EGP7. ... By GuruFocus - Investing.com Canada"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:21:03 GMT",
+        "identity_key": "https://almalnews.com/2147554/%D8%A5%D9%8A%D8%AF%D9%8A%D8%AA%D8%A7-%D9%84%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A7%D8%AA-%D8%A7%D9%84%D8%BA%D8%B0%D8%A7%D8%A6%D9%8A%D8%A9-%D8%AA%D8%B9%D9%84%D9%86-%D9%86%D8%AA%D8%A7%D8%A6%D8%AC-%D8%A7%D9%84%D8%B1%D8%A8%D8%B9-%D8%A7%D9%84%D8%AB%D8%A7%D9%84%D8%AB/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "إيديتا للصناعات الغذائية تعلن نتائج الربع الثالث من عام 2026 - جريدة المال"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 07:20:15 GMT",
+        "identity_key": "https://www.youlyou.com/95479",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "إيديتا تحقق أعلى إيرادات فصلية في تاريخها بـ7.3 مليار جنيه بالربع الثالث 2026 - https://www.youlyou.com/"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 07:04:48 GMT",
+        "identity_key": "https://www.youlyou.com/95475",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "أرباح إيديتا تقفز 54% إلى 2.4 مليار جنيه بأول 9 شهور من 2026 - https://www.youlyou.com/"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 20.66,
+    "base_source": "egx-data/egxpy_efid.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_efid.csv",
+      "base_stale": false,
+      "base_used": 20.66,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_efid.csv": 20.4,
+        "openbb/efid_ca.csv": 20.399999618530273,
+        "pandas-ta/indicators.csv": 20.399999618530273,
+        "talib/indicators.csv": 20.399999618530273,
+        "yahooquery/efid.ca.csv": 20.399999618530273
+      }
+    },
+    "sessions_per_calendar_day": 0.663,
+    "sigma_daily": 0.0317,
+    "sigma_source": "egx-data/egxpy_efid.csv (σ60=0.0288, σ10=0.0317)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 20.66,
+      "last_date": "2026-11-25",
+      "last_high": 20.98,
+      "last_low": 20.52,
+      "last_open": 20.98,
+      "last_volume": 380774.0,
+      "note": null,
+      "rows": 2824,
+      "source": "egx-data/egxpy_efid.csv",
+      "stale": false
+    },
+    {
+      "last_close": 20.399999618530273,
+      "last_date": "2026-11-24",
+      "last_high": 20.399999618530273,
+      "last_low": 20.399999618530273,
+      "last_open": 20.399999618530273,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/EFID_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.399999618530273,
+      "last_date": "2026-11-24",
+      "last_high": 20.399999618530273,
+      "last_low": 20.399999618530273,
+      "last_open": 20.399999618530273,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.399999618530273,
+      "last_date": "2026-11-24",
+      "last_high": 20.399999618530273,
+      "last_low": 20.399999618530273,
+      "last_open": 20.399999618530273,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 20.399999618530273,
+      "last_date": "2026-11-23",
+      "last_high": 20.549999237060547,
+      "last_low": 20.200000762939453,
+      "last_open": 20.100000381469727,
+      "last_volume": 1217933.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/EFID.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-efid-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-efid-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "EFID.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.48,
+      "max3": 0.88
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFID.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T11:59:41.733457+00:00",
+  "sweep_dir": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+  "ticker": "EFID.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EFID.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EFID.CA.csv_last_close": 20.399999618530273,
+          "EFID.CA.csv_last_date": "2026-11-23",
+          "rows_EFID.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "c8b3cf1e06b4db9d0debc0fd0cbb83ec7f06d1bed57f90f855b2e5213aa89ec4",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EFID_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EFID_CA.csv_last_close": 20.399999618530273,
+          "EFID_CA.csv_last_date": "2026-11-24",
+          "rows_EFID_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "ef547e1f17d2e302f3f654e3479212e9a20995bdac95aed809d7350969db3c8d",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_efid.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_efid.csv_last_close": 20.66,
+          "egxpy_efid.csv_last_date": "2026-11-25",
+          "rows_egxpy_efid.csv": 2824,
+          "symbol": "EFID",
+          "ticker": "EFID.CA"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "2ecd7687780b22c1e574c732b6e8f754badf5a4b33035c5313502e889fa998dd",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 25.8634,
+          "atr_14": 0.8426,
+          "bb_lower": 17.1674,
+          "bb_mid": 19.4055,
+          "bb_pctb": 0.7222,
+          "bb_upper": 21.6436,
+          "close": 20.4,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 19.8349,
+          "ema_200": 24.7604,
+          "ema_50": 21.0619,
+          "first_date_used": "2019-01-01",
+          "high": 20.4,
+          "indicators.csv_last_close": 20.399999618530273,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 20.4,
+          "macd": 0.1878,
+          "macd_hist": 0.258,
+          "macd_signal": -0.0702,
+          "open": 20.4,
+          "rows_fetched": 2862,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 53.7627,
+          "stoch_d": 74.804,
+          "stoch_k": 68.8765,
+          "ticker": "EFID.CA"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "e5f7c1abd1008aadefb8e7e6ce57b7d0079e0b35d1e9532e6f23f75b6139ea17",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 20.399999618530273,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 20.399999618530273,
+          "last_date": "2026-11-24",
+          "rows_fetched": 2862,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "EFID.CA"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "965a9e56b3f55438eea4a1b955c269cd476b2a41c53e915a749ba68787efad8c",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "22b29847a3216ee572292c68dd808a26fe5f11db3a2a024ffdb4dfd5a11112e6",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "c41e4a154af602696c30049f785780f4bf059d0d213d51a0567a111c40ee47fc",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "b42fda3581a750fea9d4743d973bed5916caee3bf777ba97dea99a820268ea7f",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 7,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "6ea03108fd69b86b3ddd4f3d51475578e244cd69edf41c4e10c6ab9e20f0fbaf",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 7,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "d3c1e605e033b2521933dc3dbdbc2857d749272389e96acd57ab739e079dddb4",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 7,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "9d1e9f3850981546c971ed49185015a8f7a5de81104cc2a6212dbe2cb3843828",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 19.0769,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "626e8d2bb0678210c0f691cf9a83172b1b80222750223b4b2dff2b7bd725a9cd",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "d7ca311f395fc26d24775f22129e0d77aa0af45ba67d8819fb1598d2ca2715aa",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-efid-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 3,
+          "bodies_fetched": 3,
+          "disclosure_count": 2,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T12:02:33Z",
+          "finbert_negative": 0.04,
+          "finbert_neutral": 0.865,
+          "finbert_positive": 0.096,
+          "finbert_scored": 3,
+          "latest_disclosure_date": "Wed, 18 Nov 2026 19:05:53 GMT",
+          "latest_news_date": "Mon, 23 Nov 2026 20:40:44 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.004,
+          "multilingual_neutral": 0.053,
+          "multilingual_positive": 0.943,
+          "multilingual_scored": 3,
+          "news_count": 4,
+          "ticker": "EFID.CA",
+          "tool": "news-disclosure",
+          "top_headline": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+          "translated_negative": 0.016,
+          "translated_neutral": 0.034,
+          "translated_positive": 0.95,
+          "translated_scored": 3,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "EFID.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "944f5fc0344fe5f4411d86817d949ca0df042fea0ff50a0d5b4d4911b6da2393",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-efid-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

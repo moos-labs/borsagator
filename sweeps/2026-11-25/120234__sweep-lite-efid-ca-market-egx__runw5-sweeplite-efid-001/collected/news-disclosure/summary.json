@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "EFID.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EFID.CA",
+    "fetched_at": "2026-11-25T12:02:33Z",
+    "tool": "news-disclosure",
+    "news_count": 4,
+    "disclosure_count": 2,
+    "arabic_headlines": 3,
+    "latest_news_date": "Mon, 23 Nov 2026 20:40:44 GMT",
+    "latest_disclosure_date": "Wed, 18 Nov 2026 19:05:53 GMT",
+    "top_headline": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.096,
+    "finbert_negative": 0.04,
+    "finbert_neutral": 0.865,
+    "finbert_scored": 3,
+    "multilingual_positive": 0.943,
+    "multilingual_negative": 0.004,
+    "multilingual_neutral": 0.053,
+    "multilingual_scored": 3,
+    "bodies_fetched": 3,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.95,
+    "translated_negative": 0.016,
+    "translated_neutral": 0.034,
+    "translated_scored": 3
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

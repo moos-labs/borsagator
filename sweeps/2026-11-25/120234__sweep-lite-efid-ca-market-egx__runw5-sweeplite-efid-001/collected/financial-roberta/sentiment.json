@@ -1,0 +1,127 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 7,
+  "label_counts": {
+    "positive": 5,
+    "negative": 0,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.665554394064072,
+    "negative": 0.0005143417885327446,
+    "neutral": 0.33393126051773186
+  },
+  "items": [
+    {
+      "text": "Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of EGP7. ... By GuruFocus - Investing.com Canada",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980331063270569,
+        "negative": 0.0005843114340677857,
+        "neutral": 0.0013826134381815791
+      },
+      "raw_probabilities": {
+        "positive": 0.9980331063270569,
+        "neutral": 0.0013826134381815791,
+        "negative": 0.0005843114340677857
+      }
+    },
+    {
+      "text": "EFID: Record Q3 revenue and strong volumes support continued growth despite cost and capacity pressures - TradingView",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9983231425285339,
+        "negative": 0.0007090572034940124,
+        "neutral": 0.0009677394409663975
+      },
+      "raw_probabilities": {
+        "positive": 0.9983231425285339,
+        "neutral": 0.0009677394409663975,
+        "negative": 0.0007090572034940124
+      }
+    },
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006191274733282626,
+        "negative": 0.000150120205944404,
+        "neutral": 0.9992307424545288
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992307424545288,
+        "positive": 0.0006191274733282626,
+        "negative": 0.000150120205944404
+      }
+    },
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007548074354417622,
+        "negative": 0.00015648663975298405,
+        "neutral": 0.9990886449813843
+      },
+      "raw_probabilities": {
+        "neutral": 0.9990886449813843,
+        "positive": 0.0007548074354417622,
+        "negative": 0.00015648663975298405
+      }
+    },
+    {
+      "text": "These Are the Best RFID-blocking Wallets For Travelers, According to T+L Editors - Travel + Leisure",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.6647899150848389,
+        "negative": 0.0005752755096182227,
+        "neutral": 0.33463484048843384
+      },
+      "raw_probabilities": {
+        "positive": 0.6647899150848389,
+        "neutral": 0.33463484048843384,
+        "negative": 0.0005752755096182227
+      }
+    },
+    {
+      "text": "Edita’s Q3 profit jumps 41.5% on record sales - Daily News Egypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982436895370483,
+        "negative": 0.0007619024254381657,
+        "neutral": 0.0009944385383278131
+      },
+      "raw_probabilities": {
+        "positive": 0.9982436895370483,
+        "neutral": 0.0009944385383278131,
+        "negative": 0.0007619024254381657
+      }
+    },
+    {
+      "text": "EFID: 9M profit reached EGP 2.61bn as capacity investment expands amid rising risks - TradingView",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981169700622559,
+        "negative": 0.0006632391014136374,
+        "neutral": 0.0012198042823001742
+      },
+      "raw_probabilities": {
+        "positive": 0.9981169700622559,
+        "neutral": 0.0012198042823001742,
+        "negative": 0.0006632391014136374
+      }
+    }
+  ]
+}

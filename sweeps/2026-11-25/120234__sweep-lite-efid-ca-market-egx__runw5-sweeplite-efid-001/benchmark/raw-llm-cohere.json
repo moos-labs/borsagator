@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 20.66,
+ "base_source": "egx-data/egxpy_efid.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T12:02:35.055870+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_efid.csv": "62e4972e51ea94a9ee9e177e27e9e6da13546214da29806e695e496b9d2a0c2d",
+  "digest.json": "8a3e4fef7eb3653e578bf4e1652625b477f5b3737d570356f5381706a837893d",
+  "ensemble.json": "1f3381a3aea381bb2a15145699d3afb265a316d05af63cc7dc397e21ed8a6240",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+ "ticker": "EFID.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

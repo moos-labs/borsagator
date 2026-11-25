@@ -1,0 +1,201 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 7,
+  "label_counts": {
+    "positive": 5,
+    "negative": 0,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "positive": 5,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.7142477607983112,
+    "negative": 9.75777642680293e-06,
+    "neutral": 0.28574247418865373
+  },
+  "items": [
+    {
+      "text": "Edita Food Industries S.A.E (CAI:EFID) Q3 2026 Earnings Call Highlights: Record Revenue of EGP7. ... By GuruFocus - Investing.com Canada",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999996423721313,
+        "negative": 7.40588035341716e-09,
+        "neutral": 3.2418543582934944e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999996423721313
+        },
+        {
+          "label": "Neutral",
+          "score": 3.2418543582934944e-07
+        },
+        {
+          "label": "Negative",
+          "score": 7.40588035341716e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "EFID: Record Q3 revenue and strong volumes support continued growth despite cost and capacity pressures - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 2.985372171693257e-09,
+        "neutral": 8.206180734937618e-10
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Negative",
+          "score": 2.985372171693257e-09
+        },
+        {
+          "label": "Neutral",
+          "score": 8.206180734937618e-10
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.8600827590707922e-06,
+        "negative": 3.828828994301148e-05,
+        "neutral": 0.999958872795105
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999958872795105
+        },
+        {
+          "label": "Negative",
+          "score": 3.828828994301148e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.8600827590707922e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.5607088193501113e-06,
+        "negative": 2.9384284061961807e-05,
+        "neutral": 0.9999669790267944
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999669790267944
+        },
+        {
+          "label": "Negative",
+          "score": 2.9384284061961807e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.5607088193501113e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "These Are the Best RFID-blocking Wallets For Travelers, According to T+L Editors - Travel + Leisure",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9997307658195496,
+        "negative": 4.6198272229958093e-07,
+        "neutral": 0.00026877957861870527
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9997307658195496
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00026877957861870527
+        },
+        {
+          "label": "Negative",
+          "score": 4.6198272229958093e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Edita’s Q3 profit jumps 41.5% on record sales - Daily News Egypt",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 3.545785220993025e-09,
+        "neutral": 8.160825792913329e-09
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Neutral",
+          "score": 8.160825792913329e-09
+        },
+        {
+          "label": "Negative",
+          "score": 3.545785220993025e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "EFID: 9M profit reached EGP 2.61bn as capacity investment expands amid rising risks - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999974966049194,
+        "negative": 1.5594122260154109e-07,
+        "neutral": 2.3547531782242004e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999974966049194
+        },
+        {
+          "label": "Neutral",
+          "score": 2.3547531782242004e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.5594122260154109e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

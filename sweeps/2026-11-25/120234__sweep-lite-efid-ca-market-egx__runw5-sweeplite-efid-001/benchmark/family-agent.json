@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 20.66,
+ "base_source": "egx-data/egxpy_efid.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-25T12:02:35.044967+00:00",
+ "inputs_sha256": {
+  "digest.json": "8a3e4fef7eb3653e578bf4e1652625b477f5b3737d570356f5381706a837893d",
+  "ensemble.json": "1f3381a3aea381bb2a15145699d3afb265a316d05af63cc7dc397e21ed8a6240"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+ "ticker": "EFID.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
