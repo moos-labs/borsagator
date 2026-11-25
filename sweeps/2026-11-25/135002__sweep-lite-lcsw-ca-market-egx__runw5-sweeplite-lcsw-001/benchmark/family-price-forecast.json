@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 41.39,
+ "base_source": "egx-data/egxpy_lcsw.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:50:03.232348+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -2.07,
+   "families": {
+    "price-forecast": -0.394
+   },
+   "horizon_short": false,
+   "net_score": -0.394,
+   "range_high_pct": 3.04,
+   "range_low_pct": -7.18,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -11.17,
+   "families": {
+    "price-forecast": -0.568
+   },
+   "horizon_short": false,
+   "net_score": -0.568,
+   "range_high_pct": 7.94,
+   "range_low_pct": -30.29,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -2.77,
+   "families": {
+    "price-forecast": -0.304
+   },
+   "horizon_short": false,
+   "net_score": -0.304,
+   "range_high_pct": 6.08,
+   "range_low_pct": -11.62,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "3e7588174aa87e1908355e458c4502e5f0c5f3571649b2ce1a2f0f8e28511951",
+  "digest.json": "879456084f68a57c2c44acc79dc13a866d61fca8f50cdf4eba9ca794ef4875c2",
+  "ensemble.json": "2ddabfa739b23a91670b4aa5fa7a74e2b64de0c4252956697cc295114b8137a7"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.656,
+ "sigma_daily": 0.0307,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001",
+ "ticker": "LCSW.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

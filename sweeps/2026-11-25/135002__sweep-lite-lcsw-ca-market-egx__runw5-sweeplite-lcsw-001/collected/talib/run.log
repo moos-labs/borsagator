@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "LCSW.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 4686,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 40.439998626708984,
+  "indicators": {
+    "RSI_14": 62.79669405675716,
+    "MACD": 1.6183862142585923,
+    "MACD_signal": 1.5659985745746892,
+    "MACD_hist": 0.05238763968390314,
+    "EMA_20": 38.23644187147318,
+    "EMA_50": 36.05473154441881,
+    "ADX_14": 18.622426423397048
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-23",
+    "CDLHAMMER": "2026-09-16",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

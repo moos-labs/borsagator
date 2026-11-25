@@ -1,0 +1,127 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "negative": 1,
+    "positive": 1,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.15614999780800076,
+    "negative": 0.206037831028425,
+    "neutral": 0.6378121674060822
+  },
+  "items": [
+    {
+      "text": "Guest View: Crowded calendars, lonely holidays for capable adults - Gilroy Dispatch",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.4819601119597792e-06,
+        "negative": 0.8206351399421692,
+        "neutral": 0.1793633997440338
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8206351399421692
+        },
+        {
+          "label": "Neutral",
+          "score": 0.1793633997440338
+        },
+        {
+          "label": "Positive",
+          "score": 1.4819601119597792e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Are “Girl Dads” Better Partners? - Psychology Today",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.6122727394104004,
+        "negative": 0.0034710278268903494,
+        "neutral": 0.3842562139034271
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.6122727394104004
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3842562139034271
+        },
+        {
+          "label": "Negative",
+          "score": 0.0034710278268903494
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CHCF Health Care Leadership Program Welcomes 26th Cohort of Fellows - California Health Care Foundation",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.012293560430407524,
+        "negative": 1.7308506357949227e-05,
+        "neutral": 0.9876891374588013
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9876891374588013
+        },
+        {
+          "label": "Positive",
+          "score": 0.012293560430407524
+        },
+        {
+          "label": "Negative",
+          "score": 1.7308506357949227e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "LatinX Council Updates! - NASWCANEWS.ORG",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.220943108317442e-05,
+        "negative": 2.784783828246873e-05,
+        "neutral": 0.9999399185180664
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999399185180664
+        },
+        {
+          "label": "Positive",
+          "score": 3.220943108317442e-05
+        },
+        {
+          "label": "Negative",
+          "score": 2.784783828246873e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 41.39,
+ "base_source": "egx-data/egxpy_lcsw.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-25T13:50:03.233458+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.24,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 5.34,
+   "range_low_pct": -4.87,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 0.88,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 20.0,
+   "range_low_pct": -18.23,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.41,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 9.26,
+   "range_low_pct": -8.44,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "879456084f68a57c2c44acc79dc13a866d61fca8f50cdf4eba9ca794ef4875c2",
+  "ensemble.json": "2ddabfa739b23a91670b4aa5fa7a74e2b64de0c4252956697cc295114b8137a7"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.656,
+ "sigma_daily": 0.0307,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001",
+ "ticker": "LCSW.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

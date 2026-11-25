@@ -1,0 +1,82 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.25612273172373534,
+    "negative": 0.24974316265797825,
+    "neutral": 0.49413407972315326
+  },
+  "items": [
+    {
+      "text": "Guest View: Crowded calendars, lonely holidays for capable adults - Gilroy Dispatch",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002011341421166435,
+        "negative": 0.9979155659675598,
+        "neutral": 0.0018832299392670393
+      },
+      "raw_probabilities": {
+        "negative": 0.9979155659675598,
+        "neutral": 0.0018832299392670393,
+        "positive": 0.0002011341421166435
+      }
+    },
+    {
+      "text": "Are “Girl Dads” Better Partners? - Psychology Today",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0014025106793269515,
+        "negative": 0.00047439878107979894,
+        "neutral": 0.9981231093406677
+      },
+      "raw_probabilities": {
+        "neutral": 0.9981231093406677,
+        "positive": 0.0014025106793269515,
+        "negative": 0.00047439878107979894
+      }
+    },
+    {
+      "text": "CHCF Health Care Leadership Program Welcomes 26th Cohort of Fellows - California Health Care Foundation",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9949837923049927,
+        "negative": 0.00019616181089077145,
+        "neutral": 0.004820012953132391
+      },
+      "raw_probabilities": {
+        "positive": 0.9949837923049927,
+        "neutral": 0.004820012953132391,
+        "negative": 0.00019616181089077145
+      }
+    },
+    {
+      "text": "LatinX Council Updates! - NASWCANEWS.ORG",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.027903489768505096,
+        "negative": 0.0003865240723825991,
+        "neutral": 0.9717099666595459
+      },
+      "raw_probabilities": {
+        "neutral": 0.9717099666595459,
+        "positive": 0.027903489768505096,
+        "negative": 0.0003865240723825991
+      }
+    }
+  ]
+}

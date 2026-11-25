@@ -1,0 +1,431 @@
+{
+  "job": "sweep-lite LCSW.CA market=EGX",
+  "ticker": "LCSW.CA",
+  "date": "2026-11-25",
+  "started": "2026-11-25T13:47:59.905252+00:00",
+  "finished": "2026-11-25T13:50:02.934470+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_LCSW.CA.csv": 1208,
+          "LCSW.CA.csv_last_date": "2026-11-23",
+          "LCSW.CA.csv_last_close": "40.439998626708984"
+        },
+        "files": [
+          "LCSW.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_LCSW_CA.csv": 484,
+          "LCSW_CA.csv_last_date": "2026-11-24",
+          "LCSW_CA.csv_last_close": "40.439998626708984"
+        },
+        "files": [
+          "LCSW_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "LCSW.CA",
+          "symbol": "LCSW",
+          "rows_egxpy_lcsw.csv": 3000,
+          "egxpy_lcsw.csv_last_date": "2026-11-25",
+          "egxpy_lcsw.csv_last_close": "41.39"
+        },
+        "files": [
+          "egxpy_lcsw.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "LCSW.CA",
+          "date": "2026-11-24",
+          "open": 40.44,
+          "high": 40.44,
+          "low": 40.44,
+          "close": 40.44,
+          "rsi_14": 62.7967,
+          "macd": 1.6184,
+          "macd_signal": 1.566,
+          "macd_hist": 0.0524,
+          "ema_20": 38.2364,
+          "ema_50": 36.0547,
+          "ema_200": 31.6161,
+          "adx_14": 18.6224,
+          "bb_upper": 42.7599,
+          "bb_mid": 38.0995,
+          "bb_lower": 33.4391,
+          "bb_pctb": 0.7511,
+          "atr_14": 1.8666,
+          "stoch_k": 70.8548,
+          "stoch_d": 68.0441,
+          "rows_fetched": 4686,
+          "rows_used": 1929,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "40.439998626708984"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "LCSW.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 4686,
+          "rows_used": 1929,
+          "last_date": "2026-11-24",
+          "last_close": 40.439998626708984,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "40.439998626708984"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2436,
+          "poul_ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-22",
+          "forecast.csv_last_close": "35.9874"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "LCSW.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "detail": "ERROR: no items fetched from any source"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  }
+}

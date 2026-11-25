@@ -1,0 +1,1292 @@
+{
+  "archive_commit": "ce6d559f604de90fe6bec127719d708313904614",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "97a2015d80a3a558d3ad9916f4b219d7ba304479d2e651432119ea18c75fd389",
+      "family-agent.json": "a1a6a1e0d0013ac85b26abe803aff2202f5af80c804f4c50ba3a6d229fd15687",
+      "family-fundamentals.json": "6452d4bcb7e30ccdb3515e3fa74bc7aa34785d89e9bbb697e5ffad32c6d7cf5c",
+      "family-price-forecast.json": "480b132bf08239458e2902961c48fe9dc7ed1d5eadefec63d459ae4fe7706488",
+      "family-sentiment.json": "dbf7d35240cd7abef7ec1b665520de0e098dd59f00d832dc128fd6503a8057ec",
+      "family-technicals.json": "c72efb481873b8a4ae7888cef929bc7dfc84e436dc2499bec569d3ddf5ceaed7",
+      "kronos-alone.json": "535a05def2c37a0c40a5c95c8ee1c211987de436b255b17503f50febb7a9f52c",
+      "raw-llm-cohere.json": "800e0eaece3a049526736ed5271e35dacb9bad1ee5acec2cbb8654b65d8ec1da"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/LCSW-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 41.39,
+    "base_source": "egx-data/egxpy_lcsw.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": -0.568,
+      "sentiment": 0.009,
+      "technicals": 0.3
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.35,
+        "direction": "down",
+        "expected_move_pct": -1.48,
+        "families": {
+          "price-forecast": -0.394,
+          "sentiment": 0.009,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.4206,
+        "net_score": -0.015,
+        "range_high_pct": 4.38,
+        "range_low_pct": -7.33,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.0728
+      },
+      "month": {
+        "confidence": 0.35,
+        "direction": "down",
+        "expected_move_pct": -7.95,
+        "families": {
+          "fundamentals": 0.15,
+          "price-forecast": -0.568,
+          "sentiment": 0.009,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -13.0529,
+        "net_score": -0.02,
+        "range_high_pct": 14.24,
+        "range_low_pct": -30.14,
+        "trading_sessions": 14,
+        "vol_h_pct": 11.4974
+      },
+      "week": {
+        "confidence": 0.35,
+        "direction": "down",
+        "expected_move_pct": -1.98,
+        "families": {
+          "price-forecast": -0.304,
+          "sentiment": 0.009,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -3.2392,
+        "net_score": -0.014,
+        "range_high_pct": 7.95,
+        "range_low_pct": -11.92,
+        "trading_sessions": 3,
+        "vol_h_pct": 5.3222
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_lcsw.csv",
+      "base_stale": false,
+      "base_used": 41.39,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_lcsw.csv": 40.44,
+        "openbb/lcsw_ca.csv": 40.439998626708984,
+        "pandas-ta/indicators.csv": 40.439998626708984,
+        "talib/indicators.csv": 40.439998626708984,
+        "yahooquery/lcsw.ca.csv": 40.439998626708984
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.656,
+    "sigma_daily": 0.0307,
+    "sigma_source": "egx-data/egxpy_lcsw.csv (σ60=0.0307, σ10=0.0237)",
+    "ticker": "LCSW.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": -0.568,
+    "sentiment": 0.009,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-25T13:50:02.934470+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/LCSW.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/LCSW.CA.json",
+    "sharia-row-missing: AAOIFI LCSW.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 LCSW.CA",
+    "sharia-row-missing: FTSE LCSW.CA",
+    "sharia-row-missing: ISLAMICLY LCSW.CA",
+    "sharia-row-missing: MSCI LCSW.CA",
+    "sharia-row-missing: MSCI_M LCSW.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.35,
+      "direction": "down",
+      "expected_move_pct": -1.48,
+      "families": {
+        "price-forecast": -0.394,
+        "sentiment": 0.009,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.4206,
+      "net_score": -0.015,
+      "range_high_pct": 4.38,
+      "range_low_pct": -7.33,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.0728
+    },
+    "month": {
+      "confidence": 0.35,
+      "direction": "down",
+      "expected_move_pct": -7.95,
+      "families": {
+        "fundamentals": 0.15,
+        "price-forecast": -0.568,
+        "sentiment": 0.009,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -13.0529,
+      "net_score": -0.02,
+      "range_high_pct": 14.24,
+      "range_low_pct": -30.14,
+      "trading_sessions": 14,
+      "vol_h_pct": 11.4974
+    },
+    "week": {
+      "confidence": 0.35,
+      "direction": "down",
+      "expected_move_pct": -1.98,
+      "families": {
+        "price-forecast": -0.304,
+        "sentiment": 0.009,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -3.2392,
+      "net_score": -0.014,
+      "range_high_pct": 7.95,
+      "range_low_pct": -11.92,
+      "trading_sessions": 3,
+      "vol_h_pct": 5.3222
+    }
+  },
+  "job": "sweep-lite LCSW.CA market=EGX",
+  "job_shape": "sweep-lite LCSW.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 44.6805,
+    "support": 36.4563
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 41.39,
+    "base_source": "egx-data/egxpy_lcsw.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_lcsw.csv",
+      "base_stale": false,
+      "base_used": 41.39,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_lcsw.csv": 40.44,
+        "openbb/lcsw_ca.csv": 40.439998626708984,
+        "pandas-ta/indicators.csv": 40.439998626708984,
+        "talib/indicators.csv": 40.439998626708984,
+        "yahooquery/lcsw.ca.csv": 40.439998626708984
+      }
+    },
+    "sessions_per_calendar_day": 0.656,
+    "sigma_daily": 0.0307,
+    "sigma_source": "egx-data/egxpy_lcsw.csv (σ60=0.0307, σ10=0.0237)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 41.39,
+      "last_date": "2026-11-25",
+      "last_high": 41.5,
+      "last_low": 40.83,
+      "last_open": 41.37,
+      "last_volume": 344706.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_lcsw.csv",
+      "stale": false
+    },
+    {
+      "last_close": 40.439998626708984,
+      "last_date": "2026-11-24",
+      "last_high": 40.439998626708984,
+      "last_low": 40.439998626708984,
+      "last_open": 40.439998626708984,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/LCSW_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 40.439998626708984,
+      "last_date": "2026-11-24",
+      "last_high": 40.439998626708984,
+      "last_low": 40.439998626708984,
+      "last_open": 40.439998626708984,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 40.439998626708984,
+      "last_date": "2026-11-24",
+      "last_high": 40.439998626708984,
+      "last_low": 40.439998626708984,
+      "last_open": 40.439998626708984,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 40.439998626708984,
+      "last_date": "2026-11-23",
+      "last_high": 40.439998626708984,
+      "last_low": 38.0099983215332,
+      "last_open": 38.650001525878906,
+      "last_volume": 203971.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/LCSW.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-lcsw-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-lcsw-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "LCSW.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for LCSW.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T13:47:59.905252+00:00",
+  "sweep_dir": "sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001",
+  "ticker": "LCSW.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "LCSW.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "LCSW.CA.csv_last_close": 40.439998626708984,
+          "LCSW.CA.csv_last_date": "2026-11-23",
+          "rows_LCSW.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "8ae9124f9d9d7f2241d3e672d753bb698488c4954008df150b43326ca6345ed3",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "LCSW_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "LCSW_CA.csv_last_close": 40.439998626708984,
+          "LCSW_CA.csv_last_date": "2026-11-24",
+          "rows_LCSW_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "7f94ca654d69c1862162f5768181f8bb3704f79161bc64b085a043442672412b",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_lcsw.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_lcsw.csv_last_close": 41.39,
+          "egxpy_lcsw.csv_last_date": "2026-11-25",
+          "rows_egxpy_lcsw.csv": 3000,
+          "symbol": "LCSW",
+          "ticker": "LCSW.CA"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "629521f7fc98b2c01d393d804ca22501511df9aaaa0bf128e5b5df64271c2744",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 18.6224,
+          "atr_14": 1.8666,
+          "bb_lower": 33.4391,
+          "bb_mid": 38.0995,
+          "bb_pctb": 0.7511,
+          "bb_upper": 42.7599,
+          "close": 40.44,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 38.2364,
+          "ema_200": 31.6161,
+          "ema_50": 36.0547,
+          "first_date_used": "2019-01-01",
+          "high": 40.44,
+          "indicators.csv_last_close": 40.439998626708984,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 40.44,
+          "macd": 1.6184,
+          "macd_hist": 0.0524,
+          "macd_signal": 1.566,
+          "open": 40.44,
+          "rows_fetched": 4686,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 62.7967,
+          "stoch_d": 68.0441,
+          "stoch_k": 70.8548,
+          "ticker": "LCSW.CA"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "70bd4ce89e1d503370bcd8e02df2109986b1236fe76cd834e706edbe04da01c7",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 40.439998626708984,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 40.439998626708984,
+          "last_date": "2026-11-24",
+          "rows_fetched": 4686,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "LCSW.CA"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "b41bb7703e10fa48067b325c26b555f77f5eca40963943c4b9cea34ba7acf104",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "8b32d7707db94eef0d1491fb52c18946e5e535be9fbc6f876060a195eaf61ceb",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "f19865b2ee1c32ef838c97d7f308188f43e55ccec5b42f7bc8e0170c05e990e5",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "d5241b7f13b3a604633e9dcdd7c2079fc0e9cd555c45f5c739129df0bc53fc75",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "23dd875330de27ce8266ab0261e861fa7478b5ae4af56a35b61e18eef2020508",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "449c7bb984c29d372faf4baecf76335c7fda294d8e795d2ac3145be2c37e365f",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "a56303b3dfd85069cb706ed4b133af3b6c836d2d3305497147bdf74a1a3cef28",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 35.9874,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "1fc77a3e42a30b74685b74dcd6fb9f927a3f3ae88bf0a9400373429fe86d1ea6",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "LCSW.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "386d573e21b2704e4011562087d7e4a67a41d6a2edfa894ab4f9236632529e28",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-lcsw-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "LCSW.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "9523561469d6c020fb824ebaeea6822dcb6a9882ebc96682edabd99e10cdb4fc",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-lcsw-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 41.39,
+ "base_source": "egx-data/egxpy_lcsw.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:50:03.244530+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_lcsw.csv": "0fcce896d324af1f907b42ef9cff8c6e943341c1d1e1c8a2d7e96f31b63123b7",
+  "digest.json": "879456084f68a57c2c44acc79dc13a866d61fca8f50cdf4eba9ca794ef4875c2",
+  "ensemble.json": "2ddabfa739b23a91670b4aa5fa7a74e2b64de0c4252956697cc295114b8137a7",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001",
+ "ticker": "LCSW.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

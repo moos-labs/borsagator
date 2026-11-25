@@ -1,0 +1,53 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 4,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 4
+  },
+  "mean_probabilities": {
+    "positive": 0.11298909829929471,
+    "negative": 0.04148990591056645,
+    "neutral": 0.8455209881067276
+  },
+  "items": [
+    {
+      "text": "Guest View: Crowded calendars, lonely holidays for capable adults - Gilroy Dispatch",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.031028708443045616,
+        "negative": 0.10280626267194748,
+        "neutral": 0.8661649823188782
+      }
+    },
+    {
+      "text": "Are “Girl Dads” Better Partners? - Psychology Today",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.10596217960119247,
+        "negative": 0.02992185205221176,
+        "neutral": 0.8641159534454346
+      }
+    },
+    {
+      "text": "CHCF Health Care Leadership Program Welcomes 26th Cohort of Fellows - California Health Care Foundation",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.2819797098636627,
+        "negative": 0.010104808025062084,
+        "neutral": 0.7079154849052429
+      }
+    },
+    {
+      "text": "LatinX Council Updates! - NASWCANEWS.ORG",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.03298579528927803,
+        "negative": 0.023126700893044472,
+        "neutral": 0.9438875317573547
+      }
+    }
+  ]
+}
