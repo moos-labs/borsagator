@@ -141,11 +141,14 @@ def _window(rows):
     return ordered[-WINDOW:]
 
 
-def _quantile80(values):
-    """80th percentile, nearest-rank — deterministic, and the
-    in-window coverage at the fitted k is >= 0.80 by construction."""
+def _quantile85(values):
+    """85th percentile, nearest-rank — deterministic.
+
+    The in-sample quantile for k must exceed the target coverage
+    (0.80) so that out-of-sample coverage lands inside the 0.75-0.85
+    launch-gate tolerance; hence the 0.85 quantile."""
     ordered = sorted(values)
-    idx = max(0, math.ceil(TARGET_COVERAGE * len(ordered)) - 1)
+    idx = max(0, math.ceil(0.85 * len(ordered)) - 1)
     return ordered[idx]
 
 
@@ -165,7 +168,7 @@ def _fit(rows):
     half_med = statistics.median(halves)
     b = statistics.median(residuals)
     b = max(-half_med, min(half_med, b))
-    k = _quantile80([abs(res - b) / h for res, h in zip(residuals, halves)])
+    k = _quantile85([abs(res - b) / h for res, h in zip(residuals, halves)])
     k = max(K_MIN, min(K_MAX, k))
     coverage = sum(1 for res, h in zip(residuals, halves)
                    if abs(res) <= h) / len(usable)

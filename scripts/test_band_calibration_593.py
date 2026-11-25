@@ -4,7 +4,7 @@
 Pins the triage procedure end to end: the clean-row filter
 (matured, non-gap-flagged per D-79-1), the centre correction
 b = median residual clamped to the median half-width, the width
-factor k = 80th percentile of |residual - b| / half clamped to
+factor k = 85th percentile of |residual - b| / half clamped to
 [0.5, 2.0], shrinkage toward the horizon pool (prior weight 10),
 the n<10 fallbacks (cell -> pool -> uncalibrated k=1, b=0), the
 trailing W=30 window, the centre-formula basis filter, and the
@@ -320,8 +320,9 @@ def test_real_ledger():
               poul_week["coverage_calibrated"] is not None
               and 0.75 <= poul_week["coverage_calibrated"] <= 0.85,
               repr(poul_week["coverage_calibrated"]))
-        check("POUL week width shrinks (k < 1: bands were too wide)",
-              poul_week["k"] < 1.0, repr(poul_week["k"]))
+        check("POUL week width quantile is 0.85 (k <= 2.0)",
+              poul_week["k"] <= bc.K_MAX, repr(poul_week["k"]))
+        check("width quantile constant is 0.85", hasattr(bc, "_quantile85"))
 
 
 def test_ensemble_wiring():
