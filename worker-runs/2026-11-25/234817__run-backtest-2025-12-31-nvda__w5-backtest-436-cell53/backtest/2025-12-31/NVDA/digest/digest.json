@@ -1,0 +1,61 @@
+{
+ "ticker": "NVDA",
+ "date": "2025-12-31",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 178.7572
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "NVDA",
+     "as_of": "2025-12-31",
+     "date": "2025-12-31",
+     "open": 189.57,
+     "high": 190.56,
+     "low": 186.49,
+     "close": 186.5,
+     "rsi_14": 53.3901,
+     "macd": 0.9915,
+     "macd_signal": -0.239,
+     "macd_hist": 1.2305,
+     "ema_20": 184.0453,
+     "ema_50": 183.7087,
+     "ema_200": 165.9878,
+     "adx_14": 13.0413,
+     "bb_upper": 193.2177,
+     "bb_mid": 182.5005,
+     "bb_lower": 171.7833,
+     "bb_pctb": 0.6866,
+     "atr_14": 5.2898,
+     "stoch_k": 76.4522,
+     "stoch_d": 82.59,
+     "rows_fetched": 7005,
+     "rows_used": 1760,
+     "first_date_used": "2019-01-02",
+     "last_date": "2025-12-31",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 186.5
+    }
+   }
+  }
+ ]
+}
