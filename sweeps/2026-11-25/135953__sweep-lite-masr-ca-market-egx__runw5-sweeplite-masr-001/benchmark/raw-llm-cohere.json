@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 6.23,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:59:53.506967+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_masr.csv": "e8b50cb8e58d7ff3b327ac34381f69f84e6dc3525daf6eb98662e80f47187379",
+  "digest.json": "f95fd5f881327970013fdd9f5c3cd67795e640ed071010ffdafbe6f593136b36",
+  "ensemble.json": "ebf1d5151023626835d2d681878d28b989338e227273dc6919ae3e4ae5da9c77",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001",
+ "ticker": "MASR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

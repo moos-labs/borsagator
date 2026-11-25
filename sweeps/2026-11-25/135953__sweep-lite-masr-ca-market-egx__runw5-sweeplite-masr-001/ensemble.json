@@ -1,0 +1,154 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "MASR.CA",
+ "base_price": 6.23,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_date": "2026-11-25",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_masr.csv": 6.27,
+   "openbb/masr_ca.csv": 6.269999980926514,
+   "pandas-ta/indicators.csv": 6.269999980926514,
+   "talib/indicators.csv": 6.269999980926514,
+   "yahooquery/masr.ca.csv": 6.269999980926514
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-23",
+  "base_used": 6.23,
+  "base_source_used": "egx-data/egxpy_masr.csv",
+  "base_date": "2026-11-25",
+  "latest_collected_date": "2026-11-25",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0349,
+ "sigma_source": "egx-data/egxpy_masr.csv (σ60=0.0349, σ10=0.0228)",
+ "sessions_per_calendar_day": 0.665,
+ "date": "2026-11-25",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "legal event: \"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy",
+   "legal event: الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط"
+  ],
+  "events": [
+   {
+    "type": "legal",
+    "severity": "high",
+    "title": "\"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy"
+   },
+   {
+    "type": "legal",
+    "severity": "high",
+    "title": "الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط"
+   },
+   {
+    "type": "governance",
+    "severity": "medium",
+    "title": "مدينة مصر تقرر شراء 18.15 مليون سهم خزينة تمثل 0.85% من الأسهم المصدرة - الاقتصادي نيوز"
+   }
+  ],
+  "move_z": {
+   "last": 0.59,
+   "max3": 0.74
+  }
+ },
+ "weights_source": "ledger",
+ "applied_weights": {
+  "source": "ledger",
+  "file": "ledger/weights.json",
+  "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+  "factors": {
+   "price-forecast": 0.5,
+   "technicals": 0.679,
+   "sentiment": 1.068,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {
+   "price-forecast": {
+    "factor": 0.5,
+    "n": 31,
+    "skill": -0.606
+   },
+   "technicals": {
+    "factor": 0.679,
+    "n": 33,
+    "skill": -0.321
+   },
+   "sentiment": {
+    "factor": 1.068,
+    "n": 33,
+    "skill": 0.068
+   }
+  }
+ },
+ "family_scores": {
+  "technicals": -0.3,
+  "sentiment": -0.094,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.284
+ },
+ "horizons": {
+  "day": {
+   "direction": "up",
+   "expected_move_pct": 1.37,
+   "range_low_pct": -6.19,
+   "range_high_pct": 8.94,
+   "confidence": 0.3,
+   "net_score": -0.075,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.094,
+    "price-forecast": 0.36
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 2.5136,
+   "vol_h_pct": 3.4889
+  },
+  "week": {
+   "direction": "up",
+   "expected_move_pct": 2.48,
+   "range_low_pct": -10.6,
+   "range_high_pct": 15.57,
+   "confidence": 0.3,
+   "net_score": -0.049,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.094,
+    "price-forecast": 0.363
+   },
+   "horizon_short": false,
+   "trading_sessions": 3,
+   "kronos_move_pct": 4.39,
+   "vol_h_pct": 6.0429
+  },
+  "month": {
+   "direction": "up",
+   "expected_move_pct": 5.89,
+   "range_low_pct": -22.53,
+   "range_high_pct": 34.31,
+   "confidence": 0.3,
+   "net_score": 0.215,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.094,
+    "fundamentals": 0.4,
+    "price-forecast": 0.284
+   },
+   "horizon_short": false,
+   "trading_sessions": 14,
+   "kronos_move_pct": 7.4141,
+   "vol_h_pct": 13.0542
+  }
+ },
+ "confidence_basis": "calibrated (ledger skill factors applied)"
+}

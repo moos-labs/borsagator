@@ -1,0 +1,26 @@
+bodies: 12/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/MASR.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5790.25it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 13594.37it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16819.40it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5826.23it/s]
+{"tool": "news-disclosure", "ticker": "MASR.CA", "news_count": 40, "disclosure_count": 0, "arabic_headlines": 31, "latest_news_date": "Wed, 25 Nov 2026 11:20:55 GMT", "latest_disclosure_date": "", "top_headline": "سعر الذهب اليوم في مصر يواصل الانخفاض منتصف تعاملات الأربعاء - Masrawy", "llm_provider": "extractive", "finbert_positive": 0.295, "finbert_negative": 0.041, "finbert_neutral": 0.664, "finbert_scored": 9, "multilingual_positive": 0.534, "multilingual_negative": 0.218, "multilingual_neutral": 0.248, "multilingual_scored": 31, "bodies_fetched": 12, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.31, "translated_negative": 0.233, "translated_neutral": 0.457, "translated_scored": 31}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 11:20:55 GMT] (Masrawy) سعر الذهب اليوم في مصر يواصل الانخفاض منتصف تعاملات الأربعاء - Masrawy
+- [Wed, 25 Nov 2026 09:52:26 GMT] (Masrawy) "اتفرج ببلاش".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy
+- [Tue, 24 Nov 2026 20:42:53 GMT] (الشرق الأوسط) مصر: لماذا يحجم متضررو «الإيجار القديم» عن «السكن البديل»؟ - الشرق الأوسط
+- [Tue, 24 Nov 2026 20:06:09 GMT] (الشرق الأوسط) «فيفا» يواجه رفضاً من مصر وإيران بسبب السماح بأعلام المثليين في ملعب «لومن فيلد» - الشرق الأوسط
+- [Tue, 24 Nov 2026 19:26:51 GMT] (الشرق الأوسط) الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط
+- [Tue, 24 Nov 2026 19:18:36 GMT] (الشرق الأوسط) البطالة في مصر تتراجع رغم تداعيات الحرب الإيرانية - الشرق الأوسط
+- [Tue, 24 Nov 2026 18:06:06 GMT] (الشرق الأوسط) مصطفى شوبير: منتخب مصر سيقاتل حتى النهاية رغم الإصابات - الشرق الأوسط
+- [Tue, 24 Nov 2026 12:24:47 GMT] (الشرق الأوسط) «يد مصر»... سيطرة مُطلقة على العرش الأفريقي - الشرق الأوسط

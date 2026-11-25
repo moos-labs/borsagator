@@ -1,0 +1,1665 @@
+{
+  "archive_commit": "eaaa7ddaf18b0b46a552335de5bf8ccc74357c28",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "27db5c7974afaaea77fd7f119354247ce5c069a665fa007899ccbb8f7dc75a63",
+      "family-agent.json": "528464fafaa96c83f0f9d8af62d7ca44e4fafcd222aaa60a4e8f54e83ee7d330",
+      "family-fundamentals.json": "2c1de55ed3296cc3cb0194a584ad7c114b6e895b29cde85e71ec2584ecae85f5",
+      "family-price-forecast.json": "1d211f99902cf266bf24633e95d6ca3040edccfd8fe7719fe339f854f5378cfe",
+      "family-sentiment.json": "7a8a9c6301d73df233efe36a16e3e8b894c4c12896562ec4840edbc46917d603",
+      "family-technicals.json": "a9007fd86a4413847459ccb8aec54a776bdbb853e750aebeef35546e508cda7e",
+      "kronos-alone.json": "1c04b717b2aa32d3424d4d3c721c281975acb5f23323e56abfceb7c65e954f87",
+      "raw-llm-cohere.json": "39c5114e3ceb78c8ea91ca8916963f36bc0d5ea36704447dfcfbf59864445cc3"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/MASR-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 6.23,
+    "base_source": "egx-data/egxpy_masr.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.284,
+      "sentiment": -0.094,
+      "technicals": -0.3
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.37,
+        "families": {
+          "price-forecast": 0.36,
+          "sentiment": -0.094,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.5136,
+        "net_score": -0.075,
+        "range_high_pct": 8.94,
+        "range_low_pct": -6.19,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.4889
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 5.89,
+        "families": {
+          "fundamentals": 0.4,
+          "price-forecast": 0.284,
+          "sentiment": -0.094,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 7.4141,
+        "net_score": 0.215,
+        "range_high_pct": 34.31,
+        "range_low_pct": -22.53,
+        "trading_sessions": 14,
+        "vol_h_pct": 13.0542
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 2.48,
+        "families": {
+          "price-forecast": 0.363,
+          "sentiment": -0.094,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 4.39,
+        "net_score": -0.049,
+        "range_high_pct": 15.57,
+        "range_low_pct": -10.6,
+        "trading_sessions": 3,
+        "vol_h_pct": 6.0429
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_masr.csv",
+      "base_stale": false,
+      "base_used": 6.23,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_masr.csv": 6.27,
+        "openbb/masr_ca.csv": 6.269999980926514,
+        "pandas-ta/indicators.csv": 6.269999980926514,
+        "talib/indicators.csv": 6.269999980926514,
+        "yahooquery/masr.ca.csv": 6.269999980926514
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "\"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy",
+          "type": "legal"
+        },
+        {
+          "severity": "high",
+          "title": "الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط",
+          "type": "legal"
+        },
+        {
+          "severity": "medium",
+          "title": "مدينة مصر تقرر شراء 18.15 مليون سهم خزينة تمثل 0.85% من الأسهم المصدرة - الاقتصادي نيوز",
+          "type": "governance"
+        }
+      ],
+      "flags": [
+        "legal event: \"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy",
+        "legal event: الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.59,
+        "max3": 0.74
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0349,
+    "sigma_source": "egx-data/egxpy_masr.csv (σ60=0.0349, σ10=0.0228)",
+    "ticker": "MASR.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.284,
+    "sentiment": -0.094,
+    "technicals": -0.3
+  },
+  "finished": "2026-11-25T13:59:53.145491+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/MASR.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/MASR.CA.json",
+    "sharia-row-missing: AAOIFI MASR.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 MASR.CA",
+    "sharia-row-missing: FTSE MASR.CA",
+    "sharia-row-missing: ISLAMICLY MASR.CA",
+    "sharia-row-missing: MSCI MASR.CA",
+    "sharia-row-missing: MSCI_M MASR.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.37,
+      "families": {
+        "price-forecast": 0.36,
+        "sentiment": -0.094,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.5136,
+      "net_score": -0.075,
+      "range_high_pct": 8.94,
+      "range_low_pct": -6.19,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.4889
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 5.89,
+      "families": {
+        "fundamentals": 0.4,
+        "price-forecast": 0.284,
+        "sentiment": -0.094,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 7.4141,
+      "net_score": 0.215,
+      "range_high_pct": 34.31,
+      "range_low_pct": -22.53,
+      "trading_sessions": 14,
+      "vol_h_pct": 13.0542
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 2.48,
+      "families": {
+        "price-forecast": 0.363,
+        "sentiment": -0.094,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 4.39,
+      "net_score": -0.049,
+      "range_high_pct": 15.57,
+      "range_low_pct": -10.6,
+      "trading_sessions": 3,
+      "vol_h_pct": 6.0429
+    }
+  },
+  "job": "sweep-lite MASR.CA market=EGX",
+  "job_shape": "sweep-lite MASR.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 7.2,
+    "support": 5.5696
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T11:20:55Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 11:20:55 GMT",
+    "news_count": 40,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 11:20:55 GMT",
+        "identity_key": "https://www.masrawy.com/news/news_economy/details/2026/11/25/3084259/%D8%B3%D8%B9%D8%B1-%D8%A7%D9%84%D8%B0%D9%87%D8%A8-%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D9%8A%D9%88%D8%A7%D8%B5%D9%84-%D8%A7%D9%84%D8%A7%D9%86%D8%AE%D9%81%D8%A7%D8%B6-%D9%85%D9%86%D8%AA%D8%B5%D9%81-%D8%AA%D8%B9%D8%A7%D9%85%D9%84%D8%A7%D8%AA-%D8%A7%D9%84%D8%A3%D8%B1%D8%A8%D8%B9%D8%A7%D8%A1",
+        "key_type": "resolved_url",
+        "source": "Masrawy",
+        "title": "سعر الذهب اليوم في مصر يواصل الانخفاض منتصف تعاملات الأربعاء - Masrawy"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 09:52:26 GMT",
+        "identity_key": "https://www.masrawy.com/sports/sports_news/details/2026/11/25/3084187/-%D8%A7%D8%AA%D9%81%D8%B1%D8%AC-%D8%A8%D8%A8%D9%84%D8%A7%D8%B4-%D9%82%D9%86%D8%A7%D8%A9-%D9%85%D9%81%D8%AA%D9%88%D8%AD%D8%A9-%D8%AA%D9%86%D9%82%D9%84-%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D9%85%D8%B5%D8%B1-%D9%88%D8%A8%D9%86%D9%85%D8%A7-%D9%81%D9%8A-%D9%83%D8%A3%D8%B3-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D9%84%D9%84%D9%86%D8%A7%D8%B4%D8%A6%D9%8A%D9%86",
+        "key_type": "resolved_url",
+        "source": "Masrawy",
+        "title": "\"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 20:42:53 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A/%D8%B4%D9%85%D8%A7%D9%84-%D8%A7%D9%81%D8%B1%D9%8A%D9%82%D9%8A%D8%A7/5299465-%D9%85%D8%B5%D8%B1-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-%D9%8A%D8%AD%D8%AC%D9%85-%D9%85%D8%AA%D8%B6%D8%B1%D8%B1%D9%88-%D8%A7%D9%84%D8%A5%D9%8A%D8%AC%D8%A7%D8%B1-%D8%A7%D9%84%D9%82%D8%AF%D9%8A%D9%85-%D8%B9%D9%86-%D8%A7%D9%84%D8%B3%D9%83%D9%86-%D8%A7%D9%84%D8%A8%D8%AF%D9%8A%D9%84%D8%9F",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "مصر: لماذا يحجم متضررو «الإيجار القديم» عن «السكن البديل»؟ - الشرق الأوسط"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 20:06:09 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9/%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9-%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9/5288407-%D9%81%D9%8A%D9%81%D8%A7-%D9%8A%D9%88%D8%A7%D8%AC%D9%87-%D8%B1%D9%81%D8%B6%D8%A7%D9%8B-%D9%85%D9%86-%D9%85%D8%B5%D8%B1-%D9%88%D8%A5%D9%8A%D8%B1%D8%A7%D9%86-%D8%A8%D8%B3%D8%A8%D8%A8-%D8%A7%D9%84%D8%B3%D9%85%D8%A7%D8%AD-%D8%A8%D8%A3%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D9%85%D8%AB%D9%84%D9%8A%D9%8A%D9%86-%D9%81%D9%8A-%D9%85%D9%84%D8%B9%D8%A8",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "«فيفا» يواجه رفضاً من مصر وإيران بسبب السماح بأعلام المثليين في ملعب «لومن فيلد» - الشرق الأوسط"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 19:26:51 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9/%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9-%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9/5293409-%D8%A7%D9%84%D8%B5%D8%AD%D8%A7%D9%81%D8%A9-%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9-%D9%82%D8%B1%D8%A7%D8%B1%D8%A7%D8%AA-%D8%AA%D8%AD%D9%83%D9%8A%D9%85%D9%8A%D8%A9-%D9%85%D8%AB%D9%8A%D8%B1%D8%A9-%D9%84%D9%84%D8%AC%D8%AF%D9%84-%D8%AA%D8%AE%D8%B1%D8%AC-%D9%85%D8%B5%D8%B1-%D9%85%D9%86-%D8%A7%D9%84%D9%85%D9%88%D9%86%D8%AF%D9%8A%D8%A7%D9%84",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 19:18:36 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%85-%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A/%D8%B4%D9%85%D8%A7%D9%84-%D8%A7%D9%81%D8%B1%D9%8A%D9%82%D9%8A%D8%A7/5304537-%D8%A7%D9%84%D8%A8%D8%B7%D8%A7%D9%84%D8%A9-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D8%AA%D8%AA%D8%B1%D8%A7%D8%AC%D8%B9-%D8%B1%D8%BA%D9%85-%D8%AA%D8%AF%D8%A7%D8%B9%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AD%D8%B1%D8%A8-%D8%A7%D9%84%D8%A5%D9%8A%D8%B1%D8%A7%D9%86%D9%8A%D8%A9",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "البطالة في مصر تتراجع رغم تداعيات الحرب الإيرانية - الشرق الأوسط"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 18:06:06 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9/%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9-%D8%B9%D8%A7%D9%84%D9%85%D9%8A%D8%A9/5291882-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D8%B4%D9%88%D8%A8%D9%8A%D8%B1-%D9%85%D9%86%D8%AA%D8%AE%D8%A8-%D9%85%D8%B5%D8%B1-%D8%B3%D9%8A%D9%82%D8%A7%D8%AA%D9%84-%D8%AD%D8%AA%D9%89-%D8%A7%D9%84%D9%86%D9%87%D8%A7%D9%8A%D8%A9-%D8%B1%D8%BA%D9%85-%D8%A7%D9%84%D8%A5%D8%B5%D8%A7%D8%A8%D8%A7%D8%AA",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "مصطفى شوبير: منتخب مصر سيقاتل حتى النهاية رغم الإصابات - الشرق الأوسط"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 12:24:47 GMT",
+        "identity_key": "https://aawsat.com/%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9/%D8%B1%D9%8A%D8%A7%D8%B6%D8%A9-%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9/5321701-%D9%8A%D8%AF-%D9%85%D8%B5%D8%B1-%D8%B3%D9%8A%D8%B7%D8%B1%D8%A9-%D9%85%D9%8F%D8%B7%D9%84%D9%82%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%B9%D8%B1%D8%B4-%D8%A7%D9%84%D8%A3%D9%81%D8%B1%D9%8A%D9%82%D9%8A",
+        "key_type": "resolved_url",
+        "source": "الشرق الأوسط",
+        "title": "«يد مصر»... سيطرة مُطلقة على العرش الأفريقي - الشرق الأوسط"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 21:14:41 GMT",
+        "identity_key": "https://alhurra.com/56795",
+        "key_type": "resolved_url",
+        "source": "الحرة",
+        "title": "الزيدي يعلن إلغاء التأشيرات مع مصر في أول زيارة للقاهرة - الحرة"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 15:36:13 GMT",
+        "identity_key": "https://asharq.com/technology/204103/%D9%83%D9%8A%D9%81-%D8%AA%D8%B6%D9%8A%D9%81-%D8%A7%D9%84%D8%A8%D8%B7%D8%A7%D9%82%D8%A9-%D8%A7%D9%84%D8%A8%D9%86%D9%83%D9%8A%D8%A9-%D9%84%D9%87%D8%A7%D8%AA%D9%81-%D8%A3%D9%86%D8%AF%D8%B1%D9%88%D9%8A%D8%AF-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D8%A5%D9%84%D9%8A%D9%83-%D8%A7%D9%84%D8%AE%D8%B7%D9%88%D8%A7%D8%AA/",
+        "key_type": "resolved_url",
+        "source": "الشرق للأخبار",
+        "title": "كيف تضيف البطاقة البنكية إلى هاتف أندرويد في مصر؟ إليك الخطوات - الشرق للأخبار"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 10:59:57 GMT",
+        "identity_key": "https://eleqtisadenews.com/%D9%85%D8%AF%D9%8A%D9%86%D8%A9-%D9%85%D8%B5%D8%B1-%D8%AA%D9%82%D8%B1%D8%B1-%D8%B4%D8%B1%D8%A7%D8%A1-18-15-%D9%85%D9%84%D9%8A%D9%88%D9%86-%D8%B3%D9%87%D9%85-%D8%AE%D8%B2%D9%8A%D9%86%D8%A9-%D8%AA%D9%85/",
+        "key_type": "resolved_url",
+        "source": "الاقتصادي نيوز",
+        "title": "مدينة مصر تقرر شراء 18.15 مليون سهم خزينة تمثل 0.85% من الأسهم المصدرة - الاقتصادي نيوز"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 10:49:27 GMT",
+        "identity_key": "https://asharqbusiness.com/companies/157467/%D9%85%D8%B5%D8%B1-%D9%84%D8%AA%D8%A3%D9%85%D9%8A%D9%86%D8%A7%D8%AA-%D8%A7%D9%84%D8%AD%D9%8A%D8%A7%D8%A9-%D8%AA%D8%B3%D8%AA%D9%87%D8%AF%D9%81-%D8%AC%D9%85%D8%B9-10-%D9%85%D9%84%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-%D8%AC%D9%86%D9%8A%D9%87-%D9%85%D9%86-%D8%B7%D8%B1%D8%AD-%D8%A3%D9%88%D9%84%D9%8A/",
+        "key_type": "resolved_url",
+        "source": "الشرق بلومبرغ",
+        "title": "\"مصر لتأمينات الحياة\" تحدد نطاق سعر طرحها الأولي بخصم عن \"القيمة العادلة\" - الشرق بلومبرغ"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 10:42:25 GMT",
+        "identity_key": "d9be50eac689cbc3",
+        "key_type": "title-date-hash",
+        "source": "الجريدة العقارية",
+        "title": "مجلس إدارة مدينة مصر يوافق على شراء 18.15 مليون سهم خزينة - الجريدة العقارية"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 10:29:10 GMT",
+        "identity_key": "ac42c0e7edc31198",
+        "key_type": "title-date-hash",
+        "source": "بروبرتي بلس",
+        "title": "Madinet Masr’s Board Approves Buyback of 18.15 Million Shares - بروبرتي بلس"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 06:56:40 GMT",
+        "identity_key": "96dff5511f801ed7",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "مصر تدرس إنشاء أول محطة نووية عائمة محلياً في الشرق الأوسط بقدرة 110 ميغاواط - الشرق بلومبرغ"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 16:10:29 GMT",
+        "identity_key": "30add4c97484a802",
+        "key_type": "title-date-hash",
+        "source": "الحرة",
+        "title": "في مقابلة مع \"الحرة\".. وزير خارجية مصر يوجه نداء لترامب بشأن خطة غزة - الحرة"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 09:05:27 GMT",
+        "identity_key": "a0cffe9f27427e5f",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "مصر تتعاقد على استيراد 9 ملايين برميل من النفط الروسي - الشرق بلومبرغ"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 01:59:59 GMT",
+        "identity_key": "6090b8a0cadc6a11",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Roundhill Space & Technology ETF (MARS) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 18:43:01 GMT",
+        "identity_key": "6a5af0e0382c0042",
+        "key_type": "title-date-hash",
+        "source": "الحرة",
+        "title": "مصر وليبيا.. لقاءات \"احتواء التوتر\" - الحرة"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 01:09:20 GMT",
+        "identity_key": "80038d045a042a79",
+        "key_type": "title-date-hash",
+        "source": "Nine.com.au",
+        "title": "Bruno Mars shares heartbreaking post announcing father’s dead - Nine.com.au"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 12:47:48 GMT",
+        "identity_key": "e617598b64aa9b8b",
+        "key_type": "title-date-hash",
+        "source": "CNN Arabic",
+        "title": "فرنسا وألمانيا تعلقان على أوضاع الصحفيين في مصر.. ماذا قالتا عن \"متصدقش\" و\"مدى مصر\"؟ - CNN Arabic"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 06:11:10 GMT",
+        "identity_key": "9d937d3582ce3ddb",
+        "key_type": "title-date-hash",
+        "source": "Glamsham.com",
+        "title": "Bruno Mars Mourns Father Peter Hernandez's Death At 74, Shares Emotional Tribute - Glamsham.com"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 05:50:00 GMT",
+        "identity_key": "fc88eb18f7a0c27e",
+        "key_type": "title-date-hash",
+        "source": "ANI News",
+        "title": "Bruno Mars' father, Peter Hernandez, passes away; singer shares emotional tribute - ANI News"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 03:10:00 GMT",
+        "identity_key": "22719d5867642938",
+        "key_type": "title-date-hash",
+        "source": "The News International",
+        "title": "Bruno Mars shares news of father Peter Hernandez's death - The News International"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 19:55:41 GMT",
+        "identity_key": "a9ba123db36f736a",
+        "key_type": "title-date-hash",
+        "source": "CNBC",
+        "title": "Commerce approved sales of more than 879,000 AI chips to Chinese companies, Rep. Mast says - CNBC"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 18:05:07 GMT",
+        "identity_key": "b4d345927c40729b",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "دين مصر الخارجي عند أقل مستوياته منذ أربع سنوات مالية - الشرق بلومبرغ"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 16:42:00 GMT",
+        "identity_key": "e61d8156e3e55556",
+        "key_type": "title-date-hash",
+        "source": "East Renfrewshire News",
+        "title": "Plans to install 20-metre telecommunications mast in Clarkston - East Renfrewshire News"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 09:46:08 GMT",
+        "identity_key": "8bbade0368a1c5e7",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "صندوق النقد الدولي يتيح لمصر تمويلات بقيمة 2.3 مليار دولار - الشرق بلومبرغ"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 21:53:46 GMT",
+        "identity_key": "b7f90b879daa3518",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "مصر تطلق مشروعاً سياحياً ضخماً بالقرب من الأهرامات والمتحف الكبير - الشرق بلومبرغ"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 18:46:34 GMT",
+        "identity_key": "21a7c3789f3a0795",
+        "key_type": "title-date-hash",
+        "source": "Reuters",
+        "title": "صندوق النقد الدولي يتوصل لاتفاق مع مصر لصرف 2.3 مليار دولار - Reuters"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "9b029b284f9b237b",
+        "key_type": "title-date-hash",
+        "source": "BBC",
+        "title": "الذهب والدهابة والعرجاني: كيف تسعى مصر لتنظيم التنقيب الأهلي عن الذهب؟ - BBC"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "f15a3943c5da3609",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "تقييم \"مصر لتأمينات الحياة\" عند نحو 69 مليار جنيه تمهيداً للطرح - الشرق بلومبرغ"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "bead84592f71a11c",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "مصر تلجأ لتحفيز المواطنين لترشيد فاتورة الكهرباء - الشرق بلومبرغ"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 00:44:02 GMT",
+        "identity_key": "80da79eabcd019dd",
+        "key_type": "title-date-hash",
+        "source": "ad-hoc-news.de",
+        "title": "Madinet Masr stock: 9M sales rise 25% to EGP 45.4 billion - ad-hoc-news.de"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 22:29:36 GMT",
+        "identity_key": "9c28b1b7e5337022",
+        "key_type": "title-date-hash",
+        "source": "المدن",
+        "title": "القاهرة وحفتر: مصر تسحب خبراءها - المدن"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "200d671137db8bea",
+        "key_type": "title-date-hash",
+        "source": "الشرق للأخبار",
+        "title": "مصر تؤكد تضامنها مع الكويت ورفضها أي اعتداءات على دول الخليج - الشرق للأخبار"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "9165a4bdfeb54c4a",
+        "key_type": "title-date-hash",
+        "source": "الحرة",
+        "title": "بعد الجيش.. العرجاني يتحرك لإنهاء أزمة \"الدهابة\" في مصر - الحرة"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 08:00:00 GMT",
+        "identity_key": "45edfcb68e87a783",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "«مدينة مصر» تحقق مبيعات قياسية بقيمة 45.4 مليار جنيه وأرباحًا 1.8 مليار خلال 9 أشهر - بوابة التكنولوجيا المالية"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 08:00:00 GMT",
+        "identity_key": "b3d66bd56233e3b8",
+        "key_type": "title-date-hash",
+        "source": "بروبرتي بلس",
+        "title": "مدينة مصر تحقق أداءً قياسيًا جديدًا في المبيعات بنمو 25% لتصل المبيعات الجديدة إلى 45.4 مليار جنيه خلال أول 9 أشهر من 2026 - بروبرتي بلس"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 08:00:00 GMT",
+        "identity_key": "38cd668c09a70c00",
+        "key_type": "title-date-hash",
+        "source": "Stock Titan",
+        "title": "Two spacecraft built for NASA fired their own engines toward Mars - Stock Titan"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 6.23,
+    "base_source": "egx-data/egxpy_masr.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_masr.csv",
+      "base_stale": false,
+      "base_used": 6.23,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_masr.csv": 6.27,
+        "openbb/masr_ca.csv": 6.269999980926514,
+        "pandas-ta/indicators.csv": 6.269999980926514,
+        "talib/indicators.csv": 6.269999980926514,
+        "yahooquery/masr.ca.csv": 6.269999980926514
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0349,
+    "sigma_source": "egx-data/egxpy_masr.csv (σ60=0.0349, σ10=0.0228)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 6.23,
+      "last_date": "2026-11-25",
+      "last_high": 6.41,
+      "last_low": 6.22,
+      "last_open": 6.36,
+      "last_volume": 2701979.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_masr.csv",
+      "stale": false
+    },
+    {
+      "last_close": 6.360000133514404,
+      "last_date": "2026-11-24",
+      "last_high": 6.429999828338623,
+      "last_low": 6.239999771118164,
+      "last_open": 6.269999980926514,
+      "last_volume": 3801010.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/MASR_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 6.360000133514404,
+      "last_date": "2026-11-24",
+      "last_high": 6.429999828338623,
+      "last_low": 6.239999771118164,
+      "last_open": 6.269999980926514,
+      "last_volume": 3801010.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 6.360000133514404,
+      "last_date": "2026-11-24",
+      "last_high": 6.429999828338623,
+      "last_low": 6.239999771118164,
+      "last_open": 6.269999980926514,
+      "last_volume": 3801010.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 6.269999980926514,
+      "last_date": "2026-11-23",
+      "last_high": 6.329999923706055,
+      "last_low": 6.199999809265137,
+      "last_open": 6.110000133514404,
+      "last_volume": 2882065.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/MASR.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-masr-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-masr-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "MASR.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "\"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy",
+        "type": "legal"
+      },
+      {
+        "severity": "high",
+        "title": "الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط",
+        "type": "legal"
+      },
+      {
+        "severity": "medium",
+        "title": "مدينة مصر تقرر شراء 18.15 مليون سهم خزينة تمثل 0.85% من الأسهم المصدرة - الاقتصادي نيوز",
+        "type": "governance"
+      }
+    ],
+    "flags": [
+      "legal event: \"اتفرج ببلاش\".. قناة مفتوحة تنقل مباراة مصر وبنما في كأس العالم للناشئين - Masrawy",
+      "legal event: الصحافة العالمية: قرارات تحكيمية مثيرة للجدل تخرج مصر من المونديال - الشرق الأوسط"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.59,
+      "max3": 0.74
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MASR.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T13:55:17.215330+00:00",
+  "sweep_dir": "sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001",
+  "ticker": "MASR.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MASR.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MASR.CA.csv_last_close": 6.269999980926514,
+          "MASR.CA.csv_last_date": "2026-11-23",
+          "rows_MASR.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "5eb8442cb486818a5dce2b4c426e3b9bba89ce0f4e1bdc31c2e96efe119df60a",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MASR_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MASR_CA.csv_last_close": 6.360000133514404,
+          "MASR_CA.csv_last_date": "2026-11-24",
+          "rows_MASR_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "c0a156ac58a82cf73075aab123787003d6d3f1c87335afa9d8506d5cfd5e4da5",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_masr.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_masr.csv_last_close": 6.23,
+          "egxpy_masr.csv_last_date": "2026-11-25",
+          "rows_egxpy_masr.csv": 3000,
+          "symbol": "MASR",
+          "ticker": "MASR.CA"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "367435dab05524aec278aef91d14fd34f560dfd4382b7feae4f99f4df18666d7",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 19.1648,
+          "atr_14": 0.2973,
+          "bb_lower": 6.159,
+          "bb_mid": 6.65,
+          "bb_pctb": 0.2047,
+          "bb_upper": 7.141,
+          "close": 6.36,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 6.6535,
+          "ema_200": 6.7087,
+          "ema_50": 6.9805,
+          "first_date_used": "2019-01-01",
+          "high": 6.43,
+          "indicators.csv_last_close": 6.360000133514404,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 6.24,
+          "macd": -0.1912,
+          "macd_hist": -0.0264,
+          "macd_signal": -0.1647,
+          "open": 6.27,
+          "rows_fetched": 6536,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 41.4335,
+          "stoch_d": 21.2765,
+          "stoch_k": 22.2222,
+          "ticker": "MASR.CA"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "db8087023d56dc06c95166bbafdf93617e13be9f0c70bd56150d900ea0b96614",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 6.360000133514404,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 6.360000133514404,
+          "last_date": "2026-11-24",
+          "rows_fetched": 6536,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "MASR.CA"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "8489805674f760023dff2b9e5d184611f9350714cda33e3fff5baf2166c8b64a",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "3c20594c965607a467b1354a6352c35454c8eb41a16939bb5aee1cec31b70829",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "e74bd2cb6310686a16dc8e8401cf748674f1ebdb48df9f7ae8f53ab2362997cb",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "3913790feb329921db47d8bc71de8bc56bf5358125602d2a5fa23679ec50813a",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "229b33511ffa822176221da9249644f7f6b7f638441bd17022b99e09221890d7",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "4aa3e9b79598b99f7b923ad7e87caee2097ad023914e08741db038b0aaa0f5f8",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "5122b96c92d6a690d53743ffe9172dd1369d9dcff896c7edf7a4fdba57ce3dc8",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 6.6919,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "9c049477f8de0f0fa90ab02ab62d36d954ab35ae73f5192de9b36951d9e82f5d",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "bda8f62db5c7c414ea668b8af78c5aa99713c27979ea8073c8826865da065f89",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-masr-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 31,
+          "bodies_fetched": 12,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T13:59:51Z",
+          "finbert_negative": 0.041,
+          "finbert_neutral": 0.664,
+          "finbert_positive": 0.295,
+          "finbert_scored": 9,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 11:20:55 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.218,
+          "multilingual_neutral": 0.248,
+          "multilingual_positive": 0.534,
+          "multilingual_scored": 31,
+          "news_count": 40,
+          "ticker": "MASR.CA",
+          "tool": "news-disclosure",
+          "top_headline": "سعر الذهب اليوم في مصر يواصل الانخفاض منتصف تعاملات الأربعاء - Masrawy",
+          "translated_negative": 0.233,
+          "translated_neutral": 0.457,
+          "translated_positive": 0.31,
+          "translated_scored": 31,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "MASR.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "62d8c47c1829125301c084207054aca3c50ac410144f7e65843d731ecb4f805c",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-masr-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

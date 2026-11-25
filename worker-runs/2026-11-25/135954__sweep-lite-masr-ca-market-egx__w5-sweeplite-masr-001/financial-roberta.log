@@ -1,0 +1,8 @@
+headlines: 40 English scored-input, 3 Arabic skipped, window 30d, ticker MASR.CA
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 393/393 [00:00<00:00, 12399.94it/s]
+Scored 40 texts | counts={'neutral': 16, 'positive': 8, 'negative': 16} | means=positive=0.1933, negative=0.4073, neutral=0.3995

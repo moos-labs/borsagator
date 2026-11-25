@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "MASR.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "MASR.CA",
+    "fetched_at": "2026-11-25T13:59:51Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 0,
+    "arabic_headlines": 31,
+    "latest_news_date": "Wed, 25 Nov 2026 11:20:55 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "سعر الذهب اليوم في مصر يواصل الانخفاض منتصف تعاملات الأربعاء - Masrawy",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.295,
+    "finbert_negative": 0.041,
+    "finbert_neutral": 0.664,
+    "finbert_scored": 9,
+    "multilingual_positive": 0.534,
+    "multilingual_negative": 0.218,
+    "multilingual_neutral": 0.248,
+    "multilingual_scored": 31,
+    "bodies_fetched": 12,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.31,
+    "translated_negative": 0.233,
+    "translated_neutral": 0.457,
+    "translated_scored": 31
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

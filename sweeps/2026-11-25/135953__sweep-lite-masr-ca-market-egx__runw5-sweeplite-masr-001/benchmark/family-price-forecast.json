@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 6.23,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:59:53.494679+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.15,
+   "families": {
+    "price-forecast": 0.36
+   },
+   "horizon_short": false,
+   "net_score": 0.36,
+   "range_high_pct": 8.85,
+   "range_low_pct": -4.55,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 6.35,
+   "families": {
+    "price-forecast": 0.284
+   },
+   "horizon_short": false,
+   "net_score": 0.284,
+   "range_high_pct": 31.42,
+   "range_low_pct": -18.72,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 3.76,
+   "families": {
+    "price-forecast": 0.363
+   },
+   "horizon_short": false,
+   "net_score": 0.363,
+   "range_high_pct": 15.36,
+   "range_low_pct": -7.85,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "e297fdbaa2475cf74b59460e180bbe08b4f37fd415dc5010d37b6495b45f0c04",
+  "digest.json": "f95fd5f881327970013fdd9f5c3cd67795e640ed071010ffdafbe6f593136b36",
+  "ensemble.json": "ebf1d5151023626835d2d681878d28b989338e227273dc6919ae3e4ae5da9c77"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0349,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001",
+ "ticker": "MASR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
