@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 12c8085e, commit 12c8085e). Sweeps archived: 62 (41 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree 0a3bf7cf, commit 0a3bf7cf). Sweeps archived: 77 (56 with an ensemble).
 
-**Forecasts found: 117 · matured: 48 · pending: 57 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 162 · matured: 48 · pending: 102 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -17,6 +17,21 @@ Source: `moos-labs/borsagator` branch `archive` (tree 12c8085e, commit 12c8085e)
 | CLHO.CA | 3 | 0 | 3 | 0 | 2016-04-14 → 2026-11-25 |
 | COMI.CA | 3 | 0 | 0 | 3 | 2018-01-01 → 2026-11-12 |
 | EFID.CA | 3 | 0 | 3 | 0 | 2015-04-02 → 2026-11-25 |
+| EFIH.CA | 3 | 0 | 3 | 0 | 2021-10-19 → 2026-11-25 |
+| EGAL.CA | 3 | 0 | 3 | 0 | 2014-06-09 → 2026-11-25 |
+| EGAS.CA | 3 | 0 | 3 | 0 | 2014-07-15 → 2026-11-25 |
+| ETEL.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| ETRS.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| FAIT.CA | 3 | 0 | 3 | 0 | 2014-06-26 → 2026-11-25 |
+| FAITA.CA | 3 | 0 | 3 | 0 | 2014-07-13 → 2026-11-25 |
+| GOUR.CA | 3 | 0 | 3 | 0 | 2026-02-10 → 2026-11-25 |
+| ICFC.CA | 3 | 0 | 3 | 0 | 2014-06-11 → 2026-11-25 |
+| IFAP.CA | 3 | 0 | 3 | 0 | 2014-07-16 → 2026-11-25 |
+| ISPH.CA | 3 | 0 | 3 | 0 | 2017-12-11 → 2026-11-25 |
+| JUFO.CA | 3 | 0 | 3 | 0 | 2014-07-17 → 2026-11-25 |
+| LCSW.CA | 3 | 0 | 3 | 0 | 2014-05-21 → 2026-11-25 |
+| MASR.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| MCQE.CA | 3 | 0 | 3 | 0 | 2014-07-08 → 2026-11-25 |
 | NVDA | 6 | 1 | 5 | 0 | 2021-11-15 → 2026-11-13 |
 | POUL.CA | 84 | 47 | 28 | 9 | 2014-06-04 → 2026-11-24 |
 
@@ -44,22 +59,22 @@ Source: `moos-labs/borsagator` branch `archive` (tree 12c8085e, commit 12c8085e)
 |---|---|---|---|---|---|---|---|---|---|---|
 | POUL.CA | 2026-11-12 | day | flat | +0.53 | -1.96 | ❌ | 2.49 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-12 | week | flat | -0.40 | -25.69 | ❌ | 25.29 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-12 | month | down | -5.98 | — | — | — | — | | pending (8/14 sessions) |
+| POUL.CA | 2026-11-12 | month | down | -5.98 | — | — | — | — | | pending (8/21 sessions) |
 | NVDA | 2026-11-12 | day | flat | -0.54 | -0.82 | ❌ | 0.28 | ✅ |  | matured 2026-11-13 |
 | NVDA | 2026-11-12 | week | up | +8.07 | — | — | — | — | | pending (1/5 sessions) |
-| NVDA | 2026-11-12 | month | up | +17.76 | — | — | — | — | | pending (1/14 sessions) |
+| NVDA | 2026-11-12 | month | up | +17.76 | — | — | — | — | | pending (1/21 sessions) |
 | POUL.CA | 2026-11-13 | day | flat | -0.23 | -1.96 | ❌ | 1.73 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.14 | -25.69 | ✅ | 24.55 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -6.46 | — | — | — | — | | pending (8/14 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -6.46 | — | — | — | — | | pending (8/21 sessions) |
 | NVDA | 2026-11-13 | day | flat | -0.71 | — | — | — | — | | pending (0/1 sessions) |
 | NVDA | 2026-11-13 | week | up | +6.93 | — | — | — | — | | pending (0/5 sessions) |
-| NVDA | 2026-11-13 | month | up | +18.61 | — | — | — | — | | pending (0/14 sessions) |
+| NVDA | 2026-11-13 | month | up | +18.61 | — | — | — | — | | pending (0/21 sessions) |
 | POUL.CA | 2026-11-13 | day | flat | -0.38 | -1.96 | ❌ | 1.58 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.67 | -25.69 | ✅ | 24.02 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -6.93 | — | — | — | — | | pending (8/14 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -6.93 | — | — | — | — | | pending (8/21 sessions) |
 | POUL.CA | 2026-11-13 | day | up | +1.16 | -1.48 | ❌ | 2.64 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.01 | -25.32 | ✅ | 24.31 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -1.76 | — | — | — | — | | pending (8/14 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -1.76 | — | — | — | — | | pending (8/21 sessions) |
 | POUL.CA | 2026-11-15 | day | up | +1.22 | -20.99 | ❌ | 22.21 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -0.92 | -24.14 | ✅ | 23.22 | ❌ |  | matured 2026-11-18 |
 | POUL.CA | 2026-11-15 | month | down | -1.88 | — | — | — | — | | pending (7/14 sessions) |
@@ -159,6 +174,51 @@ Source: `moos-labs/borsagator` branch `archive` (tree 12c8085e, commit 12c8085e)
 | EFID.CA | 2026-11-25 | day | flat | -0.04 | — | — | — | — | | pending (0/1 sessions) |
 | EFID.CA | 2026-11-25 | week | flat | +0.13 | — | — | — | — | | pending (0/3 sessions) |
 | EFID.CA | 2026-11-25 | month | down | -4.40 | — | — | — | — | | pending (0/14 sessions) |
+| EFIH.CA | 2026-11-25 | day | flat | +0.10 | — | — | — | — | | pending (0/1 sessions) |
+| EFIH.CA | 2026-11-25 | week | flat | -0.11 | — | — | — | — | | pending (0/3 sessions) |
+| EFIH.CA | 2026-11-25 | month | down | -1.87 | — | — | — | — | | pending (0/14 sessions) |
+| EGAL.CA | 2026-11-25 | day | up | +1.51 | — | — | — | — | | pending (0/1 sessions) |
+| EGAL.CA | 2026-11-25 | week | up | +1.97 | — | — | — | — | | pending (0/3 sessions) |
+| EGAL.CA | 2026-11-25 | month | up | +2.80 | — | — | — | — | | pending (0/14 sessions) |
+| EGAS.CA | 2026-11-25 | day | flat | -0.05 | — | — | — | — | | pending (0/1 sessions) |
+| EGAS.CA | 2026-11-25 | week | down | -1.52 | — | — | — | — | | pending (0/3 sessions) |
+| EGAS.CA | 2026-11-25 | month | down | -1.73 | — | — | — | — | | pending (0/14 sessions) |
+| ETEL.CA | 2026-11-25 | day | flat | +0.25 | — | — | — | — | | pending (0/1 sessions) |
+| ETEL.CA | 2026-11-25 | week | up | +1.29 | — | — | — | — | | pending (0/3 sessions) |
+| ETEL.CA | 2026-11-25 | month | up | +1.55 | — | — | — | — | | pending (0/14 sessions) |
+| ETRS.CA | 2026-11-25 | day | flat | -0.03 | — | — | — | — | | pending (0/1 sessions) |
+| ETRS.CA | 2026-11-25 | week | down | -1.20 | — | — | — | — | | pending (0/3 sessions) |
+| ETRS.CA | 2026-11-25 | month | down | -3.32 | — | — | — | — | | pending (0/14 sessions) |
+| FAIT.CA | 2026-11-25 | day | down | -0.99 | — | — | — | — | | pending (0/1 sessions) |
+| FAIT.CA | 2026-11-25 | week | flat | +0.17 | — | — | — | — | | pending (0/3 sessions) |
+| FAIT.CA | 2026-11-25 | month | down | -2.12 | — | — | — | — | | pending (0/14 sessions) |
+| FAITA.CA | 2026-11-25 | day | flat | +0.16 | — | — | — | — | | pending (0/1 sessions) |
+| FAITA.CA | 2026-11-25 | week | flat | +0.28 | — | — | — | — | | pending (0/3 sessions) |
+| FAITA.CA | 2026-11-25 | month | down | -0.80 | — | — | — | — | | pending (0/14 sessions) |
+| GOUR.CA | 2026-11-25 | day | flat | +0.42 | — | — | — | — | | pending (0/1 sessions) |
+| GOUR.CA | 2026-11-25 | week | flat | +0.73 | — | — | — | — | | pending (0/3 sessions) |
+| GOUR.CA | 2026-11-25 | month | up | +1.98 | — | — | — | — | | pending (0/14 sessions) |
+| ICFC.CA | 2026-11-25 | day | down | -1.53 | — | — | — | — | | pending (0/1 sessions) |
+| ICFC.CA | 2026-11-25 | week | down | -3.48 | — | — | — | — | | pending (0/3 sessions) |
+| ICFC.CA | 2026-11-25 | month | down | -8.88 | — | — | — | — | | pending (0/14 sessions) |
+| IFAP.CA | 2026-11-25 | day | up | +2.16 | — | — | — | — | | pending (0/1 sessions) |
+| IFAP.CA | 2026-11-25 | week | up | +2.33 | — | — | — | — | | pending (0/3 sessions) |
+| IFAP.CA | 2026-11-25 | month | up | +3.89 | — | — | — | — | | pending (0/14 sessions) |
+| ISPH.CA | 2026-11-25 | day | up | +1.23 | — | — | — | — | | pending (0/1 sessions) |
+| ISPH.CA | 2026-11-25 | week | up | +2.28 | — | — | — | — | | pending (0/3 sessions) |
+| ISPH.CA | 2026-11-25 | month | flat | +0.09 | — | — | — | — | | pending (0/14 sessions) |
+| JUFO.CA | 2026-11-25 | day | up | +1.12 | — | — | — | — | | pending (0/1 sessions) |
+| JUFO.CA | 2026-11-25 | week | up | +2.71 | — | — | — | — | | pending (0/3 sessions) |
+| JUFO.CA | 2026-11-25 | month | up | +4.70 | — | — | — | — | | pending (0/14 sessions) |
+| LCSW.CA | 2026-11-25 | day | down | -1.48 | — | — | — | — | | pending (0/1 sessions) |
+| LCSW.CA | 2026-11-25 | week | down | -1.98 | — | — | — | — | | pending (0/3 sessions) |
+| LCSW.CA | 2026-11-25 | month | down | -7.95 | — | — | — | — | | pending (0/14 sessions) |
+| MASR.CA | 2026-11-25 | day | up | +1.37 | — | — | — | — | | pending (0/1 sessions) |
+| MASR.CA | 2026-11-25 | week | up | +2.48 | — | — | — | — | | pending (0/3 sessions) |
+| MASR.CA | 2026-11-25 | month | up | +5.89 | — | — | — | — | | pending (0/14 sessions) |
+| MCQE.CA | 2026-11-25 | day | up | +0.84 | — | — | — | — | | pending (0/1 sessions) |
+| MCQE.CA | 2026-11-25 | week | up | +0.75 | — | — | — | — | | pending (0/3 sessions) |
+| MCQE.CA | 2026-11-25 | month | down | -1.09 | — | — | — | — | | pending (0/14 sessions) |
 
 ## Data gaps & notes
 
@@ -172,6 +232,21 @@ Source: `moos-labs/borsagator` branch `archive` (tree 12c8085e, commit 12c8085e)
 - CLHO.CA: actuals series has 2575 sessions, 2016-04-14 → 2026-11-25 (last source: sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001/collected/egx-data/egxpy_clho.csv)
 - COMI.CA: actuals series has 2180 sessions, 2018-01-01 → 2026-11-12 (last source: sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248/collected/quantstats/ohlc.csv)
 - EFID.CA: actuals series has 2824 sessions, 2015-04-02 → 2026-11-25 (last source: sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001/collected/egx-data/egxpy_efid.csv)
+- EFIH.CA: actuals series has 1238 sessions, 2021-10-19 → 2026-11-25 (last source: sweeps/2026-11-25/121054__sweep-lite-efih-ca-market-egx__runw5-sweeplite-efih-001/collected/egx-data/egxpy_efih.csv)
+- EGAL.CA: actuals series has 3000 sessions, 2014-06-09 → 2026-11-25 (last source: sweeps/2026-11-25/121852__sweep-lite-egal-ca-market-egx__runw5-sweeplite-egal-001/collected/egx-data/egxpy_egal.csv)
+- EGAS.CA: actuals series has 3000 sessions, 2014-07-15 → 2026-11-25 (last source: sweeps/2026-11-25/122721__sweep-lite-egas-ca-market-egx__runw5-sweeplite-egas-001/collected/egx-data/egxpy_egas.csv)
+- ETEL.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/124034__sweep-lite-etel-ca-market-egx__runw5-sweeplite-etel-001/collected/egx-data/egxpy_etel.csv)
+- ETRS.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/124806__sweep-lite-etrs-ca-market-egx__runw5-sweeplite-etrs-001/collected/egx-data/egxpy_etrs.csv)
+- FAIT.CA: actuals series has 3000 sessions, 2014-06-26 → 2026-11-25 (last source: sweeps/2026-11-25/125656__sweep-lite-fait-ca-market-egx__runw5-sweeplite-fait-001/collected/egx-data/egxpy_fait.csv)
+- FAITA.CA: actuals series has 3000 sessions, 2014-07-13 → 2026-11-25 (last source: sweeps/2026-11-25/130440__sweep-lite-faita-ca-market-egx__runw5-sweeplite-faita-001/collected/egx-data/egxpy_faita.csv)
+- GOUR.CA: actuals series has 192 sessions, 2026-02-10 → 2026-11-25 (last source: sweeps/2026-11-25/131220__sweep-lite-gour-ca-market-egx__runw5-sweeplite-gour-001/collected/egx-data/egxpy_gour.csv)
+- ICFC.CA: actuals series has 3000 sessions, 2014-06-11 → 2026-11-25 (last source: sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001/collected/egx-data/egxpy_icfc.csv)
+- IFAP.CA: actuals series has 3000 sessions, 2014-07-16 → 2026-11-25 (last source: sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001/collected/egx-data/egxpy_ifap.csv)
+- ISPH.CA: actuals series has 2173 sessions, 2017-12-11 → 2026-11-25 (last source: sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001/collected/egx-data/egxpy_isph.csv)
+- JUFO.CA: actuals series has 3000 sessions, 2014-07-17 → 2026-11-25 (last source: sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001/collected/egx-data/egxpy_jufo.csv)
+- LCSW.CA: actuals series has 3000 sessions, 2014-05-21 → 2026-11-25 (last source: sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001/collected/egx-data/egxpy_lcsw.csv)
+- MASR.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001/collected/egx-data/egxpy_masr.csv)
+- MCQE.CA: actuals series has 3000 sessions, 2014-07-08 → 2026-11-25 (last source: sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001/collected/egx-data/egxpy_mcqe.csv)
 - NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)
 - POUL.CA: actuals series has 3052 sessions, 2014-06-04 → 2026-11-24 (last source: sweeps/2026-11-25/063413__sweep-lite-poul-ca-market-egx__runsched-2026-11-25/collected/egx-data/egxpy_poul.csv)
 - price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files
