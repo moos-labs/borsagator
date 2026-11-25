@@ -1,0 +1,24 @@
+WARN body http 403: https://ca.investing.com/news/stock-market-news/bold-eagle-acquisition-enters-108-million-
+WARN body http 403: https://kalkine.ca/news/mining/agnico-eagle-mines-limited-tsxaem-why-this-large-cap-growth
+WARN body http 404: https://ca.finance.yahoo.com/quote/NUCL/
+WARN body http 403: https://www.tipranks.com/news/company-announcements/eagle-plains-announces-non-binding-mpw
+WARN body http 403: https://www.stocktitan.net/news/EGPLF/eagle-plains-announces-letter-of-intent-with-kestrel
+WARN body http 403: https://www.stocktitan.net/news/EGPLF/eagle-plains-and-earthwise-extend-claim-applications
+WARN body http 403: https://kalkine.ca/news/mining/why-did-agnico-eagle-mines-tsxaem-surge-6143-on-november-23
+WARN body http 403: https://www.investing.com/news/stock-market-news/eagle-nuclear-energy-stock-rises-on-russe
+bodies: 4/12 fetched; failures by stage: {'decode': 0, 'http': 8, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EGAL.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5652.51it/s]
+{"tool": "news-disclosure", "ticker": "EGAL.CA", "news_count": 40, "disclosure_count": 0, "arabic_headlines": 0, "latest_news_date": "Wed, 25 Nov 2026 06:17:14 GMT", "latest_disclosure_date": "", "top_headline": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Mail", "llm_provider": "extractive", "finbert_positive": 0.152, "finbert_negative": 0.189, "finbert_neutral": 0.659, "finbert_scored": 40, "bodies_fetched": 4, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "none"}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 06:17:14 GMT] (The Globe and Mail) Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Mail
+- [Tue, 24 Nov 2026 22:25:45 GMT] (Investing.com Canada) Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com - Investing.com Canada
+- [Tue, 24 Nov 2026 22:12:14 GMT] (Yahoo! Finance Canada) Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada
+- [Tue, 24 Nov 2026 17:13:00 GMT] (kalkine.ca) Agnico Eagle Mines Limited (TSX:AEM): Why This Large Cap Growth Stock Is Trending on the S&P/TSX Composite Index Today - kalkine.ca
+- [Tue, 24 Nov 2026 15:58:45 GMT] (Yahoo! Finance Canada) Eagle Nuclear Energy Corp. (NUCL) Stock Price, News, Quote & History - Yahoo! Finance Canada
+- [Tue, 24 Nov 2026 15:33:16 GMT] (TipRanks) Eagle Plains Announces Non-Binding MPW Option LOI with Kestrel Gold - TipRanks
+- [Tue, 24 Nov 2026 13:30:00 GMT] (TradingView) Kestrel Gold Announces Letter of Intent with Eagle Plains for Option of the MPW Project, British Columbia - TradingView
+- [Tue, 24 Nov 2026 12:00:00 GMT] (Stock Titan) Kestrel could fund C$5 million in exploration as part of earning 60% of a B.C. copper-and-gold project. - Stock Titan

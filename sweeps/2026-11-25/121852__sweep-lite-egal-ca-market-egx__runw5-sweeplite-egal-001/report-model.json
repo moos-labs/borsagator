@@ -1,0 +1,1658 @@
+{
+  "archive_commit": "9ec2b526f5d683511fdf97232496726c8307c070",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "ee1df38bb30afd6acb637e8983aee760cf447bfb81b591a58974295b982098c5",
+      "family-agent.json": "eb6fa3761720c47e588f44531f29335d764c8cdbc34acb35749df07cec56f4e8",
+      "family-fundamentals.json": "4c0b4fd33e26198564595e628255313363166d1b3f46141fac27e5ab579ccb17",
+      "family-price-forecast.json": "d26ece8d28e9b39cc5e3f0091e6e6fa01ac63f9cb02945c44acb92d34da3547d",
+      "family-sentiment.json": "fd1330f1b80410a1a8c0eea05f6c569a03d2e5bb1608697c4052a38676f9b25b",
+      "family-technicals.json": "0e8f886ff338e10f88018a602e38ae4dc292b412b9502d380771ead05a0336e3",
+      "kronos-alone.json": "bac8ddc866649837cf31d3358d1fc42e6a69aa4be7828971be3df5aa1ab8f264",
+      "raw-llm-cohere.json": "fd7f3d998ae6370148e595177d160da93a8a2210ddc422d09bbcf142d7419f8e"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/EGAL-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 293.3,
+    "base_source": "egx-data/egxpy_egal.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.176,
+      "sentiment": 0.029,
+      "technicals": -0.2
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.51,
+        "families": {
+          "price-forecast": 0.53,
+          "sentiment": 0.029,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.4237,
+        "net_score": 0.049,
+        "range_high_pct": 6.53,
+        "range_low_pct": -3.51,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.2878
+      },
+      "month": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 2.8,
+        "families": {
+          "fundamentals": 0.4,
+          "price-forecast": 0.176,
+          "sentiment": 0.029,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.0136,
+        "net_score": 0.227,
+        "range_high_pct": 21.07,
+        "range_low_pct": -15.47,
+        "trading_sessions": 14,
+        "vol_h_pct": 8.5603
+      },
+      "week": {
+        "confidence": 0.3,
+        "direction": "up",
+        "expected_move_pct": 1.97,
+        "families": {
+          "price-forecast": 0.396,
+          "sentiment": 0.029,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.1405,
+        "net_score": 0.043,
+        "range_high_pct": 10.45,
+        "range_low_pct": -6.5,
+        "trading_sessions": 3,
+        "vol_h_pct": 3.9626
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_egal.csv",
+      "base_stale": false,
+      "base_used": 293.3,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_egal.csv": 302.0,
+        "openbb/egal_ca.csv": 302.0,
+        "pandas-ta/indicators.csv": 302.0,
+        "talib/indicators.csv": 302.0,
+        "yahooquery/egal.ca.csv": 302.0
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Ma",
+          "type": "earnings"
+        },
+        {
+          "severity": "high",
+          "title": "Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com ",
+          "type": "capital"
+        },
+        {
+          "severity": "high",
+          "title": "Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Can",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Ma",
+        "capital event: Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com ",
+        "earnings event: Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Can"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.69,
+        "max3": 0.69
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.659,
+    "sigma_daily": 0.0229,
+    "sigma_source": "egx-data/egxpy_egal.csv (σ60=0.0229, σ10=0.0191)",
+    "ticker": "EGAL.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.176,
+    "sentiment": 0.029,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-25T12:18:52.248536+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/EGAL.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/EGAL.CA.json",
+    "sharia-row-missing: AAOIFI EGAL.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 EGAL.CA",
+    "sharia-row-missing: FTSE EGAL.CA",
+    "sharia-row-missing: ISLAMICLY EGAL.CA",
+    "sharia-row-missing: MSCI EGAL.CA",
+    "sharia-row-missing: MSCI_M EGAL.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.51,
+      "families": {
+        "price-forecast": 0.53,
+        "sentiment": 0.029,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.4237,
+      "net_score": 0.049,
+      "range_high_pct": 6.53,
+      "range_low_pct": -3.51,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.2878
+    },
+    "month": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 2.8,
+      "families": {
+        "fundamentals": 0.4,
+        "price-forecast": 0.176,
+        "sentiment": 0.029,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.0136,
+      "net_score": 0.227,
+      "range_high_pct": 21.07,
+      "range_low_pct": -15.47,
+      "trading_sessions": 14,
+      "vol_h_pct": 8.5603
+    },
+    "week": {
+      "confidence": 0.3,
+      "direction": "up",
+      "expected_move_pct": 1.97,
+      "families": {
+        "price-forecast": 0.396,
+        "sentiment": 0.029,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.1405,
+      "net_score": 0.043,
+      "range_high_pct": 10.45,
+      "range_low_pct": -6.5,
+      "trading_sessions": 3,
+      "vol_h_pct": 3.9626
+    }
+  },
+  "job": "sweep-lite EGAL.CA market=EGX",
+  "job_shape": "sweep-lite EGAL.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 323.9499,
+    "support": 274.2355
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "none",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T06:17:14Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 06:17:14 GMT",
+    "news_count": 40,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 06:17:14 GMT",
+        "identity_key": "https://www.theglobeandmail.com/investing/markets/stocks/ENB-T/pressreleases/8997136/market-outlook-which-canadian-stocks-could-outperform-before-year-end/",
+        "key_type": "resolved_url",
+        "source": "The Globe and Mail",
+        "title": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Mail"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 22:25:45 GMT",
+        "identity_key": "973f1337092ba8d1",
+        "key_type": "title-date-hash",
+        "source": "Investing.com Canada",
+        "title": "Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com - Investing.com Canada"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 22:12:14 GMT",
+        "identity_key": "https://ca.finance.yahoo.com/quote/FNV.TO/",
+        "key_type": "resolved_url",
+        "source": "Yahoo! Finance Canada",
+        "title": "Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 17:13:00 GMT",
+        "identity_key": "40e9a5201025dd14",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Agnico Eagle Mines Limited (TSX:AEM): Why This Large Cap Growth Stock Is Trending on the S&P/TSX Composite Index Today - kalkine.ca"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 15:58:45 GMT",
+        "identity_key": "4153ead46b976310",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Eagle Nuclear Energy Corp. (NUCL) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 15:33:16 GMT",
+        "identity_key": "f4672183b39b9c36",
+        "key_type": "title-date-hash",
+        "source": "TipRanks",
+        "title": "Eagle Plains Announces Non-Binding MPW Option LOI with Kestrel Gold - TipRanks"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 13:30:00 GMT",
+        "identity_key": "https://www.tradingview.com/news/acceswire:6935c9488094b:0-kestrel-gold-announces-letter-of-intent-with-eagle-plains-for-option-of-the-mpw-project-british-columbia/",
+        "key_type": "resolved_url",
+        "source": "TradingView",
+        "title": "Kestrel Gold Announces Letter of Intent with Eagle Plains for Option of the MPW Project, British Columbia - TradingView"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 12:00:00 GMT",
+        "identity_key": "94c1cc17cd6a01ec",
+        "key_type": "title-date-hash",
+        "source": "Stock Titan",
+        "title": "Kestrel could fund C$5 million in exploration as part of earning 60% of a B.C. copper-and-gold project. - Stock Titan"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 12:00:00 GMT",
+        "identity_key": "9ccc4bc6cd4b3ba3",
+        "key_type": "title-date-hash",
+        "source": "Stock Titan",
+        "title": "An 11-kilometer gold trend may extend toward older finds, but no link is proven. Eagle Plains and Earthwise applied for more land. - Stock Titan"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 11:16:00 GMT",
+        "identity_key": "7e6af4bd618f5d51",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Why Did Agnico Eagle Mines (TSX:AEM) Surge 6.143% on November 23, 2026? - kalkine.ca"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 01:11:34 GMT",
+        "identity_key": "af31067049869ad0",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "Eagle Nuclear Energy stock rises on Russell Microcap addition - Investing.com"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 17:45:00 GMT",
+        "identity_key": "https://kalkinemedia.com/ca/stocks/penny/grid-metals-tsxvgrdm-why-is-agnico-eagles-avenir-raising-stake",
+        "key_type": "resolved_url",
+        "source": "Kalkine Media",
+        "title": "Grid Metals (TSXV:GRDM): Why Is Agnico Eagle's Avenir Raising Stake? - Kalkine Media"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 16:51:09 GMT",
+        "identity_key": "0152f31ade6c509e",
+        "key_type": "title-date-hash",
+        "source": "Traders Union",
+        "title": "What's behind Agnico Eagle Mines's latest 6.1% stock surge? - Traders Union"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 16:50:12 GMT",
+        "identity_key": "9d2726cb0686f77b",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance Australia",
+        "title": "Eagle Nuclear Energy Corp. (NUCL) stock price, news, quote and history - Yahoo Finance Australia"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 16:35:18 GMT",
+        "identity_key": "9f2acdb6ff5f1c76",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "Why is Eagle Nuclear Energy stock rallying today? - Investing.com"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 12:21:00 GMT",
+        "identity_key": "8e7408d58917f438",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "How a US$170 plunge in gold dragged Agnico Eagle Mines (TSX:AEM) lower on the S&P/TSX Composite - kalkine.ca"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 09:06:35 GMT",
+        "identity_key": "cec3a3417465450c",
+        "key_type": "title-date-hash",
+        "source": "Trefis",
+        "title": "Can Agnico Eagle Stock Bounce Off $151 Again? - Trefis"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 14:45:00 GMT",
+        "identity_key": "27e8fe17de660dbc",
+        "key_type": "title-date-hash",
+        "source": "Kalkine Media",
+        "title": "How Agnico Eagle Mines Ltd (TSX:AEM) Enters the Latest Canadian Market Test - Kalkine Media"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 22:48:29 GMT",
+        "identity_key": "5e66cd4ce64b26b8",
+        "key_type": "title-date-hash",
+        "source": "StockInvest.us",
+        "title": "American Eagle Outfitters Stock Price Forecast. Should You Buy AEO? - StockInvest.us"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 17:02:30 GMT",
+        "identity_key": "46eee65e8d1d681f",
+        "key_type": "title-date-hash",
+        "source": "Traders Union",
+        "title": "Agnico Eagle Mines stock drops more than 3% after ongoing selling pressure and lack of sustained support - Traders Union"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 15:38:00 GMT",
+        "identity_key": "4453044a6ff499e5",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "S&P/TSX Composite: Agnico Eagle Mines Limited (TSX:AEM) — Large Cap Value Stock in Focus as Investors Track the Next Catalyst - kalkine.ca"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 11:56:00 GMT",
+        "identity_key": "92bcb065f993c51d",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Agnico Eagle Mines Limited (TSX:AEM) Stock Falls 2.08%: Gold Price Volatility, Mining Costs and Valuation Concerns Raise Downside Risks - kalkine.ca"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 11:32:36 GMT",
+        "identity_key": "9f920b46f7c2e904",
+        "key_type": "title-date-hash",
+        "source": "Investing.com Canada",
+        "title": "DA Davidson upgrades Eagle Bancorp Montana stock rating on growth By Investing.com - Investing.com Canada"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 08:00:00 GMT",
+        "identity_key": "15ed5e0375fd7692",
+        "key_type": "title-date-hash",
+        "source": "MarketBeat",
+        "title": "Agnico Eagle Mines (AEM) Stock Forecast and Price Target 2026 - MarketBeat"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 04:30:00 GMT",
+        "identity_key": "d555e5d40608f568",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Seabridge Gold (TSX:SEA) Faces A Valuation Test Following Earnings And A KSM Legal Ruling - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 15:07:28 GMT",
+        "identity_key": "0d32a282c62df1e9",
+        "key_type": "title-date-hash",
+        "source": "Traders Union",
+        "title": "Agnico Eagle Mines shares technical analysis: Weak momentum and seller control persist - Traders Union"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 04:46:35 GMT",
+        "identity_key": "419fe850a7452d08",
+        "key_type": "title-date-hash",
+        "source": "Stockhouse",
+        "title": "Turbulent stock markets: Agnico Eagle, dynaCERT and Deutsche Bank in focus | 2026-11-18 | Investing News - Stockhouse"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 16:49:27 GMT",
+        "identity_key": "3fd1e63626a0f603",
+        "key_type": "title-date-hash",
+        "source": "Traders Union",
+        "title": "Will Agnico Eagle Mines stock hold above C$219.83 support as sellers dominate? - Traders Union"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 21:30:00 GMT",
+        "identity_key": "bfc26f1b33b1d277",
+        "key_type": "title-date-hash",
+        "source": "Business Wire",
+        "title": "Victory Capital Stockholders Approve Stock Issuance, Clearing Key Milestone Toward First Eagle Acquisition - Business Wire"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 19:51:21 GMT",
+        "identity_key": "6917acd721c62046",
+        "key_type": "title-date-hash",
+        "source": "Investing.com Canada",
+        "title": "Why is Agnico Eagle stock gaining today? By Investing.com - Investing.com Canada"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 16:45:00 GMT",
+        "identity_key": "875bd6f56381ce57",
+        "key_type": "title-date-hash",
+        "source": "The Motley Fool Canada",
+        "title": "Agnico Eagle Stock: The Cash Flow Behind the Gold-Price Headlines - The Motley Fool Canada"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 16:15:00 GMT",
+        "identity_key": "b2484396a18e8213",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Glen Eagle Resources (TSXV:GER) in Focus: TSXV Composite Small-Cap Growth Stock Trends on AGM results and Cobra Oro extension - kalkine.ca"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 16:15:00 GMT",
+        "identity_key": "d9bfaf8e5af714a7",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Talon Metals (TSX:TLO) in Focus: TSX Composite Mid-Cap Growth Stock Trends on Q3 results and Eagle/Humboldt transaction - kalkine.ca"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:02:00 GMT",
+        "identity_key": "4d178c377d7183b4",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Arizona Eagle Mining Corp. (AZE): What Its Elevated Beta Reveals About Market Sensitivity and Volatility - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 16:47:00 GMT",
+        "identity_key": "f2bca0d80520411d",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "S&P/TSX Composite Focus: Agnico Eagle Mines Limited (TSX:AEM) — Large Cap Growth Stock Why Traders and Long-Term Investors Are Watching This Name - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 16:32:00 GMT",
+        "identity_key": "33765f97131550bd",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "S&P/TSX Composite Index Agnico Eagle Mines Limited (TSX:AEM) Large Cap Value Stock: Gold, Copper and Critical-Mineral Momentum - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 14:43:00 GMT",
+        "identity_key": "36b5debf224dd1ad",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Can Agnico Eagle Mines (TSX:AEM) Keep Returning Cash as Gold Prices Lift Free Cash Flow? - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 10:06:00 GMT",
+        "identity_key": "97fbd0e68558c04b",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Why Agnico Eagle Shares Are Declining as Investors Assess Gold Prices and Mining Costs - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 10:06:00 GMT",
+        "identity_key": "1c42c5ce9e4d1b86",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "Why Did Agnico Eagle Mines Limited (TSX:AEM) Fall 4.056% to $254.28 on November 12, 2026? - kalkine.ca"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "3173bda207dd8f86",
+        "key_type": "title-date-hash",
+        "source": "kalkine.ca",
+        "title": "American Eagle Gold Corp. (TSXV:AE) — TSXV Small-Cap Growth Stock in Focus as the Next Catalyst Comes Into View - kalkine.ca"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 293.3,
+    "base_source": "egx-data/egxpy_egal.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_egal.csv",
+      "base_stale": false,
+      "base_used": 293.3,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_egal.csv": 302.0,
+        "openbb/egal_ca.csv": 302.0,
+        "pandas-ta/indicators.csv": 302.0,
+        "talib/indicators.csv": 302.0,
+        "yahooquery/egal.ca.csv": 302.0
+      }
+    },
+    "sessions_per_calendar_day": 0.659,
+    "sigma_daily": 0.0229,
+    "sigma_source": "egx-data/egxpy_egal.csv (σ60=0.0229, σ10=0.0191)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 293.3,
+      "last_date": "2026-11-25",
+      "last_high": 299.0,
+      "last_low": 292.5,
+      "last_open": 298.0,
+      "last_volume": 146677.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_egal.csv",
+      "stale": false
+    },
+    {
+      "last_close": 302.0,
+      "last_date": "2026-11-24",
+      "last_high": 302.0,
+      "last_low": 302.0,
+      "last_open": 302.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/EGAL_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 302.0,
+      "last_date": "2026-11-24",
+      "last_high": 302.0,
+      "last_low": 302.0,
+      "last_open": 302.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 302.0,
+      "last_date": "2026-11-24",
+      "last_high": 302.0,
+      "last_low": 302.0,
+      "last_open": 302.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 302.0,
+      "last_date": "2026-11-23",
+      "last_high": 302.9200134277344,
+      "last_low": 299.0,
+      "last_open": 298.0,
+      "last_volume": 79522.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/EGAL.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-egal-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-egal-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "EGAL.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Ma",
+        "type": "earnings"
+      },
+      {
+        "severity": "high",
+        "title": "Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com ",
+        "type": "capital"
+      },
+      {
+        "severity": "high",
+        "title": "Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Can",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Ma",
+      "capital event: Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com ",
+      "earnings event: Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Can"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.69,
+      "max3": 0.69
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAL.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T12:16:11.420963+00:00",
+  "sweep_dir": "sweeps/2026-11-25/121852__sweep-lite-egal-ca-market-egx__runw5-sweeplite-egal-001",
+  "ticker": "EGAL.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EGAL.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EGAL.CA.csv_last_close": 302.0,
+          "EGAL.CA.csv_last_date": "2026-11-23",
+          "rows_EGAL.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "9a931aa1af4ac2f965704f4a6a3d22a4be09a2fb0c4195c7c639fc5ff9c8b370",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EGAL_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EGAL_CA.csv_last_close": 302.0,
+          "EGAL_CA.csv_last_date": "2026-11-24",
+          "rows_EGAL_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "1e86c8dfc363ffa4a910e4e3a67dec658a71f720d18cfc56102cea17fad67826",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_egal.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_egal.csv_last_close": 293.3,
+          "egxpy_egal.csv_last_date": "2026-11-25",
+          "rows_egxpy_egal.csv": 3000,
+          "symbol": "EGAL",
+          "ticker": "EGAL.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "60be1ec9a9ffbce62070d3d91bdbfbc63d1ab2d9116ba355c3bc074fab5802b1",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 26.5319,
+          "atr_14": 9.1358,
+          "bb_lower": 291.7522,
+          "bb_mid": 310.295,
+          "bb_pctb": 0.2763,
+          "bb_upper": 328.8378,
+          "close": 302.0,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 310.5405,
+          "ema_200": 298.3932,
+          "ema_50": 318.3994,
+          "first_date_used": "2019-01-01",
+          "high": 302.0,
+          "indicators.csv_last_close": 302.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 302.0,
+          "macd": -4.1006,
+          "macd_hist": -0.6123,
+          "macd_signal": -3.4884,
+          "open": 302.0,
+          "rows_fetched": 6533,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 41.7083,
+          "stoch_d": 24.1167,
+          "stoch_k": 18.4069,
+          "ticker": "EGAL.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "85c357fac1b962dbb59a03dead3e8db7f769d4cad6b2450d7ce8fe0a300d564e",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 302.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 302.0,
+          "last_date": "2026-11-24",
+          "rows_fetched": 6533,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "EGAL.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "475d0994a43b0c4431352aaf661bbca6085a4c014216fdf387e0314b4b48cf3d",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "67bfcd5f970c1849022636845a8a8476f21667a64c6a6abae7ea27f0483ed901",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "b15d06584549586473ae980973eee578831b2bf8a410d4cfdd975659e915bc2d",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "523d994e64690397f46364db17615167385f7ec578dd8caa2bb1f2964abd2f9b",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "09ea49a099417df613dfbbd141aa6c9cba31e4d83400cd845347dc58d52a030b",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "a06ed65f9d628f9857f58b400729d3fd98199f26c74af1f83c61ca748f579fb3",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 40,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "19cc97d2afc26301f73b6742cd4a7356f532f02b1da2b9347e4a29426449de2a",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 302.1389,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "611a3583a2d0e632fdac2a7fd413f2aa298cc4116c8bfc59c75817883ebb4f66",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "1d88cef0a922f0e6d7aa2fec7e402443d4580745ba42ddd0998b58542ac0492c",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-egal-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 0,
+          "bodies_fetched": 4,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T12:18:51Z",
+          "finbert_negative": 0.189,
+          "finbert_neutral": 0.659,
+          "finbert_positive": 0.152,
+          "finbert_scored": 40,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 06:17:14 GMT",
+          "llm_provider": "extractive",
+          "news_count": 40,
+          "ticker": "EGAL.CA",
+          "tool": "news-disclosure",
+          "top_headline": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Mail",
+          "translation_provider": "none"
+        },
+        "status": "ok",
+        "ticker": "EGAL.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "6b1161873dd825527622075ff1b7db2e88c7d3727e2b202b842c0fec079b134d",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egal-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

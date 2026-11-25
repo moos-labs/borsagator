@@ -1,0 +1,1027 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 40,
+  "label_counts": {
+    "positive": 9,
+    "negative": 7,
+    "neutral": 24
+  },
+  "label_counts_raw": {
+    "positive": 9,
+    "neutral": 24,
+    "negative": 7
+  },
+  "mean_probabilities": {
+    "positive": 0.23180531219644998,
+    "negative": 0.1720685928765588,
+    "neutral": 0.5961261083562667
+  },
+  "items": [
+    {
+      "text": "Market Outlook: Which Canadian Stocks Could Outperform Before Year-End? - The Globe and Mail",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999998807907104,
+        "negative": 2.380877051066932e-09,
+        "neutral": 7.143312785728995e-08
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999998807907104
+        },
+        {
+          "label": "Neutral",
+          "score": 7.143312785728995e-08
+        },
+        {
+          "label": "Negative",
+          "score": 2.380877051066932e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Bold Eagle Acquisition enters $1.08 million promissory note with sponsor By Investing.com - Investing.com Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4412665223062504e-05,
+        "negative": 7.960567927511875e-06,
+        "neutral": 0.9999775886535645
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999775886535645
+        },
+        {
+          "label": "Positive",
+          "score": 1.4412665223062504e-05
+        },
+        {
+          "label": "Negative",
+          "score": 7.960567927511875e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Franco-Nevada Corporation (FNV.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.6996070207351295e-07,
+        "negative": 2.7889650482393336e-06,
+        "neutral": 0.9999969005584717
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999969005584717
+        },
+        {
+          "label": "Negative",
+          "score": 2.7889650482393336e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.6996070207351295e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Mines Limited (TSX:AEM): Why This Large Cap Growth Stock Is Trending on the S&P/TSX Composite Index Today - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.067931342888187e-07,
+        "negative": 2.544628159739659e-06,
+        "neutral": 0.9999971389770508
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999971389770508
+        },
+        {
+          "label": "Negative",
+          "score": 2.544628159739659e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.067931342888187e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Eagle Nuclear Energy Corp. (NUCL) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.730465535540134e-07,
+        "negative": 2.263614078401588e-06,
+        "neutral": 0.9999967813491821
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999967813491821
+        },
+        {
+          "label": "Negative",
+          "score": 2.263614078401588e-06
+        },
+        {
+          "label": "Positive",
+          "score": 9.730465535540134e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Eagle Plains Announces Non-Binding MPW Option LOI with Kestrel Gold - TipRanks",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.011238791048526764,
+        "negative": 2.4768291041254997e-05,
+        "neutral": 0.9887364506721497
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9887364506721497
+        },
+        {
+          "label": "Positive",
+          "score": 0.011238791048526764
+        },
+        {
+          "label": "Negative",
+          "score": 2.4768291041254997e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kestrel Gold Announces Letter of Intent with Eagle Plains for Option of the MPW Project, British Columbia - TradingView",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.869425199809484e-05,
+        "negative": 8.817191883281339e-06,
+        "neutral": 0.9999524354934692
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999524354934692
+        },
+        {
+          "label": "Positive",
+          "score": 3.869425199809484e-05
+        },
+        {
+          "label": "Negative",
+          "score": 8.817191883281339e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kestrel could fund C$5 million in exploration as part of earning 60% of a B.C. copper-and-gold project. - Stock Titan",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00011098648974439129,
+        "negative": 4.480674760998227e-06,
+        "neutral": 0.9998844861984253
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998844861984253
+        },
+        {
+          "label": "Positive",
+          "score": 0.00011098648974439129
+        },
+        {
+          "label": "Negative",
+          "score": 4.480674760998227e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "An 11-kilometer gold trend may extend toward older finds, but no link is proven. Eagle Plains and Earthwise applied for more land. - Stock Titan",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0147531611437444e-05,
+        "negative": 1.768614538377733e-06,
+        "neutral": 0.9999880790710449
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999880790710449
+        },
+        {
+          "label": "Positive",
+          "score": 1.0147531611437444e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.768614538377733e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why Did Agnico Eagle Mines (TSX:AEM) Surge 6.143% on November 23, 2026? - kalkine.ca",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9624156355857849,
+        "negative": 0.0016153149772435427,
+        "neutral": 0.03596915304660797
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9624156355857849
+        },
+        {
+          "label": "Neutral",
+          "score": 0.03596915304660797
+        },
+        {
+          "label": "Negative",
+          "score": 0.0016153149772435427
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Eagle Nuclear Energy stock rises on Russell Microcap addition - Investing.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.005425253417342901,
+        "negative": 6.573640712304041e-05,
+        "neutral": 0.9945090413093567
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9945090413093567
+        },
+        {
+          "label": "Positive",
+          "score": 0.005425253417342901
+        },
+        {
+          "label": "Negative",
+          "score": 6.573640712304041e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Grid Metals (TSXV:GRDM): Why Is Agnico Eagle's Avenir Raising Stake? - Kalkine Media",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.56549171556253e-05,
+        "negative": 0.00022816589626017958,
+        "neutral": 0.9997362494468689
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997362494468689
+        },
+        {
+          "label": "Negative",
+          "score": 0.00022816589626017958
+        },
+        {
+          "label": "Positive",
+          "score": 3.56549171556253e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What's behind Agnico Eagle Mines's latest 6.1% stock surge? - Traders Union",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.998925507068634,
+        "negative": 4.401555088406894e-06,
+        "neutral": 0.0010701101273298264
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.998925507068634
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0010701101273298264
+        },
+        {
+          "label": "Negative",
+          "score": 4.401555088406894e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Eagle Nuclear Energy Corp. (NUCL) stock price, news, quote and history - Yahoo Finance Australia",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.137580447149958e-07,
+        "negative": 3.231184336982551e-06,
+        "neutral": 0.9999964237213135
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999964237213135
+        },
+        {
+          "label": "Negative",
+          "score": 3.231184336982551e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.137580447149958e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why is Eagle Nuclear Energy stock rallying today? - Investing.com",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.3462373614311218,
+        "negative": 0.42690369486808777,
+        "neutral": 0.2268589735031128
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.42690369486808777
+        },
+        {
+          "label": "Positive",
+          "score": 0.3462373614311218
+        },
+        {
+          "label": "Neutral",
+          "score": 0.2268589735031128
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "How a US$170 plunge in gold dragged Agnico Eagle Mines (TSX:AEM) lower on the S&P/TSX Composite - kalkine.ca",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.00024469554773531854,
+        "negative": 0.5509532690048218,
+        "neutral": 0.44880211353302
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.5509532690048218
+        },
+        {
+          "label": "Neutral",
+          "score": 0.44880211353302
+        },
+        {
+          "label": "Positive",
+          "score": 0.00024469554773531854
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Can Agnico Eagle Stock Bounce Off $151 Again? - Trefis",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.1733778715133667,
+        "negative": 0.22168488800525665,
+        "neutral": 0.6049373149871826
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.6049373149871826
+        },
+        {
+          "label": "Negative",
+          "score": 0.22168488800525665
+        },
+        {
+          "label": "Positive",
+          "score": 0.1733778715133667
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "How Agnico Eagle Mines Ltd (TSX:AEM) Enters the Latest Canadian Market Test - Kalkine Media",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.017749488353729248,
+        "negative": 5.91943944527884e-06,
+        "neutral": 0.9822445511817932
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9822445511817932
+        },
+        {
+          "label": "Positive",
+          "score": 0.017749488353729248
+        },
+        {
+          "label": "Negative",
+          "score": 5.91943944527884e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "American Eagle Outfitters Stock Price Forecast. Should You Buy AEO? - StockInvest.us",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9818325042724609,
+        "negative": 0.0005065797595307231,
+        "neutral": 0.017660919576883316
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9818325042724609
+        },
+        {
+          "label": "Neutral",
+          "score": 0.017660919576883316
+        },
+        {
+          "label": "Negative",
+          "score": 0.0005065797595307231
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Mines stock drops more than 3% after ongoing selling pressure and lack of sustained support - Traders Union",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 4.0508606957700977e-07,
+        "negative": 0.9999995231628418,
+        "neutral": 8.016426278345534e-08
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999995231628418
+        },
+        {
+          "label": "Positive",
+          "score": 4.0508606957700977e-07
+        },
+        {
+          "label": "Neutral",
+          "score": 8.016426278345534e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "S&P/TSX Composite: Agnico Eagle Mines Limited (TSX:AEM) — Large Cap Value Stock in Focus as Investors Track the Next Catalyst - kalkine.ca",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.7535092830657959,
+        "negative": 2.4662793293828145e-05,
+        "neutral": 0.24646598100662231
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.7535092830657959
+        },
+        {
+          "label": "Neutral",
+          "score": 0.24646598100662231
+        },
+        {
+          "label": "Negative",
+          "score": 2.4662793293828145e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Mines Limited (TSX:AEM) Stock Falls 2.08%: Gold Price Volatility, Mining Costs and Valuation Concerns Raise Downside Risks - kalkine.ca",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.0008846353739500046,
+        "negative": 0.9984843134880066,
+        "neutral": 0.0006310686585493386
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9984843134880066
+        },
+        {
+          "label": "Positive",
+          "score": 0.0008846353739500046
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0006310686585493386
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "DA Davidson upgrades Eagle Bancorp Montana stock rating on growth By Investing.com - Investing.com Canada",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9977999329566956,
+        "negative": 5.089615569886519e-06,
+        "neutral": 0.002194936852902174
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9977999329566956
+        },
+        {
+          "label": "Neutral",
+          "score": 0.002194936852902174
+        },
+        {
+          "label": "Negative",
+          "score": 5.089615569886519e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Mines (AEM) Stock Forecast and Price Target 2026 - MarketBeat",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.396908869035542e-05,
+        "negative": 0.00012782028352376074,
+        "neutral": 0.9998382329940796
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998382329940796
+        },
+        {
+          "label": "Negative",
+          "score": 0.00012782028352376074
+        },
+        {
+          "label": "Positive",
+          "score": 3.396908869035542e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Seabridge Gold (TSX:SEA) Faces A Valuation Test Following Earnings And A KSM Legal Ruling - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.352118129550945e-06,
+        "negative": 0.3931713104248047,
+        "neutral": 0.6068203449249268
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.6068203449249268
+        },
+        {
+          "label": "Negative",
+          "score": 0.3931713104248047
+        },
+        {
+          "label": "Positive",
+          "score": 8.352118129550945e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Mines shares technical analysis: Weak momentum and seller control persist - Traders Union",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.3945238208634692e-07,
+        "negative": 0.9999997615814209,
+        "neutral": 1.1791029663754671e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999997615814209
+        },
+        {
+          "label": "Positive",
+          "score": 1.3945238208634692e-07
+        },
+        {
+          "label": "Neutral",
+          "score": 1.1791029663754671e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Turbulent stock markets: Agnico Eagle, dynaCERT and Deutsche Bank in focus | 2026-11-18 | Investing News - Stockhouse",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 6.9450120463443454e-06,
+        "negative": 0.9519137740135193,
+        "neutral": 0.04807930439710617
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9519137740135193
+        },
+        {
+          "label": "Neutral",
+          "score": 0.04807930439710617
+        },
+        {
+          "label": "Positive",
+          "score": 6.9450120463443454e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Will Agnico Eagle Mines stock hold above C$219.83 support as sellers dominate? - Traders Union",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.01892928220331669,
+        "negative": 0.10367650538682938,
+        "neutral": 0.8773943185806274
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.8773943185806274
+        },
+        {
+          "label": "Negative",
+          "score": 0.10367650538682938
+        },
+        {
+          "label": "Positive",
+          "score": 0.01892928220331669
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Victory Capital Stockholders Approve Stock Issuance, Clearing Key Milestone Toward First Eagle Acquisition - Business Wire",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.001336743589490652,
+        "negative": 4.962570983479964e-06,
+        "neutral": 0.998658299446106
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.998658299446106
+        },
+        {
+          "label": "Positive",
+          "score": 0.001336743589490652
+        },
+        {
+          "label": "Negative",
+          "score": 4.962570983479964e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why is Agnico Eagle stock gaining today? By Investing.com - Investing.com Canada",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.991797685623169,
+        "negative": 0.00023164240701589733,
+        "neutral": 0.007970708422362804
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.991797685623169
+        },
+        {
+          "label": "Neutral",
+          "score": 0.007970708422362804
+        },
+        {
+          "label": "Negative",
+          "score": 0.00023164240701589733
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Agnico Eagle Stock: The Cash Flow Behind the Gold-Price Headlines - The Motley Fool Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.003919527865946293,
+        "negative": 0.00019651594629976898,
+        "neutral": 0.9958840012550354
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9958840012550354
+        },
+        {
+          "label": "Positive",
+          "score": 0.003919527865946293
+        },
+        {
+          "label": "Negative",
+          "score": 0.00019651594629976898
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Glen Eagle Resources (TSXV:GER) in Focus: TSXV Composite Small-Cap Growth Stock Trends on AGM results and Cobra Oro extension - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.8480721994128544e-06,
+        "negative": 5.46473529539071e-06,
+        "neutral": 0.9999916553497314
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999916553497314
+        },
+        {
+          "label": "Negative",
+          "score": 5.46473529539071e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.8480721994128544e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Talon Metals (TSX:TLO) in Focus: TSX Composite Mid-Cap Growth Stock Trends on Q3 results and Eagle/Humboldt transaction - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.475141839880962e-06,
+        "negative": 4.809668098459952e-06,
+        "neutral": 0.9999867677688599
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999867677688599
+        },
+        {
+          "label": "Positive",
+          "score": 8.475141839880962e-06
+        },
+        {
+          "label": "Negative",
+          "score": 4.809668098459952e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Arizona Eagle Mining Corp. (AZE): What Its Elevated Beta Reveals About Market Sensitivity and Volatility - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.81290521495248e-07,
+        "negative": 1.433459601685172e-06,
+        "neutral": 0.9999979734420776
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999979734420776
+        },
+        {
+          "label": "Negative",
+          "score": 1.433459601685172e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.81290521495248e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "S&P/TSX Composite Focus: Agnico Eagle Mines Limited (TSX:AEM) — Large Cap Growth Stock Why Traders and Long-Term Investors Are Watching This Name - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.0780893464689143e-05,
+        "negative": 2.277316525578499e-05,
+        "neutral": 0.999956488609314
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999956488609314
+        },
+        {
+          "label": "Negative",
+          "score": 2.277316525578499e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.0780893464689143e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "S&P/TSX Composite Index Agnico Eagle Mines Limited (TSX:AEM) Large Cap Value Stock: Gold, Copper and Critical-Mineral Momentum - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.002842479618266225,
+        "negative": 1.0887243661272805e-05,
+        "neutral": 0.9971465468406677
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9971465468406677
+        },
+        {
+          "label": "Positive",
+          "score": 0.002842479618266225
+        },
+        {
+          "label": "Negative",
+          "score": 1.0887243661272805e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Can Agnico Eagle Mines (TSX:AEM) Keep Returning Cash as Gold Prices Lift Free Cash Flow? - kalkine.ca",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9996647834777832,
+        "negative": 4.932826414005831e-06,
+        "neutral": 0.00033029308542609215
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9996647834777832
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00033029308542609215
+        },
+        {
+          "label": "Negative",
+          "score": 4.932826414005831e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why Agnico Eagle Shares Are Declining as Investors Assess Gold Prices and Mining Costs - kalkine.ca",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.007629200350493193,
+        "negative": 0.991132915019989,
+        "neutral": 0.0012378549436107278
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.991132915019989
+        },
+        {
+          "label": "Positive",
+          "score": 0.007629200350493193
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0012378549436107278
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Why Did Agnico Eagle Mines Limited (TSX:AEM) Fall 4.056% to $254.28 on November 12, 2026? - kalkine.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00030289217829704285,
+        "negative": 0.24169711768627167,
+        "neutral": 0.7580000162124634
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.7580000162124634
+        },
+        {
+          "label": "Negative",
+          "score": 0.24169711768627167
+        },
+        {
+          "label": "Positive",
+          "score": 0.00030289217829704285
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "American Eagle Gold Corp. (TSXV:AE) — TSXV Small-Cap Growth Stock in Focus as the Next Catalyst Comes Into View - kalkine.ca",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9958544969558716,
+        "negative": 9.03558145637362e-07,
+        "neutral": 0.004144560545682907
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9958544969558716
+        },
+        {
+          "label": "Neutral",
+          "score": 0.004144560545682907
+        },
+        {
+          "label": "Negative",
+          "score": 9.03558145637362e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

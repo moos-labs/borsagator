@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "EGAL.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6533,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 302.0,
+  "indicators": {
+    "RSI_14": 41.70827513895644,
+    "MACD": -4.1006432849296175,
+    "MACD_signal": -3.488366781229555,
+    "MACD_hist": -0.6122765037000626,
+    "EMA_20": 310.540481128605,
+    "EMA_50": 318.3993767694832,
+    "ADX_14": 26.53189449261145
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-12",
+    "CDLHAMMER": "2026-11-08",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

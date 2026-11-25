@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 293.3,
+ "base_source": "egx-data/egxpy_egal.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T12:18:52.589758+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.42,
+   "families": {
+    "price-forecast": 0.529
+   },
+   "horizon_short": false,
+   "net_score": 0.529,
+   "range_high_pct": 4.04,
+   "range_low_pct": 0.96,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.01,
+   "families": {
+    "price-forecast": 0.176
+   },
+   "horizon_short": false,
+   "net_score": 0.176,
+   "range_high_pct": 5.19,
+   "range_low_pct": 1.65,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.14,
+   "families": {
+    "price-forecast": 0.396
+   },
+   "horizon_short": false,
+   "net_score": 0.396,
+   "range_high_pct": 4.66,
+   "range_low_pct": 1.03,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "4af2e309b39eabaac40d4b09d3cce0c1f19524f0ada76d5cc613d4e5a4965f2a",
+  "digest.json": "e5264dc3067f81ce81966f4dd5c22059b420ef8482178af3fb44c6b6980d19fd",
+  "ensemble.json": "bff3e2194d8f31b277319023fa85d98bedd7cf6629baa591440f8473f45c9133"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0229,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/121852__sweep-lite-egal-ca-market-egx__runw5-sweeplite-egal-001",
+ "ticker": "EGAL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
