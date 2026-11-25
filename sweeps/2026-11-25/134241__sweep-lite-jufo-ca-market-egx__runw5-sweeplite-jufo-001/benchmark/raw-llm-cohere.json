@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 21.85,
+ "base_source": "egx-data/egxpy_jufo.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:42:41.411561+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_jufo.csv": "2d22716ad3afb5e8247205df09fb0e9abe49813ca27eafdad4368e594651ba71",
+  "digest.json": "ae31de618cd58ad28ae924e5e49dd7c48056eda16c072da8569a94258141e0a7",
+  "ensemble.json": "8b58f87cbd7bacc6eb9d05102ea87a201c487a13cde76e41f2fb98adfa6a5249",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001",
+ "ticker": "JUFO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

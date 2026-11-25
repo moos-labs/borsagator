@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 21.85,
+ "base_source": "egx-data/egxpy_jufo.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-25T13:42:41.400637+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": -0.13,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "horizon_short": false,
+   "net_score": -0.1,
+   "range_high_pct": 4.1,
+   "range_low_pct": -4.36,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": -0.49,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "horizon_short": false,
+   "net_score": -0.1,
+   "range_high_pct": 15.33,
+   "range_low_pct": -16.3,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": -0.23,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "horizon_short": false,
+   "net_score": -0.1,
+   "range_high_pct": 7.1,
+   "range_low_pct": -7.55,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "ae31de618cd58ad28ae924e5e49dd7c48056eda16c072da8569a94258141e0a7",
+  "ensemble.json": "8b58f87cbd7bacc6eb9d05102ea87a201c487a13cde76e41f2fb98adfa6a5249"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0254,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001",
+ "ticker": "JUFO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

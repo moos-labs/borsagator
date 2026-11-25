@@ -1,0 +1,50 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 1.30565222207224e-05,
+    "negative": 0.0006268980796448886,
+    "neutral": 0.9993600249290466
+  },
+  "items": [
+    {
+      "text": "Montreal Panamerican Open 2026 - IJF.org",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.30565222207224e-05,
+        "negative": 0.0006268980796448886,
+        "neutral": 0.9993600249290466
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9993600249290466
+        },
+        {
+          "label": "Negative",
+          "score": 0.0006268980796448886
+        },
+        {
+          "label": "Positive",
+          "score": 1.30565222207224e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

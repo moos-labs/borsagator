@@ -1,0 +1,1292 @@
+{
+  "archive_commit": "2b8189e65fd6085998db771fe3204f4f43e5ead6",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "2d74777e8fe0e93acba29b14b222faab70c33c446c52c10982871a4d4fbad4a7",
+      "family-agent.json": "db2bf82d007134db9dfdecbb9cd764031ec0f78cec432e0b5f9933fa7e5dc780",
+      "family-fundamentals.json": "964d845d0b17dc1cd8919499cc28acb8ce471cd56cdd47262ab50833933db9d6",
+      "family-price-forecast.json": "6e9de2e764483e5d3001e105fbc1121ebcfae4caf4c5232011064ecd64932df6",
+      "family-sentiment.json": "a216933fa1c5801cfc41fe5d825783120804b296482d702af898f6a98f73b287",
+      "family-technicals.json": "46287ef914523017f5ede8ea5a401f098b3f709e79cf31992e7a1896ca86b78a",
+      "kronos-alone.json": "0536ec12d15a869650c173f092e39a8aa16950c39dd987143b066a45632b3969",
+      "raw-llm-cohere.json": "e2095d7a2096f59f0db3340084b7521df50ef8ec0dbe5f9d56784d450d0efc50"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/JUFO-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 21.85,
+    "base_source": "egx-data/egxpy_jufo.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": 0.403,
+      "sentiment": 0.005,
+      "technicals": -0.2
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.35,
+        "direction": "up",
+        "expected_move_pct": 1.12,
+        "families": {
+          "price-forecast": 0.35,
+          "sentiment": 0.005,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.7817,
+        "net_score": 0.042,
+        "range_high_pct": 5.85,
+        "range_low_pct": -3.6,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.5445
+      },
+      "month": {
+        "confidence": 0.35,
+        "direction": "up",
+        "expected_move_pct": 4.7,
+        "families": {
+          "fundamentals": -0.1,
+          "price-forecast": 0.403,
+          "sentiment": 0.005,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 7.6714,
+        "net_score": 0.02,
+        "range_high_pct": 22.31,
+        "range_low_pct": -12.91,
+        "trading_sessions": 14,
+        "vol_h_pct": 9.5207
+      },
+      "week": {
+        "confidence": 0.35,
+        "direction": "up",
+        "expected_move_pct": 2.71,
+        "families": {
+          "price-forecast": 0.466,
+          "sentiment": 0.005,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 4.1108,
+        "net_score": 0.106,
+        "range_high_pct": 11.06,
+        "range_low_pct": -5.65,
+        "trading_sessions": 3,
+        "vol_h_pct": 4.4072
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_jufo.csv",
+      "base_stale": false,
+      "base_used": 21.85,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_jufo.csv": 22.0,
+        "openbb/jufo_ca.csv": 22.0,
+        "pandas-ta/indicators.csv": 22.0,
+        "talib/indicators.csv": 22.0,
+        "yahooquery/jufo.ca.csv": 22.0
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0254,
+    "sigma_source": "egx-data/egxpy_jufo.csv (σ60=0.0254, σ10=0.0199)",
+    "ticker": "JUFO.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": 0.403,
+    "sentiment": 0.005,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-25T13:42:41.104599+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/JUFO.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/JUFO.CA.json",
+    "sharia-row-missing: AAOIFI JUFO.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 JUFO.CA",
+    "sharia-row-missing: FTSE JUFO.CA",
+    "sharia-row-missing: ISLAMICLY JUFO.CA",
+    "sharia-row-missing: MSCI JUFO.CA",
+    "sharia-row-missing: MSCI_M JUFO.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.35,
+      "direction": "up",
+      "expected_move_pct": 1.12,
+      "families": {
+        "price-forecast": 0.35,
+        "sentiment": 0.005,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.7817,
+      "net_score": 0.042,
+      "range_high_pct": 5.85,
+      "range_low_pct": -3.6,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.5445
+    },
+    "month": {
+      "confidence": 0.35,
+      "direction": "up",
+      "expected_move_pct": 4.7,
+      "families": {
+        "fundamentals": -0.1,
+        "price-forecast": 0.403,
+        "sentiment": 0.005,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 7.6714,
+      "net_score": 0.02,
+      "range_high_pct": 22.31,
+      "range_low_pct": -12.91,
+      "trading_sessions": 14,
+      "vol_h_pct": 9.5207
+    },
+    "week": {
+      "confidence": 0.35,
+      "direction": "up",
+      "expected_move_pct": 2.71,
+      "families": {
+        "price-forecast": 0.466,
+        "sentiment": 0.005,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 4.1108,
+      "net_score": 0.106,
+      "range_high_pct": 11.06,
+      "range_low_pct": -5.65,
+      "trading_sessions": 3,
+      "vol_h_pct": 4.4072
+    }
+  },
+  "job": "sweep-lite JUFO.CA market=EGX",
+  "job_shape": "sweep-lite JUFO.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 24.2666,
+    "support": 20.6155
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 21.85,
+    "base_source": "egx-data/egxpy_jufo.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_jufo.csv",
+      "base_stale": false,
+      "base_used": 21.85,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_jufo.csv": 22.0,
+        "openbb/jufo_ca.csv": 22.0,
+        "pandas-ta/indicators.csv": 22.0,
+        "talib/indicators.csv": 22.0,
+        "yahooquery/jufo.ca.csv": 22.0
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0254,
+    "sigma_source": "egx-data/egxpy_jufo.csv (σ60=0.0254, σ10=0.0199)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 21.85,
+      "last_date": "2026-11-25",
+      "last_high": 22.82,
+      "last_low": 21.79,
+      "last_open": 22.19,
+      "last_volume": 2436241.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_jufo.csv",
+      "stale": false
+    },
+    {
+      "last_close": 22.0,
+      "last_date": "2026-11-24",
+      "last_high": 22.0,
+      "last_low": 22.0,
+      "last_open": 22.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/JUFO_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.0,
+      "last_date": "2026-11-24",
+      "last_high": 22.0,
+      "last_low": 22.0,
+      "last_open": 22.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.0,
+      "last_date": "2026-11-24",
+      "last_high": 22.0,
+      "last_low": 22.0,
+      "last_open": 22.0,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 22.0,
+      "last_date": "2026-11-23",
+      "last_high": 22.5,
+      "last_low": 21.950000762939453,
+      "last_open": 21.770000457763672,
+      "last_volume": 629672.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/JUFO.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-jufo-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-jufo-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "JUFO.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T13:40:32.834622+00:00",
+  "sweep_dir": "sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001",
+  "ticker": "JUFO.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "JUFO.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "JUFO.CA.csv_last_close": 22.0,
+          "JUFO.CA.csv_last_date": "2026-11-23",
+          "rows_JUFO.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "cf013e8f9182b04b92c2f865125d0dfa5409d2efc59101aeef8cc82cf401346b",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "JUFO_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "JUFO_CA.csv_last_close": 22.0,
+          "JUFO_CA.csv_last_date": "2026-11-24",
+          "rows_JUFO_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "35ce51b1e2574ddc0f2a42c40477fbebfef5002e3aa7e886140efae401c6c9f0",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_jufo.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_jufo.csv_last_close": 21.85,
+          "egxpy_jufo.csv_last_date": "2026-11-25",
+          "rows_egxpy_jufo.csv": 3000,
+          "symbol": "JUFO",
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "7782a9a8ccf710ab57c74945620dd0aebe0c4bdf6784b82bf76c534ee77a68f2",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 28.7961,
+          "atr_14": 0.8671,
+          "bb_lower": 21.607,
+          "bb_mid": 23.387,
+          "bb_pctb": 0.1104,
+          "bb_upper": 25.167,
+          "close": 22.0,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 23.3119,
+          "ema_200": 26.3661,
+          "ema_50": 24.2843,
+          "first_date_used": "2019-01-01",
+          "high": 22.0,
+          "indicators.csv_last_close": 22.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 22.0,
+          "macd": -0.4935,
+          "macd_hist": -0.1539,
+          "macd_signal": -0.3396,
+          "open": 22.0,
+          "rows_fetched": 4066,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 37.1622,
+          "stoch_d": 18.6056,
+          "stoch_k": 7.1805,
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "556820006e0bf831f4322e731476342756d096b12adef559e996fa40fe4a6359",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 22.0,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 22.0,
+          "last_date": "2026-11-24",
+          "rows_fetched": 4066,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "aa8c53919d2a6420743a83c3d642fc4455fa235d137294c521d49bcd4e2d8905",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "1beab20a1632ba647fe639fa240184eec91c510932ed3b3bab546e81b0141cf6",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "78be28cb87df64cafd3ffde63bb26b2bdad918023d95838f5bb5314d61802355",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "f6d4e0520f044c0ea0633d2e92d7e2f7dc26f31fa6cadad8f48526d198dac18b",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "bc7e7a0d2a1ecf2a59ca59cd2db252992b97ba242775cfce2ff53c8556214a4b",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "de2891eda3b2771f80cd2c70012d4a1dc5e3298e5eac64d31fd9406d3aa1df0a",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "0f94407ab2d1bc99d99c42e9788f5d37372d35bd392c4ef137cf33f7ac32dab7",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 23.5262,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "31155c4932681413c7766e12a85e70b755d97e32f9e340113d7673304df92864",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "b9d9f09b7e2fa1be3d6a4b428e034ba5cb44633ad701e0e65890ad4dbdc70a09",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-jufo-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "JUFO.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "927ffa1645e7740e9efe230dffd8faa781216e5b6cd4013d2dbd1c36415ade80",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-jufo-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}
