@@ -1,0 +1,26 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite GOUR.CA market=EGX",
+  "job_shape": "sweep-lite GOUR.CA market=EGX",
+  "claim_id": "w5-sweeplite-gour-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-gour-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/131220__sweep-lite-gour-ca-market-egx__runw5-sweeplite-gour-001",
+  "finished": "2026-11-25T13:12:20.857491+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "price-forecast"
+    ],
+    "absent_tools": [
+      "kronos"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

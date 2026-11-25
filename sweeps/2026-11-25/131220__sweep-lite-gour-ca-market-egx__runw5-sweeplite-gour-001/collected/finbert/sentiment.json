@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.13940250252683958,
+    "negative": 0.02488587548335393,
+    "neutral": 0.8357116381327311
+  },
+  "items": [
+    {
+      "text": "Jammu and Kashmir Bank MD to address investors at Emerging India CEO Conference - scanx.trade",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.052007999271154404,
+        "negative": 0.018334263935685158,
+        "neutral": 0.9296577572822571
+      }
+    },
+    {
+      "text": "SpaceX stock could see massive buying on Nasdaq 100 rebalance: will SPCX rally? - Invezz",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.3365894854068756,
+        "negative": 0.028291381895542145,
+        "neutral": 0.6351191401481628
+      }
+    },
+    {
+      "text": "Donald Ervin Gour Obituary (2026) - Bridgewater, MA - Chapman Funerals & Cremations - Bridgewater - Legacy | Obituary",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.02961002290248871,
+        "negative": 0.028031980618834496,
+        "neutral": 0.9423580169677734
+      }
+    }
+  ]
+}

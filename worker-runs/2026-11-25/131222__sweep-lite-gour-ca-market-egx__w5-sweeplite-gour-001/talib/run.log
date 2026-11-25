@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/opt/gator/runners/talib/scripts/ta.py", line 215, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/opt/gator/runners/talib/scripts/ta.py", line 131, in main
+    df = fetch_ohlc(ticker)
+         ^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/runners/talib/scripts/ta.py", line 94, in fetch_ohlc
+    resp.raise_for_status()
+  File "/opt/gator/venvs/talib/lib/python3.12/site-packages/requests/models.py", line 1167, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: https://query1.finance.yahoo.com/v8/finance/chart/GOUR.CA?period1=0&period2=1795612221&interval=1d

@@ -1,0 +1,11 @@
+[data] yahooquery failed: yahooquery returned no rows
+[data] yahoo-chart-api failed: 404 Client Error: Not Found for url: https://query1.finance.yahoo.com/v8/finance/chart/GOUR.CA?period1=1546300800&period2=1795698676&interval=1d
+Traceback (most recent call last):
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 588, in <module>
+    main()
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 481, in main
+    df, source = fetch_data(args.ticker)
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/gator/runners/kronos/scripts/kronos_forecast.py", line 131, in fetch_data
+    raise RuntimeError("All data sources failed: " + " | ".join(errors))
+RuntimeError: All data sources failed: yahooquery: yahooquery returned no rows | yahoo-chart-api: 404 Client Error: Not Found for url: https://query1.finance.yahoo.com/v8/finance/chart/GOUR.CA?period1=1546300800&period2=1795698676&interval=1d

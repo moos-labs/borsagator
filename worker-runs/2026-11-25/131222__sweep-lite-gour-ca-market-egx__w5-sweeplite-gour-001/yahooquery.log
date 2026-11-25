@@ -1,0 +1,27 @@
+=== GOUR.CA ===
+{
+  "ticker": "GOUR.CA",
+  "rows": 0,
+  "first_date": null,
+  "last_date": null,
+  "first_close": null,
+  "last_close": null,
+  "info_obtained": {
+    "summary_detail": false,
+    "asset_profile": false,
+    "price": false
+  },
+  "info_fields": {
+    "summary_detail": [],
+    "asset_profile": [],
+    "price": []
+  },
+  "info_notes": {
+    "summary_detail": "non-dict payload (str): No fundamentals data found for symbol: GOUR.CA",
+    "asset_profile": "non-dict payload (str): Quote not found for symbol: GOUR.CA",
+    "price": "non-dict payload (str): Quote not found for symbol: GOUR.CA"
+  },
+  "info_errors": {},
+  "error": "history DataFrame was empty"
+}
+Wrote results/summary.json

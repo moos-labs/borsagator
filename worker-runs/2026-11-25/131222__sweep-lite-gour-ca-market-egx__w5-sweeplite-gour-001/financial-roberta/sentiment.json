@@ -1,0 +1,67 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.33274537496617995,
+    "negative": 0.00030748087253111106,
+    "neutral": 0.6669471129619827
+  },
+  "items": [
+    {
+      "text": "Jammu and Kashmir Bank MD to address investors at Emerging India CEO Conference - scanx.trade",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005975977401249111,
+        "negative": 0.00016274541849270463,
+        "neutral": 0.9992396831512451
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992396831512451,
+        "positive": 0.0005975977401249111,
+        "negative": 0.00016274541849270463
+      }
+    },
+    {
+      "text": "SpaceX stock could see massive buying on Nasdaq 100 rebalance: will SPCX rally? - Invezz",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9973783493041992,
+        "negative": 0.0005400273948907852,
+        "neutral": 0.00208159233443439
+      },
+      "raw_probabilities": {
+        "positive": 0.9973783493041992,
+        "neutral": 0.00208159233443439,
+        "negative": 0.0005400273948907852
+      }
+    },
+    {
+      "text": "Donald Ervin Gour Obituary (2026) - Bridgewater, MA - Chapman Funerals & Cremations - Bridgewater - Legacy | Obituary",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00026017785421572626,
+        "negative": 0.00021966980420984328,
+        "neutral": 0.9995200634002686
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995200634002686,
+        "positive": 0.00026017785421572626,
+        "negative": 0.00021966980420984328
+      }
+    }
+  ]
+}

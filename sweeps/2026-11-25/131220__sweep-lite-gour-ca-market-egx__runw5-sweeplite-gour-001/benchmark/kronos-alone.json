@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 13.37,
+ "base_source": "egx-data/egxpy_gour.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: collected/kronos/forecast.csv absent or unparseable",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T13:12:21.061380+00:00",
+ "inputs_sha256": {
+  "digest.json": "5d0f3ee503fb10e50f565605f7ffc694dff074b4eebe3cca449edc51d008c077",
+  "ensemble.json": "b20cafe6f8d45bf7f4383845a97d31bc5ee36a7ca85232480c4c9a81fd96059b"
+ },
+ "reason": "no-kronos-csv",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/131220__sweep-lite-gour-ca-market-egx__runw5-sweeplite-gour-001",
+ "ticker": "GOUR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
