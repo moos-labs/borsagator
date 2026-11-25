@@ -2145,6 +2145,49 @@ def test_scorer():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_scorer_tilt_missing_range():
+    print("== scorer tilt-technicals missing range fields (#673) ==")
+    sc = load_module(os.path.join(HERE, "backtest_score.py"),
+                     "backtest_score")
+    tmp = tempfile.mkdtemp(prefix="bt436-tilt673-")
+    try:
+        cap, ens, base, after = _fixture_capture(tmp)
+        kronos, first_date = sc.read_kronos_path(
+            os.path.join(cap, "collected/kronos/forecast.csv"))
+        # A malformed/partial capture: tilt present on every
+        # horizon, but week carries NO range fields and month
+        # carries only range_high_pct. Both horizons must be
+        # skipped by the tilt-technicals entrant without raising
+        # (the old code subtracted before the None guard and
+        # raised TypeError).
+        broken = json.loads(json.dumps(ens))
+        week = broken["horizons"]["week"]
+        assert week.get("tilt_centre_pct") is not None
+        week.pop("range_high_pct", None)
+        week.pop("range_low_pct", None)
+        month = broken["horizons"]["month"]
+        assert month.get("tilt_centre_pct") is not None
+        month.pop("range_low_pct", None)
+        raised = None
+        try:
+            mine = sc.build_entrants(broken, kronos, first_date)
+        except Exception as exc:  # noqa: BLE001 - report, don't hide
+            raised = exc
+            mine = None
+        check("tilt missing range does not raise", raised is None,
+              repr(raised))
+        if mine is not None:
+            tt = mine["tilt-technicals"]
+            check("tilt week skipped when range fields absent",
+                  "week" not in tt, "got %s" % sorted(tt))
+            check("tilt month skipped when range_low_pct absent",
+                  "month" not in tt, "got %s" % sorted(tt))
+            check("tilt day still built from intact horizon",
+                  "day" in tt, "got %s" % sorted(tt))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_realised_dropped_close():
     print("== realised dropped close (horizons must not shift) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -2389,6 +2432,7 @@ def run_backtest_checks(verbose=True):
     test_runner_skip_classification_in_cell()
     test_runner_python_override()
     test_scorer()
+    test_scorer_tilt_missing_range()
     return CHECKS["pass"], CHECKS["fail"], list(FAILURES)
 
 
