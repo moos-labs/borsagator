@@ -53,11 +53,10 @@ import ledger  # noqa: E402
 TOOL = "walkforward-backtest"
 VERSION = 1
 WARMUP_SESSIONS = 60
-# Kronos bars requested per cell: enough calendar bars to span
-# the 21-session month horizon at any realistic EGX density
-# (issue #666: ensemble.horizon_bars(21, 0.6) = 35; at the usual
-# ~0.71 density the month reads bar 29).
-KRONOS_PRED_LEN = 35
+# Kronos rows requested per cell: one row per TRADING session
+# (kronos_forecast.py builds its path on next_sessions), so the
+# 21-session month horizon reads row 21 (issue #666).
+KRONOS_PRED_LEN = 21
 DROP_BEFORE = "2019-01-01"
 # Design §3: 12 quarter-ends, 2023-12-29 -> 2026-09-30. A
 # quarter-end that is not a session is adjusted to the last
