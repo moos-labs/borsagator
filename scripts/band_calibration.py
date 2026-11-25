@@ -28,6 +28,16 @@ deterministically from the ledger's matured rows:
    centre = expected + b', half = k' x half. Direction is taken
    from the corrected centre so direction and range agree.
 
+6. Launch-gate alerts (accepted #593 design note): a cell pages
+   when it holds one full trailing window of independent blocks
+   (n_eff >= PUBLIC_N[horizon]: day 30, week 6, month 2) and its
+   as-published coverage trips the per-horizon exact-binomial
+   predicate (alert_predicate): day outside [0.75, 0.85], week at
+   coverage <= 2/6, month at 0/2; no high-side page for week/month.
+   One 30-row window can only catch catastrophic week/month
+   under-coverage — fine week/month calibration is not decidable at
+   6 / 2 independent blocks.
+
 Formula basis: residuals are only meaningful against the centre
 formula that produced them, so compute_calibration() can filter
 rows to one formula tag (ledger rows carry the producing
@@ -51,10 +61,19 @@ import statistics
 WINDOW = 30            # trailing matured rows per cell
 MIN_N = 10             # a cell (or pool) applies at n >= MIN_N
 PRIOR_N = 10           # shrinkage prior weight toward the pool
-PUBLIC_N = 30          # public accuracy claims only at n >= 30 (D4)
+PUBLIC_N = {"day": 30, "week": 6, "month": 2}
+                       # launch-gate alert threshold per horizon: one
+                       # full trailing window of independent blocks
+                       # (WINDOW / sessions; accepted #593 design)
 K_MIN, K_MAX = 0.5, 2.0
 TARGET_COVERAGE = 0.80
-ALERT_BAND = (0.75, 0.85)   # launch-gate tolerance per ticker cell
+ALERT_BAND = (0.75, 0.85)   # day launch-gate page band per ticker cell
+WEEK_PAGE_LOW = 2.0 / 6.0   # week pages low at coverage <= 2/6 (exact
+                            # binomial at target 0.80: ~1.7% false-page)
+MONTH_PAGE_LOW = 0.0        # month pages low at 0/2 only (~4% false-page)
+                            # No high-side page for week/month: at 6 / 2
+                            # blocks a full-window 6/6 or 2/2 reading is
+                            # common at true 0.80 coverage.
 HORIZONS = ("day", "week", "month")
 
 
@@ -297,18 +316,46 @@ def apply_calibration(centre, half, entry):
     return centre + entry["b"], half * entry["k"], True
 
 
+def public_n(horizon):
+    """Launch-gate alert threshold for a horizon: one full trailing
+    window of independent blocks (WINDOW / sessions — day 30, week 6,
+    month 2; accepted #593 design). Unknown horizons gate at the day
+    value, matching effective_n's sessions default."""
+    return PUBLIC_N.get(horizon, PUBLIC_N["day"])
+
+
+def alert_predicate(horizon, coverage):
+    """Launch-gate page predicate at TARGET_COVERAGE (accepted #593
+    design note), exact-binomial so a conforming cell false-pages
+    rarely at the horizon's own block count. Day keeps the
+    [0.75, 0.85] band on both sides (the status quo). Week pages low
+    at coverage <= 2/6 (~1.7% false-page at true 0.80) and month at
+    0/2 only (~4%); there is NO high-side page for week/month — a
+    full-window 6/6 or 2/2 reading is common at true 0.80, so a
+    high-side page would mostly cry wolf. One 30-row window can only
+    catch catastrophic week/month under-coverage."""
+    if coverage is None:
+        return False
+    if horizon == "week":
+        return coverage <= WEEK_PAGE_LOW
+    if horizon == "month":
+        return coverage <= MONTH_PAGE_LOW
+    return not (ALERT_BAND[0] <= coverage <= ALERT_BAND[1])
+
+
 def alert_cells(calibration):
-    """Cells the guard should page on (triage step 6): n >=
-    PUBLIC_N with AS-PUBLISHED coverage outside the launch-gate
-    tolerance [0.75, 0.85]."""
+    """Cells the guard should page on (triage step 6, accepted #593
+    per-horizon predicate): n_eff at one full window of independent
+    blocks (PUBLIC_N per horizon) with AS-PUBLISHED coverage tripping
+    alert_predicate for the horizon."""
     out = []
     for entry in (calibration.get("cells") or {}).values():
-        cov = entry.get("coverage_before")
+        horizon = entry.get("horizon")
         n_eff = entry.get("n_eff")
         if n_eff is None:
-            n_eff = effective_n(entry.get("n", 0), entry.get("horizon"))
-        if (n_eff >= PUBLIC_N and cov is not None
-                and not (ALERT_BAND[0] <= cov <= ALERT_BAND[1])):
+            n_eff = effective_n(entry.get("n", 0), horizon)
+        if (n_eff >= public_n(horizon)
+                and alert_predicate(horizon, entry.get("coverage_before"))):
             out.append(entry)
     return sorted(out, key=lambda e: (str(e["ticker"]), str(e["horizon"])))
 

@@ -8,7 +8,10 @@ factor k = 85th percentile of |residual - b| / half clamped to
 [0.5, 2.0], shrinkage toward the horizon pool (prior weight 10),
 the n<10 fallbacks (cell -> pool -> uncalibrated k=1, b=0), the
 trailing W=30 window, the centre-formula basis filter, and the
-guard alert predicate (n >= 30 outside 0.75-0.85).
+guard alert predicate (per-horizon full-window n_eff gate — day 30,
+week 6, month 2 — with the exact-binomial page predicate: day outside
+0.75-0.85, week at coverage <= 2/6, month at 0/2, no high-side page
+for week/month).
 
 Also pins the layer against the in-repo forward ledger — the
 triage's own evidence base (48 matured, 12 gap-flagged, 36
@@ -204,8 +207,8 @@ def test_apply_and_alerts():
     c, h, applied = bc.apply_calibration(1.0, 2.0, None)
     check("missing entry leaves the band unchanged",
           not applied and (c, h) == (1.0, 2.0), repr((c, h, applied)))
-    # Alert predicate: n >= 30 and as-published coverage outside
-    # [0.75, 0.85].
+    # Day alert predicate: n_eff >= 30 and as-published coverage
+    # outside [0.75, 0.85].
     def cell(ticker, n, cov):
         return {"ticker": ticker, "horizon": "day", "n": n,
                 "coverage_before": cov}
@@ -314,6 +317,70 @@ def test_effective_n_703():
           repr(table))
 
 
+def test_alert_predicate_per_horizon():
+    # Accepted #593 design: PUBLIC_N is the per-horizon full-window
+    # gate (day 30 / week 6 / month 2) and the page predicate is
+    # exact-binomial at target 0.80.
+    check("PUBLIC_N is the per-horizon full-window mapping",
+          bc.PUBLIC_N == {"day": 30, "week": 6, "month": 2},
+          repr(bc.PUBLIC_N))
+    check("public_n day 30 / week 6 / month 2",
+          (bc.public_n("day"), bc.public_n("week"),
+           bc.public_n("month")) == (30, 6, 2))
+    check("unknown horizon gates at the day value",
+          bc.public_n("quarter") == 30, repr(bc.public_n("quarter")))
+    # Day keeps the [0.75, 0.85] band on both sides (status quo).
+    check("day pages low below 0.75",
+          bc.alert_predicate("day", 0.749) is True)
+    check("day pages high above 0.85",
+          bc.alert_predicate("day", 0.851) is True)
+    check("day band edges pass",
+          bc.alert_predicate("day", 0.75) is False
+          and bc.alert_predicate("day", 0.85) is False)
+    # Week: low page at coverage <= 2/6 only; no high-side page.
+    check("week pages low at 2/6",
+          bc.alert_predicate("week", 2.0 / 6.0) is True)
+    check("week 3/6 does not page",
+          bc.alert_predicate("week", 3.0 / 6.0) is False)
+    check("week never pages high (6/6 at true 0.80 is ~26%)",
+          bc.alert_predicate("week", 1.0) is False)
+    # Month: low page at 0/2 only; no high-side page.
+    check("month pages at 0/2",
+          bc.alert_predicate("month", 0.0) is True)
+    check("month 1/2 does not page",
+          bc.alert_predicate("month", 0.5) is False)
+    check("month never pages high",
+          bc.alert_predicate("month", 1.0) is False)
+    check("None coverage never pages",
+          bc.alert_predicate("day", None) is False
+          and bc.alert_predicate("week", None) is False
+          and bc.alert_predicate("month", None) is False)
+    # alert_cells: the full-window gate is per horizon.
+    def cell(ticker, horizon, n, n_eff, cov):
+        return {"ticker": ticker, "horizon": horizon, "n": n,
+                "n_eff": n_eff, "coverage_before": cov}
+    cal = {"cells": {
+        ("WLO", "week"): cell("WLO", "week", 30, 6, 2.0 / 6.0),
+        ("WHI", "week"): cell("WHI", "week", 30, 6, 1.0),
+        ("WTHIN", "week"): cell("WTHIN", "week", 25, 5, 0.0),
+        ("MLO", "month"): cell("MLO", "month", 30, 2, 0.0),
+        ("MOK", "month"): cell("MOK", "month", 30, 2, 0.5),
+        ("MTHIN", "month"): cell("MTHIN", "month", 21, 1, 0.0),
+        ("DLO", "day"): cell("DLO", "day", 30, 30, 0.70),
+        ("DTHIN", "day"): cell("DTHIN", "day", 29, 29, 0.70),
+    }}
+    alerts = {a["ticker"] for a in bc.alert_cells(cal)}
+    check("alert_cells pages per the per-horizon predicate",
+          alerts == {"WLO", "MLO", "DLO"}, repr(alerts))
+    # Entries without a stored n_eff derive it from raw n.
+    cal2 = {"cells": {
+        ("W2", "week"): {"ticker": "W2", "horizon": "week", "n": 30,
+                         "coverage_before": 0.0}}}
+    alerts2 = [a["ticker"] for a in bc.alert_cells(cal2)]
+    check("n_eff derived from raw n when absent (week 30 -> 6, pages)",
+          alerts2 == ["W2"], repr(alerts2))
+
+
 def test_real_ledger():
     path = os.path.join(ROOT, "ledger", "ledger.json")
     with open(path, encoding="utf-8") as f:
@@ -379,6 +446,7 @@ if __name__ == "__main__":
     test_formula_basis()
     test_apply_and_alerts()
     test_effective_n_703()
+    test_alert_predicate_per_horizon()
     test_feedback_loop_701()
     test_real_ledger()
     test_ensemble_wiring()
