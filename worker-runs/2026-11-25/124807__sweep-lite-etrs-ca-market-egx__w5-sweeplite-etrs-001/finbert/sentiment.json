@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.03484670507411162,
+    "negative": 0.016645297408103943,
+    "neutral": 0.9485080242156982
+  },
+  "items": [
+    {
+      "text": "Mandatory Sage Firmware Update Requires ETRS Form One Revision - Radio World",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.028781188651919365,
+        "negative": 0.019609440118074417,
+        "neutral": 0.9516093730926514
+      }
+    },
+    {
+      "text": "November 2026 Regulatory Dates for Broadcasters – Nationwide EAS Test and ETRS Reporting, NCE FM Translator Filing Window, Daylight Savings Time, and more - Broadcast Law Blog",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.03522035852074623,
+        "negative": 0.0165108609944582,
+        "neutral": 0.9482688307762146
+      }
+    },
+    {
+      "text": "Filing FCC ETRS Form One for Radio - Radio World",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.040538568049669266,
+        "negative": 0.013815591111779213,
+        "neutral": 0.9456458687782288
+      }
+    }
+  ]
+}

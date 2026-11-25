@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "ETRS.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6149,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 11.050000190734863,
+  "indicators": {
+    "RSI_14": 55.40972662343461,
+    "MACD": 0.1390912142852958,
+    "MACD_signal": 0.11305833938717688,
+    "MACD_hist": 0.026032874898118924,
+    "EMA_20": 10.865088791172887,
+    "EMA_50": 10.72980953185679,
+    "ADX_14": 18.41405077749867
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-23",
+    "CDLENGULFING": "2026-11-24",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
