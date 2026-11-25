@@ -48,6 +48,16 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 | kronos-alone | n=0 — below the n≥10 gate, no claim | — | — | — |
 | raw-llm-cohere | n=0 — below the n≥10 gate, no claim | — | — | — |
 
+## Band calibration (issue #593)
+
+Per-cell fit of the calibration layer (trailing 30 clean matured rows per cell; centre correction b = median realised - expected, width factor k = 80th percentile of |residual - b| / half, shrunk toward the horizon pool). A cell ships uncalibrated until it or its pool reaches n >= 10.
+
+| Ticker | Horizon | n | Coverage (as published) | Coverage (calibrated, in-window) | k | b (pp) | Basis |
+|---|---|---|---|---|---|---|---|
+| NVDA | day | 1 | 1.000 | 1.000 | 1.052 | -8.47 | pool |
+| POUL.CA | day | 20 | 0.450 | 0.800 | 1.013 | -8.51 | cell |
+| POUL.CA | week | 15 | 1.000 | 0.800 | 0.500 | -22.03 | cell |
+
 ## Benchmark gaps & notes
 
 - sweeps/2026-11-18/123709__sweep-lite-poul-ca-market-egx__runsched-2026-11-18: family-agent absent (family-did-not-vote) — no rows
