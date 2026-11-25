@@ -1,0 +1,7 @@
+{
+ "job_id": "guard-2026-11-25T2047Z",
+ "job": "ledger-guard",
+ "at": "2026-11-25T21:25:47.082663+00:00",
+ "worker": "borsagator-worker-6",
+ "reason": "guard ran but its envelope heartbeat did not land on main via the publish relay \u2014 slot not marked done; the next hourly guard retries (issues #434, #443)"
+}
