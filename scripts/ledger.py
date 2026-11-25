@@ -1452,9 +1452,11 @@ def main():
     # fitted on the clean matured ensemble rows above. The
     # ensemble applies a fit only to rows of its own centre
     # formula; this table is the shipped-history diagnostic over
-    # all clean rows. Cells at n >= 30 measuring outside the
-    # 0.75-0.85 tolerance are listed as alerts (the guard pages
-    # on the same predicate, band_calibration.alert_cells).
+    # all clean rows. Cells holding one full window of independent
+    # blocks (n_eff >= 30 day / 6 week / 2 month) whose as-published
+    # coverage trips the per-horizon exact-binomial page predicate
+    # are listed as alerts (the guard pages on the same predicate,
+    # band_calibration.alert_cells).
     try:
         _scripts = os.path.dirname(os.path.abspath(__file__))
         if _scripts not in sys.path:
@@ -1474,9 +1476,15 @@ def main():
         B += [""]
         _alerts = _band_cal.alert_cells(_cal)
         if _alerts:
-            B += ["**Calibration alerts** — cells at n >= "
-                  f"{_band_cal.PUBLIC_N} with as-published coverage "
-                  "outside the 0.75-0.85 launch-gate tolerance:", ""]
+            B += ["**Calibration alerts** — cells holding one full "
+                  "window of independent blocks (n_eff >= "
+                  f"{_band_cal.PUBLIC_N['day']} day / "
+                  f"{_band_cal.PUBLIC_N['week']} week / "
+                  f"{_band_cal.PUBLIC_N['month']} month) whose "
+                  "as-published coverage pages under the "
+                  "per-horizon predicate (day outside 0.75-0.85, "
+                  "week at coverage <= 2/6, month at 0/2; no "
+                  "high-side page for week/month):", ""]
             for _e in _alerts:
                 B.append(f"- {_e['ticker']} {_e['horizon']}: "
                          f"n={_e['n']}, coverage "
