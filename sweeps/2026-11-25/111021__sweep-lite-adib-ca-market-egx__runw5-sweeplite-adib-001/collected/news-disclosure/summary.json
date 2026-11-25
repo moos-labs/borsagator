@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ADIB.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ADIB.CA",
+    "fetched_at": "2026-11-25T11:10:20Z",
+    "tool": "news-disclosure",
+    "news_count": 34,
+    "disclosure_count": 1,
+    "arabic_headlines": 31,
+    "latest_news_date": "Wed, 25 Nov 2026 10:21:28 GMT",
+    "latest_disclosure_date": "Sun, 15 Nov 2026 03:40:40 GMT",
+    "top_headline": "Abu Dhabi Islamic Bank - Egypt - S.A.E (ADIB.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.245,
+    "finbert_negative": 0.028,
+    "finbert_neutral": 0.727,
+    "finbert_scored": 4,
+    "multilingual_positive": 0.226,
+    "multilingual_negative": 0.542,
+    "multilingual_neutral": 0.233,
+    "multilingual_scored": 31,
+    "bodies_fetched": 10,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.19,
+    "translated_negative": 0.28,
+    "translated_neutral": 0.531,
+    "translated_scored": 31
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

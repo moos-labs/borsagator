@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 46.31,
+ "base_source": "egx-data/egxpy_adib.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:10:22.300352+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_adib.csv": "8b72771729bc5b2d6f76ca2dfb241ca70a01a93454e618dc02da4afaf98b9ea5",
+  "digest.json": "4e155fc61baa9e5f5b42054cd700728177e9b6413f3ce6cb7b5ba0cc1efe4fe6",
+  "ensemble.json": "64bea06caf22730d6c21e10015a9bd3d59bba5dac6b57d2d66f56e1cd972da7c",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001",
+ "ticker": "ADIB.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

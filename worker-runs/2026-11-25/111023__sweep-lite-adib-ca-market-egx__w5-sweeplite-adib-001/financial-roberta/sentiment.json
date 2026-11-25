@@ -1,0 +1,427 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 27,
+  "label_counts": {
+    "positive": 10,
+    "negative": 6,
+    "neutral": 11
+  },
+  "mean_probabilities": {
+    "positive": 0.37668424393309075,
+    "negative": 0.2213066893341925,
+    "neutral": 0.4020090651400905
+  },
+  "items": [
+    {
+      "text": "The things that can wait — Nahrizul Adib Kadri - Malay Mail",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00042100518476217985,
+        "negative": 0.0002874038473237306,
+        "neutral": 0.9992915391921997
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992915391921997,
+        "positive": 0.00042100518476217985,
+        "negative": 0.0002874038473237306
+      }
+    },
+    {
+      "text": "THIS MORNING: ADIB eyes AT1 sukuk + Emaar Properties clears conditions for construction arm takeover - EnterpriseAM",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9943684935569763,
+        "negative": 0.00028689761529676616,
+        "neutral": 0.0053445762023329735
+      },
+      "raw_probabilities": {
+        "positive": 0.9943684935569763,
+        "neutral": 0.0053445762023329735,
+        "negative": 0.00028689761529676616
+      }
+    },
+    {
+      "text": "Skandinaviska Enskilda Banken AB (SEBA.HM) options chain - Yahoo Finance Australia",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007849522517062724,
+        "negative": 0.00026115356013178825,
+        "neutral": 0.9989538192749023
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989538192749023,
+        "positive": 0.0007849522517062724,
+        "negative": 0.00026115356013178825
+      }
+    },
+    {
+      "text": "Match Highlights Al-Dhafra - Ajman | ADIB Cup | Yalla Shoot - YSscores",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006407268228940666,
+        "negative": 0.000399874581489712,
+        "neutral": 0.9989594221115112
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989594221115112,
+        "positive": 0.0006407268228940666,
+        "negative": 0.000399874581489712
+      }
+    },
+    {
+      "text": "ADIB-Egypt named Global Finance’s best Islamic financial institution in Egypt for 9th year - Daily News Egypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9979456067085266,
+        "negative": 0.0010050265118479729,
+        "neutral": 0.0010493420995771885
+      },
+      "raw_probabilities": {
+        "positive": 0.9979456067085266,
+        "neutral": 0.0010493420995771885,
+        "negative": 0.0010050265118479729
+      }
+    },
+    {
+      "text": "Abu Dhabi Islamic Bank announces results of SME Innovation Challenge - Big News Network.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.17892304062843323,
+        "negative": 0.0008097178069874644,
+        "neutral": 0.8202672004699707
+      },
+      "raw_probabilities": {
+        "neutral": 0.8202672004699707,
+        "positive": 0.17892304062843323,
+        "negative": 0.0008097178069874644
+      }
+    },
+    {
+      "text": "Abu Dhabi Islamic Bank Egypt stock: 9-month profit rises 22.8% - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982666969299316,
+        "negative": 0.0008098056423477829,
+        "neutral": 0.000923439918551594
+      },
+      "raw_probabilities": {
+        "positive": 0.9982666969299316,
+        "neutral": 0.000923439918551594,
+        "negative": 0.0008098056423477829
+      }
+    },
+    {
+      "text": "Malaf El Yawm Season 1 Andira Al-Zuhairi - Adib Zakhour - MTV Lebanon",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005701732588931918,
+        "negative": 0.00045070535270497203,
+        "neutral": 0.9989790916442871
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989790916442871,
+        "positive": 0.0005701732588931918,
+        "negative": 0.00045070535270497203
+      }
+    },
+    {
+      "text": "Al-Wahda 3-1 Khorfakkan: Result, Goals and Stats | ADIB Cup - YSscores",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.003155306912958622,
+        "negative": 0.00047791266115382314,
+        "neutral": 0.9963667392730713
+      },
+      "raw_probabilities": {
+        "neutral": 0.9963667392730713,
+        "positive": 0.003155306912958622,
+        "negative": 0.00047791266115382314
+      }
+    },
+    {
+      "text": "Abu Dhabi Islamic Bank - Egypt - S.A.E (ADIB.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006859527784399688,
+        "negative": 0.00016295758541673422,
+        "neutral": 0.9991511106491089
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991511106491089,
+        "positive": 0.0006859527784399688,
+        "negative": 0.00016295758541673422
+      }
+    },
+    {
+      "text": "Selangor defender Adib falls victim to concert ticket scam - NST Online",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00023533475177828223,
+        "negative": 0.9985935091972351,
+        "neutral": 0.0011710796970874071
+      },
+      "raw_probabilities": {
+        "negative": 0.9985935091972351,
+        "neutral": 0.0011710796970874071,
+        "positive": 0.00023533475177828223
+      }
+    },
+    {
+      "text": "It all points to institutional failures - Adib Saani on recurring cocaine seizures linked to Ghana - Adomonline.com",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002395459305262193,
+        "negative": 0.9987694621086121,
+        "neutral": 0.0009910091757774353
+      },
+      "raw_probabilities": {
+        "negative": 0.9987694621086121,
+        "neutral": 0.0009910091757774353,
+        "positive": 0.0002395459305262193
+      }
+    },
+    {
+      "text": "UAE Business: ADIB launches ‘ADIB Arrive’ for new UAE residents - Gulf Daily News (Bahrain)",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976522326469421,
+        "negative": 0.0004731116641778499,
+        "neutral": 0.0018746481509879231
+      },
+      "raw_probabilities": {
+        "positive": 0.9976522326469421,
+        "neutral": 0.0018746481509879231,
+        "negative": 0.0004731116641778499
+      }
+    },
+    {
+      "text": "ADIB Launches ‘ADIB Arrive’ to Streamline Banking for New UAE Residents - FF News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9979946613311768,
+        "negative": 0.0005800699000246823,
+        "neutral": 0.0014253172557801008
+      },
+      "raw_probabilities": {
+        "positive": 0.9979946613311768,
+        "neutral": 0.0014253172557801008,
+        "negative": 0.0005800699000246823
+      }
+    },
+    {
+      "text": "ADIB’s Dh1.75 billion rights issue opens on Nov 10 - Gulf News",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005621791933663189,
+        "negative": 0.00024397265224251896,
+        "neutral": 0.9991938471794128
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991938471794128,
+        "positive": 0.0005621791933663189,
+        "negative": 0.00024397265224251896
+      }
+    },
+    {
+      "text": "ADIB Launches UAE’s First 24/7 Real-Time EGP Transfers to Egypt via Visa Direct - FF News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978253841400146,
+        "negative": 0.0006534234853461385,
+        "neutral": 0.0015211645513772964
+      },
+      "raw_probabilities": {
+        "positive": 0.9978253841400146,
+        "neutral": 0.0015211645513772964,
+        "negative": 0.0006534234853461385
+      }
+    },
+    {
+      "text": "ADIB becomes the first bank in the UAE to offer 24/7 real-time EGP transfers to bank accounts across Egypt through Visa Direct - Zawya",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.997665524482727,
+        "negative": 0.0005530194030143321,
+        "neutral": 0.0017815219471231103
+      },
+      "raw_probabilities": {
+        "positive": 0.997665524482727,
+        "neutral": 0.0017815219471231103,
+        "negative": 0.0005530194030143321
+      }
+    },
+    {
+      "text": "Former Queensland premier Annastacia Palaszczuk’s ex-partner Reza Adib’s bail altered for Gold Coast rape charges - SMH.com.au",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0008973761578090489,
+        "negative": 0.977605402469635,
+        "neutral": 0.0214972086250782
+      },
+      "raw_probabilities": {
+        "negative": 0.977605402469635,
+        "neutral": 0.0214972086250782,
+        "positive": 0.0008973761578090489
+      }
+    },
+    {
+      "text": "ADIB rights trading period for AED 1.75bln rights Issue begins on 4 November - Zawya",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000300143874483183,
+        "negative": 0.00020672504615504295,
+        "neutral": 0.9994931221008301
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994931221008301,
+        "positive": 0.000300143874483183,
+        "negative": 0.00020672504615504295
+      }
+    },
+    {
+      "text": "Adib opens trading for Dh1.75 billion rights issue; key dates investors should know - Khaleej Times",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.005138344131410122,
+        "negative": 0.00019866270304191858,
+        "neutral": 0.9946630001068115
+      },
+      "raw_probabilities": {
+        "neutral": 0.9946630001068115,
+        "positive": 0.005138344131410122,
+        "negative": 0.00019866270304191858
+      }
+    },
+    {
+      "text": "Reza Adib fronts Gold Coast court over rape charges - The Courier Mail",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003314002533443272,
+        "negative": 0.9938235282897949,
+        "neutral": 0.005845131352543831
+      },
+      "raw_probabilities": {
+        "negative": 0.9938235282897949,
+        "neutral": 0.005845131352543831,
+        "positive": 0.0003314002533443272
+      }
+    },
+    {
+      "text": "ADIB rights trading period for rights issue begins on 4 November - Zawya",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0002656728611327708,
+        "negative": 0.00020340841729193926,
+        "neutral": 0.9995309114456177
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995309114456177,
+        "positive": 0.0002656728611327708,
+        "negative": 0.00020340841729193926
+      }
+    },
+    {
+      "text": "Beirut cocaine seizure: NACOC's damage control raises more questions than answers - Adib Saani - Modern Ghana",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003678166540339589,
+        "negative": 0.9987139701843262,
+        "neutral": 0.0009183256770484149
+      },
+      "raw_probabilities": {
+        "negative": 0.9987139701843262,
+        "neutral": 0.0009183256770484149,
+        "positive": 0.0003678166540339589
+      }
+    },
+    {
+      "text": "Beirut Cocaine Bust: Adib Saani accuses NACOC of damage control - GhanaWeb",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0004841308400500566,
+        "negative": 0.997252881526947,
+        "neutral": 0.0022630926687270403
+      },
+      "raw_probabilities": {
+        "negative": 0.997252881526947,
+        "neutral": 0.0022630926687270403,
+        "positive": 0.0004841308400500566
+      }
+    },
+    {
+      "text": "ADIB adds 200,000 customers and a first-of-its-kind open finance licence as nine-month profit climbs to AED 6.4 billion - The Fintech Times",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982789754867554,
+        "negative": 0.0007639451650902629,
+        "neutral": 0.0009570932015776634
+      },
+      "raw_probabilities": {
+        "positive": 0.9982789754867554,
+        "neutral": 0.0009570932015776634,
+        "negative": 0.0007639451650902629
+      }
+    },
+    {
+      "text": "ADIB sustains strong growth momentum in first nine months, with profit before tax Up 6% to AED 6.4 billion - www.wam.ae",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9983055591583252,
+        "negative": 0.0008504022844135761,
+        "neutral": 0.0008440004312433302
+      },
+      "raw_probabilities": {
+        "positive": 0.9983055591583252,
+        "negative": 0.0008504022844135761,
+        "neutral": 0.0008440004312433302
+      }
+    },
+    {
+      "text": "ADIB Q3 profit before tax rises 6% to Dh6.4 billion as financing surges - Khaleej Times",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981683492660522,
+        "negative": 0.0008436623611487448,
+        "neutral": 0.0009880043799057603
+      },
+      "raw_probabilities": {
+        "positive": 0.9981683492660522,
+        "neutral": 0.0009880043799057603,
+        "negative": 0.0008436623611487448
+      }
+    }
+  ]
+}

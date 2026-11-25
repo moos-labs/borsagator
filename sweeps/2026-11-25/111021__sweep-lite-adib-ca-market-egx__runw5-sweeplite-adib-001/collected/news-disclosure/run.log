@@ -1,0 +1,20 @@
+WARN body http 404: https://ca.finance.yahoo.com/quote/ADIB.CA/seasonality/
+WARN body http 403: https://www.mobtada.com/egypt/1672956/%D9%85%D9%86%D9%8A%D8%B1-%D8%A3%D8%AF%D9%8A%D8%A8-%D
+bodies: 10/12 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/ADIB.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5971.11it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 20078.96it/s]
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 14138.60it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6229.30it/s]
+{"tool": "news-disclosure", "ticker": "ADIB.CA", "news_count": 34, "disclosure_count": 1, "arabic_headlines": 31, "latest_news_date": "Wed, 25 Nov 2026 10:21:28 GMT", "latest_disclosure_date": "Sun, 15 Nov 2026 03:40:40 GMT", "top_headline": "Abu Dhabi Islamic Bank - Egypt - S.A.E (ADIB.CA) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada", "llm_provider": "extractive", "finbert_positive": 0.245, "finbert_negative": 0.028, "finbert_neutral": 0.727, "finbert_scored": 4, "multilingual_positive": 0.226, "multilingual_negative": 0.542, "multilingual_neutral": 0.233, "multilingual_scored": 31, "bodies_fetched": 10, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.19, "translated_negative": 0.28, "translated_neutral": 0.531, "translated_scored": 31}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Wed, 25 Nov 2026 10:21:28 GMT] (مبتدا) منير أديب: العواصم الأوروبية أدركت أن الإرهابية تمثل خطرًا على أمنها (فيديو) - مبتدا
+- [Tue, 24 Nov 2026 14:53:55 GMT] (شبكة تواصل الإخبارية) عمرو أديب يهاجم الأهلي بعد هزيمته أمام بيراميدز 2-0 ويطالب ببقاء عموتة - شبكة تواصل الإخبارية
+- [Tue, 24 Nov 2026 08:57:48 GMT] (alqhat.com) القطيف - القلعة: الأديب والشاعر الحاج محمد سعيد ابن الشيخ علي ابو الحسن الخنيزي في ذمة الله - alqhat.com
+- [Mon, 23 Nov 2026 21:18:35 GMT] (موقع الحرية الإخباري) عمرو أديب بعد هزيمة الأهلي أمام بيراميدز: «ندائي للإدارة والجماهير.. أوعوا تمشوا عموتة» - موقع الحرية الإخباري
+- [Mon, 23 Nov 2026 21:13:08 GMT] (ايجي بودكاست) عمرو أديب يهاجم لاعبي الأهلي: «مستواهم زي الزفت.. والدلع زاد عن حده» - ايجي بودكاست
+- [Mon, 23 Nov 2026 21:05:26 GMT] (https://www.youlyou.com/) عمرو أديب يهاجم لاعبي الأهلي: فين روح الفانلة الحمراء؟ - https://www.youlyou.com/
+- [Mon, 23 Nov 2026 20:51:45 GMT] (أهل مصر) عمرو أديب بعد خسارة الأهلي أمام بيراميدز: الفريق السماوي يستحق لقب الدوري.. وتمسكوا بعموتة (فيديو) - أهل مصر
+- [Mon, 23 Nov 2026 20:47:46 GMT] (أهل مصر) عمرو أديب: الأهلي من سيئ إلى أسوأ.. وحال جمهوره يصعب عليك - أهل مصر
