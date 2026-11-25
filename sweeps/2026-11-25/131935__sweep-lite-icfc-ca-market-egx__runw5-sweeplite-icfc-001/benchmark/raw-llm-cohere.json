@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 26.8,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:19:35.835872+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_icfc.csv": "007b63d4d5e22bcb9a2601a3887cbf38f1d1bf1af4c6e97b1d5b5581856d5b54",
+  "digest.json": "ddb6e17aadbfd272f99c7f5e8c15ea5d456ea187c8d96236b172623a1e51bf54",
+  "ensemble.json": "ebf907967873976d2ea3e3bf563cdcbb3bf036aca403dc90a33c50a11b221786",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

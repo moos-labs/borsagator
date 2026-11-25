@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 26.8,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T13:19:35.825073+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -2.01,
+   "families": {
+    "price-forecast": -0.227
+   },
+   "horizon_short": false,
+   "net_score": -0.227,
+   "range_high_pct": 1.31,
+   "range_low_pct": -4.89,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -12.44,
+   "families": {
+    "price-forecast": -0.375
+   },
+   "horizon_short": false,
+   "net_score": -0.375,
+   "range_high_pct": -10.66,
+   "range_low_pct": -15.94,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -4.84,
+   "families": {
+    "price-forecast": -0.316
+   },
+   "horizon_short": false,
+   "net_score": -0.316,
+   "range_high_pct": -2.62,
+   "range_low_pct": -6.92,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "0b364ef62f6e576114320249a6d2f21bc0011a4ec1cecd74932feff046919668",
+  "digest.json": "ddb6e17aadbfd272f99c7f5e8c15ea5d456ea187c8d96236b172623a1e51bf54",
+  "ensemble.json": "ebf907967873976d2ea3e3bf563cdcbb3bf036aca403dc90a33c50a11b221786"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0443,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

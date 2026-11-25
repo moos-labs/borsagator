@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 26.8,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:19:35.823630+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -1.72,
+   "families": {
+    "price-forecast": -0.227
+   },
+   "horizon_short": false,
+   "net_score": -0.227,
+   "range_high_pct": 5.65,
+   "range_low_pct": -9.09,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -10.65,
+   "families": {
+    "price-forecast": -0.376
+   },
+   "horizon_short": false,
+   "net_score": -0.376,
+   "range_high_pct": 16.93,
+   "range_low_pct": -38.23,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -4.15,
+   "families": {
+    "price-forecast": -0.316
+   },
+   "horizon_short": false,
+   "net_score": -0.316,
+   "range_high_pct": 8.62,
+   "range_low_pct": -16.92,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "0b364ef62f6e576114320249a6d2f21bc0011a4ec1cecd74932feff046919668",
+  "digest.json": "ddb6e17aadbfd272f99c7f5e8c15ea5d456ea187c8d96236b172623a1e51bf54",
+  "ensemble.json": "ebf907967873976d2ea3e3bf563cdcbb3bf036aca403dc90a33c50a11b221786"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0443,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

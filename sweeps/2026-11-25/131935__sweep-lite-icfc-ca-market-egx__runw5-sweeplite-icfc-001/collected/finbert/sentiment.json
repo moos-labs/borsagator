@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.1164584755897522,
+    "negative": 0.014342618795732657,
+    "neutral": 0.8691989183425903
+  },
+  "items": [
+    {
+      "text": "India’s 207-million CTV audience sparks push for a common industry body - Storyboard18",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.22474734485149384,
+        "negative": 0.009976424276828766,
+        "neutral": 0.7652761936187744
+      }
+    },
+    {
+      "text": "India’s CTV & FAST players discuss forming industry council - afaqs!",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.054063424468040466,
+        "negative": 0.01461909618228674,
+        "neutral": 0.9313175082206726
+      }
+    },
+    {
+      "text": "ICFC Finance Limited Board Proposes 10.5263 Percent Cash Dividend for Fiscal Year 2082/83 - Hamro Patro",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.07056465744972229,
+        "negative": 0.018432335928082466,
+        "neutral": 0.911003053188324
+      }
+    }
+  ]
+}

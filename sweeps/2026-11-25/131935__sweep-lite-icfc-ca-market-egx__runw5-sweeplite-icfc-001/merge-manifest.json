@@ -1,0 +1,24 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite ICFC.CA market=EGX",
+  "job_shape": "sweep-lite ICFC.CA market=EGX",
+  "claim_id": "w5-sweeplite-icfc-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-icfc-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
+  "finished": "2026-11-25T13:19:35.528136+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

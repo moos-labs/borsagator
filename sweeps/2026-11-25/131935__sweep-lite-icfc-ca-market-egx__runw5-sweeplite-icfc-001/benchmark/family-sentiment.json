@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 26.8,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-25T13:19:35.824261+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.35,
+   "families": {
+    "sentiment": 0.155
+   },
+   "horizon_short": false,
+   "net_score": 0.155,
+   "range_high_pct": 7.72,
+   "range_low_pct": -7.02,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 1.32,
+   "families": {
+    "sentiment": 0.155
+   },
+   "horizon_short": false,
+   "net_score": 0.155,
+   "range_high_pct": 28.9,
+   "range_low_pct": -26.27,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.61,
+   "families": {
+    "sentiment": 0.155
+   },
+   "horizon_short": false,
+   "net_score": 0.155,
+   "range_high_pct": 13.38,
+   "range_low_pct": -12.16,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "ddb6e17aadbfd272f99c7f5e8c15ea5d456ea187c8d96236b172623a1e51bf54",
+  "ensemble.json": "ebf907967873976d2ea3e3bf563cdcbb3bf036aca403dc90a33c50a11b221786"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0443,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
