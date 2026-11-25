@@ -93,6 +93,47 @@ def is_clean_matured(row):
     return half is not None and half > 0 and row_residual(row) is not None
 
 
+def uncalibrated_view(row):
+    """Issue #701: the row as the frozen model band published it.
+
+    A row whose band the layer itself calibrated
+    (band_calibration.applied == true) carries expected/range
+    values already shifted by b' and scaled by k'. Fitting on those
+    values makes the layer learn from its own output (feedback
+    loop). Instead of dropping such rows (which would starve every
+    cell once the layer is live, since all new rows are calibrated),
+    the uncalibrated band is reconstructed from the b_pp and k the
+    ensemble recorded on the row: expected_raw = expected - b_pp,
+    half_raw = half / k, centred on expected_raw. The realised
+    move is untouched, so the residual is the frozen model's own.
+
+    Returns a copy of the row for fitting, the row itself when the
+    layer did not touch it, or None when the row was calibrated but
+    cannot be reconstructed (missing/invalid b_pp or k): such rows
+    are excluded rather than guessed. Idempotent: the returned view
+    is marked applied=False. Reconstruction carries the rows'
+    2-decimal rounding."""
+    if not isinstance(row, dict):
+        return None
+    bc = row.get("band_calibration")
+    if not isinstance(bc, dict) or not bc.get("applied"):
+        return row
+    b, k = _num(bc.get("b_pp")), _num(bc.get("k"))
+    exp = _num(row.get("expected_move_pct"))
+    half = row_half(row)
+    if b is None or k is None or k <= 0 or exp is None or half is None:
+        return None
+    exp0 = exp - b
+    half0 = half / k
+    out = dict(row)
+    out["expected_move_pct"] = exp0
+    out["range_low_pct"] = exp0 - half0
+    out["range_high_pct"] = exp0 + half0
+    out["band_calibration"] = {"applied": False,
+                               "reconstructed_from": bc.get("basis")}
+    return out
+
+
 def _window(rows):
     """Trailing WINDOW rows, deterministic order (as_of, sweep)."""
     ordered = sorted(rows, key=lambda r: (str(r.get("as_of") or ""),
@@ -158,7 +199,11 @@ def compute_calibration(rows, formula=None):
     "cell" (n >= MIN_N, shrunk toward the pool), "pool" (cell too
     small, horizon pool applied) or "none" (k=1, b=0 — the
     uncalibrated model band)."""
-    usable = [r for r in (rows or []) if is_clean_matured(r)]
+    # Issue #701: never fit on the layer's own output — rows whose
+    # band was calibrated are reconstructed to the uncalibrated
+    # model band (or excluded when that is impossible).
+    views = [uncalibrated_view(r) for r in (rows or [])]
+    usable = [r for r in views if r is not None and is_clean_matured(r)]
     if formula is not None:
         usable = [r for r in usable if r.get("formula") == formula]
 

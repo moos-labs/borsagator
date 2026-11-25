@@ -223,6 +223,71 @@ def test_apply_and_alerts():
           and table[2].startswith("| AAA | day | 12 |"), repr(table))
 
 
+def cal_row(raw_exp=0.0, raw_half=10.0, resid=-8.0, b=-8.0, k=0.5,
+            **kw):
+    """A ledger row whose band the layer already calibrated (#701):
+    published expected = raw + b, half = raw half x k; the realised
+    move is the same as for the uncalibrated row."""
+    r = row(expected=raw_exp + b, half=raw_half * k, resid=resid - b, **kw)
+    r["band_calibration"] = {"applied": True, "n": 20, "k": k,
+                             "b_pp": b, "basis": "cell"}
+    return r
+
+
+def test_feedback_loop_701():
+    def mk(factory, n, **kw):
+        return [factory(as_of="2026-11-%02d" % (i % 28 + 1),
+                        sweep="s%03d" % i, **kw) for i in range(n)]
+    raw = mk(row, 20, resid=-8.0, half=10.0)
+    cald = mk(cal_row, 20, resid=-8.0, raw_half=10.0, b=-8.0, k=0.5)
+    ref = bc.compute_calibration(raw)["cells"][("AAA", "day")]
+    got = bc.compute_calibration(cald)["cells"][("AAA", "day")]
+    check("calibrated rows fit to the same b as the raw rows",
+          abs(got["b"] - ref["b"]) < 1e-9, "%r vs %r" % (got["b"], ref["b"]))
+    check("calibrated rows fit to the same k as the raw rows",
+          abs(got["k"] - ref["k"]) < 1e-9, "%r vs %r" % (got["k"], ref["k"]))
+    check("n counts the reconstructed rows (no starvation)",
+          got["n"] == 20, repr(got["n"]))
+    # Without the fix the published values would be fitted as-is:
+    # residual vs the published centre is 0, so b would collapse.
+    naive = [dict(r, band_calibration={"applied": False}) for r in cald]
+    nv = bc.compute_calibration(naive)["cells"][("AAA", "day")]
+    check("sanity: fitting published values as-is diverges (the loop)",
+          abs(nv["b"] - ref["b"]) > 1.0, repr(nv["b"]))
+    # Mixed raw + calibrated rows behave like all-raw.
+    mixed = raw[:10] + cald[10:]
+    mx = bc.compute_calibration(mixed)["cells"][("AAA", "day")]
+    check("mixed raw and calibrated rows fit like all-raw",
+          abs(mx["b"] - ref["b"]) < 1e-9 and abs(mx["k"] - ref["k"]) < 1e-9,
+          repr(mx))
+    # Not reconstructable: excluded, never guessed.
+    bad = cal_row()
+    bad["band_calibration"] = {"applied": True, "basis": "cell"}
+    check("calibrated row without b_pp/k is excluded",
+          bc.uncalibrated_view(bad) is None)
+    zero_k = cal_row()
+    zero_k["band_calibration"]["k"] = 0.0
+    check("calibrated row with k=0 is excluded",
+          bc.uncalibrated_view(zero_k) is None)
+    cal = bc.compute_calibration([bad, zero_k] + rows(12, resid=-5.0))
+    check("excluded rows do not count toward n",
+          cal["cells"][("AAA", "day")]["n"] == 12,
+          repr(cal["cells"][("AAA", "day")]["n"]))
+    # Untouched rows pass through unchanged; the view is idempotent.
+    plain = row()
+    check("uncalibrated row returned as-is",
+          bc.uncalibrated_view(plain) is plain)
+    once = bc.uncalibrated_view(cal_row())
+    check("view is idempotent", bc.uncalibrated_view(once) is once)
+    check("reconstruction recovers the raw band",
+          abs(once["expected_move_pct"]) < 1e-9
+          and abs(bc.row_half(once) - 10.0) < 1e-9
+          and abs(bc.row_residual(once) - (-8.0)) < 1e-9, repr(once))
+    check("input row is not mutated",
+          cal_row()["band_calibration"]["applied"] is True
+          and bc.uncalibrated_view(cal_row()) is not None)
+
+
 def test_real_ledger():
     path = os.path.join(ROOT, "ledger", "ledger.json")
     with open(path, encoding="utf-8") as f:
@@ -286,6 +351,7 @@ if __name__ == "__main__":
     test_window()
     test_formula_basis()
     test_apply_and_alerts()
+    test_feedback_loop_701()
     test_real_ledger()
     test_ensemble_wiring()
     print("PASS band-calibration-593: %s" % CHECKS)

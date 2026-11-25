@@ -1061,6 +1061,15 @@ def main():
                 "sessions": sess,
                 "corporate_actions": normalize_actions(ens, hb),
             })
+            # Issue #701: what the calibration layer did to this
+            # band. compute_calibration reconstructs the
+            # uncalibrated band from it so the layer never fits on
+            # its own output. Only recorded when the layer applied.
+            bcal = hb.get("band_calibration")
+            if isinstance(bcal, dict) and bcal.get("applied"):
+                forecasts[-1]["band_calibration"] = {
+                    k: bcal.get(k) for k in
+                    ("applied", "n", "k", "b_pp", "basis")}
 
     # ---- benchmark entrants (issue #79) ----------------------------------
     # Frozen entrant files under benchmark/ in each sweep dir, scored
