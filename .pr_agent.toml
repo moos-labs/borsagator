@@ -1,8 +1,10 @@
 # PR-Agent configuration for moos-labs/borsagator (#215).
 # Backend: OpenRouter only (Muhammad's decision, 2026-11-19 - the Gemini
 # free tier is down, 403). Free-tier cap on our key: 50 requests/day,
-# shared with the review panel; each PR costs ~3 calls (describe/review/
-# improve).
+# shared with the review panel. Since 2026-11-25 only auto_review runs
+# automatically (Muhammad's decision: stay on the free tier); describe
+# and improve are on-demand via PR comments, so an automatic run costs
+# ~1 call instead of ~3.
 [config]
 model = "openrouter/baidu/ernie-5.5-flash-preview:free"
 fallback_models = ["openrouter/inclusionai/ling-3.2-flash:free"]
