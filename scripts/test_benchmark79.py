@@ -780,6 +780,59 @@ def test_f13_class_b():
     assert "no timestamp" in gaps, bench_doc["gaps"]
 
 
+def test_f14_recompute_sigma_4tuple():
+    """#610 follow-up: ensemble.realized_sigma returns 4 values
+    (sigma, sigma60, source, density) since the v2 band (#594);
+    the old 3-value unpack in _recompute_sigma raised ValueError
+    and the except silently dropped sigma to None for sweeps whose
+    ensemble.json carries no sigma_daily (the two 2026-11-12
+    backfills). A stub returning the 4-tuple must yield sigma."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "score_forward_benchmark",
+        os.path.join(ROOT, "benchmarks", "score_forward_benchmark.py"))
+    sfb = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sfb)
+    import benchmark_freeze as bf
+    tmp = tempfile.mkdtemp(prefix="bench79-f14-")
+    sweep = "sweep-2026-11-12-backfill"
+    sdir = os.path.join(tmp, sweep)
+    ens = ensemble_141124()
+    ens.pop("sigma_daily", None)
+    ens.pop("sigma_source", None)
+    write_json(os.path.join(sdir, "ensemble.json"), ens)
+    write_json(os.path.join(sdir, "digest.json"), digest_141124())
+    kdir = os.path.join(sdir, "collected", "kronos")
+    os.makedirs(kdir, exist_ok=True)
+    with open(os.path.join(kdir, "forecast.csv"), "w",
+              newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["date", "open", "high", "low", "close",
+                    "volume", "amount"])
+        for i, d in enumerate(KRONOS_DATES):
+            c, h, l = KRONOS_CLOSES.get(i, (10.0 + 0.01 * i,
+                                            10.3 + 0.01 * i,
+                                            9.8 + 0.01 * i))
+            w.writerow([d, f"{c - 0.19:.4f}", f"{h:.4f}", f"{l:.4f}",
+                        f"{c:.4f}", "1000000.0", "10000000.0"])
+
+    class StubEns:
+        def __init__(self):
+            self.called = False
+
+        def realized_sigma(self, ticker, base=None, ok=None):
+            self.called = True
+            assert ticker == "POUL.CA" and base == 8.02
+            return (0.05, 0.04, "stub", 0.8)
+
+    stub = StubEns()
+    fs = sfb.FamilyScorer(tmp, sweep, bf, stub)
+    assert stub.called, "realized_sigma was not called"
+    assert fs.sigma == 0.05, f"sigma {fs.sigma}"
+    assert fs.sigma_note == "recomputed via ensemble.realized_sigma", (
+        fs.sigma_note)
+
+
 def test_f12_publisher_validation():
     import ledger_publish as pub
     assert hasattr(pub, "validate_benchmark"), (
@@ -851,6 +904,7 @@ def main():
         ("F11 delta walk", test_f11_delta_walk),
         ("F12 publisher validation", test_f12_publisher_validation),
         ("F13 class-b capture", test_f13_class_b),
+        ("F14 recompute-sigma 4-tuple", test_f14_recompute_sigma_4tuple),
     ]
     for name, fn in tests:
         check(name, fn)
