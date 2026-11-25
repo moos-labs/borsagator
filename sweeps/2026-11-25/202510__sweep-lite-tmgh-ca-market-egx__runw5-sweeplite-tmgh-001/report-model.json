@@ -1,0 +1,1630 @@
+{
+  "archive_commit": "beaf77ac5a3f8ffebdb7080ebfe42dc34b08b1b7",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "91219a923ca64bd357d0421b16484c77fb30fbeb8aa50dec1c1c5b670cb23a11",
+      "family-agent.json": "4210fdbf33c2fd47ca3d7e2fbeba6d7535d2eee701717979133b725dfcdb2593",
+      "family-fundamentals.json": "60ec45aa1b5efa910563b4c37214c25fcddaca520a15b6a44a42b18475dd8394",
+      "family-price-forecast.json": "8b428d1ed82df0e6e3e79acc29d3fb153a72a3e3eece29c513175a3696bc8ef7",
+      "family-sentiment.json": "d0fca024ebedd352b639c451ec407b8eec0a84194a16e3cb9ce2172fbdc57f56",
+      "family-technicals.json": "1d1acca9898e6b2105e24611fce53098108c5e66fa2043ef7c5f786f443581a7",
+      "kronos-alone.json": "7694034429200a6ab5b56dc19a674f5d466d456ce75317310c1abcb8f97fdd27",
+      "raw-llm-cohere.json": "311d3baa537cc3692fd0bdc3f4d04182bf36d4e893e99098be5c7fad47410565"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/TMGH-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 78.95,
+    "base_source": "egx-data/egxpy_tmgh.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": 0.248,
+      "sentiment": 0.439,
+      "technicals": -0.2
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.439
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.3953,
+        "net_score": 0.439,
+        "range_high_pct": 2.63,
+        "range_low_pct": -2.63,
+        "tilt_centre_pct": 0.16,
+        "trading_sessions": 1,
+        "vol_h_pct": 1.9038
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.15,
+          "sentiment": 0.439,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 4.3192,
+        "net_score": 0.039,
+        "range_high_pct": 12.56,
+        "range_low_pct": -12.56,
+        "tilt_centre_pct": 0.22,
+        "trading_sessions": 21,
+        "vol_h_pct": 8.7245
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.439,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.4466,
+        "net_score": 0.074,
+        "range_high_pct": 6.54,
+        "range_low_pct": -6.54,
+        "tilt_centre_pct": 0.14,
+        "trading_sessions": 5,
+        "vol_h_pct": 4.2571
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_tmgh.csv",
+      "base_stale": false,
+      "base_used": 78.95,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_tmgh.csv": 79.5,
+        "openbb/tmgh_ca.csv": 79.5,
+        "pandas-ta/indicators.csv": 79.5,
+        "talib/indicators.csv": 79.5,
+        "yahooquery/tmgh.ca.csv": 79.5
+      }
+    },
+    "risk": {
+      "conf_cap": 0.45,
+      "events": [],
+      "flags": [],
+      "level": "elevated",
+      "move_z": {
+        "last": 0.6,
+        "max3": 0.96
+      },
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.019,
+    "sigma_daily": 0.019,
+    "sigma_source": "egx-data/egxpy_tmgh.csv (σ60=0.0190, σ10=0.0161)",
+    "ticker": "TMGH.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": 0.248,
+    "sentiment": 0.439,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-25T20:25:10.886924+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/TMGH.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/TMGH.CA.json",
+    "sharia-row-missing: AAOIFI TMGH.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 TMGH.CA",
+    "sharia-row-missing: FTSE TMGH.CA",
+    "sharia-row-missing: ISLAMICLY TMGH.CA",
+    "sharia-row-missing: MSCI TMGH.CA",
+    "sharia-row-missing: MSCI_M TMGH.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.439
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.3953,
+      "net_score": 0.439,
+      "range_high_pct": 2.63,
+      "range_low_pct": -2.63,
+      "tilt_centre_pct": 0.16,
+      "trading_sessions": 1,
+      "vol_h_pct": 1.9038
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.15,
+        "sentiment": 0.439,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 4.3192,
+      "net_score": 0.039,
+      "range_high_pct": 12.56,
+      "range_low_pct": -12.56,
+      "tilt_centre_pct": 0.22,
+      "trading_sessions": 21,
+      "vol_h_pct": 8.7245
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.439,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.4466,
+      "net_score": 0.074,
+      "range_high_pct": 6.54,
+      "range_low_pct": -6.54,
+      "tilt_centre_pct": 0.14,
+      "trading_sessions": 5,
+      "vol_h_pct": 4.2571
+    }
+  },
+  "job": "sweep-lite TMGH.CA market=EGX",
+  "job_shape": "sweep-lite TMGH.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 186,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 126,
+      "sweeps": 85,
+      "sweeps_with_ensemble": 64
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 84.1133,
+    "support": 73.7867
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 3,
+    "disclosure_items": [
+      {
+        "date": "2026-11-15",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297747",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "مجموعة طلعت مصطفى القابضة (TMGH.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر"
+      },
+      {
+        "date": "2026-11-15",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297745",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "مجموعة طلعت مصطفى القابضة (TMGH.CA) تعلن نتائج أعمالها غير المجمعة عن 9 أشهر"
+      },
+      {
+        "date": "2026-11-15",
+        "identity_key": "https://www.egx.com.eg/ar/NewsDetails.aspx?NewsID=297618",
+        "key_type": "resolved_url",
+        "source": "egx.com.eg",
+        "title": "مجموعة طلعت مصطفى القابضة (TMGH.CA) - قرارات مجلس إدارة الشركة"
+      }
+    ],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": "2026-11-15",
+    "latest_news_date": "2026-11-24T17:50:38Z",
+    "latest_news_date_raw": "Tue, 24 Nov 2026 17:50:38 GMT",
+    "news_count": 40,
+    "news_items": [
+      {
+        "date": "Tue, 24 Nov 2026 17:50:38 GMT",
+        "identity_key": "https://alborsaanews.com/2026/11/24/2008848",
+        "key_type": "resolved_url",
+        "source": "جريدة البورصة",
+        "title": "سهم طلعت مصطفى يرتفع 2.28% خلال تعاملات البورصة اليوم - جريدة البورصة"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 17:38:55 GMT",
+        "identity_key": "https://almalnews.com/2149469/%D8%B3%D9%87%D9%85-%D8%B7%D9%84%D8%B9%D8%AA-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D9%8A%D9%82%D9%81%D8%B2-%D8%A8%D9%86%D8%B3%D8%A8%D8%A9-2-28/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "سهم طلعت مصطفى يقفز بنسبة 2.28% خلال تعاملات البورصة اليوم - جريدة المال"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 10:22:38 GMT",
+        "identity_key": "54ec70a63c272144",
+        "key_type": "title-date-hash",
+        "source": "Mubasher",
+        "title": "مع تهاوي بورصة مصر.. كيف جاء أداء \"التجاري الدولي\" و\"طلعت مصطفى\"؟ - Mubasher"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 20:26:24 GMT",
+        "identity_key": "https://www.elwekalanews.net/775939",
+        "key_type": "resolved_url",
+        "source": "الوكالة نيوز",
+        "title": "النائب عبدالرحمن بشاري يبحث مع هشام طلعت مصطفى أولوية توظيف أبناء الأقصر ودعم مشروعات التنمية - الوكالة نيوز"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 00:30:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/21/%D9%81%D9%89-%D8%B3%D9%88%D9%82-%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D9%83%D8%A8%D8%A7%D8%B1-%D9%8A%D8%B1%D8%A7%D9%87%D9%86%D9%88%D9%86-%D8%B9%D9%84%D9%89-%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1-%D8%B7%D9%84%D8%B9%D8%AA-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D9%88CIB/7625715",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "فى سوق المشتقات.. الكبار يراهنون على أسعار \"طلعت مصطفى\" وCIB حتى 2027 - اليوم السابع"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 14:19:28 GMT",
+        "identity_key": "https://alboslanews.com/%D8%A3%D8%B3%D9%88%D8%A7%D9%82-%D9%85%D8%A7%D9%84/%D8%AA%D8%B1%D8%A7%D8%AC%D8%B9-%D8%A7%D9%84%D8%B9%D9%82%D9%88%D8%AF-%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%82%D8%A8%D9%84%D9%8A%D8%A9-%D9%84%D9%80-egx30-%D9%88%D8%B7%D9%84%D8%B9%D8%AA-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D9%87%D8%A7%D9%85%D8%B4%D9%8A%D9%8B%D8%A7-%D9%88%D8%A7%D9%86%D8%AE%D9%81%D8%A7%D8%B6-%D8%A7%D9%84%D8%A8%D9%86%D9%83-%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D8%A8%D9%86%D8%B3%D8%A8-%D8%AA%D8%AA%D8%AE%D8%B7%D9%89-1-%D8%A7%D9%84%D9%8A%D9%88%D9%85-431143",
+        "key_type": "resolved_url",
+        "source": "مجلة البوصلة الاقتصادية",
+        "title": "تراجع العقود المستقبلية لـ EGX30 و\"طلعت مصطفى\" هامشيًا.. وانخفاض البنك التجاري الدولي بنسب تتخطى 1% اليوم - مجلة البوصلة الاقتصادية"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 14:01:23 GMT",
+        "identity_key": "https://www.youlyou.com/97501",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "طلعت مصطفى تفتح جبهة استثمارية جديدة في العراق.. مدينة عمرانية بـ43 ألف وحدة ومبيعات مستهدفة 18.8 مليار دولار - https://www.youlyou.com/"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:57:01 GMT",
+        "identity_key": "0f91acad31d54f6d",
+        "key_type": "title-date-hash",
+        "source": "صحيفة اخبارنا",
+        "title": "استثمارات طلعت مصطفى القابضة في العراق تستهدف مدينة ببغداد تضم 43 ألف وحدة - صحيفة اخبارنا"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:55:19 GMT",
+        "identity_key": "https://elnel-news.com/egy-news/36999/%D8%B7%D9%84%D8%B9%D8%AA-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D8%A7%D9%84%D9%82%D8%A7%D8%A8%D8%B6%D8%A9-%D8%AA%D8%B9%D9%84%D9%86-%D8%AA%D8%B1%D8%B3%D9%8A%D8%AE-%D8%A7%D8%B3%D8%AA%D8%AB%D9%85%D8%A7%D8%B1/",
+        "key_type": "resolved_url",
+        "source": "النيل نيوز",
+        "title": "طلعت مصطفى القابضة تعلن ترسيخ استثماراتها في السوق العراقية - النيل نيوز"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:54:00 GMT",
+        "identity_key": "https://www.elbalad.news/7185325",
+        "key_type": "resolved_url",
+        "source": "صدى البلد",
+        "title": "محفظة استثمارات تتخطى الحدود.. طلعت مصطفى القابضة ترسخ أقدامها في قلب العراق - صدى البلد"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:49:49 GMT",
+        "identity_key": "https://www.iqraa.news/233568/%D8%B1%D9%8A%D8%A7%D8%AF%D8%A9-%D8%AA%D8%AA%D8%AE%D8%B7%D9%89-%D8%A7%D9%84%D8%AD%D8%AF%D9%88%D8%AF-%D8%B7%D9%84%D8%B9%D8%AA-%D9%85%D8%B5%D8%B7%D9%81%D9%89-%D8%A7%D9%84%D9%82%D8%A7%D8%A8%D8%B6%D8%A9/",
+        "key_type": "resolved_url",
+        "source": "إقرأ نيوز",
+        "title": "ريادة تتخطى الحدود.. طلعت مصطفى القابضة تنقل تجربة مدنها الذكية العالمية إلى العراق - إقرأ نيوز"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 18:03:26 GMT",
+        "identity_key": "https://mofa.gov.iq/cairo/7580/",
+        "key_type": "resolved_url",
+        "source": "وزارة الخارجية العراقية",
+        "title": "سفير العراق في القاهرة يبحث مع الرئيس التنفيذي لمجموعة طلعت مصطفى فرص التعاون والاستثمار في العراق - وزارة الخارجية العراقية"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 10:10:08 GMT",
+        "identity_key": "c0ce00174b6f2b3c",
+        "key_type": "title-date-hash",
+        "source": "https://www.youlyou.com/",
+        "title": "طلعت مصطفى تستقبل وفدا من المطورين العقاريين العُمانيين في مدينة نور - https://www.youlyou.com/"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 02:04:00 GMT",
+        "identity_key": "10ae9c3f44222143",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "24 ٪ نموًا فى إيرادات «طلعت مصطفى».. والمبيعات تسجل 290 مليار جنيه - المصري اليوم"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 11:56:54 GMT",
+        "identity_key": "8b172f3e51dee555",
+        "key_type": "title-date-hash",
+        "source": "Billionaires.Africa",
+        "title": "Billionaire Hisham Talaat Moustafa's TMG earns $271m in 9M - Billionaires.Africa"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "e22b97160186216d",
+        "key_type": "title-date-hash",
+        "source": "ايكونومي بلس",
+        "title": "تسليمات مجموعة طلعت مصطفى تقفز 70% في أول 9 أشهر من 2026 - ايكونومي بلس"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "ec4c19a8324d9e7e",
+        "key_type": "title-date-hash",
+        "source": "ايكونومي بلس",
+        "title": "\"ساوث ميد\" يستحوذ على 45% من مبيعات \"طلعت مصطفى\" في الأشهر الـ9 الأولى من 2026 - ايكونومي بلس"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 22:00:00 GMT",
+        "identity_key": "493085db1ab355c9",
+        "key_type": "title-date-hash",
+        "source": "EnterpriseAM",
+        "title": "Edita, Valu, TMG, and Bonyan report 9M earnings - EnterpriseAM"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 15:33:12 GMT",
+        "identity_key": "0d7a5cf35dd64c29",
+        "key_type": "title-date-hash",
+        "source": "25H",
+        "title": "أرباح “طلعت مصطفى” تقفز إلى 15 مليار جنيه خلال 9 أشهر.. والإيرادات تسجل 47.6 مليار جنيه بنمو 24% - 25H"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 15:20:22 GMT",
+        "identity_key": "d13c9b855759dd0d",
+        "key_type": "title-date-hash",
+        "source": "www.marketscreener.com",
+        "title": "Talaat Moustafa Group Holding Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 14:35:00 GMT",
+        "identity_key": "87c5893a7eba8095",
+        "key_type": "title-date-hash",
+        "source": "بوابة الأهرام",
+        "title": "هشام طلعت مصطفى: الطلب القوي على مجتمعاتنا العمرانية والقدرة على التنفيذ يدعمان مرحلة جديدة من النمو - بوابة الأهرام"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 13:05:45 GMT",
+        "identity_key": "8253ff366b7e1230",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "ارتفاع أصول «طلعت مصطفى» إلى 507.9 مليار جنيه بنهاية سبتمبر 2026 - بوابة التكنولوجيا المالية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 11:45:58 GMT",
+        "identity_key": "d542e6e3d78e4318",
+        "key_type": "title-date-hash",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "أرباح طلعت مصطفى تقفز 19% إلى 15 مليار جنيه خلال 9 أشهر - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 11:22:47 GMT",
+        "identity_key": "5d31f6f90f9a30ed",
+        "key_type": "title-date-hash",
+        "source": "بوابة الوفد الإلكترونية",
+        "title": "أرباح طلعت مصطفى تقفز 19% إلى 15 مليار جنيه خلال 9 شهور - بوابة الوفد الإلكترونية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 11:16:07 GMT",
+        "identity_key": "26c0781e92e3a749",
+        "key_type": "title-date-hash",
+        "source": "CNN الاقتصادية",
+        "title": "كيف تفاعل سهم «طلعت مصطفى» مع قفزة أرباح وإيرادات المجموعة؟ - CNN الاقتصادية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 11:11:26 GMT",
+        "identity_key": "72c1a84dbbd08172",
+        "key_type": "title-date-hash",
+        "source": "آراب فاينانس",
+        "title": "طلعت مصطفى تحقق 15 مليار جنيه أرباحا بنهاية سبتمبر 2026 - آراب فاينانس"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 09:02:26 GMT",
+        "identity_key": "15c9a9145ceac245",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "5.39 مليار جنيه أرباح قطاع الضيافة بطلعت مصطفى في 9 أشهر - جريدة المال"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:57:51 GMT",
+        "identity_key": "e28e418fbee12b37",
+        "key_type": "title-date-hash",
+        "source": "عالم المال",
+        "title": "مجموعة طلعت مصطفى تحقق إيرادات بقيمة 47.6 مليار جنيه خلال 9 أشهر - عالم المال"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:55:29 GMT",
+        "identity_key": "77101598a5d72b55",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "\"طلعت مصطفى\" تربح 15 مليار جنيه خلال 9 أشهر - جريدة البورصة"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:53:12 GMT",
+        "identity_key": "6e4e9a0da75f5c9d",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "أيكون التابعة لطلعت مصطفى تسجل 4.70 مليار جنيه إيرادات في 9 أشهر - جريدة المال"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:30:10 GMT",
+        "identity_key": "4c0b3d16deda8012",
+        "key_type": "title-date-hash",
+        "source": "خبري نيوز",
+        "title": "مبيعات طلعت مصطفى المتعاقد عليها تبلغ 290.1 مليار جنيه في 9 أشهر - خبري نيوز"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "be62c6d0f4d8615a",
+        "key_type": "title-date-hash",
+        "source": "جريدة حابي",
+        "title": "طلعت مصطفى تُحقق 15 مليار جنيه أرباحًا مجمعة في 9 أشهر بارتفاع 19% - جريدة حابي"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "f00b48d2ed4d7562",
+        "key_type": "title-date-hash",
+        "source": "المصدر",
+        "title": "ارتفاع أرباح مجموعة طلعت مصطفى إلى 15 مليار جنيه خلال 9 أشهر - المصدر"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "a493ff4bdcea5f87",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "مجموعة طلعت مصطفى تحقق 47.6 مليار جنيه إيرادات و15 مليارًا صافي ربح خلال 9 أشهر - جريدة المال"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "15c8961f9d4546fe",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "«طلعت مصطفى»: 4 فنادق قيد التطوير لتعزيز الإيرادات المتكررة بالعملات الأجنبية - بوابة التكنولوجيا المالية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "cdf8a43c5f4f4b49",
+        "key_type": "title-date-hash",
+        "source": "إرم بزنس",
+        "title": "نمو أرباح «طلعت مصطفى» المصرية 12.5% في الربع الثالث مع قفزة الإيرادات - إرم بزنس"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "061b0be472c603c4",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "مبيعات «قطاع التطوير العقاري» ﺑـ«طلعت مصطفى» ترتفع 13% إلى 290.1 مليار جنيه خلال 9 أشهر من 2026 - بوابة التكنولوجيا المالية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "8b0bdcd261f8b87a",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "ليجاسي التابعة لمجموعة طلعت مصطفى تسجل 5.67 مليار جنيه إيرادات في 9 أشهر - جريدة المال"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "525799bc9ed705d5",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "صافي أرباح «طلعت مصطفى» يرتفع 19% إلى 15 مليار جنيه والإيرادات تسجل 47.6 مليار خلال 9 شهور من 2026 - بوابة التكنولوجيا المالية"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "9e07e3ebe4d1858d",
+        "key_type": "title-date-hash",
+        "source": "بوابة التكنولوجيا المالية",
+        "title": "مبيعات مشروع «ذا سباين» التابع ﻟـ«طلعت مصطفى» تسجل 34.3 مليار جنيه منذ إطلاقه - بوابة التكنولوجيا المالية"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 78.95,
+    "base_source": "egx-data/egxpy_tmgh.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_tmgh.csv",
+      "base_stale": false,
+      "base_used": 78.95,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_tmgh.csv": 79.5,
+        "openbb/tmgh_ca.csv": 79.5,
+        "pandas-ta/indicators.csv": 79.5,
+        "talib/indicators.csv": 79.5,
+        "yahooquery/tmgh.ca.csv": 79.5
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.019,
+    "sigma_source": "egx-data/egxpy_tmgh.csv (σ60=0.0190, σ10=0.0161)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 78.95,
+      "last_date": "2026-11-25",
+      "last_high": 79.55,
+      "last_low": 76.6,
+      "last_open": 78.06,
+      "last_volume": 4594956.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_tmgh.csv",
+      "stale": false
+    },
+    {
+      "last_close": 78.05999755859375,
+      "last_date": "2026-11-24",
+      "last_high": 80.87999725341797,
+      "last_low": 77.7699966430664,
+      "last_open": 79.5,
+      "last_volume": 3706321.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/TMGH_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 78.05999755859375,
+      "last_date": "2026-11-24",
+      "last_high": 80.87999725341797,
+      "last_low": 77.7699966430664,
+      "last_open": 79.5,
+      "last_volume": 3706321.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 78.05999755859375,
+      "last_date": "2026-11-24",
+      "last_high": 80.87999725341797,
+      "last_low": 77.7699966430664,
+      "last_open": 79.5,
+      "last_volume": 3706321.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 79.5,
+      "last_date": "2026-11-23",
+      "last_high": 80.66999816894531,
+      "last_low": 79.22000122070312,
+      "last_open": 79.0,
+      "last_volume": 2464712.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/TMGH.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-tmgh-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-tmgh-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    ],
+    "worker_code_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "worker_release_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "TMGH.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.45,
+    "events": [],
+    "flags": [],
+    "level": "elevated",
+    "move_z": {
+      "last": 0.6,
+      "max3": 0.96
+    },
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for TMGH.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T20:19:38.607446+00:00",
+  "sweep_dir": "sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001",
+  "ticker": "TMGH.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "TMGH.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "TMGH.CA.csv_last_close": 79.5,
+          "TMGH.CA.csv_last_date": "2026-11-23",
+          "rows_TMGH.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "04b861cbdd28db52865d1a3310a8803b4389f91b79ac6a764b3a577c8915229e",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "TMGH_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "TMGH_CA.csv_last_close": 78.05999755859375,
+          "TMGH_CA.csv_last_date": "2026-11-24",
+          "rows_TMGH_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "3d44679877b4721b95ab9d1196cadcf06ae47e3c309fdfbe258c85829066a3ac",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_tmgh.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_tmgh.csv_last_close": 78.95,
+          "egxpy_tmgh.csv_last_date": "2026-11-25",
+          "rows_egxpy_tmgh.csv": 3000,
+          "symbol": "TMGH",
+          "ticker": "TMGH.CA"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "8762b86ed79d39077adc68debf3780b314c4395dfdd401d1b3511f84850c2dd2",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 24.7879,
+          "atr_14": 2.4667,
+          "bb_lower": 77.1307,
+          "bb_mid": 81.7375,
+          "bb_pctb": 0.1009,
+          "bb_upper": 86.3443,
+          "close": 78.06,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 82.2286,
+          "ema_200": 86.7226,
+          "ema_50": 85.611,
+          "first_date_used": "2019-01-01",
+          "high": 80.88,
+          "indicators.csv_last_close": 78.05999755859375,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 77.77,
+          "macd": -1.5124,
+          "macd_hist": -0.198,
+          "macd_signal": -1.3144,
+          "open": 79.5,
+          "rows_fetched": 4706,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 35.3023,
+          "stoch_d": 34.3791,
+          "stoch_k": 17.7214,
+          "ticker": "TMGH.CA"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "6464a9bad87bf83b923543c2703cb0364a46305e2a657641197c17410a27d71c",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 78.05999755859375,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 78.05999755859375,
+          "last_date": "2026-11-24",
+          "rows_fetched": 4706,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "TMGH.CA"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "a30a3635c2a12a173f215528c5c54b8408c37f0d583c34ff1c8e71a9700388e5",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "b8b408f3f3ced877187551bb4abd423bb032229271d737116280bb25bb3e7ed3",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "4174aa61f013759389409e2cebcee54de517e4475828819212b6bf0346747d0d",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "33894831bc67f617b2ecccbe0fadbea6ec8f491c4ca004327a4b6056bf9d0eca",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 14,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "df7039888ef5d285a7b31a377de47cdfe89ef5ff552a53e9b7fd01786bded1d1",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 14,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "954ed8063584710eb8077ef53b8b4da76eae86e3edc4646b6e5a558d34f8bdc4",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 14,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "87b36b5cafb20fd202b2870d987322c65e445200925369cade1887edcad01b3e",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 82.36,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "4aa40f9687f4951b30812956b39dd93f51197901279d6ddcf3ca094438f3aa17",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "aa2830d75233d60d39c89ab8a4332174c7f0706c82323fdadc27c3ba94c102f2",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-tmgh-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 40,
+          "bodies_fetched": 10,
+          "disclosure_count": 3,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 3,
+          "egx_harvest_source": "local-file",
+          "fetched_at": "2026-11-25T20:25:09Z",
+          "finbert_negative": 0.039,
+          "finbert_neutral": 0.877,
+          "finbert_positive": 0.084,
+          "finbert_scored": 3,
+          "latest_disclosure_date": "2026-11-15",
+          "latest_news_date": "Tue, 24 Nov 2026 17:50:38 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.006,
+          "multilingual_neutral": 0.235,
+          "multilingual_positive": 0.758,
+          "multilingual_scored": 40,
+          "news_count": 40,
+          "ticker": "TMGH.CA",
+          "tool": "news-disclosure",
+          "top_headline": "مجموعة طلعت مصطفى القابضة (TMGH.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر",
+          "translated_negative": 0.045,
+          "translated_neutral": 0.406,
+          "translated_positive": 0.549,
+          "translated_scored": 40,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "TMGH.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "bb0c4a38ffb1128fbd31d948d3da2ba8c71b7c024e3c46840373448862b8cbb0",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-tmgh-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 78.95,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T20:25:11.233677+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "f85a34023e980821415025fd701ab3db086c227edd6a31e296982345192d782b",
+  "digest.json": "a15be93187e4f081ba751ee5ec102a3c2814f01ba8150f26d8a939b9e1d76f05",
+  "ensemble.json": "70d30f37598215e900bf91070806b07f940ae6f1e48b997665e9eacc2d2e89bd"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

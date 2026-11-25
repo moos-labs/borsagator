@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 78.95,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T20:25:11.235070+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.4,
+   "families": {
+    "price-forecast": 0.367
+   },
+   "horizon_short": false,
+   "net_score": 0.367,
+   "range_high_pct": 3.11,
+   "range_low_pct": 0.18,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 4.32,
+   "families": {
+    "price-forecast": 0.248
+   },
+   "horizon_short": false,
+   "net_score": 0.248,
+   "range_high_pct": 5.95,
+   "range_low_pct": 3.21,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.45,
+   "families": {
+    "price-forecast": 0.288
+   },
+   "horizon_short": false,
+   "net_score": 0.288,
+   "range_high_pct": 4.04,
+   "range_low_pct": 0.81,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "f85a34023e980821415025fd701ab3db086c227edd6a31e296982345192d782b",
+  "digest.json": "a15be93187e4f081ba751ee5ec102a3c2814f01ba8150f26d8a939b9e1d76f05",
+  "ensemble.json": "70d30f37598215e900bf91070806b07f940ae6f1e48b997665e9eacc2d2e89bd"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.019,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

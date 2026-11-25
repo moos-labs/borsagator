@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 78.95,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-25T20:25:11.234300+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.43,
+   "families": {
+    "sentiment": 0.439
+   },
+   "horizon_short": false,
+   "net_score": 0.439,
+   "range_high_pct": 3.35,
+   "range_low_pct": -2.49,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 1.96,
+   "families": {
+    "sentiment": 0.439
+   },
+   "horizon_short": false,
+   "net_score": 0.439,
+   "range_high_pct": 15.33,
+   "range_low_pct": -11.42,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 0.95,
+   "families": {
+    "sentiment": 0.439
+   },
+   "horizon_short": false,
+   "net_score": 0.439,
+   "range_high_pct": 7.48,
+   "range_low_pct": -5.57,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "a15be93187e4f081ba751ee5ec102a3c2814f01ba8150f26d8a939b9e1d76f05",
+  "ensemble.json": "70d30f37598215e900bf91070806b07f940ae6f1e48b997665e9eacc2d2e89bd"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.019,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

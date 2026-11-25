@@ -1,0 +1,232 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 14,
+  "label_counts": {
+    "positive": 10,
+    "negative": 1,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.7136483357129951,
+    "negative": 0.06181966452381208,
+    "neutral": 0.22453198777761177
+  },
+  "items": [
+    {
+      "text": "Billionaire Hisham Talaat Moustafa's TMG earns $271m in 9M - Billionaires.Africa",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.995834231376648,
+        "negative": 0.00027546228375285864,
+        "neutral": 0.003890229854732752
+      },
+      "raw_probabilities": {
+        "positive": 0.995834231376648,
+        "neutral": 0.003890229854732752,
+        "negative": 0.00027546228375285864
+      }
+    },
+    {
+      "text": "Edita, Valu, TMG, and Bonyan report 9M earnings - EnterpriseAM",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9952032566070557,
+        "negative": 0.00038638903060927987,
+        "neutral": 0.004410398192703724
+      },
+      "raw_probabilities": {
+        "positive": 0.9952032566070557,
+        "neutral": 0.004410398192703724,
+        "negative": 0.00038638903060927987
+      }
+    },
+    {
+      "text": "Talaat Moustafa Group Holding Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000527824042364955,
+        "negative": 0.00015319885278586298,
+        "neutral": 0.9993189573287964
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993189573287964,
+        "positive": 0.000527824042364955,
+        "negative": 0.00015319885278586298
+      }
+    },
+    {
+      "text": "TMG Q3 profit up 12.5% to EGP 5.06bn - Dailynewsegypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981200098991394,
+        "negative": 0.0008527900208719075,
+        "neutral": 0.0010271798819303513
+      },
+      "raw_probabilities": {
+        "positive": 0.9981200098991394,
+        "neutral": 0.0010271798819303513,
+        "negative": 0.0008527900208719075
+      }
+    },
+    {
+      "text": "Egypt’s TMG Profit Rises 19% To $280.5M In 9M 2026 As Real Estate Revenue Jumps 33% - Forbes Middle East",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982509016990662,
+        "negative": 0.0008029945893213153,
+        "neutral": 0.0009460695437155664
+      },
+      "raw_probabilities": {
+        "positive": 0.9982509016990662,
+        "neutral": 0.0009460695437155664,
+        "negative": 0.0008029945893213153
+      }
+    },
+    {
+      "text": "TMG bets on recurring income for next growth phase - Daily News Egypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981656670570374,
+        "negative": 0.0005534313968382776,
+        "neutral": 0.0012808910105377436
+      },
+      "raw_probabilities": {
+        "positive": 0.9981656670570374,
+        "neutral": 0.0012808910105377436,
+        "negative": 0.0005534313968382776
+      }
+    },
+    {
+      "text": "Investor Memo: The $200 Billion Question — Hisham Talaat Moustafa's TMG, Egypt's Four New Megaprojects, and Who Will Share the Proceeds - Billionaires.Africa",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00034587300615385175,
+        "negative": 0.0001778913283487782,
+        "neutral": 0.9994762539863586
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994762539863586,
+        "positive": 0.00034587300615385175,
+        "negative": 0.0001778913283487782
+      }
+    },
+    {
+      "text": "Egyptian billionaire Hisham Talaat Moustafa's $200 billion TMG deal draws military interest - Billionaires.Africa",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.012213167734444141,
+        "negative": 0.8585349917411804,
+        "neutral": 0.12925182282924652
+      },
+      "raw_probabilities": {
+        "negative": 0.8585349917411804,
+        "neutral": 0.12925182282924652,
+        "positive": 0.012213167734444141
+      }
+    },
+    {
+      "text": "TMG invests in new-generation golf destinations to boost high-spending tourism - Identity Magazine",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981999397277832,
+        "negative": 0.0005958111141808331,
+        "neutral": 0.0012041742447763681
+      },
+      "raw_probabilities": {
+        "positive": 0.9981999397277832,
+        "neutral": 0.0012041742447763681,
+        "negative": 0.0005958111141808331
+      }
+    },
+    {
+      "text": "Egyptian billionaire Hisham Talaat Moustafa's TMG named world's best golf hospitality developer - Billionaires.Africa",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9977430105209351,
+        "negative": 0.0008329087286256254,
+        "neutral": 0.0014240966411307454
+      },
+      "raw_probabilities": {
+        "positive": 0.9977430105209351,
+        "neutral": 0.0014240966411307454,
+        "negative": 0.0008329087286256254
+      }
+    },
+    {
+      "text": "Egypt, UAE sweep prestigious WGA among 80 competing nations - EIN News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980272650718689,
+        "negative": 0.0008969575865194201,
+        "neutral": 0.0010757261188700795
+      },
+      "raw_probabilities": {
+        "positive": 0.9980272650718689,
+        "neutral": 0.0010757261188700795,
+        "negative": 0.0008969575865194201
+      }
+    },
+    {
+      "text": "TMG named world’s best golf developer, Madinaty tops Africa - Dailynewsegypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978530406951904,
+        "negative": 0.0008664722554385662,
+        "neutral": 0.0012805343139916658
+      },
+      "raw_probabilities": {
+        "positive": 0.9978530406951904,
+        "neutral": 0.0012805343139916658,
+        "negative": 0.0008664722554385662
+      }
+    },
+    {
+      "text": "Egypt at heart of global golf: Madinaty selected for 2026 World Golf Awards - Egypt Today",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9967395663261414,
+        "negative": 0.0003510559326969087,
+        "neutral": 0.002909365575760603
+      },
+      "raw_probabilities": {
+        "positive": 0.9967395663261414,
+        "neutral": 0.002909365575760603,
+        "negative": 0.0003510559326969087
+      }
+    },
+    {
+      "text": "Thermal Energy International Inc. (TMG:CA) Presents at Planet MicroCap Showcase: Toronto 2026 - Slideshow - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0038529462181031704,
+        "negative": 0.00019494847219903022,
+        "neutral": 0.9959521293640137
+      },
+      "raw_probabilities": {
+        "neutral": 0.9959521293640137,
+        "positive": 0.0038529462181031704,
+        "negative": 0.00019494847219903022
+      }
+    }
+  ]
+}

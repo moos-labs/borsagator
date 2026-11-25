@@ -1,0 +1,8 @@
+headlines: 14 English scored-input, 1 Arabic skipped, window 30d, ticker TMGH.CA
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 393/393 [00:00<00:00, 11685.87it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Scored 14 texts | counts={'positive': 10, 'neutral': 3, 'negative': 1} | means=positive=0.7136, negative=0.0618, neutral=0.2245
