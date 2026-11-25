@@ -2,7 +2,7 @@
 
 Source: `moos-labs/borsagator` branch `archive` (tree 92f07b69, commit 92f07b69). Sweeps archived: 85 (41 with a benchmark freeze).
 
-**Benchmark rows: 708 · matured: 78 · pending: 594 · invalid: 36 · excluded gap-flagged: 0**
+**Benchmark rows: 711 · matured: 78 · pending: 597 · invalid: 36 · excluded gap-flagged: 0**
 
 Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 10 matured forecasts — such cells show their count and the gate wording only. Public accuracy claims need n ≥ 30 matured forecasts (D4).
 
