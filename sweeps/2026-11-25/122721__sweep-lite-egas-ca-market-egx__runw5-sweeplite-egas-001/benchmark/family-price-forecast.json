@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 49.0,
+ "base_source": "egx-data/egxpy_egas.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T12:27:21.643892+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": -0.25,
+   "families": {
+    "price-forecast": -0.052
+   },
+   "horizon_short": false,
+   "net_score": -0.052,
+   "range_high_pct": 3.35,
+   "range_low_pct": -3.85,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "down",
+   "expected_move_pct": -2.15,
+   "families": {
+    "price-forecast": -0.12
+   },
+   "horizon_short": false,
+   "net_score": -0.12,
+   "range_high_pct": 11.31,
+   "range_low_pct": -15.61,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "down",
+   "expected_move_pct": -2.17,
+   "families": {
+    "price-forecast": -0.26
+   },
+   "horizon_short": false,
+   "net_score": -0.26,
+   "range_high_pct": 4.06,
+   "range_low_pct": -8.4,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "4c88f3c0d340ad98837b356b98d96a5569d370f8bfce620db785121bc801ad41",
+  "digest.json": "b9b8e9b80980ea342539a82ea8621f6d63fdef1c3d09f3be3e375a9369659d17",
+  "ensemble.json": "e376b713723be7e5439d916bbd7de903b37f10b9190c46f875e698f6567fa3b4"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0281,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/122721__sweep-lite-egas-ca-market-egx__runw5-sweeplite-egas-001",
+ "ticker": "EGAS.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

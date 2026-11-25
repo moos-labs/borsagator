@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 49.0,
+ "base_source": "egx-data/egxpy_egas.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T12:27:21.656224+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_egas.csv": "01482a591457d1e2dac0975082c0d4321b637b1f7ba269a885b2a0f90b2dda6c",
+  "digest.json": "b9b8e9b80980ea342539a82ea8621f6d63fdef1c3d09f3be3e375a9369659d17",
+  "ensemble.json": "e376b713723be7e5439d916bbd7de903b37f10b9190c46f875e698f6567fa3b4",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/122721__sweep-lite-egas-ca-market-egx__runw5-sweeplite-egas-001",
+ "ticker": "EGAS.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

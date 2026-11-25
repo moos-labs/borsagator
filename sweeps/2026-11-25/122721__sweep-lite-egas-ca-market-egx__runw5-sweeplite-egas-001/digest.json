@@ -1,0 +1,456 @@
+{
+  "job": "sweep-lite EGAS.CA market=EGX",
+  "ticker": "EGAS.CA",
+  "date": "2026-11-25",
+  "started": "2026-11-25T12:24:10.008765+00:00",
+  "finished": "2026-11-25T12:27:21.303938+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_EGAS.CA.csv": 1209,
+          "EGAS.CA.csv_last_date": "2026-11-23",
+          "EGAS.CA.csv_last_close": "49.099998474121094"
+        },
+        "files": [
+          "EGAS.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_EGAS_CA.csv": 484,
+          "EGAS_CA.csv_last_date": "2026-11-24",
+          "EGAS_CA.csv_last_close": "49.099998474121094"
+        },
+        "files": [
+          "EGAS_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "EGAS.CA",
+          "symbol": "EGAS",
+          "rows_egxpy_egas.csv": 3000,
+          "egxpy_egas.csv_last_date": "2026-11-25",
+          "egxpy_egas.csv_last_close": "49.0"
+        },
+        "files": [
+          "egxpy_egas.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "EGAS.CA",
+          "date": "2026-11-24",
+          "open": 49.1,
+          "high": 50.95,
+          "low": 48.87,
+          "close": 49.1,
+          "rsi_14": 47.9247,
+          "macd": -0.4498,
+          "macd_signal": -0.7644,
+          "macd_hist": 0.3146,
+          "ema_20": 49.3233,
+          "ema_50": 51.0111,
+          "ema_200": 50.1077,
+          "adx_14": 29.7612,
+          "bb_upper": 52.007,
+          "bb_mid": 48.3775,
+          "bb_lower": 44.748,
+          "bb_pctb": 0.5995,
+          "atr_14": 2.5865,
+          "stoch_k": 25.4151,
+          "stoch_d": 29.0616,
+          "rows_fetched": 6422,
+          "rows_used": 1930,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "49.099998474121094"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "EGAS.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 6422,
+          "rows_used": 1930,
+          "last_date": "2026-11-24",
+          "last_close": 49.099998474121094,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "49.099998474121094"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2436,
+          "poul_ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 11
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 11
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-22",
+          "forecast.csv_last_close": "47.7701"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "EGAS.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "EGAS.CA",
+          "fetched_at": "2026-11-25T12:27:20Z",
+          "tool": "news-disclosure",
+          "news_count": 8,
+          "disclosure_count": 0,
+          "arabic_headlines": 5,
+          "latest_news_date": "Tue, 24 Nov 2026 21:42:18 GMT",
+          "latest_disclosure_date": "",
+          "top_headline": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+          "llm_provider": "extractive",
+          "finbert_positive": 0.04,
+          "finbert_negative": 0.061,
+          "finbert_neutral": 0.9,
+          "finbert_scored": 3,
+          "multilingual_positive": 0.948,
+          "multilingual_negative": 0.004,
+          "multilingual_neutral": 0.048,
+          "multilingual_scored": 5,
+          "bodies_fetched": 7,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "translation_provider": "nllb",
+          "translated_positive": 0.631,
+          "translated_negative": 0.01,
+          "translated_neutral": 0.36,
+          "translated_scored": 5
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001",
+      "claim_id": "w5-sweeplite-egas-001"
+    }
+  ]
+}

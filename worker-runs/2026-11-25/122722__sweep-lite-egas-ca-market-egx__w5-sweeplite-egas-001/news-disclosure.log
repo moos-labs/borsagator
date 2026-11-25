@@ -1,0 +1,27 @@
+WARN body http 404: https://ca.finance.yahoo.com/quote/LVS/
+bodies: 7/8 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EGAS.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5689.01it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15916.61it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17456.52it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5814.57it/s]
+{"tool": "news-disclosure", "ticker": "EGAS.CA", "news_count": 8, "disclosure_count": 0, "arabic_headlines": 5, "latest_news_date": "Tue, 24 Nov 2026 21:42:18 GMT", "latest_disclosure_date": "", "top_headline": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada", "llm_provider": "extractive", "finbert_positive": 0.04, "finbert_negative": 0.061, "finbert_neutral": 0.9, "finbert_scored": 3, "multilingual_positive": 0.948, "multilingual_negative": 0.004, "multilingual_neutral": 0.048, "multilingual_scored": 5, "bodies_fetched": 7, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.631, "translated_negative": 0.01, "translated_neutral": 0.36, "translated_scored": 5}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 24 Nov 2026 21:42:18 GMT] (Yahoo! Finance Canada) Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada
+- [Tue, 24 Nov 2026 09:32:28 GMT] (عالم الطاقة) كوادر إيجاس يتألقون على المنصات العلمية في جامعة القاهرة - عالم الطاقة
+- [Wed, 18 Nov 2026 10:15:00 GMT] (البوابة نيوز) «اتصالات مصر» و«إيجاس» تتعاونان في المدفوعات الرقمية وتطوير تطبيقات خدمات الغاز - البوابة نيوز
+- [Mon, 09 Nov 2026 19:34:55 GMT] (Forbes Middle East) إيجاس وكايرون المصريتان توقعان اتفاقا لاستكشاف الغاز شرق الإسكندرية باستثمارات تتجاوز 42 مليون دولار - Forbes Middle East
+- [Mon, 09 Nov 2026 18:59:00 GMT] (البوابة نيوز) 42 مليون دولار لاستكشاف الغاز بشرق الإسكندرية.. اتفاقية جديدة بين "إيجاس" و"كايرون" - البوابة نيوز
+- [Sun, 08 Nov 2026 08:00:00 GMT] (عالم الطاقة) الرئيس الأسبق لـ إيجاس: أدعو لدمج وزارتي البترول والكهرباء.. وتخصيص 25% من مزيج الطاقة للفحم - عالم الطاقة
+- [Sun, 01 Nov 2026 07:00:00 GMT] (Autoweek) NHRA Las Vegas Results: Championship Battles Head to Pomona - Autoweek
+- [Tue, 27 Oct 2026 07:00:00 GMT] (New York Post) United passenger who forced Newark-bound flight to return to Vegas over ‘hijacking threat’ has boozy explanation - New York Post

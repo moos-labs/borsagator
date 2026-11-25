@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.039635095124443374,
+    "negative": 0.06078570832808813,
+    "neutral": 0.8995792269706726
+  },
+  "items": [
+    {
+      "text": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.021590879186987877,
+        "negative": 0.03305983915925026,
+        "neutral": 0.9453492760658264
+      }
+    },
+    {
+      "text": "NHRA Las Vegas Results: Championship Battles Head to Pomona - Autoweek",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.031475696712732315,
+        "negative": 0.04759349301457405,
+        "neutral": 0.9209308624267578
+      }
+    },
+    {
+      "text": "United passenger who forced Newark-bound flight to return to Vegas over ‘hijacking threat’ has boozy explanation - New York Post",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.06583870947360992,
+        "negative": 0.10170379281044006,
+        "neutral": 0.8324575424194336
+      }
+    }
+  ]
+}

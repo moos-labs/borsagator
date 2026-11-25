@@ -1,0 +1,1402 @@
+{
+  "archive_commit": "669e69d04a04a4084a1830efdfcdf9f8a23b6285",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "53244b69ed715bd61b7000cb8095ca3ce3338837ded2a0a6db26e536a7fa5583",
+      "family-agent.json": "ea228f49933e1902d43cd518bdbbd1bc5e579dd7b210da7bbc0a65b462eb1e94",
+      "family-fundamentals.json": "59003c914fc988fd35aaec5104a24c88bb2efd0e1bc568a6dd2f31a422328577",
+      "family-price-forecast.json": "9b32ba4dff5120b96752b5de6e7a97d66718b1b4dbb6acad78399af5dfce5699",
+      "family-sentiment.json": "d048c1e3443e25e87f22dac456d5edc8778309c352342d775eee01038957f490",
+      "family-technicals.json": "dec48e491b89dc07060b493e16aa21d5726b0f61e7e85a06573b61812691f147",
+      "kronos-alone.json": "3c2b0163218c844bceed46bae4361daa85ceb8e348a6a5cfbdfc60ca3d6d96ee",
+      "raw-llm-cohere.json": "0b08725f61d61c838cc3130edad13433aaab12a6ee4511e1755f6c4dad11ca71"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/EGAS-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 49.0,
+    "base_source": "egx-data/egxpy_egas.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": -0.12,
+      "sentiment": 0.201,
+      "technicals": 0.15
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": -0.05,
+        "families": {
+          "price-forecast": -0.052,
+          "sentiment": 0.201,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.2892,
+        "net_score": 0.087,
+        "range_high_pct": 3.74,
+        "range_low_pct": -3.84,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.8056
+      },
+      "month": {
+        "confidence": 0.6,
+        "direction": "down",
+        "expected_move_pct": -1.73,
+        "families": {
+          "fundamentals": -0.1,
+          "price-forecast": -0.12,
+          "sentiment": 0.201,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.51,
+        "net_score": -0.042,
+        "range_high_pct": 12.5,
+        "range_low_pct": -15.97,
+        "trading_sessions": 14,
+        "vol_h_pct": 10.4977
+      },
+      "week": {
+        "confidence": 0.6,
+        "direction": "down",
+        "expected_move_pct": -1.52,
+        "families": {
+          "price-forecast": -0.26,
+          "sentiment": 0.201,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.5316,
+        "net_score": 0.001,
+        "range_high_pct": 5.37,
+        "range_low_pct": -8.41,
+        "trading_sessions": 3,
+        "vol_h_pct": 4.8595
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_egas.csv",
+      "base_stale": false,
+      "base_used": 49.0,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_egas.csv": 49.1,
+        "openbb/egas_ca.csv": 49.099998474121094,
+        "pandas-ta/indicators.csv": 49.099998474121094,
+        "talib/indicators.csv": 49.099998474121094,
+        "yahooquery/egas.ca.csv": 49.099998474121094
+      }
+    },
+    "risk": {
+      "conf_cap": 0.6,
+      "events": [],
+      "flags": [],
+      "level": "none",
+      "move_z": {
+        "last": 0.07,
+        "max3": 0.41
+      },
+      "price_mult": 1.0
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0281,
+    "sigma_source": "egx-data/egxpy_egas.csv (σ60=0.0281, σ10=0.0227)",
+    "ticker": "EGAS.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": -0.12,
+    "sentiment": 0.201,
+    "technicals": 0.15
+  },
+  "finished": "2026-11-25T12:27:21.303938+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/EGAS.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/EGAS.CA.json",
+    "sharia-row-missing: AAOIFI EGAS.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 EGAS.CA",
+    "sharia-row-missing: FTSE EGAS.CA",
+    "sharia-row-missing: ISLAMICLY EGAS.CA",
+    "sharia-row-missing: MSCI EGAS.CA",
+    "sharia-row-missing: MSCI_M EGAS.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": -0.05,
+      "families": {
+        "price-forecast": -0.052,
+        "sentiment": 0.201,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.2892,
+      "net_score": 0.087,
+      "range_high_pct": 3.74,
+      "range_low_pct": -3.84,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.8056
+    },
+    "month": {
+      "confidence": 0.6,
+      "direction": "down",
+      "expected_move_pct": -1.73,
+      "families": {
+        "fundamentals": -0.1,
+        "price-forecast": -0.12,
+        "sentiment": 0.201,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.51,
+      "net_score": -0.042,
+      "range_high_pct": 12.5,
+      "range_low_pct": -15.97,
+      "trading_sessions": 14,
+      "vol_h_pct": 10.4977
+    },
+    "week": {
+      "confidence": 0.6,
+      "direction": "down",
+      "expected_move_pct": -1.52,
+      "families": {
+        "price-forecast": -0.26,
+        "sentiment": 0.201,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.5316,
+      "net_score": 0.001,
+      "range_high_pct": 5.37,
+      "range_low_pct": -8.41,
+      "trading_sessions": 3,
+      "vol_h_pct": 4.8595
+    }
+  },
+  "job": "sweep-lite EGAS.CA market=EGX",
+  "job_shape": "sweep-lite EGAS.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 51.6313,
+    "support": 44.8791
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-24T21:42:18Z",
+    "latest_news_date_raw": "Tue, 24 Nov 2026 21:42:18 GMT",
+    "news_count": 8,
+    "news_items": [
+      {
+        "date": "Tue, 24 Nov 2026 21:42:18 GMT",
+        "identity_key": "fc06b01a3aac2e4d",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 09:32:28 GMT",
+        "identity_key": "https://www.alamaltaqa.com/52317",
+        "key_type": "resolved_url",
+        "source": "عالم الطاقة",
+        "title": "كوادر إيجاس يتألقون على المنصات العلمية في جامعة القاهرة - عالم الطاقة"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:15:00 GMT",
+        "identity_key": "https://www.albawabhnews.com/5437497",
+        "key_type": "resolved_url",
+        "source": "البوابة نيوز",
+        "title": "«اتصالات مصر» و«إيجاس» تتعاونان في المدفوعات الرقمية وتطوير تطبيقات خدمات الغاز - البوابة نيوز"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 19:34:55 GMT",
+        "identity_key": "https://www.forbesmiddleeast.com/ar/industry/energy/egyptian-companies-egas-and-kiron-sign-an-agreement-to-explore-for-gas-east-of-alexandria-with-investments-exceeding-$42-million",
+        "key_type": "resolved_url",
+        "source": "Forbes Middle East",
+        "title": "إيجاس وكايرون المصريتان توقعان اتفاقا لاستكشاف الغاز شرق الإسكندرية باستثمارات تتجاوز 42 مليون دولار - Forbes Middle East"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 18:59:00 GMT",
+        "identity_key": "https://www.albawabhnews.com/5433855",
+        "key_type": "resolved_url",
+        "source": "البوابة نيوز",
+        "title": "42 مليون دولار لاستكشاف الغاز بشرق الإسكندرية.. اتفاقية جديدة بين \"إيجاس\" و\"كايرون\" - البوابة نيوز"
+      },
+      {
+        "date": "Sun, 08 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.alamaltaqa.com/52182",
+        "key_type": "resolved_url",
+        "source": "عالم الطاقة",
+        "title": "الرئيس الأسبق لـ إيجاس: أدعو لدمج وزارتي البترول والكهرباء.. وتخصيص 25% من مزيج الطاقة للفحم - عالم الطاقة"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "https://www.autoweek.com/racing/nhra/a74307000/nhra-las-vegas-championship-battles-head-to-pomona/",
+        "key_type": "resolved_url",
+        "source": "Autoweek",
+        "title": "NHRA Las Vegas Results: Championship Battles Head to Pomona - Autoweek"
+      },
+      {
+        "date": "Tue, 27 Oct 2026 07:00:00 GMT",
+        "identity_key": "https://nypost.com/2026/10/27/us-news/united-passenger-who-forced-vegas-flight-to-turn-around-over-hijacking-threat-has-boozy-explanation/",
+        "key_type": "resolved_url",
+        "source": "New York Post",
+        "title": "United passenger who forced Newark-bound flight to return to Vegas over ‘hijacking threat’ has boozy explanation - New York Post"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 49.0,
+    "base_source": "egx-data/egxpy_egas.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_egas.csv",
+      "base_stale": false,
+      "base_used": 49.0,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_egas.csv": 49.1,
+        "openbb/egas_ca.csv": 49.099998474121094,
+        "pandas-ta/indicators.csv": 49.099998474121094,
+        "talib/indicators.csv": 49.099998474121094,
+        "yahooquery/egas.ca.csv": 49.099998474121094
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0281,
+    "sigma_source": "egx-data/egxpy_egas.csv (σ60=0.0281, σ10=0.0227)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 49.0,
+      "last_date": "2026-11-25",
+      "last_high": 49.5,
+      "last_low": 48.5,
+      "last_open": 49.1,
+      "last_volume": 38093.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_egas.csv",
+      "stale": false
+    },
+    {
+      "last_close": 49.099998474121094,
+      "last_date": "2026-11-24",
+      "last_high": 50.95000076293945,
+      "last_low": 48.869998931884766,
+      "last_open": 49.099998474121094,
+      "last_volume": 29347.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/EGAS_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 49.099998474121094,
+      "last_date": "2026-11-24",
+      "last_high": 50.95000076293945,
+      "last_low": 48.869998931884766,
+      "last_open": 49.099998474121094,
+      "last_volume": 29347.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 49.099998474121094,
+      "last_date": "2026-11-24",
+      "last_high": 50.95000076293945,
+      "last_low": 48.869998931884766,
+      "last_open": 49.099998474121094,
+      "last_volume": 29347.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 49.099998474121094,
+      "last_date": "2026-11-23",
+      "last_high": 49.5,
+      "last_low": 48.540000915527344,
+      "last_open": 48.540000915527344,
+      "last_volume": 17655.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/EGAS.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-egas-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-egas-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "EGAS.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.6,
+    "events": [],
+    "flags": [],
+    "level": "none",
+    "move_z": {
+      "last": 0.07,
+      "max3": 0.41
+    },
+    "price_mult": 1.0
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EGAS.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T12:24:10.008765+00:00",
+  "sweep_dir": "sweeps/2026-11-25/122721__sweep-lite-egas-ca-market-egx__runw5-sweeplite-egas-001",
+  "ticker": "EGAS.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EGAS.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EGAS.CA.csv_last_close": 49.099998474121094,
+          "EGAS.CA.csv_last_date": "2026-11-23",
+          "rows_EGAS.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "0488d14060fef0a39b358a399445a71466c8e13b6ec10c223994b58698552277",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EGAS_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EGAS_CA.csv_last_close": 49.099998474121094,
+          "EGAS_CA.csv_last_date": "2026-11-24",
+          "rows_EGAS_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "556937d999fa2da8c93e96fb20d6c065685c43b73bbb9533f00fb03d05b4e6ee",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_egas.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_egas.csv_last_close": 49.0,
+          "egxpy_egas.csv_last_date": "2026-11-25",
+          "rows_egxpy_egas.csv": 3000,
+          "symbol": "EGAS",
+          "ticker": "EGAS.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "360e3c9ebe35e4fec25ac839e463b0241aa2b02b9fc1d9c9fae0c9c7e1936cac",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 29.7612,
+          "atr_14": 2.5865,
+          "bb_lower": 44.748,
+          "bb_mid": 48.3775,
+          "bb_pctb": 0.5995,
+          "bb_upper": 52.007,
+          "close": 49.1,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 49.3233,
+          "ema_200": 50.1077,
+          "ema_50": 51.0111,
+          "first_date_used": "2019-01-01",
+          "high": 50.95,
+          "indicators.csv_last_close": 49.099998474121094,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 48.87,
+          "macd": -0.4498,
+          "macd_hist": 0.3146,
+          "macd_signal": -0.7644,
+          "open": 49.1,
+          "rows_fetched": 6422,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 47.9247,
+          "stoch_d": 29.0616,
+          "stoch_k": 25.4151,
+          "ticker": "EGAS.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "ae19203c661d258c446de70b8d8999e1112e8c69a151c6869c35602b1777bc27",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 49.099998474121094,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 49.099998474121094,
+          "last_date": "2026-11-24",
+          "rows_fetched": 6422,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "EGAS.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "226b17057481a19354aeeb998f7db0cd3c4e2efe37c42c56d658572c8b2e1b57",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "d19410275cd995fea4764082b5b8a0877dd2851b92ca749d03fd3dd631cc64f1",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "2e2f5ed0673acb39f71c70f5df4e7064a769b8caef9d41c8156913a12013d0a6",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "fb71454808a302b2f3ecbad89c7e8cfebde962752e71deb67b6cbc26bf51f9d6",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "024ab9b97fae75e75fda1e425a07c4902109e4d050d63f4fdd403e6102e5a85d",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 11,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "b4c95354564b02e5e1cfbbd7366fa25be36160f038b4f604ca6c328d8583c94d",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 11,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "6f0d00e967d0c8576477edbdbcdf0d46abfcf37b87230d5242d23587a30c9697",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 47.7701,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "167d331c9a4f67e4801748fec94436f3a2a08342554b1e35dc0c71f29a020e44",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "b3ac1ac144cbd1f3de48df08f816260c3ec1a737defc87b3569e69039a3c2522",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-egas-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 5,
+          "bodies_fetched": 7,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T12:27:20Z",
+          "finbert_negative": 0.061,
+          "finbert_neutral": 0.9,
+          "finbert_positive": 0.04,
+          "finbert_scored": 3,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Tue, 24 Nov 2026 21:42:18 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.004,
+          "multilingual_neutral": 0.048,
+          "multilingual_positive": 0.948,
+          "multilingual_scored": 5,
+          "news_count": 8,
+          "ticker": "EGAS.CA",
+          "tool": "news-disclosure",
+          "top_headline": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+          "translated_negative": 0.01,
+          "translated_neutral": 0.36,
+          "translated_positive": 0.631,
+          "translated_scored": 5,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "EGAS.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "5569e83b8fbf64a257dc1ed4a6a1eb149af8907b33ac15da2cec7d6183776ae5",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-egas-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

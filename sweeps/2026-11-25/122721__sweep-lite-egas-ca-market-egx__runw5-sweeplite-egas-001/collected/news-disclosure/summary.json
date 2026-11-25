@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "EGAS.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EGAS.CA",
+    "fetched_at": "2026-11-25T12:27:20Z",
+    "tool": "news-disclosure",
+    "news_count": 8,
+    "disclosure_count": 0,
+    "arabic_headlines": 5,
+    "latest_news_date": "Tue, 24 Nov 2026 21:42:18 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "Las Vegas Sands Corp. (LVS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.04,
+    "finbert_negative": 0.061,
+    "finbert_neutral": 0.9,
+    "finbert_scored": 3,
+    "multilingual_positive": 0.948,
+    "multilingual_negative": 0.004,
+    "multilingual_neutral": 0.048,
+    "multilingual_scored": 5,
+    "bodies_fetched": 7,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.631,
+    "translated_negative": 0.01,
+    "translated_neutral": 0.36,
+    "translated_scored": 5
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
