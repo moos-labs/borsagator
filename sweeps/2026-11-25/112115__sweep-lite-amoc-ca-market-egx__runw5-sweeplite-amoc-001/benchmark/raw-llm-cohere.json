@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T11:21:15.812425+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_amoc.csv": "1173c8bea72953095d698344ac3ff0e811ba75506cae53d7a5bd1363df95c607",
+  "digest.json": "7187b3c6e9bf10261e62a26dfa9cc231e418a8b6a4f8a39480ac78f1902ec729",
+  "ensemble.json": "b6c493d4235ca01688126a66a3c4b353ebc4d36b1eeecbed4af2dc0d1742cb5b",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

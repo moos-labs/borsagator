@@ -1,0 +1,26 @@
+bodies: 3/3 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+egx-harvest: attached 0 official bodies, added 6 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5807.60it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15059.40it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17586.90it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5653.42it/s]
+{"tool": "news-disclosure", "ticker": "AMOC.CA", "news_count": 3, "disclosure_count": 6, "arabic_headlines": 8, "latest_news_date": "Sun, 08 Nov 2026 08:00:00 GMT", "latest_disclosure_date": "2026-11-22", "top_headline": "الاسكندرية للزيوت المعدنية (AMOC.CA) - محضر اجتماع الجمعية العامة غير العادية (غير موثق)", "llm_provider": "extractive", "finbert_positive": 0.942, "finbert_negative": 0.015, "finbert_neutral": 0.043, "finbert_scored": 1, "multilingual_positive": 0.327, "multilingual_negative": 0.007, "multilingual_neutral": 0.665, "multilingual_scored": 8, "bodies_fetched": 3, "egx_bodies_attached": 0, "egx_disclosures_added": 6, "egx_harvest_source": "local-file", "translation_provider": "nllb", "translated_positive": 0.134, "translated_negative": 0.109, "translated_neutral": 0.757, "translated_scored": 8}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [2026-11-22] (egx.com.eg) الاسكندرية للزيوت المعدنية (AMOC.CA) - محضر اجتماع الجمعية العامة غير العادية (غير موثق)
+- [2026-11-15] (egx.com.eg) الاسكندرية للزيوت المعدنية (AMOC.CA) تعلن نتائج أعمالها المستقلة عن الفترة: من 01/01/2026 إلى 30/09/2026
+- [2026-11-15] (egx.com.eg) الاسكندرية للزيوت المعدنية (AMOC.CA) تعلن نتائج أعمالها المجمعة عن الفترة: من 01/01/2026 إلى 30/09/2026
+- [2026-11-15] (egx.com.eg) الاسكندرية للزيوت المعدنية (AMOC.CA) - قرارات مجلس إدارة الشركة
+- [2026-11-15] (egx.com.eg) الاسكندرية للزيوت المعدنية (AMOC.CA) - ملخص قرارات الجمعية العامة غير العادية
+- [Sun, 08 Nov 2026 08:00:00 GMT] (المصري اليوم) «علوم الإسكندرية» تطلق مبادرة لتلبية احتياجات المصانع محلياً وتفعيل منصة رقمية للأبحاث - المصري اليوم
+- [Sun, 01 Nov 2026 07:00:00 GMT] (اليوم السابع) مكاسب بالمليارات في البورصة.. "أموك" والإسكندرية للحاويات يقودان قطار الأرباح - اليوم السابع
+- [Sun, 01 Nov 2026 07:00:00 GMT] (Egypt Oil & Gas) AMOC Delivers 2.5 fold Profit Growth in 9M 2026 - Egypt Oil & Gas

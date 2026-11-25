@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T11:21:15.800280+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 4.69,
+   "families": {
+    "price-forecast": 1.0
+   },
+   "horizon_short": false,
+   "net_score": 1.0,
+   "range_high_pct": 8.62,
+   "range_low_pct": 0.76,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 9.32,
+   "families": {
+    "price-forecast": 0.568
+   },
+   "horizon_short": false,
+   "net_score": 0.568,
+   "range_high_pct": 24.03,
+   "range_low_pct": -5.39,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 4.43,
+   "families": {
+    "price-forecast": 0.584
+   },
+   "horizon_short": false,
+   "net_score": 0.584,
+   "range_high_pct": 11.25,
+   "range_low_pct": -2.38,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "da92195a5de90cee415049f9fbbd350361a0324dc62ceb9ea1d9f579d034498b",
+  "digest.json": "7187b3c6e9bf10261e62a26dfa9cc231e418a8b6a4f8a39480ac78f1902ec729",
+  "ensemble.json": "b6c493d4235ca01688126a66a3c4b353ebc4d36b1eeecbed4af2dc0d1742cb5b"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0256,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

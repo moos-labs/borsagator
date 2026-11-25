@@ -1,0 +1,252 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 1,
+    "negative": 5,
+    "neutral": 3
+  },
+  "label_counts_raw": {
+    "negative": 5,
+    "neutral": 3,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.11123909713332915,
+    "negative": 0.4495342213875478,
+    "neutral": 0.43922667202989235
+  },
+  "items": [
+    {
+      "text": "AMOC Risks Running AMOK: Putting Europe Into Deep Freeze and Disrupting Monsoon Patterns in Africa and Asia - Health Policy Watch",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 2.81406244084792e-07,
+        "negative": 0.999995231628418,
+        "neutral": 4.464845915208571e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.999995231628418
+        },
+        {
+          "label": "Neutral",
+          "score": 4.464845915208571e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.81406244084792e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Atlantic Meridional Overturning Circulation (AMOC) | Thermohaline, Effects, Collapse, & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.498076683987165e-07,
+        "negative": 1.671430072747171e-05,
+        "neutral": 0.9999825954437256
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999825954437256
+        },
+        {
+          "label": "Negative",
+          "score": 1.671430072747171e-05
+        },
+        {
+          "label": "Positive",
+          "score": 7.498076683987165e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The AMOC ocean current could collapse. If it does, it could change Chicago's weather for 1,000 years. - CBS News",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.00010760138684418052,
+        "negative": 0.6830891370773315,
+        "neutral": 0.3168031871318817
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.6830891370773315
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3168031871318817
+        },
+        {
+          "label": "Positive",
+          "score": 0.00010760138684418052
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Iceland Runs Crisis Exercise for AMOC Ocean Current Collapse - Gizmodo",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.00013977722846902907,
+        "negative": 0.5054649114608765,
+        "neutral": 0.49439534544944763
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.5054649114608765
+        },
+        {
+          "label": "Neutral",
+          "score": 0.49439534544944763
+        },
+        {
+          "label": "Positive",
+          "score": 0.00013977722846902907
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "AMOC collapse: the major climate threat missing from almost every country's adaptation plans - yourweather.co.uk | Meteored",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 0.0009054240654222667,
+        "negative": 0.9739514589309692,
+        "neutral": 0.025143083184957504
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9739514589309692
+        },
+        {
+          "label": "Neutral",
+          "score": 0.025143083184957504
+        },
+        {
+          "label": "Positive",
+          "score": 0.0009054240654222667
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "AMOC Delivers 2.5 fold Profit Growth in 9M 2026 - Egypt Oil & Gas",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999904632568359,
+        "negative": 8.0320710083015e-08,
+        "neutral": 9.389297702000476e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999904632568359
+        },
+        {
+          "label": "Neutral",
+          "score": 9.389297702000476e-06
+        },
+        {
+          "label": "Negative",
+          "score": 8.0320710083015e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The Climate Question | AMOC: How the changing Atlantic could reshape our world - BBC",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 6.416163614630932e-06,
+        "negative": 0.8829478025436401,
+        "neutral": 0.11704578250646591
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8829478025436401
+        },
+        {
+          "label": "Neutral",
+          "score": 0.11704578250646591
+        },
+        {
+          "label": "Positive",
+          "score": 6.416163614630932e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Almost no country plans for a collapse of the Atlantic current that keeps Europe mild, study finds - Nacionale",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.588136164329626e-07,
+        "negative": 0.0003076191642321646,
+        "neutral": 0.9996919631958008
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9996919631958008
+        },
+        {
+          "label": "Negative",
+          "score": 0.0003076191642321646
+        },
+        {
+          "label": "Positive",
+          "score": 4.588136164329626e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What If We Say “F*ck the AMOC”?. The Atlantic’s collapse date keeps… | by Ricky Lanusse | Southern Winds | Oct, 2026 - Medium",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.020712473604362e-07,
+        "negative": 3.503706102492288e-05,
+        "neutral": 0.9999642372131348
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999642372131348
+        },
+        {
+          "label": "Negative",
+          "score": 3.503706102492288e-05
+        },
+        {
+          "label": "Positive",
+          "score": 7.020712473604362e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
