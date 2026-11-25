@@ -1,0 +1,452 @@
+{
+  "job": "sweep-lite MCQE.CA market=EGX",
+  "ticker": "MCQE.CA",
+  "date": "2026-11-25",
+  "started": "2026-11-25T14:05:13.620149+00:00",
+  "finished": "2026-11-25T14:09:17.030878+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_MCQE.CA.csv": 1208,
+          "MCQE.CA.csv_last_date": "2026-11-23",
+          "MCQE.CA.csv_last_close": "175.97000122070312"
+        },
+        "files": [
+          "MCQE.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_MCQE_CA.csv": 484,
+          "MCQE_CA.csv_last_date": "2026-11-24",
+          "MCQE_CA.csv_last_close": "175.97000122070312"
+        },
+        "files": [
+          "MCQE_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MCQE.CA",
+          "symbol": "MCQE",
+          "rows_egxpy_mcqe.csv": 3000,
+          "egxpy_mcqe.csv_last_date": "2026-11-25",
+          "egxpy_mcqe.csv_last_close": "174.31"
+        },
+        "files": [
+          "egxpy_mcqe.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MCQE.CA",
+          "date": "2026-11-24",
+          "open": 175.97,
+          "high": 175.97,
+          "low": 175.97,
+          "close": 175.97,
+          "rsi_14": 49.026,
+          "macd": -0.9594,
+          "macd_signal": -1.9054,
+          "macd_hist": 0.946,
+          "ema_20": 175.9927,
+          "ema_50": 183.0291,
+          "ema_200": 177.7375,
+          "adx_14": 13.0127,
+          "bb_upper": 189.6831,
+          "bb_mid": 173.5975,
+          "bb_lower": 157.5119,
+          "bb_pctb": 0.5737,
+          "atr_14": 9.829,
+          "stoch_k": 29.7549,
+          "stoch_d": 33.3858,
+          "rows_fetched": 6135,
+          "rows_used": 1929,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "175.97000122070312"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MCQE.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 6135,
+          "rows_used": 1929,
+          "last_date": "2026-11-24",
+          "last_close": 175.97000122070312,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-24",
+          "indicators.csv_last_close": "175.97000122070312"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2436,
+          "poul_ohlc.csv_last_close": "7.099999904632568"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 16
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 8
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 8
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-22",
+          "forecast.csv_last_close": "169.0974"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "MCQE.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MCQE.CA",
+          "fetched_at": "2026-11-25T14:09:15Z",
+          "tool": "news-disclosure",
+          "news_count": 28,
+          "disclosure_count": 0,
+          "arabic_headlines": 28,
+          "latest_news_date": "Sun, 22 Nov 2026 21:55:06 GMT",
+          "latest_disclosure_date": "",
+          "top_headline": "معالج أقوى وذاكرة أكبر.. \"أبل\" تقترب من إطلاق \"ماك بوك نيو 2\" - إرم نيوز",
+          "llm_provider": "extractive",
+          "multilingual_positive": 0.633,
+          "multilingual_negative": 0.044,
+          "multilingual_neutral": 0.323,
+          "multilingual_scored": 28,
+          "bodies_fetched": 10,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "translation_provider": "nllb",
+          "translated_positive": 0.221,
+          "translated_negative": 0.074,
+          "translated_neutral": 0.705,
+          "translated_scored": 28
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001",
+      "claim_id": "w5-sweeplite-mcqe-001"
+    }
+  ]
+}

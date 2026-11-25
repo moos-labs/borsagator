@@ -1,0 +1,225 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 8,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 8
+  },
+  "label_counts_raw": {
+    "neutral": 8
+  },
+  "mean_probabilities": {
+    "positive": 1.6806574469230284e-05,
+    "negative": 6.913237140082629e-05,
+    "neutral": 0.9999140650033951
+  },
+  "items": [
+    {
+      "text": "Caputo named Fort Erie CAO days after McQueen firing - Fort Erie Radio",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6225394361413237e-08,
+        "negative": 7.692695476180234e-07,
+        "neutral": 0.9999992847442627
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999992847442627
+        },
+        {
+          "label": "Negative",
+          "score": 7.692695476180234e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.6225394361413237e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Fort Erie CAO Chris McQueen leaves Town position - Fort Erie Observer",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4317188856693974e-07,
+        "negative": 1.5385897995656705e-06,
+        "neutral": 0.9999983310699463
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999983310699463
+        },
+        {
+          "label": "Negative",
+          "score": 1.5385897995656705e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.4317188856693974e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Steve McQueen | Biography, Films, & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.22834135760786e-06,
+        "negative": 0.00010357801511418074,
+        "neutral": 0.9998881816864014
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998881816864014
+        },
+        {
+          "label": "Negative",
+          "score": 0.00010357801511418074
+        },
+        {
+          "label": "Positive",
+          "score": 8.22834135760786e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Lassen vs McQueen - Girls Junior Varsity Basketball 11/30/2026 | Watch Live & On Demand - NFHS Network",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.612460568547249e-05,
+        "negative": 7.4820050031121355e-06,
+        "neutral": 0.9999563694000244
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999563694000244
+        },
+        {
+          "label": "Positive",
+          "score": 3.612460568547249e-05
+        },
+        {
+          "label": "Negative",
+          "score": 7.4820050031121355e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "How Gen X is reshaping 55-plus living in California - Orange County Register",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.4690877984976396e-05,
+        "negative": 6.538011803058907e-06,
+        "neutral": 0.9999487400054932
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999487400054932
+        },
+        {
+          "label": "Positive",
+          "score": 4.4690877984976396e-05
+        },
+        {
+          "label": "Negative",
+          "score": 6.538011803058907e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ducks’ McQueen drops gloves with Canucks’ Quillan after big hit on Mintyukov - Sportsnet.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0064757589134388e-05,
+        "negative": 0.00035891588777303696,
+        "neutral": 0.9996310472488403
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9996310472488403
+        },
+        {
+          "label": "Negative",
+          "score": 0.00035891588777303696
+        },
+        {
+          "label": "Positive",
+          "score": 1.0064757589134388e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Nadena McQueen Obituary (1946 - 2026) - Porterville, CA - The Porterville Recorder - Legacy obituary",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.026441496942425e-07,
+        "negative": 5.7875586207956076e-05,
+        "neutral": 0.9999414682388306
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999414682388306
+        },
+        {
+          "label": "Negative",
+          "score": 5.7875586207956076e-05
+        },
+        {
+          "label": "Positive",
+          "score": 6.026441496942425e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "McQueen calls for unity after fourth mayoral victory in Grey Highlands - CollingwoodToday.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.458197170402855e-05,
+        "negative": 1.6361605958081782e-05,
+        "neutral": 0.9999490976333618
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999490976333618
+        },
+        {
+          "label": "Positive",
+          "score": 3.458197170402855e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.6361605958081782e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

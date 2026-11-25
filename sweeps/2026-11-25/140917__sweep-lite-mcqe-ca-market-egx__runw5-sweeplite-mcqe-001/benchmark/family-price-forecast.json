@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 174.31,
+ "base_source": "egx-data/egxpy_mcqe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T14:09:17.376518+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 0.8,
+   "families": {
+    "price-forecast": 0.112
+   },
+   "horizon_short": false,
+   "net_score": 0.112,
+   "range_high_pct": 7.19,
+   "range_low_pct": -5.59,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "down",
+   "expected_move_pct": -2.56,
+   "families": {
+    "price-forecast": -0.096
+   },
+   "horizon_short": false,
+   "net_score": -0.096,
+   "range_high_pct": 21.35,
+   "range_low_pct": -26.47,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.51,
+   "families": {
+    "price-forecast": 0.041
+   },
+   "horizon_short": false,
+   "net_score": 0.041,
+   "range_high_pct": 11.57,
+   "range_low_pct": -10.56,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "c0100de8ddcf4056e094fe06c0f33535468227d1d1508d54a23cb555ac50e24c",
+  "digest.json": "f6e99e1e95bab0f66c21820db40ab2ce9b337e7f4797f656f9c9942722ef5b77",
+  "ensemble.json": "e10097441a29385938098aac39830f1f5474c91fda2e5df5377685396b82d600"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.663,
+ "sigma_daily": 0.0416,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001",
+ "ticker": "MCQE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

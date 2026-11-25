@@ -1,0 +1,142 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 8,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 7
+  },
+  "mean_probabilities": {
+    "positive": 0.1285170811243006,
+    "negative": 0.015612644119755714,
+    "neutral": 0.8558702715672553
+  },
+  "items": [
+    {
+      "text": "Caputo named Fort Erie CAO days after McQueen firing - Fort Erie Radio",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003313043562229723,
+        "negative": 0.0002491943596396595,
+        "neutral": 0.9994194507598877
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994194507598877,
+        "positive": 0.0003313043562229723,
+        "negative": 0.0002491943596396595
+      }
+    },
+    {
+      "text": "Fort Erie CAO Chris McQueen leaves Town position - Fort Erie Observer",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0002999529242515564,
+        "negative": 0.009172526188194752,
+        "neutral": 0.9905275106430054
+      },
+      "raw_probabilities": {
+        "neutral": 0.9905275106430054,
+        "negative": 0.009172526188194752,
+        "positive": 0.0002999529242515564
+      }
+    },
+    {
+      "text": "Steve McQueen | Biography, Films, & Facts - Britannica",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00027175573632121086,
+        "negative": 0.00021383877901826054,
+        "neutral": 0.9995143413543701
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995143413543701,
+        "positive": 0.00027175573632121086,
+        "negative": 0.00021383877901826054
+      }
+    },
+    {
+      "text": "Lassen vs McQueen - Girls Junior Varsity Basketball 11/30/2026 | Watch Live & On Demand - NFHS Network",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010330220684409142,
+        "negative": 0.00025795865803956985,
+        "neutral": 0.998708963394165
+      },
+      "raw_probabilities": {
+        "neutral": 0.998708963394165,
+        "positive": 0.0010330220684409142,
+        "negative": 0.00025795865803956985
+      }
+    },
+    {
+      "text": "How Gen X is reshaping 55-plus living in California - Orange County Register",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0022498483303934336,
+        "negative": 0.00018305682169739157,
+        "neutral": 0.9975671768188477
+      },
+      "raw_probabilities": {
+        "neutral": 0.9975671768188477,
+        "positive": 0.0022498483303934336,
+        "negative": 0.00018305682169739157
+      }
+    },
+    {
+      "text": "Ducks’ McQueen drops gloves with Canucks’ Quillan after big hit on Mintyukov - Sportsnet.ca",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.05025801062583923,
+        "negative": 0.11436887085437775,
+        "neutral": 0.8353731036186218
+      },
+      "raw_probabilities": {
+        "neutral": 0.8353731036186218,
+        "negative": 0.11436887085437775,
+        "positive": 0.05025801062583923
+      }
+    },
+    {
+      "text": "Nadena McQueen Obituary (1946 - 2026) - Porterville, CA - The Porterville Recorder - Legacy obituary",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00032113000634126365,
+        "negative": 0.00020010412845294923,
+        "neutral": 0.9994788765907288
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994788765907288,
+        "positive": 0.00032113000634126365,
+        "negative": 0.00020010412845294923
+      }
+    },
+    {
+      "text": "McQueen calls for unity after fourth mayoral victory in Grey Highlands - CollingwoodToday.ca",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9733716249465942,
+        "negative": 0.00025560316862538457,
+        "neutral": 0.026372749358415604
+      },
+      "raw_probabilities": {
+        "positive": 0.9733716249465942,
+        "neutral": 0.026372749358415604,
+        "negative": 0.00025560316862538457
+      }
+    }
+  ]
+}

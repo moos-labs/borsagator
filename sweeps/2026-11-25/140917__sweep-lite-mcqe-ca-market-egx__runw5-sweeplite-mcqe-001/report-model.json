@@ -1,0 +1,1539 @@
+{
+  "archive_commit": "d42feb5f6982f10719b8bc75910681ab50048ae2",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "bf796c762d154ad4817dc8786081e942776da195017bcc3cc4cb8e4b427c91fc",
+      "family-agent.json": "5abc2d4c57c8cdd0515d305fdee0cd458de6cc589ed3f72956ed8001faaeafcd",
+      "family-fundamentals.json": "9ef83918b2110eca9691df3f87dd432d07dcb3742f36689ea7a9854f6a3a2f5a",
+      "family-price-forecast.json": "5d278adc5310545ff5f3260300212ff5535add322bd814b6a0ee0fe8a9189cae",
+      "family-sentiment.json": "7d1f6c2d7471d8e11473a4f4a25842b8c0a876d3c8a90219b2a7a7058cceb384",
+      "family-technicals.json": "7b971f010968d8161daae345216ac799bcb695bf993a1341b8474ab7e540a862",
+      "kronos-alone.json": "adafd4dc62eabbb86c74295eceac1cefd8659d1e4a336d311b5340ffcc98900b",
+      "raw-llm-cohere.json": "f2006d386b16b4ef5c7f76fc842bcd0be58340fb77e0954683ca1002aba6cd15"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/MCQE-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 174.31,
+    "base_source": "egx-data/egxpy_mcqe.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": -0.096,
+      "sentiment": 0.14,
+      "technicals": 0.15
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.45,
+        "direction": "up",
+        "expected_move_pct": 0.84,
+        "families": {
+          "price-forecast": 0.112,
+          "sentiment": 0.14,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.9303,
+        "net_score": 0.134,
+        "range_high_pct": 7.28,
+        "range_low_pct": -5.59,
+        "trading_sessions": 1,
+        "vol_h_pct": 4.1577
+      },
+      "month": {
+        "confidence": 0.45,
+        "direction": "down",
+        "expected_move_pct": -1.09,
+        "families": {
+          "fundamentals": 0.15,
+          "price-forecast": -0.096,
+          "sentiment": 0.14,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.9904,
+        "net_score": 0.089,
+        "range_high_pct": 24.06,
+        "range_low_pct": -26.24,
+        "trading_sessions": 14,
+        "vol_h_pct": 15.5566
+      },
+      "week": {
+        "confidence": 0.45,
+        "direction": "up",
+        "expected_move_pct": 0.75,
+        "families": {
+          "price-forecast": 0.041,
+          "sentiment": 0.14,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.5906,
+        "net_score": 0.108,
+        "range_high_pct": 12.09,
+        "range_low_pct": -10.58,
+        "trading_sessions": 3,
+        "vol_h_pct": 7.2013
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_mcqe.csv",
+      "base_stale": false,
+      "base_used": 174.31,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_mcqe.csv": 175.97,
+        "openbb/mcqe_ca.csv": 175.97000122070312,
+        "pandas-ta/indicators.csv": 175.97000122070312,
+        "talib/indicators.csv": 175.97000122070312,
+        "yahooquery/mcqe.ca.csv": 175.97000122070312
+      }
+    },
+    "risk": {
+      "conf_cap": 0.45,
+      "events": [],
+      "flags": [],
+      "level": "elevated",
+      "move_z": {
+        "last": 0.22,
+        "max3": 1.08
+      },
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.663,
+    "sigma_daily": 0.0416,
+    "sigma_source": "egx-data/egxpy_mcqe.csv (σ60=0.0416, σ10=0.0356)",
+    "ticker": "MCQE.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": -0.096,
+    "sentiment": 0.14,
+    "technicals": 0.15
+  },
+  "finished": "2026-11-25T14:09:17.030878+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/MCQE.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/MCQE.CA.json",
+    "sharia-row-missing: AAOIFI MCQE.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 MCQE.CA",
+    "sharia-row-missing: FTSE MCQE.CA",
+    "sharia-row-missing: ISLAMICLY MCQE.CA",
+    "sharia-row-missing: MSCI MCQE.CA",
+    "sharia-row-missing: MSCI_M MCQE.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.45,
+      "direction": "up",
+      "expected_move_pct": 0.84,
+      "families": {
+        "price-forecast": 0.112,
+        "sentiment": 0.14,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.9303,
+      "net_score": 0.134,
+      "range_high_pct": 7.28,
+      "range_low_pct": -5.59,
+      "trading_sessions": 1,
+      "vol_h_pct": 4.1577
+    },
+    "month": {
+      "confidence": 0.45,
+      "direction": "down",
+      "expected_move_pct": -1.09,
+      "families": {
+        "fundamentals": 0.15,
+        "price-forecast": -0.096,
+        "sentiment": 0.14,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.9904,
+      "net_score": 0.089,
+      "range_high_pct": 24.06,
+      "range_low_pct": -26.24,
+      "trading_sessions": 14,
+      "vol_h_pct": 15.5566
+    },
+    "week": {
+      "confidence": 0.45,
+      "direction": "up",
+      "expected_move_pct": 0.75,
+      "families": {
+        "price-forecast": 0.041,
+        "sentiment": 0.14,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.5906,
+      "net_score": 0.108,
+      "range_high_pct": 12.09,
+      "range_low_pct": -10.58,
+      "trading_sessions": 3,
+      "vol_h_pct": 7.2013
+    }
+  },
+  "job": "sweep-lite MCQE.CA market=EGX",
+  "job_shape": "sweep-lite MCQE.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 117,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 57,
+      "sweeps": 62,
+      "sweeps_with_ensemble": 41
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 195.3841,
+    "support": 155.868
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-22T21:55:06Z",
+    "latest_news_date_raw": "Sun, 22 Nov 2026 21:55:06 GMT",
+    "news_count": 28,
+    "news_items": [
+      {
+        "date": "Sun, 22 Nov 2026 21:55:06 GMT",
+        "identity_key": "722536305c70b09f",
+        "key_type": "title-date-hash",
+        "source": "إرم نيوز",
+        "title": "معالج أقوى وذاكرة أكبر.. \"أبل\" تقترب من إطلاق \"ماك بوك نيو 2\" - إرم نيوز"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 20:37:00 GMT",
+        "identity_key": "https://www.yallakora.com/epl/3033/news/574536/%D8%A7%D8%B3%D8%AA%D8%B9%D8%A7%D8%AF-%D8%A8%D8%B1%D9%8A%D9%82%D9%87-%D9%88%D9%85%D9%83%D8%A7%D9%86%D8%AA%D9%87-%D9%87%D9%84-%D9%8A%D8%AA%D8%AD%D8%B1%D9%83-%D9%84%D9%8A%D9%81%D8%B1%D8%A8%D9%88%D9%84-%D9%84%D8%AD%D8%B3%D9%85-%D8%AA%D9%85%D8%AF%D9%8A%D8%AF-%D8%B9%D9%82%D8%AF-%D9%85%D8%A7%D9%83-%D8%A3%D9%84%D9%8A%D8%B3%D8%AA%D8%B1-",
+        "key_type": "resolved_url",
+        "source": "يلاكورة",
+        "title": "استعاد بريقه ومكانته.. هل يتحرك ليفربول لحسم تمديد عقد ماك أليستر؟ - يلاكورة"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 07:25:07 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/8102098/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "جوجل تتيح لتطبيق جيميناي تشغيل جهاز كمبيوتر ماك بدلا من المستخدم - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 22:02:25 GMT",
+        "identity_key": "https://www.aljazeera.net/tech/2026/11/22/%D9%85%D9%84%D9%81%D8%A7%D8%AA-%D8%AE%D9%81%D9%8A%D8%A9-%D8%AA%D8%B3%D8%AA%D9%87%D9%84%D9%83-%D9%85%D8%B3%D8%A7%D8%AD%D8%A9-%D8%AC%D9%87%D8%A7%D8%B2-%D9%85%D8%A7%D9%83-%D8%AE%D8%B7%D9%88%D8%A7%D8%AA",
+        "key_type": "resolved_url",
+        "source": "الجزيرة نت",
+        "title": "ملفات خفية تستهلك مساحة جهاز ماك.. خطوات يسيرة لاستعادتها - الجزيرة نت"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 04:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/21/%D8%A7%D9%84%D8%A5%D8%B7%D9%84%D8%A7%D9%82-2027-%D8%A2%D8%A8%D9%84-%D8%AA%D8%B7%D9%88%D8%B1-%D8%B0%D9%83%D8%A7%D8%A1-%D8%A7%D8%B5%D8%B7%D9%86%D8%A7%D8%B9%D9%8A-%D9%8A%D8%AA%D8%AD%D9%83%D9%85-%D9%81%D9%8A-%D8%A3%D8%AC%D9%87%D8%B2%D8%A9-%D9%85%D8%A7%D9%83/7625697",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "الإطلاق 2027.. آبل تطور ذكاء اصطناعي يتحكم في أجهزة ماك بدلاً من المستخدم - اليوم السابع"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 14:02:00 GMT",
+        "identity_key": "https://www.yallakora.com/epl/3033/news/573838/%D9%84%D9%8A%D9%81%D8%B1%D8%A8%D9%88%D9%84-%D9%8A%D8%AA%D8%AD%D8%B1%D9%83-%D9%84%D8%AA%D8%AD%D8%B5%D9%8A%D9%86-%D9%85%D8%A7%D9%83-%D8%A3%D9%84%D9%8A%D8%B3%D8%AA%D8%B1",
+        "key_type": "resolved_url",
+        "source": "يلاكورة",
+        "title": "ليفربول يتحرك لتحصين ماك أليستر - يلاكورة"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 13:36:00 GMT",
+        "identity_key": "https://www.yallakora.com/epl/3033/news/573832/%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF-%D9%88%D8%A7%D9%84%D8%A8%D9%8A%D8%B9-3-%D8%AE%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-%D8%A3%D9%85%D8%A7%D9%85-%D9%84%D9%8A%D9%81%D8%B1%D8%A8%D9%88%D9%84-%D9%84%D8%AD%D8%B3%D9%85-%D9%85%D8%B3%D8%AA%D9%82%D8%A8%D9%84-%D9%85%D8%A7%D9%83-%D8%A3%D9%84%D9%8A%D8%B3%D8%AA%D8%B1",
+        "key_type": "resolved_url",
+        "source": "يلاكورة",
+        "title": "بين التجديد والبيع.. 3 خيارات أمام ليفربول لحسم مستقبل ماك أليستر - يلاكورة"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "332861117b7c658b",
+        "key_type": "title-date-hash",
+        "source": "winwin",
+        "title": "خاص | والد ماك أليستر يعلن لأول مرة موعد بدء مفاوضات التجديد - winwin"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/14/Perplexity-%D8%AA%D8%AA%D9%8A%D8%AD-%D9%85%D9%8A%D8%B2%D8%A9-%D9%88%D9%83%D9%84%D8%A7%D8%A1-%D8%A7%D9%84%D8%B0%D9%83%D8%A7%D8%A1-%D8%A7%D9%84%D8%A7%D8%B5%D8%B7%D9%86%D8%A7%D8%B9%D9%89-Teammates-%D8%B9%D9%84%D9%89-%D8%A3%D8%AC%D9%87%D8%B2%D8%A9-%D9%85%D8%A7%D9%83/7618416",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "Perplexity تتيح ميزة وكلاء الذكاء الاصطناعى \"Teammates\" على أجهزة ماك - اليوم السابع"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/13/Grok-Bot-%D8%B9%D9%84%D9%89-%D8%A3%D8%AC%D9%87%D8%B2%D8%A9-%D9%85%D8%A7%D9%83-%D9%8A%D8%B6%D9%8A%D9%81-%D8%AA%D9%83%D8%A7%D9%85%D9%84%D8%A7-%D9%85%D8%B9-%D8%AA%D8%B7%D8%A8%D9%8A%D9%82%D8%A7%D8%AA-%D8%A3%D8%A8%D9%84/7617082",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "Grok Bot على أجهزة ماك يضيف تكاملا مع تطبيقات أبل - اليوم السابع"
+      },
+      {
+        "date": "Sun, 08 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/8/%D8%A2%D8%A8%D9%84-%D8%AA%D8%B9%D9%8A%D8%AF-%D8%A5%D8%AD%D9%8A%D8%A7%D8%A1-%D8%B4%D8%B9%D8%A7%D8%B1-%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%AD%D8%A9-%D8%A7%D9%84%D9%85%D8%B6%D9%89%D8%A1-%D9%81%D9%89-%D9%85%D8%A7%D9%83-%D8%A8%D9%88%D9%83-%D9%85%D9%8A%D8%B2%D8%A9/7609533",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "آبل تعيد إحياء شعار التفاحة المضىء فى ماك بوك.. ميزة قديمة تعود بخيارات جديدة - اليوم السابع"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 11:52:23 GMT",
+        "identity_key": "https://shabiba.com/article/213728-%D8%A8%D8%B9%D8%AF-%D8%B3%D9%86%D9%88%D8%A7%D8%AA-%D9%85%D9%86-%D8%A7%D9%84%D8%B1%D9%81%D8%B6-%D8%A3%D8%A8%D9%84-%D8%AA%D8%B7%D8%B1%D8%AD-%D9%85%D8%A7%D9%83-%D8%A8%D9%88%D9%83-%D8%A8%D8%B1%D9%88-%D8%A8%D8%B4%D8%A7%D8%B4%D8%A9-%D9%84%D9%85%D8%B3",
+        "key_type": "resolved_url",
+        "source": "Shabiba",
+        "title": "بعد سنوات من الرفض.. «أبل» تطرح «ماك بوك برو» بشاشة لمس - الشبيبة | آخر أخبار سلطنة عمان المحلية وأخبار العالم - Shabiba"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "34339d2fd205e06c",
+        "key_type": "title-date-hash",
+        "source": "المصدر",
+        "title": "«منصور» للسيارات تكشف موعد إنهاء أعمال إنشاء مصنع «ماك لتصنيع وسائل النقل» - المصدر"
+      },
+      {
+        "date": "Sat, 31 Oct 2026 11:37:48 GMT",
+        "identity_key": "77f547aefa7aa012",
+        "key_type": "title-date-hash",
+        "source": "365Scores",
+        "title": "ماك أليستر يكشف تطورات مستقبله مع ليفربول بعد أنباء رحيله إلى ريال مدريد - 365Scores"
+      },
+      {
+        "date": "Sat, 31 Oct 2026 07:00:00 GMT",
+        "identity_key": "a97a282ebda8e239",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "هل تنهى آبل رفضها لشاشات اللمس فى حواسيب ماك بوك؟ - اليوم السابع"
+      },
+      {
+        "date": "Sat, 31 Oct 2026 07:00:00 GMT",
+        "identity_key": "ff2e8cd02d3486aa",
+        "key_type": "title-date-hash",
+        "source": "يلاكورة",
+        "title": "بعد تأخر التجديد.. إيراولا يعلن موقفه من بقاء ماك أليستر في ليفربول - يلاكورة"
+      },
+      {
+        "date": "Fri, 30 Oct 2026 07:00:00 GMT",
+        "identity_key": "af5f69c4e60802f2",
+        "key_type": "title-date-hash",
+        "source": "يلاكورة",
+        "title": "ماك أليستر عن انحسار المنافسة بين أرسنال والسيتي: نحن ليفربول - يلاكورة"
+      },
+      {
+        "date": "Fri, 30 Oct 2026 07:00:00 GMT",
+        "identity_key": "3e5e6de2afdd1cb6",
+        "key_type": "title-date-hash",
+        "source": "صحيفة الرياضية",
+        "title": "ماك أليستر يدخل خطط مورينيو - صحيفة الرياضية"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "3af9fd9b9ba6398d",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "\"أبل\" تطلق أول \"ماك بوك برو\" بشاشة لمس بعد رفض استمر عقدين - الشرق بلومبرغ"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "a337c9ef2e0db16b",
+        "key_type": "title-date-hash",
+        "source": "التلفزيون العربي",
+        "title": "أبل تكشف عن أول \"ماك بوك\" بشاشة تعمل باللمس.. ماذا عن الأسعار؟ | التلفزيون العربي - التلفزيون العربي"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "7711140f8209c17d",
+        "key_type": "title-date-hash",
+        "source": "الشرق الأوسط",
+        "title": "«أبل» تُطلق «ماك بوك برو» بشاشة تعمل باللمس للمرة الأولى - الشرق الأوسط"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "1696db59f15e70f0",
+        "key_type": "title-date-hash",
+        "source": "الشرق للأخبار",
+        "title": "أبل تكشف عن أول حاسوب ماك بوك برو بشاشة تعمل باللمس - الشرق للأخبار"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "9ee1baa968880de5",
+        "key_type": "title-date-hash",
+        "source": "يلاكورة",
+        "title": "3 بدائل.. ليفربول يستعد لرحيل ماك أليستر - يلاكورة"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "97c21ed90efaae82",
+        "key_type": "title-date-hash",
+        "source": "CNN Arabic",
+        "title": "آبل تعلن عن أول جهاز \"ماك بوك\" بشاشة تعمل باللمس.. تعرف إلى المواصفات | CNN Arabic | CNN - CNN Arabic"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "76557f4f8b12b68f",
+        "key_type": "title-date-hash",
+        "source": "Goal.com",
+        "title": "أخبار الانتقالات | ريال مدريد يبدأ خطته لخطف ماك أليستر وفليك يلجأ إلى ألمانيا لإنقاذ دفاع برشلونة - Goal.com"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "5537b394188190cb",
+        "key_type": "title-date-hash",
+        "source": "الشرق بلومبرغ",
+        "title": "\"أبل\" تراهن على شاشات اللمس لرفع أسعار أجهزة \"ماك بوك برو\" - الشرق بلومبرغ"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "b5c94e4e397fdaee",
+        "key_type": "title-date-hash",
+        "source": "winwin",
+        "title": "خاص | ليفربول يستعد لبدء مفاوضات تجديد عقد أليكسيس ماك أليستر - winwin"
+      },
+      {
+        "date": "Tue, 27 Oct 2026 07:00:00 GMT",
+        "identity_key": "9b07e386d15511d4",
+        "key_type": "title-date-hash",
+        "source": "الشرق الأوسط",
+        "title": "«أبل» تكشف عن جيل جديد من حواسيب «ماك» - الشرق الأوسط"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 174.31,
+    "base_source": "egx-data/egxpy_mcqe.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_mcqe.csv",
+      "base_stale": false,
+      "base_used": 174.31,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_mcqe.csv": 175.97,
+        "openbb/mcqe_ca.csv": 175.97000122070312,
+        "pandas-ta/indicators.csv": 175.97000122070312,
+        "talib/indicators.csv": 175.97000122070312,
+        "yahooquery/mcqe.ca.csv": 175.97000122070312
+      }
+    },
+    "sessions_per_calendar_day": 0.663,
+    "sigma_daily": 0.0416,
+    "sigma_source": "egx-data/egxpy_mcqe.csv (σ60=0.0416, σ10=0.0356)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 174.31,
+      "last_date": "2026-11-25",
+      "last_high": 178.6,
+      "last_low": 173.02,
+      "last_open": 175.9,
+      "last_volume": 68488.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_mcqe.csv",
+      "stale": false
+    },
+    {
+      "last_close": 175.97000122070312,
+      "last_date": "2026-11-24",
+      "last_high": 175.97000122070312,
+      "last_low": 175.97000122070312,
+      "last_open": 175.97000122070312,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/MCQE_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 175.97000122070312,
+      "last_date": "2026-11-24",
+      "last_high": 175.97000122070312,
+      "last_low": 175.97000122070312,
+      "last_open": 175.97000122070312,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 175.97000122070312,
+      "last_date": "2026-11-24",
+      "last_high": 175.97000122070312,
+      "last_low": 175.97000122070312,
+      "last_open": 175.97000122070312,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 175.97000122070312,
+      "last_date": "2026-11-23",
+      "last_high": 179.0,
+      "last_low": 170.60000610351562,
+      "last_open": 168.2100067138672,
+      "last_volume": 229700.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/MCQE.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-mcqe-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-mcqe-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    ],
+    "worker_code_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "worker_release_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "MCQE.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.45,
+    "events": [],
+    "flags": [],
+    "level": "elevated",
+    "move_z": {
+      "last": 0.22,
+      "max3": 1.08
+    },
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MCQE.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T14:05:13.620149+00:00",
+  "sweep_dir": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001",
+  "ticker": "MCQE.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MCQE.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MCQE.CA.csv_last_close": 175.97000122070312,
+          "MCQE.CA.csv_last_date": "2026-11-23",
+          "rows_MCQE.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "56b403bbbbc23870070aab246820b1ec54f5fbe8243859dc41ffe10989ca0a48",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MCQE_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MCQE_CA.csv_last_close": 175.97000122070312,
+          "MCQE_CA.csv_last_date": "2026-11-24",
+          "rows_MCQE_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "d8c7a72a966bfd3d7b37c403a9165c5fe3a109882e1ea04682246b79c65dd485",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_mcqe.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_mcqe.csv_last_close": 174.31,
+          "egxpy_mcqe.csv_last_date": "2026-11-25",
+          "rows_egxpy_mcqe.csv": 3000,
+          "symbol": "MCQE",
+          "ticker": "MCQE.CA"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "ea1bab794853911f6a74830810c58c153c2a0d5ed742d7c64dd66491132a4557",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 13.0127,
+          "atr_14": 9.829,
+          "bb_lower": 157.5119,
+          "bb_mid": 173.5975,
+          "bb_pctb": 0.5737,
+          "bb_upper": 189.6831,
+          "close": 175.97,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 175.9927,
+          "ema_200": 177.7375,
+          "ema_50": 183.0291,
+          "first_date_used": "2019-01-01",
+          "high": 175.97,
+          "indicators.csv_last_close": 175.97000122070312,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 175.97,
+          "macd": -0.9594,
+          "macd_hist": 0.946,
+          "macd_signal": -1.9054,
+          "open": 175.97,
+          "rows_fetched": 6135,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 49.026,
+          "stoch_d": 33.3858,
+          "stoch_k": 29.7549,
+          "ticker": "MCQE.CA"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "e7472f99142364d0caad685ccc3b0d09db9516cd1b221a9c9467197c89f3a28a",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 175.97000122070312,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 175.97000122070312,
+          "last_date": "2026-11-24",
+          "rows_fetched": 6135,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "MCQE.CA"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "7a90d1d07be6f9ec779971837a07e4661d0dffb64274b0dd53fd4c4a6ec7c51c",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "eb732dbf77d99cc17e71ada387eaf603374efe6c40080ac68d1fde5cb51b1860",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "270074b40d23f0860c5fbe9752be7f1d0fb84f148bf04e16249790bfe6847dd4",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "22ef9884dfd5a6223598c42a0f2877a5e6922d09bf8010652ca5f86d81d1d790",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 16,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "3c8238548f6ab7d5fc8f2784dc34320b0a9da0df4d8a2a6c5241b518c4a1bd59",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 8,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "b2beb43bea79044b58e90028b8f92f1961e7758fee302b25e87d3237414873c5",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 8,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "ad5eba08d57758cc89850686dd7121bbdd4f9a828eff6dc677cd70c69d32de04",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 169.0974,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "4a9e3b6f2df26f0a760043c079fd6fa4f2d7792ca014d04ee1ca852ba50d4dfe",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "1d674aef02a04e9ed277a00ecb898df669a7f5048a4f144896a5eb3cd0486ab2",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-mcqe-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 28,
+          "bodies_fetched": 10,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T14:09:15Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Sun, 22 Nov 2026 21:55:06 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.044,
+          "multilingual_neutral": 0.323,
+          "multilingual_positive": 0.633,
+          "multilingual_scored": 28,
+          "news_count": 28,
+          "ticker": "MCQE.CA",
+          "tool": "news-disclosure",
+          "top_headline": "معالج أقوى وذاكرة أكبر.. \"أبل\" تقترب من إطلاق \"ماك بوك نيو 2\" - إرم نيوز",
+          "translated_negative": 0.074,
+          "translated_neutral": 0.705,
+          "translated_positive": 0.221,
+          "translated_scored": 28,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "MCQE.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "5c19006816f60b502d6d2943b58c1bf70d41e8f2136a751c3cceeee952112baf",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-mcqe-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

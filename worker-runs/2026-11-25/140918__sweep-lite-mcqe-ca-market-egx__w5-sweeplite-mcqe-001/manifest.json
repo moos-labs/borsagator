@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w5-sweeplite-mcqe-001",
+  "job": "sweep-lite MCQE.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T14:05:13.620149+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-mcqe-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T14:05:13.620149+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "MCQE"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['MCQE']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T14:09:17.030878+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001",
+  "model": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001/report-model.json",
+  "model_sha256": "77e6385fc183f4fb1b335599d76de24e69c79ab67deb293b55e35204d409e326",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/MCQE.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/MCQE.CA.json",
+   "sharia-row-missing: AAOIFI MCQE.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 MCQE.CA",
+   "sharia-row-missing: FTSE MCQE.CA",
+   "sharia-row-missing: ISLAMICLY MCQE.CA",
+   "sharia-row-missing: MSCI MCQE.CA",
+   "sharia-row-missing: MSCI_M MCQE.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "d42feb5f6982f10719b8bc75910681ab50048ae2",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 140018,
+    "sha256": "fbcc9fe1f54c9a4cce3e6a2ae0d11c5f227666c61d14ef1d71650b3de68a6701"
+   },
+   {
+    "path": "report.md",
+    "bytes": 29392,
+    "sha256": "d44f4dcf5945b781fefda3ecddcd6a36057971a1e7a5e1616ebd65cd0cf5cac8"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "MCQE.CA"
+ }
+}

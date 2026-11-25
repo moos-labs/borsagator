@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "MCQE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "MCQE.CA",
+    "fetched_at": "2026-11-25T14:09:15Z",
+    "tool": "news-disclosure",
+    "news_count": 28,
+    "disclosure_count": 0,
+    "arabic_headlines": 28,
+    "latest_news_date": "Sun, 22 Nov 2026 21:55:06 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "معالج أقوى وذاكرة أكبر.. \"أبل\" تقترب من إطلاق \"ماك بوك نيو 2\" - إرم نيوز",
+    "llm_provider": "extractive",
+    "multilingual_positive": 0.633,
+    "multilingual_negative": 0.044,
+    "multilingual_neutral": 0.323,
+    "multilingual_scored": 28,
+    "bodies_fetched": 10,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.221,
+    "translated_negative": 0.074,
+    "translated_neutral": 0.705,
+    "translated_scored": 28
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
