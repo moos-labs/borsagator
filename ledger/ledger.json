@@ -4,16 +4,16 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "fa8e081ca3fc7110536a6f5387e815165459bca6",
-  "commit_sha": "fa8e081ca3fc7110536a6f5387e815165459bca6",
+  "tree_sha": "12c8085e0d270ee6b0e55128e5eb456b31ed323b",
+  "commit_sha": "12c8085e0d270ee6b0e55128e5eb456b31ed323b",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 55,
-  "sweeps_with_ensemble": 34,
-  "forecasts": 96,
+  "sweeps": 62,
+  "sweeps_with_ensemble": 41,
+  "forecasts": 117,
   "matured": 48,
-  "pending": 36,
+  "pending": 57,
   "invalid": 12,
   "dividend_adjusted": 8,
   "excluded_flagged": 12
@@ -25,11 +25,53 @@
    "pending": 3,
    "invalid": 0
   },
+  "ADIB.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
+  "AMOC.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
+  "ARCC.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
+  "ATQA.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
+  "CIRA.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
+  "CLHO.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
+  },
   "COMI.CA": {
    "found": 3,
    "matured": 0,
    "pending": 0,
    "invalid": 3
+  },
+  "EFID.CA": {
+   "found": 3,
+   "matured": 0,
+   "pending": 3,
+   "invalid": 0
   },
   "NVDA": {
    "found": 6,
@@ -100,6 +142,84 @@
     }
    ]
   },
+  "ADIB.CA": {
+   "points": 3000,
+   "first_date": "2014-07-15",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001",
+     "file": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001/collected/egx-data/egxpy_adib.csv",
+     "points": 3000,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
+  "AMOC.CA": {
+   "points": 3000,
+   "first_date": "2014-07-21",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+     "file": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001/collected/egx-data/egxpy_amoc.csv",
+     "points": 3000,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
+  "ARCC.CA": {
+   "points": 3000,
+   "first_date": "2014-07-13",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+     "file": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001/collected/egx-data/egxpy_arcc.csv",
+     "points": 3000,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
+  "ATQA.CA": {
+   "points": 3000,
+   "first_date": "2014-06-29",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+     "file": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001/collected/egx-data/egxpy_atqa.csv",
+     "points": 3000,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
+  "CIRA.CA": {
+   "points": 1978,
+   "first_date": "2018-10-01",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+     "file": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001/collected/egx-data/egxpy_cira.csv",
+     "points": 1978,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
+  "CLHO.CA": {
+   "points": 2575,
+   "first_date": "2016-04-14",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+     "file": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001/collected/egx-data/egxpy_clho.csv",
+     "points": 2575,
+     "last_date": "2026-11-25"
+    }
+   ]
+  },
   "COMI.CA": {
    "points": 2180,
    "first_date": "2018-01-01",
@@ -110,6 +230,19 @@
      "file": "sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248/collected/quantstats/ohlc.csv",
      "points": 2180,
      "last_date": "2026-11-12"
+    }
+   ]
+  },
+  "EFID.CA": {
+   "points": 2824,
+   "first_date": "2015-04-02",
+   "last_date": "2026-11-25",
+   "sources": [
+    {
+     "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+     "file": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001/collected/egx-data/egxpy_efid.csv",
+     "points": 2824,
+     "last_date": "2026-11-25"
     }
    ]
   },
@@ -3669,12 +3802,485 @@
    "corporate_actions": [],
    "status": "pending",
    "sessions_available": 0
+  },
+  {
+   "ticker": "ADIB.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.45,
+   "range_low_pct": -5.03,
+   "range_high_pct": 4.12,
+   "confidence": 0.3,
+   "net_score": -0.134,
+   "base_price": 46.31,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": 0.065,
+    "price-forecast": -0.115
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ADIB.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.43,
+   "range_low_pct": -7.58,
+   "range_high_pct": 8.44,
+   "confidence": 0.3,
+   "net_score": -0.048,
+   "base_price": 46.31,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": 0.065,
+    "price-forecast": 0.115
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ADIB.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.47,
+   "range_low_pct": -16.41,
+   "range_high_pct": 19.35,
+   "confidence": 0.3,
+   "net_score": 0.197,
+   "base_price": 46.31,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": 0.065,
+    "fundamentals": 0.4,
+    "price-forecast": 0.064
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "AMOC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 3.68,
+   "range_low_pct": -1.32,
+   "range_high_pct": 8.68,
+   "confidence": 0.45,
+   "net_score": 0.23,
+   "base_price": 12.0,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": -0.088,
+    "price-forecast": 1.0
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "AMOC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 3.37,
+   "range_low_pct": -4.63,
+   "range_high_pct": 11.37,
+   "confidence": 0.45,
+   "net_score": 0.114,
+   "base_price": 12.0,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": -0.088,
+    "price-forecast": 0.584
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "AMOC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 7.41,
+   "range_low_pct": -9.19,
+   "range_high_pct": 24.0,
+   "confidence": 0.45,
+   "net_score": 0.178,
+   "base_price": 12.0,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": -0.088,
+    "fundamentals": 0.15,
+    "price-forecast": 0.568
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ARCC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.67,
+   "range_low_pct": -6.67,
+   "range_high_pct": 5.33,
+   "confidence": 0.3,
+   "net_score": -0.276,
+   "base_price": 66.53,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": -0.195,
+    "price-forecast": -0.075
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ARCC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.53,
+   "range_low_pct": -11.02,
+   "range_high_pct": 9.95,
+   "confidence": 0.3,
+   "net_score": -0.231,
+   "base_price": 66.53,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": -0.195,
+    "price-forecast": 0.01
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ARCC.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -0.97,
+   "range_low_pct": -25.3,
+   "range_high_pct": 23.36,
+   "confidence": 0.3,
+   "net_score": 0.112,
+   "base_price": 66.53,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": -0.195,
+    "fundamentals": 0.4,
+    "price-forecast": -0.123
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ATQA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 2.69,
+   "range_low_pct": -3.66,
+   "range_high_pct": 9.04,
+   "confidence": 0.35,
+   "net_score": 0.316,
+   "base_price": 9.82,
+   "families": {
+    "technicals": 0.15,
+    "price-forecast": 0.505
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ATQA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.34,
+   "range_low_pct": -8.83,
+   "range_high_pct": 11.5,
+   "confidence": 0.35,
+   "net_score": 0.137,
+   "base_price": 9.82,
+   "families": {
+    "technicals": 0.15,
+    "price-forecast": 0.125
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ATQA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.28,
+   "range_low_pct": -27.1,
+   "range_high_pct": 20.55,
+   "confidence": 0.35,
+   "net_score": -0.209,
+   "base_price": 9.82,
+   "families": {
+    "technicals": 0.15,
+    "fundamentals": -0.35,
+    "price-forecast": -0.119
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CIRA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.21,
+   "range_low_pct": -4.83,
+   "range_high_pct": 4.4,
+   "confidence": 0.45,
+   "net_score": 0.168,
+   "base_price": 38.0,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.153,
+    "price-forecast": -0.138
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CIRA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.53,
+   "range_low_pct": -7.22,
+   "range_high_pct": 8.28,
+   "confidence": 0.45,
+   "net_score": 0.192,
+   "base_price": 38.0,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.153,
+    "price-forecast": 0.013
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CIRA.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.52,
+   "range_low_pct": -17.35,
+   "range_high_pct": 16.32,
+   "confidence": 0.45,
+   "net_score": 0.016,
+   "base_price": 38.0,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.153,
+    "fundamentals": -0.1,
+    "price-forecast": -0.05
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CLHO.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.23,
+   "range_low_pct": -3.24,
+   "range_high_pct": 3.71,
+   "confidence": 0.45,
+   "net_score": 0.083,
+   "base_price": 14.34,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": -0.36,
+    "price-forecast": 0.064
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CLHO.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.64,
+   "range_low_pct": -6.68,
+   "range_high_pct": 5.39,
+   "confidence": 0.45,
+   "net_score": -0.042,
+   "base_price": 14.34,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": -0.36,
+    "price-forecast": -0.142
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "CLHO.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.76,
+   "range_low_pct": -16.46,
+   "range_high_pct": 8.94,
+   "confidence": 0.45,
+   "net_score": -0.236,
+   "base_price": 14.34,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": -0.36,
+    "fundamentals": -0.35,
+    "price-forecast": -0.33
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFID.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.04,
+   "range_low_pct": -7.06,
+   "range_high_pct": 6.97,
+   "confidence": 0.3,
+   "net_score": 0.363,
+   "base_price": 20.66,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.624,
+    "price-forecast": -0.166
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFID.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.13,
+   "range_low_pct": -12.03,
+   "range_high_pct": 12.3,
+   "confidence": 0.3,
+   "net_score": 0.372,
+   "base_price": 20.66,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.624,
+    "price-forecast": -0.138
+   },
+   "sessions": 3,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFID.CA",
+   "as_of": "2026-11-25",
+   "sweep": "sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -4.4,
+   "range_low_pct": -30.78,
+   "range_high_pct": 21.99,
+   "confidence": 0.3,
+   "net_score": 0.033,
+   "base_price": 20.66,
+   "families": {
+    "technicals": 0.45,
+    "sentiment": 0.624,
+    "fundamentals": -0.1,
+    "price-forecast": -0.323
+   },
+   "sessions": 14,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
   "21 sweep(s) carry no ensemble.json (category/single-tool runs): sweeps/2026-11-12/053914__backfill-issue-7__sweep-poul-ca; sweeps/2026-11-12/153612__backfill-issue-13__sweep-lite-poul-ca-market-egx; sweeps/2026-11-13/070542__run-news-disclosure-poul-ca__run43382934691; sweeps/2026-11-13/105352__category-agent-poul-ca__run43411434864; sweeps/2026-11-13/112806__category-agent-poul-ca__run43414990698; sweeps/2026-11-13/123153__category-news-poul-ca__run43425457246; sweeps/2026-11-13/141636__category-news-poul-ca__run43440228991; sweeps/2026-11-13/171214__category-news-poul-ca__run43469687667; sweeps/2026-11-13/175202__category-news-poul-ca__run43475305450; sweeps/2026-11-13/181309__run-financetoolkit-comi-ca__run43480301234; sweeps/2026-11-13/181720__run-financetoolkit-poul-ca__run43481004601; sweeps/2026-11-13/184846__category-agent-poul-ca__run43482153785; sweeps/2026-11-14/085808__run-egx-data-poul-ca__run43578206341; sweeps/2026-11-15/130920__run-kronos-nvda__run43717394637; sweeps/2026-11-15/131641__category-news-poul-ca__run43717400241; sweeps/2026-11-15/134248__category-agent-poul-ca__run43717405249; sweeps/2026-11-15/140746__sweep-nvda__run43717388468; sweeps/2026-11-16/040734__run-egx-data-comi-ca__run43801992894; sweeps/2026-11-16/041112__category-news-poul-ca__run43801982888; sweeps/2026-11-16/041429__run-talib-comi-ca__run43802798857; sweeps/2026-11-16/042354__category-news-poul-ca__run43802770319",
   "ACGC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/110009__sweep-lite-acgc-ca-market-egx__runw5-sweeplite-acgc-001/collected/egx-data/egxpy_acgc.csv)",
+  "ADIB.CA: actuals series has 3000 sessions, 2014-07-15 → 2026-11-25 (last source: sweeps/2026-11-25/111021__sweep-lite-adib-ca-market-egx__runw5-sweeplite-adib-001/collected/egx-data/egxpy_adib.csv)",
+  "AMOC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/112115__sweep-lite-amoc-ca-market-egx__runw5-sweeplite-amoc-001/collected/egx-data/egxpy_amoc.csv)",
+  "ARCC.CA: actuals series has 3000 sessions, 2014-07-13 → 2026-11-25 (last source: sweeps/2026-11-25/112926__sweep-lite-arcc-ca-market-egx__runw5-sweeplite-arcc-001/collected/egx-data/egxpy_arcc.csv)",
+  "ATQA.CA: actuals series has 3000 sessions, 2014-06-29 → 2026-11-25 (last source: sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001/collected/egx-data/egxpy_atqa.csv)",
+  "CIRA.CA: actuals series has 1978 sessions, 2018-10-01 → 2026-11-25 (last source: sweeps/2026-11-25/114458__sweep-lite-cira-ca-market-egx__runw5-sweeplite-cira-001/collected/egx-data/egxpy_cira.csv)",
+  "CLHO.CA: actuals series has 2575 sessions, 2016-04-14 → 2026-11-25 (last source: sweeps/2026-11-25/115426__sweep-lite-clho-ca-market-egx__runw5-sweeplite-clho-001/collected/egx-data/egxpy_clho.csv)",
   "COMI.CA: actuals series has 2180 sessions, 2018-01-01 → 2026-11-12 (last source: sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248/collected/quantstats/ohlc.csv)",
+  "EFID.CA: actuals series has 2824 sessions, 2015-04-02 → 2026-11-25 (last source: sweeps/2026-11-25/120234__sweep-lite-efid-ca-market-egx__runw5-sweeplite-efid-001/collected/egx-data/egxpy_efid.csv)",
   "NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)",
   "POUL.CA: actuals series has 3052 sessions, 2014-06-04 → 2026-11-24 (last source: sweeps/2026-11-25/063413__sweep-lite-poul-ca-market-egx__runsched-2026-11-25/collected/egx-data/egxpy_poul.csv)",
   "price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files",
