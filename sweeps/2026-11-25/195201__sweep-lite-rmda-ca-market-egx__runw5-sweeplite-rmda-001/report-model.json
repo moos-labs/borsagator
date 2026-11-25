@@ -1,0 +1,1260 @@
+{
+  "archive_commit": null,
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "1d5b94a83fcb232f56785ae326917c02352ccb216d4b3815527a82dc75e63405",
+      "family-agent.json": "d33ec364d51810716def991e20d14d3c546bf213ba21ae6116163d4b96b49b11",
+      "family-fundamentals.json": "c0be00df1a095409b9ff3ab59545e572878f5e1d5d5c8f68ecc450f082faa3b6",
+      "family-price-forecast.json": "c9da8f6485511217f4e9d8766100b93f2eecd6d9622bbe035de8501c43997bac",
+      "family-sentiment.json": "374c95f9bc42f4250b12fb4b561eb040488d2447041f01ae3aeddf839c261e52",
+      "family-technicals.json": "ea455422eb14f7746650d2a47ec7ab61b1f71a8101b43084ce68b51a5cff6c7d",
+      "kronos-alone.json": "dca4b813688ddf7b72c79fb07a0f730451d77ef6ed8f1d3b8efc9c06f66d73cf",
+      "raw-llm-cohere.json": "42a3bbacd5356d157a606d036200a30f42998ba9cb8238ac7a9a52f379fb303f"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/RMDA-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 5.05,
+    "base_source": "egx-data/egxpy_rmda.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.35,
+      "price-forecast": 0.056,
+      "sentiment": 0.042,
+      "technicals": -0.2
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.042
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.8337,
+        "net_score": 0.042,
+        "range_high_pct": 3.97,
+        "range_low_pct": -3.97,
+        "tilt_centre_pct": 0.02,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.656
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.35,
+          "sentiment": 0.042,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.3545,
+        "net_score": -0.251,
+        "range_high_pct": 18.99,
+        "range_low_pct": -18.99,
+        "tilt_centre_pct": -1.95,
+        "trading_sessions": 21,
+        "vol_h_pct": 12.1712
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.042,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.4139,
+        "net_score": -0.096,
+        "range_high_pct": 9.88,
+        "range_low_pct": -9.88,
+        "tilt_centre_pct": -0.26,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.9389
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_rmda.csv",
+      "base_stale": false,
+      "base_used": 5.05,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 1.39,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_rmda.csv": 5.12,
+        "openbb/rmda_ca.csv": 5.050000190734863,
+        "pandas-ta/indicators.csv": 5.050000190734863,
+        "talib/indicators.csv": 5.050000190734863
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.0266,
+    "sigma_daily": 0.0266,
+    "sigma_source": "egx-data/egxpy_rmda.csv (σ60=0.0266, σ10=0.0229)",
+    "ticker": "RMDA.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.35,
+    "price-forecast": 0.056,
+    "sentiment": 0.042,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-25T19:52:01.338852+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-25",
+    "archive-sha-unavailable: sweep dir is not a git checkout and no --archive-sha was given",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/RMDA.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/RMDA.CA.json",
+    "sharia-row-missing: AAOIFI RMDA.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 RMDA.CA",
+    "sharia-row-missing: FTSE RMDA.CA",
+    "sharia-row-missing: ISLAMICLY RMDA.CA",
+    "sharia-row-missing: MSCI RMDA.CA",
+    "sharia-row-missing: MSCI_M RMDA.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.042
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.8337,
+      "net_score": 0.042,
+      "range_high_pct": 3.97,
+      "range_low_pct": -3.97,
+      "tilt_centre_pct": 0.02,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.656
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.35,
+        "sentiment": 0.042,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.3545,
+      "net_score": -0.251,
+      "range_high_pct": 18.99,
+      "range_low_pct": -18.99,
+      "tilt_centre_pct": -1.95,
+      "trading_sessions": 21,
+      "vol_h_pct": 12.1712
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.042,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.4139,
+      "net_score": -0.096,
+      "range_high_pct": 9.88,
+      "range_low_pct": -9.88,
+      "tilt_centre_pct": -0.26,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.9389
+    }
+  },
+  "job": "sweep-lite RMDA.CA market=EGX",
+  "job_shape": "sweep-lite RMDA.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 186,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 126,
+      "sweeps": 85,
+      "sweeps_with_ensemble": 64
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 5.5489,
+    "support": 4.5511
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 5.05,
+    "base_source": "egx-data/egxpy_rmda.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_rmda.csv",
+      "base_stale": false,
+      "base_used": 5.05,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 1.39,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_rmda.csv": 5.12,
+        "openbb/rmda_ca.csv": 5.050000190734863,
+        "pandas-ta/indicators.csv": 5.050000190734863,
+        "talib/indicators.csv": 5.050000190734863
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0266,
+    "sigma_source": "egx-data/egxpy_rmda.csv (σ60=0.0266, σ10=0.0229)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 5.05,
+      "last_date": "2026-11-25",
+      "last_high": 5.5,
+      "last_low": 5.05,
+      "last_open": 5.12,
+      "last_volume": 1368966.0,
+      "note": null,
+      "rows": 1699,
+      "source": "egx-data/egxpy_rmda.csv",
+      "stale": false
+    },
+    {
+      "last_close": 5.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 5.050000190734863,
+      "last_low": 5.050000190734863,
+      "last_open": 5.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/RMDA_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 5.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 5.050000190734863,
+      "last_low": 5.050000190734863,
+      "last_open": 5.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 5.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 5.050000190734863,
+      "last_low": 5.050000190734863,
+      "last_open": 5.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-rmda-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-rmda-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    ],
+    "worker_code_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009",
+    "worker_release_sha": "e86ef70b4a839516ac37d8b49adbbacb61540009"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "RMDA.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RMDA.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T19:28:58.301966+00:00",
+  "sweep_dir": "sweeps/2026-11-25/195201__sweep-lite-rmda-ca-market-egx__runw5-sweeplite-rmda-001",
+  "ticker": "RMDA.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {},
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "19907b6dfe3ccddd1e1375d45b191a6b3f03838169e755b3f110445dea7d7078",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "RMDA_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "RMDA_CA.csv_last_close": 5.050000190734863,
+          "RMDA_CA.csv_last_date": "2026-11-24",
+          "rows_RMDA_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "37ff3924c71617badcc1499b0e159350f5c1c14fd6f57086ae6c96ac39e0d086",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_rmda.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_rmda.csv_last_close": 5.05,
+          "egxpy_rmda.csv_last_date": "2026-11-25",
+          "rows_egxpy_rmda.csv": 1699,
+          "symbol": "RMDA",
+          "ticker": "RMDA.CA"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "493dfce3e203e0875e4ff4cba1f83c377fe465ffda787667f4c6fcd2f4e0635d",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 27.3589,
+          "atr_14": 0.2029,
+          "bb_lower": 4.7805,
+          "bb_mid": 5.277,
+          "bb_pctb": 0.2714,
+          "bb_upper": 5.7735,
+          "close": 5.05,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 5.2476,
+          "ema_200": 5.0801,
+          "ema_50": 5.364,
+          "first_date_used": "2019-12-11",
+          "high": 5.05,
+          "indicators.csv_last_close": 5.050000190734863,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 5.05,
+          "macd": -0.0605,
+          "macd_hist": -0.0365,
+          "macd_signal": -0.024,
+          "open": 5.05,
+          "rows_fetched": 1685,
+          "rows_indicators.csv": 250,
+          "rows_used": 1685,
+          "rsi_14": 42.2545,
+          "stoch_d": 20.8577,
+          "stoch_k": 14.2274,
+          "ticker": "RMDA.CA"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "7ee47bb84f2f71c7653ef7e4b80380745ddc7e442b3f53e2e2f275b19e490f9a",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 5.050000190734863,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 5.050000190734863,
+          "last_date": "2026-11-24",
+          "rows_fetched": 1685,
+          "rows_indicators.csv": 250,
+          "rows_used": 1685,
+          "ticker": "RMDA.CA"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "dfbe56c0f7c5ee35e2dff1fccd493ccfeac2bbdfb6e75ea3ea205734b2b01c0c",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "21a7db49a56f078cad379350881147a75284e76ce0188c0fbb085b723984f68a",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "1ac99568fb06aa21163ec233ad99bdae38d62336565ca41be67b13ae75384801",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "dbdf520cacf613d83f15decc213381468ec2acddcfc46f642912eb75c4b17b3a",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 2,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "73b616b3950edd8064f95192480aef085fe2dd3516fe13fcb50572a397f9e4a0",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 2,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "bf91a80b9f487da415f228850b6c24201d07759423cb8b79ec614dca940238f8",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "1b23e58e7977da3c2e4a1a3da99097faa0e275a11b67428701aebb217b7d9772",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 5.1184,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "673aa9e2ad3c724b4156866493d370ded47cef95651251f156192cc18d65c2f3",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "RMDA.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "d8d1bb090a4fd9d7e4b553ca37b47213a3decc4a8d3a16af32bd973e3ed0a201",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-rmda-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "RMDA.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "7699e59246ba7bbc4c32f9e4d3f60b3381a50eda626685133b960ec68f76ce4a",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-rmda-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
