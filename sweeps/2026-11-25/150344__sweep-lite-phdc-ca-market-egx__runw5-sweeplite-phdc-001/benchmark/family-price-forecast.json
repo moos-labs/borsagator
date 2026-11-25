@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 11.35,
+ "base_source": "egx-data/egxpy_phdc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T15:03:44.731363+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 1.94,
+   "families": {
+    "price-forecast": 0.429
+   },
+   "horizon_short": false,
+   "net_score": 0.429,
+   "range_high_pct": 5.99,
+   "range_low_pct": -2.12,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 3.31,
+   "families": {
+    "price-forecast": 0.196
+   },
+   "horizon_short": false,
+   "net_score": 0.196,
+   "range_high_pct": 18.48,
+   "range_low_pct": -11.86,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 2.39,
+   "families": {
+    "price-forecast": 0.306
+   },
+   "horizon_short": false,
+   "net_score": 0.306,
+   "range_high_pct": 9.42,
+   "range_low_pct": -4.63,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "6b4c768f9897c2703e9ea0ca9665449658fda0d782329426cdf27344f94bc369",
+  "digest.json": "9b68c6a41a390cf7b3bfa518dcc8eb3429e1e7a3b72ee07d19e3b93aafe2ff3d",
+  "ensemble.json": "83ed69cff8e1f8fa30b124ec733f497df0cae099d050930a8cdc9fa19f68f583"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0264,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+ "ticker": "PHDC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

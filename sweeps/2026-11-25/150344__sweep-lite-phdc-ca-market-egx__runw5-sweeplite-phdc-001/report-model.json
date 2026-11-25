@@ -1,0 +1,1370 @@
+{
+  "archive_commit": "5dc0e4cc823d853f3e77fefb124cee685294415b",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "93877a68f73ceb9661f9c99cb07d018c1d01f71566c16b73361142a6591ac29d",
+      "family-agent.json": "65188982496385b0eb491b970d734b504d021e6f3ae1479380000d5953237d7c",
+      "family-fundamentals.json": "f4ab25b6ce2c9f9bdd97ffa672000f1709d506574ce6b1bd06b040a41341d7ee",
+      "family-price-forecast.json": "365e0d5d12583b1c75099a2feaf918c849385b938b0ce411aa8c0b64e36ed83a",
+      "family-sentiment.json": "1b5e75f9f63a0f06c3bc4379399ef438c7086fc1ad6dc5b1203eaaa39490b927",
+      "family-technicals.json": "b7e21ddb0f7db8fabaf29ca930a106f343cc4b4e8052e0b0d26aaa914e921d1d",
+      "kronos-alone.json": "345bc1a7009cefcf765b4faa9a3d5c1b938f8b0f0a91544b79a5b63d16893524",
+      "raw-llm-cohere.json": "ee44588d3afd7c6a79250c66fa7b0de7cfe4636c494216cce1982ac612e15221"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "finbert",
+      "financial-roberta"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/PHDC-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 11.35,
+    "base_source": "egx-data/egxpy_phdc.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.196,
+      "sentiment": -0.053,
+      "technicals": 0.3
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.45,
+        "direction": "up",
+        "expected_move_pct": 1.68,
+        "families": {
+          "price-forecast": 0.429,
+          "sentiment": -0.053,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.2608,
+        "net_score": 0.239,
+        "range_high_pct": 6.12,
+        "range_low_pct": -2.77,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.6353
+      },
+      "month": {
+        "confidence": 0.45,
+        "direction": "up",
+        "expected_move_pct": 3.77,
+        "families": {
+          "fundamentals": 0.4,
+          "price-forecast": 0.196,
+          "sentiment": -0.053,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.8643,
+        "net_score": 0.287,
+        "range_high_pct": 20.01,
+        "range_low_pct": -12.48,
+        "trading_sessions": 14,
+        "vol_h_pct": 9.8605
+      },
+      "week": {
+        "confidence": 0.45,
+        "direction": "up",
+        "expected_move_pct": 2.09,
+        "families": {
+          "price-forecast": 0.306,
+          "sentiment": -0.053,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.7965,
+        "net_score": 0.178,
+        "range_high_pct": 9.7,
+        "range_low_pct": -5.51,
+        "trading_sessions": 3,
+        "vol_h_pct": 4.5645
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_phdc.csv",
+      "base_stale": false,
+      "base_used": 11.35,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_phdc.csv": 11.55,
+        "openbb/phdc_ca.csv": 11.550000190734863,
+        "pandas-ta/indicators.csv": 11.550000190734863,
+        "talib/indicators.csv": 11.550000190734863,
+        "yahooquery/phdc.ca.csv": 11.550000190734863
+      }
+    },
+    "risk": {
+      "conf_cap": 0.45,
+      "events": [],
+      "flags": [
+        "abnormal move: 1.7σ in the last 3 sessions"
+      ],
+      "level": "elevated",
+      "move_z": {
+        "last": 0.5,
+        "max3": 1.75
+      },
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0264,
+    "sigma_source": "egx-data/egxpy_phdc.csv (σ60=0.0255, σ10=0.0264)",
+    "ticker": "PHDC.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.196,
+    "sentiment": -0.053,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-25T15:03:44.394618+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "recommendation-unavailable: no profiles/PHDC.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/PHDC.CA.json",
+    "sharia-row-missing: AAOIFI PHDC.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 PHDC.CA",
+    "sharia-row-missing: FTSE PHDC.CA",
+    "sharia-row-missing: ISLAMICLY PHDC.CA",
+    "sharia-row-missing: MSCI PHDC.CA",
+    "sharia-row-missing: MSCI_M PHDC.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.45,
+      "direction": "up",
+      "expected_move_pct": 1.68,
+      "families": {
+        "price-forecast": 0.429,
+        "sentiment": -0.053,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.2608,
+      "net_score": 0.239,
+      "range_high_pct": 6.12,
+      "range_low_pct": -2.77,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.6353
+    },
+    "month": {
+      "confidence": 0.45,
+      "direction": "up",
+      "expected_move_pct": 3.77,
+      "families": {
+        "fundamentals": 0.4,
+        "price-forecast": 0.196,
+        "sentiment": -0.053,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.8643,
+      "net_score": 0.287,
+      "range_high_pct": 20.01,
+      "range_low_pct": -12.48,
+      "trading_sessions": 14,
+      "vol_h_pct": 9.8605
+    },
+    "week": {
+      "confidence": 0.45,
+      "direction": "up",
+      "expected_move_pct": 2.09,
+      "families": {
+        "price-forecast": 0.306,
+        "sentiment": -0.053,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.7965,
+      "net_score": 0.178,
+      "range_high_pct": 9.7,
+      "range_low_pct": -5.51,
+      "trading_sessions": 3,
+      "vol_h_pct": 4.5645
+    }
+  },
+  "job": "sweep-lite PHDC.CA market=EGX",
+  "job_shape": "sweep-lite PHDC.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 117,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 57,
+      "sweeps": 62,
+      "sweeps_with_ensemble": 41
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 12.4509,
+    "support": 10.7246
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "extractive",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-16T08:00:00Z",
+    "latest_news_date_raw": "Mon, 16 Nov 2026 08:00:00 GMT",
+    "news_count": 6,
+    "news_items": [
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://964media.com/737310/",
+        "key_type": "resolved_url",
+        "source": "شبكة 964",
+        "title": "خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://964media.com/736593/",
+        "key_type": "resolved_url",
+        "source": "شبكة 964",
+        "title": "الزيدي يرسل العيون بدلاً من الجنرالات.. كواليس اتفاق أبو فدك الذي غير لجنة الجرف - شبكة 964"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 10:32:00 GMT",
+        "identity_key": "83c66a24fc2156c4",
+        "key_type": "title-date-hash",
+        "source": "AhlulBayt News Agency (ABNA",
+        "title": "فدك؛ ليست مجرد أرض، بل مفتاح لإعادة قراءة شرعية الخلافة - AhlulBayt News Agency (ABNA"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "c4e5f4327c73a4d4",
+        "key_type": "title-date-hash",
+        "source": "الترا العراق",
+        "title": "وسط أزمة التصعيد مع \"الكتائب\".. العامري والفياض و\"أبو فدك\" عند الزيدي - الترا العراق"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://shafaq.com/ar/%D8%B3%DB%8C%D8%A7%D8%B3%D8%A9/%D8%AE%D8%A7%D8%B5-%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9-%D9%84%D9%84%D8%B2%D9%8A%D8%AF%D9%8A-%D9%88%D8%A7%D9%84%D8%B9%D8%A7%D9%85%D8%B1%D9%8A-%D9%88%D8%A7%D9%84%D9%81%D9%8A%D8%A7%D8%B6-%D9%88-%D8%A8%D9%88-%D9%81%D8%AF%D9%83-%D9%84%D8%A7%D8%AD%D8%AA%D9%88%D8%A7-%D8%A7%D9%84%D8%AA%D8%B5%D8%B9%D9%8A%D8%AF-%D9%85%D8%B9-%D9%83%D8%AA%D8%A7-%D8%A8-%D8%AD%D8%B2%D8%A8-%D8%A7%D9%84%D9%84%D9%87",
+        "key_type": "resolved_url",
+        "source": "شفق نيوز",
+        "title": "خاص.. اجتماع للزيدي والعامري والفياض و\"أبو فدك\" لاحتواء التصعيد مع كتائب حزب الله - شفق نيوز"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 18:16:21 GMT",
+        "identity_key": "https://964media.com/732723/",
+        "key_type": "resolved_url",
+        "source": "شبكة 964",
+        "title": "حشد الزيدي يختلف عن حشد أبو فدك بـ20 فقرة.. ضباط الجيش يقودون ألوية “المجاهدين”؟ - شبكة 964"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 11.35,
+    "base_source": "egx-data/egxpy_phdc.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_phdc.csv",
+      "base_stale": false,
+      "base_used": 11.35,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_phdc.csv": 11.55,
+        "openbb/phdc_ca.csv": 11.550000190734863,
+        "pandas-ta/indicators.csv": 11.550000190734863,
+        "talib/indicators.csv": 11.550000190734863,
+        "yahooquery/phdc.ca.csv": 11.550000190734863
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0264,
+    "sigma_source": "egx-data/egxpy_phdc.csv (σ60=0.0255, σ10=0.0264)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 11.35,
+      "last_date": "2026-11-25",
+      "last_high": 11.83,
+      "last_low": 11.3,
+      "last_open": 11.5,
+      "last_volume": 11753038.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_phdc.csv",
+      "stale": false
+    },
+    {
+      "last_close": 11.5,
+      "last_date": "2026-11-24",
+      "last_high": 11.760000228881836,
+      "last_low": 11.149999618530273,
+      "last_open": 11.550000190734863,
+      "last_volume": 5808529.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/PHDC_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.5,
+      "last_date": "2026-11-24",
+      "last_high": 11.760000228881836,
+      "last_low": 11.149999618530273,
+      "last_open": 11.550000190734863,
+      "last_volume": 5808529.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.5,
+      "last_date": "2026-11-24",
+      "last_high": 11.760000228881836,
+      "last_low": 11.149999618530273,
+      "last_open": 11.550000190734863,
+      "last_volume": 5808529.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.550000190734863,
+      "last_date": "2026-11-23",
+      "last_high": 11.770000457763672,
+      "last_low": 11.15999984741211,
+      "last_open": 11.029999732971191,
+      "last_volume": 12291233.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/PHDC.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-phdc-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-phdc-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    ],
+    "worker_code_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+    "worker_release_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "PHDC.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.45,
+    "events": [],
+    "flags": [
+      "abnormal move: 1.7σ in the last 3 sessions"
+    ],
+    "level": "elevated",
+    "move_z": {
+      "last": 0.5,
+      "max3": 1.75
+    },
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for PHDC.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T15:00:33.108605+00:00",
+  "sweep_dir": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+  "ticker": "PHDC.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "PHDC.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "PHDC.CA.csv_last_close": 11.550000190734863,
+          "PHDC.CA.csv_last_date": "2026-11-23",
+          "rows_PHDC.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "92e376ab16c9c80eb2254ea65f1bb6f93e847e85259d3e0cd0877c292c0c5597",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "PHDC_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "PHDC_CA.csv_last_close": 11.5,
+          "PHDC_CA.csv_last_date": "2026-11-24",
+          "rows_PHDC_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "f84f4339b606cd32e287251fa8a322dd72df90a7990b8ba5819bc3b61a49a5a4",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_phdc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_phdc.csv_last_close": 11.35,
+          "egxpy_phdc.csv_last_date": "2026-11-25",
+          "rows_egxpy_phdc.csv": 3000,
+          "symbol": "PHDC",
+          "ticker": "PHDC.CA"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "d604d6d477bc1ceae5a609e4769aa9e0b9ae477317aad8a1ea0f874885ff15e2",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 26.4046,
+          "atr_14": 0.5619,
+          "bb_lower": 10.6106,
+          "bb_mid": 11.5735,
+          "bb_pctb": 0.4618,
+          "bb_upper": 12.5364,
+          "close": 11.5,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 11.7589,
+          "ema_200": 12.2237,
+          "ema_50": 12.4093,
+          "first_date_used": "2019-01-01",
+          "high": 11.76,
+          "indicators.csv_last_close": 11.5,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 11.15,
+          "macd": -0.2654,
+          "macd_hist": 0.0255,
+          "macd_signal": -0.2909,
+          "open": 11.55,
+          "rows_fetched": 4589,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 44.4464,
+          "stoch_d": 40.2606,
+          "stoch_k": 36.1428,
+          "ticker": "PHDC.CA"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "2b8647a0264659a895d9ce3253fab90ab031888c357adf374d5c712c1d9d1208",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 11.5,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 11.5,
+          "last_date": "2026-11-24",
+          "rows_fetched": 4589,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "PHDC.CA"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "551ab613d31a9b8ca7a663bb55cd595fa9a73a515a8233c03b6469c7b3e853f4",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "a60c6dedc47d1ee3ead5dfa2fea57b66214d22a52539244a769762c061958384",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "cb3f85e005637390a2fffee7224c005479c534f1ddb22572203453f9374123e3",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "e772f4061f254ffcd33f763e3f1c589469f26d3cf8e4d1a5fc99daaa4c0d6f91",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "PHDC.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "9f19cd6b3dc0fb9e95586b64a3874f0c84efd6ab4d5fea63f1491e83087bed10",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 8,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "c96d22f1c02e83740569fc08686993cda7da85cbc67abb9d32c6194fd212b032",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "PHDC.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "66892a5b7f9fb25a9445abd2acc9f5de8a18bcbfecb8f8c7d1f8acac3580fdb2",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 11.7886,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "3ea7f3bde51ab72d94364d5f628268d3bd54b0094a5910dd47463f2e12f4a331",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "67a142405168904a5dabfd3f64662c516aa2a88e4fbfeeee8cf6c3a49cb98002",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-phdc-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 6,
+          "bodies_fetched": 4,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-25T15:03:43Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Mon, 16 Nov 2026 08:00:00 GMT",
+          "llm_provider": "extractive",
+          "multilingual_negative": 0.32,
+          "multilingual_neutral": 0.513,
+          "multilingual_positive": 0.167,
+          "multilingual_scored": 6,
+          "news_count": 6,
+          "ticker": "PHDC.CA",
+          "tool": "news-disclosure",
+          "top_headline": "خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964",
+          "translated_negative": 0.146,
+          "translated_neutral": 0.774,
+          "translated_positive": 0.079,
+          "translated_scored": 6,
+          "translation_provider": "nllb"
+        },
+        "status": "ok",
+        "ticker": "PHDC.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "46c9bbf38b2221a9111efc42597bf905db095f49de85019aeb3778da0325173a",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "financial-roberta"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 34,
+          "skill": -0.632
+        },
+        "sentiment": {
+          "factor": 1.063,
+          "n": 36,
+          "skill": 0.063
+        },
+        "technicals": {
+          "factor": 0.67,
+          "n": 36,
+          "skill": -0.33
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.063,
+        "technicals": 0.67
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

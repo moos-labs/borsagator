@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w5-sweeplite-phdc-001",
+  "job": "sweep-lite PHDC.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T15:00:33.108605+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "exit-1",
+  "finbert-tone": "ok",
+  "financial-roberta": "exit-1",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-phdc-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T15:00:33.108605+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "PHDC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['PHDC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T15:03:44.394618+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+  "model": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001/report-model.json",
+  "model_sha256": "0dfa1ac506b5e4f55c9c561b892142f07f4171fd933f2e89ee4327666d0034d9",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "finbert",
+    "financial-roberta"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "recommendation-unavailable: no profiles/PHDC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/PHDC.CA.json",
+   "sharia-row-missing: AAOIFI PHDC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 PHDC.CA",
+   "sharia-row-missing: FTSE PHDC.CA",
+   "sharia-row-missing: ISLAMICLY PHDC.CA",
+   "sharia-row-missing: MSCI PHDC.CA",
+   "sharia-row-missing: MSCI_M PHDC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "5dc0e4cc823d853f3e77fefb124cee685294415b",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 121310,
+    "sha256": "e9784ebd15697d97cb25ce23b4ce37a4c226cf8487873a6dd0c77536062738f2"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23793,
+    "sha256": "a6a410e06f08d33186a94bfe185710014b2120ac82c987c455956a87ec32576e"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "PHDC.CA"
+ }
+}

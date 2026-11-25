@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 11.35,
+ "base_source": "egx-data/egxpy_phdc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-25T15:03:44.732229+00:00",
+ "inputs_sha256": {
+  "digest.json": "9b68c6a41a390cf7b3bfa518dcc8eb3429e1e7a3b72ee07d19e3b93aafe2ff3d",
+  "ensemble.json": "83ed69cff8e1f8fa30b124ec733f497df0cae099d050930a8cdc9fa19f68f583"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+ "ticker": "PHDC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

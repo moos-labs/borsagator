@@ -1,0 +1,26 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 4/6 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/PHDC.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6124.49it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16934.26it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 15533.90it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6324.35it/s]
+{"tool": "news-disclosure", "ticker": "PHDC.CA", "news_count": 6, "disclosure_count": 0, "arabic_headlines": 6, "latest_news_date": "Mon, 16 Nov 2026 08:00:00 GMT", "latest_disclosure_date": "", "top_headline": "خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964", "llm_provider": "extractive", "multilingual_positive": 0.167, "multilingual_negative": 0.32, "multilingual_neutral": 0.513, "multilingual_scored": 6, "bodies_fetched": 4, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.079, "translated_negative": 0.146, "translated_neutral": 0.774, "translated_scored": 6}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Mon, 16 Nov 2026 08:00:00 GMT] (شبكة 964) خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964
+- [Sat, 14 Nov 2026 08:00:00 GMT] (شبكة 964) الزيدي يرسل العيون بدلاً من الجنرالات.. كواليس اتفاق أبو فدك الذي غير لجنة الجرف - شبكة 964
+- [Thu, 12 Nov 2026 10:32:00 GMT] (AhlulBayt News Agency (ABNA) فدك؛ ليست مجرد أرض، بل مفتاح لإعادة قراءة شرعية الخلافة - AhlulBayt News Agency (ABNA
+- [Thu, 12 Nov 2026 08:00:00 GMT] (الترا العراق) وسط أزمة التصعيد مع "الكتائب".. العامري والفياض و"أبو فدك" عند الزيدي - الترا العراق
+- [Thu, 12 Nov 2026 08:00:00 GMT] (شفق نيوز) خاص.. اجتماع للزيدي والعامري والفياض و"أبو فدك" لاحتواء التصعيد مع كتائب حزب الله - شفق نيوز
+- [Tue, 03 Nov 2026 18:16:21 GMT] (شبكة 964) حشد الزيدي يختلف عن حشد أبو فدك بـ20 فقرة.. ضباط الجيش يقودون ألوية “المجاهدين”؟ - شبكة 964

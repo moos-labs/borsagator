@@ -1,0 +1,25 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite PHDC.CA market=EGX",
+  "job_shape": "sweep-lite PHDC.CA market=EGX",
+  "claim_id": "w5-sweeplite-phdc-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-phdc-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001",
+  "finished": "2026-11-25T15:03:44.394618+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "finbert",
+      "financial-roberta"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

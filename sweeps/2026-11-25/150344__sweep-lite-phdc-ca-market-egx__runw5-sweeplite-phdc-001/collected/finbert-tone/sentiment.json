@@ -1,0 +1,225 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 8,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 8
+  },
+  "label_counts_raw": {
+    "neutral": 8
+  },
+  "mean_probabilities": {
+    "positive": 0.004132600308764722,
+    "negative": 7.822631275189451e-06,
+    "neutral": 0.9958595782518387
+  },
+  "items": [
+    {
+      "text": "President Mahama hails PHDC’s $28billion partnership for Phase 2 of Petroleum Hub Project - Graphic Online",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2926159342896426e-06,
+        "negative": 9.07585763343377e-06,
+        "neutral": 0.9999896287918091
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999896287918091
+        },
+        {
+          "label": "Negative",
+          "score": 9.07585763343377e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.2926159342896426e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ghana’s PHDC advancing Phase 2 of multibillion-dollar downstream petroleum hub - Oil & Gas Journal",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.03220943361520767,
+        "negative": 1.5593570424243808e-05,
+        "neutral": 0.9677749872207642
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9677749872207642
+        },
+        {
+          "label": "Positive",
+          "score": 0.03220943361520767
+        },
+        {
+          "label": "Negative",
+          "score": 1.5593570424243808e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "PHDC signs BOO deal to develop $28-B petroleum hub in Ghana - Hydrocarbon Processing",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0002771081926766783,
+        "negative": 2.1803087292937562e-05,
+        "neutral": 0.9997010827064514
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997010827064514
+        },
+        {
+          "label": "Positive",
+          "score": 0.0002771081926766783
+        },
+        {
+          "label": "Negative",
+          "score": 2.1803087292937562e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "PHDC signs US$28bn deal for Jomoro petroleum hub - Business & Financial Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.558952463819878e-06,
+        "negative": 5.4619586080661975e-06,
+        "neutral": 0.9999879598617554
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999879598617554
+        },
+        {
+          "label": "Positive",
+          "score": 6.558952463819878e-06
+        },
+        {
+          "label": "Negative",
+          "score": 5.4619586080661975e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "PHDC signs $28 billion deal for second phase of Ghana's Petroleum Hub - GhanaWeb",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00041120470268651843,
+        "negative": 1.4228515965442057e-06,
+        "neutral": 0.99958735704422
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.99958735704422
+        },
+        {
+          "label": "Positive",
+          "score": 0.00041120470268651843
+        },
+        {
+          "label": "Negative",
+          "score": 1.4228515965442057e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Energy Ministry woos investors as PHDC signs Global Sphere deal for Petroleum Hub Phase Two - MyJoyOnline",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00012169992987764999,
+        "negative": 4.040447947772918e-06,
+        "neutral": 0.9998742341995239
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998742341995239
+        },
+        {
+          "label": "Positive",
+          "score": 0.00012169992987764999
+        },
+        {
+          "label": "Negative",
+          "score": 4.040447947772918e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "PHDC signs $28bn deal for second phase of Ghana’s Petroleum Hub - CitiNewsroom.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.2460869988426566e-05,
+        "negative": 3.1413508168043336e-06,
+        "neutral": 0.9999644756317139
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999644756317139
+        },
+        {
+          "label": "Positive",
+          "score": 3.2460869988426566e-05
+        },
+        {
+          "label": "Negative",
+          "score": 3.1413508168043336e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Build connections with renters and buyers at the 2026 PHDC annual housing fair - City of Philadelphia (.gov)",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.0435912827233551e-06,
+        "negative": 2.041925881712814e-06,
+        "neutral": 0.9999969005584717
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999969005584717
+        },
+        {
+          "label": "Negative",
+          "score": 2.041925881712814e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.0435912827233551e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
