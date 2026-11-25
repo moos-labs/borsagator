@@ -1,0 +1,1248 @@
+{
+  "archive_commit": "662dfa3398d6906352b799e91fe801ce01be7947",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "ac2df7a714140cf9b95296c031f62d03df33134ea63ed10a6a739b557a483cac",
+      "family-agent.json": "4d5da463a21b90a83061dd0234fdfad131db378e74f47c0fc49cac56cb708395",
+      "family-fundamentals.json": "023107ceed284880687af974b4caa51935218fadf8ccbee54aa8caff07035093",
+      "family-price-forecast.json": "988bf4dfd623e6e61b0f9814e05ce97aec6bb7dbd6f7876656ba4781924d07d7",
+      "family-sentiment.json": "eaad9720aecbd42194e72a42e8771c39e76dd6cb7dd3e90b8c4fef663479d138",
+      "family-technicals.json": "d29dff56e85dade85a248621790e690d3c52837bf49ff8a5cb397bb63254b39b",
+      "kronos-alone.json": "3bc1d871364c004e0158742ecb6e5934b018097796865365c33bad97a98bda6a",
+      "raw-llm-cohere.json": "b5d65fee41ad350c91a2e7fe3664f0fb2b12f27485e9bec38f78e7fe6de1617c"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "present",
+      "family-sentiment.json": "absent",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "absent"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-25",
+  "degraded": {
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ATQA-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "base_date": "2026-11-25",
+    "base_price": 9.82,
+    "base_source": "egx-data/egxpy_atqa.csv",
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "corporate_actions": [],
+    "date": "2026-11-25",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.35,
+      "price-forecast": -0.119,
+      "sentiment": null,
+      "technicals": 0.15
+    },
+    "horizons": {
+      "day": {
+        "confidence": 0.35,
+        "direction": "up",
+        "expected_move_pct": 2.69,
+        "families": {
+          "price-forecast": 0.505,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.5377,
+        "net_score": 0.316,
+        "range_high_pct": 9.04,
+        "range_low_pct": -3.66,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.5056
+      },
+      "month": {
+        "confidence": 0.35,
+        "direction": "down",
+        "expected_move_pct": -3.28,
+        "families": {
+          "fundamentals": -0.35,
+          "price-forecast": -0.119,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -3.1212,
+        "net_score": -0.209,
+        "range_high_pct": 20.55,
+        "range_low_pct": -27.1,
+        "trading_sessions": 14,
+        "vol_h_pct": 13.1167
+      },
+      "week": {
+        "confidence": 0.35,
+        "direction": "up",
+        "expected_move_pct": 1.34,
+        "families": {
+          "price-forecast": 0.125,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.5214,
+        "net_score": 0.137,
+        "range_high_pct": 11.5,
+        "range_low_pct": -8.83,
+        "trading_sessions": 3,
+        "vol_h_pct": 6.0718
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_atqa.csv",
+      "base_stale": false,
+      "base_used": 9.82,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_atqa.csv": 10.05,
+        "openbb/atqa_ca.csv": 10.050000190734863,
+        "pandas-ta/indicators.csv": 10.050000190734863,
+        "talib/indicators.csv": 10.050000190734863,
+        "yahooquery/atqa.ca.csv": 10.050000190734863
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.662,
+    "sigma_daily": 0.0351,
+    "sigma_source": "egx-data/egxpy_atqa.csv (σ60=0.0351, σ10=0.0300)",
+    "ticker": "ATQA.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "ledger"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.35,
+    "price-forecast": -0.119,
+    "sentiment": null,
+    "technicals": 0.15
+  },
+  "finished": "2026-11-25T11:36:37.090713+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: sentiment)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/ATQA.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ATQA.CA.json",
+    "sharia-row-missing: AAOIFI ATQA.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ATQA.CA",
+    "sharia-row-missing: FTSE ATQA.CA",
+    "sharia-row-missing: ISLAMICLY ATQA.CA",
+    "sharia-row-missing: MSCI ATQA.CA",
+    "sharia-row-missing: MSCI_M ATQA.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "confidence": 0.35,
+      "direction": "up",
+      "expected_move_pct": 2.69,
+      "families": {
+        "price-forecast": 0.505,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.5377,
+      "net_score": 0.316,
+      "range_high_pct": 9.04,
+      "range_low_pct": -3.66,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.5056
+    },
+    "month": {
+      "confidence": 0.35,
+      "direction": "down",
+      "expected_move_pct": -3.28,
+      "families": {
+        "fundamentals": -0.35,
+        "price-forecast": -0.119,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -3.1212,
+      "net_score": -0.209,
+      "range_high_pct": 20.55,
+      "range_low_pct": -27.1,
+      "trading_sessions": 14,
+      "vol_h_pct": 13.1167
+    },
+    "week": {
+      "confidence": 0.35,
+      "direction": "up",
+      "expected_move_pct": 1.34,
+      "families": {
+        "price-forecast": 0.125,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.5214,
+      "net_score": 0.137,
+      "range_high_pct": 11.5,
+      "range_low_pct": -8.83,
+      "trading_sessions": 3,
+      "vol_h_pct": 6.0718
+    }
+  },
+  "job": "sweep-lite ATQA.CA market=EGX",
+  "job_shape": "sweep-lite ATQA.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 90,
+      "invalid": 9,
+      "matured": 45,
+      "pending": 36,
+      "sweeps": 53,
+      "sweeps_with_ensemble": 32
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_file_sha256_at_compile": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+    "weights_sha_matches_ensemble": true
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 10.9493,
+    "support": 8.9529
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-25",
+    "base_price": 9.82,
+    "base_source": "egx-data/egxpy_atqa.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-25",
+      "base_source_used": "egx-data/egxpy_atqa.csv",
+      "base_stale": false,
+      "base_used": 9.82,
+      "common_date": "2026-11-23",
+      "latest_collected_date": "2026-11-25",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_atqa.csv": 10.05,
+        "openbb/atqa_ca.csv": 10.050000190734863,
+        "pandas-ta/indicators.csv": 10.050000190734863,
+        "talib/indicators.csv": 10.050000190734863,
+        "yahooquery/atqa.ca.csv": 10.050000190734863
+      }
+    },
+    "sessions_per_calendar_day": 0.662,
+    "sigma_daily": 0.0351,
+    "sigma_source": "egx-data/egxpy_atqa.csv (σ60=0.0351, σ10=0.0300)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 9.82,
+      "last_date": "2026-11-25",
+      "last_high": 9.98,
+      "last_low": 9.81,
+      "last_open": 9.91,
+      "last_volume": 878982.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_atqa.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 10.050000190734863,
+      "last_low": 10.050000190734863,
+      "last_open": 10.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ATQA_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 10.050000190734863,
+      "last_low": 10.050000190734863,
+      "last_open": 10.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 10.050000190734863,
+      "last_low": 10.050000190734863,
+      "last_open": 10.050000190734863,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.050000190734863,
+      "last_date": "2026-11-23",
+      "last_high": 10.25,
+      "last_low": 9.949999809265137,
+      "last_open": 10.020000457763672,
+      "last_volume": 3766169.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ATQA.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w5-sweeplite-atqa-001",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "merged_by": "worker",
+    "run_id": "w5-sweeplite-atqa-001",
+    "source_runs": [
+      "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    ],
+    "worker_code_sha": "859fb9522e8fb6b1347d70c994bd59c053782762",
+    "worker_release_sha": "859fb9522e8fb6b1347d70c994bd59c053782762"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ATQA.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ATQA.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-25T11:34:45.684950+00:00",
+  "sweep_dir": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+  "ticker": "ATQA.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ATQA.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ATQA.CA.csv_last_close": 10.050000190734863,
+          "ATQA.CA.csv_last_date": "2026-11-23",
+          "rows_ATQA.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "c7757a961bca63a3348f7606be60f52f8e9355cbd0ce2c872291c538cb592a0f",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ATQA_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ATQA_CA.csv_last_close": 10.050000190734863,
+          "ATQA_CA.csv_last_date": "2026-11-24",
+          "rows_ATQA_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "08a0c8bf75c3f9435dbf2e7caf31b1bfdb7b808fa76aec81fff3a8418403959a",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_atqa.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_atqa.csv_last_close": 9.82,
+          "egxpy_atqa.csv_last_date": "2026-11-25",
+          "rows_egxpy_atqa.csv": 3000,
+          "symbol": "ATQA",
+          "ticker": "ATQA.CA"
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "00e4a06ced4953536563e3680e2de3b8e364da0f54365d831d0ac5db807e308a",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 26.6951,
+          "atr_14": 0.5104,
+          "bb_lower": 8.8315,
+          "bb_mid": 9.782,
+          "bb_pctb": 0.641,
+          "bb_upper": 10.7325,
+          "close": 10.05,
+          "date": "2026-11-24",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.0978,
+          "ema_200": 10.2937,
+          "ema_50": 10.4964,
+          "first_date_used": "2019-01-01",
+          "high": 10.05,
+          "indicators.csv_last_close": 10.050000190734863,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_date": "2026-11-24",
+          "low": 10.05,
+          "macd": -0.1338,
+          "macd_hist": 0.1007,
+          "macd_signal": -0.2345,
+          "open": 10.05,
+          "rows_fetched": 2985,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "rsi_14": 47.2884,
+          "stoch_d": 58.2412,
+          "stoch_k": 52.7823,
+          "ticker": "ATQA.CA"
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "a64dee4dc372d2084c54ef15781e88de84cf077255993ad2014dc865e2896aa7",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 10.050000190734863,
+          "indicators.csv_last_date": "2026-11-24",
+          "last_close": 10.050000190734863,
+          "last_date": "2026-11-24",
+          "rows_fetched": 2985,
+          "rows_indicators.csv": 250,
+          "rows_used": 1929,
+          "ticker": "ATQA.CA"
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "8182a6559b9f697cdd6b4642fb46db3a84ef8ebcc9aa5b460446981e8018876e",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 7.099999904632568,
+          "rows": 2187,
+          "rows_ohlc.csv": 2187,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "1c996ef90145af7c759b3f70d7ea2165abae4fbe6a1914821cebcaea59329300",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 7.099999904632568,
+          "rows_poul_ohlc.csv": 2436
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "154ecf721a21a90b30bda243a7dd30a8be4446424e70f62470709ffa81503def",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "8a5b839976ad9e78a4b6717e893af24ce0b8da54582293145cda5a1b29009ea2",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ATQA.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "8f75b4fcdb7f62c869b293c7818eede4688007c659f927c30ba4940b37515854",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-tone-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ATQA.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "1feeda42ea3490890118aebf7d39f97b34dc28733cdcdecca9b20fdce46cccbd",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ATQA.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "bf45921e0665776db649b7d86680daae5c2607f04b18ee37a3fe55c0f066babc",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 9.5135,
+          "forecast.csv_last_date": "2026-12-22",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "7aa6b61e97d2c86ebaf7b8e1f56054f3d536e817159d6114e83e0b4b45e48ced",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "data",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ATQA.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "56eb89be73d88a1e5b26587be7c84a692770d4f8cfa92c69a811f4762fa7255d",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    },
+    {
+      "category": "news",
+      "claim_id": "w5-sweeplite-atqa-001",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ATQA.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "072e7c51bd12eeb1d7eee9c29c7a2e135015d0b474cc952417ec2b03bf1345d4",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-25/w5-sweeplite-atqa-001"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert-tone"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "financial-roberta"
+    },
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {
+        "price-forecast": {
+          "factor": 0.5,
+          "n": 31,
+          "skill": -0.606
+        },
+        "sentiment": {
+          "factor": 1.068,
+          "n": 33,
+          "skill": 0.068
+        },
+        "technicals": {
+          "factor": 0.679,
+          "n": 33,
+          "skill": -0.321
+        }
+      },
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 0.5,
+        "sentiment": 1.068,
+        "technicals": 0.679
+      },
+      "file": "ledger/weights.json",
+      "file_sha256": "edecc9862cdb67390a9e29e093130f72ff4c3b7e8934438d0324e41b38b546e4",
+      "source": "ledger"
+    },
+    "confidence_basis": "calibrated (ledger skill factors applied)",
+    "weights_source": "ledger"
+  }
+}

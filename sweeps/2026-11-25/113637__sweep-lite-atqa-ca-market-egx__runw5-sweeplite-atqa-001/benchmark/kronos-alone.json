@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 9.82,
+ "base_source": "egx-data/egxpy_atqa.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-25T11:36:37.383217+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.54,
+   "families": {
+    "price-forecast": 0.504
+   },
+   "horizon_short": false,
+   "net_score": 0.504,
+   "range_high_pct": 5.83,
+   "range_low_pct": 0.21,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -3.12,
+   "families": {
+    "price-forecast": -0.119
+   },
+   "horizon_short": false,
+   "net_score": -0.119,
+   "range_high_pct": -0.53,
+   "range_low_pct": -5.86,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.52,
+   "families": {
+    "price-forecast": 0.125
+   },
+   "horizon_short": false,
+   "net_score": 0.125,
+   "range_high_pct": 4.71,
+   "range_low_pct": -1.56,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "247c972233e5c842030338c5ec29310ed2309f171de9261b2b3fde45420c9906",
+  "digest.json": "d749487b88b99c3b2a8d165b4eb6ae29f787c04cbd2d71e5a97770016c41a87f",
+  "ensemble.json": "e378c2a457a4885c0e0e3325443d0d7f6a16c9fa6b9d1e811aa5fd28577e72d4"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0351,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+ "ticker": "ATQA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

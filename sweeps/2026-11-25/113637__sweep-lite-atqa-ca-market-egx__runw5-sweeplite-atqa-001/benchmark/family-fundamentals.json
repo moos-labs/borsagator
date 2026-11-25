@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 9.82,
+ "base_source": "egx-data/egxpy_atqa.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-25T11:36:37.382813+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": -0.63,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 5.21,
+   "range_low_pct": -6.47,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -2.35,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 19.5,
+   "range_low_pct": -24.21,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -1.09,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 9.03,
+   "range_low_pct": -11.21,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "d749487b88b99c3b2a8d165b4eb6ae29f787c04cbd2d71e5a97770016c41a87f",
+  "ensemble.json": "e378c2a457a4885c0e0e3325443d0d7f6a16c9fa6b9d1e811aa5fd28577e72d4"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0351,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/113637__sweep-lite-atqa-ca-market-egx__runw5-sweeplite-atqa-001",
+ "ticker": "ATQA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
