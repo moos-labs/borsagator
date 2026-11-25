@@ -99,9 +99,11 @@ def synthetic_series(n=FIXTURE_N, cutoff=FIXTURE_CUTOFF):
     return rows
 
 
-def fixture_kronos_rows(series, cutoff=FIXTURE_CUTOFF, bars=21):
-    """Kronos forecast path: 21 calendar days after the cutoff,
-    closes continuing the drift (+0.1% per bar)."""
+def fixture_kronos_rows(series, cutoff=FIXTURE_CUTOFF, bars=35):
+    """Kronos forecast path: 35 calendar days after the cutoff
+    (backtest.KRONOS_PRED_LEN — enough bars to span the 21-session
+    month horizon at the fixture density, issue #666), closes
+    continuing the drift (+0.1% per bar)."""
     base = series[-1]["close"]
     start = date.fromisoformat(cutoff) + timedelta(days=1)
     rows = []
@@ -268,12 +270,12 @@ GOLDEN = {
                  "range_low_pct": -0.65, "range_high_pct": 0.65,
                  "confidence": 0.35, "net_score": 0.6,
                  "tilt_centre_pct": 0.06,
-                 "trading_sessions": 4},
+                 "trading_sessions": 5},
         "month": {"direction": "flat", "expected_move_pct": 0.0,
                   "range_low_pct": -1.25, "range_high_pct": 1.25,
                   "confidence": 0.35, "net_score": 0.6,
                   "tilt_centre_pct": 0.12,
-                  "trading_sessions": 15},
+                  "trading_sessions": 21},
     },
 }
 

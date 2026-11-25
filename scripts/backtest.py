@@ -53,7 +53,11 @@ import ledger  # noqa: E402
 TOOL = "walkforward-backtest"
 VERSION = 1
 WARMUP_SESSIONS = 60
-KRONOS_PRED_LEN = 21  # ensemble month bar (design §1.1)
+# Kronos bars requested per cell: enough calendar bars to span
+# the 21-session month horizon at any realistic EGX density
+# (issue #666: ensemble.horizon_bars(21, 0.6) = 35; at the usual
+# ~0.71 density the month reads bar 29).
+KRONOS_PRED_LEN = 35
 DROP_BEFORE = "2019-01-01"
 # Design §3: 12 quarter-ends, 2023-12-29 -> 2026-09-30. A
 # quarter-end that is not a session is adjusted to the last
@@ -486,13 +490,13 @@ def audit_stage(stage_dir, cutoff, ticker):
                 "v2 ensemble (issue #594)" % h)
         if hb.get("horizon_short"):
             violations.append(
-                "audit: %s horizon is short (Kronos path < 21 bars)"
-                % h)
+                "audit: %s horizon is short (Kronos path < %d bars)"
+                % (h, KRONOS_PRED_LEN))
     if ens.get("sigma60_daily") is None:
         violations.append(
             "audit: ensemble has no sigma60_daily — the v2 band and "
             "the naive-range baseline cannot be built (issue #594)")
-    # 4. Kronos path length: 21 bars were requested.
+    # 4. Kronos path length: KRONOS_PRED_LEN bars were requested.
     kpath = os.path.join(stage_dir, "collected/kronos/forecast.csv")
     if os.path.exists(kpath):
         with open(kpath, newline="", encoding="utf-8") as f:

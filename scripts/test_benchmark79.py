@@ -485,9 +485,13 @@ def test_f2_kronos_alone():
     k = load_bench(sdir, "kronos-alone")
     assert k["status"] == "present"
     assert k["base_price"] == 8.02
-    # kronos_at row-index rule: rows 0/4/20, never CSV row 0 as base.
+    # kronos_at row-index rule: rows 0/7/20, never CSV row 0 as base.
+    # Issue #666: bars derive from the ledger session counts at the
+    # capture's density 0.66 — day 1 session -> bar 1 (row 0),
+    # week 5 -> bar 8 (row 7), month 21 -> bar 32, clamped to the
+    # 21-row path's last row (row 20).
     approx(k["horizons"]["day"]["expected_move_pct"], 28.55)
-    approx(k["horizons"]["week"]["expected_move_pct"], 23.36)
+    approx(k["horizons"]["week"]["expected_move_pct"], 25.56)
     approx(k["horizons"]["month"]["expected_move_pct"], 20.02)
     approx(k["horizons"]["day"]["range_low_pct"], 25.88)
     approx(k["horizons"]["day"]["range_high_pct"], 31.95)
