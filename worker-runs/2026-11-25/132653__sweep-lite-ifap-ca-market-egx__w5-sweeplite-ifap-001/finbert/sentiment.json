@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.2688071628411611,
+    "negative": 0.010585136711597443,
+    "neutral": 0.7206077178319296
+  },
+  "items": [
+    {
+      "text": "IFAP Committee sets up resource mobilization team to fund information access for persons with disabilities - Adomonline.com",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.09564587473869324,
+        "negative": 0.010612091980874538,
+        "neutral": 0.893742024898529
+      }
+    },
+    {
+      "text": "Kyiv commemorates IFAP's 25th Anniversary - UNESCO",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.43359172344207764,
+        "negative": 0.012958847917616367,
+        "neutral": 0.5534494519233704
+      }
+    },
+    {
+      "text": "Three new projects to advance inclusive knowledge societies for IFAP’s 25th anniversary - UNESCO",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.2771838903427124,
+        "negative": 0.008184470236301422,
+        "neutral": 0.7146316766738892
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 2,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.665902994844752,
+    "negative": 0.00044394543025797856,
+    "neutral": 0.33365307313700515
+  },
+  "items": [
+    {
+      "text": "IFAP Committee sets up resource mobilization team to fund information access for persons with disabilities - Adomonline.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9979224801063538,
+        "negative": 0.0005699063185602427,
+        "neutral": 0.0015076487325131893
+      },
+      "raw_probabilities": {
+        "positive": 0.9979224801063538,
+        "neutral": 0.0015076487325131893,
+        "negative": 0.0005699063185602427
+      }
+    },
+    {
+      "text": "Kyiv commemorates IFAP's 25th Anniversary - UNESCO",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00175709358882159,
+        "negative": 0.0001579096569912508,
+        "neutral": 0.9980850219726562
+      },
+      "raw_probabilities": {
+        "neutral": 0.9980850219726562,
+        "positive": 0.00175709358882159,
+        "negative": 0.0001579096569912508
+      }
+    },
+    {
+      "text": "Three new projects to advance inclusive knowledge societies for IFAP’s 25th anniversary - UNESCO",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980294108390808,
+        "negative": 0.0006040203152224422,
+        "neutral": 0.0013665487058460712
+      },
+      "raw_probabilities": {
+        "positive": 0.9980294108390808,
+        "neutral": 0.0013665487058460712,
+        "negative": 0.0006040203152224422
+      }
+    }
+  ]
+}

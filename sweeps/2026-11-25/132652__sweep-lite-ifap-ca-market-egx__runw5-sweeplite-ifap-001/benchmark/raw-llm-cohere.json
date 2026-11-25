@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 15.82,
+ "base_source": "egx-data/egxpy_ifap.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T13:26:52.769388+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_ifap.csv": "9724b380fb4d4b32a00e4bc1a595ae2b6f5b00a7304517965570de4b8c9e8b6e",
+  "digest.json": "28d37fee088f270254645f06ac6525243872123d87f6ceee068980abbeec318d",
+  "ensemble.json": "8a24520f7e61a1da3acf73ecb50f0de8661fd635c0bb74d61fcf8e0ab54b92b0",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001",
+ "ticker": "IFAP.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

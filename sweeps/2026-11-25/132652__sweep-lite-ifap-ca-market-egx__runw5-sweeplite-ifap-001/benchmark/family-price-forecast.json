@@ -1,0 +1,73 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 15.82,
+ "base_source": "egx-data/egxpy_ifap.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for price-forecast, 0 else; kmove recomputed from the Kronos CSV (kronos_at row-index mirror), never inverted from the clamped price_score; risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-25T13:26:52.756871+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 2.67,
+   "families": {
+    "price-forecast": 0.555
+   },
+   "horizon_short": false,
+   "net_score": 0.555,
+   "range_high_pct": 7.35,
+   "range_low_pct": -2.0,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 4.45,
+   "families": {
+    "price-forecast": 0.247
+   },
+   "horizon_short": false,
+   "net_score": 0.247,
+   "range_high_pct": 21.94,
+   "range_low_pct": -13.05,
+   "trading_sessions": 14
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "up",
+   "expected_move_pct": 2.74,
+   "families": {
+    "price-forecast": 0.328
+   },
+   "horizon_short": false,
+   "net_score": 0.328,
+   "range_high_pct": 10.84,
+   "range_low_pct": -5.36,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "ef6146b7105cea0c969fb1e2225458817d4346cadb4e8f5141de1faf4ff51afa",
+  "digest.json": "28d37fee088f270254645f06ac6525243872123d87f6ceee068980abbeec318d",
+  "ensemble.json": "8a24520f7e61a1da3acf73ecb50f0de8661fd635c0bb74d61fcf8e0ab54b92b0"
+ },
+ "kronos_first_row_date": "2026-11-24",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0281,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001",
+ "ticker": "IFAP.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

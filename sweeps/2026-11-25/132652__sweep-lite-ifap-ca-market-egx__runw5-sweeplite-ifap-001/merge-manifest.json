@@ -1,0 +1,24 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite IFAP.CA market=EGX",
+  "job_shape": "sweep-lite IFAP.CA market=EGX",
+  "claim_id": "w5-sweeplite-ifap-001",
+  "source_runs": [
+    "worker-runs/2026-11-25/w5-sweeplite-ifap-001"
+  ],
+  "sweep_dir": "sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001",
+  "finished": "2026-11-25T13:26:52.463526+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

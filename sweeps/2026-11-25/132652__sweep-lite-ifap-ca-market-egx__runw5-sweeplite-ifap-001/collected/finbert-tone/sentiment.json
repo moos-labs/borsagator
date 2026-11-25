@@ -1,0 +1,100 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "label_counts_raw": {
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.003652326453675414,
+    "negative": 1.710245457312946e-05,
+    "neutral": 0.9963305393854777
+  },
+  "items": [
+    {
+      "text": "IFAP Committee sets up resource mobilization team to fund information access for persons with disabilities - Adomonline.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.7448844573664246e-06,
+        "negative": 1.9860055544995703e-05,
+        "neutral": 0.9999783039093018
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999783039093018
+        },
+        {
+          "label": "Negative",
+          "score": 1.9860055544995703e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.7448844573664246e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kyiv commemorates IFAP's 25th Anniversary - UNESCO",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.150853419560008e-05,
+        "negative": 1.0497603398107458e-05,
+        "neutral": 0.9999480247497559
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999480247497559
+        },
+        {
+          "label": "Positive",
+          "score": 4.150853419560008e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.0497603398107458e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Three new projects to advance inclusive knowledge societies for IFAP’s 25th anniversary - UNESCO",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.010913725942373276,
+        "negative": 2.0949704776285216e-05,
+        "neutral": 0.9890652894973755
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9890652894973755
+        },
+        {
+          "label": "Positive",
+          "score": 0.010913725942373276
+        },
+        {
+          "label": "Negative",
+          "score": 2.0949704776285216e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
