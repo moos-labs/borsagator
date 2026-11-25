@@ -228,7 +228,9 @@ def read_kronos_csv(digest):
 
 def kronos_at(path, base, bar):
     """Mirror of ensemble.py's kronos_at(): row-index rule, same
-    clamping. bar is a Kronos bar count (calendar days)."""
+    clamping. bar is a session count — Kronos forecast rows are
+    trading sessions (next_sessions in kronos_forecast.py), so
+    bar == the horizon's session count (issue #666)."""
     if not path:
         return None
     i = min(bar, len(path)) - 1
@@ -236,19 +238,6 @@ def kronos_at(path, base, bar):
     return {"close": c, "move": c / base - 1.0,
             "band": max((h - l) / 2.0 / base, 0.004),
             "short": len(path) < bar}
-
-
-def horizon_bars(sessions, density):
-    """Mirror of ensemble.py's horizon_bars() (issue #666): the
-    Kronos bar count spanning `sessions` trading sessions, derived
-    from the session count via the capture's own density — so the
-    mirrors read the same Kronos row the ensemble read. A
-    1-session horizon always reads the first predicted bar."""
-    if not density or density <= 0:
-        return sessions
-    if sessions <= 1:
-        return 1
-    return max(1, round(sessions / density))
 
 
 def rescale_kronos(path, ens):
@@ -387,7 +376,7 @@ def freeze_family_alone(ens, digest, fam, kronos, kronos_first_date,
         ka_band = 0.0
         if fam == "price-forecast":
             ka = kronos_at(kronos, (ens or {}).get("base_price"),
-                           horizon_bars(sessions, density)) \
+                           sessions) \
                 if kronos else None
             if ka is None:
                 continue
@@ -453,7 +442,7 @@ def freeze_kronos_alone(ens, digest, kronos, kronos_first_date,
         ens_h = ((ens or {}).get("horizons") or {}).get(hname)
         if not isinstance(ens_h, dict):
             continue
-        bar = horizon_bars(sessions, density)
+        bar = sessions
         ka = kronos_at(kronos, base, bar)
         if ka is None:
             continue

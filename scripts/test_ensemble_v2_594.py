@@ -51,19 +51,17 @@ def test_constants():
           ens.V2_SESSIONS == led.DEFAULT_SESSIONS,
           "%r vs %r" % (ens.V2_SESSIONS, led.DEFAULT_SESSIONS))
     # Issue #666: the horizon lengths themselves are the ledger's
-    # session counts, and the Kronos bar count derives FROM them
-    # (at density 5/7: day 1 -> bar 1, week 5 -> bar 7,
-    # month 21 -> bar 29) — never the other way round.
+    # session counts, and the Kronos path is read at bar == sessions
+    # — kronos_forecast.py builds its path on next_sessions(), so
+    # each forecast row IS one trading session. There is NO density
+    # derivation (the first #666 fix's horizon_bars(sessions/density)
+    # was wrong; Ins's review caught it against the runner source).
     check("HORIZONS == ledger.DEFAULT_SESSIONS",
           ens.HORIZONS == led.DEFAULT_SESSIONS,
           "%r vs %r" % (ens.HORIZONS, led.DEFAULT_SESSIONS))
-    check("horizon_bars derives bars from sessions",
-          ens.horizon_bars(1, 5 / 7) == 1
-          and ens.horizon_bars(5, 5 / 7) == 7
-          and ens.horizon_bars(21, 5 / 7) == 29
-          and ens.horizon_bars(5, 1.0) == 5
-          and ens.horizon_bars(5, 0) == 5,
-          repr([ens.horizon_bars(s, 5 / 7) for s in (1, 5, 21)]))
+    check("no horizon_bars density derivation remains",
+          not hasattr(ens, "horizon_bars"),
+          "horizon_bars must stay removed: Kronos rows are sessions")
     # Kronos weight 0 at every horizon; technicals 0 on day and a
     # capped 0.2 tilt on week/month.
     check("Kronos weight 0 everywhere",
