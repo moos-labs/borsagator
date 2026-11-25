@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1929 rows
+{
+  "ticker": "RACC.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 2253,
+  "rows_used": 1929,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-24"
+  },
+  "last_date": "2026-11-24",
+  "last_close": 7.75,
+  "indicators": {
+    "RSI_14": 43.836352747751064,
+    "MACD": -0.16985612120216054,
+    "MACD_signal": -0.20020836780454693,
+    "MACD_hist": 0.03035224660238639,
+    "EMA_20": 7.927884691926833,
+    "EMA_50": 8.405369437660077,
+    "ADX_14": 38.728443809770006
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-12",
+    "CDLHAMMER": "2026-10-12",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

@@ -1,0 +1,92 @@
+{
+ "job": {
+  "id": "w5-sweeplite-racc-001",
+  "job": "sweep-lite RACC.CA market=EGX",
+  "added": "2026-11-25T09:50:18+00:00"
+ },
+ "worker": "borsagator-worker-5",
+ "started": "2026-11-25T15:09:01.336523+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "872a91251e63ffcfe4fac4ee340e635fe7f759de9049231e5ada240b8cb32ba3",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "a79a0c2cc8d0f4a1e1bb30d5adc0ebfabf41c6a4",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w5-sweeplite-racc-001",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-25T15:09:01.336523+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "RACC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['RACC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-25T15:11:50.565851+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001",
+  "model": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001/report-model.json",
+  "model_sha256": "7fd4dbb0b1d59e31363beee5a98a4ad8816e7262f00e67c651316194056d94a9",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-23 vs base_date 2026-11-25",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/RACC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/RACC.CA.json",
+   "sharia-row-missing: AAOIFI RACC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 RACC.CA",
+   "sharia-row-missing: FTSE RACC.CA",
+   "sharia-row-missing: ISLAMICLY RACC.CA",
+   "sharia-row-missing: MSCI RACC.CA",
+   "sharia-row-missing: MSCI_M RACC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "160488f2ed9fcb4de76133566c6ba1e5e1f72fd6",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 122413,
+    "sha256": "5fbc94d1c4af53dcaad3e235ef0561333633069dfaf1c8e36783b3dbfb2de547"
+   },
+   {
+    "path": "report.md",
+    "bytes": 25361,
+    "sha256": "abb3f66aad87412a119eed54a62a6a03de5831f03feb76928074d65c11b94242"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "RACC.CA"
+ }
+}

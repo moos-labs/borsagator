@@ -1,0 +1,55 @@
+{
+  "RACC.CA": {
+    "ticker": "RACC.CA",
+    "rows": 1208,
+    "first_date": "2021-11-25",
+    "last_date": "2026-11-23",
+    "first_close": 3.0199999809265137,
+    "last_close": 7.75,
+    "info_obtained": {
+      "summary_detail": false,
+      "asset_profile": false,
+      "price": true
+    },
+    "info_fields": {
+      "summary_detail": [],
+      "asset_profile": [],
+      "price": [
+        "currency",
+        "currencySymbol",
+        "exchange",
+        "exchangeDataDelayedBy",
+        "exchangeName",
+        "fromCurrency",
+        "fulldayChange",
+        "fulldayChangePercent",
+        "fulldayPrice",
+        "lastMarket",
+        "longName",
+        "marketCap",
+        "marketState",
+        "maxAge",
+        "priceHint",
+        "quoteSourceName",
+        "quoteType",
+        "regularMarketChange",
+        "regularMarketChangePercent",
+        "regularMarketPreviousClose",
+        "regularMarketPrice",
+        "regularMarketSource",
+        "regularMarketTime",
+        "shortName",
+        "symbol",
+        "toCurrency",
+        "underlyingSymbol"
+      ]
+    },
+    "info_notes": {
+      "summary_detail": "non-dict payload (str): No fundamentals data found for symbol: RACC.CA",
+      "asset_profile": "non-dict payload (str): No fundamentals data found for symbol: RACC.CA"
+    },
+    "info_errors": {},
+    "error": null,
+    "csv_file": "RACC.CA.csv"
+  }
+}

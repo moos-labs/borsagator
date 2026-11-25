@@ -1,0 +1,26 @@
+WARN body http 404: https://www.mubasher.info/news/4700351/%D8%A7%D9%84%D8%B9%D9%86%D9%88%D8%A7%D9%86-%D8%B1%D
+WARN body http 403: https://quantisnow.com/insight/research-alliance-corporation-iii-filed-sec-form-8-k-submis
+WARN body http 403: https://www.stocktitan.net/sec-filings/RACC/8-k-research-alliance-corp-iii-reports-materia
+bodies: 2/5 fetched; failures by stage: {'decode': 0, 'http': 3, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/RACC.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6126.41it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 17616.87it/s]
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17726.41it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6303.59it/s]
+{"tool": "news-disclosure", "ticker": "RACC.CA", "news_count": 4, "disclosure_count": 1, "arabic_headlines": 3, "latest_news_date": "Tue, 24 Nov 2026 22:06:39 GMT", "latest_disclosure_date": "Wed, 11 Nov 2026 07:01:48 GMT", "top_headline": "العنوان: راية لخدمات مراكز الاتصالات (RACC.CA) محضر اجتماع مجلس ادارة الشركةاسم الشركة: راية لخدمات مراكز الاتصالاتكود الترقيم الدولي: EGS7 - Mubasher", "llm_provider": "extractive", "finbert_positive": 0.03, "finbert_negative": 0.048, "finbert_neutral": 0.921, "finbert_scored": 2, "multilingual_positive": 0.235, "multilingual_negative": 0.004, "multilingual_neutral": 0.761, "multilingual_scored": 3, "bodies_fetched": 2, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.101, "translated_negative": 0.203, "translated_neutral": 0.695, "translated_scored": 3}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Tue, 24 Nov 2026 22:06:39 GMT] (Quantisnow) RACC: Research Alliance Corporation III filed SEC Form 8-K: Submission of Matters to a Vote of Security Holders - Quantisnow
+- [Tue, 24 Nov 2026 22:03:45 GMT] (Stock Titan) Over 3.2 million shares were put up for redemption as Research Alliance Corp III (RACC) held a deal vote. - Stock Titan
+- [Tue, 24 Nov 2026 13:53:31 GMT] (كود) شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية ففاس - كود
+- [Wed, 11 Nov 2026 07:01:48 GMT] (Mubasher) العنوان: راية لخدمات مراكز الاتصالات (RACC.CA) محضر اجتماع مجلس ادارة الشركةاسم الشركة: راية لخدمات مراكز الاتصالاتكود الترقيم الدولي: EGS7 - Mubasher
+- [Fri, 06 Nov 2026 08:00:00 GMT] (البيان) استكمال الأعمال الإنشائية لمشروع راك سنترال سكوير في رأس الخيمة - البيان

@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 7.51,
+ "base_source": "egx-data/egxpy_racc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-25T15:11:50.892206+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.79,
+   "range_low_pct": -3.79,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 12.57,
+   "range_low_pct": -12.57,
+   "trading_sessions": 11
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 6.56,
+   "range_low_pct": -6.56,
+   "trading_sessions": 3
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "7f9d6ea094fbbb1c3caaa09620ab0f4d894d5fdaa20694bb2953f6650d1d43fa",
+  "ensemble.json": "f778d062a581d12936253c03b533b4b0f0311651d0cd25d1f721c4f630b8de71"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.54,
+ "sigma_daily": 0.0296,
+ "status": "present",
+ "sweep": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001",
+ "ticker": "RACC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

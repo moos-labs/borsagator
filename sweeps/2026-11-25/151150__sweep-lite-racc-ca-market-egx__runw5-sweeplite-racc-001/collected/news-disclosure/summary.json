@@ -1,0 +1,41 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "RACC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "RACC.CA",
+    "fetched_at": "2026-11-25T15:11:49Z",
+    "tool": "news-disclosure",
+    "news_count": 4,
+    "disclosure_count": 1,
+    "arabic_headlines": 3,
+    "latest_news_date": "Tue, 24 Nov 2026 22:06:39 GMT",
+    "latest_disclosure_date": "Wed, 11 Nov 2026 07:01:48 GMT",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.03,
+    "finbert_negative": 0.048,
+    "finbert_neutral": 0.921,
+    "finbert_scored": 2,
+    "multilingual_positive": 0.235,
+    "multilingual_negative": 0.004,
+    "multilingual_neutral": 0.761,
+    "multilingual_scored": 3,
+    "bodies_fetched": 2,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb",
+    "translated_positive": 0.101,
+    "translated_negative": 0.203,
+    "translated_neutral": 0.695,
+    "translated_scored": 3
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+ "as_of": "2026-11-25",
+ "base_date": "2026-11-25",
+ "base_price": 7.51,
+ "base_source": "egx-data/egxpy_racc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: LLM API key absent — no fallback model",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-25T15:11:50.891987+00:00",
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_racc.csv": "7f40926a1cad22486762099fd4e3e6cb2be96a3c1297863a9a852d68591a6a8c",
+  "digest.json": "7f9d6ea094fbbb1c3caaa09620ab0f4d894d5fdaa20694bb2953f6650d1d43fa",
+  "ensemble.json": "f778d062a581d12936253c03b533b4b0f0311651d0cd25d1f721c4f630b8de71",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "reason": "llm-key-absent",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001",
+ "ticker": "RACC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
