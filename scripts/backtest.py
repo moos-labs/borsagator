@@ -470,14 +470,28 @@ def audit_stage(stage_dir, cutoff, ticker):
             violations.append("audit: ensemble has no %s horizon" % h)
             continue
         voters = sorted((hb.get("families") or {}).keys())
-        if voters != ["price-forecast", "technicals"]:
+        # Issue #594: the v2 headline (centre 0 + calibrated band)
+        # needs NO voting family, and Kronos weight is 0 — so the
+        # day horizon has no voters at all and week/month vote
+        # technicals only. The old "2 families" invariant was the
+        # v1 combine; asserting it now would fail every v2 cell.
+        want_voters = [] if h == "day" else ["technicals"]
+        if voters != want_voters:
             violations.append(
-                "audit: %s horizon voters %r, not the 2 families"
-                % (h, voters))
+                "audit: %s horizon voters %r, not the v2 voters %r"
+                % (h, voters, want_voters))
+        if hb.get("tilt_centre_pct") is None:
+            violations.append(
+                "audit: %s horizon has no tilt_centre_pct — not a "
+                "v2 ensemble (issue #594)" % h)
         if hb.get("horizon_short"):
             violations.append(
                 "audit: %s horizon is short (Kronos path < 21 bars)"
                 % h)
+    if ens.get("sigma60_daily") is None:
+        violations.append(
+            "audit: ensemble has no sigma60_daily — the v2 band and "
+            "the naive-range baseline cannot be built (issue #594)")
     # 4. Kronos path length: 21 bars were requested.
     kpath = os.path.join(stage_dir, "collected/kronos/forecast.csv")
     if os.path.exists(kpath):
@@ -881,15 +895,26 @@ def run_cell(cutoff, ticker, cfg):
                     for h in ledger.HORIZONS:
                         a = (ens.get("horizons") or {}).get(h) or {}
                         b = (ens2.get("horizons") or {}).get(h) or {}
-                        if (a.get("direction"), a.get("expected_move_pct")) \
+                        # Issue #594: the v2 headline is centre 0 /
+                        # flat on every horizon, so (direction,
+                        # expected) can no longer see a flipped
+                        # Kronos path — compare kronos_move_pct too
+                        # (the rerun's whole point is Kronos
+                        # determinism). Without it a non-deterministic
+                        # Kronos stub would pass silently.
+                        if (a.get("direction"), a.get("expected_move_pct"),
+                                a.get("kronos_move_pct")) \
                                 != (b.get("direction"),
-                                    b.get("expected_move_pct")):
+                                    b.get("expected_move_pct"),
+                                    b.get("kronos_move_pct")):
                             diffs.append(
-                                "%s: %s/%s vs %s/%s"
+                                "%s: %s/%s/%s vs %s/%s/%s"
                                 % (h, a.get("direction"),
                                    a.get("expected_move_pct"),
+                                   a.get("kronos_move_pct"),
                                    b.get("direction"),
-                                   b.get("expected_move_pct")))
+                                   b.get("expected_move_pct"),
+                                   b.get("kronos_move_pct")))
                     result["determinism"] = {
                         "rerun": True, "diffs": diffs}
                     if diffs:

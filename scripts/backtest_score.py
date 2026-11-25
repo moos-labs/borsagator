@@ -21,6 +21,14 @@ itself):
   market-difficulty reference; benchmark_freeze.py does NOT freeze
   an index baseline, so the scorer builds this reference directly
   from the capture's index closes).
+  - "naive-range" (#594): the centre-0 trailing-volatility range
+    — 0 +/- 1.2816 x sigma60 x sqrt(ledger sessions). The gate
+    baseline: an ensemble only beats it by having a better CENTRE,
+    not a better width.
+  - "tilt-technicals" (#594): the v2 shadow tilt — the ensemble's
+    own tilt_centre_pct with the ensemble's own v2 band re-centred
+    on the tilt (direction via bf.direction_of). Tests whether the
+    capped technicals tilt has edge over the naive centre.
 
 Scoring is by the ledger's session counts (day 1 / week 5 /
 month 21, ledger.DEFAULT_SESSIONS), not the ensemble's Kronos
@@ -45,9 +53,10 @@ import benchmark_freeze as bf  # noqa: E402
 import ensemble as ens_mod  # noqa: E402
 
 TOOL = "walkforward-backtest"
-VERSION = 1
+VERSION = 2
 ENTRANTS = ("2-family-ensemble", "kronos-alone", "family-technicals",
-            "buy-and-hold", "index-baseline")
+            "buy-and-hold", "index-baseline", "naive-range",
+            "tilt-technicals")
 
 FLATTERY_WARNING = (
     "Kronos-small (NeoQuasar/Kronos-small) is a pretrained model "
@@ -239,7 +248,86 @@ def build_entrants(ens, kronos_path, kronos_first_date):
         out["index-baseline"][h] = _horizon_block(
             "flat", 0.0, None, None, None, None, {}, hb,
             hb.get("trading_sessions"))
+
+    # Naive-range (#594): the gate baseline — centre 0 with
+    # half-width 1.2816 x sigma60 x sqrt(LEDGER sessions). No risk
+    # multiplier and no confidence: it is the interval to beat,
+    # not a forecaster. sigma60 comes from the ensemble's
+    # sigma60_daily; an older capture without it falls back to
+    # sigma_daily as a proxy and is flagged in the capture's gaps.
+    sigma60 = fnum(ens.get("sigma60_daily"))
+    if sigma60 is None:
+        sigma60 = sigma
+        score_capture_gap = True
+    else:
+        score_capture_gap = False
+    out["naive-range"] = {}
+    for h in ledger.HORIZONS:
+        hb = (ens.get("horizons") or {}).get(h)
+        if not isinstance(hb, dict):
+            continue
+        half_pct = (ens_mod.V2_NAIVE_K * sigma60
+                    * math.sqrt(ens_mod.V2_SESSIONS[h]) * 100)
+        out["naive-range"][h] = _horizon_block(
+            "flat", 0.0, -half_pct, half_pct, None, None, {}, hb,
+            hb.get("trading_sessions"))
+    if score_capture_gap:
+        build_entrants.naive_sigma60_gap = True
+    # Tilt-technicals (#594): the v2 shadow tilt — the ensemble's
+    # own tilt_centre_pct with the ensemble's own v2 band
+    # re-centred on it. Tests whether the capped technicals tilt
+    # has edge over the naive centre.
+    out["tilt-technicals"] = {}
+    for h in ledger.HORIZONS:
+        hb = (ens.get("horizons") or {}).get(h)
+        if not isinstance(hb, dict):
+            continue
+        tilt = fnum(hb.get("tilt_centre_pct"))
+        if tilt is None:
+            continue
+        half_pct = (hb.get("range_high_pct") - hb.get("range_low_pct")) / 2
+        if half_pct is None:
+            continue
+        out["tilt-technicals"][h] = _horizon_block(
+            bf.direction_of(tilt / 100), tilt,
+            tilt - half_pct, tilt + half_pct, None,
+            hb.get("net_score"),
+            {k: fnum(v) for k, v in (hb.get("families") or {}).items()
+             if fnum(v) is not None},
+            hb, hb.get("trading_sessions"))
     return out
+
+
+def winkler_is(realised_pct, low_pct, high_pct, alpha=0.2):
+    """Winkler interval score for one realised move against a
+    central interval [low, high] (all in pp). alpha=0.2 = 80%
+    interval (the #594 gate). Lower is better; a miss costs the
+    interval width plus 2/alpha times the distance outside."""
+    width = high_pct - low_pct
+    if low_pct <= realised_pct <= high_pct:
+        return width
+    if realised_pct < low_pct:
+        return width + (2 / alpha) * (low_pct - realised_pct)
+    return width + (2 / alpha) * (realised_pct - high_pct)
+
+
+def bootstrap_gap_ci(naive_scores, ens_scores, reps=2000, seed=20261125):
+    """Paired-bootstrap 95% CI on the mean (naive IS − ensemble
+    IS) — positive means the ensemble's interval beats the naive
+    one. Deterministic (fixed seed). Returns (lo, hi) or
+    (None, None) when there is nothing to resample."""
+    import random
+    if not naive_scores or len(naive_scores) != len(ens_scores):
+        return None, None
+    rng = random.Random(seed)
+    n = len(naive_scores)
+    gaps = [a - b for a, b in zip(naive_scores, ens_scores)]
+    means = []
+    for _ in range(reps):
+        means.append(sum(rng.choice(gaps) for _ in range(n)) / n)
+    means.sort()
+    return (round(means[int(0.025 * reps)], 2),
+            round(means[min(reps - 1, int(0.975 * reps))], 2))
 
 
 def score_capture(capture_dir):
@@ -308,6 +396,14 @@ def score_capture(capture_dir):
     kronos_path, kronos_first = read_kronos_path(
         os.path.join(capture_dir, "collected/kronos/forecast.csv"))
     entrants = build_entrants(ens, kronos_path, kronos_first)
+    if getattr(build_entrants, "naive_sigma60_gap", False):
+        # The naive-range baseline fell back to sigma_daily because
+        # the capture predates sigma60_daily (#594) — the gate
+        # comparison for this capture is approximate, not exact.
+        gaps.append("%s: ensemble.json has no sigma60_daily — "
+                    "naive-range built from sigma_daily as proxy "
+                    "(#594)" % rel)
+        build_entrants.naive_sigma60_gap = False
     # Series for scoring: the C close plus the 21 realised
     # sessions (design §1.4.4 — fetched separately, never visible
     # to the forecast). Provenance is a single backtest source;
@@ -464,13 +560,40 @@ def agg(subset):
         return {"n": 0, "hit_rate": None, "mean_abs_error_pp": None,
                 "range_coverage": None}
     ranged = [r for r in subset if r.get("in_range") is not None]
+    # Issue #594: the Winkler interval score (80%) per row, so
+    # the RangeSkill gate can be computed per (entrant, horizon).
+    # Rows without a range carry no interval score.
+    is_rows = [winkler_is(r["realized_move_pct"], r["range_low_pct"],
+                          r["range_high_pct"])
+               for r in ranged
+               if r.get("range_low_pct") is not None
+               and r.get("range_high_pct") is not None]
     return {"n": n,
             "hit_rate": round(sum(r["direction_hit"] for r in subset) / n, 3),
             "mean_abs_error_pp": round(
                 sum(r["move_error_pp"] for r in subset) / n, 2),
             "range_coverage": (round(
                 sum(r["in_range"] for r in ranged) / len(ranged), 3)
-                if ranged else None)}
+                if ranged else None),
+            "mean_interval_score": (round(sum(is_rows) / len(is_rows), 2)
+                                    if is_rows else None)}
+
+
+def range_gate_decision(cell):
+    """The #594 RangeSkill gate for one (entrant, horizon) cell.
+    PASS needs RangeSkill > 0 with the paired-bootstrap 95% CI
+    lower bound on the IS gap above 0 AND pooled coverage in
+    75–85% at n >= 30. Anything else is 'n<30' or 'FAIL'."""
+    if cell["n"] < 30:
+        return "n<30"
+    if (cell.get("range_skill") is None
+            or cell.get("range_coverage") is None):
+        return "FAIL"
+    lo = (cell.get("range_skill_gap_ci") or [None, None])[0]
+    if (cell["range_skill"] > 0 and lo is not None and lo > 0
+            and 0.75 <= cell["range_coverage"] <= 0.85):
+        return "PASS"
+    return "FAIL"
 
 
 def score_all(captures_root):
@@ -602,6 +725,33 @@ def score_all(captures_root):
                 if a_idx["mean_abs_error_pp"] is not None
                 and b_idx_a["mean_abs_error_pp"] is not None else None)
             a["paired_n_vs_index"] = len(e_idx)
+            # Issue #594: the RangeSkill gate vs the naive-range
+            # baseline, paired by capture and horizon. PASS needs
+            # RangeSkill > 0 with the paired-bootstrap 95% CI on
+            # the IS gap above 0 AND pooled coverage in 75–85%
+            # at n >= 30. Frozen v2 baseline on the 41 cells:
+            # RangeSkill -1.06 / -1.59 / -2.48 (day / week / month,
+            # at 1/5/14 sessions — month now scores at 21, so the
+            # adoption test re-measures it there).
+            e_naive, b_naive = paired(entrant, "naive-range", h)
+            a_naive = agg(b_naive)
+            a["naive_interval_score"] = a_naive["mean_interval_score"]
+            if (a["mean_interval_score"] is not None
+                    and a_naive["mean_interval_score"]):
+                a["range_skill"] = round(
+                    1 - a["mean_interval_score"]
+                    / a_naive["mean_interval_score"], 3)
+                lo, hi = bootstrap_gap_ci(
+                    [winkler_is(r["realized_move_pct"], r["range_low_pct"],
+                                r["range_high_pct"]) for r in b_naive],
+                    [winkler_is(r["realized_move_pct"], r["range_low_pct"],
+                                r["range_high_pct"]) for r in e_naive])
+                a["range_skill_gap_ci"] = [lo, hi]
+            else:
+                a["range_skill"] = None
+                a["range_skill_gap_ci"] = [None, None]
+            a["paired_n_vs_naive"] = len(e_naive)
+            a["range_gate"] = range_gate_decision(a)
             # No quality claim for a cell with n < 10 (design §2.2).
             a["quality_claim"] = a["n"] >= 10
             by_entrant[entrant][h] = a
@@ -635,7 +785,7 @@ def score_all(captures_root):
 
 
 def render_md(doc):
-    L = ["# 🐊 Borsagator — walk-forward backtest (v1)", "",
+    L = ["# 🐊 Borsagator — walk-forward backtest (v2)", "",
          "> ⚠️ **Flattery warning:** " + FLATTERY_WARNING, "",
          "> " + EXCLUSION_STATEMENT, "",
          f"**Forecasts found: {doc['counts']['forecasts']} · "
@@ -676,6 +826,31 @@ def render_md(doc):
     L += ["", "Deltas vs buy-and-hold / index are computed on matched "
           "captures only (both the entrant and the baseline matured "
           "there); the paired n per cell is in backtest.json."]
+    # Issue #594: the RangeSkill gate table — the primary gate for
+    # the v2 adoption test.
+    L += ["", "## RangeSkill gate vs naive-range (issue #594)", "",
+          "RangeSkill = 1 − mean interval score / naive mean interval "
+          "score (Winkler, 80%). PASS needs RangeSkill > 0 with the "
+          "paired-bootstrap 95% CI lower bound on the IS gap above 0 "
+          "AND pooled coverage in 75–85% at n ≥ 30. Frozen v2 "
+          "baseline on the 41 cells: RangeSkill −1.06 / −1.59 / −2.48 "
+          "(day / week / month, at 1/5/14 sessions — month now scores "
+          "at 21, so the adoption test re-measures it there).", "",
+          "| Entrant | Horizon | n | Mean IS | Naive IS | RangeSkill | "
+          "Gap 95% CI | Coverage | Gate |",
+          "|---|---|---|---|---|---|---|---|---|"]
+    for entrant in ENTRANTS:
+        for h in ledger.HORIZONS:
+            a = doc["by_entrant"][entrant][h]
+            ci = a.get("range_skill_gap_ci") or [None, None]
+            ci_s = ("—" if ci[0] is None
+                    else f"[{ci[0]}, {ci[1]}]")
+            L.append(f"| {entrant} | {h} | {a['n']} | "
+                     f"{fmt(a['mean_interval_score'])} | "
+                     f"{fmt(a['naive_interval_score'])} | "
+                     f"{fmt(a['range_skill'])} | {ci_s} | "
+                     f"{fmt(a['range_coverage'])} | "
+                     f"{a['range_gate']} |")
     L += ["", "## Family skill (2-family ensemble rows only; mean of "
           "family_score × sign(realized), matured only)", "",
           "| Family | Mean skill | n |", "|---|---|---|"]

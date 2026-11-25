@@ -10,14 +10,21 @@ Design (v2 — root fixes over v1):
 - Sentiment inputs are LIVE per-ticker headlines: the FinBERT trio
   fetches the day's coverage itself (fetch_headlines.py in each
   sentiment repo) — no stored samples anywhere in the chain.
-- Ranges are anchored in the stock's OWN realized volatility
-  (sigma = max of 60-session and 10-session daily-return stdev, from
-  the price history the fleet already collects), not in the forecast
-  model's self-reported bands — so intervals widen by themselves on
-  shock days, because the shock is inside the recent returns.
-- The price family's score is the Kronos move measured in units of
-  that volatility (z-score), not an arbitrary multiplier — a +5% path
-  means something different on a calm stock than on a crashing one.
+- Ranges are the naive-calibrated range (issue #594, frozen
+  2026-11-25): centre 0 (random walk) with half-width
+  k_h x sigma60 x sqrt(ledger sessions), k = 1.15 / 1.28 / 1.20 for
+  day / week / month. The shipped ensemble failed the RangeSkill
+  gate on all horizons (naive trailing-volatility range beats it),
+  because the old centre was Kronos-biased; width was never the
+  problem. Family tilts are shadow challengers only: computed,
+  logged and scored, never the headline, until one passes the
+  RangeSkill gate (CI lower bound > 0) on untouched cells.
+- Kronos has NO protected status: weight 0 in centre and band at
+  all horizons. It is still run, logged (family_scores) and scored
+  (kronos-alone entrant), never blended. Re-admit only if it
+  passes the gate on its own. Its z-score (Kronos move in units of
+  the stock's own realized volatility) is still recorded for the
+  shadow scoring, not for the headline.
 - The news layer never votes direction; it is a risk overlay that
   caps confidence, discounts the price weight and stretches ranges.
 - Confidence is PROVISIONAL (uncalibrated) until the scoring ledger
@@ -37,22 +44,59 @@ OUT_JSON = os.path.join(os.getcwd(), "digest", "ensemble.json")
 OUT_MD = os.path.join(os.getcwd(), "digest", "digest.md")
 
 HORIZONS = {"day": 1, "week": 5, "month": 21}
+# Issue #594 (INS-PUSH T1, frozen 2026-11-25 on the 41 scored #436
+# cells — 6 tickers, 8 quarterly cutoffs 2023-12-29 to 2025-09-30):
+# the recalibrated ensemble "v2". Do NOT re-fit these numbers on the
+# forward ledger (one ticker, all down after the ex-div drop) or on
+# the adoption cells (48-72) — the adoption test scores them frozen,
+# and a tilt is adopted only if its RangeSkill CI lower bound > 0
+# over the naive range. Baseline on the 41 cells (Winkler interval
+# score at 80%): ensemble IS 16.9 / 59.9 / 106.8 vs naive 8.2 /
+# 23.1 / 30.7 (day / week / month) — RangeSkill -1.06 / -1.59 /
+# -2.48. v2 target as designed: RangeSkill about 0 at centre 0.
+#
+# W is the TILT table, not a blend: the headline centre is 0 and the
+# tilt is the weighted SUM of family scores (not the mean), scaled
+# by 1.28 x vol60_h. price-forecast (Kronos) is 0 everywhere —
+# shadow challenger only. technicals is 0 on day and a capped 0.2
+# tilt on week/month (ship as shadow, adopt only on hold-out).
+# sentiment / agent / fundamentals freeze at their current base
+# weights as a tilt inside the same cap; they cannot be backtested
+# (no historical headline archive / LLM training leaks the future /
+# no point-in-time vintages), so the live 5-family tilt is only
+# testable forward. The reaction nudge is 0 (recommend.py, #594).
 W = {
-    "price-forecast": {"day": .45, "week": .40, "month": .30},
-    "technicals":     {"day": .30, "week": .20, "month": .10},
+    "price-forecast": {"day": .0, "week": .0, "month": .0},
+    "technicals":     {"day": .0, "week": .20, "month": .20},
     "sentiment":      {"day": .15, "week": .15, "month": .05},
     "agent":          {"day": .10, "week": .20, "month": .30},
     "fundamentals":   {"day": .00, "week": .00, "month": .25},
 }
+# v2 band half-widths: range = centre +/- k_h x sigma60 x
+# sqrt(sessions_h). k calibrated on the 41 cells (pooled coverage
+# at k=1.2816: 85.4 / 80.5 / 85.4%; at day k=1.0: 75.6%).
+V2_BAND_K = {"day": 1.15, "week": 1.28, "month": 1.20}
+# Sessions per horizon for the band: the LEDGER's scoring sessions
+# (ledger.DEFAULT_SESSIONS), NOT the ensemble's Kronos-bar session
+# estimate — the published range is the scored range. A test pins
+# this table equal to ledger.DEFAULT_SESSIONS.
+V2_SESSIONS = {"day": 1, "week": 5, "month": 21}
+# Naive baseline half-width for the RangeSkill gate (80% z):
+# naive = 0 +/- 1.2816 x sigma60 x sqrt(sessions_h).
+V2_NAIVE_K = 1.2816
 
 
 def expected_move(kmove, net_score, vol_h):
-    """The combine's expected move (issue #436): the Kronos path
-    move carries 60%, the family net score 40% scaled by the
-    1.28-sigma horizon band. Extracted verbatim from main() so the
-    walk-forward backtest can build family-alone entrants with the
-    same rule instead of a second one; the horizon loop below calls
-    this function, it does not duplicate the formula."""
+    """The RETIRED v1 combine (issue #594): the Kronos path move
+    carried 60%, the family net score 40% scaled by the 1.28-sigma
+    horizon band. Kept verbatim — NOT called by the v2 horizon loop
+    below — because the frozen backtest mirrors (benchmark_freeze
+    and backtest_score's family-alone entrants) build their
+    reference entrants with this exact rule, and test_backtest_436
+    cross-checks the scorer against it. The live v2 combine is the
+    tilt in main(): headline centre 0, shadow tilt = weighted SUM
+    of family scores x 1.28 x vol60_h. Do not "fix" this function
+    to the v2 rule: that would silently move the frozen entrants."""
     return .6 * kmove + .4 * net_score * (1.28 * vol_h)
 
 
@@ -169,46 +213,23 @@ def _apply_measured_weights(base):
     feedback is forbidden outright — the ledger's factors are
     measured on 2026 sweeps, i.e. from the future relative to any
     historical cutoff. The backtest always runs on the hand-set
-    base weights, recorded as source 'base-v1'."""
+    base weights, recorded as source 'base-v1'.
+    Issue #594 (2026-11-25): the feedback is REMOVED in v2 — the
+    ledger's factors rest on a single ticker (36 clean matured
+    rows, all POUL, all down after the ex-div drop) and must not
+    move weights until n>=30 independent as-of dates per family.
+    All factors are 1.0 and the file is never read (a stale or
+    single-ticker weights.json can no longer smuggle a tilt in).
+    Re-enable only when the ledger's per-family n clears 30: then
+    restore the #28 file read (see git history, pre-#594) and the
+    'ledger' source."""
     if two_family_backtest():
         return base, "base-v1", {
             "source": "base-v1", "file": None, "file_sha256": None,
             "factors": {fam: 1.0 for fam in base}, "eligible": {}}
-    import hashlib
-    path = os.environ.get("BORSAGATOR_WEIGHTS", "ledger/weights.json")
-    info = {"source": "builtin", "file": path, "file_sha256": None,
-            "factors": {fam: 1.0 for fam in base}, "eligible": {}}
-    try:
-        with open(path, "rb") as f:
-            raw = f.read()
-        info["file_sha256"] = hashlib.sha256(raw).hexdigest()
-        doc = json.loads(raw.decode("utf-8"))
-        factors = {}
-        for k, v in (doc.get("factors") or {}).items():
-            if k not in base:
-                continue
-            try:
-                fv = float(v["factor"])
-                n = int(v.get("n", 0))
-            except Exception:
-                continue
-            if not math.isfinite(fv) or not (0.5 <= fv <= 1.5) or n < 3:
-                print(f"weights: ignoring ineligible factor for {k}: "
-                      f"factor={v.get('factor')} n={v.get('n')}")
-                continue
-            factors[k] = fv
-            info["eligible"][k] = {"factor": fv, "n": n,
-                                   "skill": v.get("skill")}
-        if not factors:
-            return base, "builtin", info
-    except Exception:
-        return base, "builtin", info
-    info["source"] = "ledger"
-    info["factors"] = {fam: factors.get(fam, 1.0) for fam in base}
-    out = {fam: {h: round(w * factors.get(fam, 1.0), 4)
-                 for h, w in hs.items()}
-           for fam, hs in base.items()}
-    return out, "ledger", info
+    return base, "frozen-v2", {
+        "source": "frozen-v2", "file": None, "file_sha256": None,
+        "factors": {fam: 1.0 for fam in base}, "eligible": {}}
 
 
 W, WEIGHTS_SOURCE, WEIGHTS_INFO = _apply_measured_weights(W)
@@ -279,9 +300,12 @@ def find_key(obj, needles, depth=0):
 
 def realized_sigma(ticker, base=None, ok=None):
     """Daily-return stdev from collected price CSVs.
-    Returns (sigma, source, density): sigma = max(sigma_60, sigma_10);
-    density = trading sessions per calendar day in that series — Kronos
-    emits calendar-day bars, so horizon maths must convert.
+    Returns (sigma, sigma60, source, density): sigma = max(sigma_60,
+    sigma_10); sigma60 is the trailing 60-session stdev alone — the
+    v2 band (#594) is calibrated on sigma60, not on the max, so both
+    are returned; density = trading sessions per calendar day in
+    that series — Kronos emits calendar-day bars, so horizon maths
+    must convert.
     Series choice is ANCHORED on the verified base close when known:
     among candidates whose last close sits within 25% of base, take the
     longest (a stray foreign series must not set the volatility); with
@@ -356,7 +380,7 @@ def realized_sigma(ticker, base=None, ok=None):
     if anchored is not None:
         best = anchored
     if not best:
-        return 0.02, "default (no history found)", 5 / 7
+        return 0.02, 0.02, "default (no history found)", 5 / 7
     if base and anchored is None:
         # No candidate anchored on the verified base close: the
         # longest series may be a stale reference (a dead series
@@ -365,7 +389,8 @@ def realized_sigma(ticker, base=None, ok=None):
         print(f"ensemble: no series anchored within 25% of base {base} "
               f"— longest candidate ends at {best[0][-1]} "
               f"({best[2]}); using default sigma")
-        return 0.02, "default (no series anchored within 25% of base)", 5 / 7
+        return (0.02, 0.02,
+                "default (no series anchored within 25% of base)", 5 / 7)
     closes, dates, src = best
     density = 5 / 7
     ds = [d for d in dates if d]
@@ -381,7 +406,7 @@ def realized_sigma(ticker, base=None, ok=None):
 
     s60 = sd(closes[-61:])
     s10 = sd(closes[-11:])
-    return max(s60, s10), f"{src} (σ60={s60:.4f}, σ10={s10:.4f})", density
+    return max(s60, s10), s60, f"{src} (σ60={s60:.4f}, σ10={s10:.4f})", density
 
 
 def price_series(ticker, ok=None):
@@ -972,7 +997,7 @@ def main():
             base_date and check.get("latest_collected_date")
             and base_date < check["latest_collected_date"])
 
-    sigma, sigma_src, density = realized_sigma(ticker, base, ok)
+    sigma, sigma60, sigma_src, density = realized_sigma(ticker, base, ok)
 
     # ---------- Kronos path ----------
     kronos_path = []
@@ -1392,15 +1417,23 @@ def main():
            "base_date": base_date,
            "price_crosscheck": check, "corporate_actions": actions,
            "kronos_ex_rescale": ex_rescale,
-           "sigma_daily": round(sigma, 4), "sigma_source": sigma_src,
+           "sigma_daily": round(sigma, 4),
+           "sigma60_daily": round(sigma60, 4),
+           "sigma_source": sigma_src,
+           "calibration": "v2-594 (frozen 2026-11-25: centre 0, "
+                          "band k=1.15/1.28/1.20 x sigma60 x "
+                          "sqrt(ledger sessions))",
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
            "weights_source": WEIGHTS_SOURCE,
            "applied_weights": WEIGHTS_INFO,
            "family_scores": {}, "horizons": {},
-           "confidence_basis": ("calibrated (ledger skill factors applied)"
-                                if WEIGHTS_SOURCE == "ledger" else
-                                "provisional (uncalibrated — no scoring history yet)")}
+           "confidence_basis": ("frozen v2 (factors 1.0 until n>=30 "
+                                "per family, #594)"
+                                if WEIGHTS_SOURCE == "frozen-v2" else
+                                ("calibrated (ledger skill factors applied)"
+                                 if WEIGHTS_SOURCE == "ledger" else
+                                 "provisional (uncalibrated — no scoring history yet)"))}
     fam_display = dict(fam_fixed)
     for hname, bar in HORIZONS.items():
         ka = kronos_at(bar)
@@ -1409,6 +1442,11 @@ def main():
         # and it is the sessions that carry the volatility.
         h_eff = max(1, round(bar * density))
         vol_h = sigma * math.sqrt(h_eff)        # 1-sigma move over the horizon
+        # Issue #594: the v2 band uses sigma60 over the LEDGER's
+        # scoring sessions (V2_SESSIONS), not vol_h — the published
+        # range is the scored range, and the k calibration was fit
+        # on sigma60.
+        vol60_h = sigma60 * math.sqrt(V2_SESSIONS[hname])
         price_score = None
         if ka:
             price_score = max(-1.0, min(1.0, ka["move"] / (2.0 * vol_h))) if vol_h > 0 else 0.0
@@ -1419,25 +1457,41 @@ def main():
                 continue
             w = W[fam][hname] * (risk["price_mult"] if fam == "price-forecast" else 1.0)
             scores[fam], weights[fam] = s, w
-        if not scores:
-            continue
-        wsum = sum(weights.values())
-        net = sum(scores[f] * weights[f] for f in scores) / wsum
-        var = sum(weights[f] * (scores[f] - net) ** 2 for f in scores) / wsum
-        disagree = math.sqrt(var)
+        # Issue #594: the headline is centre 0 with the calibrated
+        # band — it publishes with NO voting family (a range needs
+        # only sigma60). The old `if not scores: continue` would
+        # have dropped every day horizon in 2-family mode, where
+        # technicals day weight is 0 and Kronos is 0 — the adoption
+        # test would have had no day rows to score.
+        if scores:
+            wsum = sum(weights.values())
+            net = sum(scores[f] * weights[f] for f in scores) / wsum
+            var = sum(weights[f] * (scores[f] - net) ** 2 for f in scores) / wsum
+            disagree = math.sqrt(var)
+            # Shadow tilt: the weighted SUM of family scores (not
+            # the mean) scaled by 1.28 x vol60_h. In 2-family mode
+            # this is exactly 0.2 x tech x 1.28 x vol60_h on
+            # week/month (T1). Logged and scored, never the headline.
+            tilt = net * wsum * 1.28 * vol60_h
+        else:
+            net, disagree, tilt = None, 0.0, 0.0
         kmove = ka["move"] if ka else 0.0
-        expected = expected_move(kmove, net, vol_h)
-        half = max(1.28 * vol_h, ka["band"] if ka else 0.0) \
-            * RISK_MULT[risk["level"]] * (1 + .5 * disagree)
+        expected = 0.0  # random-walk centre (#594)
+        # The Kronos-band max and the (1 + 0.5 x disagree) widening
+        # are dropped (#594): both let the biased Kronos path widen
+        # the band. RISK_MULT stays as a widening overlay ONLY —
+        # untested, flagged in the digest line below.
+        half = V2_BAND_K[hname] * vol60_h * RISK_MULT[risk["level"]]
         agree = max(0.0, 1.0 - disagree)
         conf = min(risk["conf_cap"], .20 + .45 * agree + .10 * (len(scores) / 5))
         out["horizons"][hname] = {
-            "direction": "up" if expected > .0075 else "down" if expected < -.0075 else "flat",
+            "direction": "flat",
             "expected_move_pct": round(expected * 100, 2),
             "range_low_pct": round((expected - half) * 100, 2),
             "range_high_pct": round((expected + half) * 100, 2),
             "confidence": round(conf, 2),
-            "net_score": round(net, 3),
+            "net_score": round(net, 3) if net is not None else None,
+            "tilt_centre_pct": round(tilt * 100, 2),
             "families": {f: round(scores[f], 3) for f in scores},
             "horizon_short": bool(ka and ka["short"]),
             "trading_sessions": h_eff,
@@ -1502,7 +1556,10 @@ def main():
              f"(density {density:.2f}/day). "
              f"News risk: **{risk['level']}**"
              + ((" — " + "; ".join(risk["flags"])) if risk["flags"] else "") + ".",
-             "Ranges are anchored in realized volatility. Confidence is provisional "
+             "Ranges are the calibrated range (issue #594): centre 0, "
+             f"half-width k × σ60 × √(ledger sessions), k = 1.15 / 1.28 / 1.20. "
+             "The risk overlay widens the range only (multiplier untested). "
+             "Confidence is provisional "
              "(uncalibrated) until the scoring ledger has history.", ""]
     if check["status"] == "disagree":
         wit = ", ".join(f"{s} {v:g}" for s, v in check["witnesses"].items())
@@ -1578,8 +1635,9 @@ def main():
                      f"{h['range_low_pct']:+.2f}% … {h['range_high_pct']:+.2f}% | {h['confidence']:.2f} |")
     lines += ["", "Family scores (−1…+1): " + ", ".join(
         f"{k} {v:+.2f}" if v is not None else f"{k} —" for k, v in fam_display.items()) + ".",
-        "Verdicts are combined by family, weighted by horizon; disagreement widens "
-        "the range instead of being averaged away."]
+        "Headline is the centre-0 range; family tilts are shadow "
+        "challengers (tilt_centre_pct in ensemble.json), adopted only "
+        "if they pass the RangeSkill gate (#594)."]
     # Issue #113: ensure the digest is headed before appending, so a
     # gator that died before writing digest.md cannot leave the
     # ensemble section orphaned in a headerless file.
@@ -1587,6 +1645,7 @@ def main():
     with open(OUT_MD, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("ensemble v2: written for", ticker, "| sigma", round(sigma, 4),
+          "| sigma60", round(sigma60, 4),
           "| horizons:", list(out["horizons"]))
 
 
