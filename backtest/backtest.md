@@ -4,7 +4,7 @@
 
 > Out of scope for this backtest (design §5.2): sentiment/news (no complete historical headline archive exists), agent/LLM (training knowledge leaks the future), fundamentals (no verified point-in-time statement vintages), and validation / backtest-category tools (qlib, vectorbt, backtrader) which are not direction voters. Only price-forecast (Kronos) and technicals (pandas-ta voter + talib cross-check) are scored, separately and as a 2-family ensemble.
 
-**Forecasts found: 564 · matured: 564 · pending: 0 · invalid: 0 · captures: 36**
+**Forecasts found: 618 · matured: 618 · pending: 0 · invalid: 0 · captures: 39**
 
 No quality claim is made for any (entrant, horizon) cell with n < 10 matured rows. Backtest n never counts toward the forward ledger's D4 threshold (n ≥ 30 matured).
 
@@ -12,38 +12,38 @@ No quality claim is made for any (entrant, horizon) cell with n < 10 matured row
 
 | Ticker | Found | Matured | Pending | Invalid |
 |---|---|---|---|---|
-| COMI.CA | 90 | 90 | 0 | 0 |
+| COMI.CA | 108 | 108 | 0 | 0 |
 | ETEL.CA | 90 | 90 | 0 | 0 |
-| HRHO.CA | 75 | 75 | 0 | 0 |
+| HRHO.CA | 93 | 93 | 0 | 0 |
 | NVDA | 144 | 144 | 0 | 0 |
-| SWDY.CA | 75 | 75 | 0 | 0 |
+| SWDY.CA | 93 | 93 | 0 | 0 |
 | TMGH.CA | 90 | 90 | 0 | 0 |
 
 ## By entrant and horizon (matured only, gap-flagged rows excluded from skill)
 
 | Entrant | Horizon | n | Hit rate | MAE pp | Range cov. | Hit vs B&H | MAE vs B&H | Hit vs index | MAE vs index |
 |---|---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 36 | 0.389 | 3.48 | 0.667 | 0.083 | 1.94 | -0.5 | 3.3 |
-| 2-family-ensemble | week | 36 | 0.444 | 9.86 | 0.472 | 0.388 | 5.18 | -0.125 | 14.96 |
-| 2-family-ensemble | month | 36 | 0.306 | 19.44 | 0.361 | 0.223 | 11.35 | 0.25 | 28.42 |
-| kronos-alone | day | 36 | 0.333 | 4.54 | 0.528 | 0.027 | 3.0 | -0.625 | 4.12 |
-| kronos-alone | week | 36 | 0.444 | 13.13 | 0.278 | 0.388 | 8.45 | -0.125 | 22.48 |
-| kronos-alone | month | 36 | 0.306 | 25.08 | 0.083 | 0.223 | 16.99 | 0.25 | 39.14 |
-| family-technicals | day | 36 | 0.306 | 1.64 | 0.889 | 0.0 | 0.1 | -0.5 | 1.8 |
-| family-technicals | week | 36 | 0.278 | 4.46 | 0.667 | 0.222 | -0.22 | -0.25 | 1.81 |
-| family-technicals | month | 36 | 0.389 | 7.92 | 0.806 | 0.306 | -0.17 | 0.5 | 9.65 |
-| buy-and-hold | day | 36 | 0.306 | 1.54 | 0.861 | 0.0 | 0.0 | -0.5 | 1.49 |
-| buy-and-hold | week | 36 | 0.056 | 4.68 | 0.639 | 0.0 | 0.0 | -0.5 | 2.24 |
-| buy-and-hold | month | 36 | 0.083 | 8.09 | 0.778 | 0.0 | 0.0 | 0.0 | 10.42 |
+| 2-family-ensemble | day | 39 | 0.41 | 3.29 | 0.667 | 0.077 | 1.79 | -0.5 | 3.3 |
+| 2-family-ensemble | week | 39 | 0.436 | 9.3 | 0.487 | 0.359 | 4.77 | -0.125 | 14.96 |
+| 2-family-ensemble | month | 39 | 0.282 | 18.89 | 0.385 | 0.205 | 10.47 | 0.25 | 28.42 |
+| kronos-alone | day | 39 | 0.308 | 4.28 | 0.513 | -0.025 | 2.78 | -0.625 | 4.12 |
+| kronos-alone | week | 39 | 0.462 | 12.33 | 0.308 | 0.385 | 7.8 | -0.125 | 22.48 |
+| kronos-alone | month | 39 | 0.308 | 24.66 | 0.077 | 0.231 | 16.24 | 0.25 | 39.14 |
+| family-technicals | day | 39 | 0.333 | 1.6 | 0.897 | 0.0 | 0.1 | -0.5 | 1.8 |
+| family-technicals | week | 39 | 0.282 | 4.34 | 0.667 | 0.205 | -0.19 | -0.25 | 1.81 |
+| family-technicals | month | 39 | 0.359 | 8.26 | 0.795 | 0.282 | -0.16 | 0.5 | 9.65 |
+| buy-and-hold | day | 39 | 0.333 | 1.5 | 0.846 | 0.0 | 0.0 | -0.5 | 1.49 |
+| buy-and-hold | week | 39 | 0.077 | 4.53 | 0.641 | 0.0 | 0.0 | -0.5 | 2.24 |
+| buy-and-hold | month | 39 | 0.077 | 8.42 | 0.769 | 0.0 | 0.0 | 0.0 | 10.42 |
 | index-baseline | day | 8 | 0.875 (n < 10 — no claim) | 0.38 | — | 0.5 | -1.49 | 0.0 | 0.0 |
 | index-baseline | week | 8 | 0.5 (n < 10 — no claim) | 1.93 | — | 0.5 | -2.24 | 0.0 | 0.0 |
 | index-baseline | month | 8 | 0.125 (n < 10 — no claim) | 1.77 | — | 0.0 | -10.42 | 0.0 | 0.0 |
-| naive-range | day | 36 | 0.306 | 1.54 | 0.861 | 0.0 | 0.0 | -0.5 | 1.49 |
-| naive-range | week | 36 | 0.056 | 4.68 | 0.778 | 0.0 | 0.0 | -0.5 | 2.24 |
-| naive-range | month | 36 | 0.083 | 8.09 | 0.889 | 0.0 | 0.0 | 0.0 | 10.42 |
-| tilt-technicals | day | 0 | — (n < 10 — no claim) | — | — | — | — | — | — |
-| tilt-technicals | week | 0 | — (n < 10 — no claim) | — | — | — | — | — | — |
-| tilt-technicals | month | 0 | — (n < 10 — no claim) | — | — | — | — | — | — |
+| naive-range | day | 39 | 0.333 | 1.5 | 0.846 | 0.0 | 0.0 | -0.5 | 1.49 |
+| naive-range | week | 39 | 0.077 | 4.53 | 0.769 | 0.0 | 0.0 | -0.5 | 2.24 |
+| naive-range | month | 39 | 0.077 | 8.42 | 0.872 | 0.0 | 0.0 | 0.0 | 10.42 |
+| tilt-technicals | day | 3 | 0.667 (n < 10 — no claim) | 1.05 | 0.667 | 0.0 | 0.0 | — | — |
+| tilt-technicals | week | 3 | 0.333 (n < 10 — no claim) | 2.81 | 0.667 | 0.0 | 0.13 | — | — |
+| tilt-technicals | month | 3 | 0.0 (n < 10 — no claim) | 12.32 | 0.667 | 0.0 | 0.03 | — | — |
 
 Deltas vs buy-and-hold / index are computed on matched captures only (both the entrant and the baseline matured there); the paired n per cell is in backtest.json.
 
@@ -53,35 +53,35 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 
 | Entrant | Horizon | n | Mean IS | Naive IS | RangeSkill | Gap 95% CI | Coverage | Gate |
 |---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 36 | 17.45 | 7.48 | -1.333 | [-24.76, -1.74] | 0.667 | FAIL |
-| 2-family-ensemble | week | 36 | 65.11 | 23.29 | -1.796 | [-70.14, -18.55] | 0.472 | FAIL |
-| 2-family-ensemble | month | 36 | 114.61 | 36.75 | -2.119 | [-117.7, -41.91] | 0.361 | FAIL |
-| kronos-alone | day | 36 | 25.72 | 7.48 | -2.439 | [-46.59, -2.47] | 0.528 | FAIL |
-| kronos-alone | week | 36 | 106.3 | 23.29 | -3.564 | [-135.83, -39.26] | 0.278 | FAIL |
-| kronos-alone | month | 36 | 231.46 | 36.75 | -5.298 | [-271.03, -122.55] | 0.083 | FAIL |
-| family-technicals | day | 36 | 7.69 | 7.48 | -0.028 | [-0.54, 0.04] | 0.889 | FAIL |
-| family-technicals | week | 36 | 23.36 | 23.29 | -0.003 | [-2.34, 1.86] | 0.667 | FAIL |
-| family-technicals | month | 36 | 36.03 | 36.75 | 0.02 | [-4.07, 4.38] | 0.806 | FAIL |
-| buy-and-hold | day | 36 | 7.48 | 7.48 | 0.0 | [-0.01, 0.01] | 0.861 | FAIL |
-| buy-and-hold | week | 36 | 24.2 | 23.29 | -0.039 | [-3.2, 1.07] | 0.639 | FAIL |
-| buy-and-hold | month | 36 | 35.76 | 36.75 | 0.027 | [-2.63, 3.84] | 0.778 | FAIL |
+| 2-family-ensemble | day | 39 | 16.45 | 7.22 | -1.278 | [-23.78, -1.66] | 0.667 | FAIL |
+| 2-family-ensemble | week | 39 | 60.78 | 22.17 | -1.742 | [-66.45, -16.55] | 0.487 | FAIL |
+| 2-family-ensemble | month | 39 | 111.95 | 39.99 | -1.799 | [-111.03, -38.19] | 0.385 | FAIL |
+| kronos-alone | day | 39 | 24.37 | 7.22 | -2.375 | [-44.62, -2.54] | 0.513 | FAIL |
+| kronos-alone | week | 39 | 99.74 | 22.17 | -3.499 | [-127.57, -37.19] | 0.308 | FAIL |
+| kronos-alone | month | 39 | 226.45 | 39.99 | -4.663 | [-259.22, -120.09] | 0.077 | FAIL |
+| family-technicals | day | 39 | 7.38 | 7.22 | -0.022 | [-0.46, 0.07] | 0.897 | FAIL |
+| family-technicals | week | 39 | 22.4 | 22.17 | -0.01 | [-2.43, 1.64] | 0.667 | FAIL |
+| family-technicals | month | 39 | 39.66 | 39.99 | 0.008 | [-4.06, 3.82] | 0.795 | FAIL |
+| buy-and-hold | day | 39 | 7.22 | 7.22 | 0.0 | [-0.01, 0.01] | 0.846 | FAIL |
+| buy-and-hold | week | 39 | 23.02 | 22.17 | -0.038 | [-2.86, 0.99] | 0.641 | FAIL |
+| buy-and-hold | month | 39 | 39.07 | 39.99 | 0.023 | [-2.47, 3.57] | 0.769 | FAIL |
 | index-baseline | day | 8 | — | 8.25 | — | — | — | n<30 |
 | index-baseline | week | 8 | — | 18.1 | — | — | — | n<30 |
 | index-baseline | month | 8 | — | 52.13 | — | — | — | n<30 |
-| naive-range | day | 36 | 7.48 | 7.48 | 0.0 | [0.0, 0.0] | 0.861 | FAIL |
-| naive-range | week | 36 | 23.29 | 23.29 | 0.0 | [0.0, 0.0] | 0.778 | FAIL |
-| naive-range | month | 36 | 36.75 | 36.75 | 0.0 | [0.0, 0.0] | 0.889 | FAIL |
-| tilt-technicals | day | 0 | — | — | — | — | — | n<30 |
-| tilt-technicals | week | 0 | — | — | — | — | — | n<30 |
-| tilt-technicals | month | 0 | — | — | — | — | — | n<30 |
+| naive-range | day | 39 | 7.22 | 7.22 | 0.0 | [0.0, 0.0] | 0.846 | FAIL |
+| naive-range | week | 39 | 22.17 | 22.17 | 0.0 | [0.0, 0.0] | 0.769 | FAIL |
+| naive-range | month | 39 | 39.99 | 39.99 | 0.0 | [0.0, 0.0] | 0.872 | FAIL |
+| tilt-technicals | day | 3 | 4.47 | 4.04 | -0.106 | [-1.92, 0.38] | 0.667 | n<30 |
+| tilt-technicals | week | 3 | 9.83 | 8.79 | -0.118 | [-3.1, 0.0] | 0.667 | n<30 |
+| tilt-technicals | month | 3 | 82.1 | 78.86 | -0.041 | [-11.58, 1.08] | 0.667 | n<30 |
 
 ## Family skill (2-family ensemble rows only; mean of family_score × sign(realized), matured only)
 
 | Family | Mean skill | n |
 |---|---|---|
-| ensemble (net_score) | -0.055 | 108 |
+| ensemble (net_score) | -0.055 | 114 |
 | price-forecast | -0.095 | 108 |
-| technicals | +0.048 | 108 |
+| technicals | +0.043 | 114 |
 
 ## Forecasts
 
@@ -618,6 +618,24 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 | ETEL.CA | 2025-09-30 | day | naive-range | flat | +0.00 | +0.00 | ✅ | 0.00 | ✅ |  | matured 2025-10-01 |
 | ETEL.CA | 2025-09-30 | week | naive-range | flat | +0.00 | -6.24 | ❌ | 6.24 | ❌ |  | matured 2025-10-07 |
 | ETEL.CA | 2025-09-30 | month | naive-range | flat | +0.00 | -1.76 | ❌ | 1.76 | ✅ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | 2-family-ensemble | flat | +0.00 | -0.67 | ✅ | 0.67 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | 2-family-ensemble | flat | +0.00 | -0.11 | ✅ | 0.11 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | 2-family-ensemble | flat | +0.00 | +5.08 | ❌ | 5.08 | ✅ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | kronos-alone | down | -0.85 | -0.67 | ❌ | 0.18 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | kronos-alone | flat | -0.64 | -0.11 | ✅ | 0.53 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | kronos-alone | down | -1.53 | +5.08 | ❌ | 6.61 | ❌ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | family-technicals | flat | +0.15 | -0.67 | ✅ | 0.82 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | family-technicals | flat | +0.34 | -0.11 | ✅ | 0.45 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | family-technicals | flat | +0.70 | +5.08 | ❌ | 4.38 | ✅ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | buy-and-hold | flat | +0.00 | -0.67 | ✅ | 0.67 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | buy-and-hold | flat | +0.00 | -0.11 | ✅ | 0.11 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | buy-and-hold | flat | +0.00 | +5.08 | ❌ | 5.08 | ✅ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | naive-range | flat | +0.00 | -0.67 | ✅ | 0.67 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | naive-range | flat | +0.00 | -0.11 | ✅ | 0.11 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | naive-range | flat | +0.00 | +5.08 | ❌ | 5.08 | ✅ |  | matured 2025-10-30 |
+| HRHO.CA | 2025-09-30 | day | tilt-technicals | flat | +0.00 | -0.67 | ✅ | 0.67 | ✅ |  | matured 2025-10-01 |
+| HRHO.CA | 2025-09-30 | week | tilt-technicals | flat | +0.17 | -0.11 | ✅ | 0.28 | ✅ |  | matured 2025-10-07 |
+| HRHO.CA | 2025-09-30 | month | tilt-technicals | flat | +0.35 | +5.08 | ❌ | 4.73 | ✅ |  | matured 2025-10-30 |
 | NVDA | 2025-09-30 | day | 2-family-ensemble | flat | -0.60 | +0.35 | ✅ | 0.95 | ✅ |  | matured 2025-10-01 |
 | NVDA | 2025-09-30 | week | 2-family-ensemble | down | -5.57 | -0.83 | ✅ | 4.74 | ✅ |  | matured 2025-10-07 |
 | NVDA | 2025-09-30 | month | 2-family-ensemble | down | -18.05 | +10.97 | ❌ | 29.02 | ❌ |  | matured 2025-10-29 |
@@ -636,6 +654,24 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 | NVDA | 2025-09-30 | day | naive-range | flat | +0.00 | +0.35 | ✅ | 0.35 | ✅ |  | matured 2025-10-01 |
 | NVDA | 2025-09-30 | week | naive-range | flat | +0.00 | -0.83 | ❌ | 0.83 | ✅ |  | matured 2025-10-07 |
 | NVDA | 2025-09-30 | month | naive-range | flat | +0.00 | +10.97 | ❌ | 10.97 | ✅ |  | matured 2025-10-29 |
+| SWDY.CA | 2025-09-30 | day | 2-family-ensemble | flat | +0.00 | -0.08 | ✅ | 0.08 | ✅ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | 2-family-ensemble | flat | +0.00 | +2.61 | ❌ | 2.61 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | 2-family-ensemble | flat | +0.00 | +2.65 | ❌ | 2.65 | ✅ |  | matured 2025-10-30 |
+| SWDY.CA | 2025-09-30 | day | kronos-alone | up | +0.89 | -0.08 | ❌ | 0.97 | ❌ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | kronos-alone | up | +4.28 | +2.61 | ✅ | 1.67 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | kronos-alone | up | +19.04 | +2.65 | ✅ | 16.39 | ❌ |  | matured 2025-10-30 |
+| SWDY.CA | 2025-09-30 | day | family-technicals | flat | +0.08 | -0.08 | ✅ | 0.16 | ✅ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | family-technicals | flat | +0.18 | +2.61 | ❌ | 2.43 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | family-technicals | flat | +0.37 | +2.65 | ❌ | 2.28 | ✅ |  | matured 2025-10-30 |
+| SWDY.CA | 2025-09-30 | day | buy-and-hold | flat | +0.00 | -0.08 | ✅ | 0.08 | ✅ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | buy-and-hold | flat | +0.00 | +2.61 | ❌ | 2.61 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | buy-and-hold | flat | +0.00 | +2.65 | ❌ | 2.65 | ✅ |  | matured 2025-10-30 |
+| SWDY.CA | 2025-09-30 | day | naive-range | flat | +0.00 | -0.08 | ✅ | 0.08 | ✅ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | naive-range | flat | +0.00 | +2.61 | ❌ | 2.61 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | naive-range | flat | +0.00 | +2.65 | ❌ | 2.65 | ✅ |  | matured 2025-10-30 |
+| SWDY.CA | 2025-09-30 | day | tilt-technicals | flat | +0.00 | -0.08 | ✅ | 0.08 | ✅ |  | matured 2025-10-01 |
+| SWDY.CA | 2025-09-30 | week | tilt-technicals | flat | +0.09 | +2.61 | ❌ | 2.52 | ✅ |  | matured 2025-10-07 |
+| SWDY.CA | 2025-09-30 | month | tilt-technicals | flat | +0.18 | +2.65 | ❌ | 2.47 | ✅ |  | matured 2025-10-30 |
 | TMGH.CA | 2025-09-30 | day | 2-family-ensemble | down | -1.78 | +0.49 | ❌ | 2.27 | ❌ |  | matured 2025-10-01 |
 | TMGH.CA | 2025-09-30 | week | 2-family-ensemble | down | -2.52 | -1.13 | ✅ | 1.39 | ✅ |  | matured 2025-10-07 |
 | TMGH.CA | 2025-09-30 | month | 2-family-ensemble | down | -1.67 | +1.11 | ❌ | 2.78 | ✅ |  | matured 2025-10-30 |
@@ -651,180 +687,201 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 | TMGH.CA | 2025-09-30 | day | naive-range | flat | +0.00 | +0.49 | ✅ | 0.49 | ✅ |  | matured 2025-10-01 |
 | TMGH.CA | 2025-09-30 | week | naive-range | flat | +0.00 | -1.13 | ❌ | 1.13 | ✅ |  | matured 2025-10-07 |
 | TMGH.CA | 2025-09-30 | month | naive-range | flat | +0.00 | +1.11 | ❌ | 1.11 | ✅ |  | matured 2025-10-30 |
+| COMI.CA | 2025-12-31 | day | 2-family-ensemble | flat | +0.00 | -2.41 | ❌ | 2.41 | ❌ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | 2-family-ensemble | flat | +0.00 | +5.31 | ❌ | 5.31 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | 2-family-ensemble | flat | +0.00 | +29.13 | ❌ | 29.13 | ❌ |  | matured 2026-02-03 |
+| COMI.CA | 2025-12-31 | day | kronos-alone | flat | +0.05 | -2.41 | ❌ | 2.46 | ❌ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | kronos-alone | down | -0.81 | +5.31 | ❌ | 6.12 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | kronos-alone | down | -6.87 | +29.13 | ❌ | 36.00 | ❌ |  | matured 2026-02-03 |
+| COMI.CA | 2025-12-31 | day | family-technicals | flat | -0.28 | -2.41 | ❌ | 2.13 | ✅ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | family-technicals | flat | -0.62 | +5.31 | ❌ | 5.93 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | family-technicals | down | -1.27 | +29.13 | ❌ | 30.40 | ❌ |  | matured 2026-02-03 |
+| COMI.CA | 2025-12-31 | day | buy-and-hold | flat | +0.00 | -2.41 | ❌ | 2.41 | ❌ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | buy-and-hold | flat | +0.00 | +5.31 | ❌ | 5.31 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | buy-and-hold | flat | +0.00 | +29.13 | ❌ | 29.13 | ❌ |  | matured 2026-02-03 |
+| COMI.CA | 2025-12-31 | day | naive-range | flat | +0.00 | -2.41 | ❌ | 2.41 | ❌ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | naive-range | flat | +0.00 | +5.31 | ❌ | 5.31 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | naive-range | flat | +0.00 | +29.13 | ❌ | 29.13 | ❌ |  | matured 2026-02-03 |
+| COMI.CA | 2025-12-31 | day | tilt-technicals | flat | +0.00 | -2.41 | ❌ | 2.41 | ❌ |  | matured 2026-01-04 |
+| COMI.CA | 2025-12-31 | week | tilt-technicals | flat | -0.31 | +5.31 | ❌ | 5.62 | ❌ |  | matured 2026-01-11 |
+| COMI.CA | 2025-12-31 | month | tilt-technicals | flat | -0.63 | +29.13 | ❌ | 29.76 | ❌ |  | matured 2026-02-03 |
 
 ## Data gaps & notes
 
+- rescore592/2023-12-29/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2023-12-29/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2023-12-29/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2023-12-29/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2023-12-29/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2023-12-29/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2023-12-29/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2023-12-29/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2023-12-29/HRHO.CA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/HRHO.CA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/HRHO.CA: tilt-technicals has no month horizon — no row
+- rescore592/2023-12-29/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2023-12-29/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2023-12-29/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2023-12-29/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2023-12-29/SWDY.CA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/SWDY.CA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/SWDY.CA: tilt-technicals has no month horizon — no row
+- rescore592/2023-12-29/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2023-12-29/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2023-12-29/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2023-12-29/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2023-12-29/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2023-12-29/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2023-12-29/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-03-31/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-03-31/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-03-31/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-03-31/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2024-03-31/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2024-03-31/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2024-03-31/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2024-06-30/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-06-30/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-06-30/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-06-30/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2024-06-30/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2024-06-30/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2024-06-30/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-09-30/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-09-30/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-09-30/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-09-30/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-09-30/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-09-30/HRHO.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/HRHO.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/HRHO.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2024-09-30/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-09-30/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-09-30/SWDY.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/SWDY.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/SWDY.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-09-30/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-09-30/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-09-30/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-09-30/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-09-30/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-09-30/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-09-30/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-12-31/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-12-31/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-12-31/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-12-31/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-12-31/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-12-31/HRHO.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/HRHO.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/HRHO.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2024-12-31/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-12-31/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-12-31/SWDY.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/SWDY.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/SWDY.CA: tilt-technicals has no month horizon — no row
+- rescore592/2024-12-31/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2024-12-31/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2024-12-31/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2024-12-31/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2024-12-31/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2024-12-31/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2024-12-31/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-03-31/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-03-31/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-03-31/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-03-31/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-03-31/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-03-31/HRHO.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/HRHO.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/HRHO.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2025-03-31/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-03-31/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-03-31/SWDY.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/SWDY.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/SWDY.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-03-31/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-03-31/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-03-31/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-03-31/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-03-31/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-03-31/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-03-31/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-06-30/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-06-30/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-06-30/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-06-30/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-06-30/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-06-30/HRHO.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/HRHO.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/HRHO.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2025-06-30/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-06-30/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-06-30/SWDY.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/SWDY.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/SWDY.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-06-30/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-06-30/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-06-30/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-06-30/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-06-30/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-06-30/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-06-30/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-09-30/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-09-30/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-09-30/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-09-30/COMI.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-09-30/COMI.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-09-30/COMI.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-09-30/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-09-30/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-09-30/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-09-30/ETEL.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-09-30/ETEL.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-09-30/ETEL.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-09-30/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- rescore592/2025-09-30/NVDA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/NVDA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/NVDA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-09-30/NVDA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
-- rescore592/2025-09-30/NVDA: tilt-technicals has no day horizon — no row
-- rescore592/2025-09-30/NVDA: tilt-technicals has no week horizon — no row
-- rescore592/2025-09-30/NVDA: tilt-technicals has no month horizon — no row
+- rescore592/2025-09-30/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- rescore592/2025-09-30/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- rescore592/2025-09-30/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
 - rescore592/2025-09-30/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-09-30/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
-- rescore592/2025-09-30/TMGH.CA: tilt-technicals has no day horizon — no row
-- rescore592/2025-09-30/TMGH.CA: tilt-technicals has no week horizon — no row
-- rescore592/2025-09-30/TMGH.CA: tilt-technicals has no month horizon — no row
+- rescore592/2025-12-31/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 
 _Backtest scores are an upper bound on live skill (see the warning above). The forward ledger remains the only basis for accuracy claims._
