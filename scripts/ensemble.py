@@ -25,6 +25,11 @@ Design (v2 — root fixes over v1):
   passes the gate on its own. Its z-score (Kronos move in units of
   the stock's own realized volatility) is still recorded for the
   shadow scoring, not for the headline.
+- A separable band calibration layer (issue #593, scripts/
+  band_calibration.py) recentres and rescales the frozen band
+  from this centre formula's own matured ledger rows when a
+  (ticker, horizon) cell qualifies; otherwise the frozen band
+  ships labelled uncalibrated in the horizon block.
 - The news layer never votes direction; it is a risk overlay that
   caps confidence, discounts the price weight and stretches ranges.
 - Confidence is PROVISIONAL (uncalibrated) until the scoring ledger
@@ -84,6 +89,13 @@ V2_SESSIONS = {"day": 1, "week": 5, "month": 21}
 # Naive baseline half-width for the RangeSkill gate (80% z):
 # naive = 0 +/- 1.2816 x sigma60 x sqrt(sessions_h).
 V2_NAIVE_K = 1.2816
+# Centre-formula tag (issue #593): ledger rows carry the tag of
+# the ensemble formula that produced them, and the band
+# calibration layer fits its centre correction ONLY on rows of
+# the same tag — residuals from a retired centre must never
+# re-centre its successor. Bump this whenever the centre rule
+# changes (the v2 centre is 0, so a bump means a new centre).
+FORMULA_TAG = "v2-594"
 
 
 def expected_move(kmove, net_score, vol_h):
@@ -233,6 +245,35 @@ def _apply_measured_weights(base):
 
 
 W, WEIGHTS_SOURCE, WEIGHTS_INFO = _apply_measured_weights(W)
+
+
+def _load_band_calibration():
+    """Issue #593: fit the band calibration layer (scripts/
+    band_calibration.py) on the forward ledger's matured rows for
+    THIS centre formula (FORMULA_TAG) and return its cells dict,
+    {(ticker, horizon): entry}. The layer recentres the frozen v2
+    band by the formula's own measured bias and rescales its
+    width; with no qualifying rows every entry is uncalibrated
+    and the band ships exactly as #594 froze it.
+    Issue #436: forbidden in 2-family backtest mode — the forward
+    ledger is measured on 2026 sweeps, i.e. from the future
+    relative to any historical cutoff (same rule as the retired
+    measured-weights feedback). Never raises: any problem reading
+    or fitting the ledger returns {} (uncalibrated)."""
+    if two_family_backtest():
+        return {}
+    try:
+        if HERE not in sys.path:
+            sys.path.insert(0, HERE)
+        import band_calibration
+        cal = band_calibration.load_calibration(
+            os.path.join(ROOT, "ledger", "ledger.json"),
+            formula=FORMULA_TAG)
+        return cal.get("cells") or {}
+    except Exception:
+        return {}
+
+
 RISK_MULT = {"none": 1.0, "elevated": 1.2, "shock": 1.5, "unknown": 1.3}
 SHOCK_WORDS = [
     "resign", "oust", "ceo", "earnings", "guidance", "investigat", "fraud",
@@ -1423,6 +1464,7 @@ def main():
            "calibration": "v2-594 (frozen 2026-11-25: centre 0, "
                           "band k=1.15/1.28/1.20 x sigma60 x "
                           "sqrt(ledger sessions))",
+           "formula": FORMULA_TAG,
            "sessions_per_calendar_day": round(density, 3),
            "date": digest.get("date"), "risk": risk,
            "weights_source": WEIGHTS_SOURCE,
@@ -1435,6 +1477,7 @@ def main():
                                  if WEIGHTS_SOURCE == "ledger" else
                                  "provisional (uncalibrated — no scoring history yet)"))}
     fam_display = dict(fam_fixed)
+    band_cal = _load_band_calibration()
     for hname, bar in HORIZONS.items():
         ka = kronos_at(bar)
         # Kronos bars are CALENDAR days; sigma is per TRADING session.
@@ -1482,10 +1525,24 @@ def main():
         # the band. RISK_MULT stays as a widening overlay ONLY —
         # untested, flagged in the digest line below.
         half = V2_BAND_K[hname] * vol60_h * RISK_MULT[risk["level"]]
+        # Issue #593: band calibration layer — recentre by b' and
+        # rescale by k' fitted on THIS formula's own matured
+        # ledger rows (scripts/band_calibration.py; b is in pp,
+        # the ensemble works in fractions). An uncalibrated entry
+        # leaves the frozen v2 band untouched. Direction follows
+        # the corrected centre so direction and range agree.
+        cal_entry = band_cal.get((ticker, hname))
+        cal_applied = bool(cal_entry and cal_entry.get("calibrated"))
+        if cal_applied:
+            expected = expected + cal_entry["b"] / 100.0
+            half = half * cal_entry["k"]
+        direction = "flat"
+        if cal_applied and expected != 0.0:
+            direction = "up" if expected > 0 else "down"
         agree = max(0.0, 1.0 - disagree)
         conf = min(risk["conf_cap"], .20 + .45 * agree + .10 * (len(scores) / 5))
         out["horizons"][hname] = {
-            "direction": "flat",
+            "direction": direction,
             "expected_move_pct": round(expected * 100, 2),
             "range_low_pct": round((expected - half) * 100, 2),
             "range_high_pct": round((expected + half) * 100, 2),
@@ -1500,6 +1557,15 @@ def main():
             # of re-deriving them from rounded sigma_daily.
             "kronos_move_pct": round(kmove * 100, 4) if ka else None,
             "vol_h_pct": round(vol_h * 100, 4),
+            # Issue #593: what the calibration layer did to this
+            # horizon's band (applied=False = the frozen v2 band
+            # shipped uncalibrated).
+            "band_calibration": (
+                {"applied": True, "n": cal_entry["n"],
+                 "k": round(cal_entry["k"], 4),
+                 "b_pp": round(cal_entry["b"], 2),
+                 "basis": cal_entry["basis"]}
+                if cal_applied else {"applied": False}),
         }
         # Mark horizons spanning an ex-date: the mechanical dividend
         # drop inside them is decomposed, not forecast skill/error.
