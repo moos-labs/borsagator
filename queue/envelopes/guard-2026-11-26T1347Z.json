@@ -1,0 +1,22 @@
+{
+ "job_id": "guard-2026-11-26T1347Z",
+ "branch": "publish/ledger-guard-2026-11-26T1347Z",
+ "envelope_commit": "7ef10954f51e6baf9dc68d1f4cd46e79843f2885",
+ "heartbeat": {
+  "last_run_utc": "2026-11-26T13:59:26Z",
+  "run_id": "guard-2026-11-26T1347Z",
+  "status": "ok",
+  "workflow": "ledger-guard",
+  "note": "Written by every completed ledger-guard run; the watchdog (ledger-guard-watchdog.yml) pages when this is older than 90 minutes."
+ },
+ "blobs": {
+  "ledger/benchmark.json": "6e8c44863890ecc50ba47576f33c8fd644b7b752",
+  "ledger/benchmark.md": "62547202c0362d0091f4fbaffb9faf7d94ba8c06",
+  "ledger/guard-heartbeat.json": "dd808b15f916571f165c15ad9b39b28dea8501a8",
+  "ledger/ledger.json": "326f4fc243066ff49ac24fe8a18ac8b0087679e6",
+  "ledger/ledger.md": "47c62f8a7ad45fd9d1980b23203ac43477c98473",
+  "ledger/weights.json": "3d7d961c9852716fb696e83dd31bc4e147f0a99c"
+ },
+ "attempt_id": "borsagator-worker-6@2026-11-26T13:48:56.851485+00:00",
+ "persisted_at": "2026-11-26T13:59:29.812903+00:00"
+}
