@@ -4,7 +4,7 @@
 
 > Out of scope for this backtest (design §5.2): sentiment/news (no complete historical headline archive exists), agent/LLM (training knowledge leaks the future), fundamentals (no verified point-in-time statement vintages), and validation / backtest-category tools (qlib, vectorbt, backtrader) which are not direction voters. Only price-forecast (Kronos) and technicals (pandas-ta voter + talib cross-check) are scored, separately and as a 2-family ensemble.
 
-**Forecasts found: 618 · matured: 618 · pending: 0 · invalid: 0 · captures: 39**
+**Forecasts found: 675 · matured: 675 · pending: 0 · invalid: 0 · captures: 42**
 
 No quality claim is made for any (entrant, horizon) cell with n < 10 matured rows. Backtest n never counts toward the forward ledger's D4 threshold (n ≥ 30 matured).
 
@@ -13,37 +13,37 @@ No quality claim is made for any (entrant, horizon) cell with n < 10 matured row
 | Ticker | Found | Matured | Pending | Invalid |
 |---|---|---|---|---|
 | COMI.CA | 108 | 108 | 0 | 0 |
-| ETEL.CA | 90 | 90 | 0 | 0 |
+| ETEL.CA | 108 | 108 | 0 | 0 |
 | HRHO.CA | 93 | 93 | 0 | 0 |
-| NVDA | 144 | 144 | 0 | 0 |
+| NVDA | 165 | 165 | 0 | 0 |
 | SWDY.CA | 93 | 93 | 0 | 0 |
-| TMGH.CA | 90 | 90 | 0 | 0 |
+| TMGH.CA | 108 | 108 | 0 | 0 |
 
 ## By entrant and horizon (matured only, gap-flagged rows excluded from skill)
 
 | Entrant | Horizon | n | Hit rate | MAE pp | Range cov. | Hit vs B&H | MAE vs B&H | Hit vs index | MAE vs index |
 |---|---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 39 | 0.41 | 3.29 | 0.667 | 0.077 | 1.79 | -0.5 | 3.3 |
-| 2-family-ensemble | week | 39 | 0.436 | 9.3 | 0.487 | 0.359 | 4.77 | -0.125 | 14.96 |
-| 2-family-ensemble | month | 39 | 0.282 | 18.89 | 0.385 | 0.205 | 10.47 | 0.25 | 28.42 |
-| kronos-alone | day | 39 | 0.308 | 4.28 | 0.513 | -0.025 | 2.78 | -0.625 | 4.12 |
-| kronos-alone | week | 39 | 0.462 | 12.33 | 0.308 | 0.385 | 7.8 | -0.125 | 22.48 |
-| kronos-alone | month | 39 | 0.308 | 24.66 | 0.077 | 0.231 | 16.24 | 0.25 | 39.14 |
-| family-technicals | day | 39 | 0.333 | 1.6 | 0.897 | 0.0 | 0.1 | -0.5 | 1.8 |
-| family-technicals | week | 39 | 0.282 | 4.34 | 0.667 | 0.205 | -0.19 | -0.25 | 1.81 |
-| family-technicals | month | 39 | 0.359 | 8.26 | 0.795 | 0.282 | -0.16 | 0.5 | 9.65 |
-| buy-and-hold | day | 39 | 0.333 | 1.5 | 0.846 | 0.0 | 0.0 | -0.5 | 1.49 |
-| buy-and-hold | week | 39 | 0.077 | 4.53 | 0.641 | 0.0 | 0.0 | -0.5 | 2.24 |
-| buy-and-hold | month | 39 | 0.077 | 8.42 | 0.769 | 0.0 | 0.0 | 0.0 | 10.42 |
-| index-baseline | day | 8 | 0.875 (n < 10 — no claim) | 0.38 | — | 0.5 | -1.49 | 0.0 | 0.0 |
-| index-baseline | week | 8 | 0.5 (n < 10 — no claim) | 1.93 | — | 0.5 | -2.24 | 0.0 | 0.0 |
-| index-baseline | month | 8 | 0.125 (n < 10 — no claim) | 1.77 | — | 0.0 | -10.42 | 0.0 | 0.0 |
-| naive-range | day | 39 | 0.333 | 1.5 | 0.846 | 0.0 | 0.0 | -0.5 | 1.49 |
-| naive-range | week | 39 | 0.077 | 4.53 | 0.769 | 0.0 | 0.0 | -0.5 | 2.24 |
-| naive-range | month | 39 | 0.077 | 8.42 | 0.872 | 0.0 | 0.0 | 0.0 | 10.42 |
-| tilt-technicals | day | 3 | 0.667 (n < 10 — no claim) | 1.05 | 0.667 | 0.0 | 0.0 | — | — |
-| tilt-technicals | week | 3 | 0.333 (n < 10 — no claim) | 2.81 | 0.667 | 0.0 | 0.13 | — | — |
-| tilt-technicals | month | 3 | 0.0 (n < 10 — no claim) | 12.32 | 0.667 | 0.0 | 0.03 | — | — |
+| 2-family-ensemble | day | 42 | 0.405 | 3.19 | 0.667 | 0.072 | 1.66 | -0.556 | 3.05 |
+| 2-family-ensemble | week | 42 | 0.405 | 8.91 | 0.5 | 0.334 | 4.44 | -0.111 | 13.26 |
+| 2-family-ensemble | month | 42 | 0.286 | 18.43 | 0.405 | 0.191 | 9.72 | 0.333 | 25.11 |
+| kronos-alone | day | 42 | 0.333 | 4.05 | 0.524 | 0.0 | 2.52 | -0.667 | 3.77 |
+| kronos-alone | week | 42 | 0.476 | 11.82 | 0.31 | 0.405 | 7.35 | 0.0 | 20.1 |
+| kronos-alone | month | 42 | 0.286 | 25.36 | 0.071 | 0.191 | 16.65 | 0.222 | 34.99 |
+| family-technicals | day | 42 | 0.333 | 1.6 | 0.881 | 0.0 | 0.07 | -0.556 | 1.66 |
+| family-technicals | week | 42 | 0.262 | 4.36 | 0.667 | 0.191 | -0.11 | -0.222 | 1.71 |
+| family-technicals | month | 42 | 0.357 | 8.64 | 0.786 | 0.262 | -0.07 | 0.445 | 8.7 |
+| buy-and-hold | day | 42 | 0.333 | 1.53 | 0.833 | 0.0 | 0.0 | -0.556 | 1.44 |
+| buy-and-hold | week | 42 | 0.071 | 4.47 | 0.643 | 0.0 | 0.0 | -0.444 | 1.96 |
+| buy-and-hold | month | 42 | 0.095 | 8.71 | 0.762 | 0.0 | 0.0 | 0.111 | 9.11 |
+| index-baseline | day | 9 | 0.889 (n < 10 — no claim) | 0.36 | — | 0.556 | -1.44 | 0.0 | 0.0 |
+| index-baseline | week | 9 | 0.444 (n < 10 — no claim) | 1.84 | — | 0.444 | -1.96 | 0.0 | 0.0 |
+| index-baseline | month | 9 | 0.111 (n < 10 — no claim) | 1.78 | — | -0.111 | -9.11 | 0.0 | 0.0 |
+| naive-range | day | 42 | 0.333 | 1.53 | 0.833 | 0.0 | 0.0 | -0.556 | 1.44 |
+| naive-range | week | 42 | 0.071 | 4.47 | 0.762 | 0.0 | 0.0 | -0.444 | 1.96 |
+| naive-range | month | 42 | 0.095 | 8.71 | 0.857 | 0.0 | 0.0 | 0.111 | 9.11 |
+| tilt-technicals | day | 6 | 0.5 (n < 10 — no claim) | 1.48 | 0.667 | 0.0 | 0.0 | -1.0 | 1.07 |
+| tilt-technicals | week | 6 | 0.167 (n < 10 — no claim) | 3.5 | 0.667 | 0.0 | 0.29 | 0.0 | 0.27 |
+| tilt-technicals | month | 6 | 0.0 (n < 10 — no claim) | 12.67 | 0.667 | -0.167 | 0.26 | 0.0 | -0.19 |
 
 Deltas vs buy-and-hold / index are computed on matched captures only (both the entrant and the baseline matured there); the paired n per cell is in backtest.json.
 
@@ -53,35 +53,35 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 
 | Entrant | Horizon | n | Mean IS | Naive IS | RangeSkill | Gap 95% CI | Coverage | Gate |
 |---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 39 | 16.45 | 7.22 | -1.278 | [-23.78, -1.66] | 0.667 | FAIL |
-| 2-family-ensemble | week | 39 | 60.78 | 22.17 | -1.742 | [-66.45, -16.55] | 0.487 | FAIL |
-| 2-family-ensemble | month | 39 | 111.95 | 39.99 | -1.799 | [-111.03, -38.19] | 0.385 | FAIL |
-| kronos-alone | day | 39 | 24.37 | 7.22 | -2.375 | [-44.62, -2.54] | 0.513 | FAIL |
-| kronos-alone | week | 39 | 99.74 | 22.17 | -3.499 | [-127.57, -37.19] | 0.308 | FAIL |
-| kronos-alone | month | 39 | 226.45 | 39.99 | -4.663 | [-259.22, -120.09] | 0.077 | FAIL |
-| family-technicals | day | 39 | 7.38 | 7.22 | -0.022 | [-0.46, 0.07] | 0.897 | FAIL |
-| family-technicals | week | 39 | 22.4 | 22.17 | -0.01 | [-2.43, 1.64] | 0.667 | FAIL |
-| family-technicals | month | 39 | 39.66 | 39.99 | 0.008 | [-4.06, 3.82] | 0.795 | FAIL |
-| buy-and-hold | day | 39 | 7.22 | 7.22 | 0.0 | [-0.01, 0.01] | 0.846 | FAIL |
-| buy-and-hold | week | 39 | 23.02 | 22.17 | -0.038 | [-2.86, 0.99] | 0.641 | FAIL |
-| buy-and-hold | month | 39 | 39.07 | 39.99 | 0.023 | [-2.47, 3.57] | 0.769 | FAIL |
-| index-baseline | day | 8 | — | 8.25 | — | — | — | n<30 |
-| index-baseline | week | 8 | — | 18.1 | — | — | — | n<30 |
-| index-baseline | month | 8 | — | 52.13 | — | — | — | n<30 |
-| naive-range | day | 39 | 7.22 | 7.22 | 0.0 | [0.0, 0.0] | 0.846 | FAIL |
-| naive-range | week | 39 | 22.17 | 22.17 | 0.0 | [0.0, 0.0] | 0.769 | FAIL |
-| naive-range | month | 39 | 39.99 | 39.99 | 0.0 | [0.0, 0.0] | 0.872 | FAIL |
-| tilt-technicals | day | 3 | 4.47 | 4.04 | -0.106 | [-1.92, 0.38] | 0.667 | n<30 |
-| tilt-technicals | week | 3 | 9.83 | 8.79 | -0.118 | [-3.1, 0.0] | 0.667 | n<30 |
-| tilt-technicals | month | 3 | 82.1 | 78.86 | -0.041 | [-11.58, 1.08] | 0.667 | n<30 |
+| 2-family-ensemble | day | 42 | 15.98 | 7.39 | -1.162 | [-21.53, -1.5] | 0.667 | FAIL |
+| 2-family-ensemble | week | 42 | 57.64 | 21.79 | -1.645 | [-61.15, -14.4] | 0.5 | FAIL |
+| 2-family-ensemble | month | 42 | 108.94 | 42.03 | -1.592 | [-103.91, -35.44] | 0.405 | FAIL |
+| kronos-alone | day | 42 | 23.02 | 7.39 | -2.115 | [-40.19, -1.94] | 0.524 | FAIL |
+| kronos-alone | week | 42 | 95.33 | 21.79 | -3.375 | [-120.7, -34.83] | 0.31 | FAIL |
+| kronos-alone | month | 42 | 233.76 | 42.03 | -4.562 | [-260.98, -127.55] | 0.071 | FAIL |
+| family-technicals | day | 42 | 7.61 | 7.39 | -0.03 | [-0.52, 0.03] | 0.881 | FAIL |
+| family-technicals | week | 42 | 22.19 | 21.79 | -0.018 | [-2.48, 1.4] | 0.667 | FAIL |
+| family-technicals | month | 42 | 42.12 | 42.03 | -0.002 | [-4.31, 3.24] | 0.786 | FAIL |
+| buy-and-hold | day | 42 | 7.39 | 7.39 | 0.0 | [-0.01, 0.01] | 0.833 | FAIL |
+| buy-and-hold | week | 42 | 22.57 | 21.79 | -0.036 | [-2.76, 0.97] | 0.643 | FAIL |
+| buy-and-hold | month | 42 | 41.18 | 42.03 | 0.02 | [-2.12, 3.37] | 0.762 | FAIL |
+| index-baseline | day | 9 | — | 8.0 | — | — | — | n<30 |
+| index-baseline | week | 9 | — | 17.59 | — | — | — | n<30 |
+| index-baseline | month | 9 | — | 49.4 | — | — | — | n<30 |
+| naive-range | day | 42 | 7.39 | 7.39 | 0.0 | [0.0, 0.0] | 0.833 | FAIL |
+| naive-range | week | 42 | 21.79 | 21.79 | 0.0 | [0.0, 0.0] | 0.762 | FAIL |
+| naive-range | month | 42 | 42.03 | 42.03 | 0.0 | [0.0, 0.0] | 0.857 | FAIL |
+| tilt-technicals | day | 6 | 7.2 | 6.83 | -0.054 | [-1.27, 0.5] | 0.667 | n<30 |
+| tilt-technicals | week | 6 | 13.97 | 12.77 | -0.094 | [-2.6, 0.01] | 0.667 | n<30 |
+| tilt-technicals | month | 6 | 77.37 | 73.72 | -0.05 | [-9.26, 1.4] | 0.667 | n<30 |
 
 ## Family skill (2-family ensemble rows only; mean of family_score × sign(realized), matured only)
 
 | Family | Mean skill | n |
 |---|---|---|
-| ensemble (net_score) | -0.055 | 114 |
+| ensemble (net_score) | -0.064 | 120 |
 | price-forecast | -0.095 | 108 |
-| technicals | +0.043 | 114 |
+| technicals | +0.028 | 120 |
 
 ## Forecasts
 
@@ -705,6 +705,63 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 | COMI.CA | 2025-12-31 | day | tilt-technicals | flat | +0.00 | -2.41 | ❌ | 2.41 | ❌ |  | matured 2026-01-04 |
 | COMI.CA | 2025-12-31 | week | tilt-technicals | flat | -0.31 | +5.31 | ❌ | 5.62 | ❌ |  | matured 2026-01-11 |
 | COMI.CA | 2025-12-31 | month | tilt-technicals | flat | -0.63 | +29.13 | ❌ | 29.76 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | 2-family-ensemble | flat | +0.00 | -0.70 | ✅ | 0.70 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | 2-family-ensemble | flat | +0.00 | +7.95 | ❌ | 7.95 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | 2-family-ensemble | flat | +0.00 | +26.58 | ❌ | 26.58 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | kronos-alone | flat | -0.25 | -0.70 | ✅ | 0.45 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | kronos-alone | down | -3.89 | +7.95 | ❌ | 11.84 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | kronos-alone | down | -45.43 | +26.58 | ❌ | 72.01 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | family-technicals | flat | -0.36 | -0.70 | ✅ | 0.34 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | family-technicals | down | -0.81 | +7.95 | ❌ | 8.76 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | family-technicals | down | -1.67 | +26.58 | ❌ | 28.25 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | buy-and-hold | flat | +0.00 | -0.70 | ✅ | 0.70 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | buy-and-hold | flat | +0.00 | +7.95 | ❌ | 7.95 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | buy-and-hold | flat | +0.00 | +26.58 | ❌ | 26.58 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | naive-range | flat | +0.00 | -0.70 | ✅ | 0.70 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | naive-range | flat | +0.00 | +7.95 | ❌ | 7.95 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | naive-range | flat | +0.00 | +26.58 | ❌ | 26.58 | ❌ |  | matured 2026-02-03 |
+| ETEL.CA | 2025-12-31 | day | tilt-technicals | flat | +0.00 | -0.70 | ✅ | 0.70 | ✅ |  | matured 2026-01-04 |
+| ETEL.CA | 2025-12-31 | week | tilt-technicals | flat | -0.41 | +7.95 | ❌ | 8.36 | ❌ |  | matured 2026-01-11 |
+| ETEL.CA | 2025-12-31 | month | tilt-technicals | down | -0.83 | +26.58 | ❌ | 27.41 | ❌ |  | matured 2026-02-03 |
+| NVDA | 2025-12-31 | day | 2-family-ensemble | flat | +0.00 | +1.26 | ❌ | 1.26 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | 2-family-ensemble | flat | +0.00 | -0.78 | ❌ | 0.78 | ✅ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | 2-family-ensemble | flat | +0.00 | -0.48 | ✅ | 0.48 | ✅ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | kronos-alone | flat | +0.05 | +1.26 | ❌ | 1.21 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | kronos-alone | down | -2.96 | -0.78 | ✅ | 2.18 | ❌ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | kronos-alone | down | -4.15 | -0.48 | ❌ | 3.67 | ❌ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | family-technicals | flat | +0.54 | +1.26 | ❌ | 0.72 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | family-technicals | up | +1.21 | -0.78 | ❌ | 1.99 | ✅ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | family-technicals | up | +2.48 | -0.48 | ❌ | 2.96 | ✅ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | buy-and-hold | flat | +0.00 | +1.26 | ❌ | 1.26 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | buy-and-hold | flat | +0.00 | -0.78 | ❌ | 0.78 | ✅ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | buy-and-hold | flat | +0.00 | -0.48 | ✅ | 0.48 | ✅ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | index-baseline | flat | +0.00 | +0.19 | ✅ | 0.19 | ❌ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | index-baseline | flat | +0.00 | +1.11 | ❌ | 1.11 | ❌ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | index-baseline | flat | +0.00 | +1.91 | ❌ | 1.91 | ❌ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | naive-range | flat | +0.00 | +1.26 | ❌ | 1.26 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | naive-range | flat | +0.00 | -0.78 | ❌ | 0.78 | ✅ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | naive-range | flat | +0.00 | -0.48 | ✅ | 0.48 | ✅ |  | matured 2026-02-02 |
+| NVDA | 2025-12-31 | day | tilt-technicals | flat | +0.00 | +1.26 | ❌ | 1.26 | ✅ |  | matured 2026-01-02 |
+| NVDA | 2025-12-31 | week | tilt-technicals | flat | +0.60 | -0.78 | ❌ | 1.38 | ✅ |  | matured 2026-01-08 |
+| NVDA | 2025-12-31 | month | tilt-technicals | up | +1.24 | -0.48 | ❌ | 1.72 | ✅ |  | matured 2026-02-02 |
+| TMGH.CA | 2025-12-31 | day | 2-family-ensemble | flat | +0.00 | -3.75 | ❌ | 3.75 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | 2-family-ensemble | flat | +0.00 | -2.51 | ❌ | 2.51 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | 2-family-ensemble | flat | +0.00 | +10.55 | ❌ | 10.55 | ✅ |  | matured 2026-02-03 |
+| TMGH.CA | 2025-12-31 | day | kronos-alone | down | -2.12 | -3.75 | ✅ | 1.63 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | kronos-alone | down | -3.68 | -2.51 | ✅ | 1.17 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | kronos-alone | down | -17.01 | +10.55 | ❌ | 27.56 | ❌ |  | matured 2026-02-03 |
+| TMGH.CA | 2025-12-31 | day | family-technicals | flat | +0.28 | -3.75 | ❌ | 4.03 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | family-technicals | flat | +0.62 | -2.51 | ❌ | 3.13 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | family-technicals | up | +1.27 | +10.55 | ✅ | 9.28 | ✅ |  | matured 2026-02-03 |
+| TMGH.CA | 2025-12-31 | day | buy-and-hold | flat | +0.00 | -3.75 | ❌ | 3.75 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | buy-and-hold | flat | +0.00 | -2.51 | ❌ | 2.51 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | buy-and-hold | flat | +0.00 | +10.55 | ❌ | 10.55 | ✅ |  | matured 2026-02-03 |
+| TMGH.CA | 2025-12-31 | day | naive-range | flat | +0.00 | -3.75 | ❌ | 3.75 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | naive-range | flat | +0.00 | -2.51 | ❌ | 2.51 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | naive-range | flat | +0.00 | +10.55 | ❌ | 10.55 | ✅ |  | matured 2026-02-03 |
+| TMGH.CA | 2025-12-31 | day | tilt-technicals | flat | +0.00 | -3.75 | ❌ | 3.75 | ❌ |  | matured 2026-01-04 |
+| TMGH.CA | 2025-12-31 | week | tilt-technicals | flat | +0.31 | -2.51 | ❌ | 2.82 | ✅ |  | matured 2026-01-11 |
+| TMGH.CA | 2025-12-31 | month | tilt-technicals | flat | +0.63 | +10.55 | ❌ | 9.92 | ✅ |  | matured 2026-02-03 |
 
 ## Data gaps & notes
 
@@ -883,5 +940,7 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 - rescore592/2025-09-30/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
 - rescore592/2025-09-30/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 - rescore592/2025-12-31/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- rescore592/2025-12-31/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- rescore592/2025-12-31/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 
 _Backtest scores are an upper bound on live skill (see the warning above). The forward ledger remains the only basis for accuracy claims._
