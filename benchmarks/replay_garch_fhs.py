@@ -266,6 +266,12 @@ def fit_pooled(rets_by_t):
     if not use:
         return None
     var = {t: sum(x * x for x in r) / len(r) for t, r in use.items()}
+    # A zero-variance series (a stale or constant price file) has no
+    # dynamics to pool and would send _nll to log(0): skip it, and
+    # return None when nothing usable remains.
+    use = {t: r for t, r in use.items() if var[t] > 0}
+    if not use:
+        return None
     best, best_p = None, None
     for a in A_GRID:
         for b in B_GRID:

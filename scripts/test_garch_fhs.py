@@ -141,8 +141,16 @@ def test_last_window_and_unnumbered():
     import json
     import tempfile
     with tempfile.TemporaryDirectory() as d:
-        cap = os.path.join(d, "TST")
-        os.makedirs(cap)
+        cap = os.path.join(d, "2025-11-14", "TST")
+        os.makedirs(os.path.join(cap, "digest"))
+        # Same files as test_unnumbered_and_json so find_captures DOES
+        # return this dir and only the cell-number filter can drop it.
+        for fn in ("manifest.json", "realised.json"):
+            open(os.path.join(cap, fn), "w").write("{}")
+        open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
+        check("fixture is found by find_captures (reaches the filter)",
+              G.A.find_captures([d], None) != []
+              and G.A.cell_number(cap) is None)
         px, rows = 10.0, ["date,close"]
         day = dt.date(2020, 1, 1)
         for x in [0.0] + sim_garch(755, seed=9):
@@ -248,11 +256,64 @@ def test_unnumbered_and_json():
               "verdict" in json.load(open(out)))
 
 
+def test_pooled_last_window():
+    import datetime as dt
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        caps = []
+        for k, t in enumerate(("TST", "TSU")):
+            cap = os.path.join(d, t)
+            os.makedirs(cap)
+            px, rows = 10.0, ["date,close"]
+            day = dt.date(2021, 1, 1)
+            # closes up to and just past 2023-12-28 (1086 days later)
+            for x in [0.0] + sim_garch(1090, seed=30 + k):
+                px *= math.exp(x)
+                rows.append("%s,%f" % (day.isoformat(), px))
+                day += dt.timedelta(days=1)
+            with open(os.path.join(cap, "price.csv"), "w") as f:
+                f.write("\n".join(rows))
+            caps.append(cap)
+        # The band maths is irrelevant to the window limit: stub it so
+        # the step-1 sweep is cheap, restore it afterwards.
+        real_p, real_o = G.fhs_band_pooled, G.fhs_band
+        G.fhs_band_pooled = lambda rets, n, ab: 1.0
+        G.fhs_band = lambda rets, n: 1.0
+        try:
+            pairs, ab = G.screen_pooled_pairs(
+                caps, step=1, fit_end="2021-12-31", start="2022-01-01")
+        finally:
+            G.fhs_band_pooled, G.fhs_band = real_p, real_o
+        by_h = {h: [p["as_of"] for p in pairs if p["horizon"] == h
+                    and p["ticker"] == "TST"] for h in G.HORIZONS}
+        closes = G.read_closes(caps[0], "2023-12-28")
+        n_close = len(closes)
+        # the last complete window ends exactly on the last close: its
+        # base index is n_close - n (1-based as_of is closes[i-1])
+        for h in G.HORIZONS:
+            n = G.R.SESSIONS[h]
+            check("pooled %s: last window ends on the last close (<=)" % h,
+                  by_h[h] and by_h[h][-1] == closes[n_close - n - 1][0],
+                  (h, by_h[h][-1:] if by_h[h] else None))
+
+
+def test_zero_variance_ticker():
+    flat = [0.0] * 750
+    ab = G.fit_pooled({"FLAT": flat})
+    check("only a zero-variance ticker -> None, no crash", ab is None)
+    ab2 = G.fit_pooled({"FLAT": flat, "A": sim_garch(800, seed=11)})
+    check("zero-variance ticker is skipped, the rest still fit",
+          ab2 is not None and ab2 == G.fit_pooled(
+              {"A": sim_garch(800, seed=11)}), ab2)
+
+
 def main():
     for fn in (test_constants, test_fit, test_fhs, test_score_rows,
                test_screen_window_limit, test_fhs_log_space,
                test_last_window_and_unnumbered, test_pooled,
-               test_pooled_screen_window_limit, test_refusal):
+               test_pooled_screen_window_limit, test_pooled_last_window,
+               test_zero_variance_ticker, test_unnumbered_and_json,
+               test_refusal):
         fn()
     print("test_garch_fhs: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
