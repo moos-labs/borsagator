@@ -22,7 +22,9 @@ cutoff T and horizon h:
        alpha <- clip(alpha + GAMMA x (ALPHA - err_P), 0.02, 0.50),
      GAMMA = 0.05, where err_P is the share of P's rows NOT covered by
      the band q_P x half_v2 that was used at P (the same procedure
-     replayed at P).
+     replayed at P). err_P only matures at P + 35 days, so it is
+     applied only to cutoffs at least 35 days after P: the alpha behind
+     q_P (and q_T) holds the errors matured by that date, nothing newer.
   3. q_T = the ceil((n+1)(1-alpha))/n-th smallest pooled past score
      (the largest score if that index exceeds n). With fewer than
      MIN_HIST = 12 past scores, q = 1 (the band equals v2).
@@ -105,20 +107,55 @@ def _eligible(hist_rows, target_date):
             and score_of(r) is not None]
 
 
-def q_for(target_asof, hist_rows):
-    """(q, alpha) for a target cutoff from the eligible past rows of
-    one horizon, replaying the ACI update over the past cutoffs."""
-    elig = _eligible(hist_rows, _date(target_asof))
-    cutoffs = sorted({r["as_of"] for r in elig})
-    alpha = ALPHA
-    for p in cutoffs:
-        prior = [score_of(r) for r in _eligible(
-            [x for x in elig if x["as_of"] < p], _date(p))]
-        q = conformal_q(prior, alpha)
-        rows_p = [r for r in elig if r["as_of"] == p]
+def _alpha_step(alpha, err):
+    return min(ALPHA_MAX, max(ALPHA_MIN, alpha + GAMMA * (ALPHA - err)))
+
+
+def _feedback(hist_rows, upto):
+    """[(cutoff date, err)] for every cutoff P <= upto - MATURITY_DAYS,
+    in date order. err_P is the share of P's rows NOT covered by the
+    band q_P x half_v2 that was used at P, where q_P comes from the
+    scores eligible at P and the alpha known at P (alpha_known). Each
+    err_P only matures at P + MATURITY_DAYS (the month horizon is up to
+    ~29 days), so it is applied to a later cutoff only once that date
+    has passed."""
+    rows = [r for r in hist_rows if score_of(r) is not None
+            and _date(r["as_of"]) <= upto - dt.timedelta(
+                days=MATURITY_DAYS)]
+    fb = []
+    for p in sorted({r["as_of"] for r in rows}):
+        dp = _date(p)
+        alpha = alpha_known(fb, dp)
+        q = conformal_q([score_of(r) for r in _eligible(
+            [x for x in rows if x["as_of"] < p], dp)], alpha)
+        rows_p = [r for r in rows if r["as_of"] == p]
         err = sum(score_of(r) > q for r in rows_p) / len(rows_p)
-        alpha = min(ALPHA_MAX, max(ALPHA_MIN,
-                                   alpha + GAMMA * (ALPHA - err)))
+        fb.append((dp, err))
+    return fb
+
+
+def alpha_known(feedback, at):
+    """ACI level at date `at`: only the errors that have matured by
+    then (cutoff + MATURITY_DAYS <= at), applied in date order."""
+    alpha = ALPHA
+    for dp, err in feedback:
+        if dp + dt.timedelta(days=MATURITY_DAYS) <= at:
+            alpha = _alpha_step(alpha, err)
+    return alpha
+
+
+def alpha_at(target_asof, hist_rows):
+    """ACI level a cutoff would use: feedback matured at that date."""
+    t = _date(target_asof)
+    return alpha_known(_feedback(hist_rows, t), t)
+
+
+def q_for(target_asof, hist_rows):
+    """(q, alpha) for a target cutoff from the past rows of one
+    horizon. Only rows and feedback mature at the target date count."""
+    t = _date(target_asof)
+    alpha = alpha_at(target_asof, hist_rows)
+    elig = _eligible(hist_rows, t)
     return conformal_q([score_of(r) for r in elig], alpha), alpha
 
 

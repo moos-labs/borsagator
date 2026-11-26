@@ -96,6 +96,43 @@ def test_score_rows():
           and p["in_v2"])
 
 
+def test_feedback_maturity():
+    p0 = [row(half() * 0.5, "2024-11-01", t="T%d" % i) for i in range(12)]
+    p1 = [row(half() * 3.0, "2025-01-01", t="T%d" % i) for i in range(12)]
+    p2 = [row(half() * 1.5, "2025-01-20", t="T%d" % i) for i in range(12)]
+    hist = p0 + p1 + p2
+    # err_P0 = 0 (q = 1, scores 0.5) -> alpha 0.21 once P0 + 35 passes;
+    # err_P1 = 1 (q_P1 = 0.5, scores 3.0) -> alpha 0.17 once P1 + 35
+    # passes (2025-02-05).
+    a_mid = C.alpha_at("2025-01-21", hist)
+    check("P1 feedback not yet mature 20 days after P1 (only P0 applied)",
+          abs(a_mid - 0.21) < 1e-9, a_mid)
+    a_edge = C.alpha_at("2025-02-04", hist)
+    check("one day before P1 + 35 days still excludes err_P1",
+          abs(a_edge - 0.21) < 1e-9, a_edge)
+    a_late = C.alpha_at("2025-02-05", hist)
+    check("err_P1 applies from P1 + 35 days",
+          abs(a_late - 0.17) < 1e-9, a_late)
+    # err_P2 must be computed with the alpha known at P2 (0.21, not the
+    # 0.17 that P1's immature error would give): q_P2 from P0's twelve
+    # 0.5 scores is 0.5 either way, so err_P2 = 1 (scores 1.5) and
+    # alpha after P2 matures (2025-02-24) = 0.17 + 0.05 x (0.2 - 1).
+    a_p2 = C.alpha_at("2025-02-24", hist)
+    check("both matured: P0, P1, P2 errors applied in date order",
+          abs(a_p2 - (0.17 + 0.05 * (0.2 - 1.0))) < 1e-9, a_p2)
+    # later rows never change an earlier cutoff's alpha
+    later = hist + [row(half() * 9.0, "2025-02-10", t="Z%d" % i)
+                    for i in range(12)]
+    check("rows after the target cannot move its alpha",
+          abs(C.alpha_at("2025-02-05", later) - a_late) < 1e-12)
+    q, a = C.q_for("2025-02-05", hist)
+    check("q_for reports the same matured alpha", abs(a - a_late) < 1e-12)
+    # an immature error alone must not move alpha: a single cutoff
+    # 20 days back leaves alpha at its start value
+    check("immature feedback alone leaves alpha at ALPHA",
+          C.alpha_at("2025-01-21", p1) == C.ALPHA)
+
+
 def test_refusal():
     rc = C.main(["score", "--captures", "/nonexistent", "--min-cell", "73"])
     check("refuses seen cells", rc == 2)
@@ -134,7 +171,8 @@ def test_unnumbered_and_json():
 
 def main():
     for fn in (test_constants, test_quantile, test_score,
-               test_no_lookahead, test_alpha_moves, test_score_rows,
+               test_no_lookahead, test_alpha_moves, test_feedback_maturity,
+               test_score_rows,
                test_refusal, test_unnumbered_and_json):
         fn()
     print("test_aci_conformal: %d passed, %d failed"
