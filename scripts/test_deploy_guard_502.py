@@ -204,23 +204,42 @@ def test_093_review_fixes():
                         "merge commit"))
 
 
+def _step_body(text, name):
+    """Return the YAML block of one workflow step (from its
+    `- name:` line to the next step at the same indent)."""
+    start = text.index(f"- name: {name}")
+    nxt = text.find("\n      - name:", start + 1)
+    return text[start:] if nxt == -1 else text[start:nxt]
+
+
 def test_105_app_token_narrowing():
     # INS-REVIEW-105 item 5: the Borsagator App token is pinned
-    # to the full commit SHA of the action's v1 tag, minted
-    # only when this run actually needs to create a PR, and
-    # used for that operation alone — merge, evidence comment
-    # and branch deletion run on GITHUB_TOKEN, and reconciled /
-    # existing-PR runs never touch the App key.
+    # to the full commit SHA of the action's v1 tag and minted
+    # in fresh mode — a new PR and a reused PR both end at the
+    # merge, so the mint is not conditioned on pr_number. The
+    # App token is used for exactly the two operations whose
+    # actor identity matters: CREATING the PR and MERGING it.
+    # Since 2026-11-25 the merge-gate-approval ruleset requires
+    # an approving review on main; GITHUB_TOKEN can neither
+    # approve nor bypass it, so the merge runs as the App, an
+    # always-bypass actor in that ruleset (PR #739, proven by
+    # relay run 45788015824 merging PR #741 as borsagator[bot]).
+    # Every other step runs on GITHUB_TOKEN, and reconciled /
+    # non-fresh runs never touch the App key.
     check("105: app-token action pinned to the full v1 commit",
           "actions/create-github-app-token@"
           "d72941d797fd3113feb6b93fd0dec494b13a2547" in RELAY)
     check("105: no mutable app-token tag remains",
           "create-github-app-token@v1" not in RELAY)
-    check("105: mint runs only when a PR needs creation",
-          "if: steps.assess.outputs.mode == 'fresh' && "
-          "steps.assess.outputs.pr_number == ''" in RELAY)
-    check("105: only PR creation uses the App token",
-          RELAY.count("steps.apptoken.outputs.token") == 1)
+    check("105: mint runs in fresh mode (new or reused PR)",
+          "id: apptoken\n        if: steps.assess.outputs.mode "
+          "== 'fresh'" in RELAY)
+    check("105: only PR creation and merge use the App token",
+          RELAY.count("steps.apptoken.outputs.token") == 2
+          and "steps.apptoken.outputs.token"
+          in _step_body(RELAY, "Open the PR")
+          and "steps.apptoken.outputs.token"
+          in _step_body(RELAY, "Merge the PR"))
 
 
 def main():
