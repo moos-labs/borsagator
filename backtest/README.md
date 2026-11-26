@@ -9,14 +9,15 @@ cells 79–88 (2026-05-15 × COMI/ETEL/TMGH/NVDA/SWDY/HRHO and
 2026-02-13 × COMI/ETEL/TMGH/NVDA) and batch-16 cells 89–90
 (2026-02-13 × SWDY/HRHO, the batch-B remainder) and batch-17
 cells 91–97 (2025-11-14 × COMI/ETEL/TMGH/NVDA/SWDY/HRHO and
-2025-08-15 × COMI, the D/E batch).
+2025-08-15 × COMI, the D/E batch) and batch-18 cells 98–102
+(2025-08-15 × ETEL/TMGH/NVDA/SWDY/HRHO, the D/E batch remainder).
 Scorer v2 (`scripts/backtest_score.py`, PR #665 plus the `agg()`
 empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
 `ledger.DEFAULT_SESSIONS`.
 
 ## Coverage
 
-- **86 cells re-scored** (1488 forecasts, all matured):
+- **91 cells re-scored** (1581 forecasts, all matured):
   cells 1–47 except the 11 below, plus batch-7 cells 48 (SWDY.CA
   2025-09-30), 49 (HRHO.CA 2025-09-30) and 50 (COMI.CA 2025-12-31),
   batch-8 cells 51 (ETEL.CA 2025-12-31), 52 (TMGH.CA 2025-12-31)
@@ -40,7 +41,10 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
   (SWDY.CA 2026-02-13) and 90 (HRHO.CA 2026-02-13), and batch-17 cells 91
   (COMI.CA 2025-11-14), 92 (ETEL.CA 2025-11-14), 93 (TMGH.CA 2025-11-14),
   94 (NVDA 2025-11-14), 95 (SWDY.CA 2025-11-14), 96 (HRHO.CA 2025-11-14)
-  and 97 (COMI.CA 2025-08-15).
+  and 97 (COMI.CA 2025-08-15), and batch-18 cells 98
+  (ETEL.CA 2025-08-15), 99 (TMGH.CA 2025-08-15), 100 (NVDA
+  2025-08-15), 101 (SWDY.CA 2025-08-15) and 102 (HRHO.CA
+  2025-08-15).
   Per-cell files: `cells/cellNN_score_v2.json`.
 - **5 cells still v1-scored, NOT in this grid** — the 21-session realised
   window is unbuildable from the feed: cells 6, 7, 8, 20, 21 fail closed
@@ -52,18 +56,18 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
   scored): cells 3 (ORAS.CA 2023-12-29, stale-flat), 10, 11, 12, 22, 23
   (whole 2024-06-30 cutoff — the 2024-07-01 gap).
 
-## Headline (86 cells, month = 21)
+## Headline (91 cells, month = 21)
 
 | Entrant | Day MAE / RangeSkill | Week MAE / RangeSkill | Month MAE / RangeSkill |
 |---|---|---|---|
-| 2-family-ensemble | 2.90 / −0.368 | 6.20 / −0.912 | 13.38 / −0.819 |
-| kronos-alone | 3.54 / −0.830 | 9.05 / −2.683 | 21.50 / −3.879 |
-| family-technicals | 2.17 / −0.027 | 4.08 / −0.018 | 8.70 / −0.028 |
-| naive-range (gate) | 2.09 / 0.000 | 4.03 / 0.000 | 8.63 / 0.000 |
+| 2-family-ensemble | 2.81 / −0.357 | 6.03 / −0.880 | 12.92 / −0.791 |
+| kronos-alone | 3.44 / −0.829 | 8.75 / −2.628 | 21.21 / −3.914 |
+| family-technicals | 2.12 / −0.028 | 4.02 / −0.019 | 8.49 / −0.029 |
+| naive-range (gate) | 2.04 / 0.000 | 3.98 / 0.000 | 8.43 / 0.000 |
 
-Flat zero-move (buy-and-hold) MAE: 2.09 / 4.03 / 8.63. The ensemble
-fails the RangeSkill gate at every horizon; Kronos month MAE 21.50 pp
-vs zero-move 8.63 pp, direction hit 37.2%. The batch-7 cells alone:
+Flat zero-move (buy-and-hold) MAE: 2.04 / 3.98 / 8.43. The ensemble
+fails the RangeSkill gate at every horizon; Kronos month MAE 21.21 pp
+vs zero-move 8.43 pp, direction hit 37.4%. The batch-7 cells alone:
 ensemble month MAE 2.65 / 5.08 / 29.13 pp (cells 48/49/50), RangeSkill
 +0.064 / +0.061 / −0.026 — the first two cells beat the naive range
 on intervals; cell 50 (COMI +29.13% realised month) covers 0.000.
@@ -143,20 +147,33 @@ with hit 1.00. Cell 92 (ETEL.CA +17.86% realised month) covers 0.000 at the
 month horizon on every entrant; ensemble month direction hit is 0.00 on six
 of the seven cells (1.00 on cell 97). Cell 94 (NVDA) carries 21 forecasts —
 the only cell with an index-baseline leg, so it has seven entrants instead
-of six.
+of six. The batch-18 cells alone
+(2025-08-15 × ETEL/TMGH/NVDA/SWDY/HRHO, the D/E batch remainder):
+ensemble month MAE 6.02 / 2.38 / 3.09 / 7.81 / 5.74 pp (cells
+98/99/100/101/102), RangeSkill +0.065 / +0.065 / +0.062 / −0.104 /
++0.064; Kronos month on the batch-18 cells: 25.99 / 6.56 / 30.85 /
+16.18 / 1.62 pp — worse than zero-move on four of the five cells,
+better than the ensemble only on cell 102 (HRHO, 1.62 vs 5.74 pp);
+Kronos month coverage is 0.000 on four of the five cells (1.000 on
+cell 102). Cell 101 (SWDY.CA −7.81% realised month) covers 0.000 at
+the month horizon on the ensemble; the other four cells cover
+1.000. Ensemble month direction hit is 0.00 on all five cells.
+Cell 100 (NVDA) carries 21 forecasts — an index-baseline leg, so
+it has seven entrants instead of six.
 
-## Tilt-technicals (n = 50 — adoption test decisive at n = 31, DO NOT ADOPT)
+## Tilt-technicals (n = 55 — adoption test decisive at n = 31, DO NOT ADOPT)
 
-The fifty batch-7/8/9/10/11/12/13/14/15/16/17 captures are the first v2 captures, so they
-are the first cells with `tilt_centre_pct`: tilt-technicals month MAE
-9.12 pp, RangeSkill −0.034 (n = 50); day −0.020, week −0.004.
-Coverage 0.660 / 0.780 / 0.660. The #594 adoption test at n = 31
+The fifty-five batch-7/8/9/10/11/12/13/14/15/16/17/18 captures are the first v2
+captures, so they are the first cells with `tilt_centre_pct`:
+tilt-technicals month MAE 8.74 pp, RangeSkill −0.029 (n = 55);
+day −0.016, week −0.003. Coverage 0.691 / 0.782 / 0.673. The #594 adoption test at n = 31
 (2026-11-26) is decisive: DO NOT ADOPT on all three horizons —
 frozen v2 RangeSkill −0.023 / −0.001 / −0.022 with 95% CIs
 [−0.055, 0.024] / [−0.002, 0.001] / [−0.033, −0.009]; no CI
-lower bound clears 0. The seven batch-17 cells extend the tilt sample
-to 50; an adoption re-run on the larger n is the improvement loop's,
-not this publish's. See #594.
+lower bound clears 0. The seven batch-17 cells extended the tilt
+sample to 50 and the five batch-18 cells extend it to 55; an
+adoption re-run on the larger n is the improvement loop's, not this
+publish's. See #594.
 
 ## v1 reference (T1/T2 triage, 41 cells, month = 14 sessions)
 
@@ -166,7 +183,7 @@ almost nothing: the ~3 pp of the old month error that was the
 scoring mismatch is gone, and the decay is still there — this
 confirms the decay is real, not a scoring artifact.
 
-## Gaps recorded by the scorer (214)
+## Gaps recorded by the scorer (218)
 
 Every v1 capture lacks `sigma60_daily` (naive-range falls back to
 `sigma_daily` as proxy) and `tilt_centre_pct` (`tilt-technicals` has
