@@ -26,7 +26,9 @@ cells only (cell >= 73). KEEP when, on EVERY horizon, with at least
 30 rows over at least 5 tickers and at least 2 cutoffs,
   (1) RangeSkill vs naive has a cutoff-clustered 95% CI lower bound
       > 0, and
-  (2) coverage is within 0.75-0.85.
+  (2) the cutoff-clustered coverage CI overlaps [0.75, 0.85] (round 11
+      ruling by Moos; the original wording was point coverage within
+      0.75-0.85), same clustering and draws as the RangeSkill CI.
 REJECT when the sample is enough on every horizon and either fails
 anywhere. INSUFFICIENT when any horizon lacks the sample. One scoring,
 no re-fit. Cells 48-72 give descriptive output only (--descriptive).
@@ -128,9 +130,9 @@ def keep_verdict(res):
         cov = c["ch"]["coverage"]
         if lo is None or lo <= 0:
             bad.append("%s CI lower bound %s not > 0" % (h, _f(lo)))
-        if cov is None or not COV_BAND[0] <= cov <= COV_BAND[1]:
-            bad.append("%s coverage %s outside [%.2f, %.2f]"
-                       % (h, _f(cov), COV_BAND[0], COV_BAND[1]))
+        if not R.coverage_ci_ok(c["ch_cov_ci_cutoff"], COV_BAND):
+            bad.append(R.coverage_ci_reason(h, c["ch_cov_ci_cutoff"], cov,
+                                            COV_BAND))
     return ("REJECT" if bad else "KEEP"), bad
 
 

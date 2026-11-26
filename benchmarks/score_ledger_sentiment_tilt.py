@@ -28,7 +28,8 @@ per horizon, ONE scoring per horizon once the sample is enough: with
 at least 30 matured rows over at least 10 tickers (and at least 2
 as-of dates for a cutoff-clustered CI),
   (1) RangeSkill cutoff-clustered (by as_of) 95% CI lower bound > 0,
-  (2) tilt coverage within 0.75-0.85.
+  (2) the cutoff-clustered tilt coverage CI overlaps [0.75, 0.85]
+      (round 11 ruling by Moos; was point coverage within 0.75-0.85).
 KEEP when both hold, REJECT when the sample is enough and either
 fails, INSUFFICIENT otherwise. While a horizon is INSUFFICIENT the
 default output prints only sample counts; numbers need --descriptive.
@@ -146,9 +147,9 @@ def verdicts(pairs, res=None):
         bad = []
         if lo is None or lo <= 0:
             bad.append("CI lower bound %s not > 0" % _f(lo))
-        if cov is None or not COV_BAND[0] <= cov <= COV_BAND[1]:
-            bad.append("coverage %s outside [%.2f, %.2f]"
-                       % (_f(cov), COV_BAND[0], COV_BAND[1]))
+        if not R.coverage_ci_ok(c["ch_cov_ci_cutoff"], COV_BAND):
+            bad.append(R.coverage_ci_reason("", c["ch_cov_ci_cutoff"], cov,
+                                            COV_BAND).strip())
         out[h] = ("REJECT" if bad else "KEEP", "; ".join(bad))
     return out
 

@@ -28,9 +28,10 @@ sys.modules["tiltt"] = T
 spec.loader.exec_module(T)
 
 
-def cell(n, tickers, cutoffs, lo, cov):
+def cell(n, tickers, cutoffs, lo, cov, ci=None):
     return {"n": n, "tickers": tickers, "cutoffs": cutoffs,
-            "skill_ci_cutoff": [lo, 0.1], "coverage": cov}
+            "skill_ci_cutoff": [lo, 0.1], "coverage": cov,
+            "coverage_ci_cutoff": ci or [cov - 0.03, cov + 0.03]}
 
 
 def test_constants():
@@ -50,13 +51,19 @@ def test_rule():
     check("keep", T.tilt_rule(cell(36, 6, 3, 0.01, 0.8)).startswith("KEEP"))
     check("ci lower 0 rejects",
           T.tilt_rule(cell(36, 6, 3, 0.0, 0.8)).startswith("REJECT"))
-    check("coverage low rejects",
-          T.tilt_rule(cell(36, 6, 3, 0.05, 0.74)).startswith("REJECT"))
-    check("coverage high rejects",
-          T.tilt_rule(cell(36, 6, 3, 0.05, 0.86)).startswith("REJECT"))
-    check("coverage edges keep",
-          T.tilt_rule(cell(36, 6, 3, 0.05, 0.75)).startswith("KEEP")
-          and T.tilt_rule(cell(36, 6, 3, 0.05, 0.85)).startswith("KEEP"))
+    check("coverage CI entirely low rejects", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.6, [0.5, 0.7])).startswith("REJECT"))
+    check("coverage CI entirely high rejects", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.9, [0.86, 0.95])).startswith("REJECT"))
+    check("point outside band but CI overlaps keeps", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.72, [0.66, 0.80])).startswith("KEEP"))
+    check("CI edges keep",
+          T.tilt_rule(cell(36, 6, 3, 0.05, 0.7, [0.6, 0.75])
+                      ).startswith("KEEP")
+          and T.tilt_rule(cell(36, 6, 3, 0.05, 0.9, [0.85, 0.95])
+                          ).startswith("KEEP"))
+    check("undefined coverage CI rejects", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.8, [None, None])).startswith("REJECT"))
 
 
 def test_evaluate():
