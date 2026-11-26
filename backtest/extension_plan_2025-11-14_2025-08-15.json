@@ -1,0 +1,85 @@
+{
+ "plan": "borsagator #436 grid extension, batches D and E (INS-IMPROVE-001 round 2, target T2)",
+ "status": "definitions only: runs are dispatched by the cycle on the worker bus, not from this repo change",
+ "purpose": "two more untouched mid-quarter cutoffs so the technicals-tilt rule (#751) reaches 5 cutoffs x 6 tickers = 30 rows per horizon",
+ "documented_exception": {
+  "rule": "design section 3: 12 quarter-ends, 2023-12-29 to 2026-09-30 (scripts/backtest.py CUTOFFS_V1)",
+  "deviation": "cutoffs 2025-11-14 and 2025-08-15 are mid-quarter dates, not quarter-ends",
+  "reason": "all quarter-end cutoffs are used by cells 1-72; fit discipline requires scoring parameter changes only on cells never seen",
+  "independence": "each 21-session month window (about 31 calendar days from the cutoff) starts more than 31 days from every other cutoff's start: 2025-11-14 is 45 and 47 days from 2025-09-30 and 2025-12-31, 2025-08-15 is 46 and 46 days from 2025-06-30 and 2025-09-30, and the five mid-quarter cutoffs sit 91 days apart",
+  "recorded_on": "https://github.com/moos-labs/borsagator/issues/436"
+ },
+ "cutoffs": [
+  "2025-11-14",
+  "2025-08-15"
+ ],
+ "tickers_excluded": {
+  "ORAS.CA": "stays excluded (stale-flat, cell 3)",
+  "POUL.CA": "no usable series before 2026-09-28"
+ },
+ "cells": [
+  {
+   "cell": 91,
+   "ticker": "COMI.CA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 92,
+   "ticker": "ETEL.CA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 93,
+   "ticker": "TMGH.CA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 94,
+   "ticker": "NVDA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 95,
+   "ticker": "SWDY.CA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 96,
+   "ticker": "HRHO.CA",
+   "cutoff": "2025-11-14"
+  },
+  {
+   "cell": 97,
+   "ticker": "COMI.CA",
+   "cutoff": "2025-08-15"
+  },
+  {
+   "cell": 98,
+   "ticker": "ETEL.CA",
+   "cutoff": "2025-08-15"
+  },
+  {
+   "cell": 99,
+   "ticker": "TMGH.CA",
+   "cutoff": "2025-08-15"
+  },
+  {
+   "cell": 100,
+   "ticker": "NVDA",
+   "cutoff": "2025-08-15"
+  },
+  {
+   "cell": 101,
+   "ticker": "SWDY.CA",
+   "cutoff": "2025-08-15"
+  },
+  {
+   "cell": 102,
+   "ticker": "HRHO.CA",
+   "cutoff": "2025-08-15"
+  }
+ ],
+ "order_note": "newest cutoff first, then COMI, ETEL, TMGH, NVDA, SWDY, HRHO as in batches A, B and C",
+ "tilt_rows_after_this_plan": "5 cutoffs (2026-08-14, 2026-05-15, 2026-02-13, 2025-11-14, 2025-08-15) x 6 tickers = 30 untouched rows per horizon, which meets the n >= 30 minimum and the 5 cutoffs a verdict needs under the #751 rule, if every cell lands",
+ "expected_adoption_n": "31 after batch A, 43 after B and C, 55 after D and E, if the cycle lands them"
+}
