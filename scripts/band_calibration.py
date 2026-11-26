@@ -15,10 +15,11 @@ deterministically from the ledger's matured rows:
 2. Centre correction: b = median(realised - expected) over the
    window, clamped to |b| <= the window's median half-width.
    Published centre c' = expected + b'.
-3. Width factor: k = 80th percentile (nearest-rank) of
+3. Width factor: k = 85th percentile (nearest-rank) of
    z_i = |(realised - expected) - b| / half_i, clamped to
    [0.5, 2.0]. The quantile construction puts in-window coverage
-   at ~0.80 by design.
+   at ~0.85 by design, so out-of-sample coverage lands inside
+   the 0.75-0.85 launch-gate tolerance.
 4. Shrinkage: k' = (n*k + 10*k_H) / (n+10), b' = (n*b + 10*b_H) /
    (n+10), with k_H / b_H the horizon-pooled fits. A cell with
    n < 10 falls back to the horizon pool; a pool with n < 10 falls
@@ -26,6 +27,16 @@ deterministically from the ledger's matured rows:
 5. Application (ensemble.py, where the band is built):
    centre = expected + b', half = k' x half. Direction is taken
    from the corrected centre so direction and range agree.
+
+6. Launch-gate alerts (accepted #593 design note): a cell pages
+   when it holds one full trailing window of independent blocks
+   (n_eff >= PUBLIC_N[horizon]: day 30, week 6, month 2) and its
+   as-published coverage trips the per-horizon exact-binomial
+   predicate (alert_predicate): day outside [0.75, 0.85], week at
+   coverage <= 2/6, month at 0/2; no high-side page for week/month.
+   One 30-row window can only catch catastrophic week/month
+   under-coverage — fine week/month calibration is not decidable at
+   6 / 2 independent blocks.
 
 Formula basis: residuals are only meaningful against the centre
 formula that produced them, so compute_calibration() can filter
@@ -50,11 +61,33 @@ import statistics
 WINDOW = 30            # trailing matured rows per cell
 MIN_N = 10             # a cell (or pool) applies at n >= MIN_N
 PRIOR_N = 10           # shrinkage prior weight toward the pool
-PUBLIC_N = 30          # public accuracy claims only at n >= 30 (D4)
+PUBLIC_N = {"day": 30, "week": 6, "month": 2}
+                       # launch-gate alert threshold per horizon: one
+                       # full trailing window of independent blocks
+                       # (WINDOW / sessions; accepted #593 design)
 K_MIN, K_MAX = 0.5, 2.0
 TARGET_COVERAGE = 0.80
-ALERT_BAND = (0.75, 0.85)   # launch-gate tolerance per ticker cell
+ALERT_BAND = (0.75, 0.85)   # day launch-gate page band per ticker cell
+WEEK_PAGE_LOW = 2.0 / 6.0   # week pages low at coverage <= 2/6 (exact
+                            # binomial at target 0.80: ~1.7% false-page)
+MONTH_PAGE_LOW = 0.0        # month pages low at 0/2 only (~4% false-page)
+                            # No high-side page for week/month: at 6 / 2
+                            # blocks a full-window 6/6 or 2/2 reading is
+                            # common at true 0.80 coverage.
 HORIZONS = ("day", "week", "month")
+
+
+def effective_n(n, horizon):
+    """Non-overlapping-block count for a cell: ceil(n / sessions),
+    where sessions are day=1, week=5, month=21. Day is unchanged."""
+    sessions = {"day": 1, "week": 5, "month": 21}.get(horizon, 1)
+    try:
+        n = int(n)
+    except (TypeError, ValueError):
+        return 0
+    if sessions <= 0:
+        sessions = 1
+    return math.ceil(n / sessions) if n > 0 else 0
 
 
 def _num(x):
@@ -93,6 +126,47 @@ def is_clean_matured(row):
     return half is not None and half > 0 and row_residual(row) is not None
 
 
+def uncalibrated_view(row):
+    """Issue #701: the row as the frozen model band published it.
+
+    A row whose band the layer itself calibrated
+    (band_calibration.applied == true) carries expected/range
+    values already shifted by b' and scaled by k'. Fitting on those
+    values makes the layer learn from its own output (feedback
+    loop). Instead of dropping such rows (which would starve every
+    cell once the layer is live, since all new rows are calibrated),
+    the uncalibrated band is reconstructed from the b_pp and k the
+    ensemble recorded on the row: expected_raw = expected - b_pp,
+    half_raw = half / k, centred on expected_raw. The realised
+    move is untouched, so the residual is the frozen model's own.
+
+    Returns a copy of the row for fitting, the row itself when the
+    layer did not touch it, or None when the row was calibrated but
+    cannot be reconstructed (missing/invalid b_pp or k): such rows
+    are excluded rather than guessed. Idempotent: the returned view
+    is marked applied=False. Reconstruction carries the rows'
+    2-decimal rounding."""
+    if not isinstance(row, dict):
+        return None
+    bc = row.get("band_calibration")
+    if not isinstance(bc, dict) or not bc.get("applied"):
+        return row
+    b, k = _num(bc.get("b_pp")), _num(bc.get("k"))
+    exp = _num(row.get("expected_move_pct"))
+    half = row_half(row)
+    if b is None or k is None or k <= 0 or exp is None or half is None:
+        return None
+    exp0 = exp - b
+    half0 = half / k
+    out = dict(row)
+    out["expected_move_pct"] = exp0
+    out["range_low_pct"] = exp0 - half0
+    out["range_high_pct"] = exp0 + half0
+    out["band_calibration"] = {"applied": False,
+                               "reconstructed_from": bc.get("basis")}
+    return out
+
+
 def _window(rows):
     """Trailing WINDOW rows, deterministic order (as_of, sweep)."""
     ordered = sorted(rows, key=lambda r: (str(r.get("as_of") or ""),
@@ -100,11 +174,14 @@ def _window(rows):
     return ordered[-WINDOW:]
 
 
-def _quantile80(values):
-    """80th percentile, nearest-rank — deterministic, and the
-    in-window coverage at the fitted k is >= 0.80 by construction."""
+def _quantile85(values):
+    """85th percentile, nearest-rank — deterministic.
+
+    The in-sample quantile for k must exceed the target coverage
+    (0.80) so that out-of-sample coverage lands inside the 0.75-0.85
+    launch-gate tolerance; hence the 0.85 quantile."""
     ordered = sorted(values)
-    idx = max(0, math.ceil(TARGET_COVERAGE * len(ordered)) - 1)
+    idx = max(0, math.ceil(0.85 * len(ordered)) - 1)
     return ordered[idx]
 
 
@@ -113,7 +190,7 @@ def _fit(rows):
 
     Returns {n, b, k, coverage} or None when no usable rows.
     b is the median residual clamped to the median half-width;
-    k is the 80th percentile of |residual - b| / half, clamped
+    k is the 85th percentile of |residual - b| / half, clamped
     to [K_MIN, K_MAX]; coverage is the as-published coverage
     (|residual| <= half)."""
     usable = [r for r in rows if is_clean_matured(r)]
@@ -124,7 +201,7 @@ def _fit(rows):
     half_med = statistics.median(halves)
     b = statistics.median(residuals)
     b = max(-half_med, min(half_med, b))
-    k = _quantile80([abs(res - b) / h for res, h in zip(residuals, halves)])
+    k = _quantile85([abs(res - b) / h for res, h in zip(residuals, halves)])
     k = max(K_MIN, min(K_MAX, k))
     coverage = sum(1 for res, h in zip(residuals, halves)
                    if abs(res) <= h) / len(usable)
@@ -158,7 +235,11 @@ def compute_calibration(rows, formula=None):
     "cell" (n >= MIN_N, shrunk toward the pool), "pool" (cell too
     small, horizon pool applied) or "none" (k=1, b=0 — the
     uncalibrated model band)."""
-    usable = [r for r in (rows or []) if is_clean_matured(r)]
+    # Issue #701: never fit on the layer's own output — rows whose
+    # band was calibrated are reconstructed to the uncalibrated
+    # model band (or excluded when that is impossible).
+    views = [uncalibrated_view(r) for r in (rows or [])]
+    usable = [r for r in views if r is not None and is_clean_matured(r)]
     if formula is not None:
         usable = [r for r in usable if r.get("formula") == formula]
 
@@ -195,6 +276,7 @@ def compute_calibration(rows, formula=None):
             b = (n * fit["b"] + PRIOR_N * prior_b) / (n + PRIOR_N)
             k = (n * fit["k"] + PRIOR_N * prior_k) / (n + PRIOR_N)
             entry = {"ticker": ticker, "horizon": horizon, "n": n,
+                     "n_eff": effective_n(n, horizon),
                      "b": b, "k": k, "calibrated": True, "basis": "cell",
                      "coverage_before": fit["coverage"],
                      "coverage_calibrated": _coverage(cell_rows, b, k),
@@ -202,6 +284,7 @@ def compute_calibration(rows, formula=None):
         elif pool["calibrated"]:
             entry = {"ticker": ticker, "horizon": horizon,
                      "n": fit["n"] if fit else 0,
+                     "n_eff": effective_n(fit["n"] if fit else 0, horizon),
                      "b": pool["b"], "k": pool["k"],
                      "calibrated": True, "basis": "pool",
                      "coverage_before": fit["coverage"] if fit else None,
@@ -211,6 +294,7 @@ def compute_calibration(rows, formula=None):
         else:
             entry = {"ticker": ticker, "horizon": horizon,
                      "n": fit["n"] if fit else 0,
+                     "n_eff": effective_n(fit["n"] if fit else 0, horizon),
                      "b": 0.0, "k": 1.0,
                      "calibrated": False, "basis": "none",
                      "coverage_before": fit["coverage"] if fit else None,
@@ -232,15 +316,46 @@ def apply_calibration(centre, half, entry):
     return centre + entry["b"], half * entry["k"], True
 
 
+def public_n(horizon):
+    """Launch-gate alert threshold for a horizon: one full trailing
+    window of independent blocks (WINDOW / sessions — day 30, week 6,
+    month 2; accepted #593 design). Unknown horizons gate at the day
+    value, matching effective_n's sessions default."""
+    return PUBLIC_N.get(horizon, PUBLIC_N["day"])
+
+
+def alert_predicate(horizon, coverage):
+    """Launch-gate page predicate at TARGET_COVERAGE (accepted #593
+    design note), exact-binomial so a conforming cell false-pages
+    rarely at the horizon's own block count. Day keeps the
+    [0.75, 0.85] band on both sides (the status quo). Week pages low
+    at coverage <= 2/6 (~1.7% false-page at true 0.80) and month at
+    0/2 only (~4%); there is NO high-side page for week/month — a
+    full-window 6/6 or 2/2 reading is common at true 0.80, so a
+    high-side page would mostly cry wolf. One 30-row window can only
+    catch catastrophic week/month under-coverage."""
+    if coverage is None:
+        return False
+    if horizon == "week":
+        return coverage <= WEEK_PAGE_LOW
+    if horizon == "month":
+        return coverage <= MONTH_PAGE_LOW
+    return not (ALERT_BAND[0] <= coverage <= ALERT_BAND[1])
+
+
 def alert_cells(calibration):
-    """Cells the guard should page on (triage step 6): n >=
-    PUBLIC_N with AS-PUBLISHED coverage outside the launch-gate
-    tolerance [0.75, 0.85]."""
+    """Cells the guard should page on (triage step 6, accepted #593
+    per-horizon predicate): n_eff at one full window of independent
+    blocks (PUBLIC_N per horizon) with AS-PUBLISHED coverage tripping
+    alert_predicate for the horizon."""
     out = []
     for entry in (calibration.get("cells") or {}).values():
-        cov = entry.get("coverage_before")
-        if (entry.get("n", 0) >= PUBLIC_N and cov is not None
-                and not (ALERT_BAND[0] <= cov <= ALERT_BAND[1])):
+        horizon = entry.get("horizon")
+        n_eff = entry.get("n_eff")
+        if n_eff is None:
+            n_eff = effective_n(entry.get("n", 0), horizon)
+        if (n_eff >= public_n(horizon)
+                and alert_predicate(horizon, entry.get("coverage_before"))):
             out.append(entry)
     return sorted(out, key=lambda e: (str(e["ticker"]), str(e["horizon"])))
 
@@ -250,9 +365,9 @@ def calibration_table(calibration):
     pass emits into ledger/benchmark.md (triage step 6): one row
     per (ticker, horizon) cell with n, as-published coverage,
     calibrated in-window coverage, k and b."""
-    lines = ["| Ticker | Horizon | n | Coverage (as published) | "
+    lines = ["| Ticker | Horizon | n | n_eff | Coverage (as published) | "
              "Coverage (calibrated, in-window) | k | b (pp) | Basis |",
-             "|---|---|---|---|---|---|---|---|"]
+             "|---|---|---|---|---|---|---|---|---|"]
     cells = (calibration.get("cells") or {}).values()
     order = {h: i for i, h in enumerate(HORIZONS)}
     for e in sorted(cells, key=lambda e: (str(e["ticker"]),
@@ -260,8 +375,9 @@ def calibration_table(calibration):
         fmt = lambda v: "—" if v is None else "%.3f" % v
         basis = e["basis"] if e["calibrated"] else "uncalibrated"
         lines.append(
-            "| %s | %s | %d | %s | %s | %.3f | %+.2f | %s |" % (
+            "| %s | %s | %d | %d | %s | %s | %.3f | %+.2f | %s |" % (
                 e["ticker"], e["horizon"], e["n"],
+                e.get("n_eff", effective_n(e.get("n", 0), e.get("horizon"))),
                 fmt(e["coverage_before"]), fmt(e["coverage_calibrated"]),
                 e["k"], e["b"], basis))
     return lines

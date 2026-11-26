@@ -1061,6 +1061,15 @@ def main():
                 "sessions": sess,
                 "corporate_actions": normalize_actions(ens, hb),
             })
+            # Issue #701: what the calibration layer did to this
+            # band. compute_calibration reconstructs the
+            # uncalibrated band from it so the layer never fits on
+            # its own output. Only recorded when the layer applied.
+            bcal = hb.get("band_calibration")
+            if isinstance(bcal, dict) and bcal.get("applied"):
+                forecasts[-1]["band_calibration"] = {
+                    k: bcal.get(k) for k in
+                    ("applied", "n", "k", "b_pp", "basis")}
 
     # ---- benchmark entrants (issue #79) ----------------------------------
     # Frozen entrant files under benchmark/ in each sweep dir, scored
@@ -1443,9 +1452,11 @@ def main():
     # fitted on the clean matured ensemble rows above. The
     # ensemble applies a fit only to rows of its own centre
     # formula; this table is the shipped-history diagnostic over
-    # all clean rows. Cells at n >= 30 measuring outside the
-    # 0.75-0.85 tolerance are listed as alerts (the guard pages
-    # on the same predicate, band_calibration.alert_cells).
+    # all clean rows. Cells holding one full window of independent
+    # blocks (n_eff >= 30 day / 6 week / 2 month) whose as-published
+    # coverage trips the per-horizon exact-binomial page predicate
+    # are listed as alerts (the guard pages on the same predicate,
+    # band_calibration.alert_cells).
     try:
         _scripts = os.path.dirname(os.path.abspath(__file__))
         if _scripts not in sys.path:
@@ -1457,7 +1468,7 @@ def main():
               "Per-cell fit of the calibration layer (trailing "
               f"{_band_cal.WINDOW} clean matured rows per cell; "
               "centre correction b = median realised - expected, "
-              "width factor k = 80th percentile of |residual - b| "
+              "width factor k = 85th percentile of |residual - b| "
               "/ half, shrunk toward the horizon pool). A cell "
               "ships uncalibrated until it or its pool reaches "
               f"n >= {_band_cal.MIN_N}.", ""]
@@ -1465,9 +1476,15 @@ def main():
         B += [""]
         _alerts = _band_cal.alert_cells(_cal)
         if _alerts:
-            B += ["**Calibration alerts** — cells at n >= "
-                  f"{_band_cal.PUBLIC_N} with as-published coverage "
-                  "outside the 0.75-0.85 launch-gate tolerance:", ""]
+            B += ["**Calibration alerts** — cells holding one full "
+                  "window of independent blocks (n_eff >= "
+                  f"{_band_cal.PUBLIC_N['day']} day / "
+                  f"{_band_cal.PUBLIC_N['week']} week / "
+                  f"{_band_cal.PUBLIC_N['month']} month) whose "
+                  "as-published coverage pages under the "
+                  "per-horizon predicate (day outside 0.75-0.85, "
+                  "week at coverage <= 2/6, month at 0/2; no "
+                  "high-side page for week/month):", ""]
             for _e in _alerts:
                 B.append(f"- {_e['ticker']} {_e['horizon']}: "
                          f"n={_e['n']}, coverage "

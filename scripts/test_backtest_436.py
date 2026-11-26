@@ -2449,6 +2449,103 @@ def test_realised_index_window():
               len(realised3.get("index_sessions") or []) == 21)
 
 
+
+def test_scorer_689_range_guards():
+    """#689: scorer hardening follow-ups from the #676 review —
+    fnum() on the range fields (a NaN cannot poison the Winkler
+    score silently or crash the capture), an explicit gap entry
+    for every skipped tilt horizon, and a hi < lo guard."""
+    print("== scorer #689 range guards ==")
+    sc = load_module(os.path.join(HERE, "backtest_score.py"),
+                     "backtest_score_689")
+    tmp = tempfile.mkdtemp(prefix="bt436-score-689-")
+    try:
+        cap, ens, base, after = _fixture_capture(tmp)
+        ens_path = os.path.join(cap, "digest/ensemble.json")
+        e = json.load(open(ens_path, encoding="utf-8"))
+        # 1) A NaN range read (the JSON string float("NaN") parses
+        # from) on the week horizon, tilt present.
+        e["horizons"]["week"]["range_low_pct"] = "NaN"
+        # 2) An inverted month range (high < low).
+        m = e["horizons"]["month"]
+        m["range_low_pct"], m["range_high_pct"] = (
+            m["range_high_pct"], m["range_low_pct"])
+        check("689 fixture month range strictly inverted",
+              m["range_high_pct"] < m["range_low_pct"])
+        # 3) A day horizon with no tilt at all.
+        e["horizons"]["day"].pop("tilt_centre_pct", None)
+        json.dump(e, open(ens_path, "w"), indent=1)
+        crashed = None
+        try:
+            doc, md = sc.score_all(os.path.join(tmp, "backtest"))
+        except Exception as ex:  # noqa: BLE001 - any raise is the bug
+            crashed = ex
+            doc = None
+        check("689 score_all does not crash on bad ranges",
+              crashed is None,
+              "%s: %s" % (type(crashed).__name__, crashed))
+        if doc is None:
+            return
+        g = doc["gaps"]
+        joined = "\n".join(g)
+        check("689 NaN week band recorded for tilt-technicals",
+              any("tilt-technicals week" in x and "non-finite" in x
+                  and "#689" in x for x in g), joined)
+        check("689 inverted month range recorded for ensemble",
+              any("2-family-ensemble month" in x and "inverted" in x
+                  and "#689" in x for x in g), joined)
+        check("689 inverted month range recorded for tilt",
+              any("tilt-technicals month" in x and "inverted" in x
+                  and "#689" in x for x in g), joined)
+        check("689 missing day tilt recorded explicitly",
+              any("tilt-technicals day" in x
+                  and "tilt_centre_pct" in x and "#689" in x
+                  for x in g), joined)
+        check("689 no duplicate generic gap for explained skips",
+              not any("has no day horizon" in x
+                      or "has no month horizon" in x for x in g),
+              joined)
+        # Rows: 21 minus the 4 skips (ensemble month, tilt day,
+        # tilt week, tilt month). The NaN week band only strips the
+        # ensemble week row's range — the row itself still scores.
+        check("689 17 rows scored (21 - 4 guarded skips)",
+              doc["counts"]["forecasts"] == 17,
+              "got %d" % doc["counts"]["forecasts"])
+        check("689 all scored rows matured",
+              doc["counts"]["matured"] == 17, str(doc["counts"]))
+        det = {(r["entrant"], r["horizon"]): r
+               for r in doc["forecasts_detail"]}
+        ew = det[("2-family-ensemble", "week")]
+        check("689 NaN week band read became None, not NaN",
+              ew["range_low_pct"] is None
+              and ew["status"] == "matured",
+              str((ew["range_low_pct"], ew["range_high_pct"],
+                   ew["status"])))
+        check("689 ensemble month row absent (inverted range)",
+              ("2-family-ensemble", "month") not in det)
+        check("689 tilt rows absent for all 3 guarded horizons",
+              all(("tilt-technicals", h) not in det
+                  for h in ("day", "week", "month")))
+        # The whole document must be strict-JSON serialisable: no
+        # NaN leaked into any scored value.
+        try:
+            json.dumps(doc, allow_nan=False)
+            strict = True
+        except ValueError:
+            strict = False
+        check("689 document is strict-JSON serialisable (no NaN)",
+              strict)
+        # Kronos row with high < low: skipped with an explicit gap.
+        sc.build_entrants(e, [(base, base * 0.99, base * 1.01)],
+                          "2025-07-01")
+        check("689 inverted Kronos row skipped with gap",
+              any(ent == "kronos-alone" and "inverted" in reason
+                  for ent, h, reason in sc.build_entrants.range_gaps),
+              str(getattr(sc.build_entrants, "range_gaps", None)))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def run_backtest_checks(verbose=True):
     """Entry point for harness_issue109.py --backtest. Returns
     (passed, failed, failures)."""
@@ -2465,6 +2562,7 @@ def run_backtest_checks(verbose=True):
     test_runner_python_override()
     test_scorer()
     test_scorer_v1_capture_missing_entrants()
+    test_scorer_689_range_guards()
     return CHECKS["pass"], CHECKS["fail"], list(FAILURES)
 
 

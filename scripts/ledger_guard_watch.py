@@ -40,6 +40,26 @@ lands is a real outage, not a long sweep. The latency cap is
 derived from the two job timeouts: sweep 350 min + guard 30 min
 + 40 min scheduling/push slack = 420 min.
 
+Issue #593 follow-up (INS-DEV-004): the same run also pages on
+band-calibration coverage. band_calibration.alert_cells() lists the
+(ticker, horizon) cells past the per-horizon gate (n_eff >=
+PUBLIC_N[horizon]: 30 day / 6 week / 2 month) whose AS-PUBLISHED
+coverage trips the per-horizon exact-binomial page predicate: day
+outside the 0.75-0.85 launch-gate tolerance, week low at <= 2/6,
+month at 0/2 (no high-side page for week/month); until
+now that list only landed in ledger/benchmark.md, where nobody
+reads it. The watch now fits the calibration from the committed
+ledger (--ledger, default ledger/ledger.json) and files / updates a
+dedicated "Calibration coverage alert" `ledger-failure` issue while
+any cell is outside tolerance, then closes it with a recovery
+comment once none is. It is independent of the heartbeat check: a
+dead guard and a drifting cell are separate pages. A ledger that
+cannot be read or fitted is "unknown": nothing is filed AND nothing
+is closed (an unreadable ledger is not evidence of recovery).
+--calibration-signal-out is the dry-run payload file for this
+check; with --signal-out but no --calibration-signal-out the
+calibration check is skipped (old callers keep their behaviour).
+
 Exit codes: 0 when the check ran (signal filed, or none needed);
 1 when a needed signal could not be filed (no token / API failure)
 so the run goes red instead of silently swallowing the page.
@@ -66,6 +86,8 @@ MAX_LATENCY_MINUTES_DEFAULT = 420
 GUARD_WORKFLOW = "ledger-guard.yml"
 GUARD_TITLE_PREFIX = "⚠️ Ledger guard dead"
 HEARTBEAT_DEFAULT = "ledger/guard-heartbeat.json"
+LEDGER_DEFAULT = "ledger/ledger.json"
+CAL_TITLE_PREFIX = "⚠️ Calibration coverage alert"
 
 
 def log(msg):
@@ -296,6 +318,167 @@ def clear_dead_guard(token, now, signal_out=None):
         return False
 
 
+# ---------------------------------------------------------------
+# Band-calibration coverage alerts (issue #593 follow-up)
+# ---------------------------------------------------------------
+
+def calibration_alerts(ledger_path):
+    """Returns (state, alerts, error). state is "alert" (>= 1 cell
+    at effective n >= PUBLIC_N with as-published coverage outside
+    the tolerance), "clear" (the fit ran and no cell is outside),
+    or "unknown" (ledger missing / unreadable / not fittable).
+    band_calibration.load_calibration swallows errors into an empty
+    fit, which would read as "clear" — so the ledger is read and
+    fitted here, and any failure is "unknown", never "clear"."""
+    try:
+        import band_calibration
+        with open(ledger_path, encoding="utf-8") as f:
+            doc = json.load(f)
+        rows = doc.get("forecasts_detail")
+        if not isinstance(rows, list):
+            return "unknown", [], "ledger has no forecasts_detail list"
+        cal = band_calibration.compute_calibration(rows)
+        alerts = band_calibration.alert_cells(cal)
+    except FileNotFoundError:
+        return "unknown", [], f"ledger missing: {ledger_path}"
+    except Exception as e:  # noqa: BLE001 — never crash the watch
+        return "unknown", [], f"{type(e).__name__}: {e}"
+    return ("alert" if alerts else "clear"), alerts, None
+
+
+def _cell_key(e):
+    return f"{e['ticker']}/{e['horizon']}"
+
+
+def _cells_line(alerts):
+    return "Cells: " + ", ".join(_cell_key(e) for e in alerts)
+
+
+def calibration_title_body(alerts, now):
+    lines = []
+    for e in alerts:
+        n_eff = e.get("n_eff", e.get("n"))
+        lines.append(f"- {e['ticker']} {e['horizon']}: n={e['n']}, "
+                     f"n_eff={n_eff}, as-published coverage "
+                     f"{e['coverage_before']:.3f}")
+    body = (f"⚠️ {len(alerts)} calibration cell(s) past the per-horizon "
+            f"gate (n_eff >= 30 day / 6 week / 2 month) trip the "
+            f"per-horizon exact-binomial page predicate on as-published "
+            f"coverage: day outside the 0.75-0.85 launch-gate "
+            f"tolerance, week low at <= 2/6, month at 0/2 (no "
+            f"high-side page for week/month).\n\n"
+            + "\n".join(lines) + "\n\n"
+            f"{_cells_line(alerts)}\n"
+            f"**Checked:** {now.strftime('%Y-%m-%d %H:%M UTC')}\n\n"
+            "Raised by scripts/ledger_guard_watch.py from "
+            "band_calibration.alert_cells() (issue #593 follow-up); "
+            "the same list is in ledger/benchmark.md. This issue is "
+            "closed automatically with a recovery comment once no "
+            "cell is outside tolerance.\n\n"
+            "WSJF: 6.0")
+    return CAL_TITLE_PREFIX, body
+
+
+def signal_calibration(token, alerts, now, signal_out=None):
+    """File or update the calibration alert issue. A recurrence
+    comment is added only when the alerting cell set changed, so a
+    steady alert does not comment every watch run. Returns True on
+    success."""
+    title, body = calibration_title_body(alerts, now)
+    cells = [_cell_key(e) for e in alerts]
+    if signal_out:
+        payload = {"action": "create", "title": title, "body": body,
+                   "labels": [SIGNAL_LABEL], "issue_number": None,
+                   "cells": cells,
+                   "reason": f"{len(cells)} calibration cell(s) past "
+                             f"per-horizon gate (n_eff >= 30 day / "
+                             f"6 week / 2 month), exact-binomial "
+                             f"predicate"}
+        with open(signal_out, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        log(f"dry run: calibration signal payload written to "
+            f"{signal_out}")
+        return True
+    if token is None:
+        log("no GH_TOKEN — cannot file the calibration alert")
+        return False
+    try:
+        ensure_signal_label(token)
+        existing = find_open_signal_issues(token, CAL_TITLE_PREFIX)
+        if existing:
+            number = existing[0]["number"]
+            if _cells_line(alerts) in (existing[0].get("body") or ""):
+                log(f"calibration alert: issue #{number} already "
+                    f"lists the same cells — no new comment")
+                return True
+            if _comment_issue(
+                    token, number,
+                    f"⚠️ Alerting cells changed "
+                    f"({now.strftime('%Y-%m-%d %H:%M UTC')}).\n\n"
+                    + body):
+                log(f"calibration alert: change noted on open "
+                    f"issue #{number}")
+                return True
+            return False
+        number = _create_issue(token, title, body)
+        if number:
+            log(f"calibration alert: issue #{number} filed")
+            return True
+        return False
+    except Exception as e:  # noqa: BLE001
+        log(f"calibration alert: filing failed ({e})")
+        return False
+
+
+def clear_calibration(token, now, signal_out=None):
+    """Close any open calibration alert now no cell is outside
+    tolerance. Returns True when nothing is left open."""
+    if signal_out:
+        payload = {"action": "none", "title": None, "body": None,
+                   "labels": [SIGNAL_LABEL], "issue_number": None,
+                   "cells": [],
+                   "reason": "no calibration cell outside 0.75-0.85"}
+        with open(signal_out, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        log(f"dry run: calibration clear, wrote {signal_out}")
+        return True
+    if token is None:
+        log("calibration clear, but no GH_TOKEN — cannot verify "
+            "whether an alert issue is still open")
+        return True
+    try:
+        ok = True
+        for it in find_open_signal_issues(token, CAL_TITLE_PREFIX):
+            if _close_issue(
+                    token, it["number"],
+                    f"✅ No calibration cell is outside the 0.75-0.85 "
+                    f"tolerance "
+                    f"({now.strftime('%Y-%m-%d %H:%M UTC')}) — "
+                    f"closing this alert."):
+                log(f"calibration alert: closed issue #{it['number']}")
+            else:
+                ok = False
+        return ok
+    except Exception as e:  # noqa: BLE001
+        log(f"calibration alert: clearing failed ({e})")
+        return False
+
+
+def run_calibration_check(ledger_path, now, token, signal_out=None):
+    """One calibration pass. Returns True when the check ran and any
+    needed signal went out; "unknown" never files or closes."""
+    state, alerts, err = calibration_alerts(ledger_path)
+    if state == "unknown":
+        log(f"calibration check UNKNOWN (nothing filed or closed): "
+            f"{err}")
+        return True
+    if state == "alert":
+        log(f"CALIBRATION ALERT: {_cells_line(alerts)}")
+        return signal_calibration(token, alerts, now, signal_out)
+    log("calibration check: no cell outside 0.75-0.85")
+    return clear_calibration(token, now, signal_out)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--heartbeat", default=HEARTBEAT_DEFAULT,
@@ -320,6 +503,14 @@ def main():
                          "querying the Actions API (tests / manual "
                          "runs): 'yes' = a guard run is queued or "
                          "running, 'no' = none is")
+    ap.add_argument("--ledger", default=LEDGER_DEFAULT,
+                    help="committed ledger.json to fit the band "
+                         "calibration from (default: "
+                         "ledger/ledger.json)")
+    ap.add_argument("--calibration-signal-out", default=None,
+                    help="write the would-be calibration signal "
+                         "payload JSON here instead of calling the "
+                         "GitHub API (dry run)")
     ap.add_argument("--signal-out", default=None,
                     help="write the would-be signal payload JSON here "
                          "instead of calling the GitHub API (dry run)")
@@ -342,18 +533,29 @@ def main():
     if state == "fresh":
         log(why)
         ok = clear_dead_guard(_gh_token(), now, a.signal_out)
-        return 0 if ok else 1
-    if state == "suppressed":
+    elif state == "suppressed":
         # Issue #156: a queued guard has not proven itself alive
         # yet — the heartbeat is still stale — so an open
         # dead-guard issue stays open until a fresh heartbeat
         # arrives; only the false page is suppressed.
         log(f"SUPPRESSED: {why}")
-        return 0
-    log(f"GUARD DEAD: {why}")
-    ok = signal_dead_guard(_gh_token(), why, now, last, status,
-                           a.stale_minutes, a.signal_out)
-    return 0 if ok else 1
+        ok = True
+    else:
+        log(f"GUARD DEAD: {why}")
+        ok = signal_dead_guard(_gh_token(), why, now, last, status,
+                               a.stale_minutes, a.signal_out)
+    # Calibration coverage is independent of guard liveness.
+    # Dry-run callers that only pass --signal-out (no calibration
+    # out) keep their old behaviour: the check is skipped, never
+    # sent to the live API.
+    if a.signal_out and not a.calibration_signal_out:
+        log("calibration check skipped (--signal-out without "
+            "--calibration-signal-out)")
+        cal_ok = True
+    else:
+        cal_ok = run_calibration_check(a.ledger, now, _gh_token(),
+                                       a.calibration_signal_out)
+    return 0 if (ok and cal_ok) else 1
 
 
 if __name__ == "__main__":

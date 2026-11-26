@@ -1294,7 +1294,11 @@ def run_schedule_check(now_override=None):
 # no-ops without an Issues-capable token).
 GUARD_CHECKOUT = ROOT / "main-ledger"
 GUARD_SCRIPTS = ("scripts/ledger_publish.py", "scripts/ledger.py")
-WATCH_SCRIPTS = ("scripts/ledger_guard_watch.py",) + GUARD_SCRIPTS
+# INS-DEV-004: the watch imports band_calibration for the calibration
+# coverage alert, so it joins the D2 byte-identity set.
+WATCH_SCRIPTS = (("scripts/ledger_guard_watch.py",
+                  "scripts/band_calibration.py") + GUARD_SCRIPTS)
+GUARD_LEDGER_REL = "ledger/ledger.json"
 GUARD_HEARTBEAT_REL = "ledger/guard-heartbeat.json"
 # Issue #443: the publisher subprocess gets the same 1800s bound
 # it effectively had, but now under sh_group (the whole process
@@ -2563,6 +2567,59 @@ def guard_pending_from_bus(queue_ids, claim_ids, done_ids, now=None):
     return False
 
 
+def _mirror_calibration_alert(job, cal_out):
+    """INS-DEV-004: mirror the watch's calibration decision onto the
+    bus as queue/calibration-alert.json (same reason as the guard
+    alert: the worker PAT cannot file issues, Moos's side does).
+    A missing signal file means the check was "unknown" (ledger
+    unreadable): nothing is written and an existing alert stays.
+    An unreadable file or a failed push returns False so the watch
+    job is not marked done and the next watch retries. Runs before
+    the guard decision so a suppressed guard page never hides a
+    calibration alert."""
+    try:
+        payload = json.loads(Path(cal_out).read_text())
+    except FileNotFoundError:
+        return True
+    except Exception as e:
+        print(f"run_ledger_watchdog: calibration signal unreadable "
+              f"for {job['id']}: {e}; refusing done",
+              file=sys.stderr, flush=True)
+        return False
+    if payload and payload.get("action") == "create":
+        if not _write_bus_json(
+                "calibration-alert.json",
+                {"state": "alert", "at": now(),
+                 "worker": os.uname().nodename, "job_id": job["id"],
+                 "signal": payload},
+                f"calibration alert {job['id']}"):
+            print(f"run_ledger_watchdog: calibration-alert push "
+                  f"failed for {job['id']}; refusing done",
+                  file=sys.stderr, flush=True)
+            return False
+        return True
+    alert = BUS / "queue" / "calibration-alert.json"
+    if alert.exists():
+        try:
+            cur = json.loads(alert.read_text())
+        except Exception:
+            cur = {}
+        if cur.get("state") == "alert":
+            if not _write_bus_json(
+                    "calibration-alert.json",
+                    {"state": "recovered", "at": now(),
+                     "worker": os.uname().nodename,
+                     "job_id": job["id"],
+                     "reason": (payload or {}).get(
+                         "reason", "no cell outside tolerance")},
+                    f"calibration recovered {job['id']}"):
+                print(f"run_ledger_watchdog: calibration-recovered "
+                      f"push failed for {job['id']}; refusing done",
+                      file=sys.stderr, flush=True)
+                return False
+    return True
+
+
 def run_ledger_watchdog(job):
     """Execute one `ledger-watchdog` job: run the watchdog script
     against the main checkout's heartbeat file, with the pending
@@ -2604,6 +2661,8 @@ def run_ledger_watchdog(job):
     # masquerade as this run's decision — remove it first, so a
     # payload present afterwards was written by this run.
     out.unlink(missing_ok=True)
+    cal_out = OUT / f"{job['id']}-calibration-signal.json"
+    cal_out.unlink(missing_ok=True)
     env = _guard_env()
     _assert_no_denied(env)
     r = subprocess.run(
@@ -2611,6 +2670,8 @@ def run_ledger_watchdog(job):
          str(checkout / "scripts" / "ledger_guard_watch.py"),
          "--heartbeat", str(checkout / GUARD_HEARTBEAT_REL),
          "--guard-pending", "yes" if pending else "no",
+         "--ledger", str(checkout / GUARD_LEDGER_REL),
+         "--calibration-signal-out", str(cal_out),
          "--signal-out", str(out)],
         cwd=checkout, env=env, capture_output=True, text=True,
         timeout=600)
@@ -2622,6 +2683,8 @@ def run_ledger_watchdog(job):
         print(f"run_ledger_watchdog: watch script exited "
               f"{r.returncode} for {job['id']}; refusing done",
               file=sys.stderr, flush=True)
+        return False
+    if not _mirror_calibration_alert(job, cal_out):
         return False
     try:
         payload = json.loads(out.read_text())
