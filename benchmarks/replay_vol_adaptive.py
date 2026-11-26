@@ -263,7 +263,10 @@ def main(argv=None):
     a = ap.parse_args(argv)
     allc = A.find_captures(a.captures, None)
     if a.mode == "fit":
-        caps = [c for c in allc if (A.cell_number(c) or 0) <= a.max_cell]
+        # An unnumbered capture cannot be placed on the cell 1-47 side
+        # of the fit boundary, so it never enters a fit.
+        caps = [c for c in allc if A.cell_number(c) is not None
+                and A.cell_number(c) <= a.max_cell]
         rows, gaps = build_rows(caps, allc)
         fz = fit(rows)
         print(render_fit(fz))
@@ -277,7 +280,10 @@ def main(argv=None):
         return 2
     with open(a.frozen, encoding="utf-8") as fh:
         fz = json.load(fh)["frozen"]
-    caps = A.find_captures(a.captures, a.min_cell)
+    # Unnumbered captures cannot be placed relative to the clean-cell
+    # boundary, so they never enter a scoring.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell)
+            if A.cell_number(c) is not None]
     rows, gaps = build_rows(caps, allc)
     res = R.evaluate(score_rows(rows, fz), a.reps, a.seed)
     print(render_score(res, fz, a.descriptive))
