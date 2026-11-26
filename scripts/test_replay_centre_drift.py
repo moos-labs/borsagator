@@ -3,6 +3,7 @@
 Standalone, stdlib only: python3 scripts/test_replay_centre_drift.py
 """
 import importlib.util
+import json
 import math
 import os
 import sys
@@ -130,10 +131,54 @@ def test_refuses_seen_cells():
         ["--captures", "/nonexistent", "--min-cell", "48"]) == 2)
 
 
+def test_descriptive_json_and_unnumbered():
+    import contextlib
+    import io
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        cap = os.path.join(d, "2025-11-14", "TST")
+        os.makedirs(os.path.join(cap, "digest"))
+        for fn in ("manifest.json", "realised.json"):
+            open(os.path.join(cap, fn), "w").write("{}")
+        open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
+        out = os.path.join(d, "o.json")
+        seen = []
+
+        def fake_rows(caps, allc):
+            seen.append(list(caps))
+            return [row(1.0, t="TST", a="2025-11-14", h=h)
+                    for c in caps for h in D.HORIZONS], []
+        real_build = D.build_rows
+        D.build_rows = fake_rows
+        buf = io.StringIO()
+        try:
+            check("unnumbered capture is findable",
+                  D.A.find_captures([d], 48) != [])
+            with contextlib.redirect_stdout(buf):
+                rc = D.main(["--captures", d, "--min-cell", "48",
+                             "--descriptive", "--reps", "50",
+                             "--json", out])
+            data = json.load(open(out))
+            check("descriptive run exits 0", rc == 0)
+            check("unnumbered capture dropped from scoring",
+                  seen[-1] == [] and all(
+                      data["results"][h]["n"] == 0 for h in D.HORIZONS))
+            check("descriptive json carries no verdict",
+                  "verdict" not in data and data["descriptive"] is True)
+            with contextlib.redirect_stdout(buf):
+                D.main(["--captures", d, "--reps", "50", "--json", out])
+            data = json.load(open(out))
+            check("clean json carries a verdict",
+                  "verdict" in data and data["descriptive"] is False)
+        finally:
+            D.build_rows = real_build
+
+
 def main():
     for fn in (test_constants, test_mean_ret, test_centre, test_score_rows,
                test_verdict, test_coverage_ci_overlap,
-               test_refuses_seen_cells):
+               test_refuses_seen_cells,
+               test_descriptive_json_and_unnumbered):
         fn()
     print("test_replay_centre_drift: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
