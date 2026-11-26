@@ -1,0 +1,61 @@
+{
+ "ticker": "SWDY.CA",
+ "date": "2025-11-14",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 85.1649
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "SWDY.CA",
+     "as_of": "2025-11-14",
+     "date": "2025-11-13",
+     "open": 81.07,
+     "high": 81.8,
+     "low": 79.05,
+     "close": 79.8,
+     "rsi_14": 59.9037,
+     "macd": 1.2112,
+     "macd_signal": 0.7958,
+     "macd_hist": 0.4154,
+     "ema_20": 78.0224,
+     "ema_50": 76.8496,
+     "ema_200": 75.7788,
+     "adx_14": 44.0161,
+     "bb_upper": 81.8876,
+     "bb_mid": 77.5965,
+     "bb_lower": 73.3054,
+     "bb_pctb": 0.7568,
+     "atr_14": 1.9889,
+     "stoch_k": 65.7055,
+     "stoch_d": 69.217,
+     "rows_fetched": 5096,
+     "rows_used": 1680,
+     "first_date_used": "2019-01-01",
+     "last_date": "2025-11-13",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 79.80000305175781
+    }
+   }
+  }
+ ]
+}
