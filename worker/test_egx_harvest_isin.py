@@ -92,13 +92,14 @@ class TestIsinCheckDigit(unittest.TestCase):
     # Issue #768 (BEAST MODE item 1): the harvester must accept the
     # living EGX33 freeze, not just the original 10 codes. The freeze
     # is sharia/benchmark/sources/egx33.json; the ISINs come from
-    # evaluation/top30_manifest.json (stage-2). Six freeze codes
-    # have no manifest ISIN yet (CLHO, FAITA, GOUR, ICFC, LCSW,
-    # RACC) and are the documented gap — everything else must be
-    # present, with the manifest's exact ISIN.
+    # evaluation/top30_manifest.json (stage-2). INS-PARALLEL-001 T1
+    # (2026-11-26) closed the last gap: the 6 freeze codes with no
+    # manifest ISIN (CLHO, FAITA, GOUR, ICFC, LCSW, RACC) now carry
+    # verified ISINs in both the manifest and this table, so
+    # _NO_ISIN_YET is empty — every freeze code must be present,
+    # with the manifest's exact ISIN.
     _REPO = os.path.dirname(_HERE)
-    _NO_ISIN_YET = frozenset(
-        ["CLHO", "FAITA", "GOUR", "ICFC", "LCSW", "RACC"])
+    _NO_ISIN_YET = frozenset()
 
     def _freeze_codes(self):
         with open(os.path.join(
@@ -125,7 +126,7 @@ class TestIsinCheckDigit(unittest.TestCase):
                    if c not in EGX_COMPANIES
                    and c not in self._NO_ISIN_YET]
         self.assertEqual(missing, [], f"freeze codes not in table: {missing}")
-        self.assertEqual(len(EGX_COMPANIES), 35)
+        self.assertEqual(len(EGX_COMPANIES), 41)
 
     def test_table_isins_match_manifest(self):
         """Table ISINs equal the manifest's — the manifest is the
@@ -140,10 +141,14 @@ class TestIsinCheckDigit(unittest.TestCase):
     def test_none_arabic_name_entries_validate(self):
         """Entries without a verified Arabic name (None) are
         allowed — the ISIN-keyed search needs no name — and still
-        validate cleanly."""
+        validate cleanly. After INS-PARALLEL-001 T2 (2026-11-26) the
+        only unnamed entries are the 6 T1 codes, whose Arabic names
+        were not delivered (never guessed)."""
         unnamed = [c for c, (ar, _isin) in EGX_COMPANIES.items()
                    if ar is None]
-        self.assertEqual(len(unnamed), 25)
+        self.assertEqual(sorted(unnamed),
+                         ["CLHO", "FAITA", "GOUR", "ICFC", "LCSW",
+                          "RACC"])
         self.assertEqual(validate_egx_companies_isins(), [])
 
     def test_malformed_isins_fail(self):

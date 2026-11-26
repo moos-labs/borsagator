@@ -5,13 +5,9 @@
       "id": "B-01",
       "impact": "ISIN-keyed collection can now start for these issuers; Arabic-name matching cannot rely on these rows until verified.",
       "issuers": [
-        "EFID",
-        "PHDC",
-        "RMDA",
-        "OCDI",
         "CIRA"
       ],
-      "missing": "Source-verified Arabic legal name only — ISIN + English name verified for all five issuers in stage 2 (2026-11-19); Arabic names still unverified.",
+      "missing": "Source-verified Arabic legal name only — CIRA remains; EFID, PHDC, RMDA, OCDI resolved 2026-11-26 (INS-PARALLEL-001 T2, EGX disclosure headers as republished by Mubasher / FoudaLens / numbstr).",
       "scope": "mapping verification — ISIN + names",
       "unblocks": "Verify each Arabic name against an EGX Arabic disclosure header or the EGX company page, then set name_ar + name_ar_source in this file.",
       "stage2": "ISIN + English name resolved 2026-11-19 (EFID EGS305I1C011, PHDC EGS655L1C012, RMDA EGS381B1C015, OCDI EGS65851C015, CIRA EGS65541C012). Arabic names remain the only open part."
@@ -22,40 +18,22 @@
       "issuers": [
         "FAITA"
       ],
-      "missing": "ISIN for FAITA only — the USD listing of the FAIT issuer. Its ISIN differs from FAIT (EGS60321C014) and is unverified; 13 of the 14 stage-1 listings resolved in stage 2.",
+      "missing": "RESOLVED 2026-11-26 (see resolution). No longer blocking.",
       "scope": "mapping verification — ISIN only",
       "unblocks": "One EGX disclosure header for the FAITA (USD) listing, or the issuer/FRA listing record for the USD shares.",
-      "stage2": "Resolved 2026-11-19: EFIH EGS743O1C013, EGAL EGS3E181C010, MCQE EGS3C391C017, MASR EGS65571C019, OLFI EGS30AL1C012, ARCC EGS3C0O1C016, IFAP EGS07061C012, MTIE EGS75011C014, ATQA EGS3D0C1C018, SAUD EGS60101C010, ACGC EGS32221C011, MPCO EGS02091C014, EGAS EGS39011C019."
+      "stage2": "Resolved 2026-11-19: EFIH EGS743O1C013, EGAL EGS3E181C010, MCQE EGS3C391C017, MASR EGS65571C019, OLFI EGS30AL1C012, ARCC EGS3C0O1C016, IFAP EGS07061C012, MTIE EGS75011C014, ATQA EGS3D0C1C018, SAUD EGS60101C010, ACGC EGS32221C011, MPCO EGS02091C014, EGAS EGS39011C019.",
+      "resolved": true,
+      "resolved_on": "2026-11-26",
+      "resolution": "FAITA ISIN EGS60322C012 verified 2026-11-26 (INS-PARALLEL-001 T1): EGX disclosure header republished by Mubasher (english.mubasher.info/news/4627244) lists EGS60321C014 = FAIT.CA (EGP) and EGS60322C012 = FAITA.CA (USD); Arab Finance and Yahoo agree. The USD listing has its own ISIN, distinct from FAIT."
     },
     {
       "id": "B-03",
       "impact": "Arabic-name matching in enumeration/attribution cannot rely on these rows until verified; English name + code + ISIN (where present) are the interim keys.",
       "issuers": [
-        "EFIH",
-        "ADIB",
-        "ORAS",
-        "FAIT",
         "FAITA",
-        "SKPC",
-        "EGAL",
-        "ISPH",
-        "JUFO",
-        "MCQE",
-        "ORHD",
-        "MASR",
-        "ORWE",
-        "OLFI",
-        "ARCC",
-        "IFAP",
-        "MTIE",
-        "ATQA",
-        "SAUD",
-        "ACGC",
-        "MPCO",
-        "EGAS",
-        "ETRS"
+        "OLFI"
       ],
-      "missing": "Source-verified Arabic legal name (23 listings). Only TMGH, ETEL, AMOC (and controls POUL, COMI) carry a repo-verified Arabic name.",
+      "missing": "Source-verified Arabic legal name (2 listings: FAITA, OLFI). The other 21 resolved 2026-11-26 (INS-PARALLEL-001 T2). Only TMGH, ETEL, AMOC (and controls POUL, COMI) carried a repo-verified Arabic name before this round.",
       "scope": "mapping verification — Arabic name",
       "unblocks": "Verify against EGX Arabic disclosure headers or the EGX company page per issuer.",
       "stage2": "Still open after the 2026-11-19 run: no EGX Arabic disclosure header located for any of the 23 listings (Arabic Mubasher/Okaz searches returned no header pages). Decypha profile pages show Arabic names for several issuers, but that is aggregator data and was NOT recorded as verified. Next: EGX Arabic disclosure headers, or the issuers’ own official Arabic filings."
@@ -224,15 +202,15 @@
           "code": "EFIH",
           "currency": "EGP",
           "isin": "EGS743O1C013",
-          "name_ar": null,
+          "name_ar": "اي فاينانس للاستثمارات المالية والرقمية",
           "name_en": "E-Finance For Digital and Financial Investements SAE",
           "ticker": "EFIH.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4544706/E-Finance-For-Digital-and-Financial-Investements-SAE-EFIH-CA-Release-Regarding-a-Disclosure-Form/ (Release Regarding a Disclosure Form, Art. 29 EGX Listing Rules) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by numbstr.com, https://numbstr.com/disclosures/97d1ae45-5b0b-45c4-b776-fea99e8f2c4d — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4544706/E-Finance-For-Digital-and-Financial-Investements-SAE-EFIH-CA-Release-Regarding-a-Disclosure-Form/ (Release Regarding a Disclosure Form, Art. 29 EGX Listing Rules) — checked 2026-11-19",
-            "status": "partial",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -245,16 +223,16 @@
           "code": "ADIB",
           "currency": "EGP",
           "isin": "EGS60111C019",
-          "name_ar": null,
+          "name_ar": "مصرف أبو ظبى الاسلامى - مصر",
           "name_en": "Abu Dhabi Islamic Bank- Egypt",
           "ticker": "ADIB.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 40, Abu Dhabi Islamic Bank) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ADIB) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "IPF lists the name as \"Abu Dhabi Islamic Bank\" (no \"- Egypt\" suffix).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -267,16 +245,16 @@
           "code": "EFID",
           "currency": "EGP",
           "isin": "EGS305I1C011",
-          "name_ar": null,
+          "name_ar": "ايديتا للصناعات الغذائية",
           "name_en": "Edita Food Industries S.A.E",
           "ticker": "EFID.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Okaz (okazinvest.com), https://www.okazinvest.com/okaz/newDetails.aspx?id=1045552&nb=2 (FY2024 business results release) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4585569) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Okaz (okazinvest.com), https://www.okazinvest.com/okaz/newDetails.aspx?id=1045552&nb=2 (FY2024 business results release) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Corroborated by IPF (row 128, Edita Food Industries, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -289,15 +267,15 @@
           "code": "ORAS",
           "currency": "EGP",
           "isin": "EGS95001C011",
-          "name_ar": null,
+          "name_ar": "اوراسكوم كونستراكشون بي ال سي",
           "name_en": "Orascom Construction PLC",
           "ticker": "ORAS.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 200, Orascom Construction PLC) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ORAS) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -310,31 +288,31 @@
           "code": "FAIT",
           "currency": "EGP",
           "isin": "EGS60321C014",
-          "name_ar": null,
+          "name_ar": "بنك فيصل الاسلامي المصري",
           "name_en": "Faisal Islamic Bank of Egypt (S.A.E.)",
           "ticker": "FAIT.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 45, Faisal Islamic Bank) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/FAIT) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         },
         {
           "code": "FAITA",
           "currency": "USD",
-          "isin": null,
+          "isin": "EGS60322C012",
           "name_ar": null,
           "name_en": "Faisal Islamic Bank of Egypt - In US Dollars",
           "ticker": "FAITA.CA",
           "verification": {
-            "isin_source": null,
+            "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4627244 — header lists EGS60321C014 = FAIT.CA (EGP) and EGS60322C012 = FAITA.CA (USD)) — INS-PARALLEL-001 T1, 2026-11-26; Arab Finance and Yahoo agree",
             "name_ar_source": null,
             "name_en_source": "FoudaLens EGX Shariah constituents list, crawled 2026-11-19",
             "status": "partial",
-            "note": "ISIN not found in this run (2026-11-19): no EGX disclosure header located; not a separate member of the IPF fund-members list (same issuer as FAIT); Finnhub/Musaffa pages list the USD ticker but no ISIN. Do NOT default to the FAIT ISIN — the USD listing has a different ISIN.",
-            "verified_on": "2026-11-19"
+            "note": "ISIN resolved 2026-11-26 (INS-PARALLEL-001 T1): the USD listing has its own ISIN, distinct from FAIT (EGS60321C014), as the header lists both lines.",
+            "verified_on": "2026-11-26"
           }
         }
       ],
@@ -348,16 +326,16 @@
           "code": "PHDC",
           "currency": "EGP",
           "isin": "EGS655L1C012",
-          "name_ar": null,
+          "name_ar": "بالم هيلز للتعمير",
           "name_en": "Palm Hills Development Company",
           "ticker": "PHDC.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4525194/Palm-Hills-Development-Company-PHDC-CA-Board-of-Directors-Decisions/ (BoD decisions, 16 Nov 2025) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/PHDC) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4525194/Palm-Hills-Development-Company-PHDC-CA-Board-of-Directors-Decisions/ (BoD decisions, 16 Nov 2025) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Corroborated by IPF (row 150, Palm Hills Developments, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -370,15 +348,15 @@
           "code": "SKPC",
           "currency": "EGP",
           "isin": "EGS380S1C017",
-          "name_ar": null,
+          "name_ar": "سيدى كرير للبتروكيماويات - سيدبك",
           "name_en": "Sidi Kerir Petrochemicals Co.",
           "ticker": "SKPC.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 8, Sidi Kerir Petrochemicals Company) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/SKPC) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -391,16 +369,16 @@
           "code": "EGAL",
           "currency": "EGP",
           "isin": "EGS3E181C010",
-          "name_ar": null,
+          "name_ar": "مصر للالومنيوم",
           "name_en": "Egypt Aluminum",
           "ticker": "EGAL.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/3403631/Release-from-Egypt-Aluminum-EGAL-CA-Responding-to-EGX-Inquiries/ — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/EGAL) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/3403631/Release-from-Egypt-Aluminum-EGAL-CA-Responding-to-EGX-Inquiries/ — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Stage-1 name \"Egypt Aluminum Company SAE\" (globalbankingandfinance.com) superseded by the EGX header name; IPF lists \"Egypt Aluminum Company\" (row 11, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -413,16 +391,16 @@
           "code": "ISPH",
           "currency": "EGP",
           "isin": "EGS512O1C012",
-          "name_ar": null,
+          "name_ar": "ابن سينا فارما",
           "name_en": "Ibnsina Pharma",
           "ticker": "ISPH.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 44, Ibn Sina Pharma) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ISPH) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "IPF spells the name \"Ibn Sina Pharma\".",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -435,15 +413,15 @@
           "code": "JUFO",
           "currency": "EGP",
           "isin": "EGS30901C010",
-          "name_ar": null,
+          "name_ar": "جهينة للصناعات الغذائية",
           "name_en": "Juhayna Food Industries",
           "ticker": "JUFO.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 123, Juhayna Food Industries) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/JUFO) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -456,16 +434,16 @@
           "code": "MCQE",
           "currency": "EGP",
           "isin": "EGS3C391C017",
-          "name_ar": null,
+          "name_ar": "مصر للاسمنت - قنا",
           "name_en": "Misr Cement (Qena)",
           "ticker": "MCQE.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4264327/Misr-Cement-Qena-MCQE-CA-Corporate-Governance-Report/ (Corporate Governance Report, FY2023) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/MCQE) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4264327/Misr-Cement-Qena-MCQE-CA-Corporate-Governance-Report/ (Corporate Governance Report, FY2023) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Stage-1 name \"Misr Cement Company SAE\" (Finnhub) superseded by the EGX header name; IPF lists \"Egypt Cement - Qena\" (row 91, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -478,16 +456,16 @@
           "code": "ORHD",
           "currency": "EGP",
           "isin": "EGS70321C012",
-          "name_ar": null,
+          "name_ar": "اوراسكوم للتنمية مصر",
           "name_en": "Orascom for Hotels and Development S.A.E.",
           "ticker": "ORHD.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 142, Orascom Development Egypt) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ORHD) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "IPF lists the issuer under its current name \"Orascom Development Egypt\".",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -523,16 +501,16 @@
           "code": "MASR",
           "currency": "EGP",
           "isin": "EGS65571C019",
-          "name_ar": null,
+          "name_ar": "مدينة مصر للاسكان والتعمير",
           "name_en": "Medinet MASR Housing",
           "ticker": "MASR.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4547202/Release-from-Medinet-MASR-Housing-MASR-CA-/ and EGX disclosure header republished by Okaz (okazinvest.com), https://www.okazinvest.com/okaz/newDetails.aspx?id=1034645&nb=2 — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/MASR) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4547202/Release-from-Medinet-MASR-Housing-MASR-CA-/ and EGX disclosure header republished by Okaz (okazinvest.com), https://www.okazinvest.com/okaz/newDetails.aspx?id=1034645&nb=2 — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Stage-1 name \"Madinet Masr for Housing and Development SAE\" (Finnhub GDR page) superseded by the EGX header name \"Medinet MASR Housing\"; IPF lists \"Misr Housing and Development City\" (row 28, same ISIN). Formerly Madinet Nasr (MNHD) — see aliases_note.",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -545,16 +523,16 @@
           "code": "ORWE",
           "currency": "EGP",
           "isin": "EGS33041C012",
-          "name_ar": null,
+          "name_ar": "النساجون الشرقيون للسجاد",
           "name_en": "Oriental Weavers Company for Carpets S.A.E.",
           "ticker": "ORWE.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 130, Oriental Carpet Weavers) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by FoudaLens (foudalens.com/ar/news/296603) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "IPF lists the name as \"Oriental Carpet Weavers\".",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -590,16 +568,16 @@
           "code": "RMDA",
           "currency": "EGP",
           "isin": "EGS381B1C015",
-          "name_ar": null,
+          "name_ar": "العاشر من رمضان للصناعات الدوائية والمستحضرات تشخيصية-راميدا",
           "name_en": "Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda",
           "ticker": "RMDA.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4424672/Tenth-Of-Ramadan-Pharmaceutical-Industries-Diagnostic-Rameda-RMDA-CA-Reports-Year-Ended-31-12-2024-Consolidated-Results/ (FY2024 consolidated results) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by FoudaLens (foudalens.com/ar/news/293343) — INS-PARALLEL-001 T2, 2026-11-26; verbatim header, no ال before تشخيصية",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4424672/Tenth-Of-Ramadan-Pharmaceutical-Industries-Diagnostic-Rameda-RMDA-CA-Reports-Year-Ended-31-12-2024-Consolidated-Results/ (FY2024 consolidated results) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Corroborated by IPF (row 219, 10th of Ramadan Pharmaceuticals and Diagnostic Industries (RAMEDA), same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -612,16 +590,15 @@
           "code": "OCDI",
           "currency": "EGP",
           "isin": "EGS65851C015",
-          "name_ar": null,
+          "name_ar": "السادس من اكتوبر للتنميه والاستثمار (سوديك)",
           "name_en": "Six of October Development and Investment",
           "ticker": "OCDI.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 152, 6th of October Development and Investment (SODIC)) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by numbstr.com, https://numbstr.com/disclosures/fd6afb33-081c-4701-9b55-b4aedad33e63 — INS-PARALLEL-001 T2, 2026-11-26; the (سوديك) is part of the header name",
             "name_en_source": "IPF (row 152); Decypha company profile agrees on name and ISIN — checked 2026-11-19",
-            "status": "partial",
-            "note": "No EGX disclosure header located in this run (Mubasher/Okaz searches returned no OCDI header page); ISIN verified against the official IPF member list only, corroborated by Decypha + TradingView (both aggregators). An EGX-header re-confirmation is still desirable.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -634,16 +611,16 @@
           "code": "ARCC",
           "currency": "EGP",
           "isin": "EGS3C0O1C016",
-          "name_ar": null,
+          "name_ar": "العربية للاسمنت",
           "name_en": "Arabian Cement Company",
           "ticker": "ARCC.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4092584/Arabian-Cement-Company-ARCC-CA-Corporate-Governance-Report/ (Corporate Governance Report, FY2022, 20 Mar 2023) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ARCC/announcements/) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4092584/Arabian-Cement-Company-ARCC-CA-Corporate-Governance-Report/ (Corporate Governance Report, FY2022, 20 Mar 2023) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Corroborated by IPF (row 63, Arabian Cement, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -656,16 +633,16 @@
           "code": "IFAP",
           "currency": "EGP",
           "isin": "EGS07061C012",
-          "name_ar": null,
+          "name_ar": "الدوليه للمحاصيل الزراعيه",
           "name_en": "International Co for Agricultural Corps SAE",
           "ticker": "IFAP.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 22, International Agricultural Crops) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/IFAP) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "Finnhub quote page IFAP.CA, crawled 2026-11-19 (stage 1); ISIN now confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "note": "Aggregator candidate EGS07061C012 (globalbankingandfinance.com) confirmed by IPF. No EGX disclosure header located in this run.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "note": "Aggregator candidate EGS07061C012 (globalbankingandfinance.com) confirmed by IPF.",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -678,16 +655,16 @@
           "code": "MTIE",
           "currency": "EGP",
           "isin": "EGS75011C014",
-          "name_ar": null,
+          "name_ar": "ام.ام جروب للصناعة والتجارة العالمية",
           "name_en": "MM Group Industrial & International Trade (In Kind)",
           "ticker": "MTIE.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4525099/MM-Group-Industrial-International-Trade-In-Kind-MTIE-CA-Board-of-Directors-Decisions/ (BoD decisions, 16 Nov 2025) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4583527) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4525099/MM-Group-Industrial-International-Trade-In-Kind-MTIE-CA-Board-of-Directors-Decisions/ (BoD decisions, 16 Nov 2025) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Stage-1 name \"MM Group for Industry and International Trade SAE\" (Finnhub) superseded by the EGX header name; IPF lists \"MM Group for Industry and International Trade\" (row 85, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -700,16 +677,16 @@
           "code": "ATQA",
           "currency": "EGP",
           "isin": "EGS3D0C1C018",
-          "name_ar": null,
+          "name_ar": "مصر الوطنية للصلب - عتاقة",
           "name_en": "Misr National Steel - Ataqa",
           "ticker": "ATQA.CA",
           "verification": {
             "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4352391/Misr-National-Steel-Ataqa-ATQA-CA-Disclosure-Form-for-the-BoD-the-Shareholders-Structure/ (BoD & shareholders structure disclosure, period ended 30/09/2024) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Arab Finance (arabfinance.com/Home/CompanyProfileDisclosures?key=EGS3D0C1C018) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "EGX disclosure header republished by Mubasher (english.mubasher.info), https://english.mubasher.info/news/4352391/Misr-National-Steel-Ataqa-ATQA-CA-Disclosure-Form-for-the-BoD-the-Shareholders-Structure/ (BoD & shareholders structure disclosure, period ended 30/09/2024) — checked 2026-11-19",
-            "status": "partial",
+            "status": "verified",
             "note": "Stage-1 name \"Misr National Steel SAE\" (Finnhub) superseded by the EGX header name; IPF lists \"Egyptian National Steel\" (row 7, same ISIN).",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -722,16 +699,15 @@
           "code": "SAUD",
           "currency": "EGP",
           "isin": "EGS60101C010",
-          "name_ar": null,
+          "name_ar": "بنك البركة مصر",
           "name_en": "Al Baraka Bank Egypt",
           "ticker": "SAUD.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 159, Al Baraka Bank Egypt) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/3883645) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "FoudaLens EGX Shariah constituents list, crawled 2026-11-19 (stage 1); ISIN now confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "note": "No EGX disclosure header located in this run.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -767,16 +743,15 @@
           "code": "ACGC",
           "currency": "EGP",
           "isin": "EGS32221C011",
-          "name_ar": null,
+          "name_ar": "العربية لحليج الأقطان",
           "name_en": "Arab Cotton Ginning",
           "ticker": "ACGC.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 56, Arabic cotton ginning) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by numbstr.com, https://numbstr.com/disclosures/c39bc0a0-15ac-4e4d-88fa-b44a7a037c68 (ISIN EGS32221C011 in header) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "FoudaLens EGX Shariah constituents list, crawled 2026-11-19 (stage 1); ISIN now confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "note": "No EGX disclosure header located in this run.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -789,16 +764,16 @@
           "code": "MPCO",
           "currency": "EGP",
           "isin": "EGS02091C014",
-          "name_ar": null,
+          "name_ar": "المنصورة للدواجن",
           "name_en": "Mansourah Poultry",
           "ticker": "MPCO.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 198, Mansoura Poultry) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by FoudaLens (foudalens.com/ar/news/287149) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "FoudaLens EGX Shariah constituents list, crawled 2026-11-19 (stage 1); ISIN now confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "note": "IPF spells it \"Mansoura Poultry\". No EGX disclosure header located in this run.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "note": "IPF spells it \"Mansoura Poultry\".",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -811,16 +786,15 @@
           "code": "EGAS",
           "currency": "EGP",
           "isin": "EGS39011C019",
-          "name_ar": null,
+          "name_ar": "غاز مصر",
           "name_en": "Natural Gas & Mining Project (Egypt Gas)",
           "ticker": "EGAS.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 68, Egypt Gas) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4244354) — INS-PARALLEL-001 T2, 2026-11-26",
             "name_en_source": "FoudaLens EGX Shariah constituents list, crawled 2026-11-19 (stage 1); ISIN now confirmed against IPF 2026-11-19 — checked 2026-11-19",
-            "status": "partial",
-            "note": "No EGX disclosure header located in this run.",
-            "verified_on": "2026-11-19"
+            "status": "verified",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -833,15 +807,123 @@
           "code": "ETRS",
           "currency": "EGP",
           "isin": "EGS42051C010",
-          "name_ar": null,
+          "name_ar": "المصرية لخدمات النقل والتجارة ايجيترانس نوسكو",
           "name_en": "Egyptian Transport and Commercial Services Company S.A.E.",
           "ticker": "ETRS.CA",
           "verification": {
             "isin_source": "Investor Protection Fund (ipf.eg) official fund-members list, https://ipf.eg/en/fund-members/ (row 66, Egyptian Transport and Trade Services (Egytrans)) — checked 2026-11-19",
-            "name_ar_source": null,
+            "name_ar_source": "EGX disclosure header republished by Mubasher (mubasher.info/markets/EGX/stocks/ETRS), Aug 2026 spelling — INS-PARALLEL-001 T2, 2026-11-26; May 2026 header (foudalens.com/ar/news/288921) reads المصرية لخدمات النقل (ايجيترانس); the rename is not confirmed",
             "name_en_source": "coindataflow.com EGX listings table, crawled 2026-11-19 17:25 UTC (stage 1); ISIN re-confirmed against IPF 2026-11-19 — checked 2026-11-19",
+            "status": "verified",
+            "verified_on": "2026-11-26"
+          }
+        }
+      ]
+    },
+    {
+      "in_later_freeze_2026_11_17": true,
+      "issuer": "CLHO",
+      "listings": [
+        {
+          "code": "CLHO",
+          "currency": "EGP",
+          "isin": "EGS729J1C018",
+          "name_ar": null,
+          "name_en": "Cleopatra Hospital Company",
+          "ticker": "CLHO.CA",
+          "verification": {
+            "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4636671 — 'Company Name : Cleopatra Hospital Company ISIN Code : EGS729J1C018 Reuters Code : CLHO.CA') — INS-PARALLEL-001 T1, 2026-11-26; corroborated by Arab Finance, stockanalysis.com, TradingView",
+            "name_ar_source": null,
+            "name_en_source": "Same EGX disclosure header (Company Name field) — INS-PARALLEL-001 T1, 2026-11-26",
             "status": "partial",
-            "verified_on": "2026-11-19"
+            "verified_on": "2026-11-26"
+          }
+        }
+      ]
+    },
+    {
+      "in_later_freeze_2026_11_17": true,
+      "issuer": "GOUR",
+      "listings": [
+        {
+          "code": "GOUR",
+          "currency": "EGP",
+          "isin": "EGS540S1C014",
+          "name_ar": null,
+          "name_en": "Gourmet Egypt.Com Foods",
+          "ticker": "GOUR.CA",
+          "yahoo_ticker": "EGS540S1C014.CA",
+          "verification": {
+            "isin_source": "EGX disclosure headers via the FoudaLens EGX mirror (foudalens.com/en/news/294940 and /287222 — 'Company Name : Gourmet Egypt.Com Foods ISIN Code : EGS540S1C014 Reuters Code : GOUR.CA') — INS-PARALLEL-001 T1, 2026-11-26; Arab Finance and stockanalysis.com agree; Mubasher confirms the 21 Jan 2026 listing under GOUR.CA (english.mubasher.info/news/4554886)",
+            "name_ar_source": null,
+            "name_en_source": "Same EGX disclosure headers (Company Name field) — INS-PARALLEL-001 T1, 2026-11-26",
+            "status": "partial",
+            "note": "Yahoo indexes GOUR under its ISIN symbol EGS540S1C014.CA; the chart API 404s on GOUR.CA (INS-PARALLEL-001 T3, verified live 2026-11-26: 1 bar, close 13.42). Use yahoo_ticker for Yahoo fetches; the EGX ticker stays GOUR.CA.",
+            "verified_on": "2026-11-26"
+          }
+        }
+      ]
+    },
+    {
+      "in_later_freeze_2026_11_17": true,
+      "issuer": "ICFC",
+      "listings": [
+        {
+          "code": "ICFC",
+          "currency": "EGP",
+          "isin": "EGS520D1C015",
+          "name_ar": null,
+          "name_en": "International Company For Fertilizers & Chemicals",
+          "ticker": "ICFC.CA",
+          "verification": {
+            "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4694915 — 'Company Name : International Company For Fertilizers & Chemicals ISIN Code : EGS520D1C015 Reuters Code : ICFC.CA') — INS-PARALLEL-001 T1, 2026-11-26; Arab Finance agrees",
+            "name_ar_source": null,
+            "name_en_source": "Same EGX disclosure header (Company Name field) — INS-PARALLEL-001 T1, 2026-11-26",
+            "status": "partial",
+            "verified_on": "2026-11-26"
+          }
+        }
+      ]
+    },
+    {
+      "in_later_freeze_2026_11_17": true,
+      "issuer": "LCSW",
+      "listings": [
+        {
+          "code": "LCSW",
+          "currency": "EGP",
+          "isin": "EGS3C161C014",
+          "name_ar": null,
+          "name_en": "Lecico Egypt",
+          "ticker": "LCSW.CA",
+          "verification": {
+            "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4687943 — 'Company Name : Lecico Egypt ISIN Code : EGS3C161C014 Reuters Code : LCSW.CA') — INS-PARALLEL-001 T1, 2026-11-26; Arab Finance agrees, ayondo termsheet agrees",
+            "name_ar_source": null,
+            "name_en_source": "Same EGX disclosure header (Company Name field) — INS-PARALLEL-001 T1, 2026-11-26",
+            "status": "partial",
+            "verified_on": "2026-11-26"
+          }
+        }
+      ]
+    },
+    {
+      "in_later_freeze_2026_11_17": true,
+      "issuer": "RACC",
+      "listings": [
+        {
+          "code": "RACC",
+          "currency": "EGP",
+          "isin": "EGS74191C015",
+          "name_ar": null,
+          "name_en": "Raya Customer Experience",
+          "ticker": "RACC.CA",
+          "verification": {
+            "isin_source": "EGX disclosure header republished by Mubasher (english.mubasher.info/news/4644559 — 'Company: Raya Customer Experience Symbols: EGS74191C015 Reuters: RACC.CA') — INS-PARALLEL-001 T1, 2026-11-26; Arab Finance, Yahoo and MarketScreener agree",
+            "name_ar_source": null,
+            "name_en_source": "Same EGX disclosure header (Company field) — INS-PARALLEL-001 T1, 2026-11-26",
+            "status": "partial",
+            "note": "Renamed from Raya Contact Center to Raya Customer Experience; ticker unchanged.",
+            "verified_on": "2026-11-26"
           }
         }
       ]
@@ -896,22 +978,22 @@
   "title": "Top-30 EGX disclosure-events evaluation — frozen manifest (stage 1)",
   "stage2_verification": {
     "date": "2026-11-19",
-    "scope": "B-01–B-04 mapping verification (ISIN + English name + Arabic name) for the 31 listings",
+    "scope": "B-01–B-04 mapping verification (ISIN + English name + Arabic name) for the 31 listings; extended 2026-11-26 (INS-PARALLEL-001 T1/T2) with 5 new issuers (CLHO, GOUR, ICFC, LCSW, RACC) + FAITA ISIN + 25 Arabic names — 36 listings total",
     "method": "EGX disclosure headers as republished by Mubasher (english.mubasher.info) and Okaz (okazinvest.com) — Company Name / ISIN Code / Reuters Code header — plus the Investor Protection Fund (ipf.eg) official fund-members list (ISIN + legal name per member). Aggregator values (coindataflow, Finnhub, FoudaLens, StockAnalysis, Decypha, TradingView) were used only as candidates to re-confirm, never as the verifying source. Every ISIN written here passed ISO 6166 check-digit validation (Luhn on the letter-expanded form), run locally 2026-11-19.",
     "amoc_correction": "Stage-1 \"verified\" AMOC ISIN EGS3E2B1C018 is INVALID (fails ISO 6166 check digit) and disagrees with the IPF list (EGS380P1C010, check digit valid). Corrected in this file. The worker side is fixed too: worker/egx_harvest.py EGX_COMPANIES now carries EGS380P1C010 at :38 (fixed by #309).",
     "counts": {
-      "listings_with_isin_verified": 30,
-      "listings_with_isin_missing": 1,
-      "listings_with_arabic_name_verified": 3,
-      "arabic_name_verified_incl_controls": 5,
+      "listings_with_isin_verified": 36,
+      "listings_with_isin_missing": 0,
+      "listings_with_arabic_name_verified": 28,
+      "arabic_name_verified_incl_controls": 30,
       "b04_reconfirmed": 9
     },
     "remaining": [
-      "B-01 (Arabic names only): EFID, PHDC, RMDA, OCDI, CIRA",
-      "B-02: FAITA ISIN only",
-      "B-03: Arabic names for 23 listings",
+      "B-01 (Arabic names only): CIRA",
+      "B-03: Arabic names for 2 listings (FAITA, OLFI)",
       "B-05: weights (out of scope for this run)"
     ],
-    "detail": "docs/top30-mapping-verification.md"
+    "detail": "docs/top30-mapping-verification.md",
+    "update_2026_11_26": "INS-PARALLEL-001 T1 (6 ISINs) + T2 (25 Arabic names), 2026-11-26: FAITA ISIN EGS60322C012; 5 new issuers CLHO / GOUR / ICFC / LCSW / RACC with verified ISINs; Arabic names verified for the 25 harvester codes (EGX header spelling). GOUR listing carries yahoo_ticker EGS540S1C014.CA (Yahoo indexes it under its ISIN symbol; chart API 404s on GOUR.CA). Every new ISIN passed the repo ISO 6166 check-digit validator."
   }
 }

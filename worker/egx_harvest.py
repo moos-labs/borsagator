@@ -37,44 +37,56 @@ EGX_COMPANIES = {
     "ABUK": ("أبو قير للأسمدة", "EGS38161C013"),
     "AMOC": ("الإسكندرية للزيوت المعدنية", "EGS380P1C010"),
     "EKHO": ("القابضة المصرية الكويتية", "EGS69082C013"),
-    # Issue #768 (BEAST MODE item 1): the remaining EGX33 names with
-    # a manifest ISIN. ISINs from evaluation/top30_manifest.json
-    # (stage-2, status "partial": Investor Protection Fund official
-    # fund-members list, or an EGX disclosure header republished by
-    # Mubasher/Okaz — the per-listing isin_source names the exact
-    # one); every value passes the ISO 6166 check digit (see
-    # test_egx_harvest_isin.py, which also pins the table to the
-    # manifest). The Arabic legal name is NOT verified for any of
-    # these 25 (the manifest carries no name_ar for them), so the
-    # name is None — never guess it: the primary search is ISIN-keyed
-    # and works without the name, and the form fallback below is
-    # skipped when the name is None. Still missing (no manifest
-    # ISIN): CLHO, FAITA, GOUR, ICFC, LCSW, RACC.
-    "ACGC": (None, "EGS32221C011"),  # IPF
-    "ADIB": (None, "EGS60111C019"),  # IPF
-    "ARCC": (None, "EGS3C0O1C016"),  # Mubasher
-    "ATQA": (None, "EGS3D0C1C018"),  # Mubasher
-    "EFID": (None, "EGS305I1C011"),  # Okaz
-    "EFIH": (None, "EGS743O1C013"),  # Mubasher
-    "EGAL": (None, "EGS3E181C010"),  # Mubasher
-    "EGAS": (None, "EGS39011C019"),  # IPF
-    "ETRS": (None, "EGS42051C010"),  # IPF
-    "FAIT": (None, "EGS60321C014"),  # IPF
-    "IFAP": (None, "EGS07061C012"),  # IPF
-    "ISPH": (None, "EGS512O1C012"),  # IPF
-    "JUFO": (None, "EGS30901C010"),  # IPF
-    "MASR": (None, "EGS65571C019"),  # Mubasher
-    "MCQE": (None, "EGS3C391C017"),  # Mubasher
-    "MPCO": (None, "EGS02091C014"),  # IPF
-    "MTIE": (None, "EGS75011C014"),  # Mubasher
-    "OCDI": (None, "EGS65851C015"),  # IPF
-    "ORAS": (None, "EGS95001C011"),  # IPF
-    "ORHD": (None, "EGS70321C012"),  # IPF
-    "ORWE": (None, "EGS33041C012"),  # IPF
-    "PHDC": (None, "EGS655L1C012"),  # Mubasher
-    "RMDA": (None, "EGS381B1C015"),  # Mubasher
-    "SAUD": (None, "EGS60101C010"),  # IPF
-    "SKPC": (None, "EGS380S1C017"),  # IPF
+    # Issue #768 (BEAST MODE item 1) + INS-PARALLEL-001 T1/T2 (2026-11-26):
+    # the full living EGX33 freeze is now in this table (41 codes) with
+    # manifest ISINs. T1 verified the last 6 ISINs (CLHO EGS729J1C018,
+    # FAITA EGS60322C012, GOUR EGS540S1C014, ICFC EGS520D1C015,
+    # LCSW EGS3C161C014, RACC EGS74191C015 — EGX disclosure headers as
+    # republished by Mubasher/FoudaLens/Arab Finance, per-code sources
+    # in evaluation/top30_manifest.json). T2 verified the Arabic legal
+    # names for the 25 codes below (EGX header spelling, "اسم الشركة /
+    # اسم البنك" field as republished by Mubasher/arabfinance/foudalens/
+    # numbstr; per-row sources in the T2 email). The 6 new codes carry
+    # name None: their Arabic names were not delivered — never guess
+    # one; the ISIN-keyed search works without the name, and the form
+    # fallback below is skipped when the name is None. GOUR's Yahoo
+    # symbol is its ISIN symbol EGS540S1C014.CA (see
+    # YAHOO_SYMBOL_OVERRIDES in scripts/backtest.py); the harvester
+    # itself is ISIN-keyed and needs no Yahoo symbol.
+    "ACGC": ("العربية لحليج الأقطان", "EGS32221C011"),  # IPF; name T2
+    "ADIB": ("مصرف أبو ظبى الاسلامى - مصر", "EGS60111C019"),  # IPF; name T2
+    "ARCC": ("العربية للاسمنت", "EGS3C0O1C016"),  # Mubasher; name T2
+    "ATQA": ("مصر الوطنية للصلب - عتاقة", "EGS3D0C1C018"),  # Mubasher; name T2
+    "EFID": ("ايديتا للصناعات الغذائية", "EGS305I1C011"),  # Okaz; name T2
+    "EFIH": ("اي فاينانس للاستثمارات المالية والرقمية", "EGS743O1C013"),  # Mubasher; name T2
+    "EGAL": ("مصر للالومنيوم", "EGS3E181C010"),  # Mubasher; name T2
+    "EGAS": ("غاز مصر", "EGS39011C019"),  # IPF; name T2
+    "ETRS": ("المصرية لخدمات النقل والتجارة ايجيترانس نوسكو", "EGS42051C010"),  # IPF; name T2 (Aug 2026 spelling; May 2026 header reads المصرية لخدمات النقل (ايجيترانس); rename not confirmed)
+    "FAIT": ("بنك فيصل الاسلامي المصري", "EGS60321C014"),  # IPF; name T2
+    "IFAP": ("الدوليه للمحاصيل الزراعيه", "EGS07061C012"),  # IPF; name T2
+    "ISPH": ("ابن سينا فارما", "EGS512O1C012"),  # IPF; name T2
+    "JUFO": ("جهينة للصناعات الغذائية", "EGS30901C010"),  # IPF; name T2
+    "MASR": ("مدينة مصر للاسكان والتعمير", "EGS65571C019"),  # Mubasher; name T2
+    "MCQE": ("مصر للاسمنت - قنا", "EGS3C391C017"),  # Mubasher; name T2
+    "MPCO": ("المنصورة للدواجن", "EGS02091C014"),  # IPF; name T2
+    "MTIE": ("ام.ام جروب للصناعة والتجارة العالمية", "EGS75011C014"),  # Mubasher; name T2
+    "OCDI": ("السادس من اكتوبر للتنميه والاستثمار (سوديك)", "EGS65851C015"),  # IPF; name T2
+    "ORAS": ("اوراسكوم كونستراكشون بي ال سي", "EGS95001C011"),  # IPF; name T2
+    "ORHD": ("اوراسكوم للتنمية مصر", "EGS70321C012"),  # IPF; name T2
+    "ORWE": ("النساجون الشرقيون للسجاد", "EGS33041C012"),  # IPF; name T2
+    "PHDC": ("بالم هيلز للتعمير", "EGS655L1C012"),  # Mubasher; name T2
+    "RMDA": ("العاشر من رمضان للصناعات الدوائية والمستحضرات تشخيصية-راميدا", "EGS381B1C015"),  # Mubasher; name T2
+    "SAUD": ("بنك البركة مصر", "EGS60101C010"),  # IPF; name T2
+    "SKPC": ("سيدى كرير للبتروكيماويات - سيدبك", "EGS380S1C017"),  # IPF; name T2
+    # T1 (2026-11-26): the last 6 ISINs, all VERIFIED (EGX disclosure
+    # headers as republished by Mubasher/FoudaLens). Arabic names not
+    # delivered — None, never guessed.
+    "CLHO": (None, "EGS729J1C018"),  # T1: Mubasher news/4636671
+    "FAITA": (None, "EGS60322C012"),  # T1: Mubasher news/4627244 (USD line; FAIT is the EGP line)
+    "GOUR": (None, "EGS540S1C014"),  # T1: FoudaLens EGX mirror news/294940, 287222
+    "ICFC": (None, "EGS520D1C015"),  # T1: Mubasher news/4694915
+    "LCSW": (None, "EGS3C161C014"),  # T1: Mubasher news/4687943
+    "RACC": (None, "EGS74191C015"),  # T1: Mubasher news/4644559 (renamed from Raya Contact Center; ticker unchanged)
 }
 
 

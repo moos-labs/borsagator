@@ -852,7 +852,8 @@ def run_probe_mode(manifest):
     """Probe mode (default): one pilot probe, then a ledger that
     honestly records every issuer as not_run with the shared probe
     evidence. No doomed per-issuer requests, no invented documents.
-    FAITA additionally carries its B-02 named failure.
+    A listing without a verified ISIN additionally carries its
+    B-02 named failure.
     """
     probe = probe_live_access()
     ledger = {
