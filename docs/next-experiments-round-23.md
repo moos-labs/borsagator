@@ -34,9 +34,8 @@ cells stay untouched.
 
 Heaviest = new information, fittable on long history, cells untouched.
 
-1. News volume and tone from GDELT GKG as a width input. Evidence it can
-   be built: the 2024-05 pilot matched 349 ticker-row pairs at 99.3%
-   precision after the #820 fixes (Moos's arithmetic). The full 2019-2026
+1. News volume and tone from GDELT GKG as a width input. Matching
+   precision is not re-verified here (see PR #820). The full 2019-2026
    run is in progress (429 of 543,568 files at 01:22 on 2026-11-27, ETA
    6 to 7 days, per the GDELT agent's report, not re-run by me). Design:
    per ticker and cutoff, count and mean tone of matched rows over the 5
