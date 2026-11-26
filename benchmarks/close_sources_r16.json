@@ -1,0 +1,2919 @@
+{
+ "break_date": "2021-09-05",
+ "descriptive": true,
+ "last_date": "2023-12-28",
+ "tickers": {
+  "ACGC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 24,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 92,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 2
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 43,
+      "outside_hl": 1,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 16,
+      "flat_only_first": 7,
+      "flat_only_second": 27,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/110010__sweep-lite-acgc-ca-market-egx__w5-sweeplite-acgc-001/egx-data/egxpy_acgc.csv",
+    "yahoo": "2026-11-25/110010__sweep-lite-acgc-ca-market-egx__w5-sweeplite-acgc-001/yahooquery/ACGC.CA.csv"
+   }
+  },
+  "ADIB": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-15",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 16,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 71,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 7
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 51,
+      "outside_hl": 2,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 7,
+      "flat_only_first": 8,
+      "flat_only_second": 44,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/111023__sweep-lite-adib-ca-market-egx__w5-sweeplite-adib-001/egx-data/egxpy_adib.csv",
+    "yahoo": "2026-11-25/111023__sweep-lite-adib-ca-market-egx__w5-sweeplite-adib-001/yahooquery/ADIB.CA.csv"
+   }
+  },
+  "AMOC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 35,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 83,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 7
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 47,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 47,
+      "close_equal": 464,
+      "flat_both": 25,
+      "flat_only_first": 4,
+      "flat_only_second": 22,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/112116__sweep-lite-amoc-ca-market-egx__w5-sweeplite-amoc-001/egx-data/egxpy_amoc.csv",
+    "yahoo": "2026-11-25/112116__sweep-lite-amoc-ca-market-egx__w5-sweeplite-amoc-001/yahooquery/AMOC.CA.csv"
+   }
+  },
+  "ARCC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-13",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 59,
+      "outside_hl": 0,
+      "pairs": 563,
+      "sessions": 564,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 106,
+      "outside_hl": 0,
+      "pairs": 1733,
+      "sessions": 1734,
+      "zero_range": 24
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 253,
+      "outside_hl": 86,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 34
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 314,
+      "close_equal": 193,
+      "flat_both": 42,
+      "flat_only_first": 10,
+      "flat_only_second": 205,
+      "pairs": 503,
+      "shared_dates": 507
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/112927__sweep-lite-arcc-ca-market-egx__w5-sweeplite-arcc-001/egx-data/egxpy_arcc.csv",
+    "yahoo": "2026-11-25/112927__sweep-lite-arcc-ca-market-egx__w5-sweeplite-arcc-001/yahooquery/ARCC.CA.csv"
+   }
+  },
+  "ATQA": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-29",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 12,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 439,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 250
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 31,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 111,
+      "close_equal": 400,
+      "flat_both": 7,
+      "flat_only_first": 5,
+      "flat_only_second": 24,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/113638__sweep-lite-atqa-ca-market-egx__w5-sweeplite-atqa-001/egx-data/egxpy_atqa.csv",
+    "yahoo": "2026-11-25/113638__sweep-lite-atqa-ca-market-egx__w5-sweeplite-atqa-001/yahooquery/ATQA.CA.csv"
+   }
+  },
+  "CIRA": {
+   "counts": {
+    "egxpy": {
+     "first": "2018-10-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 62,
+      "outside_hl": 0,
+      "pairs": 566,
+      "sessions": 567,
+      "zero_range": 2
+     },
+     "pre": {
+      "flat_close": 209,
+      "outside_hl": 0,
+      "pairs": 709,
+      "sessions": 710,
+      "zero_range": 90
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 120,
+      "outside_hl": 12,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 23
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 197,
+      "close_equal": 313,
+      "flat_both": 33,
+      "flat_only_first": 12,
+      "flat_only_second": 85,
+      "pairs": 508,
+      "shared_dates": 510
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/114459__sweep-lite-cira-ca-market-egx__w5-sweeplite-cira-001/egx-data/egxpy_cira.csv",
+    "yahoo": "2026-11-25/114459__sweep-lite-cira-ca-market-egx__w5-sweeplite-cira-001/yahooquery/CIRA.CA.csv"
+   }
+  },
+  "CLHO": {
+   "counts": {
+    "egxpy": {
+     "first": "2016-04-14",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 70,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 145,
+      "outside_hl": 0,
+      "pairs": 1304,
+      "sessions": 1305,
+      "zero_range": 59
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 108,
+      "outside_hl": 4,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 138,
+      "close_equal": 373,
+      "flat_both": 51,
+      "flat_only_first": 11,
+      "flat_only_second": 57,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/115428__sweep-lite-clho-ca-market-egx__w5-sweeplite-clho-001/egx-data/egxpy_clho.csv",
+    "yahoo": "2026-11-25/115428__sweep-lite-clho-ca-market-egx__w5-sweeplite-clho-001/yahooquery/CLHO.CA.csv"
+   }
+  },
+  "COMI": {
+   "counts": {
+    "capture": {
+     "first": "2022-12-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 16,
+      "outside_hl": 0,
+      "pairs": 249,
+      "sessions": 250,
+      "zero_range": 11
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "price": {
+     "first": "2019-01-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 50,
+      "outside_hl": null,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 32,
+      "outside_hl": null,
+      "pairs": 662,
+      "sessions": 663,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    }
+   },
+   "pairs": {
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 16,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "13 capture dirs"
+   }
+  },
+  "EFID": {
+   "counts": {
+    "egxpy": {
+     "first": "2015-04-02",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 61,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 1
+     },
+     "pre": {
+      "flat_close": 521,
+      "outside_hl": 0,
+      "pairs": 1553,
+      "sessions": 1554,
+      "zero_range": 291
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 148,
+      "outside_hl": 26,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 22
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 32,
+      "flat_only_first": 8,
+      "flat_only_second": 116,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/120236__sweep-lite-efid-ca-market-egx__w5-sweeplite-efid-001/egx-data/egxpy_efid.csv",
+    "yahoo": "2026-11-25/120236__sweep-lite-efid-ca-market-egx__w5-sweeplite-efid-001/yahooquery/EFID.CA.csv"
+   }
+  },
+  "EFIH": {
+   "counts": {
+    "egxpy": {
+     "first": "2021-10-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 16,
+      "outside_hl": 0,
+      "pairs": 536,
+      "sessions": 537,
+      "zero_range": 1
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 37,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 22
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 10,
+      "flat_only_first": 6,
+      "flat_only_second": 27,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/121055__sweep-lite-efih-ca-market-egx__w5-sweeplite-efih-001/egx-data/egxpy_efih.csv",
+    "yahoo": "2026-11-25/121055__sweep-lite-efih-ca-market-egx__w5-sweeplite-efih-001/yahooquery/EFIH.CA.csv"
+   }
+  },
+  "EGAL": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-09",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 16,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 276,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 157
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 40,
+      "outside_hl": 7,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 121,
+      "close_equal": 390,
+      "flat_both": 12,
+      "flat_only_first": 2,
+      "flat_only_second": 28,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/121853__sweep-lite-egal-ca-market-egx__w5-sweeplite-egal-001/egx-data/egxpy_egal.csv",
+    "yahoo": "2026-11-25/121853__sweep-lite-egal-ca-market-egx__w5-sweeplite-egal-001/yahooquery/EGAL.CA.csv"
+   }
+  },
+  "EGAS": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-15",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 5,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 199,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 83
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 36,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 2,
+      "flat_only_first": 2,
+      "flat_only_second": 34,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/122722__sweep-lite-egas-ca-market-egx__w5-sweeplite-egas-001/egx-data/egxpy_egas.csv",
+    "yahoo": "2026-11-25/122722__sweep-lite-egas-ca-market-egx__w5-sweeplite-egas-001/yahooquery/EGAS.CA.csv"
+   }
+  },
+  "ETEL": {
+   "counts": {
+    "capture": {
+     "first": "2022-12-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 16,
+      "outside_hl": 0,
+      "pairs": 249,
+      "sessions": 250,
+      "zero_range": 11
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 14,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 60,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 0
+     },
+     "straddle_dropped": 1
+    },
+    "price": {
+     "first": "2019-01-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 43,
+      "outside_hl": null,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 52,
+      "outside_hl": null,
+      "pairs": 662,
+      "sessions": 663,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 34,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "capture|egxpy": {
+     "post": {
+      "close_differs": 29,
+      "close_equal": 221,
+      "flat_both": 2,
+      "flat_only_first": 14,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 16,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "capture|yahoo": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 16,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "egxpy|price": {
+     "post": {
+      "close_differs": 94,
+      "close_equal": 474,
+      "flat_both": 10,
+      "flat_only_first": 4,
+      "flat_only_second": 33,
+      "pairs": 567,
+      "shared_dates": 568
+     },
+     "pre": {
+      "close_differs": 14,
+      "close_equal": 633,
+      "flat_both": 22,
+      "flat_only_first": 1,
+      "flat_only_second": 15,
+      "pairs": 638,
+      "shared_dates": 647
+     }
+    },
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 88,
+      "close_equal": 423,
+      "flat_both": 8,
+      "flat_only_first": 4,
+      "flat_only_second": 26,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "price|yahoo": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 511,
+      "flat_both": 34,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "13 capture dirs",
+    "egxpy": "2026-11-25/124035__sweep-lite-etel-ca-market-egx__w5-sweeplite-etel-001/egx-data/egxpy_etel.csv",
+    "yahoo": "2026-11-25/124035__sweep-lite-etel-ca-market-egx__w5-sweeplite-etel-001/yahooquery/ETEL.CA.csv"
+   }
+  },
+  "ETRS": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 48,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 106,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 9
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 47,
+      "outside_hl": 1,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 53,
+      "close_equal": 458,
+      "flat_both": 25,
+      "flat_only_first": 5,
+      "flat_only_second": 22,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/124807__sweep-lite-etrs-ca-market-egx__w5-sweeplite-etrs-001/egx-data/egxpy_etrs.csv",
+    "yahoo": "2026-11-25/124807__sweep-lite-etrs-ca-market-egx__w5-sweeplite-etrs-001/yahooquery/ETRS.CA.csv"
+   }
+  },
+  "FAIT": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-26",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 37,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 181,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 96
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 74,
+      "outside_hl": 8,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 16,
+      "flat_only_first": 12,
+      "flat_only_second": 58,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/125657__sweep-lite-fait-ca-market-egx__w5-sweeplite-fait-001/egx-data/egxpy_fait.csv",
+    "yahoo": "2026-11-25/125657__sweep-lite-fait-ca-market-egx__w5-sweeplite-fait-001/yahooquery/FAIT.CA.csv"
+   }
+  },
+  "FAITA": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-13",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 115,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 5
+     },
+     "pre": {
+      "flat_close": 540,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 228
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 145,
+      "outside_hl": 25,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 29
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 65,
+      "flat_only_first": 37,
+      "flat_only_second": 80,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/130441__sweep-lite-faita-ca-market-egx__w5-sweeplite-faita-001/egx-data/egxpy_faita.csv",
+    "yahoo": "2026-11-25/130441__sweep-lite-faita-ca-market-egx__w5-sweeplite-faita-001/yahooquery/FAITA.CA.csv"
+   }
+  },
+  "GOUR": {
+   "counts": {
+    "egxpy": {
+     "first": null,
+     "last": null,
+     "post": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {},
+   "sources": {
+    "egxpy": "2026-11-25/131222__sweep-lite-gour-ca-market-egx__w5-sweeplite-gour-001/egx-data/egxpy_gour.csv"
+   }
+  },
+  "HRHO": {
+   "counts": {
+    "capture": {
+     "first": "2022-12-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 18,
+      "outside_hl": 0,
+      "pairs": 249,
+      "sessions": 250,
+      "zero_range": 11
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "price": {
+     "first": "2019-01-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 45,
+      "outside_hl": null,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 41,
+      "outside_hl": null,
+      "pairs": 662,
+      "sessions": 663,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    }
+   },
+   "pairs": {
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 18,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "11 capture dirs"
+   }
+  },
+  "ICFC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-11",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 52,
+      "outside_hl": 0,
+      "pairs": 565,
+      "sessions": 566,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 808,
+      "outside_hl": 0,
+      "pairs": 1731,
+      "sessions": 1732,
+      "zero_range": 318
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 147,
+      "outside_hl": 51,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 26
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 509,
+      "close_equal": 0,
+      "flat_both": 28,
+      "flat_only_first": 12,
+      "flat_only_second": 116,
+      "pairs": 507,
+      "shared_dates": 509
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/131936__sweep-lite-icfc-ca-market-egx__w5-sweeplite-icfc-001/egx-data/egxpy_icfc.csv",
+    "yahoo": "2026-11-25/131936__sweep-lite-icfc-ca-market-egx__w5-sweeplite-icfc-001/yahooquery/ICFC.CA.csv"
+   }
+  },
+  "IFAP": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-16",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 43,
+      "outside_hl": 0,
+      "pairs": 566,
+      "sessions": 567,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 191,
+      "outside_hl": 0,
+      "pairs": 1730,
+      "sessions": 1731,
+      "zero_range": 24
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 139,
+      "outside_hl": 18,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 22
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 510,
+      "close_equal": 0,
+      "flat_both": 32,
+      "flat_only_first": 7,
+      "flat_only_second": 105,
+      "pairs": 508,
+      "shared_dates": 510
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/132653__sweep-lite-ifap-ca-market-egx__w5-sweeplite-ifap-001/egx-data/egxpy_ifap.csv",
+    "yahoo": "2026-11-25/132653__sweep-lite-ifap-ca-market-egx__w5-sweeplite-ifap-001/yahooquery/IFAP.CA.csv"
+   }
+  },
+  "ISPH": {
+   "counts": {
+    "egxpy": {
+     "first": "2017-12-11",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 28,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 45,
+      "outside_hl": 0,
+      "pairs": 902,
+      "sessions": 903,
+      "zero_range": 2
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 42,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 157,
+      "close_equal": 354,
+      "flat_both": 22,
+      "flat_only_first": 5,
+      "flat_only_second": 20,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/133519__sweep-lite-isph-ca-market-egx__w5-sweeplite-isph-001/egx-data/egxpy_isph.csv",
+    "yahoo": "2026-11-25/133519__sweep-lite-isph-ca-market-egx__w5-sweeplite-isph-001/yahooquery/ISPH.CA.csv"
+   }
+  },
+  "JUFO": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-17",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 45,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 315,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 94
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 99,
+      "outside_hl": 10,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 22
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 27,
+      "flat_only_first": 12,
+      "flat_only_second": 72,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/134242__sweep-lite-jufo-ca-market-egx__w5-sweeplite-jufo-001/egx-data/egxpy_jufo.csv",
+    "yahoo": "2026-11-25/134242__sweep-lite-jufo-ca-market-egx__w5-sweeplite-jufo-001/yahooquery/JUFO.CA.csv"
+   }
+  },
+  "LCSW": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-05-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 17,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 794,
+      "outside_hl": 0,
+      "pairs": 1730,
+      "sessions": 1731,
+      "zero_range": 322
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 70,
+      "outside_hl": 22,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 22
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 113,
+      "close_equal": 398,
+      "flat_both": 9,
+      "flat_only_first": 5,
+      "flat_only_second": 61,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/135004__sweep-lite-lcsw-ca-market-egx__w5-sweeplite-lcsw-001/egx-data/egxpy_lcsw.csv",
+    "yahoo": "2026-11-25/135004__sweep-lite-lcsw-ca-market-egx__w5-sweeplite-lcsw-001/yahooquery/LCSW.CA.csv"
+   }
+  },
+  "MASR": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 27,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 41,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 0
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 40,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 19,
+      "flat_only_first": 1,
+      "flat_only_second": 21,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/135954__sweep-lite-masr-ca-market-egx__w5-sweeplite-masr-001/egx-data/egxpy_masr.csv",
+    "yahoo": "2026-11-25/135954__sweep-lite-masr-ca-market-egx__w5-sweeplite-masr-001/yahooquery/MASR.CA.csv"
+   }
+  },
+  "MCQE": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-08",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 9,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 312,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 121
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 25,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 195,
+      "close_equal": 316,
+      "flat_both": 0,
+      "flat_only_first": 8,
+      "flat_only_second": 25,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/140918__sweep-lite-mcqe-ca-market-egx__w5-sweeplite-mcqe-001/egx-data/egxpy_mcqe.csv",
+    "yahoo": "2026-11-25/140918__sweep-lite-mcqe-ca-market-egx__w5-sweeplite-mcqe-001/yahooquery/MCQE.CA.csv"
+   }
+  },
+  "MPCO": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-20",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 13,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 109,
+      "outside_hl": 0,
+      "pairs": 1730,
+      "sessions": 1731,
+      "zero_range": 17
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 32,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 9,
+      "flat_only_first": 2,
+      "flat_only_second": 23,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/141626__sweep-lite-mpco-ca-market-egx__w5-sweeplite-mpco-001/egx-data/egxpy_mpco.csv",
+    "yahoo": "2026-11-25/141626__sweep-lite-mpco-ca-market-egx__w5-sweeplite-mpco-001/yahooquery/MPCO.CA.csv"
+   }
+  },
+  "MTIE": {
+   "counts": {
+    "egxpy": {
+     "first": "2005-04-26",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 11,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 189,
+      "outside_hl": 0,
+      "pairs": 1063,
+      "sessions": 1064,
+      "zero_range": 91
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 33,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 10,
+      "flat_only_first": 0,
+      "flat_only_second": 23,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/142552__sweep-lite-mtie-ca-market-egx__w5-sweeplite-mtie-001/egx-data/egxpy_mtie.csv",
+    "yahoo": "2026-11-25/142552__sweep-lite-mtie-ca-market-egx__w5-sweeplite-mtie-001/yahooquery/MTIE.CA.csv"
+   }
+  },
+  "NVDA": {
+   "counts": {
+    "capture": {
+     "first": "2023-01-03",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 248,
+      "sessions": 249,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "price": {
+     "first": "2019-01-02",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 1,
+      "outside_hl": null,
+      "pairs": 581,
+      "sessions": 582,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 1,
+      "outside_hl": null,
+      "pairs": 674,
+      "sessions": 675,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    }
+   },
+   "pairs": {
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 249,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 248,
+      "shared_dates": 249
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "14 capture dirs"
+   }
+  },
+  "OCDI": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-20",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 30,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 41,
+      "outside_hl": 0,
+      "pairs": 1730,
+      "sessions": 1731,
+      "zero_range": 3
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 167,
+      "outside_hl": 41,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 17,
+      "flat_only_first": 5,
+      "flat_only_second": 150,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/143313__sweep-lite-ocdi-ca-market-egx__w5-sweeplite-ocdi-001/egx-data/egxpy_ocdi.csv",
+    "yahoo": "2026-11-25/143313__sweep-lite-ocdi-ca-market-egx__w5-sweeplite-ocdi-001/yahooquery/OCDI.CA.csv"
+   }
+  },
+  "OLFI": {
+   "counts": {
+    "egxpy": {
+     "first": "2016-10-03",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 56,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 430,
+      "outside_hl": 0,
+      "pairs": 1193,
+      "sessions": 1194,
+      "zero_range": 235
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 81,
+      "outside_hl": 6,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 214,
+      "close_equal": 297,
+      "flat_both": 23,
+      "flat_only_first": 18,
+      "flat_only_second": 58,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/144024__sweep-lite-olfi-ca-market-egx__w5-sweeplite-olfi-001/egx-data/egxpy_olfi.csv",
+    "yahoo": "2026-11-25/144024__sweep-lite-olfi-ca-market-egx__w5-sweeplite-olfi-001/yahooquery/OLFI.CA.csv"
+   }
+  },
+  "ORHD": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-29",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 27,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 241,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 191
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 50,
+      "outside_hl": 3,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 18,
+      "flat_only_first": 9,
+      "flat_only_second": 32,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/144736__sweep-lite-orhd-ca-market-egx__w5-sweeplite-orhd-001/egx-data/egxpy_orhd.csv",
+    "yahoo": "2026-11-25/144736__sweep-lite-orhd-ca-market-egx__w5-sweeplite-orhd-001/yahooquery/ORHD.CA.csv"
+   }
+  },
+  "ORWE": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-20",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 26,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 60,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 3
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 40,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 120,
+      "close_equal": 391,
+      "flat_both": 14,
+      "flat_only_first": 10,
+      "flat_only_second": 26,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/145517__sweep-lite-orwe-ca-market-egx__w5-sweeplite-orwe-001/egx-data/egxpy_orwe.csv",
+    "yahoo": "2026-11-25/145517__sweep-lite-orwe-ca-market-egx__w5-sweeplite-orwe-001/yahooquery/ORWE.CA.csv"
+   }
+  },
+  "PHDC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 18,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 94,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 0
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 37,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 64,
+      "close_equal": 447,
+      "flat_both": 15,
+      "flat_only_first": 0,
+      "flat_only_second": 22,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/150345__sweep-lite-phdc-ca-market-egx__w5-sweeplite-phdc-001/egx-data/egxpy_phdc.csv",
+    "yahoo": "2026-11-25/150345__sweep-lite-phdc-ca-market-egx__w5-sweeplite-phdc-001/yahooquery/PHDC.CA.csv"
+   }
+  },
+  "POUL": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-18",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 42,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 212,
+      "outside_hl": 0,
+      "pairs": 1732,
+      "sessions": 1733,
+      "zero_range": 128
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-16",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 64,
+      "outside_hl": 0,
+      "pairs": 517,
+      "sessions": 518,
+      "zero_range": 24
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 518,
+      "close_equal": 0,
+      "flat_both": 28,
+      "flat_only_first": 11,
+      "flat_only_second": 36,
+      "pairs": 517,
+      "shared_dates": 518
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-26/074222__sweep-lite-poul-ca-market-egx__sched-2026-11-26/egx-data/egxpy_poul.csv",
+    "yahoo": "2026-11-17/061257__run-yahooquery-poul-ca__w3-selftest-001/yahooquery/POUL.CA.csv"
+   }
+  },
+  "RACC": {
+   "counts": {
+    "egxpy": {
+     "first": "2015-02-12",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 44,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 460,
+      "outside_hl": 0,
+      "pairs": 1054,
+      "sessions": 1055,
+      "zero_range": 324
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 83,
+      "outside_hl": 3,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 21
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 140,
+      "close_equal": 371,
+      "flat_both": 31,
+      "flat_only_first": 12,
+      "flat_only_second": 52,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/151151__sweep-lite-racc-ca-market-egx__w5-sweeplite-racc-001/egx-data/egxpy_racc.csv",
+    "yahoo": "2026-11-25/151151__sweep-lite-racc-ca-market-egx__w5-sweeplite-racc-001/yahooquery/RACC.CA.csv"
+   }
+  },
+  "RMDA": {
+   "counts": {
+    "egxpy": {
+     "first": "2019-11-27",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 43,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 49,
+      "outside_hl": 0,
+      "pairs": 428,
+      "sessions": 429,
+      "zero_range": 13
+     },
+     "straddle_dropped": 1
+    }
+   },
+   "pairs": {},
+   "sources": {
+    "egxpy": "2026-11-25/195309__sweep-lite-rmda-ca-market-egx__w5-sweeplite-rmda-001/egx-data/egxpy_rmda.csv"
+   }
+  },
+  "SAUD": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-06-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 77,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 413,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 159
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 149,
+      "outside_hl": 34,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 373,
+      "close_equal": 138,
+      "flat_both": 39,
+      "flat_only_first": 9,
+      "flat_only_second": 110,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/201251__sweep-lite-saud-ca-market-egx__w5-sweeplite-saud-001/egx-data/egxpy_saud.csv",
+    "yahoo": "2026-11-25/201251__sweep-lite-saud-ca-market-egx__w5-sweeplite-saud-001/yahooquery/SAUD.CA.csv"
+   }
+  },
+  "SKPC": {
+   "counts": {
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 10,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 41,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 0
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 31,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 511,
+      "close_equal": 0,
+      "flat_both": 9,
+      "flat_only_first": 0,
+      "flat_only_second": 22,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "egxpy": "2026-11-25/201922__sweep-lite-skpc-ca-market-egx__w5-sweeplite-skpc-001/egx-data/egxpy_skpc.csv",
+    "yahoo": "2026-11-25/201922__sweep-lite-skpc-ca-market-egx__w5-sweeplite-skpc-001/yahooquery/SKPC.CA.csv"
+   }
+  },
+  "SWDY": {
+   "counts": {
+    "capture": {
+     "first": "2022-12-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 15,
+      "outside_hl": 0,
+      "pairs": 249,
+      "sessions": 250,
+      "zero_range": 11
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "price": {
+     "first": "2019-01-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 42,
+      "outside_hl": null,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 46,
+      "outside_hl": null,
+      "pairs": 662,
+      "sessions": 663,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    }
+   },
+   "pairs": {
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 15,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "12 capture dirs"
+   }
+  },
+  "TMGH": {
+   "counts": {
+    "capture": {
+     "first": "2022-12-19",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 19,
+      "outside_hl": 0,
+      "pairs": 249,
+      "sessions": 250,
+      "zero_range": 11
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    },
+    "egxpy": {
+     "first": "2014-07-21",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 19,
+      "outside_hl": 0,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": 0
+     },
+     "pre": {
+      "flat_close": 48,
+      "outside_hl": 0,
+      "pairs": 1729,
+      "sessions": 1730,
+      "zero_range": 0
+     },
+     "straddle_dropped": 1
+    },
+    "price": {
+     "first": "2019-01-01",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 48,
+      "outside_hl": null,
+      "pairs": 567,
+      "sessions": 568,
+      "zero_range": null
+     },
+     "pre": {
+      "flat_close": 50,
+      "outside_hl": null,
+      "pairs": 662,
+      "sessions": 663,
+      "zero_range": null
+     },
+     "straddle_dropped": 1
+    },
+    "yahoo": {
+     "first": "2021-11-25",
+     "last": "2023-12-28",
+     "post": {
+      "flat_close": 39,
+      "outside_hl": 0,
+      "pairs": 510,
+      "sessions": 511,
+      "zero_range": 20
+     },
+     "pre": {
+      "flat_close": 0,
+      "outside_hl": 0,
+      "pairs": 0,
+      "sessions": 0,
+      "zero_range": 0
+     },
+     "straddle_dropped": 0
+    }
+   },
+   "pairs": {
+    "capture|egxpy": {
+     "post": {
+      "close_differs": 21,
+      "close_equal": 229,
+      "flat_both": 7,
+      "flat_only_first": 12,
+      "flat_only_second": 1,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "capture|price": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 19,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "capture|yahoo": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 250,
+      "flat_both": 19,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 249,
+      "shared_dates": 250
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "egxpy|price": {
+     "post": {
+      "close_differs": 57,
+      "close_equal": 511,
+      "flat_both": 17,
+      "flat_only_first": 2,
+      "flat_only_second": 31,
+      "pairs": 567,
+      "shared_dates": 568
+     },
+     "pre": {
+      "close_differs": 14,
+      "close_equal": 633,
+      "flat_both": 22,
+      "flat_only_first": 0,
+      "flat_only_second": 13,
+      "pairs": 638,
+      "shared_dates": 647
+     }
+    },
+    "egxpy|yahoo": {
+     "post": {
+      "close_differs": 50,
+      "close_equal": 461,
+      "flat_both": 15,
+      "flat_only_first": 2,
+      "flat_only_second": 24,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    },
+    "price|yahoo": {
+     "post": {
+      "close_differs": 0,
+      "close_equal": 511,
+      "flat_both": 39,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 510,
+      "shared_dates": 511
+     },
+     "pre": {
+      "close_differs": 0,
+      "close_equal": 0,
+      "flat_both": 0,
+      "flat_only_first": 0,
+      "flat_only_second": 0,
+      "pairs": 0,
+      "shared_dates": 0
+     }
+    }
+   },
+   "sources": {
+    "capture": "13 capture dirs",
+    "egxpy": "2026-11-25/202606__sweep-lite-tmgh-ca-market-egx__w5-sweeplite-tmgh-001/egx-data/egxpy_tmgh.csv",
+    "yahoo": "2026-11-25/202606__sweep-lite-tmgh-ca-market-egx__w5-sweeplite-tmgh-001/yahooquery/TMGH.CA.csv"
+   }
+  }
+ }
+}
