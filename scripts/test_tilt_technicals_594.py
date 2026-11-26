@@ -78,10 +78,9 @@ def test_no_frozen_edit():
     ens = T.bs  # scoring module imported, ensemble untouched
     check("module loads", ens is not None)
     import ensemble
-    check("v2 k frozen", ensemble.V2_BAND_K == {"day": 1.15, "week": 1.28,
-                                                  "month": 1.28}
-          or ensemble.V2_BAND_K["day"] == 1.15)
-
+    check("v2 k frozen exact", ensemble.V2_BAND_K ==
+          {"day": 1.15, "week": 1.28, "month": 1.20},
+          str(ensemble.V2_BAND_K))
 
 for fn in (test_constants, test_rule, test_evaluate, test_no_frozen_edit):
     fn()

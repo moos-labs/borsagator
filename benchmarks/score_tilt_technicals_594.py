@@ -5,14 +5,16 @@ INS-IMPROVE-001 round 2, technicals tilt (target T2).
 
 The "tilt-technicals" entrant (scripts/backtest_score.py) is the
 ensemble's own tilt_centre_pct with the v2 band half-width re-centred
-on the tilt. On the seen cells 48-72 it shows no skill (day -0.037,
-week -0.024, month -0.069 RangeSkill vs naive; coverage 0.625 / 0.750
-/ 0.542). This script scores it on cells NOT seen when the rule was
+on the tilt. On the seen cells 48-72 (25 archive captures, cell 70
+included) it shows no skill (day -0.035, week -0.024, month -0.071
+RangeSkill vs naive; coverage 0.640 / 0.760 / 0.520). This script scores it on cells NOT seen when the rule was
 written. It does not touch scripts/ensemble.py or any frozen value.
 
 Pre-registered keep/reject rule (written by Ins before cells 73-78
-were scored; Moos accepted the rule for the tilt in Slack on
-2026-11-26). Per horizon, on untouched cells only (cell >= 73):
+were scored). Provenance: the tilt thresholds (>= 5 tickers, >= 2
+cutoffs, coverage band, CI test) are Ins's. Moos accepted the
+forward-ledger rule and the plan to pre-register this one in Slack on
+2026-11-26. Per horizon, on untouched cells only (cell >= 73):
   KEEP the tilt when, on at least 30 untouched rows over at least 5
   tickers and at least 2 cutoffs,
     (1) tilt RangeSkill vs naive has a cutoff-clustered 95% CI lower
