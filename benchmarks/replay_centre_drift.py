@@ -158,10 +158,10 @@ def render(res, descriptive):
                     _f(c["ch_ci_ticker"][0]), _f(c["ch_ci_ticker"][1])))
         L.append("  frozen v2  coverage %s  RangeSkill %s"
                  % (_f(c["v2"]["coverage"]), _f(c["v2"]["range_skill"])))
-    v, why = keep_verdict(res)
-    L += ["", "KEEP RULE: %s%s" % (
-        v, "" if descriptive else (" (" + "; ".join(why) + ")"
-                                   if why else ""))]
+    if not descriptive:
+        v, why = keep_verdict(res)
+        L += ["", "KEEP RULE: %s%s" % (
+            v, " (" + "; ".join(why) + ")" if why else "")]
     return "\n".join(L)
 
 

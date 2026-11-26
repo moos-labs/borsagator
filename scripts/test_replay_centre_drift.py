@@ -165,8 +165,13 @@ def test_descriptive_json_and_unnumbered():
                       data["results"][h]["n"] == 0 for h in D.HORIZONS))
             check("descriptive json carries no verdict",
                   "verdict" not in data and data["descriptive"] is True)
-            with contextlib.redirect_stdout(buf):
+            check("descriptive stdout carries no KEEP RULE line",
+                  "KEEP RULE" not in buf.getvalue())
+            buf2 = io.StringIO()
+            with contextlib.redirect_stdout(buf2):
                 D.main(["--captures", d, "--reps", "50", "--json", out])
+            check("clean stdout carries the KEEP RULE line",
+                  "KEEP RULE" in buf2.getvalue())
             data = json.load(open(out))
             check("clean json carries a verdict",
                   "verdict" in data and data["descriptive"] is False)
