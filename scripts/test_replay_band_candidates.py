@@ -103,6 +103,24 @@ def test_keep_rule():
     check("coverage_ci_ok helper",
           R.coverage_ci_ok([.7, .76]) and not R.coverage_ci_ok([.86, .9])
           and not R.coverage_ci_ok(None))
+    check("width cap is 0.15", R.MAX_CI_WIDTH == 0.15)
+    check("CI exactly 0.15 wide that overlaps is ok",
+          R.coverage_ci_ok([.66, .81]) and R.coverage_ci_ok([.70, .85]))
+    check("CI wider than 0.15 cannot establish overlap, even straddling",
+          not R.coverage_ci_ok([.60, .80]) and not R.coverage_ci_ok(
+              [.74, .90]) and not R.coverage_ci_ok([.30, .95]))
+    check("cap is absolute, no relaxation: a 0.16 CI fails at any n",
+          not R.coverage_ci_ok([.65, .81]))
+    check("wide CI rejects through keep_verdict at n = 30 and n = 300",
+          R.keep_verdict(_res(30, .06, .8, .0, [.55, .95]))[0] == "REJECT"
+          and R.keep_verdict(_res(300, .06, .8, .0, [.55, .95]))[0]
+          == "REJECT")
+    check("reason names the width and the cap",
+          "wide" in R.coverage_ci_reason("day", [.55, .95], .8)
+          and "0.15" in R.coverage_ci_reason("day", [.55, .95], .8))
+    check("narrow miss keeps the overlap wording",
+          "does not overlap" in R.coverage_ci_reason(
+              "day", [.5, .6], .55))
     import inspect
     check("#594 verdict takes no coverage input (unchanged by the "
           "coverage rule)",

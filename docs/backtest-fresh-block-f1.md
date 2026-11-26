@@ -36,12 +36,14 @@ spaced at least a month apart".
   comparison; any challenger is scored with its pre-registered frozen
   file, one scoring, no refit.
 - Keep rule: round 3 rule with the coverage leg as merged at scoring
-  time (#775: cutoff-clustered coverage CI overlaps [0.75, 0.85]).
+  time (#775: cutoff-clustered coverage CI overlaps [0.75, 0.85]; round 9: the
+  CI must also be no wider than 0.15, no relaxation below n = 30).
   If #775 is unmerged then, report both the point and the overlap.
 - Report effective n (cutoff clusters) beside raw n. Minimum 10 cutoff
   clusters is recommended by the CI audit (#774); F1 has 6, so a
   verdict on F1 alone stays INSUFFICIENT for CI purposes and F1 is read
-  together with 91-102 only as a pooled count of 12 cutoffs, scored
+  together with 91-102 only as a pooled count of 8 cutoff clusters (F1's 6 plus the 2
+  cutoff dates of 91-102), scored
   once at the end.
 - Challengers tried before F1 is scored: A, B, C, D, E, F, item 4
   rolling conformal, and the item 1 estimators (s20, ewma94, blend2060,

@@ -86,9 +86,13 @@ def test_verdict():
     res["week"]["ch_cov_ci_cutoff"] = [0.60, 0.72]
     check("coverage CI below the band rejects",
           P.keep_verdict(res)[0] == "REJECT")
-    res["week"]["ch_cov_ci_cutoff"] = [0.62, 0.79]
+    res["week"]["ch_cov_ci_cutoff"] = [0.66, 0.79]
     check("point outside band but CI overlaps keeps",
           P.keep_verdict(res)[0] == "KEEP")
+    res["week"]["ch_cov_ci_cutoff"] = [0.60, 0.79]
+    check("overlapping CI wider than the 0.15 cap rejects",
+          P.keep_verdict(res)[0] == "REJECT")
+    res["week"]["ch_cov_ci_cutoff"] = [0.66, 0.79]
     res["week"]["ch_cov_ci_cutoff"] = [0.62, 0.75]
     check("CI touching the lower edge overlaps",
           P.keep_verdict(res)[0] == "KEEP")
