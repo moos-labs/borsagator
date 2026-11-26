@@ -20,7 +20,7 @@ pre-register per arm, descriptive only. Machinery: benchmarks/screen_band_models
   post (the 60-session sigma lookback starts on or after it); straddling
   pairs are dropped; regimes are scored and read separately, never
   pooled. The post regime runs 2021-09-05 + 60 sessions to 2023-12-28,
-  about 2.3 years, so at step 21 each ticker gives roughly 26 pseudo
+  about 2 years (roughly 500 sessions), so at step 21 each ticker gives about 24 pseudo
   cutoffs; with 33+ names the post regime has far more than the 10
   cutoff clusters the CI audit (#774) recommends.
 - Effective n: pseudo-cutoff dates are the clusters. Raw n and clusters
