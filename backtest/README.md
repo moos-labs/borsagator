@@ -1,21 +1,23 @@
 # Walk-forward backtest — v2 re-score for #592 (month = 21 sessions)
 
 Published 2026-11-25, extended 2026-11-26 with batch-7 cells 48–50,
-batch-8 cells 51–53 and batch-9 cells 54–59.
+batch-8 cells 51–53, batch-9 cells 54–59 and batch-10 cells 60–63.
 Scorer v2 (`scripts/backtest_score.py`, PR #665 plus the `agg()`
 empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
 `ledger.DEFAULT_SESSIONS`.
 
 ## Coverage
 
-- **48 cells re-scored** (786 forecasts, all matured):
+- **52 cells re-scored** (858 forecasts, all matured):
   cells 1–47 except the 11 below, plus batch-7 cells 48 (SWDY.CA
   2025-09-30), 49 (HRHO.CA 2025-09-30) and 50 (COMI.CA 2025-12-31),
   batch-8 cells 51 (ETEL.CA 2025-12-31), 52 (TMGH.CA 2025-12-31)
-  and 53 (NVDA 2025-12-31), and batch-9 cells 54 (SWDY.CA
+  and 53 (NVDA 2025-12-31), batch-9 cells 54 (SWDY.CA
   2025-12-31), 55 (HRHO.CA 2025-12-31), 56 (COMI.CA 2026-03-31),
   57 (ETEL.CA 2026-03-31), 58 (TMGH.CA 2026-03-31) and 59 (NVDA
-  2026-03-31).
+  2026-03-31), and batch-10 cells 60 (SWDY.CA 2026-03-31),
+  61 (HRHO.CA 2026-03-31), 62 (COMI.CA 2026-06-30) and 63 (ETEL.CA
+  2026-06-30).
   Per-cell files: `cells/cellNN_score_v2.json`.
 - **5 cells still v1-scored, NOT in this grid** — the 21-session realised
   window is unbuildable from the feed: cells 6, 7, 8, 20, 21 fail closed
@@ -27,18 +29,18 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
   scored): cells 3 (ORAS.CA 2023-12-29, stale-flat), 10, 11, 12, 22, 23
   (whole 2024-06-30 cutoff — the 2024-07-01 gap).
 
-## Headline (48 cells, month = 21)
+## Headline (52 cells, month = 21)
 
 | Entrant | Day MAE / RangeSkill | Week MAE / RangeSkill | Month MAE / RangeSkill |
 |---|---|---|---|
-| 2-family-ensemble | 3.20 / −0.906 | 8.46 / −1.440 | 18.10 / −1.287 |
-| kronos-alone | 3.95 / −1.715 | 10.91 / −3.015 | 24.35 / −3.878 |
-| family-technicals | 1.86 / −0.049 | 4.53 / −0.025 | 9.62 / −0.010 |
-| naive-range (gate) | 1.75 / 0.000 | 4.57 / 0.000 | 9.59 / 0.000 |
+| 2-family-ensemble | 3.04 / −0.862 | 7.99 / −1.382 | 17.81 / −1.174 |
+| kronos-alone | 3.76 / −1.674 | 10.33 / −2.927 | 23.98 / −3.712 |
+| family-technicals | 1.82 / −0.049 | 4.42 / −0.025 | 10.10 / −0.029 |
+| naive-range (gate) | 1.70 / 0.000 | 4.41 / 0.000 | 9.95 / 0.000 |
 
-Flat zero-move (buy-and-hold) MAE: 1.75 / 4.57 / 9.59. The ensemble
-fails the RangeSkill gate at every horizon; Kronos month MAE 24.35 pp
-vs zero-move 9.59 pp, direction hit 33.3%. The batch-7 cells alone:
+Flat zero-move (buy-and-hold) MAE: 1.70 / 4.41 / 9.95. The ensemble
+fails the RangeSkill gate at every horizon; Kronos month MAE 23.98 pp
+vs zero-move 9.95 pp, direction hit 32.7%. The batch-7 cells alone:
 ensemble month MAE 2.65 / 5.08 / 29.13 pp (cells 48/49/50), RangeSkill
 +0.064 / +0.061 / −0.026 — the first two cells beat the naive range
 on intervals; cell 50 (COMI +29.13% realised month) covers 0.000.
@@ -53,13 +55,18 @@ RangeSkill +0.064 / −0.042 / +0.065 / +0.065 / −0.043 / −0.197;
 Kronos month on the batch-9 cells: 5.82 / 8.24 / 22.86 / 43.46 /
 19.43 / 3.83 pp — still far worse than zero-move on the five EGX
 cells, and better than the ensemble only on cell 59 (NVDA, 3.83 vs
-14.43 pp).
+14.43 pp). The batch-10 cells alone: ensemble month MAE 11.68 /
+12.16 / 10.98 / 22.55 pp (cells 60/61/62/63), RangeSkill −0.120 /
++0.065 / −0.237 / −0.042; Kronos month on the batch-10 cells:
+14.11 / 2.61 / 18.20 / 43.31 pp — still far worse than zero-move
+on three of the four cells, but better than the ensemble on cell 61
+(HRHO, 2.61 vs 12.16 pp, coverage 1.000).
 
-## Tilt-technicals (n = 12 — no quality claim)
+## Tilt-technicals (n = 16 — no quality claim)
 
-The twelve batch-7/8/9 captures are the first v2 captures, so they
+The sixteen batch-7/8/9/10 captures are the first v2 captures, so they
 are the first cells with `tilt_centre_pct`: tilt-technicals month MAE
-14.37 pp, RangeSkill −0.052 (n = 12). No claim at this n; the tilt
+14.54 pp, RangeSkill −0.080 (n = 16). No claim at this n; the tilt
 is adopted only if its RangeSkill CI lower bound > 0 on untouched
 cells (#594 adoption test).
 
@@ -71,7 +78,7 @@ almost nothing: the ~3 pp of the old month error that was the
 scoring mismatch is gone, and the decay is still there — this
 confirms the decay is real, not a scoring artifact.
 
-## Gaps recorded by the scorer (182)
+## Gaps recorded by the scorer (186)
 
 Every v1 capture lacks `sigma60_daily` (naive-range falls back to
 `sigma_daily` as proxy) and `tilt_centre_pct` (`tilt-technicals` has
@@ -79,5 +86,5 @@ zero rows on the 36 v1 cells — the tilt is a v2-only entrant). EGX
 captures have no index leg (`^EGX30` 404s on Yahoo; the EW-proxy
 index leg per #436 T6 is still open). The tilt gap wording changed
 with the #689 scorer hardening ("no usable tilt_centre_pct —
-horizon skipped") — the scores are unchanged (all 675 old rows
+horizon skipped") — the scores are unchanged (all 786 old rows
 reproduce exactly). See `backtest.json` `gaps`.
