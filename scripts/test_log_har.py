@@ -112,12 +112,24 @@ def test_unnumbered_and_json():
             open(os.path.join(cap, fn), "w").write("{}")
         open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
         out = os.path.join(d, "o.json")
+        frozen = os.path.join(ROOT, "benchmarks", "frozen_log_har_r6.json")
         buf = io.StringIO()
+        # build_rows is stubbed so any capture that reaches it yields a
+        # scorable row; the "{}" fixture files alone would build no row
+        # and the test could not tell whether the filter ran.
+        def fake_rows(caps, allc):
+            return [{"ticker": "TST", "as_of": "2025-11-14",
+                     "horizon": h, "real": 1.0, "naive_half": 5.0,
+                     "mult": 1.0, "v2_sigma": 0.02, H.KEY: 0.03}
+                    for c in caps for h in ("day", "week", "month")], []
+        real_build = H.build_rows
+        H.build_rows = fake_rows
         check("unnumbered capture is findable by find_captures",
               H.A.find_captures([d], 48) != [])
         with contextlib.redirect_stdout(buf):
-            rc = H.main(["score", "--captures", d, "--min-cell", "48",
-                         "--descriptive", "--reps", "50", "--json", out], "--frozen", os.path.join(ROOT, "benchmarks", "frozen_log_har_r6.json"))
+            rc = H.main(["score", "--frozen", frozen, "--captures", d,
+                         "--min-cell", "48", "--descriptive",
+                         "--reps", "50", "--json", out])
         data = json.load(open(out))
         check("descriptive run exits 0", rc == 0)
         check("unnumbered capture dropped from scoring",
@@ -125,15 +137,17 @@ def test_unnumbered_and_json():
         check("descriptive json carries no verdict",
               "verdict" not in data and data["descriptive"] is True)
         with contextlib.redirect_stdout(buf):
-            H.main(["score", "--captures", d, "--reps", "50",
-                    "--json", out], "--frozen", os.path.join(ROOT, "benchmarks", "frozen_log_har_r6.json"))
+            H.main(["score", "--frozen", frozen, "--captures", d,
+                    "--reps", "50", "--json", out])
         check("clean json carries a verdict",
               "verdict" in json.load(open(out)))
+        H.build_rows = real_build
 
 
 def main():
     for fn in (test_constants, test_rv, test_solve, test_forecast,
-               test_score_rows, test_frozen_file, test_refusal):
+               test_score_rows, test_frozen_file, test_refusal,
+               test_unnumbered_and_json):
         fn()
     print("test_log_har: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
