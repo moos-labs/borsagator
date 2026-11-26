@@ -58,10 +58,10 @@ def scorer_legs(cell):
     """The tilt scorer's own legs, from T.evaluate's cell."""
     cci = cell["coverage_ci_cutoff"]
     lo = _lo(cell["skill_ci_cutoff"])
-    cov_ok = (None not in cci and cci[0] <= T.COV_HI and cci[1] >= T.COV_LO)
+    cov_ok = R.coverage_ci_ok(cci, (T.COV_LO, T.COV_HI))
     return {"skill_ci_lower": lo,
             "skill_leg": lo is not None and lo > 0,
-            "coverage_ci": list(cci), "coverage_overlap_leg": cov_ok}
+            "coverage_ci": list(cci), "coverage_leg": cov_ok}
 
 
 def _eval_h(hp, reps, seed):
@@ -134,10 +134,10 @@ def render(res, n_caps):
                     _f(c["range_skill"]), _f(c["coverage"])))
         s = c["scorer"]
         L.append("  scorer legs: skill CI lower %s > 0: %s | coverage CI "
-                 "[%s, %s] overlaps 0.75-0.85: %s"
+                 "[%s, %s] overlaps 0.75-0.85, width <= 0.15: %s"
                  % (_f(s["skill_ci_lower"]), _yn(s["skill_leg"]),
                     _f(s["coverage_ci"][0]), _f(s["coverage_ci"][1]),
-                    _yn(s["coverage_overlap_leg"])))
+                    _yn(s["coverage_leg"])))
         L.append("  %d-cluster bar: %d clusters: %s"
                  % (c["cluster_bar"]["needed"], c["cutoffs"],
                     _yn(c["cluster_bar"]["met"])))
