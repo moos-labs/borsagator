@@ -3,7 +3,9 @@
 r4). Standalone, stdlib only:
 python3 scripts/test_ledger_sentiment_tilt.py
 """
+import contextlib
 import importlib.util
+import io
 import os
 import sys
 
@@ -96,18 +98,34 @@ def test_verdict():
     check("day still insufficient", v["day"][0] == "INSUFFICIENT")
 
 
+def _synthetic_ledger(tmpdir):
+    """Fixed insufficient ledger: 5 matured rows, 1 ticker."""
+    import json
+    rows = [dict(row(real=1.0 + i, t="A", a="2026-11-1%d" % i))
+            for i in range(5)]
+    path = os.path.join(tmpdir, "ledger.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"forecasts_detail": rows}, f)
+    return path
+
+
 def test_default_hides_numbers():
-    import io
-    import contextlib
-    buf = io.StringIO()
-    path = os.path.join(ROOT, "ledger", "ledger.json")
-    if os.path.exists(path):
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        path = _synthetic_ledger(d)
+        buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
-            S.main(["--ledger", path])
+            rc = S.main(["--ledger", path])
         out = buf.getvalue()
-        check("no skill numbers while insufficient",
-              "RangeSkill" not in out or "KEEP" in out
-              or "REJECT" in out, out)
+    check("exit 0", rc == 0)
+    check("insufficient reported", "INSUFFICIENT" in out, out)
+    check("counts only while insufficient", "RangeSkill" not in out, out)
+    buf = io.StringIO()
+    with tempfile.TemporaryDirectory() as d:
+        path = _synthetic_ledger(d)
+        with contextlib.redirect_stdout(buf):
+            S.main(["--ledger", path, "--descriptive", "--reps", "50"])
+    check("descriptive shows numbers", "RangeSkill" in buf.getvalue())
 
 
 def main():
