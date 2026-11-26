@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 37.25,
+ "base_source": "egx-data/egxpy_cira.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-26T23:40:06.444200+00:00",
+ "inputs_sha256": {
+  "digest.json": "85b333d9e6bb8fe58c6ed4cd77c996a4e0e8e49145b94babc62fdb8cabda9f09",
+  "ensemble.json": "b0342ae708849f6b91d4128c8fe78b88a97f178265a44e702cef8e7470add46f"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/234006__sweep-lite-cira-ca-market-egx__runw6-sweeplite-cira-002",
+ "ticker": "CIRA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

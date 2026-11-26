@@ -1,0 +1,112 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 6,
+  "label_counts": {
+    "positive": 2,
+    "negative": 1,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.3331210602336796,
+    "negative": 0.18504855293091774,
+    "neutral": 0.481830403887822
+  },
+  "items": [
+    {
+      "text": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976902008056641,
+        "negative": 0.000424912286689505,
+        "neutral": 0.0018848940962925553
+      },
+      "raw_probabilities": {
+        "positive": 0.9976902008056641,
+        "neutral": 0.0018848940962925553,
+        "negative": 0.000424912286689505
+      }
+    },
+    {
+      "text": "Faroe Islands select Hello Registry to power .FO domain operations - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010088726412504911,
+        "negative": 0.0001813396520446986,
+        "neutral": 0.998809814453125
+      },
+      "raw_probabilities": {
+        "neutral": 0.998809814453125,
+        "positive": 0.0010088726412504911,
+        "negative": 0.0001813396520446986
+      }
+    },
+    {
+      "text": "Aspen Group, Inc. (ASPU) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005012943292967975,
+        "negative": 0.0002032792690442875,
+        "neutral": 0.9992954730987549
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992954730987549,
+        "positive": 0.0005012943292967975,
+        "negative": 0.0002032792690442875
+      }
+    },
+    {
+      "text": "83% of Canadians are putting local businesses on their shopping lists this holiday season, CIRA data shows - Yahoo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9970439076423645,
+        "negative": 0.0005615176633000374,
+        "neutral": 0.002394611481577158
+      },
+      "raw_probabilities": {
+        "positive": 0.9970439076423645,
+        "neutral": 0.002394611481577158,
+        "negative": 0.0005615176633000374
+      }
+    },
+    {
+      "text": "Trade Alert: President of Manufactured Housing Of Cavco Industries Brian Cira Has Sold Stock - Simply Wall St",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00033316671033389866,
+        "negative": 0.9958494901657104,
+        "neutral": 0.0038173424545675516
+      },
+      "raw_probabilities": {
+        "negative": 0.9958494901657104,
+        "neutral": 0.0038173424545675516,
+        "positive": 0.00033316671033389866
+      }
+    },
+    {
+      "text": "Cavco Industries president Cira sells $1.59 million in stock - Investing.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0021489192731678486,
+        "negative": 0.1130707785487175,
+        "neutral": 0.8847802877426147
+      },
+      "raw_probabilities": {
+        "neutral": 0.8847802877426147,
+        "negative": 0.1130707785487175,
+        "positive": 0.0021489192731678486
+      }
+    }
+  ]
+}

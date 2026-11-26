@@ -1,0 +1,1412 @@
+{
+  "archive_commit": "dd43223e02f006ba986120818295fe3896308e51",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "f80a9890677daac943e091e4c1abb1e19f2b602a1e735bc5f774d42563bc940d",
+      "family-agent.json": "7b51b37fc0011e8891561703d63dcf776f5a74557aa0ae95ab9fec98c0977411",
+      "family-fundamentals.json": "d0d45d167c5f8b81f2121437691e2153509a8679647fc172aa72adb64dca32b8",
+      "family-price-forecast.json": "037ed57f3a3c8852c9be0cba158ea1fb1b43b3bd53e96635fb3f496a5169b715",
+      "family-sentiment.json": "aed992116ec017251898b31522dad17b03d1699dfa0aa879c9b1d5fa6e6e3d80",
+      "family-technicals.json": "2b6f0f00ace66ae6aee8f4f84e34082eff3fc9ededc790a8b34a8816f522856f",
+      "kronos-alone.json": "42e022c6a08080dbd2027c4ec87ea254c474b09d6d3667bdd8d71f92cbcc49ed",
+      "raw-llm-cohere.json": "2c0126fe476ec3dc7b3b5567aa4099afb4dde11b6c38771c25f74db3756b5686"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-26",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/CIRA-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 37.25,
+    "base_source": "egx-data/egxpy_cira.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-26",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": -0.015,
+      "sentiment": 0.105,
+      "technicals": -0.45
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.105
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.4929,
+        "net_score": 0.105,
+        "range_high_pct": 3.72,
+        "range_low_pct": -3.72,
+        "tilt_centre_pct": 0.05,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.6966
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.1,
+          "sentiment": 0.105,
+          "technicals": -0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.3702,
+        "net_score": -0.219,
+        "range_high_pct": 17.79,
+        "range_low_pct": -17.79,
+        "tilt_centre_pct": -1.74,
+        "trading_sessions": 21,
+        "vol_h_pct": 12.3576
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.45,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.105,
+          "technicals": -0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.9026,
+        "net_score": -0.212,
+        "range_high_pct": 9.26,
+        "range_low_pct": -9.26,
+        "tilt_centre_pct": -0.57,
+        "trading_sessions": 5,
+        "vol_h_pct": 6.0299
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_cira.csv",
+      "base_stale": false,
+      "base_used": 37.25,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_cira.csv": 38.45,
+        "openbb/cira_ca.csv": 38.45000076293945,
+        "pandas-ta/indicators.csv": 38.45000076293945,
+        "talib/indicators.csv": 38.45000076293945,
+        "yahooquery/cira.ca.csv": 38.45000076293945
+      }
+    },
+    "risk": {
+      "conf_cap": 0.45,
+      "events": [
+        {
+          "severity": "medium",
+          "title": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+          "type": "dividend"
+        }
+      ],
+      "flags": [
+        "dividend event: CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de"
+      ],
+      "level": "elevated",
+      "move_z": {
+        "last": 0.25,
+        "max3": 1.43
+      },
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.027,
+    "sigma_daily": 0.027,
+    "sigma_source": "egx-data/egxpy_cira.csv (σ60=0.0270, σ10=0.0212)",
+    "ticker": "CIRA.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": -0.015,
+    "sentiment": 0.105,
+    "technicals": -0.45
+  },
+  "finished": "2026-11-26T23:40:06.119721+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/CIRA.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/CIRA.CA.json",
+    "sharia-row-missing: AAOIFI CIRA.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 CIRA.CA",
+    "sharia-row-missing: FTSE CIRA.CA",
+    "sharia-row-missing: ISLAMICLY CIRA.CA",
+    "sharia-row-missing: MSCI CIRA.CA",
+    "sharia-row-missing: MSCI_M CIRA.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.105
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.4929,
+      "net_score": 0.105,
+      "range_high_pct": 3.72,
+      "range_low_pct": -3.72,
+      "tilt_centre_pct": 0.05,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.6966
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.1,
+        "sentiment": 0.105,
+        "technicals": -0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.3702,
+      "net_score": -0.219,
+      "range_high_pct": 17.79,
+      "range_low_pct": -17.79,
+      "tilt_centre_pct": -1.74,
+      "trading_sessions": 21,
+      "vol_h_pct": 12.3576
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.45,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.105,
+        "technicals": -0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.9026,
+      "net_score": -0.212,
+      "range_high_pct": 9.26,
+      "range_low_pct": -9.26,
+      "tilt_centre_pct": -0.57,
+      "trading_sessions": 5,
+      "vol_h_pct": 6.0299
+    }
+  },
+  "job": "sweep-lite CIRA.CA market=EGX",
+  "job_shape": "sweep-lite CIRA.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 40.6994,
+    "support": 33.8006
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T02:10:14Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 02:10:14 GMT",
+    "news_count": 9,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 02:10:14 GMT",
+        "identity_key": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/cira-education-stock-board-backs-egp-312-million-dividend/70551195",
+        "key_type": "resolved_url",
+        "source": "ad-hoc-news.de",
+        "title": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 09:15:51 GMT",
+        "identity_key": "https://alqhat.com/q/522245",
+        "key_type": "resolved_url",
+        "source": "alqhat.com",
+        "title": "«فايف ستار» للاستقدام بالقطيف تتيح سيرًا ذاتية متنوعة لعاملات منزليات من الفلبين - alqhat.com"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 11:00:00 GMT",
+        "identity_key": "https://finance.yahoo.com/technology/articles/faroe-islands-select-hello-registry-110000253.html",
+        "key_type": "resolved_url",
+        "source": "Yahoo Finance",
+        "title": "Faroe Islands select Hello Registry to power .FO domain operations - Yahoo Finance"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 09:02:40 GMT",
+        "identity_key": "https://eleqtisadenews.com/%D8%B3%D9%8A%D8%B1%D8%A7-%D8%AA%D9%82%D9%88%D8%AF-%D8%A7%D9%84%D8%AA%D8%AD%D8%A7%D9%84%D9%81-%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A-%D9%84%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85-%D8%A8%D9%85%D8%B4%D8%A7/",
+        "key_type": "resolved_url",
+        "source": "الاقتصادي نيوز",
+        "title": "سيرا تقود التحالف المصري للتعليم بمشاركة البنك الأهلي وليبيا للاستثمار و9 كيانات أخرى - الاقتصادي نيوز"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 21:00:00 GMT",
+        "identity_key": "https://ca.finance.yahoo.com/quote/ASPU/",
+        "key_type": "resolved_url",
+        "source": "Yahoo! Finance Canada",
+        "title": "Aspen Group, Inc. (ASPU) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 13:00:00 GMT",
+        "identity_key": "https://finance.yahoo.com/small-business/articles/83-canadians-putting-local-businesses-130000713.html",
+        "key_type": "resolved_url",
+        "source": "Yahoo Finance",
+        "title": "83% of Canadians are putting local businesses on their shopping lists this holiday season, CIRA data shows - Yahoo Finance"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 12:25:50 GMT",
+        "identity_key": "https://simplywall.st/stocks/us/consumer-durables/nasdaq-cvco/cavco-industries/news/trade-alert-president-of-manufactured-housing-of-cavco-indus",
+        "key_type": "resolved_url",
+        "source": "Simply Wall St",
+        "title": "Trade Alert: President of Manufactured Housing Of Cavco Industries Brian Cira Has Sold Stock - Simply Wall St"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 08:01:05 GMT",
+        "identity_key": "a4e9d46cd5e8ba41",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "Cavco Industries president Cira sells $1.59 million in stock - Investing.com"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 21:57:59 GMT",
+        "identity_key": "https://www.awras.com/%D8%AD%D8%A7%D8%B1%D8%B3-%D8%A7%D9%84%D8%AE%D8%B6%D8%B1-%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF-%D8%AC%D8%A7%D9%87%D8%B2-%D9%84%D8%AA%D9%84%D8%A8%D9%8A%D8%A9-%D8%A7%D9%84%D8%AF%D8%B9%D9%88%D8%A9/",
+        "key_type": "resolved_url",
+        "source": "Awras",
+        "title": "حارس \"الخضر\" الجديد جاهز لتلبية الدعوة ولو سيراً على الأقدام من الصين؟ - Awras"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 37.25,
+    "base_source": "egx-data/egxpy_cira.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_cira.csv",
+      "base_stale": false,
+      "base_used": 37.25,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_cira.csv": 38.45,
+        "openbb/cira_ca.csv": 38.45000076293945,
+        "pandas-ta/indicators.csv": 38.45000076293945,
+        "talib/indicators.csv": 38.45000076293945,
+        "yahooquery/cira.ca.csv": 38.45000076293945
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.027,
+    "sigma_source": "egx-data/egxpy_cira.csv (σ60=0.0270, σ10=0.0212)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 37.25,
+      "last_date": "2026-11-26",
+      "last_high": 37.75,
+      "last_low": 36.71,
+      "last_open": 37.0,
+      "last_volume": 423361.0,
+      "note": null,
+      "rows": 1979,
+      "source": "egx-data/egxpy_cira.csv",
+      "stale": false
+    },
+    {
+      "last_close": 37.0,
+      "last_date": "2026-11-25",
+      "last_high": 38.5,
+      "last_low": 36.9900016784668,
+      "last_open": 38.45000076293945,
+      "last_volume": 379159.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/CIRA_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 37.0,
+      "last_date": "2026-11-25",
+      "last_high": 38.5,
+      "last_low": 36.9900016784668,
+      "last_open": 38.45000076293945,
+      "last_volume": 379159.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 37.0,
+      "last_date": "2026-11-25",
+      "last_high": 38.5,
+      "last_low": 36.9900016784668,
+      "last_open": 38.45000076293945,
+      "last_volume": 379159.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 38.45000076293945,
+      "last_date": "2026-11-24",
+      "last_high": 39.0,
+      "last_low": 37.79999923706055,
+      "last_open": 37.709999084472656,
+      "last_volume": 587103.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/CIRA.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-cira-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-cira-002",
+    "source_runs": [
+      "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "CIRA.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.45,
+    "events": [
+      {
+        "severity": "medium",
+        "title": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+        "type": "dividend"
+      }
+    ],
+    "flags": [
+      "dividend event: CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de"
+    ],
+    "level": "elevated",
+    "move_z": {
+      "last": 0.25,
+      "max3": 1.43
+    },
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for CIRA.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-26T23:37:24.419572+00:00",
+  "sweep_dir": "sweeps/2026-11-26/234006__sweep-lite-cira-ca-market-egx__runw6-sweeplite-cira-002",
+  "ticker": "CIRA.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "CIRA.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "CIRA.CA.csv_last_close": 38.45000076293945,
+          "CIRA.CA.csv_last_date": "2026-11-24",
+          "rows_CIRA.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "5779386c00b30b6d25d7f320b042cb9bcc260d09e70d5702cf1fcd7cd37ba064",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "CIRA_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "CIRA_CA.csv_last_close": 37.0,
+          "CIRA_CA.csv_last_date": "2026-11-25",
+          "rows_CIRA_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "11b11a8777915c8db0a1946b6baabe154e29ab84259f83b3ed6447c259e2345d",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_cira.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_cira.csv_last_close": 37.25,
+          "egxpy_cira.csv_last_date": "2026-11-26",
+          "rows_egxpy_cira.csv": 1979,
+          "symbol": "CIRA",
+          "ticker": "CIRA.CA"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "e114c5013b109f559d20842aaa9e16d869557068abb1ff4cbe0d83a5887ee4c9",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 14.2627,
+          "atr_14": 1.6104,
+          "bb_lower": 34.6087,
+          "bb_mid": 37.4565,
+          "bb_pctb": 0.4198,
+          "bb_upper": 40.3043,
+          "close": 37.0,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 37.6366,
+          "ema_200": 30.5427,
+          "ema_50": 37.0987,
+          "first_date_used": "2019-01-01",
+          "high": 38.5,
+          "indicators.csv_last_close": 37.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 36.99,
+          "macd": 0.2939,
+          "macd_hist": -0.0412,
+          "macd_signal": 0.3352,
+          "open": 38.45,
+          "rows_fetched": 5420,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 47.2932,
+          "stoch_d": 56.1357,
+          "stoch_k": 50.0158,
+          "ticker": "CIRA.CA"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "597d3f732e1bbd2e2bfa56c8fdfbab2a151d3ef7ac2073d4b59c641288bbcfee",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 37.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 37.0,
+          "last_date": "2026-11-25",
+          "rows_fetched": 5420,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "CIRA.CA"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "2bcb56c5730f569fb5dba0565bf5d8c3b4c6d6e74a55de957bb8c411195e7893",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "2ee9e2b585b619577d54467f74dc5303f07525202d81eb069214f1366f462944",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "1b206bb55aed2741ca1b114a8ee13f2003d72d783984165abfaf13bc53939f33",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "29c4b50ec995e4162ba7a54af32cde1cd74fc9d5fce0db5c7267e3b8db88c8b8",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 6,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "b58ab363b0d8d6d881bc6fa508d103a092cd5e48c099d0dc59bd06b1d199f40b",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 6,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "e25d785eae64642c514538f012b08670233e52c597ec552e05f119c728d01a5f",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 6,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "688c79b3f85ffa7710d8e4a6d170fc160245a21eb77fbbcef13455d85eaf44ff",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 37.1121,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "41c019aff70d196f57add53908ec46c275e3950f28b15b0a55e263b60df8437c",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "c639a4a60b670c601b8361824247be902d1ff4310775b115e7a6d1e17e105420",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-cira-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 3,
+          "bodies_fetched": 8,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-26T23:40:05Z",
+          "finbert_negative": 0.036,
+          "finbert_neutral": 0.917,
+          "finbert_positive": 0.047,
+          "finbert_scored": 6,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 02:10:14 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.008,
+          "multilingual_neutral": 0.481,
+          "multilingual_positive": 0.511,
+          "multilingual_scored": 3,
+          "news_count": 9,
+          "ticker": "CIRA.CA",
+          "tool": "news-disclosure",
+          "top_headline": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+          "translated_negative": 0.011,
+          "translated_neutral": 0.706,
+          "translated_positive": 0.283,
+          "translated_scored": 3,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "CIRA.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "a4e6fb7b6ea9d2432810dda08d169e8affb8fd727804f95513a333859bfeb9ac",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-cira-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

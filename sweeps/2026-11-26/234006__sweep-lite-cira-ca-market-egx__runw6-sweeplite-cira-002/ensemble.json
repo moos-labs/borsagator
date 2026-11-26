@@ -1,0 +1,138 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "CIRA.CA",
+ "base_price": 37.25,
+ "base_source": "egx-data/egxpy_cira.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_cira.csv": 38.45,
+   "openbb/cira_ca.csv": 38.45000076293945,
+   "pandas-ta/indicators.csv": 38.45000076293945,
+   "talib/indicators.csv": 38.45000076293945,
+   "yahooquery/cira.ca.csv": 38.45000076293945
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-24",
+  "base_used": 37.25,
+  "base_source_used": "egx-data/egxpy_cira.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.027,
+ "sigma60_daily": 0.027,
+ "sigma_source": "egx-data/egxpy_cira.csv (σ60=0.0270, σ10=0.0212)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.664,
+ "date": "2026-11-26",
+ "risk": {
+  "level": "elevated",
+  "conf_cap": 0.45,
+  "price_mult": 0.8,
+  "flags": [
+   "dividend event: CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de"
+  ],
+  "events": [
+   {
+    "type": "dividend",
+    "severity": "medium",
+    "title": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de"
+   }
+  ],
+  "move_z": {
+   "last": 0.25,
+   "max3": 1.43
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.45,
+  "sentiment": 0.105,
+  "agent": null,
+  "fundamentals": -0.1,
+  "price-forecast": -0.015
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.72,
+   "range_high_pct": 3.72,
+   "confidence": 0.45,
+   "net_score": 0.105,
+   "tilt_centre_pct": 0.05,
+   "families": {
+    "sentiment": 0.105
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 3.4929,
+   "vol_h_pct": 2.6966,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -9.26,
+   "range_high_pct": 9.26,
+   "confidence": 0.45,
+   "net_score": -0.212,
+   "tilt_centre_pct": -0.57,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": 0.105
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": 3.9026,
+   "vol_h_pct": 6.0299,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -17.79,
+   "range_high_pct": 17.79,
+   "confidence": 0.45,
+   "net_score": -0.219,
+   "tilt_centre_pct": -1.74,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": 0.105,
+    "fundamentals": -0.1
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": -0.3702,
+   "vol_h_pct": 12.3576,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

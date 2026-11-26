@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "CIRA.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "CIRA.CA",
+    "fetched_at": "2026-11-26T23:40:05Z",
+    "tool": "news-disclosure",
+    "news_count": 9,
+    "disclosure_count": 0,
+    "arabic_headlines": 3,
+    "latest_news_date": "Wed, 25 Nov 2026 02:10:14 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "CIRA Education stock: board backs EGP 312 million dividend - ad-hoc-news.de",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.047,
+    "finbert_negative": 0.036,
+    "finbert_neutral": 0.917,
+    "finbert_scored": 6,
+    "multilingual_positive": 0.511,
+    "multilingual_negative": 0.008,
+    "multilingual_neutral": 0.481,
+    "multilingual_scored": 3,
+    "bodies_fetched": 8,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.283,
+    "translated_negative": 0.011,
+    "translated_neutral": 0.706,
+    "translated_scored": 3
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
