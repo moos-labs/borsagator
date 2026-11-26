@@ -2,8 +2,8 @@
 """Forward-ledger scorer for the cross-sectional sentiment tilt (shadow,
 nothing fitted).
 
-INS-IMPROVE-001 round 8, experiment X1 (target T2). GO by Moos in Slack
-(1795720900.500279). Reads ledger/ledger.json forecasts_detail directly.
+INS-IMPROVE-001 round 8, experiment X1 (target T2). GO by Muhammad in
+Slack (1795720900.500279). Reads ledger/ledger.json forecasts_detail directly.
 
 Tilt: the S1 sentiment tilt (score_ledger_sentiment_tilt.py) with a
 relative score. Within each (as_of cutoff, horizon) group of eligible
