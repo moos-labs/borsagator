@@ -1,0 +1,110 @@
+{
+ "descriptive": true,
+ "min_cell": 48,
+ "reps": 5000,
+ "seed": 20261125,
+ "results": {
+  "day": {
+   "n_rows": 31,
+   "clusters": 6,
+   "range_skill": -0.023199503311258335,
+   "existing": {
+    "ci": [
+     -0.05268339229193826,
+     0.04747945205479452
+    ],
+    "pass": false
+   },
+   "jackknife": {
+    "ci": [
+     -0.06603208555651158,
+     0.019633078933994914
+    ],
+    "loo_min": -0.03496736250242365,
+    "loo_max": -0.004534343681251573,
+    "pass": false
+   },
+   "signflip": {
+    "p_one_sided": 0.796875,
+    "mode": "exact",
+    "pass": false
+   },
+   "wild": {
+    "ci": [
+     -0.05790059724824107,
+     0.011501590625724404
+    ],
+    "pass": false
+   },
+   "verdict_would_change_under": []
+  },
+  "week": {
+   "n_rows": 31,
+   "clusters": 6,
+   "range_skill": -0.0006009514287920739,
+   "existing": {
+    "ci": [
+     -0.0011749675396019225,
+     0.0003332539771740639
+    ],
+    "pass": false
+   },
+   "jackknife": {
+    "ci": [
+     -0.0013984013625270677,
+     0.00019649850494291997
+    ],
+    "loo_min": -0.0008606189035107473,
+    "loo_max": -0.00031270338801236215,
+    "pass": false
+   },
+   "signflip": {
+    "p_one_sided": 0.84375,
+    "mode": "exact",
+    "pass": false
+   },
+   "wild": {
+    "ci": [
+     -0.0013163030638543459,
+     0.00011440020627019819
+    ],
+    "pass": false
+   },
+   "verdict_would_change_under": []
+  },
+  "month": {
+   "n_rows": 31,
+   "clusters": 6,
+   "range_skill": -0.021918498366119372,
+   "existing": {
+    "ci": [
+     -0.03191582368521895,
+     -0.0067782674653185
+    ],
+    "pass": false
+   },
+   "jackknife": {
+    "ci": [
+     -0.03388302528795045,
+     -0.009953971444288294
+    ],
+    "loo_min": -0.02499039882373436,
+    "loo_max": -0.01772616576014527,
+    "pass": false
+   },
+   "signflip": {
+    "p_one_sided": 0.921875,
+    "mode": "exact",
+    "pass": false
+   },
+   "wild": {
+    "ci": [
+     -0.03312293056137516,
+     -0.010714066170863571
+    ],
+    "pass": false
+   },
+   "verdict_would_change_under": []
+  }
+ }
+}
