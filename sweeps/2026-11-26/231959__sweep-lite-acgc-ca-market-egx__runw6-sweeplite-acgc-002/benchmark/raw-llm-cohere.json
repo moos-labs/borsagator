@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 14.1,
+ "base_source": "egx-data/egxpy_acgc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-26T23:20:03.885812+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.75,
+   "direction": "up",
+   "expected_move_pct": 1.41,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.88,
+   "range_low_pct": 0.94,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.62,
+   "direction": "up",
+   "expected_move_pct": 3.55,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.73,
+   "range_low_pct": 2.37,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.68,
+   "direction": "up",
+   "expected_move_pct": 2.12,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 2.83,
+   "range_low_pct": 1.41,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_acgc.csv": "d16a38e16f76e6550e13a52ba5172b9cacc9ebf954ac58a1b6c7977c59447c49",
+  "digest.json": "c074c234229d0b0b0a91190c888da23465969ab02d2ea81cf2af2766bcb11b5c",
+  "ensemble.json": "f285705cb893a66adf954889d355e8d9ac0421acc49ad9c8b857f79de58e91b6",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_acgc.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0258,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/231959__sweep-lite-acgc-ca-market-egx__runw6-sweeplite-acgc-002",
+ "ticker": "ACGC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

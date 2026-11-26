@@ -1,0 +1,201 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 7,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 6
+  },
+  "label_counts_raw": {
+    "neutral": 6,
+    "negative": 1
+  },
+  "mean_probabilities": {
+    "positive": 5.442079685380463e-05,
+    "negative": 0.1428793693659815,
+    "neutral": 0.8570662325267092
+  },
+  "items": [
+    {
+      "text": "VM/ACGC/EU/SWValley - Teams - FloWrestling",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00037112351856194437,
+        "negative": 0.0001353891275357455,
+        "neutral": 0.9994934797286987
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994934797286987
+        },
+        {
+          "label": "Positive",
+          "score": 0.00037112351856194437
+        },
+        {
+          "label": "Negative",
+          "score": 0.0001353891275357455
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "2026-2027 WINTER SPORTS PREVIEW: Gruber returns for ACGC - The Audubon County Advocate Journal",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.5585516166538582e-06,
+        "negative": 1.992588209986934e-07,
+        "neutral": 0.9999982118606567
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999982118606567
+        },
+        {
+          "label": "Positive",
+          "score": 1.5585516166538582e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.992588209986934e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "KMAland Girls Basketball (11/23): Red Oak, Woodbine, ACGC, Pleasantville among Monday winners - KMAland.com",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.1293113756401e-07,
+        "negative": 3.8224775380513165e-06,
+        "neutral": 0.9999957084655762
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999957084655762
+        },
+        {
+          "label": "Negative",
+          "score": 3.8224775380513165e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.1293113756401e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ACGC: SEC Form S-4 filed by ACP Holdings Acquisition Corp. - Quantisnow",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.840207677465514e-07,
+        "negative": 5.751465323555749e-06,
+        "neutral": 0.9999936819076538
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999936819076538
+        },
+        {
+          "label": "Negative",
+          "score": 5.751465323555749e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.840207677465514e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ACGC/HSBC BK 17 (135867.L) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.641611551254755e-06,
+        "negative": 6.230292910913704e-06,
+        "neutral": 0.9999881982803345
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999881982803345
+        },
+        {
+          "label": "Negative",
+          "score": 6.230292910913704e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.641611551254755e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ACGC/Ogden/Panorama/SE Valley - Information - FloWrestling",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4677139006380457e-06,
+        "negative": 9.914985639625229e-06,
+        "neutral": 0.9999886751174927
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999886751174927
+        },
+        {
+          "label": "Negative",
+          "score": 9.914985639625229e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.4677139006380457e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Iowa High School Volleyball Team Mourning Loss Of Student Athlete - Sports Illustrated",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 5.7230440830835505e-08,
+        "negative": 0.9999942779541016,
+        "neutral": 5.672326551575679e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9999942779541016
+        },
+        {
+          "label": "Neutral",
+          "score": 5.672326551575679e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.7230440830835505e-08
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

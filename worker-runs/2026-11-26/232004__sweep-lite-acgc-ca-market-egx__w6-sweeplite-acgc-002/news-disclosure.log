@@ -1,0 +1,16 @@
+WARN body http 404: https://ca.finance.yahoo.com/quote/135867.L/seasonality/
+bodies: 0/1 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/ACGC.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5411.10it/s]
+{"tool": "news-disclosure", "ticker": "ACGC.CA", "news_count": 1, "disclosure_count": 0, "arabic_headlines": 0, "latest_news_date": "Sun, 22 Nov 2026 18:28:12 GMT", "latest_disclosure_date": "", "top_headline": "ACGC/HSBC BK 17 (135867.L) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada", "llm_provider": "cohere", "finbert_positive": 0.022, "finbert_negative": 0.049, "finbert_neutral": 0.929, "finbert_scored": 1, "bodies_fetched": 0, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "none"}
+BRIEF:
+- ACGC/HSBC Bank 17's seasonal returns chart is highlighted on Yahoo! Finance Canada. 
+- The chart likely provides insights into the bank's historical performance during different seasons, which can be valuable for investors assessing the stock's potential.
+- No specific numbers are mentioned in the headline, but the focus on seasonal returns suggests a potential pattern or trend analysis.
+- Understanding seasonal variations in performance can help investors make informed decisions and manage expectations.
+- This disclosure may indicate a shift in investor focus towards seasonal factors and their impact on the bank's stock.
+- It matters for the stock as it provides an additional layer of analysis, helping investors evaluate the stock's resilience and performance across different periods.
+- The headline suggests a potential opportunity for investors to review the bank's historical data and make informed choices.
+- With no further details, the impact on the stock's price or performance remains uncertain, but it opens a discussion on the bank's seasonal strategies and their effect on shareholder value.

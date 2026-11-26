@@ -1,0 +1,127 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 7,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.1422926934776894,
+    "negative": 0.14263275808895873,
+    "neutral": 0.7150745349603572
+  },
+  "items": [
+    {
+      "text": "VM/ACGC/EU/SWValley - Teams - FloWrestling",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005129073979333043,
+        "negative": 0.00024983874754980206,
+        "neutral": 0.9992372989654541
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992372989654541,
+        "positive": 0.0005129073979333043,
+        "negative": 0.00024983874754980206
+      }
+    },
+    {
+      "text": "2026-2027 WINTER SPORTS PREVIEW: Gruber returns for ACGC - The Audubon County Advocate Journal",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0023991509806364775,
+        "negative": 0.00019601694657467306,
+        "neutral": 0.9974047541618347
+      },
+      "raw_probabilities": {
+        "neutral": 0.9974047541618347,
+        "positive": 0.0023991509806364775,
+        "negative": 0.00019601694657467306
+      }
+    },
+    {
+      "text": "KMAland Girls Basketball (11/23): Red Oak, Woodbine, ACGC, Pleasantville among Monday winners - KMAland.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9912359714508057,
+        "negative": 0.0003686567069962621,
+        "neutral": 0.008395398035645485
+      },
+      "raw_probabilities": {
+        "positive": 0.9912359714508057,
+        "neutral": 0.008395398035645485,
+        "negative": 0.0003686567069962621
+      }
+    },
+    {
+      "text": "ACGC: SEC Form S-4 filed by ACP Holdings Acquisition Corp. - Quantisnow",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005778002669103444,
+        "negative": 0.00018447362526785582,
+        "neutral": 0.9992376565933228
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992376565933228,
+        "positive": 0.0005778002669103444,
+        "negative": 0.00018447362526785582
+      }
+    },
+    {
+      "text": "ACGC/HSBC BK 17 (135867.L) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000531326571945101,
+        "negative": 0.0001438827021047473,
+        "neutral": 0.9993247985839844
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993247985839844,
+        "positive": 0.000531326571945101,
+        "negative": 0.0001438827021047473
+      }
+    },
+    {
+      "text": "ACGC/Ogden/Panorama/SE Valley - Information - FloWrestling",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005900987307541072,
+        "negative": 0.00019633665215224028,
+        "neutral": 0.9992135763168335
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992135763168335,
+        "positive": 0.0005900987307541072,
+        "negative": 0.00019633665215224028
+      }
+    },
+    {
+      "text": "Iowa High School Volleyball Team Mourning Loss Of Student Athlete - Sports Illustrated",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00020159894484095275,
+        "negative": 0.9970901012420654,
+        "neutral": 0.002708262065425515
+      },
+      "raw_probabilities": {
+        "negative": 0.9970901012420654,
+        "neutral": 0.002708262065425515,
+        "positive": 0.00020159894484095275
+      }
+    }
+  ]
+}
