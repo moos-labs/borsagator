@@ -1,0 +1,106 @@
+{
+ "job": {
+  "id": "w6-sweeplite-atqa-002",
+  "job": "sweep-lite ATQA.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-26T23:35:10.251574+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "exit-1",
+  "finbert-tone": "exit-1",
+  "financial-roberta": "exit-1",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-atqa-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-26T23:35:10.251574+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ATQA"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ATQA']",
+  "extraction": {}
+ },
+ "finished": "2026-11-26T23:37:04.405436+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002",
+  "model": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002/report-model.json",
+  "model_sha256": "c47de2ad5d45f5c0eca0eeda9830c9e2ddaaa47ded8ce904656fad873c892cd8",
+  "degraded": {
+   "absent_families": [
+    "sentiment"
+   ],
+   "absent_tools": [
+    "finbert",
+    "finbert-tone",
+    "financial-roberta",
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: sentiment)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/ATQA.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ATQA.CA.json",
+   "sharia-row-missing: AAOIFI ATQA.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ATQA.CA",
+   "sharia-row-missing: FTSE ATQA.CA",
+   "sharia-row-missing: ISLAMICLY ATQA.CA",
+   "sharia-row-missing: MSCI ATQA.CA",
+   "sharia-row-missing: MSCI_M ATQA.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "14bd5f5fa95b11f799bed5e1c854564d864aec79",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 111133,
+    "sha256": "39565296cae5be44d6d2d1b603a0f6b9b85cbb8a8da599ec064410b5a6a6fa39"
+   },
+   {
+    "path": "report.md",
+    "bytes": 21065,
+    "sha256": "4b30171e3ec0545a59cedcf685bf1c05a2c7424d27e8bf3eb360ed08d4cdd0fc"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ATQA.CA"
+ }
+}

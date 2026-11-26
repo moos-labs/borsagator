@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 9.52,
+ "base_source": "egx-data/egxpy_atqa.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-26T23:37:09.229778+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.49,
+   "range_low_pct": -4.49,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 20.59,
+   "range_low_pct": -20.59,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 10.05,
+   "range_low_pct": -10.05,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "9c3d1624e367d8a34830fee6c4f6b35d43c80c9d5d5ab6d0ebcde455fbd59cbd",
+  "ensemble.json": "facb1213f8b50da0421a994b30efa2af836bfb21627046d9254632de3ec9707b"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0351,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002",
+ "ticker": "ATQA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 9.52,
+ "base_source": "egx-data/egxpy_atqa.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: sentiment score null in every horizon",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-26T23:37:04.709480+00:00",
+ "inputs_sha256": {
+  "digest.json": "9c3d1624e367d8a34830fee6c4f6b35d43c80c9d5d5ab6d0ebcde455fbd59cbd",
+  "ensemble.json": "facb1213f8b50da0421a994b30efa2af836bfb21627046d9254632de3ec9707b"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/233704__sweep-lite-atqa-ca-market-egx__runw6-sweeplite-atqa-002",
+ "ticker": "ATQA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
