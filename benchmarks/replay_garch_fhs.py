@@ -49,6 +49,16 @@ from the same closes) and a naive 1.2816 x sigma60 band on the same
 pseudo-windows. Close-only, raw closes (no dividend adjustment), 6
 tickers.
 
+Experiment F (Moos round 2-5 GO, folded into D), mode `screen-pooled`,
+descriptive long-history screen first, NEVER a verdict: one shared
+(a, b) across tickers, each ticker keeping its own scale (omega_t =
+var_t x (1 - a - b)). The shared (a, b) are fitted only on closes dated
+<= 2021-12-31; pseudo-cutoffs start 2022-01-01 and every realised
+window ends <= 2023-12-28, so the screen excludes every verdict-cell
+window and the pooled fit never sees a screened window. The same
+windows score the per-ticker arm D and v2. If the pooled arm earns a
+clean test it needs its own pre-registered score mode and frozen (a, b).
+
 Usage:
   python3 benchmarks/replay_garch_fhs.py screen --captures DIR ...
       [--reps 2000] [--json OUT]
@@ -240,6 +250,110 @@ def screen_pairs(capture_dirs, step=21, min_hist=N_RET + 1):
     return pairs
 
 
+POOL_FIT_END = "2021-12-31"
+POOL_SCREEN_START = "2022-01-01"
+
+
+def fit_pooled(rets_by_t):
+    """Shared (a, b) across tickers by grid QMLE. Each ticker keeps its
+    own scale: omega_t = var_t x (1 - a - b) (variance targeting on its
+    own returns), so only the dynamics are pooled. None when no ticker
+    has >= MIN_RET returns."""
+    use = {t: r[-N_RET:] for t, r in rets_by_t.items()
+           if len(r[-N_RET:]) >= MIN_RET}
+    if not use:
+        return None
+    var = {t: sum(x * x for x in r) / len(r) for t, r in use.items()}
+    best, best_p = None, None
+    for a in A_GRID:
+        for b in B_GRID:
+            if a + b >= 0.999:
+                continue
+            v = sum(_nll(r, var[t], var[t] * (1.0 - a - b), a, b)
+                    for t, r in use.items())
+            if best is None or v < best:
+                best, best_p = v, (a, b)
+    return best_p
+
+
+def fhs_band_pooled(rets, h, ab, seed=SEED, n_sim=N_SIM):
+    """Same FHS as fhs_band, but (a, b) are the pooled values and
+    omega comes from this ticker's own variance (its scale)."""
+    rets = rets[-N_RET:]
+    if ab is None or len(rets) < MIN_RET:
+        return None
+    a, b = ab
+    var = sum(r * r for r in rets) / len(rets)
+    if var <= 0:
+        return None
+    omega = var * (1.0 - a - b)
+    s2, z = var, []
+    for r in rets:
+        z.append(r / math.sqrt(s2))
+        s2 = omega + a * r * r + b * s2
+    rng = random.Random(seed)
+    sims = []
+    for _ in range(n_sim):
+        v, cum = s2, 0.0
+        for _s in range(h):
+            e = rng.choice(z) * math.sqrt(v)
+            cum += e
+            v = omega + a * e * e + b * v
+        sims.append(cum)
+    sims.sort()
+    q10 = sims[int(0.10 * n_sim)]
+    q90 = sims[int(0.90 * n_sim) - 1]
+    return (math.exp(q90) - math.exp(q10)) / 2.0 * 100.0
+
+
+def screen_pooled_pairs(capture_dirs, step=21, fit_end=POOL_FIT_END,
+                        start=POOL_SCREEN_START):
+    """Pooled-vs-per-ticker screen. The shared (a, b) are fitted on
+    closes dated <= fit_end only; pseudo-cutoffs begin at `start`, so
+    no screened window was used to fit the pooled dynamics. Windows end
+    on or before 2023-12-28 (no verdict cell, no ledger row). Each pair
+    carries the pooled band (is_ch / in_ch) and the per-ticker D band
+    (is_d / in_d) on the same windows, plus v2 and naive."""
+    by_t = {}
+    for cap in capture_dirs:
+        t = os.path.basename(cap).upper()
+        cl = read_closes(cap, "2023-12-28")
+        if len(cl) > len(by_t.get(t, [])):
+            by_t[t] = cl
+    fit_rets = {t: logrets([c for d, c in cl if d <= fit_end])
+                for t, cl in by_t.items()}
+    ab = fit_pooled(fit_rets)
+    pairs = []
+    for t, cl in sorted(by_t.items()):
+        closes = [c for _, c in cl]
+        dates = [d for d, _ in cl]
+        for h in HORIZONS:
+            n = R.SESSIONS[h]
+            i = max(MIN_RET + 1, 1)
+            while i + n < len(closes):
+                if dates[i - 1] >= start:
+                    rets = logrets(closes[:i])
+                    pooled = fhs_band_pooled(rets, n, ab)
+                    own = fhs_band(rets, n)
+                    s60 = R._sd(rets[-60:])
+                    if pooled and own and s60:
+                        real = (closes[i + n - 1] / closes[i - 1] - 1) * 100
+                        v2 = R.half_pct(s60, h, ens_mod.V2_BAND_K[h])
+                        nv = R.half_pct(s60, h, 1.2816)
+                        pairs.append({
+                            "ticker": t, "as_of": dates[i - 1],
+                            "horizon": h,
+                            "is_naive": bs.winkler_is(real, -nv, nv),
+                            "is_v2": bs.winkler_is(real, -v2, v2),
+                            "is_ch": bs.winkler_is(real, -pooled, pooled),
+                            "is_d": bs.winkler_is(real, -own, own),
+                            "in_v2": abs(real) <= v2,
+                            "in_ch": abs(real) <= pooled,
+                            "in_d": abs(real) <= own})
+                i += step
+    return pairs, ab
+
+
 def render(res, descriptive, title):
     L = [title, "GARCH(1,1) FHS, nominal 0.80 band (Q10/Q90), no k"]
     for h in HORIZONS:
@@ -269,6 +383,10 @@ def main(argv=None):
     sc.add_argument("--captures", nargs="+", required=True)
     sc.add_argument("--reps", type=int, default=2000)
     sc.add_argument("--json", default=None)
+    sp = sub.add_parser("screen-pooled")
+    sp.add_argument("--captures", nargs="+", required=True)
+    sp.add_argument("--reps", type=int, default=2000)
+    sp.add_argument("--json", default=None)
     s = sub.add_parser("score")
     s.add_argument("--captures", nargs="+", required=True)
     s.add_argument("--min-cell", type=int, default=CLEAN_MIN_CELL)
@@ -283,6 +401,26 @@ def main(argv=None):
               % CLEAN_MIN_CELL)
         return 2
     allc = A.find_captures(a.captures, None)
+    if a.mode == "screen-pooled":
+        pairs, ab = screen_pooled_pairs(allc)
+        res_p = R.evaluate(pairs, a.reps)
+        res_d = R.evaluate([dict(p, is_ch=p["is_d"], in_ch=p["in_d"])
+                            for p in pairs], a.reps)
+        print(render(res_p, True, "SCREEN, POOLED GARCH(1,1) FHS "
+                     "(shared a, b = %s fitted on closes <= %s; per-"
+                     "ticker scale; pseudo-cutoffs from %s, windows end "
+                     "<= 2023-12-28), descriptive" % (
+                         ab, POOL_FIT_END, POOL_SCREEN_START)))
+        print()
+        print(render(res_d, True, "SAME WINDOWS, per-ticker GARCH(1,1) "
+                     "FHS (arm D), descriptive"))
+        if a.json:
+            with open(a.json, "w", encoding="utf-8") as fh:
+                json.dump({"pooled_ab": ab, "fit_end": POOL_FIT_END,
+                           "screen_start": POOL_SCREEN_START,
+                           "pooled": res_p, "per_ticker": res_d},
+                          fh, indent=1)
+        return 0
     if a.mode == "screen":
         pairs = screen_pairs(allc)
         res = R.evaluate(pairs, a.reps)

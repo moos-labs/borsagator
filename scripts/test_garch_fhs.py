@@ -101,6 +101,49 @@ def test_screen_window_limit():
               all(p["as_of"] <= "2023-12-28" for p in pairs))
 
 
+def test_pooled():
+    r1 = sim_garch(800, seed=11)
+    r2 = [3.0 * x for x in sim_garch(800, seed=12)]
+    ab = G.fit_pooled({"A": r1, "B": r2})
+    check("pooled fit returns shared (a, b)", ab is not None
+          and ab[0] + ab[1] < 0.999, ab)
+    ab2 = G.fit_pooled({"A": r1, "B": [x * 2 for x in r2]})
+    check("pooled dynamics invariant to per-ticker scale", ab == ab2,
+          (ab, ab2))
+    w1 = G.fhs_band_pooled(r1, 5, ab, n_sim=500)
+    w2 = G.fhs_band_pooled([x * 2 for x in r1], 5, ab, n_sim=500)
+    check("per-ticker scale carried by the band", 1.8 < w2 / w1 < 2.3,
+          (w1, w2))
+    check("short history excluded",
+          G.fhs_band_pooled(r1[:100], 5, ab) is None
+          and G.fit_pooled({"A": r1[:100]}) is None)
+
+
+def test_pooled_screen_window_limit():
+    import datetime as dt
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        for k, t in enumerate(("TST", "TSU")):
+            cap = os.path.join(d, t)
+            os.makedirs(cap)
+            px, rows = 10.0, ["date,close"]
+            day = dt.date(2019, 1, 1)
+            for x in [0.0] + sim_garch(1800, seed=20 + k):
+                px *= math.exp(x)
+                rows.append("%s,%f" % (day.isoformat(), px))
+                day += dt.timedelta(days=1)
+            with open(os.path.join(cap, "price.csv"), "w") as f:
+                f.write("\n".join(rows))
+        pairs, ab = G.screen_pooled_pairs(
+            [os.path.join(d, "TST"), os.path.join(d, "TSU")])
+        check("pooled pairs built", len(pairs) > 0 and ab is not None)
+        check("no window after 2023-12-28",
+              all(p["as_of"] <= "2023-12-28" for p in pairs))
+        check("screening starts after the pooled fit window",
+              all(p["as_of"] >= G.POOL_SCREEN_START for p in pairs)
+              and G.POOL_SCREEN_START > G.POOL_FIT_END)
+
+
 def test_refusal():
     check("refuses seen cells", G.main(
         ["score", "--captures", "/nonexistent", "--min-cell", "73"]) == 2)
@@ -139,7 +182,8 @@ def test_unnumbered_and_json():
 
 def main():
     for fn in (test_constants, test_fit, test_fhs, test_score_rows,
-               test_screen_window_limit, test_refusal):
+               test_screen_window_limit, test_pooled,
+               test_pooled_screen_window_limit, test_refusal):
         fn()
     print("test_garch_fhs: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
