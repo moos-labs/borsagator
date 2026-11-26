@@ -3,6 +3,7 @@
 Standalone, stdlib only.
 """
 import importlib.util
+import json
 import math
 import os
 import sys
@@ -52,10 +53,16 @@ def test_estimator():
 
 
 def test_score_rows():
-    p = P.score_rows([row(sp=0.04, s60=0.02)])[0]
+    wide = P.score_rows([row(real=8.0, sp=0.04, s60=0.02)])[0]
+    base = P.score_rows([row(real=8.0, sp=0.02, s60=0.02)])[0]
     half = P.R.half_pct(0.04, "week", 1.28, 1.0)
     half_v2 = P.R.half_pct(0.02, "week", 1.28, 1.0)
-    check("wider sigma widens band", half > half_v2)
+    check("wider sigma widens band (through score_rows)",
+          wide["in_ch"] and not base["in_ch"] and 8.0 < half
+          and 8.0 > half_v2, (half, half_v2))
+    check("wider band reflected in IS for an inside move",
+          P.score_rows([row(real=0.0, sp=0.04, s60=0.02)])[0]["is_ch"]
+          > P.score_rows([row(real=0.0, sp=0.02, s60=0.02)])[0]["is_ch"])
     check("k not refitted: equal sigma equals v2",
           abs(P.score_rows([row(sp=0.02, s60=0.02)])[0]["is_ch"]
               - P.score_rows([row(sp=0.02, s60=0.02)])[0]["is_v2"]) < 1e-9)
@@ -83,9 +90,44 @@ def test_refusal():
     check("refuses seen cells", rc == 2)
 
 
+def test_unnumbered_and_json():
+    import tempfile
+    import contextlib
+    import io
+    with tempfile.TemporaryDirectory() as d:
+        cap = os.path.join(d, "2025-11-14", "TST")
+        os.makedirs(os.path.join(cap, "digest"))
+        for fn in ("manifest.json", "realised.json"):
+            open(os.path.join(cap, fn), "w").write("{}")
+        open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
+        check("unnumbered capture is findable",
+              P.A.find_captures([d], 91) != [])
+        out = os.path.join(d, "o.json")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = P.main(["score", "--captures", d, "--min-cell", "91",
+                         "--reps", "50", "--json", out])
+        data = json.load(open(out))
+        check("exit 0", rc == 0)
+        check("unnumbered capture dropped from scoring",
+              all(data["results"][h]["n"] == 0 for h in P.HORIZONS),
+              data["results"])
+        with contextlib.redirect_stdout(buf):
+            P.main(["score", "--captures", d, "--min-cell", "48",
+                    "--descriptive", "--reps", "50", "--json", out])
+        data = json.load(open(out))
+        check("descriptive json carries no verdict",
+              "verdict" not in data and data["descriptive"] is True)
+        with contextlib.redirect_stdout(buf):
+            P.main(["score", "--captures", d, "--reps", "50",
+                    "--json", out])
+        check("clean json carries a verdict",
+              "verdict" in json.load(open(out)))
+
+
 def main():
     for fn in (test_constants, test_estimator, test_score_rows,
-               test_verdict, test_refusal):
+               test_verdict, test_refusal, test_unnumbered_and_json):
         fn()
     print("test_parkinson_width: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

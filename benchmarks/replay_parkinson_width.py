@@ -161,7 +161,8 @@ def main(argv=None):
     a = ap.parse_args(argv)
     allc = A.find_captures(a.captures, None)
     if a.mode == "diag":
-        caps = [c for c in allc if (A.cell_number(c) or 0) <= a.max_cell]
+        caps = [c for c in allc if A.cell_number(c) is not None
+                and A.cell_number(c) <= a.max_cell]
         rows, gaps = R.build_rows(caps, allc)
         pairs = score_rows(rows)
         res = R.evaluate(pairs, a.reps)
@@ -172,7 +173,10 @@ def main(argv=None):
         print("refusing: cells below %d need --descriptive"
               % CLEAN_MIN_CELL)
         return 2
-    caps = A.find_captures(a.captures, a.min_cell)
+    # Unnumbered captures cannot be placed relative to the clean-cell
+    # boundary, so they never enter a scoring.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell)
+            if A.cell_number(c) is not None]
     rows, gaps = R.build_rows(caps, allc)
     pairs = score_rows(rows)
     res = R.evaluate(pairs, a.reps, a.seed)
@@ -181,9 +185,11 @@ def main(argv=None):
                  else "CLEAN SCORING, cells >= %d" % a.min_cell))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
-            json.dump({"k": ens_mod.V2_BAND_K, "results": res,
-                       "verdict": keep_verdict(res)[0],
-                       "descriptive": a.descriptive}, fh, indent=1)
+            out = {"k": ens_mod.V2_BAND_K, "results": res,
+                   "descriptive": a.descriptive}
+            if not a.descriptive:
+                out["verdict"] = keep_verdict(res)[0]
+            json.dump(out, fh, indent=1)
     return 0
 
 
