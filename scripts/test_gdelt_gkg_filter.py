@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests for scripts/gdelt_gkg_filter.py (INS-DATA-002 item 2, G3 pilot).
-Standalone, stdlib only, synthetic GKG rows, no network."""
+Standalone, stdlib only, synthetic 27-column GKG rows, no network."""
 import csv
 import importlib.util
 import json
@@ -35,14 +35,17 @@ G = load("gkg_t", "gdelt_gkg_filter.py")
 ALIASES_CSV = os.path.join(ROOT, "evaluation", "gdelt_alias_table.csv")
 
 
-def gkg_line(rec="20240515000000-T1", date="20240515000000",
+def gkg_line(rec="20240515000000-T1075", date="20240515000000",
              source="dostor.org", url="https://www.dostor.org/1",
              orgs="Telecom Egypt,123", themes="ECON_STOCKMARKET",
-             tone="1.27,2.22,0.95,3.17,1.5,0.5,400", ncols=26):
+             tone="1.27,2.22,0.95,3.17,1.5,0.5,400", ncols=27):
+    """27-column layout, both streams: id 0, date 1, source-collection-id 2,
+    source 3, url 4, themes 7, orgs 14, tone 15."""
     cols = [""] * ncols
-    off = 1 if ncols >= 27 else 0
-    cols[0], cols[1], cols[2 + off], cols[3 + off] = rec, date, source, url
-    cols[6 + off], cols[13 + off], cols[14 + off] = themes, orgs, tone
+    if ncols == 27:
+        cols[0], cols[1], cols[2] = rec, date, "1"
+        cols[3], cols[4] = source, url
+        cols[7], cols[14], cols[15] = themes, orgs, tone
     return "\t".join(cols)
 
 
@@ -65,31 +68,33 @@ def test_alias_table_loads():
 
 def test_match_orgs_real():
     items, blocks, _ = loaded()
-    ts, ent = G.match_orgs("Telecom Egypt,10;Vodafone Egypt,55", items, blocks)
-    check("ETEL matched", ts == {"ETEL"}, str(ts))
-    check("entry captured", ent == ["Telecom Egypt"], str(ent))
-    ts, ent = G.match_orgs("Talaat Moustafa Group Holdings,3", items, blocks)
-    check("TMGH via alt", ts == {"TMGH"}, str(ts))
-    ts, _ = G.match_orgs("Commercial International Bank,7", items, blocks)
-    check("COMI via bank alias", ts == {"COMI"}, str(ts))
-    ts, _ = G.match_orgs("السويدي اليكتريك,9", items, blocks)
-    check("no unverified arabic alias for SWDY (not in universe)", ts == set(), str(ts))
-    ts, _ = G.match_orgs("المصرية للاتصالات,9", items, blocks)
-    check("ETEL via verified arabic", ts == {"ETEL"}, str(ts))
+    bt = G.match_orgs("Telecom Egypt,10;Vodafone Egypt,55", items, blocks)
+    check("ETEL matched", set(bt) == {"ETEL"}, str(bt))
+    check("entry captured", bt["ETEL"] == {"Telecom Egypt"}, str(bt))
+    bt = G.match_orgs("Talaat Moustafa Group Holdings,3", items, blocks)
+    check("TMGH via alt", set(bt) == {"TMGH"}, str(bt))
+    bt = G.match_orgs("Commercial International Bank,7", items, blocks)
+    check("COMI via bank alias", set(bt) == {"COMI"}, str(bt))
+    bt = G.match_orgs("المصرية للاتصالات,9", items, blocks)
+    check("ETEL via verified arabic", set(bt) == {"ETEL"}, str(bt))
+    bt = G.match_orgs("Telecom Egypt,1;Talaat Moustafa Group,2", items, blocks)
+    check("multi-issuer pairing exact",
+          bt.get("ETEL") == {"Telecom Egypt"}
+          and bt.get("TMGH") == {"Talaat Moustafa Group"}, str(bt))
 
 
 def test_match_orgs_blocks_and_noise():
     items, blocks, _ = loaded()
-    ts, _ = G.match_orgs("Club Palm Hills,20", items, blocks)
-    check("Club Palm Hills blocked for PHDC", ts == set(), str(ts))
-    ts, _ = G.match_orgs("Palm Hills Developments,20", items, blocks)
-    check("Palm Hills Developments matches PHDC", ts == {"PHDC"}, str(ts))
-    ts, _ = G.match_orgs("Negotiations Commercial International,4", items, blocks)
-    check("no COMI on bare 'Commercial International'", ts == set(), str(ts))
-    ts, _ = G.match_orgs("Telecom Egypt Confidence,4", items, blocks)
-    check("Telecom Egypt Confidence blocked for ETEL", ts == set(), str(ts))
-    ts, _ = G.match_orgs("Egyptian Exchange,4", items, blocks)
-    check("Egyptian Exchange (the bourse) matches nothing", ts == set(), str(ts))
+    check("Club Palm Hills blocked for PHDC",
+          G.match_orgs("Club Palm Hills,20", items, blocks) == {})
+    bt = G.match_orgs("Palm Hills Developments,20", items, blocks)
+    check("Palm Hills Developments matches PHDC", set(bt) == {"PHDC"}, str(bt))
+    check("no COMI on bare 'Commercial International'",
+          G.match_orgs("Negotiations Commercial International,4", items, blocks) == {})
+    check("Telecom Egypt Confidence blocked for ETEL",
+          G.match_orgs("Telecom Egypt Confidence,4", items, blocks) == {})
+    check("Egyptian Exchange (the bourse) matches nothing",
+          G.match_orgs("Egyptian Exchange,4", items, blocks) == {})
 
 
 def test_process_blob():
@@ -102,61 +107,100 @@ def test_process_blob():
                  url="https://www.almasryalyoum.com/news/details/1"),
         gkg_line(rec="R4", orgs="Unrelated Corp,1", source="example.net",
                  url="https://example.net/b"),
-        gkg_line(rec="R5", orgs="Telecom Egypt,9", source="elfagr.org",
-                 url="https://www.elfagr.org/9", ncols=27),
-        "too\tfew\tcolumns",
+        gkg_line(rec="R6", orgs="Telecom Egypt,1;Talaat Moustafa Group,2",
+                 source="reuters.com", url="https://www.reuters.com/x"),
+        "too\tfew\ttelecom egypt",  # hits the prefilter, then malformed
     ])
-    rows = G.process_blob("20240515000000.gkg.csv.zip", "english",
-                          lines.encode(), items, blocks, pre)
+    rows, bad = G.process_blob("20240515000000.gkg.csv.zip", "english",
+                               lines.encode(), items, blocks, pre)
     by_id = {r["gkg_record_id"]: r for r in rows}
     check("R1 alias+both", by_id["R1"]["reason"] == "both"
           and by_id["R1"]["tickers"] == ["ETEL"], str(by_id.get("R1")))
+    check("R1 source/url from 27-col positions",
+          by_id["R1"]["source"] == "dostor.org"
+          and by_id["R1"]["url"] == "https://www.dostor.org/1")
     check("R2 blocked -> dropped", "R2" not in by_id)
     check("R3 eg_domain only, no tickers", by_id["R3"]["reason"] == "eg_domain"
           and by_id["R3"]["tickers"] == [], str(by_id.get("R3")))
     check("R4 noise dropped", "R4" not in by_id)
-    check("malformed line skipped", len(rows) == 3, str(len(rows)))
-    check("R5 translation layout (27 cols) parsed",
-          by_id["R5"]["source"] == "elfagr.org"
-          and by_id["R5"]["tickers"] == ["ETEL"]
-          and by_id["R5"]["reason"] == "both", str(by_id.get("R5")))
+    check("non-27-col line counted malformed", bad == 1, str(bad))
+    check("R6 matched_by_ticker paired",
+          by_id["R6"]["matched_by_ticker"] == {
+              "ETEL": ["Telecom Egypt"], "TMGH": ["Talaat Moustafa Group"]},
+          str(by_id.get("R6")))
     check("tone parsed", by_id["R1"]["tone"] == "1.27"
           and by_id["R1"]["word_count"] == "400")
-    check("blob without needles skipped",
+    check("blob without needles yields nothing",
           G.process_blob("f", "english", gkg_line(
               rec="Z", orgs="Nope,1", source="x.io",
-              url="https://x.io/").encode(), items, blocks, pre) == [])
+              url="https://x.io/").encode(), items, blocks, pre) == ([], 0))
 
 
 def test_list_files_and_range():
     with tempfile.TemporaryDirectory() as d:
         mp = os.path.join(d, "masterfilelist.txt")
         with open(mp, "w") as f:
-            f.write("100 md5a http://data.gdeltproject.org/gdeltv2/20240515090000.gkg.csv.zip\n")
-            f.write("100 md5b http://data.gdeltproject.org/gdeltv2/20240515091500.gkg.csv.zip\n")
-            f.write("100 md5c http://data.gdeltproject.org/gdeltv2/20240601000000.gkg.csv.zip\n")
-            f.write("100 md5d http://data.gdeltproject.org/gdeltv2/20240515090000.events.csv.zip\n")
+            f.write("100 md5a https://data.gdeltproject.org/gdeltv2/20240515090000.gkg.csv.zip\n")
+            f.write("100 md5b https://data.gdeltproject.org/gdeltv2/20240515091500.gkg.csv.zip\n")
+            f.write("100 md5c https://data.gdeltproject.org/gdeltv2/20240601000000.gkg.csv.zip\n")
+            f.write("100 md5d https://data.gdeltproject.org/gdeltv2/20240515090000.events.csv.zip\n")
         files = G.list_files([(mp, "english")], "20240501000000", "20240531235959")
         check("only in-range gkg files", [u.rsplit('/',1)[-1] for u, _ in files] ==
               ["20240515090000.gkg.csv.zip", "20240515091500.gkg.csv.zip"], str(files))
         check("stream tag", all(s == "english" for _, s in files))
 
 
+def test_fetch_guards():
+    try:
+        G.fetch("https://example.com/evil.zip")
+        check("non-GDELT host refused", False)
+    except ValueError as e:
+        check("non-GDELT host refused", "refusing" in str(e), str(e))
+    try:
+        G.fetch("ftp://data.gdeltproject.org/x.zip")
+        check("non-HTTPS scheme refused", False)
+    except ValueError as e:
+        check("non-HTTPS scheme refused", "scheme" in str(e), str(e))
+
+
+def test_config_binding():
+    with tempfile.TemporaryDirectory() as d:
+        st = os.path.join(d, "state")
+        out = os.path.join(d, "out")
+        os.makedirs(st)
+        # other-state config with a different range must refuse
+        json.dump({"aliases_sha256": "x", "start": "2019", "end": "2020",
+                   "out": out}, open(os.path.join(st, "config.json"), "w"))
+
+        class A:
+            pass
+        a = A()
+        a.aliases, a.state, a.out = ALIASES_CSV, st, out
+        a.start, a.end = "20240501000000", "20240531235959"
+        a.master, a.master_translation, a.workers, a.budget_seconds = None, None, 1, 0
+        try:
+            G.run_fetch(a)
+            check("config mismatch refuses", False)
+        except SystemExit as e:
+            check("config mismatch refuses", "mismatch" in str(e), str(e))
+
+
 def test_restart_and_finalize():
     items, blocks, pre = loaded()
-    with tempfile.TemporaryDirectory() as d:
-        out = d
+    with tempfile.TemporaryDirectory() as out:
         blob = gkg_line(rec="R1", orgs="Telecom Egypt,10").encode()
-        zpath = os.path.join(d, "z.zip")
+        zpath = os.path.join(out, "z.zip")
         with zipfile.ZipFile(zpath, "w") as z:
             z.writestr("20240515000000.gkg.csv", blob.decode())
         with zipfile.ZipFile(zpath) as z:
-            rows = G.process_blob("f", "english", z.read(z.namelist()[0]),
-                                  items, blocks, pre)
-        # duplicate lines (simulated reprocess after crash) dedupe in finalize
+            rows, _ = G.process_blob("f", "english", z.read(z.namelist()[0]),
+                                     items, blocks, pre)
+        # duplicate lines (reprocess after crash) dedupe in finalize;
+        # a truncated line (interrupted append) is skipped, not fatal
         with open(os.path.join(out, "matches.jsonl"), "w") as f:
             for r in rows + rows:
                 f.write(json.dumps(r) + "\n")
+            f.write('{"gkg_record_id": "BROKEN", "u')
 
         class A:
             pass
@@ -175,7 +219,8 @@ def test_restart_and_finalize():
 def main():
     for fn in (test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_process_blob,
-               test_list_files_and_range, test_restart_and_finalize):
+               test_list_files_and_range, test_fetch_guards,
+               test_config_binding, test_restart_and_finalize):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

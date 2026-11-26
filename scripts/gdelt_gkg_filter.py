@@ -10,10 +10,22 @@ Pipeline (Muhammad's GO, Moos Slack 1795726615.743939, 2026-11-26):
   on the alias table (evaluation/gdelt_alias_table.csv) plus Egyptian
   outlet domains -> matched rows appended as JSON lines.
 
+Layout: every GKG 2.x file in the archive, English AND translation, has 27
+columns with identical positions (Moos review on #815: verified on
+2024-05-15 09:00 both streams and the first 2015-02-18 file): record id 0,
+date 1, SourceCollectionIdentifier 2, SourceCommonName 3,
+DocumentIdentifier 4, Themes 7, V2EnhancedOrganizations 14, V2Tone 15.
+Lines with any other column count are malformed: skipped and counted per
+file, never parsed with a guessed layout.
+
 Restart-safe by file name: STATE/done.txt records every fully processed
 GKG file; reruns skip it. Matches are appended (fsync) BEFORE the done
 marker, so a crash reprocesses at most one file; --finalize dedupes on
-(gkg_record_id, url).
+(gkg_record_id, url) and skips any truncated/corrupted line an interrupted
+append can leave, counting them. STATE/config.json binds the state dir to
+the alias table hash and date range; a mismatch refuses to run (delete
+done.txt + config.json to rebind) so stale markers are never applied to a
+different configuration.
 
 Rows kept when EITHER:
   - a V2Organizations entry matches a ticker alias (word-boundary,
@@ -29,28 +41,30 @@ Fetch mode:
       --master-translation state/masterfilelist-translation.txt \
       --state state --out out --workers 6 [--budget-seconds 100]
 
-pyahocorasick and pyarrow are optional speed/format dependencies of this
-backfill tool only (not worker runtime; requirements.txt stays untouched).
-Without pyahocorasick the prefilter falls back to one combined regex
-(about 25x slower per file); without pyarrow --finalize writes CSV.
-
 Finalize mode:
   gdelt_gkg_filter.py --finalize --out out
       -> out/matches.parquet (if pyarrow installed) else out/matches.csv,
-         out/alias_hit_summary.csv (per ticker x matched org entry counts)
+         out/alias_hit_summary.csv (per ticker x matched org entry counts,
+         paired per ticker so multi-issuer rows never cross-pair)
+
+Only https://data.gdeltproject.org URLs are fetched (http master-list
+entries are upgraded); files over 200 MB are refused. pyahocorasick and
+pyarrow are optional speed/format dependencies of this backfill tool only
+(not worker runtime; requirements.txt stays untouched). Without
+pyahocorasick the prefilter falls back to one combined regex (about 25x
+slower per file); without pyarrow --finalize writes CSV.
 """
-import argparse, csv, io, json, os, re, sys, time, zipfile
+import argparse, csv, hashlib, io, json, os, re, sys, time, zipfile
 from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
-# GKG 2.x full-format column positions (0-based). English files have 26
-# columns; translation files insert a SourceCollectionIdentifier at index 2
-# (27 columns), shifting everything after it by one.
-C_ID, C_DATE = 0, 1
+# 27-column GKG 2.x layout, both streams (see module docstring).
+C_ID, C_DATE, C_SOURCE, C_URL, C_THEMES, C_ORGS, C_TONE = 0, 1, 3, 4, 7, 14, 15
+N_COLS = 27
 
-def col_offsets(ncols):
-    off = 1 if ncols >= 27 else 0
-    return 2 + off, 3 + off, 6 + off, 13 + off, 14 + off  # source, url, themes, orgs, tone
+ALLOWED_HOST = "data.gdeltproject.org"
+MAX_FILE_BYTES = 200 * 1000 * 1000
 
 EG_DOMAINS = {
     "ahram.org.eg", "almasryalyoum.com", "youm7.com", "masrawy.com",
@@ -69,61 +83,11 @@ _NORM_TABLE = {i: 32 for i in range(0x110000) if not chr(i).isalnum()}
 def norm(s):
     return " ".join(s.lower().translate(_NORM_TABLE).split())
 
-def _needle(alias_norm):
-    # Normalized alias -> regex over RAW text: case-insensitive, any
-    # non-word run where the normalized form has a space.
-    return r"[^\w]+".join(re.escape(p) for p in alias_norm.split(" "))
-
-def load_aliases(path):
-    """Return (alias_items, block_map, prefilter_re). alias_items: list of
-    (padded-normalized alias, tickers) sorted longest first."""
-    alias_map, block_map = {}, {}
-    with open(path, newline="", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            a = norm(r["alias"])
-            if not a:
-                continue
-            alias_map.setdefault(a, set()).add(r["ticker"])
-            if r["block_patterns"]:
-                block_map.setdefault(r["ticker"], set()).update(
-                    norm(b) for b in r["block_patterns"].split("|") if b.strip())
-    needles = sorted(alias_map) + sorted(norm(d) for d in EG_DOMAINS)
-    prefilter = _make_prefilter(needles)
-    alias_items = sorted(alias_map.items(), key=lambda kv: -len(kv[0]))
-    return alias_items, block_map, prefilter
-
-def match_orgs(org_field, alias_items, block_map):
-    """Match V2Organizations entries ('Name,charoffset';'-separated) against
-    aliases. Returns (tickers, matched raw entry names)."""
-    tickers, entries = set(), []
-    for ent in org_field.split(";"):
-        name = ent.rsplit(",", 1)[0] if "," in ent else ent
-        n = " " + norm(name) + " "
-        if len(n) <= 2:
-            continue
-        for a, ts in alias_items:
-            if " " + a + " " in n:
-                ok = ts - {t for t in ts
-                           if any(" " + b + " " in n for b in block_map.get(t, ()))}
-                if ok:
-                    tickers |= ok
-                    entries.append(name.strip())
-                break  # most specific (longest) alias wins for this entry
-    return tickers, entries
-
-def is_eg_domain(source):
-    s = source.lower().strip()
-    return any(s == d or s.endswith("." + d) for d in EG_DOMAINS)
-
-def parse_tone(field):
-    p = field.split(",")
-    return (p + [""] * 7)[:7]
-
 def _make_prefilter(needles):
     """Line prefilter. Fast path: pyahocorasick over the NORMALIZED line
     (pip install pyahocorasick; the 4 TB full run wants it). Fallback: one
     combined regex over the normalized line. Needles are normalized aliases
-    plus Egyptian outlet domains."""
+    plus normalized Egyptian outlet domains."""
     try:
         import ahocorasick
 
@@ -147,38 +111,86 @@ def _make_prefilter(needles):
         hit.engine = "regex"
         return hit
 
+def load_aliases(path):
+    """Return (alias_items, block_map, prefilter). alias_items: list of
+    (normalized alias, tickers) sorted longest first."""
+    alias_map, block_map = {}, {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            a = norm(r["alias"])
+            if not a:
+                continue
+            alias_map.setdefault(a, set()).add(r["ticker"])
+            if r["block_patterns"]:
+                block_map.setdefault(r["ticker"], set()).update(
+                    norm(b) for b in r["block_patterns"].split("|") if b.strip())
+    needles = sorted(alias_map) + sorted(norm(d) for d in EG_DOMAINS)
+    prefilter = _make_prefilter(needles)
+    alias_items = sorted(alias_map.items(), key=lambda kv: -len(kv[0]))
+    return alias_items, block_map, prefilter
+
+def match_orgs(org_field, alias_items, block_map):
+    """Match V2Organizations entries ('Name,charoffset';'-separated) against
+    aliases. Returns {ticker: set(matched raw entry names)} so multi-issuer
+    rows never cross-pair a ticker with another ticker's entry."""
+    by_ticker = {}
+    for ent in org_field.split(";"):
+        name = ent.rsplit(",", 1)[0] if "," in ent else ent
+        n = " " + norm(name) + " "
+        if len(n) <= 2:
+            continue
+        for a, ts in alias_items:
+            if " " + a + " " in n:
+                ok = ts - {t for t in ts
+                           if any(" " + b + " " in n for b in block_map.get(t, ()))}
+                for t in ok:
+                    by_ticker.setdefault(t, set()).add(name.strip())
+                break  # most specific (longest) alias wins for this entry
+    return by_ticker
+
+def is_eg_domain(source):
+    s = source.lower().strip()
+    return any(s == d or s.endswith("." + d) for d in EG_DOMAINS)
+
+def parse_tone(field):
+    p = field.split(",")
+    return (p + [""] * 7)[:7]
 
 def process_blob(name, stream, blob, alias_items, block_map, prefilter):
+    """Returns (rows, n_malformed). Lines with != 27 columns are skipped,
+    never parsed with a guessed layout."""
     out = []
+    n_malformed = 0
     text = blob.decode("utf-8", errors="replace")
     for line in text.split("\n"):
         if not line or not prefilter(norm(line)):
             continue
         cols = line.split("\t")
-        if len(cols) < 26:
+        if len(cols) != N_COLS:
+            n_malformed += 1
             continue
-        i_src, i_url, i_themes, i_orgs, i_tone = col_offsets(len(cols))
-        if len(cols) <= i_tone:
-            continue
-        src = cols[i_src]
+        src = cols[C_SOURCE]
         eg = is_eg_domain(src)
-        tickers, entries = match_orgs(cols[i_orgs], alias_items, block_map)
-        if not tickers and not eg:
+        by_ticker = match_orgs(cols[C_ORGS], alias_items, block_map)
+        if not by_ticker and not eg:
             continue
-        reason = ("both" if eg else "alias") if tickers else "eg_domain"
-        tone = parse_tone(cols[i_tone])
+        reason = ("both" if eg else "alias") if by_ticker else "eg_domain"
+        tone = parse_tone(cols[C_TONE])
+        entries = sorted({e for es in by_ticker.values() for e in es})
         out.append({
             "file": name, "stream": stream, "gkg_record_id": cols[C_ID],
-            "date": cols[C_DATE], "source": src, "url": cols[i_url],
-            "tickers": sorted(tickers), "matched_org_entries": sorted(set(entries)),
+            "date": cols[C_DATE], "source": src, "url": cols[C_URL],
+            "tickers": sorted(by_ticker),
+            "matched_by_ticker": {t: sorted(es) for t, es in sorted(by_ticker.items())},
+            "matched_org_entries": entries,
             "reason": reason, "tone": tone[0], "positive": tone[1],
             "negative": tone[2], "word_count": tone[6],
-            "themes": cols[i_themes][:500],
+            "themes": cols[C_THEMES][:500],
         })
-    return out
+    return out, n_malformed
 
 def list_files(master_specs, start, end):
-    """master_specs: [(path, stream)]. Yields (url, stream) sorted, filtered
+    """master_specs: [(path, stream)]. (url, stream) pairs sorted, filtered
     to 14-digit timestamp prefixes in [start, end]."""
     files = []
     for path, stream in master_specs:
@@ -197,13 +209,37 @@ def list_files(master_specs, start, end):
     return sorted(files)
 
 def fetch(url, timeout=90):
+    parts = urlsplit(url)
+    if parts.netloc != ALLOWED_HOST:
+        raise ValueError(f"refusing non-GDELT host: {parts.netloc or url[:40]}")
+    if parts.scheme == "http":
+        url = "https" + url[len("http"):]
+    elif parts.scheme != "https":
+        raise ValueError(f"refusing non-HTTPS scheme: {parts.scheme}")
     req = Request(url, headers={"User-Agent": "gdelt-gkg-filter/1.0 (research index)"})
     with urlopen(req, timeout=timeout) as r:
-        return r.read()
+        data = r.read(MAX_FILE_BYTES + 1)
+    if len(data) > MAX_FILE_BYTES:
+        raise ValueError(f"file over {MAX_FILE_BYTES} bytes")
+    return data
 
 def run_fetch(a):
     os.makedirs(a.state, exist_ok=True)
     os.makedirs(a.out, exist_ok=True)
+    a.start = a.start.ljust(14, "0")
+    a.end = a.end.ljust(14, "9")
+    aliases_sha = hashlib.sha256(open(a.aliases, "rb").read()).hexdigest()
+    config = {"aliases_sha256": aliases_sha, "start": a.start, "end": a.end,
+              "out": os.path.abspath(a.out)}
+    config_path = os.path.join(a.state, "config.json")
+    if os.path.exists(config_path):
+        old = json.load(open(config_path))
+        if old != config:
+            sys.exit(f"state config mismatch: {old} vs {config}; "
+                     f"delete {config_path} and done.txt to rebind")
+    else:
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=1)
     done_path = os.path.join(a.state, "done.txt")
     done = set()
     if os.path.exists(done_path):
@@ -217,8 +253,8 @@ def run_fetch(a):
     files = [(u, s) for u, s in list_files(specs, a.start, a.end)
              if u.rsplit("/", 1)[-1] not in done]
     matches_path = os.path.join(a.out, "matches.jsonl")
-    t0, n_done, n_bytes, n_rows = time.time(), 0, 0, 0
-    print(f"todo={len(files)} done_prev={len(done)}", flush=True)
+    t0, n_done, n_bytes, n_rows, n_malformed = time.time(), 0, 0, 0, 0
+    print(f"todo={len(files)} done_prev={len(done)} prefilter={prefilter.engine}", flush=True)
 
     def work(item):
         url, stream = item
@@ -228,9 +264,9 @@ def run_fetch(a):
             z = zipfile.ZipFile(io.BytesIO(raw))
             blob = z.read(z.namelist()[0])
         except Exception as e:
-            return name, stream, 0, None, f"{type(e).__name__}: {e}"
-        rows = process_blob(name, stream, blob, alias_items, block_map, prefilter)
-        return name, stream, len(raw), rows, None
+            return name, stream, 0, None, 0, f"{type(e).__name__}: {e}"
+        rows, bad = process_blob(name, stream, blob, alias_items, block_map, prefilter)
+        return name, stream, len(raw), rows, bad, None
 
     batch = max(a.workers * 4, 8)
     with open(done_path, "a", encoding="utf-8") as done_f, \
@@ -239,7 +275,7 @@ def run_fetch(a):
         i = 0
         while i < len(files):
             chunk = files[i:i + batch]
-            for name, stream, nbytes, rows, err in ex.map(work, chunk):
+            for name, stream, nbytes, rows, bad, err in ex.map(work, chunk):
                 if err:
                     print(f"skip {name}: {err}", flush=True)
                     continue  # NOT marked done: retried on the next run
@@ -253,21 +289,26 @@ def run_fetch(a):
                 n_done += 1
                 n_bytes += nbytes
                 n_rows += len(rows)
+                n_malformed += bad
             i += batch
             el = time.time() - t0
             rate = n_bytes / 1e6 / el if el else 0
-            print(f"progress {n_done}/{len(files)} rows={n_rows} "
+            print(f"progress {n_done}/{len(files)} rows={n_rows} malformed={n_malformed} "
                   f"mb={n_bytes/1e6:.0f} rate={rate:.1f}MB/s elapsed={el:.0f}s", flush=True)
             if a.budget_seconds and el > a.budget_seconds:
-                print(f"budget exhausted; rerun to resume", flush=True)
+                print("budget exhausted; rerun to resume", flush=True)
                 break
     print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows}", flush=True)
 
 def run_finalize(a):
-    rows, seen = [], set()
+    rows, seen, n_corrupt = [], set(), 0
     with open(os.path.join(a.out, "matches.jsonl"), encoding="utf-8") as f:
         for line in f:
-            r = json.loads(line)
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                n_corrupt += 1  # interrupted append; skip, do not block
+                continue
             k = (r["gkg_record_id"], r["url"])
             if k in seen:
                 continue
@@ -296,12 +337,14 @@ def run_finalize(a):
             w = csv.DictWriter(f, fieldnames=cols)
             w.writeheader()
             w.writerows(flat)
+    # Per ticker x matched org entry, paired per ticker (no cross-pairing).
     counts, days = {}, {}
     for r in rows:
         d = r["date"][:8]
         for t in r["tickers"]:
             days.setdefault(t, set()).add(d)
-            for e in r["matched_org_entries"]:
+            entries = r.get("matched_by_ticker", {}).get(t) or r["matched_org_entries"]
+            for e in entries:
                 counts[(t, e)] = counts.get((t, e), 0) + 1
     with open(os.path.join(a.out, "alias_hit_summary.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -309,7 +352,8 @@ def run_finalize(a):
         for (t, e), n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0])):
             w.writerow([t, e, n, len(days[t])])
     eg_only = sum(1 for r in rows if r["reason"] == "eg_domain")
-    print(f"rows={len(rows)} alias_rows={len(rows)-eg_only} eg_domain_only={eg_only} -> {wrote} + alias_hit_summary.csv")
+    print(f"rows={len(rows)} alias_rows={len(rows)-eg_only} eg_domain_only={eg_only} "
+          f"corrupt_lines_skipped={n_corrupt} -> {wrote} + alias_hit_summary.csv")
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -329,8 +373,6 @@ def main():
     else:
         if not a.master and not a.master_translation:
             p.error("fetch mode needs --master and/or --master-translation")
-        a.start = a.start.ljust(14, "0")
-        a.end = a.end.ljust(14, "9")
         run_fetch(a)
 
 if __name__ == "__main__":
