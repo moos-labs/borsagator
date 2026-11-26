@@ -65,7 +65,7 @@ Heaviest = new information, fittable on long history, cells untouched.
    post-2021 window (a handful of devaluation episodes), so the fit has
    almost no independent clusters. Rank low.
 5. Forward sentiment ledger: unchanged. Needs a second wide sweep to
-   mature (Muhammad, 22:59); MIN_CUTOFFS 2 stays until the cycle rules.
+   mature (Muhammad, Slack 1795723155.629979); MIN_CUTOFFS 2 stays until the cycle rules.
 
 Re-shaping routes (same information), only if the above stall:
 6. Pooled quantiles with the cell-weighted fit or per-regime fit. The
