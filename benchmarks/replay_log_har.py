@@ -266,7 +266,8 @@ def main(argv=None):
     allc = A.find_captures(a.captures, None)
     if a.mode == "fit":
         RV["mode"] = a.rv
-        caps = [c for c in allc if (A.cell_number(c) or 0) <= a.max_cell]
+        caps = [c for c in allc if A.cell_number(c) is not None
+                and A.cell_number(c) <= a.max_cell]
         rows, gaps = build_rows(caps, allc)
         fz = fit(rows)
         print(render_fit(fz))
@@ -282,7 +283,10 @@ def main(argv=None):
     with open(a.frozen, encoding="utf-8") as fh:
         fz = json.load(fh)["frozen"]
     RV["mode"] = fz["spec"].get("rv", "park")
-    caps = A.find_captures(a.captures, a.min_cell)
+    # Unnumbered captures cannot be placed relative to the clean-cell
+    # boundary, so they never enter a scoring.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell)
+            if A.cell_number(c) is not None]
     rows, gaps = build_rows(caps, allc)
     res = R.evaluate(score_rows(rows, fz), a.reps, a.seed)
     print(render_score(res, fz, a.descriptive))
@@ -291,7 +295,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz, "results": res,
-                       "verdict": keep_verdict(res)[0],
+                       **({} if a.descriptive else {"verdict": keep_verdict(res)[0]}),
                        "descriptive": a.descriptive}, fh, indent=1)
     return 0
 
