@@ -96,6 +96,19 @@ def test_verdict():
     check("week verdict is keep/reject once enough",
           v["week"][0] in ("KEEP", "REJECT"))
     check("day still insufficient", v["day"][0] == "INSUFFICIENT")
+    big = S.score_rows([row(real=0.5, t="T%d" % (i % 12),
+                            a="2026-11-%02d" % (i % 3 + 10))
+                        for i in range(36)])
+    def fake(ci, cov=0.9):
+        return {h: {"ch_ci_cutoff": [0.05, 0.1],
+                    "ch": {"coverage": cov}, "ch_cov_ci_cutoff": ci}
+                for h in S.HORIZONS}
+    check("coverage CI overlapping the band keeps",
+          S.verdicts(big, fake([0.70, 0.80], 0.72))["week"][0] == "KEEP")
+    check("coverage CI entirely above rejects",
+          S.verdicts(big, fake([0.86, 0.95]))["week"][0] == "REJECT")
+    check("undefined coverage CI rejects",
+          S.verdicts(big, fake([None, None], 0.8))["week"][0] == "REJECT")
 
 
 def _synthetic_ledger(tmpdir):

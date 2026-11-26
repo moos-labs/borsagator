@@ -37,7 +37,8 @@ SCORE (mode `score`): scores the frozen file on cells >= 73 only
 (refuses lower cells unless --descriptive, which prints a banner).
 Pre-registered keep rule, per horizon, on >= 30 untouched rows:
   (a) RangeSkill >= +0.05 vs naive,
-  (b) coverage inside [0.75, 0.85],
+  (b) the cutoff-clustered coverage CI overlaps [0.75, 0.85]
+      (round 11 ruling; was: point coverage inside the band),
   (c) RangeSkill >= frozen-v2 RangeSkill on the same rows.
 KEEP only if (a), (b) and (c) hold on every horizon. Below 30 rows
 the verdict is INSUFFICIENT. The formal adoption gate (CI lower
@@ -82,6 +83,27 @@ K_GRID = [round(0.50 + 0.01 * i, 2) for i in range(201)]
 MIN_ROWS = 30
 SKILL_FLOOR = 0.05
 COV_BAND = (0.75, 0.85)
+
+
+def coverage_ci_ok(ci, band=None):
+    """Coverage leg of every keep rule (Moos ruling, round 11): the
+    cutoff-clustered 95% coverage CI must OVERLAP [0.75, 0.85], using
+    the same clustering and draws as the scorer's RangeSkill CI. A point
+    check on n = 30 rejects a perfect 80% model about half the time. An
+    undefined CI (fewer than two cutoffs) is not an overlap."""
+    lo, hi = band or COV_BAND
+    if not ci or ci[0] is None or ci[1] is None:
+        return False
+    return ci[0] <= hi and ci[1] >= lo
+
+
+def coverage_ci_reason(h, ci, cov, band=None):
+    lo, hi = band or COV_BAND
+    return ("%s coverage CI [%s, %s] (point %s) does not overlap "
+            "[%.2f, %.2f]" % (h, *(("n/a" if v is None else "%.3f" % v)
+                                   for v in (ci or (None, None))),
+                              "n/a" if cov is None else "%.3f" % cov,
+                              lo, hi))
 LN2 = math.log(2.0)
 
 
@@ -416,9 +438,8 @@ def keep_verdict(res):
         if sk is None or sk < SKILL_FLOOR:
             bad.append("%s RangeSkill %s < +%.2f" % (h, _f(sk),
                                                       SKILL_FLOOR))
-        if cov is None or not COV_BAND[0] <= cov <= COV_BAND[1]:
-            bad.append("%s coverage %s outside [%.2f, %.2f]"
-                       % (h, _f(cov), COV_BAND[0], COV_BAND[1]))
+        if not coverage_ci_ok(c["ch_cov_ci_cutoff"]):
+            bad.append(coverage_ci_reason(h, c["ch_cov_ci_cutoff"], cov))
         v2 = c["v2"]["range_skill"]
         if sk is not None and v2 is not None and sk < v2:
             bad.append("%s worse than frozen v2 (%s < %s)"
