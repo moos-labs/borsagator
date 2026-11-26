@@ -62,6 +62,18 @@ def test_rule():
                       ).startswith("KEEP")
           and T.tilt_rule(cell(36, 6, 3, 0.05, 0.9, [0.85, 0.95])
                           ).startswith("KEEP"))
+    check("overlapping CI wider than 0.15 rejects (cap)", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.8, [0.63, 0.93])).startswith("REJECT"))
+    check("cap reason is printed", "width <= 0.15" in T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.8, [0.63, 0.93])))
+    check("CI just over the cap rejects", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.8, [0.70, 0.86])).startswith("REJECT"))
+    check("CI at the cap keeps", T.tilt_rule(
+        cell(36, 6, 3, 0.05, 0.8, [0.70, 0.85])).startswith("KEEP"))
+    check("wide CI with skill failing is still reject", T.tilt_rule(
+        cell(36, 6, 3, 0.0, 0.8, [0.63, 0.93])).startswith("REJECT"))
+    check("wide CI under thresholds stays insufficient", T.tilt_rule(
+        cell(6, 6, 3, 0.05, 0.8, [0.5, 0.95])).startswith("INSUFFICIENT"))
     check("undefined coverage CI rejects", T.tilt_rule(
         cell(36, 6, 3, 0.05, 0.8, [None, None])).startswith("REJECT"))
 

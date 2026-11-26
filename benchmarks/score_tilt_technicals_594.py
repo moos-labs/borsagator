@@ -20,7 +20,11 @@ forward-ledger rule and the plan to pre-register this one in Slack on
     (1) tilt RangeSkill vs naive has a cutoff-clustered 95% CI lower
         bound > 0, and
     (2) the cutoff-clustered tilt coverage CI overlaps 0.75-0.85
-        (round 11 ruling by Moos; was point coverage within the band).
+        (round 11 ruling by Moos; was point coverage within the band)
+        with an absolute width <= 0.15 (R.coverage_ci_ok, the shared
+        helper). Round 23: Muhammad's decision, relayed in Slack, that
+        the tilt scorer inherits the cap; it was the last scorer with
+        its own uncapped overlap test.
   REJECT when n, tickers and cutoffs are enough and (1) or (2) fails.
   INSUFFICIENT otherwise: numbers are printed, no keep/reject.
 One scoring of cells 73-78, no re-fit, no change to the tilt.
@@ -55,6 +59,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import score_adoption_594 as A  # noqa: E402
 import backtest_score as bs  # noqa: E402
+import replay_band_candidates as R  # noqa: E402
 
 HORIZONS = A.HORIZONS
 MIN_ROWS = A.MIN_ROWS
@@ -149,13 +154,13 @@ def tilt_rule(cell):
     lo = cell["skill_ci_cutoff"][0]
     cov = cell["coverage"]
     cci = cell.get("coverage_ci_cutoff") or [None, None]
-    cov_ok = (cci[0] is not None and cci[1] is not None
-              and cci[0] <= COV_HI and cci[1] >= COV_LO)
+    cov_ok = R.coverage_ci_ok(cci, (COV_LO, COV_HI))
     ok = lo is not None and lo > 0 and cov_ok
     return ("KEEP" if ok else "REJECT") + (
         " (RangeSkill CI lower bound %s vs 0; coverage %s, CI [%s, %s] "
         "must overlap %.2f-%.2f)"
-        % (_f(lo), _f(cov), _f(cci[0]), _f(cci[1]), COV_LO, COV_HI))
+        % (_f(lo), _f(cov), _f(cci[0]), _f(cci[1]), COV_LO, COV_HI)
+        + ", width <= %.2f" % R.MAX_CI_WIDTH)
 
 
 def _f(v, nd=3):
