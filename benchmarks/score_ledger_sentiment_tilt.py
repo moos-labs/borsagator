@@ -56,6 +56,7 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import score_adoption_594 as A  # noqa: E402
 import backtest_score as bs  # noqa: E402
 import replay_band_candidates as R  # noqa: E402
+import ledger_freshness as LF  # noqa: E402
 
 HORIZONS = A.HORIZONS
 GAMMA = 0.25
@@ -196,9 +197,13 @@ def main(argv=None):
     ap.add_argument("--reps", type=int, default=A.DEFAULT_REPS)
     ap.add_argument("--seed", type=int, default=A.DEFAULT_SEED)
     ap.add_argument("--json", default=None)
+    LF.add_args(ap)
     a = ap.parse_args(argv)
     with open(a.ledger, encoding="utf-8") as f:
         rows = json.load(f)["forecasts_detail"]
+    fresh, refused = LF.gate(rows, a)
+    if refused:
+        return refused
     pairs = score_rows(rows, a.family)
     smp = sample(pairs)
     need = any(enough(smp[h]) for h in HORIZONS)
@@ -210,7 +215,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"family": a.family, "gamma": GAMMA,
-                       "sample": smp,
+                       "freshness": fresh, "sample": smp,
                        "verdicts": {h: ver[h][0] for h in HORIZONS}},
                       fh, indent=1)
     return 0

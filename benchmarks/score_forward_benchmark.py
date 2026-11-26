@@ -44,6 +44,10 @@ import os
 import sys
 from collections import defaultdict
 
+sys.dont_write_bytecode = True
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ledger_freshness as LF  # noqa: E402
+
 FAMILIES = ("price-forecast", "technicals", "sentiment", "agent",
             "fundamentals")
 
@@ -314,6 +318,7 @@ def main():
     ap.add_argument("--benchmark-json")
     ap.add_argument("--out-md", required=True)
     ap.add_argument("--out-json")
+    LF.add_args(ap)
     args = ap.parse_args()
 
     sys.path.insert(0, args.scripts)
@@ -323,6 +328,9 @@ def main():
 
     with open(args.ledger, encoding="utf-8") as f:
         ledger = json.load(f)
+    _, refused = LF.gate(ledger["forecasts_detail"], args)
+    if refused:
+        return refused
     series = build_series(args.archive, L)
     records = score_rows(ledger, series, args.archive, (L, BF, ENS))
 
@@ -514,4 +522,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
