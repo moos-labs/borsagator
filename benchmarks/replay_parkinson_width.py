@@ -29,7 +29,8 @@ sqrt(sessions)), so the width estimator is separated from k.
 Pre-registered keep rule (same as the round 3 challengers), one
 scoring, per horizon, with >= 30 rows over >= 5 tickers and >= 2
 cutoffs: (1) RangeSkill CI lower bound (cutoff-clustered by as_of)
-> 0 and (2) coverage within 0.75-0.85. KEEP when both hold on every
+> 0 and (2) the cutoff-clustered coverage CI overlaps [0.75, 0.85]
+(#775 rule, replacing the point check). KEEP when both hold on every
 horizon, REJECT when the sample is enough and either fails,
 INSUFFICIENT otherwise. Scoring refuses cells below --min-cell
 (default 91, the cells no challenger has seen); lower cells need
@@ -107,11 +108,11 @@ def keep_verdict(res):
     for h in HORIZONS:
         lo = res[h]["ch_ci_cutoff"][0]
         cov = res[h]["ch"]["coverage"]
+        ci = res[h]["ch_cov_ci_cutoff"]
         if lo is None or lo <= 0:
             bad.append("%s CI lower bound %s not > 0" % (h, _f(lo)))
-        if cov is None or not COV_BAND[0] <= cov <= COV_BAND[1]:
-            bad.append("%s coverage %s outside [%.2f, %.2f]"
-                       % (h, _f(cov), COV_BAND[0], COV_BAND[1]))
+        if not R.coverage_ci_ok(ci, COV_BAND):
+            bad.append(R.coverage_ci_reason(h, ci, cov, COV_BAND))
     return ("REJECT" if bad else "KEEP"), bad
 
 
