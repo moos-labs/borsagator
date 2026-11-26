@@ -292,7 +292,10 @@ def main(argv=None):
             with open(a.json, "w", encoding="utf-8") as fh:
                 json.dump({"results": res}, fh, indent=1)
         return 0
-    caps = A.find_captures(a.captures, a.min_cell)
+    # Unnumbered captures cannot be placed relative to the clean-cell
+    # boundary, so they never enter a scoring.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell)
+            if A.cell_number(c) is not None]
     rows, gaps = build_rows(caps, allc)
     res = R.evaluate(score_rows(rows), a.reps, a.seed)
     print(render(res, a.descriptive,
@@ -302,7 +305,7 @@ def main(argv=None):
           % (MIN_RET, sum("excluded" in g for g in gaps)))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
-            json.dump({"results": res, "verdict": keep_verdict(res)[0],
+            json.dump({"results": res, **({} if a.descriptive else {"verdict": keep_verdict(res)[0]}),
                        "descriptive": a.descriptive}, fh, indent=1)
     return 0
 
