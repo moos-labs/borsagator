@@ -37,6 +37,44 @@ EGX_COMPANIES = {
     "ABUK": ("أبو قير للأسمدة", "EGS38161C013"),
     "AMOC": ("الإسكندرية للزيوت المعدنية", "EGS380P1C010"),
     "EKHO": ("القابضة المصرية الكويتية", "EGS69082C013"),
+    # Issue #768 (BEAST MODE item 1): the remaining EGX33 names with
+    # a manifest ISIN. ISINs from evaluation/top30_manifest.json
+    # (stage-2, status "partial": Investor Protection Fund official
+    # fund-members list, or an EGX disclosure header republished by
+    # Mubasher/Okaz — the per-listing isin_source names the exact
+    # one); every value passes the ISO 6166 check digit (see
+    # test_egx_harvest_isin.py, which also pins the table to the
+    # manifest). The Arabic legal name is NOT verified for any of
+    # these 25 (the manifest carries no name_ar for them), so the
+    # name is None — never guess it: the primary search is ISIN-keyed
+    # and works without the name, and the form fallback below is
+    # skipped when the name is None. Still missing (no manifest
+    # ISIN): CLHO, FAITA, GOUR, ICFC, LCSW, RACC.
+    "ACGC": (None, "EGS32221C011"),  # IPF
+    "ADIB": (None, "EGS60111C019"),  # IPF
+    "ARCC": (None, "EGS3C0O1C016"),  # Mubasher
+    "ATQA": (None, "EGS3D0C1C018"),  # Mubasher
+    "EFID": (None, "EGS305I1C011"),  # Okaz
+    "EFIH": (None, "EGS743O1C013"),  # Mubasher
+    "EGAL": (None, "EGS3E181C010"),  # Mubasher
+    "EGAS": (None, "EGS39011C019"),  # IPF
+    "ETRS": (None, "EGS42051C010"),  # IPF
+    "FAIT": (None, "EGS60321C014"),  # IPF
+    "IFAP": (None, "EGS07061C012"),  # IPF
+    "ISPH": (None, "EGS512O1C012"),  # IPF
+    "JUFO": (None, "EGS30901C010"),  # IPF
+    "MASR": (None, "EGS65571C019"),  # Mubasher
+    "MCQE": (None, "EGS3C391C017"),  # Mubasher
+    "MPCO": (None, "EGS02091C014"),  # IPF
+    "MTIE": (None, "EGS75011C014"),  # Mubasher
+    "OCDI": (None, "EGS65851C015"),  # IPF
+    "ORAS": (None, "EGS95001C011"),  # IPF
+    "ORHD": (None, "EGS70321C012"),  # IPF
+    "ORWE": (None, "EGS33041C012"),  # IPF
+    "PHDC": (None, "EGS655L1C012"),  # Mubasher
+    "RMDA": (None, "EGS381B1C015"),  # Mubasher
+    "SAUD": (None, "EGS60101C010"),  # IPF
+    "SKPC": (None, "EGS380S1C017"),  # IPF
 }
 
 
@@ -336,6 +374,13 @@ def main():
             st = debug["stages"][-1]["param_search"]
             for sel in st.get("selects", []):
                 if sel["options"] > 20:  # the company dropdown
+                    if ar_name is None:
+                        # Issue #768: no verified Arabic legal name
+                        # for this code — the dropdown is selected by
+                        # its Arabic label, so never guess one. The
+                        # ISIN-keyed search above is the only route.
+                        log("no verified Arabic name — form fallback skipped")
+                        break
                     try:
                         page.select_option(f"#{sel['id']}", label=ar_name,
                                            timeout=15000)

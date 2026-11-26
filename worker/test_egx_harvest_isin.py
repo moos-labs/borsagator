@@ -21,6 +21,7 @@ Run:  python3 worker/test_egx_harvest_isin.py
 No network, no fixture files.
 """
 import importlib.util
+import json
 import os
 import sys
 import unittest
@@ -87,6 +88,63 @@ class TestIsinCheckDigit(unittest.TestCase):
         """Changing a single digit breaks the check digit."""
         self.assertFalse(is_valid_isin("EGS380P1C011"))  # AMOC +1
         self.assertFalse(is_valid_isin("EGS60121C019"))  # COMI +1
+
+    # Issue #768 (BEAST MODE item 1): the harvester must accept the
+    # living EGX33 freeze, not just the original 10 codes. The freeze
+    # is sharia/benchmark/sources/egx33.json; the ISINs come from
+    # evaluation/top30_manifest.json (stage-2). Six freeze codes
+    # have no manifest ISIN yet (CLHO, FAITA, GOUR, ICFC, LCSW,
+    # RACC) and are the documented gap — everything else must be
+    # present, with the manifest's exact ISIN.
+    _REPO = os.path.dirname(_HERE)
+    _NO_ISIN_YET = frozenset(
+        ["CLHO", "FAITA", "GOUR", "ICFC", "LCSW", "RACC"])
+
+    def _freeze_codes(self):
+        with open(os.path.join(
+                self._REPO, "sharia", "benchmark", "sources",
+                "egx33.json"), encoding="utf-8") as f:
+            rows = json.load(f)["rows"]
+        return [r["ticker"].replace(".CA", "") for r in rows]
+
+    def _manifest_isins(self):
+        with open(os.path.join(
+                self._REPO, "evaluation",
+                "top30_manifest.json"), encoding="utf-8") as f:
+            man = json.load(f)
+        out = {}
+        for iss in man["issuers"]:
+            for listing in iss["listings"]:
+                if listing.get("isin"):
+                    out[listing["code"]] = listing["isin"]
+        return out
+
+    def test_freeze_coverage(self):
+        """Every freeze code with a manifest ISIN is harvestable."""
+        missing = [c for c in self._freeze_codes()
+                   if c not in EGX_COMPANIES
+                   and c not in self._NO_ISIN_YET]
+        self.assertEqual(missing, [], f"freeze codes not in table: {missing}")
+        self.assertEqual(len(EGX_COMPANIES), 35)
+
+    def test_table_isins_match_manifest(self):
+        """Table ISINs equal the manifest's — the manifest is the
+        single source; a drifted copy fails here by name."""
+        manifest = self._manifest_isins()
+        mismatched = [(c, EGX_COMPANIES[c][1], manifest[c])
+                      for c in self._freeze_codes()
+                      if c in EGX_COMPANIES and c in manifest
+                      and EGX_COMPANIES[c][1] != manifest[c]]
+        self.assertEqual(mismatched, [], f"ISIN drift vs manifest: {mismatched}")
+
+    def test_none_arabic_name_entries_validate(self):
+        """Entries without a verified Arabic name (None) are
+        allowed — the ISIN-keyed search needs no name — and still
+        validate cleanly."""
+        unnamed = [c for c, (ar, _isin) in EGX_COMPANIES.items()
+                   if ar is None]
+        self.assertEqual(len(unnamed), 25)
+        self.assertEqual(validate_egx_companies_isins(), [])
 
     def test_malformed_isins_fail(self):
         """Wrong shape is invalid even before the check digit."""
