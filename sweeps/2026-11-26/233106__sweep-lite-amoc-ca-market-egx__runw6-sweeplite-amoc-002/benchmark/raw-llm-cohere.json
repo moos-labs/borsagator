@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-26T23:31:18.974790+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "down",
+   "expected_move_pct": -1.67,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.67,
+   "range_low_pct": -5.0,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.8,
+   "direction": "down",
+   "expected_move_pct": -6.67,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 6.67,
+   "range_low_pct": -20.0,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.7,
+   "direction": "down",
+   "expected_move_pct": -3.33,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.33,
+   "range_low_pct": -10.0,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_amoc.csv": "5c5dc4ba9514821d0bc024aebc98bdb24d54ffaf0e100bfb23e5a034b2e5f1e1",
+  "digest.json": "5ce0bfa1c7b847136ea3fff293af939c57ee2ab1c083df839e74699520853769",
+  "ensemble.json": "830b7073dd1643f524120b75b52da720ea02a27f59ec779a644d0f9244c101a5",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_amoc.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0256,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

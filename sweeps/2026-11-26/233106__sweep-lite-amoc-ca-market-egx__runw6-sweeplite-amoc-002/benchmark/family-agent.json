@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-26T23:31:06.993251+00:00",
+ "inputs_sha256": {
+  "digest.json": "5ce0bfa1c7b847136ea3fff293af939c57ee2ab1c083df839e74699520853769",
+  "ensemble.json": "830b7073dd1643f524120b75b52da720ea02a27f59ec779a644d0f9244c101a5"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

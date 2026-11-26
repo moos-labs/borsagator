@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-26T23:31:06.992688+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": -0.26,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 3.67,
+   "range_low_pct": -4.19,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "down",
+   "expected_move_pct": -1.2,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 16.82,
+   "range_low_pct": -19.22,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": -0.59,
+   "families": {
+    "technicals": -0.2
+   },
+   "horizon_short": false,
+   "net_score": -0.2,
+   "range_high_pct": 8.21,
+   "range_low_pct": -9.38,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "5ce0bfa1c7b847136ea3fff293af939c57ee2ab1c083df839e74699520853769",
+  "ensemble.json": "830b7073dd1643f524120b75b52da720ea02a27f59ec779a644d0f9244c101a5"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0256,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,18 @@
+WARN body extract short (0 chars): https://www.mubasher.info/markets/CASE/stocks/AMOC
+bodies: 3/4 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 1}
+egx-harvest: attached 0 official bodies, added 6 harvested disclosures
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5360.76it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15271.08it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5514.02it/s]
+WARN cohere brief attempt 1 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+{"tool": "news-disclosure", "ticker": "AMOC.CA", "news_count": 4, "disclosure_count": 6, "arabic_headlines": 8, "latest_news_date": "Sun, 15 Nov 2026 15:00:19 GMT", "latest_disclosure_date": "2026-11-22", "top_headline": "الاسكندرية للزيوت المعدنية (AMOC.CA) - محضر اجتماع الجمعية العامة غير العادية (غير موثق)", "llm_provider": "cohere", "finbert_positive": 0.489, "finbert_negative": 0.028, "finbert_neutral": 0.483, "finbert_scored": 2, "multilingual_positive": 0.327, "multilingual_negative": 0.007, "multilingual_neutral": 0.665, "multilingual_scored": 8, "bodies_fetched": 3, "egx_bodies_attached": 0, "egx_disclosures_added": 6, "egx_harvest_source": "local-file", "translation_provider": "cohere", "translated_positive": 0.181, "translated_negative": 0.025, "translated_neutral": 0.794, "translated_scored": 8}
+BRIEF:
+- Alexandria Mineral Oils Company (AMOC) held an extraordinary general meeting on November 14, 2026, with an unofficial meeting minutes document released on November 22, 2026.
+- AMOC announced its independent financial results for the period from January 1, 2026, to September 30, 2026, with a net profit of EGP 3,003,921,347.
+- The company also disclosed its consolidated financial results for the same period, reporting a net profit of EGP 3,474,921,150.
+- On November 15, 2026, AMOC's Board of Directors made several decisions, which were announced along with a company statement and a review committee report.
+- A summary of the extraordinary general meeting's decisions was released on the same day, with details available in Arabic and English.
+- In a separate news article, it was reported that AMOC and Alexandria Container and Cargo Handling Company led the profit growth in the Egyptian stock market, with a season of financial results announcements underway.
+- According to Egypt Oil & Gas, AMOC delivered a 154% increase in consolidated net profit after tax, reaching EGP 3.47 billion in the first nine months of 2026.
+- AMOC's Board of Directors met on October 29, 2026, and made decisions regarding the company's performance indicators for the period ending September 30, 2026.

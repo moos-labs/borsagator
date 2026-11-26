@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 12.0,
+ "base_source": "egx-data/egxpy_amoc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-26T23:31:06.993800+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.92,
+   "families": {
+    "price-forecast": 0.57
+   },
+   "horizon_short": false,
+   "net_score": 0.57,
+   "range_high_pct": 4.2,
+   "range_low_pct": 1.14,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 10.99,
+   "families": {
+    "price-forecast": 0.469
+   },
+   "horizon_short": false,
+   "net_score": 0.469,
+   "range_high_pct": 13.62,
+   "range_low_pct": 9.03,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 4.93,
+   "families": {
+    "price-forecast": 0.431
+   },
+   "horizon_short": false,
+   "net_score": 0.431,
+   "range_high_pct": 6.26,
+   "range_low_pct": 2.62,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "c6ad5c5a629973485fcbb764cfc8939e13f44cbbd4ed2326db69e0846c7f0e71",
+  "digest.json": "5ce0bfa1c7b847136ea3fff293af939c57ee2ab1c083df839e74699520853769",
+  "ensemble.json": "830b7073dd1643f524120b75b52da720ea02a27f59ec779a644d0f9244c101a5"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0256,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+ "ticker": "AMOC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

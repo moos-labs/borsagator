@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-amoc-002",
+  "job": "sweep-lite AMOC.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-26T23:25:32.027417+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-amoc-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-26T23:25:32.027417+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "AMOC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['AMOC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-26T23:31:06.639135+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+  "model": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002/report-model.json",
+  "model_sha256": "987cf9ac8469a25b29d0188e4e90e4601e95791e05e19351a55149b619cec712",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/AMOC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/AMOC.CA.json",
+   "sharia-row-missing: AAOIFI AMOC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 AMOC.CA",
+   "sharia-row-missing: FTSE AMOC.CA",
+   "sharia-row-missing: ISLAMICLY AMOC.CA",
+   "sharia-row-missing: MSCI AMOC.CA",
+   "sharia-row-missing: MSCI_M AMOC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "b2c8efdbd1effe7d38a8c666fb1c47665268346d",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-26/233106__sweep-lite-amoc-ca-market-egx__runw6-sweeplite-amoc-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 129184,
+    "sha256": "6798afb366b3af5663758a0acb5b1eb029b6bbb5a9e257536381ea95e3864c24"
+   },
+   {
+    "path": "report.md",
+    "bytes": 29040,
+    "sha256": "93334b53f23d9bb6dfdc4bc3a0c16cefc6eb85c8c9d1ccc9965c92316df8a889"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "AMOC.CA"
+ }
+}
