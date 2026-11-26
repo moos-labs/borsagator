@@ -31,7 +31,10 @@ mean Winkler IS (as P2/P3 and the round 3 challengers), then frozen.
 Pre-registered keep rule: the round 3 rule. Untouched cells only
 (>= 91 without --descriptive). Per horizon with >= 30 rows over >= 5
 tickers and >= 2 cutoffs, RangeSkill (vs naive) cutoff-clustered 95%
-CI lower bound > 0 and coverage 0.75-0.85. KEEP on every horizon,
+CI lower bound > 0 and the cutoff-clustered 95% coverage CI
+overlapping [0.75, 0.85] (the #775 rule, shared coverage_ci_ok in
+replay_band_candidates.py via keep_verdict; an undefined CI is not an
+overlap; point coverage is reported, not the test). KEEP on every horizon,
 REJECT when the sample is enough and either fails, INSUFFICIENT
 otherwise. One scoring of the frozen file, no refit. Also reported:
 the LOCO-CV IS/naive ratio on the fit cells for log-HAR vs the s60
