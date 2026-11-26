@@ -6,7 +6,9 @@ spec and rule below are fixed before any untouched cell is scored.
 
 Band: centre 0, half-width from a simulated cumulative-return
 distribution at nominal 0.80 coverage,
-  half = (Q90 - Q10) / 2  of the h-session cumulative log return,
+  half = (Q90 - Q10) / 2  of the h-session cumulative LOG return,
+  taken in log space and scaled to percent (x 100), as v2 does; it is
+  not exponentiated to a price-return half-width,
 h = 1 / 5 / 21 sessions (ledger session counts), in percent. No k is
 fitted: the 0.10/0.90 quantiles are the nominal level, so there is
 nothing to freeze. RISK_MULT is applied as in v2 (inert today).
@@ -171,7 +173,7 @@ def fhs_band(rets, h, seed=SEED, n_sim=N_SIM):
     sims.sort()
     q10 = sims[int(0.10 * n_sim)]
     q90 = sims[int(0.90 * n_sim) - 1]
-    return (math.exp(q90) - math.exp(q10)) / 2.0 * 100.0
+    return (q90 - q10) / 2.0 * 100.0
 
 
 def build_rows(capture_dirs, ref_dirs):
@@ -230,7 +232,7 @@ def screen_pairs(capture_dirs, step=21, min_hist=N_RET + 1):
         for h in HORIZONS:
             n = R.SESSIONS[h]
             i = min_hist
-            while i + n < len(closes):
+            while i + n <= len(closes):
                 hist = closes[:i]
                 rets = logrets(hist)
                 half = fhs_band(rets, n)
@@ -303,7 +305,7 @@ def fhs_band_pooled(rets, h, ab, seed=SEED, n_sim=N_SIM):
     sims.sort()
     q10 = sims[int(0.10 * n_sim)]
     q90 = sims[int(0.90 * n_sim) - 1]
-    return (math.exp(q90) - math.exp(q10)) / 2.0 * 100.0
+    return (q90 - q10) / 2.0 * 100.0
 
 
 def screen_pooled_pairs(capture_dirs, step=21, fit_end=POOL_FIT_END,
@@ -330,7 +332,7 @@ def screen_pooled_pairs(capture_dirs, step=21, fit_end=POOL_FIT_END,
         for h in HORIZONS:
             n = R.SESSIONS[h]
             i = max(MIN_RET + 1, 1)
-            while i + n < len(closes):
+            while i + n <= len(closes):
                 if dates[i - 1] >= start:
                     rets = logrets(closes[:i])
                     pooled = fhs_band_pooled(rets, n, ab)
@@ -400,7 +402,10 @@ def main(argv=None):
         print("refusing: cells below %d need --descriptive"
               % CLEAN_MIN_CELL)
         return 2
-    allc = A.find_captures(a.captures, None)
+    # Unnumbered dirs (an export copy) are never captures: they cannot
+    # enter scoring, the screen or the price reference as a bogus ticker.
+    allc = [c for c in A.find_captures(a.captures, None)
+            if A.cell_number(c) is not None]
     if a.mode == "screen-pooled":
         pairs, ab = screen_pooled_pairs(allc)
         res_p = R.evaluate(pairs, a.reps)

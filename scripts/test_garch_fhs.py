@@ -82,7 +82,7 @@ def test_screen_window_limit():
     with tempfile.TemporaryDirectory() as d:
         cap = os.path.join(d, "TST")
         os.makedirs(cap)
-        r = sim_garch(1000, seed=3)
+        r = sim_garch(2000, seed=3)
         px, rows = 10.0, ["date,close"]
         import datetime as dt
         day = dt.date(2020, 1, 1)
@@ -99,6 +99,74 @@ def test_screen_window_limit():
         check("pairs built", len(pairs) > 0)
         check("no window after 2023-12-28",
               all(p["as_of"] <= "2023-12-28" for p in pairs))
+        check("fixture crosses the cutoff (series ends after 2023-12-28)",
+              max(dd for dd, _ in G.read_closes(cap)) > "2023-12-28")
+
+
+def test_fhs_log_space():
+    z = sim_garch(900, seed=5)
+    rets = z
+    w = G.fhs_band(rets, 5, n_sim=400)
+    wp = G.fhs_band_pooled(rets, 5, (0.08, 0.90), n_sim=400)
+    check("log-space half-width in percent is positive and finite",
+          w is not None and 0 < w < 100 and wp is not None and 0 < wp < 100)
+    # re-derive Q10/Q90 with the same draws: half = (q90 - q10)/2 x 100
+    import random as _r
+    omega, a, b = G.fit_garch(rets[-G.N_RET:])
+    rr = rets[-G.N_RET:]
+    var = sum(x * x for x in rr) / len(rr)
+    s2, zz = var, []
+    for x in rr:
+        zz.append(x / math.sqrt(s2))
+        s2 = omega + a * x * x + b * s2
+    rng = _r.Random(G.SEED)
+    sims = []
+    for _ in range(400):
+        v, cum = s2, 0.0
+        for _s in range(5):
+            e = rng.choice(zz) * math.sqrt(v)
+            cum += e
+            v = omega + a * e * e + b * v
+        sims.append(cum)
+    sims.sort()
+    want = (sims[int(0.9 * 400) - 1] - sims[int(0.1 * 400)]) / 2 * 100
+    check("band equals (Q90 - Q10)/2 of the log return x 100",
+          abs(w - want) < 1e-9, (w, want))
+
+
+def test_last_window_and_unnumbered():
+    import datetime as dt
+    import contextlib
+    import io
+    import json
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        cap = os.path.join(d, "TST")
+        os.makedirs(cap)
+        px, rows = 10.0, ["date,close"]
+        day = dt.date(2020, 1, 1)
+        for x in [0.0] + sim_garch(755, seed=9):
+            px *= math.exp(x)
+            rows.append("%s,%f" % (day.isoformat(), px))
+            day += dt.timedelta(days=1)
+        with open(os.path.join(cap, "price.csv"), "w") as f:
+            f.write("\n".join(rows))
+        pairs = G.screen_pairs([cap])
+        cnt = {h: sum(1 for p in pairs if p["horizon"] == h)
+               for h in G.HORIZONS}
+        check("last complete window is kept (<=): 756 closes, 751 "
+              "history + 5-session week window", cnt["week"] == 1, cnt)
+        check("day 1, month 0", cnt["day"] == 1 and cnt["month"] == 0, cnt)
+        out = os.path.join(d, "o.json")
+        for mode in ("screen", "screen-pooled"):
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = G.main([mode, "--captures", d, "--reps", "20",
+                             "--json", out])
+            data = json.load(open(out))
+            res = data["results"] if mode == "screen" else data["pooled"]
+            check("%s: unnumbered dir never enters as a ticker" % mode,
+                  rc == 0 and all(res[h]["n"] == 0 for h in G.HORIZONS),
+                  res)
 
 
 def test_pooled():
@@ -128,7 +196,7 @@ def test_pooled_screen_window_limit():
             os.makedirs(cap)
             px, rows = 10.0, ["date,close"]
             day = dt.date(2019, 1, 1)
-            for x in [0.0] + sim_garch(1800, seed=20 + k):
+            for x in [0.0] + sim_garch(2000, seed=20 + k):
                 px *= math.exp(x)
                 rows.append("%s,%f" % (day.isoformat(), px))
                 day += dt.timedelta(days=1)
@@ -182,7 +250,8 @@ def test_unnumbered_and_json():
 
 def main():
     for fn in (test_constants, test_fit, test_fhs, test_score_rows,
-               test_screen_window_limit, test_pooled,
+               test_screen_window_limit, test_fhs_log_space,
+               test_last_window_and_unnumbered, test_pooled,
                test_pooled_screen_window_limit, test_refusal):
         fn()
     print("test_garch_fhs: %d passed, %d failed"
