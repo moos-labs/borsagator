@@ -158,10 +158,10 @@ def render(res, descriptive):
                     _f(c["ch_ci_ticker"][0]), _f(c["ch_ci_ticker"][1])))
         L.append("  frozen v2  coverage %s  RangeSkill %s"
                  % (_f(c["v2"]["coverage"]), _f(c["v2"]["range_skill"])))
-    v, why = keep_verdict(res)
-    L += ["", "KEEP RULE: %s%s" % (
-        v, "" if descriptive else (" (" + "; ".join(why) + ")"
-                                   if why else ""))]
+    if not descriptive:
+        v, why = keep_verdict(res)
+        L += ["", "KEEP RULE: %s%s" % (
+            v, " (" + "; ".join(why) + ")" if why else "")]
     return "\n".join(L)
 
 
@@ -180,7 +180,10 @@ def main(argv=None):
         print("refusing: cells below 73 were seen; pass --descriptive")
         return 2
     allc = A.find_captures(a.captures, None)
-    caps = A.find_captures(a.captures, a.min_cell)
+    # Unnumbered captures cannot be placed relative to the clean-cell
+    # boundary, so they never enter a scoring.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell)
+            if A.cell_number(c) is not None]
     rows, gaps = build_rows(caps, allc)
     res = R.evaluate(score_rows(rows), a.reps, a.seed)
     print(render(res, a.descriptive))
@@ -189,7 +192,8 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"beta": BETA, "results": res,
-                       "verdict": keep_verdict(res)[0],
+                       **({} if a.descriptive
+                          else {"verdict": keep_verdict(res)[0]}),
                        "descriptive": a.descriptive}, fh, indent=1)
     return 0
 
