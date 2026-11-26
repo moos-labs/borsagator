@@ -14,6 +14,13 @@ Inputs:
                   (the long-history deliverable from the data lane);
   --captures DIR  capture trees; the longest indicator CSV per ticker
                   (collected/pandas-ta|talib/indicators.csv) is used.
+Regime break: price limits changed on 2021-09-05 (decree 681, research
+note, not relied on by code beyond this split). Each pair is tagged
+"pre" when its realised window ends before BREAK_DATE, or "post" when
+the first sigma lookback bar (as_of minus LOOKBACK sessions) is on or
+after BREAK_DATE. Pairs whose window or lookback straddles the break
+are dropped, and the two regimes are evaluated and printed SEPARATELY,
+never pooled. Use --regime post to start after the last break.
 Pseudo-cutoffs every STEP = 21 sessions after MIN_HIST = 120 bars.
 
 Screening exclusion rule: only realised windows that END on or before
@@ -53,6 +60,8 @@ import backtest_score as bs  # noqa: E402
 
 HORIZONS = A.HORIZONS
 SCREEN_END = "2023-12-28"
+BREAK_DATE = "2021-09-05"   # price-limit regime change (decree 681)
+LOOKBACK = 60               # sessions behind a sigma estimate
 STEP = 21
 MIN_HIST = 120
 MODELS = ("s20", "ewma94", "blend2060", "park60", "gk60")
@@ -114,8 +123,21 @@ def load(history_dir, capture_dirs):
     return by_t
 
 
-def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST):
-    """{model: [pair]}; each pair carries ch = the model band."""
+def regime_of(bars, i, n):
+    """'pre' | 'post' | None for the pair cut at bar index i (the base
+    bar is bars[i - 1]) with a realised window of n sessions."""
+    end_date = bars[i + n - 1][0]
+    start_look = bars[max(0, i - LOOKBACK)][0]
+    if end_date < BREAK_DATE:
+        return "pre"
+    if start_look >= BREAK_DATE:
+        return "post"
+    return None
+
+
+def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST, regime=None):
+    """{model: [pair]}; each pair carries ch = the model band and a
+    regime tag. regime = 'pre' | 'post' keeps only that regime."""
     out = {m: [] for m in MODELS}
     for t, bars in sorted(by_t.items()):
         bars = [b for b in bars if b[0] <= SCREEN_END]
@@ -127,6 +149,10 @@ def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST):
                 sig = R.sigmas([b[1:] for b in bars[:i]])
                 s60 = sig.get("s60")
                 real = (closes[i + n - 1] / closes[i - 1] - 1) * 100
+                rg = regime_of(bars, i, n)
+                if rg is None or (regime and rg != regime):
+                    i += step
+                    continue
                 if s60:
                     v2 = R.half_pct(s60, h, ens_mod.V2_BAND_K[h])
                     nv = R.half_pct(s60, h, 1.2816)
@@ -136,7 +162,7 @@ def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST):
                         half = R.half_pct(sig[m], h, ens_mod.V2_BAND_K[h])
                         out[m].append({
                             "ticker": t, "as_of": bars[i - 1][0],
-                            "horizon": h,
+                            "horizon": h, "regime": rg,
                             "is_naive": bs.winkler_is(real, -nv, nv),
                             "is_v2": bs.winkler_is(real, -v2, v2),
                             "is_ch": bs.winkler_is(real, -half, half),
@@ -146,9 +172,10 @@ def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST):
     return out
 
 
-def render(results):
+def render(results, title=""):
     L = ["SCREEN of cheap band models on long history (windows end <= "
-         "%s), frozen v2 k, descriptive, no verdict" % SCREEN_END]
+         "%s), frozen v2 k, descriptive, no verdict%s"
+         % (SCREEN_END, title)]
     for m in MODELS:
         L.append("")
         L.append("model %s" % m)
@@ -175,6 +202,9 @@ def main(argv=None):
                                  RawDescriptionHelpFormatter)
     ap.add_argument("--captures", nargs="*", default=[])
     ap.add_argument("--history", default=None)
+    ap.add_argument("--regime", choices=("pre", "post"), default=None,
+                    help="evaluate one regime only (default: both, "
+                    "separately)")
     ap.add_argument("--reps", type=int, default=2000)
     ap.add_argument("--json", default=None)
     a = ap.parse_args(argv)
@@ -183,14 +213,20 @@ def main(argv=None):
         return 2
     caps = A.find_captures(a.captures, None) if a.captures else []
     by_t = load(a.history, caps)
-    pairs = screen_pairs(by_t)
-    results = {m: R.evaluate(pairs[m], a.reps) for m in MODELS}
-    print(render(results))
+    regimes = [a.regime] if a.regime else ["pre", "post"]
+    allres = {}
+    for rg in regimes:
+        pairs = screen_pairs(by_t, regime=rg)
+        allres[rg] = {m: R.evaluate(pairs[m], a.reps) for m in MODELS}
+        print(render(allres[rg], ", regime %s (break %s)"
+                     % (rg, BREAK_DATE)))
+        print()
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"screen_end": SCREEN_END, "step": STEP,
-                       "min_hist": MIN_HIST, "descriptive": True,
-                       "models": list(MODELS), "results": results},
+                       "min_hist": MIN_HIST, "break_date": BREAK_DATE,
+                       "lookback": LOOKBACK, "descriptive": True,
+                       "models": list(MODELS), "regimes": allres},
                       fh, indent=1)
     return 0
 

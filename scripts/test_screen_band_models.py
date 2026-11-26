@@ -70,6 +70,36 @@ def test_exclusion_rule():
               (len(month), expect))
 
 
+def test_regime_split():
+    import datetime as dt
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "AAA.csv")
+        # 2021-03-01 .. 2023-12-28 spans the 2021-09-05 break
+        write_csv(p, dt.date(2021, 3, 1).toordinal(), 1000)
+        bars = S.read_history_csv(p)
+        check("series crosses the break", bars[0][0] < S.BREAK_DATE
+              < bars[-1][0])
+        pr = S.screen_pairs({"AAA": bars}, step=21, min_hist=100)["s20"]
+        regs = {x["regime"] for x in pr}
+        check("both regimes present", regs == {"pre", "post"}, regs)
+        pre = [x for x in pr if x["regime"] == "pre"]
+        check("pre windows end before the break: as_of <= break",
+              all(x["as_of"] < S.BREAK_DATE for x in pre))
+        post = [x for x in pr if x["regime"] == "post"]
+        first_ok = min(x["as_of"] for x in post)
+        i0 = [b[0] for b in bars].index(S.BREAK_DATE) \
+            if S.BREAK_DATE in [b[0] for b in bars] else None
+        check("post pairs start at least LOOKBACK sessions after the "
+              "break", first_ok > S.BREAK_DATE)
+        only = S.screen_pairs({"AAA": bars}, step=21, min_hist=100,
+                              regime="post")["s20"]
+        check("regime filter keeps only post",
+              only and all(x["regime"] == "post" for x in only))
+        straddle = [x for x in pr if x["as_of"] < S.BREAK_DATE
+                    and x["regime"] == "post"]
+        check("no pair straddles the break", straddle == [])
+
+
 def test_models_differ_and_v2_column():
     import datetime as dt
     with tempfile.TemporaryDirectory() as d:
@@ -100,13 +130,14 @@ def test_refusal_and_json():
         data = json.load(open(out))
         check("exit 0", rc == 0)
         check("json carries no verdict and is descriptive",
-              "verdict" not in data and data["descriptive"] is True)
+              "verdict" not in data and data["descriptive"] is True
+              and "regimes" in data)
         check("effective n printed beside raw n",
               "effective n (cutoff clusters)" in buf.getvalue())
 
 
 def main():
-    for fn in (test_constants, test_exclusion_rule,
+    for fn in (test_constants, test_exclusion_rule, test_regime_split,
                test_models_differ_and_v2_column, test_refusal_and_json):
         fn()
     print("test_screen_band_models: %d passed, %d failed"
