@@ -10,11 +10,14 @@ JSON output under "freshness". Dates only, no scores, so the line is safe
 in the counts-only default output. Nothing here is a verdict.
 
 Optional --max-age-days N (default off): age = today minus the newest
-MATURED row's maturity_date. When the age is above N, or the ledger has
-no matured row so its age cannot be established, the scorer refuses: it
-prints the reason to stderr and exits 2 before scoring. --today
-YYYY-MM-DD fixes "today" for reproducible runs; default is the local
-date. Dates are compared as ISO calendar dates, no timezone logic.
+MATURED row's maturity_date that is on or before today (a matured row
+dated in the future is ignored). When the age is above N, or no such
+row exists so the age cannot be established, the scorer refuses: it
+prints the reason to stderr and exits 2 before scoring. --today fixes
+"today" for reproducible runs and must be exactly a valid YYYY-MM-DD
+date (empty, truncated or trailing-text values are refused, also when
+--max-age-days is off); the local date is used only when --today is
+omitted. Dates are compared as ISO calendar dates, no timezone logic.
 """
 import datetime as dt
 import sys
@@ -39,6 +42,18 @@ def _date(s):
         return None
 
 
+def strict_date(s):
+    """A date only when s is exactly a valid YYYY-MM-DD string: no
+    truncation, no trailing text, no empty string."""
+    if not isinstance(s, str) or len(s) != 10:
+        return None
+    try:
+        d = dt.date.fromisoformat(s)
+    except ValueError:
+        return None
+    return d if d.isoformat() == s else None
+
+
 def summary(rows):
     """Newest as_of / maturity_date / matured maturity_date (ISO strings
     or None) and the row count. Unparseable dates are ignored."""
@@ -54,9 +69,13 @@ def summary(rows):
             "newest_matured_maturity_date": top(mmat)}
 
 
-def age_days(fr, today):
-    d = _date(fr["newest_matured_maturity_date"])
-    return None if d is None else (today - d).days
+def age_days(rows, today):
+    """Days from the newest MATURED row's maturity_date that is on or
+    before today (a matured row dated in the future is not evidence of
+    freshness and is ignored); None when there is no such row."""
+    ds = [d for d in (_date(r.get("maturity_date")) for r in rows
+                      if r.get("status") == "matured") if d and d <= today]
+    return (today - max(ds)).days if ds else None
 
 
 def line(fr):
@@ -70,20 +89,22 @@ def line(fr):
 def check(rows, max_age_days=None, today=None):
     """Return (freshness dict, refusal message or None)."""
     fr = summary(rows)
-    t = _date(today) if today else dt.date.today()
-    if today and t is None:
-        return fr, "--today must be YYYY-MM-DD"
+    t = dt.date.today() if today is None else strict_date(today)
+    if t is None:
+        return fr, "--today must be exactly a valid YYYY-MM-DD date"
     if max_age_days is None:
         return fr, None
-    age = age_days(fr, t)
+    age = age_days(rows, t)
     if age is None:
-        return fr, ("ledger refused: no matured row, so its age cannot "
-                    "be established (--max-age-days %d)" % max_age_days)
+        return fr, ("ledger refused: no matured row with a maturity_date "
+                    "on or before %s, so its age cannot be established "
+                    "(--max-age-days %d)" % (t.isoformat(), max_age_days))
     fr["age_days"] = age
     if age > max_age_days:
-        return fr, ("ledger refused: newest matured maturity_date %s is "
-                    "%d days before %s, over --max-age-days %d"
-                    % (fr["newest_matured_maturity_date"], age,
+        return fr, ("ledger refused: newest matured maturity_date on or "
+                    "before today, %s, is %d days before %s, over "
+                    "--max-age-days %d"
+                    % ((t - dt.timedelta(days=age)).isoformat(), age,
                        t.isoformat(), max_age_days))
     return fr, None
 

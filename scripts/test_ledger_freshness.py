@@ -104,8 +104,29 @@ def test_check():
                       "2026-11-27")
     check("no matured row cannot be fresh", why and "no matured" in why,
           why)
-    _, why = LF.check(ROWS, 5, "not-a-date")
-    check("bad --today refuses", why and "YYYY-MM-DD" in why, why)
+    for bad in ("not-a-date", "", "2026-11-27garbage", "2026-11-27 ",
+                "2026-1-27", "20261127", "2026-02-30", " 2026-11-27",
+                "2026-W48-5"):
+        for lim in (None, 5):
+            _, why = LF.check(ROWS, lim, bad)
+            check("bad --today %r (limit %s) refuses" % (bad, lim),
+                  why and "valid YYYY-MM-DD" in why, why)
+    _, why = LF.check(ROWS, None, "2026-11-27")
+    check("exact date accepted without a limit", why is None, why)
+    future = [row("2026-11-20", "2026-12-05"),
+              row("2026-11-01", "2026-11-08")]
+    fr, why = LF.check(future, 30, "2026-11-27")
+    check("future-dated matured row is ignored for age",
+          why is None and fr["age_days"] == 19, (fr, why))
+    _, why = LF.check(future, 10, "2026-11-27")
+    check("future-dated matured row cannot rescue a stale ledger",
+          why and "19 days" in why, why)
+    _, why = LF.check([row("2026-11-20", "2026-12-05")], 30, "2026-11-27")
+    check("only future-dated matured rows refuse",
+          why and "on or before 2026-11-27" in why, why)
+    fr, why = LF.check([row("2026-11-20", "2026-11-27")], 0, "2026-11-27")
+    check("maturity today counts, age 0", why is None
+          and fr["age_days"] == 0, (fr, why))
 
 
 def test_every_scorer_prints_and_exports():
@@ -132,6 +153,16 @@ def test_every_scorer_refuses_when_stale():
               (code, err))
         code, out, err, _ = run(mod, ROWS, ["--today", "2030-01-01"])
         check(name + " default off scores any age", code == 0, code)
+        for bad in ("", "2026-11-27garbage"):
+            code, out, err, _ = run(mod, ROWS, ["--today", bad])
+            check(name + " refuses bad --today %r" % bad, code == 2
+                  and "valid YYYY-MM-DD" in err and out.strip() == LINE,
+                  (code, err))
+        fut = ROWS + [row("2026-11-20", "2026-12-30")]
+        code, out, err, _ = run(mod, fut, ["--max-age-days", "9",
+                                           "--today", "2026-11-27"])
+        check(name + " future matured row does not pass the gate",
+              code == 2, code)
 
 
 def test_forward_benchmark_refuses():
