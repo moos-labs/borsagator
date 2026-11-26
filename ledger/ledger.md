@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree cc40edb6, commit cc40edb6). Sweeps archived: 86 (65 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree da7a1e7c, commit da7a1e7c). Sweeps archived: 91 (70 with an ensemble).
 
-**Forecasts found: 189 · matured: 48 · pending: 129 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 204 · matured: 48 · pending: 144 · invalid: 12 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -40,9 +40,12 @@ Source: `moos-labs/borsagator` branch `archive` (tree cc40edb6, commit cc40edb6)
 | ORHD.CA | 3 | 0 | 3 | 0 | 2014-06-29 → 2026-11-25 |
 | ORWE.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
 | PHDC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
-| POUL.CA | 84 | 47 | 28 | 9 | 2014-06-04 → 2026-11-24 |
+| POUL.CA | 90 | 47 | 34 | 9 | 2014-06-04 → 2026-11-25 |
 | RACC.CA | 3 | 0 | 3 | 0 | 2015-02-12 → 2026-11-25 |
 | RMDA.CA | 3 | 0 | 3 | 0 | 2019-11-27 → 2026-11-25 |
+| SAUD.CA | 3 | 0 | 3 | 0 | 2014-06-25 → 2026-11-25 |
+| SKPC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| TMGH.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
 
 ## By horizon (matured only, gap-flagged rows excluded from skill — issue #79)
 
@@ -68,91 +71,91 @@ Source: `moos-labs/borsagator` branch `archive` (tree cc40edb6, commit cc40edb6)
 |---|---|---|---|---|---|---|---|---|---|---|
 | POUL.CA | 2026-11-12 | day | flat | +0.53 | -1.96 | ❌ | 2.49 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-12 | week | flat | -0.40 | -25.69 | ❌ | 25.29 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-12 | month | down | -5.98 | — | — | — | — | | pending (8/21 sessions) |
+| POUL.CA | 2026-11-12 | month | down | -5.98 | — | — | — | — | | pending (9/21 sessions) |
 | NVDA | 2026-11-12 | day | flat | -0.54 | -0.82 | ❌ | 0.28 | ✅ |  | matured 2026-11-13 |
 | NVDA | 2026-11-12 | week | up | +8.07 | — | — | — | — | | pending (1/5 sessions) |
 | NVDA | 2026-11-12 | month | up | +17.76 | — | — | — | — | | pending (1/21 sessions) |
 | POUL.CA | 2026-11-13 | day | flat | -0.23 | -1.96 | ❌ | 1.73 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.14 | -25.69 | ✅ | 24.55 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -6.46 | — | — | — | — | | pending (8/21 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -6.46 | — | — | — | — | | pending (9/21 sessions) |
 | NVDA | 2026-11-13 | day | flat | -0.71 | — | — | — | — | | pending (0/1 sessions) |
 | NVDA | 2026-11-13 | week | up | +6.93 | — | — | — | — | | pending (0/5 sessions) |
 | NVDA | 2026-11-13 | month | up | +18.61 | — | — | — | — | | pending (0/21 sessions) |
 | POUL.CA | 2026-11-13 | day | flat | -0.38 | -1.96 | ❌ | 1.58 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.67 | -25.69 | ✅ | 24.02 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -6.93 | — | — | — | — | | pending (8/21 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -6.93 | — | — | — | — | | pending (9/21 sessions) |
 | POUL.CA | 2026-11-13 | day | up | +1.16 | -1.48 | ❌ | 2.64 | ✅ |  | matured 2026-11-15 |
 | POUL.CA | 2026-11-13 | week | down | -1.01 | -25.32 | ✅ | 24.31 | ❌ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-13 | month | down | -1.76 | — | — | — | — | | pending (8/21 sessions) |
+| POUL.CA | 2026-11-13 | month | down | -1.76 | — | — | — | — | | pending (9/21 sessions) |
 | POUL.CA | 2026-11-15 | day | up | +1.22 | -20.99 | ❌ | 22.21 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -0.92 | -24.14 | ✅ | 23.22 | ❌ |  | matured 2026-11-18 |
-| POUL.CA | 2026-11-15 | month | down | -1.88 | — | — | — | — | | pending (7/14 sessions) |
+| POUL.CA | 2026-11-15 | month | down | -1.88 | — | — | — | — | | pending (8/14 sessions) |
 | POUL.CA | 2026-11-15 | day | up | +1.22 | -20.99 | ❌ | 22.21 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -0.93 | -24.14 | ✅ | 23.21 | ❌ |  | matured 2026-11-18 |
-| POUL.CA | 2026-11-15 | month | down | -1.89 | — | — | — | — | | pending (7/14 sessions) |
+| POUL.CA | 2026-11-15 | month | down | -1.89 | — | — | — | — | | pending (8/14 sessions) |
 | COMI.CA | 2026-11-15 | day | up | +702.27 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 92.1% from the ticker-evidenced close 128.51 at 2026-11-15 — the sweep's data does not match COMI.CA (issue #87) |
 | COMI.CA | 2026-11-15 | week | up | +711.50 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 92.1% from the ticker-evidenced close 128.51 at 2026-11-15 — the sweep's data does not match COMI.CA (issue #87) |
 | COMI.CA | 2026-11-15 | month | up | +674.99 | — | — | — | — | | invalid — base_price 10.149999618530273 deviates 92.1% from the ticker-evidenced close 128.51 at 2026-11-15 — the sweep's data does not match COMI.CA (issue #87) |
 | POUL.CA | 2026-11-15 | day | up | +1.21 | -20.99 | ❌ | 22.20 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -1.00 | -24.14 | ✅ | 23.14 | ❌ |  | matured 2026-11-18 |
-| POUL.CA | 2026-11-15 | month | down | -1.91 | — | — | — | — | | pending (7/14 sessions) |
+| POUL.CA | 2026-11-15 | month | down | -1.91 | — | — | — | — | | pending (8/14 sessions) |
 | POUL.CA | 2026-11-15 | day | up | +1.21 | -20.99 | ❌ | 22.20 | ❌ |  | matured 2026-11-16 |
 | POUL.CA | 2026-11-15 | week | down | -1.00 | -24.14 | ✅ | 23.14 | ❌ |  | matured 2026-11-18 |
-| POUL.CA | 2026-11-15 | month | down | -1.91 | — | — | — | — | | pending (7/14 sessions) |
+| POUL.CA | 2026-11-15 | month | down | -1.91 | — | — | — | — | | pending (8/14 sessions) |
 | POUL.CA | 2026-11-16 | day | flat | +0.19 | -5.30 | ❌ | 5.49 | ❌ | 💰 | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | flat | +0.26 | -5.20 | ❌ | 5.46 | ✅ | 💰 | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +1.39 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +1.39 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +2.26 | -5.30 | ❌ | 7.56 | ❌ | 💰 | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | flat | -0.61 | -5.20 | ❌ | 4.59 | ✅ | 💰 | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | down | -1.54 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | down | -1.54 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +2.25 | -5.30 | ❌ | 7.55 | ❌ | 💰 | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | flat | -0.63 | -5.20 | ❌ | 4.57 | ✅ | 💰 | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | down | -1.55 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | down | -1.55 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.71 | -5.61 | ❌ | 24.32 | ❌ |  | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | up | +16.73 | -5.49 | ❌ | 22.22 | ✅ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +16.36 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +16.36 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.62 | -5.61 | ❌ | 24.23 | ❌ |  | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | up | +16.55 | -5.49 | ❌ | 22.04 | ✅ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +16.34 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +16.34 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.61 | -5.61 | ❌ | 24.22 | ❌ |  | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | up | +16.54 | -5.49 | ❌ | 22.03 | ✅ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +16.33 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +16.33 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +1.90 | -6.70 | ❌ | 8.60 | ✅ | 💰 | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | flat | -0.61 | -12.02 | ❌ | 11.41 | ✅ | 💰 | matured 2026-11-22 |
-| POUL.CA | 2026-11-16 | month | up | +4.77 | — | — | — | — | | pending (6/15 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +4.77 | — | — | — | — | | pending (7/15 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.52 | -5.61 | ❌ | 24.13 | ❌ |  | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | up | +16.35 | -5.49 | ❌ | 21.84 | ✅ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +16.21 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +16.21 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-16 | day | up | +18.63 | -5.61 | ❌ | 24.24 | ❌ |  | matured 2026-11-17 |
 | POUL.CA | 2026-11-16 | week | up | +16.58 | -5.49 | ❌ | 22.07 | ✅ |  | matured 2026-11-19 |
-| POUL.CA | 2026-11-16 | month | up | +16.36 | — | — | — | — | | pending (6/14 sessions) |
+| POUL.CA | 2026-11-16 | month | up | +16.36 | — | — | — | — | | pending (7/14 sessions) |
 | POUL.CA | 2026-11-17 | day | up | +18.43 | — | — | — | — | | invalid — base_price 8.02 deviates 5.9% from the ticker-evidenced close 7.57 at 2026-11-17 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-17 | week | up | +16.17 | — | — | — | — | | invalid — base_price 8.02 deviates 5.9% from the ticker-evidenced close 7.57 at 2026-11-17 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-17 | month | up | +16.08 | — | — | — | — | | invalid — base_price 8.02 deviates 5.9% from the ticker-evidenced close 7.57 at 2026-11-17 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-18 | day | up | +7.68 | -0.79 | ❌ | 8.47 | ✅ |  | matured 2026-11-19 |
 | POUL.CA | 2026-11-18 | week | up | +15.28 | -7.07 | ❌ | 22.35 | ✅ |  | matured 2026-11-23 |
-| POUL.CA | 2026-11-18 | month | up | +17.56 | — | — | — | — | | pending (4/14 sessions) |
+| POUL.CA | 2026-11-18 | month | up | +17.56 | — | — | — | — | | pending (5/14 sessions) |
 | POUL.CA | 2026-11-18 | day | up | +7.08 | -1.56 | ❌ | 8.64 | ✅ |  | matured 2026-11-19 |
 | POUL.CA | 2026-11-18 | week | up | +14.61 | -7.79 | ❌ | 22.40 | ✅ |  | matured 2026-11-23 |
-| POUL.CA | 2026-11-18 | month | up | +16.94 | — | — | — | — | | pending (4/14 sessions) |
+| POUL.CA | 2026-11-18 | month | up | +16.94 | — | — | — | — | | pending (5/14 sessions) |
 | POUL.CA | 2026-11-18 | day | up | +6.79 | -1.56 | ❌ | 8.35 | ✅ |  | matured 2026-11-19 |
 | POUL.CA | 2026-11-18 | week | up | +13.91 | -7.79 | ❌ | 21.70 | ✅ |  | matured 2026-11-23 |
-| POUL.CA | 2026-11-18 | month | up | +16.77 | — | — | — | — | | pending (4/14 sessions) |
+| POUL.CA | 2026-11-18 | month | up | +16.77 | — | — | — | — | | pending (5/14 sessions) |
 | POUL.CA | 2026-11-18 | day | up | +6.79 | -1.56 | ❌ | 8.35 | ✅ |  | matured 2026-11-19 |
 | POUL.CA | 2026-11-18 | week | up | +13.92 | -7.79 | ❌ | 21.71 | ✅ |  | matured 2026-11-23 |
-| POUL.CA | 2026-11-18 | month | up | +16.78 | — | — | — | — | | pending (4/14 sessions) |
+| POUL.CA | 2026-11-18 | month | up | +16.78 | — | — | — | — | | pending (5/14 sessions) |
 | POUL.CA | 2026-11-19 | day | up | +6.80 | -8.70 | ❌ | 15.50 | ❌ |  | matured 2026-11-22 |
 | POUL.CA | 2026-11-19 | week | up | +13.94 | -10.91 | ❌ | 24.85 | ✅ |  | matured 2026-11-24 |
-| POUL.CA | 2026-11-19 | month | up | +16.79 | — | — | — | — | | pending (3/14 sessions) |
+| POUL.CA | 2026-11-19 | month | up | +16.79 | — | — | — | — | | pending (4/14 sessions) |
 | POUL.CA | 2026-11-19 | day | up | +6.84 | -8.70 | ❌ | 15.54 | ❌ |  | matured 2026-11-22 |
 | POUL.CA | 2026-11-19 | week | up | +14.02 | -10.91 | ❌ | 24.93 | ✅ |  | matured 2026-11-24 |
-| POUL.CA | 2026-11-19 | month | up | +16.84 | — | — | — | — | | pending (3/14 sessions) |
+| POUL.CA | 2026-11-19 | month | up | +16.84 | — | — | — | — | | pending (4/14 sessions) |
 | POUL.CA | 2026-11-22 | day | up | +4.98 | — | — | — | — | | invalid — base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-22 | week | up | +9.67 | — | — | — | — | | invalid — base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-22 | month | up | +15.16 | — | — | — | — | | invalid — base_price 7.58 deviates 7.8% from the ticker-evidenced close 7.03 at 2026-11-22 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-23 | day | up | +10.66 | -2.42 | ❌ | 13.08 | ❌ |  | matured 2026-11-24 |
-| POUL.CA | 2026-11-23 | week | up | +15.90 | — | — | — | — | | pending (1/3 sessions) |
-| POUL.CA | 2026-11-23 | month | up | +21.41 | — | — | — | — | | pending (1/14 sessions) |
+| POUL.CA | 2026-11-23 | week | up | +15.90 | — | — | — | — | | pending (2/3 sessions) |
+| POUL.CA | 2026-11-23 | month | up | +21.41 | — | — | — | — | | pending (2/14 sessions) |
 | POUL.CA | 2026-11-24 | day | up | +1.04 | — | — | — | — | | invalid — base_price 7.1 deviates 3.5% from the ticker-evidenced close 6.86 at 2026-11-24 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-24 | week | up | +4.82 | — | — | — | — | | invalid — base_price 7.1 deviates 3.5% from the ticker-evidenced close 6.86 at 2026-11-24 — the sweep's data does not match POUL.CA (issue #87) |
 | POUL.CA | 2026-11-24 | month | up | +25.29 | — | — | — | — | | invalid — base_price 7.1 deviates 3.5% from the ticker-evidenced close 6.86 at 2026-11-24 — the sweep's data does not match POUL.CA (issue #87) |
@@ -255,6 +258,21 @@ Source: `moos-labs/borsagator` branch `archive` (tree cc40edb6, commit cc40edb6)
 | RMDA.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | RMDA.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | RMDA.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| SAUD.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| SAUD.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| SAUD.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| SKPC.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| SKPC.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| SKPC.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| TMGH.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| TMGH.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| TMGH.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| POUL.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| POUL.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| POUL.CA | 2026-11-26 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| POUL.CA | 2026-11-26 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| POUL.CA | 2026-11-26 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
 
 ## Data gaps & notes
 
@@ -291,9 +309,12 @@ Source: `moos-labs/borsagator` branch `archive` (tree cc40edb6, commit cc40edb6)
 - ORHD.CA: actuals series has 3000 sessions, 2014-06-29 → 2026-11-25 (last source: sweeps/2026-11-25/144735__sweep-lite-orhd-ca-market-egx__runw5-sweeplite-orhd-001/collected/egx-data/egxpy_orhd.csv)
 - ORWE.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001/collected/egx-data/egxpy_orwe.csv)
 - PHDC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001/collected/egx-data/egxpy_phdc.csv)
-- POUL.CA: actuals series has 3052 sessions, 2014-06-04 → 2026-11-24 (last source: sweeps/2026-11-25/063413__sweep-lite-poul-ca-market-egx__runsched-2026-11-25/collected/egx-data/egxpy_poul.csv)
+- POUL.CA: actuals series has 3053 sessions, 2014-06-04 → 2026-11-25 (last source: sweeps/2026-11-26/074217__sweep-lite-poul-ca-market-egx__runsched-2026-11-26/collected/egx-data/egxpy_poul.csv)
 - RACC.CA: actuals series has 2325 sessions, 2015-02-12 → 2026-11-25 (last source: sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001/collected/egx-data/egxpy_racc.csv)
 - RMDA.CA: actuals series has 1699 sessions, 2019-11-27 → 2026-11-25 (last source: sweeps/2026-11-25/195201__sweep-lite-rmda-ca-market-egx__runw5-sweeplite-rmda-001/collected/egx-data/egxpy_rmda.csv)
+- SAUD.CA: actuals series has 3000 sessions, 2014-06-25 → 2026-11-25 (last source: sweeps/2026-11-25/201240__sweep-lite-saud-ca-market-egx__runw5-sweeplite-saud-001/collected/egx-data/egxpy_saud.csv)
+- SKPC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/201513__sweep-lite-skpc-ca-market-egx__runw5-sweeplite-skpc-001/collected/egx-data/egxpy_skpc.csv)
+- TMGH.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001/collected/egx-data/egxpy_tmgh.csv)
 - price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files
 - 12 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; POUL.CA as of 2026-11-17 (day) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-17 (week) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-17 (month) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24
 - 12 matured forecast(s) span a known dividend ex-date (or carry an undated dividend action) but were NOT dividend-adjusted — their realized move includes the mechanical ex-div drop (issue #129): POUL.CA as of 2026-11-12 (week) from sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129)
