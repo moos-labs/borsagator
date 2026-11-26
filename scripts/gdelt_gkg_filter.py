@@ -32,10 +32,21 @@ unchanged config keeps them so normal restarts keep working.
 
 Rows kept when EITHER:
   - a V2Organizations entry matches a ticker alias (word-boundary,
-    case/punctuation-insensitive) and no per-ticker block pattern matches
-    (reason "alias" or "both"), OR
+    case/punctuation-insensitive), no per-ticker block pattern matches,
+    and - when the alias carries require_patterns in the alias table - at
+    least one require pattern also matches the same entry (reason "alias"
+    or "both"), OR
   - SourceCommonName is an Egyptian outlet domain (reason "eg_domain";
     candidates for a later alias-free pass, kept with no ticker).
+
+Alias-table hygiene after the 2024-05 pilot (six false-hit patterns in
+docs/gdelt-gkg-pilot-2024-05.md): require_patterns is a per-ALIAS context
+gate - the alias only matches entries that also contain one of its
+patterns (EFIH "e-Finance"/"eFinance" and MTIE "MM Group" require
+"egypt"; OCDI "SODIC" requires "egypt|development"). PHDC and CIRA carry
+block patterns (squash-club phrases, "Cira Center/Centre"). SAUD is
+restricted to the Egypt aliases ("Al Baraka Bank Egypt", "Al Baraka
+Egypt"); the bare "Al Baraka Bank" alias is dropped.
 
 Fetch mode:
   gdelt_gkg_filter.py --aliases evaluation/gdelt_alias_table.csv \
@@ -115,9 +126,11 @@ def _make_prefilter(needles):
         return hit
 
 def load_aliases(path):
-    """Return (alias_items, block_map, prefilter). alias_items: list of
-    (normalized alias, tickers) sorted longest first."""
-    alias_map, block_map = {}, {}
+    """Return (alias_items, block_map, require_map, prefilter). alias_items:
+    list of (normalized alias, tickers) sorted longest first. require_map is
+    keyed by normalized alias (not ticker): a context gate on that alias,
+    e.g. the generic short aliases, never on full-name aliases."""
+    alias_map, block_map, require_map = {}, {}, {}
     with open(path, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             a = norm(r["alias"])
@@ -127,15 +140,22 @@ def load_aliases(path):
             if r["block_patterns"]:
                 block_map.setdefault(r["ticker"], set()).update(
                     norm(b) for b in r["block_patterns"].split("|") if b.strip())
+            req = r.get("require_patterns") or ""
+            if req:
+                require_map.setdefault(a, set()).update(
+                    norm(b) for b in req.split("|") if b.strip())
     needles = sorted(alias_map) + sorted(norm(d) for d in EG_DOMAINS)
     prefilter = _make_prefilter(needles)
     alias_items = sorted(alias_map.items(), key=lambda kv: -len(kv[0]))
-    return alias_items, block_map, prefilter
+    return alias_items, block_map, require_map, prefilter
 
-def match_orgs(org_field, alias_items, block_map):
+def match_orgs(org_field, alias_items, block_map, require_map):
     """Match V2Organizations entries ('Name,charoffset';'-separated) against
     aliases. Returns {ticker: set(matched raw entry names)} so multi-issuer
-    rows never cross-pair a ticker with another ticker's entry."""
+    rows never cross-pair a ticker with another ticker's entry. An alias
+    with require_patterns matches an entry only when one of its patterns
+    also appears in the entry; a require-fail falls through to shorter
+    aliases, a successful match (even fully blocked) stops at the longest."""
     by_ticker = {}
     for ent in org_field.split(";"):
         name = ent.rsplit(",", 1)[0] if "," in ent else ent
@@ -144,6 +164,9 @@ def match_orgs(org_field, alias_items, block_map):
             continue
         for a, ts in alias_items:
             if " " + a + " " in n:
+                reqs = require_map.get(a, ())
+                if reqs and not any(" " + q + " " in n for q in reqs):
+                    continue  # context-gated alias; try shorter ones
                 ok = ts - {t for t in ts
                            if any(" " + b + " " in n for b in block_map.get(t, ()))}
                 for t in ok:
@@ -159,7 +182,7 @@ def parse_tone(field):
     p = field.split(",")
     return (p + [""] * 7)[:7]
 
-def process_blob(name, stream, blob, alias_items, block_map, prefilter):
+def process_blob(name, stream, blob, alias_items, block_map, require_map, prefilter):
     """Returns (rows, n_malformed). Lines with != 27 columns are skipped,
     never parsed with a guessed layout."""
     out = []
@@ -174,7 +197,7 @@ def process_blob(name, stream, blob, alias_items, block_map, prefilter):
             continue
         src = cols[C_SOURCE]
         eg = is_eg_domain(src)
-        by_ticker = match_orgs(cols[C_ORGS], alias_items, block_map)
+        by_ticker = match_orgs(cols[C_ORGS], alias_items, block_map, require_map)
         if not by_ticker and not eg:
             continue
         reason = ("both" if eg else "alias") if by_ticker else "eg_domain"
@@ -261,7 +284,7 @@ def run_fetch(a):
     done = set()
     if os.path.exists(done_path):
         done = set(open(done_path).read().split())
-    alias_items, block_map, prefilter = load_aliases(a.aliases)
+    alias_items, block_map, require_map, prefilter = load_aliases(a.aliases)
     specs = []
     if a.master:
         specs.append((a.master, "english"))
@@ -282,7 +305,8 @@ def run_fetch(a):
             blob = z.read(z.namelist()[0])
         except Exception as e:
             return name, stream, 0, None, 0, f"{type(e).__name__}: {e}"
-        rows, bad = process_blob(name, stream, blob, alias_items, block_map, prefilter)
+        rows, bad = process_blob(name, stream, blob, alias_items, block_map,
+                                 require_map, prefilter)
         return name, stream, len(raw), rows, bad, None
 
     batch = max(a.workers * 4, 8)

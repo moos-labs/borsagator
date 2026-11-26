@@ -1,97 +1,98 @@
-ticker,issuer,name_en,name_ar,alias,alias_type,block_patterns,alias_source,notes
-ACGC,ACGC,Arab Cotton Ginning,,Arab Cotton Ginning,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ADIB,ADIB,Abu Dhabi Islamic Bank- Egypt,,Abu Dhabi Islamic Bank,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ADIB,ADIB,Abu Dhabi Islamic Bank- Egypt,,Abu Dhabi Islamic Bank- Egypt,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,Alexandria Mineral Oils Company,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,AMOC,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,الإسكندرية للزيوت المعدنية,ar_verified,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
-AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,Alexandria Mineral Oils Co SAE,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ARCC,ARCC,Arabian Cement Company,,Arabian Cement,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ARCC,ARCC,Arabian Cement Company,,Arabian Cement Company,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ATQA,ATQA,Misr National Steel - Ataqa,,Egyptian National Steel,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ATQA,ATQA,Misr National Steel - Ataqa,,Misr National Steel,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ATQA,ATQA,Misr National Steel - Ataqa,,Misr National Steel - Ataqa,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,Cairo for Investment and Real Estate Development - Seera Education,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,CIRA,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,
-CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,CIRA Education,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,
-CLHO,CLHO,Cleopatra Hospital,,Cleopatra Hospitals Group,alt_en,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-CLHO,CLHO,Cleopatra Hospital,,Cleopatra Hospital,canonical_en,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,Commercial International Bank,alt_en,,manifest notes (IPF/EGX-header alternate spellings),regression control (outside the 30)
-COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,البنك التجاري الدولي,ar_verified,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),regression control (outside the 30)
-COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,Commercial International Bank Egypt,canonical_en,,stockanalysis.com quote page 2026-11-26 (manifest name_en is null),regression control (outside the 30)
-EFID,EFID,Edita Food Industries S.A.E,,Edita,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EFID,EFID,Edita Food Industries S.A.E,,Edita Food Industries,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EFID,EFID,Edita Food Industries S.A.E,,Edita Food Industries S.A.E,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,e-Finance,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,eFinance,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,E-Finance For Digital and Financial Investements SAE,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-EGAL,EGAL,Egypt Aluminum,,Egypt Aluminium,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EGAL,EGAL,Egypt Aluminum,,Egypt Aluminum Company,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EGAL,EGAL,Egypt Aluminum,,Egypt Aluminum,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-EGAS,EGAS,Natural Gas & Mining Project (Egypt Gas),,Egypt Gas,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-EGAS,EGAS,Natural Gas & Mining Project (Egypt Gas),,Natural Gas & Mining Project (Egypt Gas),canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,Telecom Egypt,alt_en,telecom egypt confidence,manifest notes (IPF/EGX-header alternate spellings),
-ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,المصرية للاتصالات,ar_verified,telecom egypt confidence,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
-ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,Telecom Egypt Co SAE,canonical_en,telecom egypt confidence,evaluation/top30_manifest.json (per-listing verification),
-ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egyptian Transport and Trade Services,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egytrans,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egyptian Transport and Commercial Services Company S.A.E.,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-FAIT,FAIT,Faisal Islamic Bank of Egypt (S.A.E.),,Faisal Islamic Bank,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-FAIT,FAIT,Faisal Islamic Bank of Egypt (S.A.E.),,Faisal Islamic Bank of Egypt (S.A.E.),canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-FAITA,FAIT,Faisal Islamic Bank of Egypt - In US Dollars,,Faisal Islamic Bank,alt_en,,manifest notes (IPF/EGX-header alternate spellings),USD listing of FAIT; same issuer
-FAITA,FAIT,Faisal Islamic Bank of Egypt - In US Dollars,,Faisal Islamic Bank of Egypt - In US Dollars,canonical_en,,evaluation/top30_manifest.json (per-listing verification),USD listing of FAIT; same issuer
-GOUR,GOUR,Gourmet Egypt,,Gourmet Egypt SAE,alt_en,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-GOUR,GOUR,Gourmet Egypt,,Gourmet Egypt,canonical_en,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-ICFC,ICFC,International Company for Fertilizers and Chemicals,,International Company for Fertilizers and Chemicals,canonical_en,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-IFAP,IFAP,International Co for Agricultural Corps SAE,,International Agricultural Crops,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-IFAP,IFAP,International Co for Agricultural Corps SAE,,International Co for Agricultural Crops,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-IFAP,IFAP,International Co for Agricultural Corps SAE,,International Co for Agricultural Corps SAE,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ISPH,ISPH,Ibnsina Pharma,,Ibn Sina Pharma,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ISPH,ISPH,Ibnsina Pharma,,Ibnsina Pharma,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-JUFO,JUFO,Juhayna Food Industries,,Juhayna Food Industries,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-JUFO,JUFO,Juhayna Food Industries,,Juhayna,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,
-LCSW,LCSW,Lecico Egypt,,Lecico,alt_en,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-LCSW,LCSW,Lecico Egypt,,Lecico Egypt,canonical_en,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-MASR,MASR,Medinet MASR Housing,,Madinet Masr,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MASR,MASR,Medinet MASR Housing,,Medinet MASR Housing,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-MCQE,MCQE,Misr Cement (Qena),,Egypt Cement - Qena,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MCQE,MCQE,Misr Cement (Qena),,Misr Cement Qena,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MCQE,MCQE,Misr Cement (Qena),,Misr Cement (Qena),canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-MPCO,MPCO,Mansourah Poultry,,Mansoura Poultry,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MPCO,MPCO,Mansourah Poultry,,Mansourah Poultry,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group for Industry and International Trade,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group Industrial & International Trade (In Kind),canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-OCDI,OCDI,Six of October Development and Investment,,6th of October Development and Investment,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-OCDI,OCDI,Six of October Development and Investment,,SODIC,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-OCDI,OCDI,Six of October Development and Investment,,Six of October Development and Investment,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-OLFI,OLFI,Obour Land For Food Industries,,Obour Land For Food Industries,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-OLFI,OLFI,Obour Land For Food Industries,,Obour Land,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,
-ORAS,ORAS,Orascom Construction PLC,,Orascom Construction,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ORAS,ORAS,Orascom Construction PLC,,Orascom Construction PLC,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom Development,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom Development Egypt,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom for Hotels and Development S.A.E.,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Carpet Weavers,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Weavers,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Weavers Company for Carpets S.A.E.,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-PHDC,PHDC,Palm Hills Development Company,,Palm Hills,alt_en,club palm hills,manifest notes (IPF/EGX-header alternate spellings),
-PHDC,PHDC,Palm Hills Development Company,,Palm Hills Developments,alt_en,club palm hills,manifest notes (IPF/EGX-header alternate spellings),
-PHDC,PHDC,Palm Hills Development Company,,Palm Hills Development Company,canonical_en,club palm hills,evaluation/top30_manifest.json (per-listing verification),
-POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,القاهرة للدواجن,ar_verified,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),regression control (outside the 30)
-POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,Cairo Poultry Company,canonical_en,,stockanalysis.com quote page 2026-11-26 (manifest name_en is null),regression control (outside the 30)
-POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,Cairo Poultry,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,regression control (outside the 30)
-RACC,RACC,Raya Customer Experience,,Raya Contact Center,alt_en,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-RACC,RACC,Raya Customer Experience,,Raya Customer Experience,canonical_en,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
-RMDA,RMDA,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-RMDA,RMDA,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,,Rameda,short_en,,agent matching alias for NER; quality measured by 2024-05 pilot,
-SAUD,SAUD,Al Baraka Bank Egypt,,Al Baraka Bank,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-SAUD,SAUD,Al Baraka Bank Egypt,,Al Baraka Bank Egypt,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir Petrochemicals,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir Petrochemicals Co.,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
-TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group Holdings,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,TMG Holding,alt_en,,manifest notes (IPF/EGX-header alternate spellings),
-TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,طلعت مصطفى,ar_verified,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
-TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group Holding Company TMG Holding SAE,canonical_en,,evaluation/top30_manifest.json (per-listing verification),
+ticker,issuer,name_en,name_ar,alias,alias_type,block_patterns,require_patterns,alias_source,notes
+ACGC,ACGC,Arab Cotton Ginning,,Arab Cotton Ginning,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ADIB,ADIB,Abu Dhabi Islamic Bank- Egypt,,Abu Dhabi Islamic Bank,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ADIB,ADIB,Abu Dhabi Islamic Bank- Egypt,,Abu Dhabi Islamic Bank- Egypt,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,Alexandria Mineral Oils Company,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,AMOC,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,الإسكندرية للزيوت المعدنية,ar_verified,,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
+AMOC,AMOC,Alexandria Mineral Oils Co SAE,الإسكندرية للزيوت المعدنية,Alexandria Mineral Oils Co SAE,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ARCC,ARCC,Arabian Cement Company,,Arabian Cement,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ARCC,ARCC,Arabian Cement Company,,Arabian Cement Company,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ATQA,ATQA,Misr National Steel - Ataqa,,Egyptian National Steel,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ATQA,ATQA,Misr National Steel - Ataqa,,Misr National Steel,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ATQA,ATQA,Misr National Steel - Ataqa,,Misr National Steel - Ataqa,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,Cairo for Investment and Real Estate Development - Seera Education,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,CIRA,short_en,cira center|cira centre,,agent matching alias for NER; quality measured by 2024-05 pilot,
+CIRA,CIRA,Cairo for Investment and Real Estate Development - Seera Education,,CIRA Education,short_en,cira center|cira centre,,agent matching alias for NER; quality measured by 2024-05 pilot,
+CLHO,CLHO,Cleopatra Hospital,,Cleopatra Hospitals Group,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+CLHO,CLHO,Cleopatra Hospital,,Cleopatra Hospital,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,Commercial International Bank,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),regression control (outside the 30)
+COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,البنك التجاري الدولي,ar_verified,,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),regression control (outside the 30)
+COMI,COMI,Commercial International Bank Egypt,البنك التجاري الدولي,Commercial International Bank Egypt,canonical_en,,,stockanalysis.com quote page 2026-11-26 (manifest name_en is null),regression control (outside the 30)
+EFID,EFID,Edita Food Industries S.A.E,,Edita,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+EFID,EFID,Edita Food Industries S.A.E,,Edita Food Industries,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+EFID,EFID,Edita Food Industries S.A.E,,Edita Food Industries S.A.E,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,e-Finance,alt_en,,egypt,manifest notes (IPF/EGX-header alternate spellings),
+EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,eFinance,alt_en,,egypt,manifest notes (IPF/EGX-header alternate spellings),
+EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,E-Finance For Digital and Financial Investements SAE,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+EGAL,EGAL,Egypt Aluminum,,Egypt Aluminium,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+EGAL,EGAL,Egypt Aluminum,,Egypt Aluminum Company,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+EGAL,EGAL,Egypt Aluminum,,Egypt Aluminum,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+EGAS,EGAS,Natural Gas & Mining Project (Egypt Gas),,Egypt Gas,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+EGAS,EGAS,Natural Gas & Mining Project (Egypt Gas),,Natural Gas & Mining Project (Egypt Gas),canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,Telecom Egypt,alt_en,telecom egypt confidence,,manifest notes (IPF/EGX-header alternate spellings),
+ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,المصرية للاتصالات,ar_verified,telecom egypt confidence,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
+ETEL,ETEL,Telecom Egypt Co SAE,المصرية للاتصالات,Telecom Egypt Co SAE,canonical_en,telecom egypt confidence,,evaluation/top30_manifest.json (per-listing verification),
+ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egyptian Transport and Trade Services,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egytrans,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ETRS,ETRS,Egyptian Transport and Commercial Services Company S.A.E.,,Egyptian Transport and Commercial Services Company S.A.E.,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+FAIT,FAIT,Faisal Islamic Bank of Egypt (S.A.E.),,Faisal Islamic Bank,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+FAIT,FAIT,Faisal Islamic Bank of Egypt (S.A.E.),,Faisal Islamic Bank of Egypt (S.A.E.),canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+FAITA,FAIT,Faisal Islamic Bank of Egypt - In US Dollars,,Faisal Islamic Bank,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),USD listing of FAIT; same issuer
+FAITA,FAIT,Faisal Islamic Bank of Egypt - In US Dollars,,Faisal Islamic Bank of Egypt - In US Dollars,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),USD listing of FAIT; same issuer
+GOUR,GOUR,Gourmet Egypt,,Gourmet Egypt SAE,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+GOUR,GOUR,Gourmet Egypt,,Gourmet Egypt,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+ICFC,ICFC,International Company for Fertilizers and Chemicals,,International Company for Fertilizers and Chemicals,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+IFAP,IFAP,International Co for Agricultural Corps SAE,,International Agricultural Crops,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+IFAP,IFAP,International Co for Agricultural Corps SAE,,International Co for Agricultural Crops,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+IFAP,IFAP,International Co for Agricultural Corps SAE,,International Co for Agricultural Corps SAE,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ISPH,ISPH,Ibnsina Pharma,,Ibn Sina Pharma,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ISPH,ISPH,Ibnsina Pharma,,Ibnsina Pharma,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+JUFO,JUFO,Juhayna Food Industries,,Juhayna Food Industries,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+JUFO,JUFO,Juhayna Food Industries,,Juhayna,short_en,,,agent matching alias for NER; quality measured by 2024-05 pilot,
+LCSW,LCSW,Lecico Egypt,,Lecico,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+LCSW,LCSW,Lecico Egypt,,Lecico Egypt,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+MASR,MASR,Medinet MASR Housing,,Madinet Masr,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+MASR,MASR,Medinet MASR Housing,,Medinet MASR Housing,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+MCQE,MCQE,Misr Cement (Qena),,Egypt Cement - Qena,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+MCQE,MCQE,Misr Cement (Qena),,Misr Cement Qena,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+MCQE,MCQE,Misr Cement (Qena),,Misr Cement (Qena),canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+MPCO,MPCO,Mansourah Poultry,,Mansoura Poultry,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+MPCO,MPCO,Mansourah Poultry,,Mansourah Poultry,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group,alt_en,,egypt,manifest notes (IPF/EGX-header alternate spellings),
+MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group for Industry and International Trade,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+MTIE,MTIE,MM Group Industrial & International Trade (In Kind),,MM Group Industrial & International Trade (In Kind),canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+OCDI,OCDI,Six of October Development and Investment,,6th of October Development and Investment,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+OCDI,OCDI,Six of October Development and Investment,,SODIC,alt_en,,egypt|development,manifest notes (IPF/EGX-header alternate spellings),
+OCDI,OCDI,Six of October Development and Investment,,Six of October Development and Investment,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+OLFI,OLFI,Obour Land For Food Industries,,Obour Land For Food Industries,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+OLFI,OLFI,Obour Land For Food Industries,,Obour Land,short_en,,,agent matching alias for NER; quality measured by 2024-05 pilot,
+ORAS,ORAS,Orascom Construction PLC,,Orascom Construction,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ORAS,ORAS,Orascom Construction PLC,,Orascom Construction PLC,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom Development,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom Development Egypt,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ORHD,ORHD,Orascom for Hotels and Development S.A.E.,,Orascom for Hotels and Development S.A.E.,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Carpet Weavers,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Weavers,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+ORWE,ORWE,Oriental Weavers Company for Carpets S.A.E.,,Oriental Weavers Company for Carpets S.A.E.,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+PHDC,PHDC,Palm Hills Development Company,,Palm Hills,alt_en,club palm hills|palm hills club|palm hills sports club|academy palm hills,,manifest notes (IPF/EGX-header alternate spellings),
+PHDC,PHDC,Palm Hills Development Company,,Palm Hills Developments,alt_en,club palm hills|palm hills club|palm hills sports club|academy palm hills,,manifest notes (IPF/EGX-header alternate spellings),
+PHDC,PHDC,Palm Hills Development Company,,Palm Hills Development Company,canonical_en,club palm hills|palm hills club|palm hills sports club|academy palm hills,,evaluation/top30_manifest.json (per-listing verification),
+POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,القاهرة للدواجن,ar_verified,,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),regression control (outside the 30)
+POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,Cairo Poultry Company,canonical_en,,,stockanalysis.com quote page 2026-11-26 (manifest name_en is null),regression control (outside the 30)
+POUL,POUL,Cairo Poultry Company,القاهرة للدواجن,Cairo Poultry,short_en,,,agent matching alias for NER; quality measured by 2024-05 pilot,regression control (outside the 30)
+RACC,RACC,Raya Customer Experience,,Raya Contact Center,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+RACC,RACC,Raya Customer Experience,,Raya Customer Experience,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),sharia/benchmark/sources/egx33.json constituent; name grounded on stockanalysis.com/Reuters/Mubasher/OpenFIGI 2026-11-26
+RMDA,RMDA,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+RMDA,RMDA,Tenth Of Ramadan Pharmaceutical Industries & Diagnostic - Rameda,,Rameda,short_en,,,agent matching alias for NER; quality measured by 2024-05 pilot,
+SAUD,SAUD,Al Baraka Bank Egypt,,Al Baraka Egypt,alt_en,al baraka bank pakistan|al baraka bank south africa|al baraka bank tunisia|al baraka group,,2024-05 pilot fix 3 (docs/gdelt-gkg-pilot-2024-05.md),"bare 'Al Baraka Bank' dropped: foreign affiliates (Pakistan/South Africa/Tunisia) false, bare mentions unverifiable; restricted to Egypt variants"
+SAUD,SAUD,Al Baraka Bank Egypt,,Al Baraka Bank Egypt,canonical_en,al baraka bank pakistan|al baraka bank south africa|al baraka bank tunisia|al baraka group,,evaluation/top30_manifest.json (per-listing verification),
+SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir Petrochemicals,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+SKPC,SKPC,Sidi Kerir Petrochemicals Co.,,Sidi Kerir Petrochemicals Co.,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group Holdings,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,TMG Holding,alt_en,,,manifest notes (IPF/EGX-header alternate spellings),
+TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,طلعت مصطفى,ar_verified,,,worker/egx_harvest.py EGX_COMPANIES via top30_manifest (verified),
+TMGH,TMGH,Talaat Moustafa Group Holding Company TMG Holding SAE,طلعت مصطفى,Talaat Moustafa Group Holding Company TMG Holding SAE,canonical_en,,,evaluation/top30_manifest.json (per-listing verification),
+EFIH,EFIH,E-Finance For Digital and Financial Investements SAE,,E-Finance for Digital and Financial Investments,alt_en,,,2024-05 pilot fix 1 (docs/gdelt-gkg-pilot-2024-05.md),typo-free full-name variant; canonical manifest name misspells 'Investements'

@@ -54,7 +54,7 @@ def loaded():
 
 
 def test_alias_table_loads():
-    items, blocks, pre = loaded()
+    items, blocks, reqs, pre = loaded()
     tickers = {t for _, ts in items for t in ts}
     check("38 tickers", len(tickers) == 38, str(len(tickers)))
     check("every alias nonempty", all(a.strip() for a, _ in items))
@@ -62,43 +62,94 @@ def test_alias_table_loads():
           pre(G.norm("x Telecom Egypt y")) and not pre(G.norm("x Vodafone y")))
     check("blocks lowercase-normalized",
           all(b == b.lower() for bs in blocks.values() for b in bs))
+    check("requires lowercase-normalized",
+          all(q == q.lower() for qs in reqs.values() for q in qs))
     check("PHDC block present",
           "club palm hills" in blocks.get("PHDC", set()), str(blocks.get("PHDC")))
+    check("require map keyed by alias",
+          reqs.get("e finance") == {"egypt"}
+          and reqs.get("sodic") == {"egypt", "development"}
+          and reqs.get("mm group") == {"egypt"}, str(reqs))
 
 
 def test_match_orgs_real():
-    items, blocks, _ = loaded()
-    bt = G.match_orgs("Telecom Egypt,10;Vodafone Egypt,55", items, blocks)
+    items, blocks, reqs, _ = loaded()
+    bt = G.match_orgs("Telecom Egypt,10;Vodafone Egypt,55", items, blocks, reqs)
     check("ETEL matched", set(bt) == {"ETEL"}, str(bt))
     check("entry captured", bt["ETEL"] == {"Telecom Egypt"}, str(bt))
-    bt = G.match_orgs("Talaat Moustafa Group Holdings,3", items, blocks)
+    bt = G.match_orgs("Talaat Moustafa Group Holdings,3", items, blocks, reqs)
     check("TMGH via alt", set(bt) == {"TMGH"}, str(bt))
-    bt = G.match_orgs("Commercial International Bank,7", items, blocks)
+    bt = G.match_orgs("Commercial International Bank,7", items, blocks, reqs)
     check("COMI via bank alias", set(bt) == {"COMI"}, str(bt))
-    bt = G.match_orgs("المصرية للاتصالات,9", items, blocks)
+    bt = G.match_orgs("المصرية للاتصالات,9", items, blocks, reqs)
     check("ETEL via verified arabic", set(bt) == {"ETEL"}, str(bt))
-    bt = G.match_orgs("Telecom Egypt,1;Talaat Moustafa Group,2", items, blocks)
+    bt = G.match_orgs("Telecom Egypt,1;Talaat Moustafa Group,2", items, blocks, reqs)
     check("multi-issuer pairing exact",
           bt.get("ETEL") == {"Telecom Egypt"}
           and bt.get("TMGH") == {"Talaat Moustafa Group"}, str(bt))
 
 
 def test_match_orgs_blocks_and_noise():
-    items, blocks, _ = loaded()
+    items, blocks, reqs, _ = loaded()
     check("Club Palm Hills blocked for PHDC",
-          G.match_orgs("Club Palm Hills,20", items, blocks) == {})
-    bt = G.match_orgs("Palm Hills Developments,20", items, blocks)
+          G.match_orgs("Club Palm Hills,20", items, blocks, reqs) == {})
+    bt = G.match_orgs("Palm Hills Developments,20", items, blocks, reqs)
     check("Palm Hills Developments matches PHDC", set(bt) == {"PHDC"}, str(bt))
     check("no COMI on bare 'Commercial International'",
-          G.match_orgs("Negotiations Commercial International,4", items, blocks) == {})
+          G.match_orgs("Negotiations Commercial International,4", items, blocks, reqs) == {})
     check("Telecom Egypt Confidence blocked for ETEL",
-          G.match_orgs("Telecom Egypt Confidence,4", items, blocks) == {})
+          G.match_orgs("Telecom Egypt Confidence,4", items, blocks, reqs) == {})
     check("Egyptian Exchange (the bourse) matches nothing",
-          G.match_orgs("Egyptian Exchange,4", items, blocks) == {})
+          G.match_orgs("Egyptian Exchange,4", items, blocks, reqs) == {})
+
+
+def test_pilot_six_fixes():
+    """The six false-hit patterns from docs/gdelt-gkg-pilot-2024-05.md."""
+    items, blocks, reqs, _ = loaded()
+    m = lambda orgs: G.match_orgs(orgs, items, blocks, reqs)
+    # 1. EFIH: generic 'E Finance' needs Egypt context; full names stand alone
+    check("EFIH bare 'E Finance' dropped", m("E Finance,3") == {})
+    check("EFIH bare 'eFinance' dropped", m("eFinance,3") == {})
+    check("EFIH 'E-Finance Egypt' kept", set(m("E-Finance Egypt,3")) == {"EFIH"})
+    check("EFIH full-name variant without context",
+          set(m("E-Finance for Digital and Financial Investments SAE,3")) == {"EFIH"})
+    check("EFIH canonical (typo) full name without context",
+          set(m("E-Finance For Digital and Financial Investements SAE,3")) == {"EFIH"})
+    # 2. PHDC: squash-club phrases blocked
+    check("PHDC 'Palm Hills Club' blocked", m("Palm Hills Club,3") == {})
+    check("PHDC 'Palm Hills Sports Club' blocked", m("Palm Hills Sports Club,3") == {})
+    check("PHDC 'Academy Palm Hills' blocked", m("Academy Palm Hills,3") == {})
+    check("PHDC developer still matches",
+          set(m("Palm Hills Development Company,3")) == {"PHDC"})
+    # 3. SAUD: Egypt variants only
+    check("SAUD 'Al Baraka Bank Pakistan' dropped", m("Al Baraka Bank Pakistan,3") == {})
+    check("SAUD 'Al Baraka Bank Tunisia' dropped", m("Al Baraka Bank Tunisia,3") == {})
+    check("SAUD bare 'Al Baraka Bank' dropped", m("Al Baraka Bank,3") == {})
+    check("SAUD 'Al Baraka Group' dropped", m("Al Baraka Group,3") == {})
+    check("SAUD 'Al Baraka Bank Egypt' kept", set(m("Al Baraka Bank Egypt,3")) == {"SAUD"})
+    check("SAUD 'Al Baraka Egypt' kept", set(m("Al Baraka Egypt,3")) == {"SAUD"})
+    # 4. CIRA: Philadelphia building blocked
+    check("CIRA 'Cira Center' blocked", m("Cira Center,3") == {})
+    check("CIRA 'Cira Centre' blocked", m("Cira Centre,3") == {})
+    check("CIRA Education kept", set(m("CIRA Education,3")) == {"CIRA"})
+    # 5. OCDI: bare 'Sodic' (soil term) needs Egypt/development context
+    check("OCDI bare 'Sodic' dropped", m("Sodic,3") == {})
+    check("OCDI 'SODIC Egypt' kept", set(m("SODIC Egypt,3")) == {"OCDI"})
+    check("OCDI full name without context",
+          set(m("Six of October Development and Investment,3")) == {"OCDI"})
+    # 6. MTIE: 'MM Group' needs Egypt context; long aliases stand alone
+    check("MTIE bare 'MM Group' dropped", m("MM Group,3") == {})
+    check("MTIE 'MM Group Egypt' kept", set(m("MM Group Egypt,3")) == {"MTIE"})
+    check("MTIE long alias without context",
+          set(m("MM Group for Industry and International Trade,3")) == {"MTIE"})
+    # require-fail falls through to a shorter alias of another ticker
+    bt = m("E Finance,1;Telecom Egypt,2")
+    check("require-fail does not eat sibling entries",
+          set(bt) == {"ETEL"}, str(bt))
 
 
 def test_process_blob():
-    items, blocks, pre = loaded()
+    items, blocks, reqs, pre = loaded()
     lines = "\n".join([
         gkg_line(rec="R1", orgs="Telecom Egypt,10"),
         gkg_line(rec="R2", orgs="Club Palm Hills,5", source="example.com",
@@ -112,7 +163,7 @@ def test_process_blob():
         "too\tfew\ttelecom egypt",  # hits the prefilter, then malformed
     ])
     rows, bad = G.process_blob("20240515000000.gkg.csv.zip", "english",
-                               lines.encode(), items, blocks, pre)
+                               lines.encode(), items, blocks, reqs, pre)
     by_id = {r["gkg_record_id"]: r for r in rows}
     check("R1 alias+both", by_id["R1"]["reason"] == "both"
           and by_id["R1"]["tickers"] == ["ETEL"], str(by_id.get("R1")))
@@ -133,7 +184,7 @@ def test_process_blob():
     check("blob without needles yields nothing",
           G.process_blob("f", "english", gkg_line(
               rec="Z", orgs="Nope,1", source="x.io",
-              url="https://x.io/").encode(), items, blocks, pre) == ([], 0))
+              url="https://x.io/").encode(), items, blocks, reqs, pre) == ([], 0))
 
 
 def test_list_files_and_range():
@@ -240,7 +291,7 @@ def test_config_atomic_and_restart():
 
 
 def test_restart_and_finalize():
-    items, blocks, pre = loaded()
+    items, blocks, reqs, pre = loaded()
     with tempfile.TemporaryDirectory() as out:
         blob = gkg_line(rec="R1", orgs="Telecom Egypt,10").encode()
         zpath = os.path.join(out, "z.zip")
@@ -248,7 +299,7 @@ def test_restart_and_finalize():
             z.writestr("20240515000000.gkg.csv", blob.decode())
         with zipfile.ZipFile(zpath) as z:
             rows, _ = G.process_blob("f", "english", z.read(z.namelist()[0]),
-                                     items, blocks, pre)
+                                     items, blocks, reqs, pre)
         # duplicate lines (reprocess after crash) dedupe in finalize;
         # a truncated line (interrupted append) is skipped, not fatal
         with open(os.path.join(out, "matches.jsonl"), "w") as f:
@@ -272,8 +323,8 @@ def test_restart_and_finalize():
 
 def main():
     for fn in (test_alias_table_loads, test_match_orgs_real,
-               test_match_orgs_blocks_and_noise, test_process_blob,
-               test_list_files_and_range, test_fetch_guards,
+               test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
+               test_process_blob, test_list_files_and_range, test_fetch_guards,
                test_config_binding, test_config_atomic_and_restart,
                test_restart_and_finalize):
         fn()
