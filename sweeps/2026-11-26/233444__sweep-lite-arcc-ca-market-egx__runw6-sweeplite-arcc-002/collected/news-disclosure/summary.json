@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ARCC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ARCC.CA",
+    "fetched_at": "2026-11-26T23:34:43Z",
+    "tool": "news-disclosure",
+    "news_count": 21,
+    "disclosure_count": 0,
+    "arabic_headlines": 3,
+    "latest_news_date": "Wed, 25 Nov 2026 22:31:27 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "ARCC: SEC Form N-14 8C filed by Ares Capital Corporation - Quantisnow",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.146,
+    "finbert_negative": 0.187,
+    "finbert_neutral": 0.667,
+    "finbert_scored": 18,
+    "multilingual_positive": 0.727,
+    "multilingual_negative": 0.004,
+    "multilingual_neutral": 0.268,
+    "multilingual_scored": 3,
+    "bodies_fetched": 6,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.118,
+    "translated_negative": 0.416,
+    "translated_neutral": 0.467,
+    "translated_scored": 3
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

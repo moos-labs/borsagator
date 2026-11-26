@@ -1,0 +1,382 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 24,
+  "label_counts": {
+    "positive": 5,
+    "negative": 2,
+    "neutral": 17
+  },
+  "mean_probabilities": {
+    "positive": 0.22965463706714218,
+    "negative": 0.08353504667077989,
+    "neutral": 0.6868103148323522
+  },
+  "items": [
+    {
+      "text": "Ramona Residents Can Get Same-Day Apostille Services Dec. 2 - Patch",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9933040738105774,
+        "negative": 0.0002856556384358555,
+        "neutral": 0.006410250440239906
+      },
+      "raw_probabilities": {
+        "positive": 0.9933040738105774,
+        "neutral": 0.006410250440239906,
+        "negative": 0.0002856556384358555
+      }
+    },
+    {
+      "text": "ARCC: SEC Form N-14 8C filed by Ares Capital Corporation - Quantisnow",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00045529307681135833,
+        "negative": 0.000247917982051149,
+        "neutral": 0.9992967844009399
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992967844009399,
+        "positive": 0.00045529307681135833,
+        "negative": 0.000247917982051149
+      }
+    },
+    {
+      "text": "GIZ, ARCC gives Obuasi Budget Committee capacity building training - Modern Ghana",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9968460202217102,
+        "negative": 0.0003625682438723743,
+        "neutral": 0.00279132928699255
+      },
+      "raw_probabilities": {
+        "positive": 0.9968460202217102,
+        "neutral": 0.00279132928699255,
+        "negative": 0.0003625682438723743
+      }
+    },
+    {
+      "text": "Analysts Offer Insights on Financial Companies: Lazard (LAZ), Ares Capital (ARCC) and PayPal Holdings (PYPL) - The Globe and Mail",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000489267404191196,
+        "negative": 0.00021372767514549196,
+        "neutral": 0.999297022819519
+      },
+      "raw_probabilities": {
+        "neutral": 0.999297022819519,
+        "positive": 0.000489267404191196,
+        "negative": 0.00021372767514549196
+      }
+    },
+    {
+      "text": "ARCC May 2027 22.000 call (ARCC270521C00022000) stock price, news, quote and history - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000302918633678928,
+        "negative": 0.0001960865774890408,
+        "neutral": 0.9995009899139404
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995009899139404,
+        "positive": 0.000302918633678928,
+        "negative": 0.0001960865774890408
+      }
+    },
+    {
+      "text": "Arabian Cement stock: EUR22m mill plan gains preliminary approval - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981946349143982,
+        "negative": 0.0007518574129790068,
+        "neutral": 0.0010534652974456549
+      },
+      "raw_probabilities": {
+        "positive": 0.9981946349143982,
+        "neutral": 0.0010534652974456549,
+        "negative": 0.0007518574129790068
+      }
+    },
+    {
+      "text": "Ares Capital (ARCC) Earnings Dates, Call Summary & Reports - TipRanks",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000333623553160578,
+        "negative": 0.00024070485960692167,
+        "neutral": 0.9994257688522339
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994257688522339,
+        "positive": 0.000333623553160578,
+        "negative": 0.00024070485960692167
+      }
+    },
+    {
+      "text": "ARCC Nov 2026 21.000 put (ARCC261120P00021000) interactive stock chart - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00033316799090243876,
+        "negative": 0.00017419377400074154,
+        "neutral": 0.9994926452636719
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994926452636719,
+        "positive": 0.00033316799090243876,
+        "negative": 0.00017419377400074154
+      }
+    },
+    {
+      "text": "(ARCC) and the Role of Price-Sensitive Allocations - Stock Traders Daily",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004999180091544986,
+        "negative": 0.00021344453853089362,
+        "neutral": 0.9992865920066833
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992865920066833,
+        "positive": 0.0004999180091544986,
+        "negative": 0.00021344453853089362
+      }
+    },
+    {
+      "text": "How a 68-Year-Old Collects $5,225 a Month From Just Three Tickers: VYM, DIVO, and ARCC - 24/7 Wall St.",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010416792938485742,
+        "negative": 0.00046994275180622935,
+        "neutral": 0.9984884262084961
+      },
+      "raw_probabilities": {
+        "neutral": 0.9984884262084961,
+        "positive": 0.0010416792938485742,
+        "negative": 0.00046994275180622935
+      }
+    },
+    {
+      "text": "Here is What to Know Beyond Why Ares Capital Corporation (ARCC) is a Trending Stock - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003088204830419272,
+        "negative": 0.00020134772057645023,
+        "neutral": 0.9994897842407227
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994897842407227,
+        "positive": 0.0003088204830419272,
+        "negative": 0.00020134772057645023
+      }
+    },
+    {
+      "text": "ARCC Nov 2026 18.000 call (ARCC261120C00018000) stock price, news, quote and history - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0002956552489195019,
+        "negative": 0.00023585969756823033,
+        "neutral": 0.9994685053825378
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994685053825378,
+        "positive": 0.0002956552489195019,
+        "negative": 0.00023585969756823033
+      }
+    },
+    {
+      "text": "Ares Capital: Performance Back On Track - Seeking Alpha",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980962872505188,
+        "negative": 0.000774095649830997,
+        "neutral": 0.0011295753065496683
+      },
+      "raw_probabilities": {
+        "positive": 0.9980962872505188,
+        "neutral": 0.0011295753065496683,
+        "negative": 0.000774095649830997
+      }
+    },
+    {
+      "text": "Piccalio Introduces Arcc Kids Table and Chair Set - The Toy Book",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.31235942244529724,
+        "negative": 0.0004356950812507421,
+        "neutral": 0.6872049570083618
+      },
+      "raw_probabilities": {
+        "neutral": 0.6872049570083618,
+        "positive": 0.31235942244529724,
+        "negative": 0.0004356950812507421
+      }
+    },
+    {
+      "text": "Ares Capital Corporation (ARCC) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0013148976722732186,
+        "negative": 0.00015981285832822323,
+        "neutral": 0.9985253214836121
+      },
+      "raw_probabilities": {
+        "neutral": 0.9985253214836121,
+        "positive": 0.0013148976722732186,
+        "negative": 0.00015981285832822323
+      }
+    },
+    {
+      "text": "MFIC: Portfolio losses cut NAV 3.8% as ARCC agreed to a $10.88-per-share acquisition - TradingView",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003340554831083864,
+        "negative": 0.9988327622413635,
+        "neutral": 0.0008331142016686499
+      },
+      "raw_probabilities": {
+        "negative": 0.9988327622413635,
+        "neutral": 0.0008331142016686499,
+        "positive": 0.0003340554831083864
+      }
+    },
+    {
+      "text": "Ares Capital: The Rich Grow Richer (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.007064964156597853,
+        "negative": 0.000341600738465786,
+        "neutral": 0.9925934672355652
+      },
+      "raw_probabilities": {
+        "neutral": 0.9925934672355652,
+        "positive": 0.007064964156597853,
+        "negative": 0.000341600738465786
+      }
+    },
+    {
+      "text": "Ares Capital: The Dividend Squeeze Is On - Seeking Alpha",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9423218965530396,
+        "negative": 0.00025618087965995073,
+        "neutral": 0.05742190033197403
+      },
+      "raw_probabilities": {
+        "positive": 0.9423218965530396,
+        "neutral": 0.05742190033197403,
+        "negative": 0.00025618087965995073
+      }
+    },
+    {
+      "text": "Ares Capital: The Dividend Shortfall Doesn't Break My Thesis...Yet (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0025559887290000916,
+        "negative": 0.00031064118957147,
+        "neutral": 0.9971333742141724
+      },
+      "raw_probabilities": {
+        "neutral": 0.9971333742141724,
+        "positive": 0.0025559887290000916,
+        "negative": 0.00031064118957147
+      }
+    },
+    {
+      "text": "Is Trending Stock Ares Capital Corporation (ARCC) a Buy Now? - Yahoo Finance",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0027741799131035805,
+        "negative": 0.00041072728345170617,
+        "neutral": 0.9968151450157166
+      },
+      "raw_probabilities": {
+        "neutral": 0.9968151450157166,
+        "positive": 0.0027741799131035805,
+        "negative": 0.00041072728345170617
+      }
+    },
+    {
+      "text": "ARCC Students Staging 'Pride and Prejudice' - City of Coon Rapids, MN (.gov)",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007904224330559373,
+        "negative": 0.00046871035010553896,
+        "neutral": 0.9987408518791199
+      },
+      "raw_probabilities": {
+        "neutral": 0.9987408518791199,
+        "positive": 0.0007904224330559373,
+        "negative": 0.00046871035010553896
+      }
+    },
+    {
+      "text": "ARCC Misses on Q3 Earnings as Income Falls, Announces MidCap Buyout - Yahoo Finance",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002689496905077249,
+        "negative": 0.9983640313148499,
+        "neutral": 0.001367025077342987
+      },
+      "raw_probabilities": {
+        "negative": 0.9983640313148499,
+        "neutral": 0.001367025077342987,
+        "positive": 0.0002689496905077249
+      }
+    },
+    {
+      "text": "Ares Capital Bulls, It's Time To Rethink Your Position (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0009891446679830551,
+        "negative": 0.0005910351756028831,
+        "neutral": 0.9984197616577148
+      },
+      "raw_probabilities": {
+        "neutral": 0.9984197616577148,
+        "positive": 0.0009891446679830551,
+        "negative": 0.0005910351756028831
+      }
+    },
+    {
+      "text": "Ares Capital: Not So Spooky Trading With A 10% Yield (NASDAQ:ARCC) - Seeking Alpha",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.250436007976532,
+        "negative": 0.00030252046417444944,
+        "neutral": 0.7492614984512329
+      },
+      "raw_probabilities": {
+        "neutral": 0.7492614984512329,
+        "positive": 0.250436007976532,
+        "negative": 0.00030252046417444944
+      }
+    }
+  ]
+}

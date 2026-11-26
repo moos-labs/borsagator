@@ -1,0 +1,138 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "ARCC.CA",
+ "base_price": 66.24,
+ "base_source": "egx-data/egxpy_arcc.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_arcc.csv": 67.03,
+   "openbb/arcc_ca.csv": 67.02999877929688,
+   "pandas-ta/indicators.csv": 67.02999877929688,
+   "talib/indicators.csv": 67.02999877929688,
+   "yahooquery/arcc.ca.csv": 67.02999877929688
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-24",
+  "base_used": 66.24,
+  "base_source_used": "egx-data/egxpy_arcc.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0283,
+ "sigma60_daily": 0.0283,
+ "sigma_source": "egx-data/egxpy_arcc.csv (σ60=0.0283, σ10=0.0260)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.664,
+ "date": "2026-11-26",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: \"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي"
+   }
+  ],
+  "move_z": {
+   "last": 0.15,
+   "max3": 0.57
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.45,
+  "sentiment": 0.072,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.098
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.89,
+   "range_high_pct": 4.89,
+   "confidence": 0.3,
+   "net_score": 0.072,
+   "tilt_centre_pct": 0.04,
+   "families": {
+    "sentiment": 0.072
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 1.2754,
+   "vol_h_pct": 2.8337,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -12.17,
+   "range_high_pct": 12.17,
+   "confidence": 0.3,
+   "net_score": -0.226,
+   "tilt_centre_pct": -0.64,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": 0.072
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": 0.7554,
+   "vol_h_pct": 6.3364,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -23.37,
+   "range_high_pct": 23.37,
+   "confidence": 0.3,
+   "net_score": 0.027,
+   "tilt_centre_pct": 0.23,
+   "families": {
+    "technicals": -0.45,
+    "sentiment": 0.072,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": -2.5476,
+   "vol_h_pct": 12.9858,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

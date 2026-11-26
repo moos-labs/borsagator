@@ -1,0 +1,1496 @@
+{
+  "archive_commit": "5027b82ad5ea95585988e2cb234c374a7c7501db",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "44d69c088df6c399e7fb4a81eb5e308199fc01093d0dd2a2a5ecb2b375ae487c",
+      "family-agent.json": "8e7867cd4a666b65156d05f1ad15a677520658929b90de2b42cf6bcfbd319112",
+      "family-fundamentals.json": "11180dd85b571f2aeb43011349d261e7f360a69f5a45d63d972a7b9160a9ae15",
+      "family-price-forecast.json": "171cb23822816794934bb26d8edf147dd9144963d9baebc98434e01dc12b6d30",
+      "family-sentiment.json": "10443f20a7ff2931fd640d3027595d2004428e6877381c128fea7d8a6d3101db",
+      "family-technicals.json": "14f00ce4fd679bb2e8877aed656d2ffbdc94b3b3435a1fb78ad6b99cd54b79da",
+      "kronos-alone.json": "eaf61cdacbc32f1bc6ea4719bba156872153dff19d15e77af0a8436834e778ac",
+      "raw-llm-cohere.json": "e50f78ea8955666b710611c18c953d6defc788ebd2befc061abb1892ca1455d6"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-26",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ARCC-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 66.24,
+    "base_source": "egx-data/egxpy_arcc.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-26",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": -0.098,
+      "sentiment": 0.072,
+      "technicals": -0.45
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.072
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.2754,
+        "net_score": 0.072,
+        "range_high_pct": 4.89,
+        "range_low_pct": -4.89,
+        "tilt_centre_pct": 0.04,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.8337
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": 0.072,
+          "technicals": -0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.5476,
+        "net_score": 0.027,
+        "range_high_pct": 23.37,
+        "range_low_pct": -23.37,
+        "tilt_centre_pct": 0.23,
+        "trading_sessions": 21,
+        "vol_h_pct": 12.9858
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.072,
+          "technicals": -0.45
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.7554,
+        "net_score": -0.226,
+        "range_high_pct": 12.17,
+        "range_low_pct": -12.17,
+        "tilt_centre_pct": -0.64,
+        "trading_sessions": 5,
+        "vol_h_pct": 6.3364
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_arcc.csv",
+      "base_stale": false,
+      "base_used": 66.24,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_arcc.csv": 67.03,
+        "openbb/arcc_ca.csv": 67.02999877929688,
+        "pandas-ta/indicators.csv": 67.02999877929688,
+        "talib/indicators.csv": 67.02999877929688,
+        "yahooquery/arcc.ca.csv": 67.02999877929688
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: \"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.15,
+        "max3": 0.57
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0283,
+    "sigma_daily": 0.0283,
+    "sigma_source": "egx-data/egxpy_arcc.csv (σ60=0.0283, σ10=0.0260)",
+    "ticker": "ARCC.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": -0.098,
+    "sentiment": 0.072,
+    "technicals": -0.45
+  },
+  "finished": "2026-11-26T23:34:44.232425+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ARCC.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ARCC.CA.json",
+    "sharia-row-missing: AAOIFI ARCC.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ARCC.CA",
+    "sharia-row-missing: FTSE ARCC.CA",
+    "sharia-row-missing: ISLAMICLY ARCC.CA",
+    "sharia-row-missing: MSCI ARCC.CA",
+    "sharia-row-missing: MSCI_M ARCC.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.072
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.2754,
+      "net_score": 0.072,
+      "range_high_pct": 4.89,
+      "range_low_pct": -4.89,
+      "tilt_centre_pct": 0.04,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.8337
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": 0.072,
+        "technicals": -0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.5476,
+      "net_score": 0.027,
+      "range_high_pct": 23.37,
+      "range_low_pct": -23.37,
+      "tilt_centre_pct": 0.23,
+      "trading_sessions": 21,
+      "vol_h_pct": 12.9858
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.072,
+        "technicals": -0.45
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.7554,
+      "net_score": -0.226,
+      "range_high_pct": 12.17,
+      "range_low_pct": -12.17,
+      "tilt_centre_pct": -0.64,
+      "trading_sessions": 5,
+      "vol_h_pct": 6.3364
+    }
+  },
+  "job": "sweep-lite ARCC.CA market=EGX",
+  "job_shape": "sweep-lite ARCC.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 74.3014,
+    "support": 58.1786
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T22:31:27Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 22:31:27 GMT",
+    "news_count": 21,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 22:31:27 GMT",
+        "identity_key": "647eece35937538d",
+        "key_type": "title-date-hash",
+        "source": "Quantisnow",
+        "title": "ARCC: SEC Form N-14 8C filed by Ares Capital Corporation - Quantisnow"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 11:17:20 GMT",
+        "identity_key": "https://www.tradingview.com/news/arabictrader:dfef38e4123d8:0/",
+        "key_type": "resolved_url",
+        "source": "TradingView",
+        "title": "كاثي وود تقلص استثمارات آرك إنفست في صناديق البيتكوين وإيثيريوم وسولانا - TradingView"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 07:51:47 GMT",
+        "identity_key": "https://almashhadalaraby.com/news/594738",
+        "key_type": "resolved_url",
+        "source": "المشهد العربي",
+        "title": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 11:33:51 GMT",
+        "identity_key": "https://www.theglobeandmail.com/investing/markets/markets-news/Tipranks/8980635/analysts-offer-insights-on-financial-companies-lazard-laz-ares-capital-arcc-and-paypal-holdings-pypl/",
+        "key_type": "resolved_url",
+        "source": "The Globe and Mail",
+        "title": "Analysts Offer Insights on Financial Companies: Lazard (LAZ), Ares Capital (ARCC) and PayPal Holdings (PYPL) - The Globe and Mail"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 20:47:10 GMT",
+        "identity_key": "e589e5828c25cc98",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance UK",
+        "title": "ARCC May 2027 22.000 call (ARCC270521C00022000) stock price, news, quote and history - Yahoo Finance UK"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 00:24:37 GMT",
+        "identity_key": "https://www.ad-hoc-news.de/boerse/news/nebenwerte/arabian-cement-stock-eur22m-mill-plan-gains-preliminary-approval/70544954",
+        "key_type": "resolved_url",
+        "source": "ad-hoc-news.de",
+        "title": "Arabian Cement stock: EUR22m mill plan gains preliminary approval - ad-hoc-news.de"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 00:59:14 GMT",
+        "identity_key": "e7d4b0905d3210e2",
+        "key_type": "title-date-hash",
+        "source": "TipRanks",
+        "title": "Ares Capital (ARCC) Earnings Dates, Call Summary & Reports - TipRanks"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 08:00:00 GMT",
+        "identity_key": "1294da45a2d6ccb7",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance UK",
+        "title": "ARCC Nov 2026 21.000 put (ARCC261120P00021000) interactive stock chart - Yahoo Finance UK"
+      },
+      {
+        "date": "Thu, 19 Nov 2026 21:18:02 GMT",
+        "identity_key": "https://news.stocktradersdaily.com/news_release/17/ARCC_and_the_Role_of_Price-Sensitive_Allocations_111926091802_1795141082.html",
+        "key_type": "resolved_url",
+        "source": "Stock Traders Daily",
+        "title": "(ARCC) and the Role of Price-Sensitive Allocations - Stock Traders Daily"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://finance.yahoo.com/markets/stocks/articles/know-beyond-why-ares-capital-130004645.html",
+        "key_type": "resolved_url",
+        "source": "Yahoo Finance",
+        "title": "Here is What to Know Beyond Why Ares Capital Corporation (ARCC) is a Trending Stock - Yahoo Finance"
+      },
+      {
+        "date": "Tue, 10 Nov 2026 01:20:40 GMT",
+        "identity_key": "cf3f3ef66b7c3f6f",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance UK",
+        "title": "ARCC Nov 2026 18.000 call (ARCC261120C00018000) stock price, news, quote and history - Yahoo Finance UK"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 08:00:00 GMT",
+        "identity_key": "58189464c1f18506",
+        "key_type": "title-date-hash",
+        "source": "Seeking Alpha",
+        "title": "Ares Capital: Performance Back On Track - Seeking Alpha"
+      },
+      {
+        "date": "Sat, 07 Nov 2026 01:27:32 GMT",
+        "identity_key": "06f2a39119074b5f",
+        "key_type": "title-date-hash",
+        "source": "Yahoo! Finance Canada",
+        "title": "Ares Capital Corporation (ARCC) Seasonal Returns Chart - Yahoo Finance - Yahoo! Finance Canada"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "aae6b8dc17401bdd",
+        "key_type": "title-date-hash",
+        "source": "TradingView",
+        "title": "MFIC: Portfolio losses cut NAV 3.8% as ARCC agreed to a $10.88-per-share acquisition - TradingView"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "6da4dfdcebbbbbe0",
+        "key_type": "title-date-hash",
+        "source": "Sortir à Paris",
+        "title": "ون بيس على ديزني+: آرك إيغ هيد يصل مدبلجًا بالفرنسية في ديسمبر 2026. - Sortir à Paris"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "3d54349485c32f5e",
+        "key_type": "title-date-hash",
+        "source": "Seeking Alpha",
+        "title": "Ares Capital: The Rich Grow Richer (NASDAQ:ARCC) - Seeking Alpha"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "fa7edfb93f909628",
+        "key_type": "title-date-hash",
+        "source": "Seeking Alpha",
+        "title": "Ares Capital: The Dividend Squeeze Is On - Seeking Alpha"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "6f31c7a7cfe2084f",
+        "key_type": "title-date-hash",
+        "source": "Seeking Alpha",
+        "title": "Ares Capital: The Dividend Shortfall Doesn't Break My Thesis...Yet (NASDAQ:ARCC) - Seeking Alpha"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "a48a515feb258c86",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance",
+        "title": "Is Trending Stock Ares Capital Corporation (ARCC) a Buy Now? - Yahoo Finance"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "d4f8fd7e558f70ce",
+        "key_type": "title-date-hash",
+        "source": "Yahoo Finance",
+        "title": "ARCC Misses on Q3 Earnings as Income Falls, Announces MidCap Buyout - Yahoo Finance"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "992a099f5b0bc820",
+        "key_type": "title-date-hash",
+        "source": "Seeking Alpha",
+        "title": "Ares Capital Bulls, It's Time To Rethink Your Position (NASDAQ:ARCC) - Seeking Alpha"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 66.24,
+    "base_source": "egx-data/egxpy_arcc.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_arcc.csv",
+      "base_stale": false,
+      "base_used": 66.24,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_arcc.csv": 67.03,
+        "openbb/arcc_ca.csv": 67.02999877929688,
+        "pandas-ta/indicators.csv": 67.02999877929688,
+        "talib/indicators.csv": 67.02999877929688,
+        "yahooquery/arcc.ca.csv": 67.02999877929688
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0283,
+    "sigma_source": "egx-data/egxpy_arcc.csv (σ60=0.0283, σ10=0.0260)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 66.24,
+      "last_date": "2026-11-26",
+      "last_high": 66.5,
+      "last_low": 64.61,
+      "last_open": 65.95,
+      "last_volume": 146739.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_arcc.csv",
+      "stale": false
+    },
+    {
+      "last_close": 65.94999694824219,
+      "last_date": "2026-11-25",
+      "last_high": 67.44999694824219,
+      "last_low": 65.94999694824219,
+      "last_open": 67.02999877929688,
+      "last_volume": 95434.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ARCC_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 65.94999694824219,
+      "last_date": "2026-11-25",
+      "last_high": 67.44999694824219,
+      "last_low": 65.94999694824219,
+      "last_open": 67.02999877929688,
+      "last_volume": 95434.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 65.94999694824219,
+      "last_date": "2026-11-25",
+      "last_high": 67.44999694824219,
+      "last_low": 65.94999694824219,
+      "last_open": 67.02999877929688,
+      "last_volume": 95434.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 67.02999877929688,
+      "last_date": "2026-11-24",
+      "last_high": 68.0,
+      "last_low": 66.51000213623047,
+      "last_open": 66.08999633789062,
+      "last_volume": 299982.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ARCC.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-arcc-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-arcc-002",
+    "source_runs": [
+      "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ARCC.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "\"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: \"آرك إنفستمنت\" تفوّت مكاسب بـ10.7 مليون دولار بعد بيع أسهم \"إنفيديا\" - المشهد العربي"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.15,
+      "max3": 0.57
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ARCC.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-26T23:31:49.923397+00:00",
+  "sweep_dir": "sweeps/2026-11-26/233444__sweep-lite-arcc-ca-market-egx__runw6-sweeplite-arcc-002",
+  "ticker": "ARCC.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ARCC.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ARCC.CA.csv_last_close": 67.02999877929688,
+          "ARCC.CA.csv_last_date": "2026-11-24",
+          "rows_ARCC.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "9d31dd3d626f6dd51e3b657d00e377682fda9c6c0781c69ebb900ccc8dbd0e39",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ARCC_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ARCC_CA.csv_last_close": 65.94999694824219,
+          "ARCC_CA.csv_last_date": "2026-11-25",
+          "rows_ARCC_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "04cb2c408688224c94172570b076814dac7db7d39961f1aea26a17c588dd2fc7",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_arcc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_arcc.csv_last_close": 66.24,
+          "egxpy_arcc.csv_last_date": "2026-11-26",
+          "rows_egxpy_arcc.csv": 3000,
+          "symbol": "ARCC",
+          "ticker": "ARCC.CA"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "835a51dc3b1a4d17cb7d0c3f0b6bcaa6b87773e8d31a0633048eac6477c271ce",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 14.0583,
+          "atr_14": 2.6516,
+          "bb_lower": 62.0091,
+          "bb_mid": 66.7785,
+          "bb_pctb": 0.4131,
+          "bb_upper": 71.5479,
+          "close": 65.95,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 66.9924,
+          "ema_200": 60.2045,
+          "ema_50": 67.1043,
+          "first_date_used": "2019-01-01",
+          "high": 67.45,
+          "indicators.csv_last_close": 65.94999694824219,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 65.95,
+          "macd": -0.0354,
+          "macd_hist": -0.1343,
+          "macd_signal": 0.0989,
+          "open": 67.03,
+          "rows_fetched": 3089,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 46.5758,
+          "stoch_d": 31.4658,
+          "stoch_k": 26.3622,
+          "ticker": "ARCC.CA"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "a19f6dba793609624c45f57b6938895d0f6dab3fc971ed3da21adb3c05eb1c86",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 65.94999694824219,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 65.94999694824219,
+          "last_date": "2026-11-25",
+          "rows_fetched": 3089,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "ARCC.CA"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "292ef695b096fb3d1bffe0449240a250a708f8da35a7221fdbfb53e03a602ded",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "e7bdf1ddd4d9f923567730d1a08d07449af00449f05c6ab169ea6666f17daefd",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "5f682eb5abcd339057f32b2e9e24776ed8e0bf6b0c41c008aabbaf802b072a89",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "0150b13063a271a51e1880a8be6af4d016ce362218c1b9980c1042f5d3da2d3e",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 24,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "6b30a9a738b37344bf20c2603bbdeb9d63d7a255cf7a266f3457f411535eb509",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 24,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "98c48a2d75d882eab3819c8d902922219ecd6c018ce0e257992f4d8479416a3d",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 24,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "b52df66303e1e4e0bdeab6cee2d94c7730ba45a453eab5b604d511a826f94870",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 64.5525,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "bca74baf37fd2fced7577cdcca6bd086f03896b73cfd46faec728d61e25f3fa3",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "5c3047aecb17536d7048e4b0b2950668aa88948d34ddf9c5911f4bcd51110afb",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-arcc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 3,
+          "bodies_fetched": 6,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-26T23:34:43Z",
+          "finbert_negative": 0.187,
+          "finbert_neutral": 0.667,
+          "finbert_positive": 0.146,
+          "finbert_scored": 18,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 22:31:27 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.004,
+          "multilingual_neutral": 0.268,
+          "multilingual_positive": 0.727,
+          "multilingual_scored": 3,
+          "news_count": 21,
+          "ticker": "ARCC.CA",
+          "tool": "news-disclosure",
+          "top_headline": "ARCC: SEC Form N-14 8C filed by Ares Capital Corporation - Quantisnow",
+          "translated_negative": 0.416,
+          "translated_neutral": 0.467,
+          "translated_positive": 0.118,
+          "translated_scored": 3,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "ARCC.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "3a455f3ba87f4c760b1c59bee58c473d98952578d2ea2118aaac18ddffd8d1cc",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-arcc-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

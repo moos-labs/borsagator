@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 66.24,
+ "base_source": "egx-data/egxpy_arcc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-26T23:34:44.579684+00:00",
+ "inputs_sha256": {
+  "digest.json": "9aa6177c43032510035f0afa381c116dbf87ae9bff87dd8a4da4b395d3aa8a79",
+  "ensemble.json": "429aedabe6c82e4bd91e1086a3a1d917cc9757616392b16460328d2f85c5add5"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/233444__sweep-lite-arcc-ca-market-egx__runw6-sweeplite-arcc-002",
+ "ticker": "ARCC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
