@@ -25,10 +25,8 @@ spaced at least a month apart".
 - The 91-102 block remains the frozen holdout for backtest verdicts; F1
   is a different, older block and does not replace it. Neither block is
   scored in a descriptive run.
-- Because every F1 cutoff is older than the screening-safe date
-  2023-12-28 plus warm-up only for 2024-02-16 onward, F1 cutoffs are
-  after 2023-12-28 and so do not overlap the long-history screen
-  (item 1), whose windows end on or before 2023-12-28.
+- Every F1 cutoff is after 2023-12-28, so F1 windows never overlap the
+  long-history screen (item 1), whose windows end on or before that date.
 - Price history needed per capture: about 250 bars before each cutoff
   (earliest 2024-02-16 needs data from about 2023-02). The long OHLC
   deliverable must cover that or the cycle's price fetch must.
