@@ -23,9 +23,12 @@ GKG file; reruns skip it. Matches are appended (fsync) BEFORE the done
 marker, so a crash reprocesses at most one file; --finalize dedupes on
 (gkg_record_id, url) and skips any truncated/corrupted line an interrupted
 append can leave, counting them. STATE/config.json binds the state dir to
-the alias table hash and date range; a mismatch refuses to run (delete
-done.txt + config.json to rebind) so stale markers are never applied to a
-different configuration.
+the alias table hash, date range and out dir; it is written atomically
+(temp file, fsync, os.replace) before any archive is recorded done. A
+mismatch or unreadable config refuses to run: rebind with a FRESH --out
+directory (delete config.json + done.txt), or also delete matches.jsonl to
+reuse the out dir -- a fresh bind never inherits prior matches, and an
+unchanged config keeps them so normal restarts keep working.
 
 Rows kept when EITHER:
   - a V2Organizations entry matches a ticker alias (word-boundary,
@@ -233,13 +236,27 @@ def run_fetch(a):
               "out": os.path.abspath(a.out)}
     config_path = os.path.join(a.state, "config.json")
     if os.path.exists(config_path):
-        old = json.load(open(config_path))
+        try:
+            old = json.load(open(config_path))
+        except (json.JSONDecodeError, OSError) as e:
+            sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
+                     f"directory: delete {config_path} and done.txt")
         if old != config:
-            sys.exit(f"state config mismatch: {old} vs {config}; "
-                     f"delete {config_path} and done.txt to rebind")
+            sys.exit(f"state config mismatch: {old} vs {config}; rebind with a "
+                     f"fresh --out directory (delete {config_path} and done.txt), "
+                     f"or delete matches.jsonl as well to reuse the out dir")
     else:
-        with open(config_path, "w") as f:
+        probe = os.path.join(a.out, "matches.jsonl")
+        if os.path.exists(probe) and os.path.getsize(probe) > 0:
+            sys.exit(f"{probe} has rows from a previous configuration; use a "
+                     f"fresh --out directory or delete it before rebinding")
+        # atomic publish: temp + fsync + replace, before any archive is done
+        tmp = config_path + ".tmp"
+        with open(tmp, "w") as f:
             json.dump(config, f, indent=1)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, config_path)
     done_path = os.path.join(a.state, "done.txt")
     done = set()
     if os.path.exists(done_path):

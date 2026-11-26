@@ -163,26 +163,80 @@ def test_fetch_guards():
         check("non-HTTPS scheme refused", "scheme" in str(e), str(e))
 
 
+def _args(st, out):
+    class A:
+        pass
+    a = A()
+    a.aliases, a.state, a.out = ALIASES_CSV, st, out
+    a.start, a.end = "20240501000000", "20240531235959"
+    a.master, a.master_translation, a.workers, a.budget_seconds = None, None, 1, 0
+    return a
+
+
+def _empty_master(d):
+    mp = os.path.join(d, "masterfilelist.txt")
+    with open(mp, "w") as f:  # one out-of-range file: nothing to fetch
+        f.write("100 md5a https://data.gdeltproject.org/gdeltv2/20200115090000.gkg.csv.zip\n")
+    return mp
+
+
 def test_config_binding():
     with tempfile.TemporaryDirectory() as d:
-        st = os.path.join(d, "state")
-        out = os.path.join(d, "out")
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
         os.makedirs(st)
-        # other-state config with a different range must refuse
         json.dump({"aliases_sha256": "x", "start": "2019", "end": "2020",
                    "out": out}, open(os.path.join(st, "config.json"), "w"))
-
-        class A:
-            pass
-        a = A()
-        a.aliases, a.state, a.out = ALIASES_CSV, st, out
-        a.start, a.end = "20240501000000", "20240531235959"
-        a.master, a.master_translation, a.workers, a.budget_seconds = None, None, 1, 0
         try:
-            G.run_fetch(a)
+            G.run_fetch(_args(st, out))
             check("config mismatch refuses", False)
         except SystemExit as e:
-            check("config mismatch refuses", "mismatch" in str(e), str(e))
+            check("config mismatch refuses", "mismatch" in str(e)
+                  and "fresh --out" in str(e), str(e))
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
+        os.makedirs(st)
+        with open(os.path.join(st, "config.json"), "w") as f:
+            f.write('{"aliases_sha256": "x", "sta')  # interrupted write
+        try:
+            G.run_fetch(_args(st, out))
+            check("unreadable config refuses cleanly", False)
+        except SystemExit as e:
+            check("unreadable config refuses cleanly", "unreadable" in str(e), str(e))
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
+        os.makedirs(st)
+        os.makedirs(out)
+        with open(os.path.join(out, "matches.jsonl"), "w") as f:
+            f.write('{"gkg_record_id": "OLD"}\n')  # stale rows, no config
+        try:
+            G.run_fetch(_args(st, out))
+            check("fresh bind with stale matches refuses", False)
+        except SystemExit as e:
+            check("fresh bind with stale matches refuses",
+                  "fresh --out" in str(e), str(e))
+
+
+def test_config_atomic_and_restart():
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
+        a = _args(st, out)
+        a.master = _empty_master(d)
+        G.run_fetch(a)  # fresh bind, nothing in range to fetch
+        check("config written", os.path.exists(os.path.join(st, "config.json")))
+        check("no temp file left behind",
+              not os.path.exists(os.path.join(st, "config.json.tmp")))
+        cfg = json.load(open(os.path.join(st, "config.json")))
+        check("config content", cfg["start"] == "20240501000000"
+              and cfg["end"] == "20240531235959"
+              and cfg["out"] == os.path.abspath(out), str(cfg))
+        # normal restart: unchanged config + existing matches must proceed
+        with open(os.path.join(out, "matches.jsonl"), "a") as f:
+            f.write('{"gkg_record_id": "KEPT"}\n')
+        G.run_fetch(_args(st, out))
+        check("normal restart proceeds, output preserved",
+              os.path.getsize(os.path.join(out, "matches.jsonl")) > 0)
+        check("restart wrote no second config tmp",
+              not os.path.exists(os.path.join(st, "config.json.tmp")))
 
 
 def test_restart_and_finalize():
@@ -220,7 +274,8 @@ def main():
     for fn in (test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_process_blob,
                test_list_files_and_range, test_fetch_guards,
-               test_config_binding, test_restart_and_finalize):
+               test_config_binding, test_config_atomic_and_restart,
+               test_restart_and_finalize):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
