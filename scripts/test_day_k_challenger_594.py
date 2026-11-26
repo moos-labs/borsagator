@@ -52,19 +52,20 @@ def test_half_pct():
     check("no sigma gives None", D.half_pct({}, "day", 1.0) is None)
 
 
-def _cell(n, cov, delta):
-    return {"n": n, "ch": {"coverage": cov},
-            "ch_minus_v2_skill": {"point": delta}}
+def _cell(n, cov, skill):
+    return {"n": n, "ch": {"coverage": cov, "range_skill": skill}}
 
 
 def test_rule():
     check("insufficient below 30",
           D.day_rule(_cell(29, 0.9, 0.1)).startswith("INSUFFICIENT"))
     check("keep", D.day_rule(_cell(30, 0.75, 0.0)).startswith("KEEP"))
+    check("keep at the floor",
+          D.day_rule(_cell(30, 0.8, -0.036)).startswith("KEEP"))
     check("reject on coverage",
           D.day_rule(_cell(30, 0.74, 0.1)).startswith("REJECT"))
-    check("reject on worsening",
-          D.day_rule(_cell(30, 0.8, -0.01)).startswith("REJECT"))
+    check("reject below skill floor",
+          D.day_rule(_cell(30, 0.8, -0.037)).startswith("REJECT"))
 
 
 if __name__ == "__main__":
