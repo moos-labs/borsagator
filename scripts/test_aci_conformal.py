@@ -101,10 +101,41 @@ def test_refusal():
     check("refuses seen cells", rc == 2)
 
 
+def test_unnumbered_and_json():
+    import contextlib
+    import io
+    import json
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        cap = os.path.join(d, "2025-11-14", "TST")
+        os.makedirs(os.path.join(cap, "digest"))
+        for fn in ("manifest.json", "realised.json"):
+            open(os.path.join(cap, fn), "w").write("{}")
+        open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
+        out = os.path.join(d, "o.json")
+        buf = io.StringIO()
+        check("unnumbered capture is findable by find_captures",
+              C.A.find_captures([d], 48) != [])
+        with contextlib.redirect_stdout(buf):
+            rc = C.main(["score", "--captures", d, "--min-cell", "48",
+                         "--descriptive", "--reps", "50", "--json", out])
+        data = json.load(open(out))
+        check("descriptive run exits 0", rc == 0)
+        check("unnumbered capture dropped from scoring",
+              all(data["results"][h]["n"] == 0 for h in ("day", "week", "month")))
+        check("descriptive json carries no verdict",
+              "verdict" not in data and data["descriptive"] is True)
+        with contextlib.redirect_stdout(buf):
+            C.main(["score", "--captures", d, "--reps", "50",
+                    "--json", out])
+        check("clean json carries a verdict",
+              "verdict" in json.load(open(out)))
+
+
 def main():
     for fn in (test_constants, test_quantile, test_score,
                test_no_lookahead, test_alpha_moves, test_score_rows,
-               test_refusal):
+               test_refusal, test_unnumbered_and_json):
         fn()
     print("test_aci_conformal: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

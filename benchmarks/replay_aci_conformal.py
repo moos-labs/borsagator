@@ -197,13 +197,15 @@ def main(argv=None):
     allc = A.find_captures(a.captures, None)
     rows, gaps = R.build_rows(allc, allc)
     if a.mode == "diag":
-        pairs = score_rows(rows, lambda r: (r["cell"] or 0) <= a.max_cell)
+        pairs = score_rows(rows, lambda r: r["cell"] is not None
+                        and r["cell"] <= a.max_cell)
         res = R.evaluate(pairs, a.reps)
         print(render(res, pairs, True, "TARGET CELLS 1-%d, descriptive "
                      "only (walk-forward history from all earlier "
                      "cutoffs)" % a.max_cell))
         return 0
-    pairs = score_rows(rows, lambda r: (r["cell"] or 0) >= a.min_cell)
+    pairs = score_rows(rows, lambda r: r["cell"] is not None
+                        and r["cell"] >= a.min_cell)
     res = R.evaluate(pairs, a.reps, a.seed)
     print(render(res, pairs, a.descriptive,
                  "DESCRIPTIVE ONLY, no verdict valid" if a.descriptive
@@ -211,7 +213,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"alpha": ALPHA, "gamma": GAMMA, "results": res,
-                       "verdict": keep_verdict(res)[0],
+                       **({} if a.descriptive else {"verdict": keep_verdict(res)[0]}),
                        "descriptive": a.descriptive}, fh, indent=1)
     return 0
 
