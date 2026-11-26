@@ -149,8 +149,38 @@ def test_main_output_no_verdict_and_filters():
           and "unattainable" in out.getvalue())
 
 
+def test_main_empty_horizon_does_not_crash():
+    orig = (K.A.find_captures, K.T.score_pairs)
+    K.A.find_captures = lambda paths, mc: ["/x/r__w5-backtest-436-cell80"]
+    # day has no matured rows; week and month are populated
+    K.T.score_pairs = lambda cs: (
+        [p for p in fixture() if p["horizon"] != "day"], [])
+    out = io.StringIO()
+    try:
+        with tempfile.TemporaryDirectory() as d, \
+                contextlib.redirect_stdout(out):
+            js = os.path.join(d, "o.json")
+            code = K.main(["--captures", "c", "--reps", "50",
+                           "--json", js])
+            res = json.load(open(js))
+    finally:
+        K.A.find_captures, K.T.score_pairs = orig
+    txt = out.getvalue()
+    check("empty horizon: exit 0", code == 0)
+    check("empty horizon: unavailable note printed",
+          "no matured rows at this horizon" in txt
+          and "sign-flip minimum p is unavailable" in txt)
+    check("empty horizon: json min_p null, n 0",
+          res["results"]["day"]["n"] == 0 and
+          res["results"]["day"]["ci_audit"]["signflip"]["min_p"] is None)
+    check("populated horizons keep the attainability note",
+          txt.count("smallest attainable") == 2
+          and "leg is unattainable" in txt and "leg is attainable" in txt,
+          txt)
+
+
 def main():
-    for fn in (test_audit_values, test_ticker_view_flags_one_ticker_carrying,
+    for fn in (test_main_empty_horizon_does_not_crash,test_audit_values, test_ticker_view_flags_one_ticker_carrying,
                test_leave_one_cutoff_out,
                test_main_output_no_verdict_and_filters):
         fn()
