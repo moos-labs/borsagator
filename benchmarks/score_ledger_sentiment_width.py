@@ -25,7 +25,9 @@ cost week interval score there. The verdict rests on future rows.
 Pre-registered keep rule: the #764 rule. Per horizon, one scoring once
 n >= 30 matured rows over >= 10 tickers and >= 2 as-of dates: KEEP when
 the cutoff-clustered (by as_of) 95% CI lower bound of RangeSkill > 0
-and coverage is within 0.75-0.85; REJECT when the sample is enough and
+and the cutoff-clustered coverage CI overlaps 0.75-0.85 with an
+absolute width <= 0.15 (R.coverage_ci_ok, inherited through
+T.verdicts; a point-coverage test is no longer the rule); REJECT when the sample is enough and
 either fails; INSUFFICIENT otherwise. While INSUFFICIENT the default
 output prints only sample counts; numbers need --descriptive.
 Sentiment only (the scale of other families is not read).
