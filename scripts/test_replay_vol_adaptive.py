@@ -117,9 +117,14 @@ def test_refuses_seen_cells():
          "--min-cell", "48"]) == 2)
 
 
-for fn in (test_constants, test_sigma_eff, test_sigma_long,
-           test_fit_and_score, test_verdict, test_refuses_seen_cells):
-    fn()
-print("test_replay_vol_adaptive: %d passed, %d failed"
-      % (CHECKS["pass"], CHECKS["fail"]))
-sys.exit(1 if CHECKS["fail"] else 0)
+def main():
+    for fn in (test_constants, test_sigma_eff, test_sigma_long,
+               test_fit_and_score, test_verdict, test_refuses_seen_cells):
+        fn()
+    print("test_replay_vol_adaptive: %d passed, %d failed"
+          % (CHECKS["pass"], CHECKS["fail"]))
+    sys.exit(1 if CHECKS["fail"] else 0)
+
+
+if __name__ == "__main__":
+    main()

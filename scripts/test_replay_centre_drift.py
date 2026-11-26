@@ -108,9 +108,14 @@ def test_refuses_seen_cells():
         ["--captures", "/nonexistent", "--min-cell", "48"]) == 2)
 
 
-for fn in (test_constants, test_mean_ret, test_centre, test_score_rows,
-           test_verdict, test_refuses_seen_cells):
-    fn()
-print("test_replay_centre_drift: %d passed, %d failed"
-      % (CHECKS["pass"], CHECKS["fail"]))
-sys.exit(1 if CHECKS["fail"] else 0)
+def main():
+    for fn in (test_constants, test_mean_ret, test_centre, test_score_rows,
+               test_verdict, test_refuses_seen_cells):
+        fn()
+    print("test_replay_centre_drift: %d passed, %d failed"
+          % (CHECKS["pass"], CHECKS["fail"]))
+    sys.exit(1 if CHECKS["fail"] else 0)
+
+
+if __name__ == "__main__":
+    main()
