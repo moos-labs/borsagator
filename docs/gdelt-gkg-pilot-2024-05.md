@@ -37,13 +37,23 @@ Verdicts were grounded by opening matched org strings and sampling URLs from `ma
 | ORAS | 0 | 0 | 1 | 1 | Unverifiable single row. |
 
 Totals: 307 real, 33 false, 9 ambiguous of 349 pairs. Precision on the alias channel is 88%
-(307/349), 96% for tickers other than the five problem names below.
+(307/349).
+
+Correction (2026-11-27, Moos review): an earlier version of this paragraph said "96% for
+tickers other than the five problem names" - that figure does not reproduce from the table.
+The correct arithmetic: excluding EFIH (13), PHDC (8), SAUD (19), CIRA (3) and either
+single-row name (OCDI or MTIE, 1) removes 44 pairs, leaving 305 pairs of which 303 real,
+1 false, 1 ambiguous: 303/305 = 99.3%.
 
 The other 21 of 38 tickers had zero alias hits in this month; that is expected for a single
 month of English-language GKG org strings and is coverage, not false hits. Their rows still
 arrive through the Egyptian-outlet channel.
 
 ## False-hit patterns to fix before the full run
+
+Implemented on this branch 2026-11-27 (alias table + `require_patterns` per-alias context
+gate in `scripts/gdelt_gkg_filter.py`; tests extended in `scripts/test_gdelt_gkg_filter.py`,
+`test_pilot_six_fixes`):
 
 1. `EFIH` alias "E Finance" is too generic — require co-occurrence (Egypt/digital-government
    context) or drop the alias and rely on "e-finance for Digital and Financial Investments"
