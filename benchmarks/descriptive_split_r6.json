@@ -1,0 +1,224 @@
+{
+ "descriptive": true,
+ "min_cell": 48,
+ "splits": {
+  "turnover_median": 144265491.9680786,
+  "all rows": {
+   "day": {
+    "n": 31,
+    "tickers": 6,
+    "cutoffs": 6,
+    "coverage": 0.7096774193548387,
+    "range_skill": -0.023199503311258196
+   },
+   "week": {
+    "n": 31,
+    "tickers": 6,
+    "cutoffs": 6,
+    "coverage": 0.7741935483870968,
+    "range_skill": -0.0006009514287916851
+   },
+   "month": {
+    "n": 31,
+    "tickers": 6,
+    "cutoffs": 6,
+    "coverage": 0.5806451612903226,
+    "range_skill": -0.021918498366119588
+   }
+  },
+  "zero-range share = 0": {
+   "day": {
+    "n": 14,
+    "tickers": 6,
+    "cutoffs": 5
+   },
+   "week": {
+    "n": 14,
+    "tickers": 6,
+    "cutoffs": 5
+   },
+   "month": {
+    "n": 14,
+    "tickers": 6,
+    "cutoffs": 5
+   }
+  },
+  "zero-range share > 0": {
+   "day": {
+    "n": 17,
+    "tickers": 5,
+    "cutoffs": 5
+   },
+   "week": {
+    "n": 17,
+    "tickers": 5,
+    "cutoffs": 5
+   },
+   "month": {
+    "n": 17,
+    "tickers": 5,
+    "cutoffs": 5
+   }
+  },
+  "turnover >= median": {
+   "day": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 5
+   },
+   "week": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 5
+   },
+   "month": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 5
+   }
+  },
+  "turnover < median": {
+   "day": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 6
+   },
+   "week": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 6
+   },
+   "month": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 6
+   }
+  },
+  "near-limit day in last 250 bars": {
+   "day": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 6
+   },
+   "week": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 6
+   },
+   "month": {
+    "n": 16,
+    "tickers": 4,
+    "cutoffs": 6
+   }
+  },
+  "no near-limit day in last 250 bars": {
+   "day": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 5
+   },
+   "week": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 5
+   },
+   "month": {
+    "n": 15,
+    "tickers": 4,
+    "cutoffs": 5
+   }
+  }
+ },
+ "counts": {
+  "COMI.CA": {
+   "ohlc": {
+    "bars": 911,
+    "zero_range": 25,
+    "near_10_close": 2,
+    "near_10_intraday": 6,
+    "near_20_close": 0,
+    "near_20_intraday": 0
+   },
+   "price_csv": {
+    "closes": 1892,
+    "near_10_close": 4,
+    "near_20_close": 0
+   }
+  },
+  "ETEL.CA": {
+   "ohlc": {
+    "bars": 911,
+    "zero_range": 25,
+    "near_10_close": 7,
+    "near_10_intraday": 14,
+    "near_20_close": 0,
+    "near_20_intraday": 0
+   },
+   "price_csv": {
+    "closes": 1892,
+    "near_10_close": 13,
+    "near_20_close": 1
+   }
+  },
+  "HRHO.CA": {
+   "ohlc": {
+    "bars": 878,
+    "zero_range": 24,
+    "near_10_close": 2,
+    "near_10_intraday": 6,
+    "near_20_close": 0,
+    "near_20_intraday": 1
+   },
+   "price_csv": {
+    "closes": 1859,
+    "near_10_close": 7,
+    "near_20_close": 1
+   }
+  },
+  "NVDA": {
+   "ohlc": {
+    "bars": 939,
+    "zero_range": 0,
+    "near_10_close": 8,
+    "near_10_intraday": 15,
+    "near_20_close": 1,
+    "near_20_intraday": 2
+   },
+   "price_csv": {
+    "closes": 1947,
+    "near_10_close": 18,
+    "near_20_close": 1
+   }
+  },
+  "SWDY.CA": {
+   "ohlc": {
+    "bars": 911,
+    "zero_range": 26,
+    "near_10_close": 16,
+    "near_10_intraday": 32,
+    "near_20_close": 4,
+    "near_20_intraday": 7
+   },
+   "price_csv": {
+    "closes": 1892,
+    "near_10_close": 18,
+    "near_20_close": 4
+   }
+  },
+  "TMGH.CA": {
+   "ohlc": {
+    "bars": 911,
+    "zero_range": 25,
+    "near_10_close": 19,
+    "near_10_intraday": 30,
+    "near_20_close": 2,
+    "near_20_intraday": 7
+   },
+   "price_csv": {
+    "closes": 1892,
+    "near_10_close": 21,
+    "near_20_close": 2
+   }
+  }
+ }
+}
