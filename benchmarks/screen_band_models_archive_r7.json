@@ -1,0 +1,791 @@
+{
+ "screen_end": "2023-12-28",
+ "step": 21,
+ "min_hist": 120,
+ "break_date": "2021-09-05",
+ "lookback": 60,
+ "descriptive": true,
+ "models": [
+  "s20",
+  "ewma94",
+  "blend2060",
+  "park60",
+  "gk60"
+ ],
+ "regimes": {
+  "pre": {
+   "s20": {
+    "day": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "week": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "month": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    }
+   },
+   "ewma94": {
+    "day": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "week": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "month": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    }
+   },
+   "blend2060": {
+    "day": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "week": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "month": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    }
+   },
+   "park60": {
+    "day": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "week": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "month": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    }
+   },
+   "gk60": {
+    "day": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "week": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    },
+    "month": {
+     "n": 0,
+     "cutoffs": 0,
+     "tickers": 0,
+     "v2": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch": {
+      "coverage": null,
+      "range_skill": null
+     },
+     "ch_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_cov_ci_cutoff": [
+      null,
+      null
+     ],
+     "ch_ci_ticker": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "post": {
+   "s20": {
+    "day": {
+     "n": 42,
+     "cutoffs": 12,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7380952380952381,
+      "range_skill": -0.008358218514299187
+     },
+     "ch": {
+      "coverage": 0.6428571428571429,
+      "range_skill": 0.004266723001390527
+     },
+     "ch_ci_cutoff": [
+      -0.08878569653902635,
+      0.11964380250530315
+     ],
+     "ch_cov_ci_cutoff": [
+      0.4666666666666667,
+      0.8461538461538461
+     ],
+     "ch_ci_ticker": [
+      -0.1593664377875612,
+      0.11228002528326919
+     ]
+    },
+    "week": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.8055555555555556,
+      "range_skill": 0.00018930924991356068
+     },
+     "ch": {
+      "coverage": 0.7777777777777778,
+      "range_skill": -0.16385947010525004
+     },
+     "ch_ci_cutoff": [
+      -0.33539785718863,
+      0.005820728276740961
+     ],
+     "ch_cov_ci_cutoff": [
+      0.6756756756756757,
+      0.875
+     ],
+     "ch_ci_ticker": [
+      -0.35462557239400283,
+      0.002381834634214486
+     ]
+    },
+    "month": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7222222222222222,
+      "range_skill": -0.0020052000849708485
+     },
+     "ch": {
+      "coverage": 0.7222222222222222,
+      "range_skill": 0.038092117844259366
+     },
+     "ch_ci_cutoff": [
+      -0.005459766842912606,
+      0.15424806335325403
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5161290322580645,
+      0.926829268292683
+     ],
+     "ch_ci_ticker": [
+      0.0019864412572787593,
+      0.1227678044246695
+     ]
+    }
+   },
+   "ewma94": {
+    "day": {
+     "n": 42,
+     "cutoffs": 12,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7380952380952381,
+      "range_skill": -0.008358218514299187
+     },
+     "ch": {
+      "coverage": 0.7142857142857143,
+      "range_skill": 0.0509278725684148
+     },
+     "ch_ci_cutoff": [
+      -0.04420630828759475,
+      0.1655018472007217
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5333333333333333,
+      0.8913043478260869
+     ],
+     "ch_ci_ticker": [
+      -0.07320656748194332,
+      0.14607815295606197
+     ]
+    },
+    "week": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.8055555555555556,
+      "range_skill": 0.00018930924991356068
+     },
+     "ch": {
+      "coverage": 0.8333333333333334,
+      "range_skill": -0.10287125629902505
+     },
+     "ch_ci_cutoff": [
+      -0.1848043364643388,
+      -0.016642582096233483
+     ],
+     "ch_cov_ci_cutoff": [
+      0.725,
+      0.9512195121951219
+     ],
+     "ch_ci_ticker": [
+      -0.21641630324879269,
+      0.0023749206567341696
+     ]
+    },
+    "month": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7222222222222222,
+      "range_skill": -0.0020052000849708485
+     },
+     "ch": {
+      "coverage": 0.6944444444444444,
+      "range_skill": 0.0063069467897940434
+     },
+     "ch_ci_cutoff": [
+      -0.01802209575582192,
+      0.07076234960913041
+     ],
+     "ch_cov_ci_cutoff": [
+      0.4838709677419355,
+      0.9142857142857143
+     ],
+     "ch_ci_ticker": [
+      -0.02468576939592193,
+      0.06923313578533086
+     ]
+    }
+   },
+   "blend2060": {
+    "day": {
+     "n": 42,
+     "cutoffs": 12,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7380952380952381,
+      "range_skill": -0.008358218514299187
+     },
+     "ch": {
+      "coverage": 0.6904761904761905,
+      "range_skill": 0.018843763071288877
+     },
+     "ch_ci_cutoff": [
+      -0.03414795892989653,
+      0.09031093663758516
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5,
+      0.8823529411764706
+     ],
+     "ch_ci_ticker": [
+      -0.05196459766526429,
+      0.05927076931403119
+     ]
+    },
+    "week": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.8055555555555556,
+      "range_skill": 0.00018930924991356068
+     },
+     "ch": {
+      "coverage": 0.8055555555555556,
+      "range_skill": -0.05952784371297426
+     },
+     "ch_ci_cutoff": [
+      -0.13140632309908917,
+      0.019955788693314935
+     ],
+     "ch_cov_ci_cutoff": [
+      0.6888888888888889,
+      0.9393939393939394
+     ],
+     "ch_ci_ticker": [
+      -0.15149353329908877,
+      0.021021547912480343
+     ]
+    },
+    "month": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7222222222222222,
+      "range_skill": -0.0020052000849708485
+     },
+     "ch": {
+      "coverage": 0.7222222222222222,
+      "range_skill": 0.02063770342351612
+     },
+     "ch_ci_cutoff": [
+      -0.004731201033804977,
+      0.08826110344532534
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5416666666666666,
+      0.9142857142857143
+     ],
+     "ch_ci_ticker": [
+      -0.0036608905984814033,
+      0.08027498833640156
+     ]
+    }
+   },
+   "park60": {
+    "day": {
+     "n": 42,
+     "cutoffs": 12,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7380952380952381,
+      "range_skill": -0.008358218514299187
+     },
+     "ch": {
+      "coverage": 0.7142857142857143,
+      "range_skill": -0.015512532291158898
+     },
+     "ch_ci_cutoff": [
+      -0.08677433583491734,
+      0.08666975067369531
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5111111111111111,
+      0.9
+     ],
+     "ch_ci_ticker": [
+      -0.055899880954639825,
+      0.03766119755451658
+     ]
+    },
+    "week": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.8055555555555556,
+      "range_skill": 0.00018930924991356068
+     },
+     "ch": {
+      "coverage": 0.7777777777777778,
+      "range_skill": 0.03952253780983661
+     },
+     "ch_ci_cutoff": [
+      -0.032643230294089776,
+      0.12167202349968809
+     ],
+     "ch_cov_ci_cutoff": [
+      0.6451612903225806,
+      0.9166666666666666
+     ],
+     "ch_ci_ticker": [
+      -0.02305813794306877,
+      0.12930603100154392
+     ]
+    },
+    "month": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7222222222222222,
+      "range_skill": -0.0020052000849708485
+     },
+     "ch": {
+      "coverage": 0.6944444444444444,
+      "range_skill": 0.02937220045433475
+     },
+     "ch_ci_cutoff": [
+      0.0009216171727640665,
+      0.11396903115749635
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5121951219512195,
+      0.8888888888888888
+     ],
+     "ch_ci_ticker": [
+      -0.0022663931894026934,
+      0.0994792360996134
+     ]
+    }
+   },
+   "gk60": {
+    "day": {
+     "n": 42,
+     "cutoffs": 12,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7380952380952381,
+      "range_skill": -0.008358218514299187
+     },
+     "ch": {
+      "coverage": 0.6904761904761905,
+      "range_skill": -0.022309506415022495
+     },
+     "ch_ci_cutoff": [
+      -0.10406732336034241,
+      0.09147491150036602
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5,
+      0.8679245283018868
+     ],
+     "ch_ci_ticker": [
+      -0.06750564799993031,
+      0.03973465534289178
+     ]
+    },
+    "week": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.8055555555555556,
+      "range_skill": 0.00018930924991356068
+     },
+     "ch": {
+      "coverage": 0.7777777777777778,
+      "range_skill": 0.032463368499957124
+     },
+     "ch_ci_cutoff": [
+      -0.060062825956301635,
+      0.12881512633079562
+     ],
+     "ch_cov_ci_cutoff": [
+      0.6451612903225806,
+      0.9166666666666666
+     ],
+     "ch_ci_ticker": [
+      -0.0388457237845099,
+      0.11935133521196295
+     ]
+    },
+    "month": {
+     "n": 36,
+     "cutoffs": 10,
+     "tickers": 6,
+     "v2": {
+      "coverage": 0.7222222222222222,
+      "range_skill": -0.0020052000849708485
+     },
+     "ch": {
+      "coverage": 0.6944444444444444,
+      "range_skill": 0.03743705478011017
+     },
+     "ch_ci_cutoff": [
+      0.004569323492072508,
+      0.12935597772959673
+     ],
+     "ch_cov_ci_cutoff": [
+      0.5121951219512195,
+      0.8888888888888888
+     ],
+     "ch_ci_ticker": [
+      0.005108036672590299,
+      0.1101376943120479
+     ]
+    }
+   }
+  }
+ }
+}
