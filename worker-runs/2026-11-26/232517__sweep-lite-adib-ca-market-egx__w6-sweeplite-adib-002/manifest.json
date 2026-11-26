@@ -1,0 +1,92 @@
+{
+ "job": {
+  "id": "w6-sweeplite-adib-002",
+  "job": "sweep-lite ADIB.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-26T23:20:21.186612+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-adib-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-26T23:20:21.186612+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ADIB"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ADIB']",
+  "extraction": {}
+ },
+ "finished": "2026-11-26T23:25:10.642266+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002",
+  "model": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002/report-model.json",
+  "model_sha256": "75f28c5b8962afdc304d25d40f1bea167acd9ab603833a923a73ebea1b8730b5",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/ADIB.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ADIB.CA.json",
+   "sharia-row-missing: AAOIFI ADIB.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ADIB.CA",
+   "sharia-row-missing: FTSE ADIB.CA",
+   "sharia-row-missing: ISLAMICLY ADIB.CA",
+   "sharia-row-missing: MSCI ADIB.CA",
+   "sharia-row-missing: MSCI_M ADIB.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "b82d5962fa5459cb254efd3d306369c60253d09f",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 158491,
+    "sha256": "2045f20578e6062aede7fc29de4c57289d645aa9a9f6bc4d0904e3fe4fa6bc39"
+   },
+   {
+    "path": "report.md",
+    "bytes": 39069,
+    "sha256": "bf02132e5bbf1fa059d7e6e24c473a4cb649503e1778708c89e1ef48e6393621"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ADIB.CA"
+ }
+}

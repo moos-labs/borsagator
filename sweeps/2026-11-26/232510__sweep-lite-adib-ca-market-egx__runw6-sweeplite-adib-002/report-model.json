@@ -1,0 +1,1683 @@
+{
+  "archive_commit": "b82d5962fa5459cb254efd3d306369c60253d09f",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "2914584a34a44bdb714faac97c315ec1158629925f147c556dbf447e4b758a2b",
+      "family-agent.json": "3c380d742daf396a1c3b37cdd5f7e9760c79a284045593b3f9c2dad768010505",
+      "family-fundamentals.json": "ee6de0b82acf42cffbaebb23f608f792164d0c90f588d8f3efb444d64ad5e831",
+      "family-price-forecast.json": "5abcbea1e0210b3d0d008faf9c1120a45995ce13f3cccb312d5a0ba82d35842d",
+      "family-sentiment.json": "a9e84afd4299be2e5864339ec677b39e43e5fe645c18e8cc34cea76b7ef7b2e9",
+      "family-technicals.json": "9358772ff10ff0d99e876803cefe447ba15555bc881826811a256099cedb28b2",
+      "kronos-alone.json": "85a63b1358df6c031f619d56945396e168167b4f74b462814b2004e2083dc432",
+      "raw-llm-cohere.json": "e642aabbbb7637d1eadf4087e2a1eaf5a1883e20edbf094f569a95b73b8a3076"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-26",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ADIB-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 45.98,
+    "base_source": "egx-data/egxpy_adib.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-26",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.079,
+      "sentiment": 0.253,
+      "technicals": -0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.253
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.1453,
+        "net_score": 0.253,
+        "range_high_pct": 3.77,
+        "range_low_pct": -3.77,
+        "tilt_centre_pct": 0.11,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.1879
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": 0.253,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.5774,
+        "net_score": 0.105,
+        "range_high_pct": 18.05,
+        "range_low_pct": -18.05,
+        "tilt_centre_pct": 0.68,
+        "trading_sessions": 21,
+        "vol_h_pct": 10.0262
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.253,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.3045,
+        "net_score": -0.063,
+        "range_high_pct": 9.39,
+        "range_low_pct": -9.39,
+        "tilt_centre_pct": -0.14,
+        "trading_sessions": 5,
+        "vol_h_pct": 4.8923
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_adib.csv",
+      "base_stale": false,
+      "base_used": 45.98,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_adib.csv": 46.15,
+        "openbb/adib_ca.csv": 46.150001525878906,
+        "pandas-ta/indicators.csv": 46.150001525878906,
+        "talib/indicators.csv": 46.150001525878906,
+        "yahooquery/adib.ca.csv": 46.150001525878906
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+          "type": "earnings"
+        },
+        {
+          "severity": "high",
+          "title": "عمرو أديب بعد حادث دائري الوراق: خسائر الطرق في مصر مرعبة وأعدادها غريبة - فيتو",
+          "type": "earnings"
+        },
+        {
+          "severity": "high",
+          "title": "عمرو أديب يعلق على حادث الوراق: الظلام على الطريق الدائري مرعب - Masrawy",
+          "type": "earnings"
+        },
+        {
+          "severity": "high",
+          "title": "عمرو أديب عن حريق الوراق: «أستخدم امتداد هذا الطريق يوميًا.. والظلام فيه مرعب» - المصري ال",
+          "type": "earnings"
+        },
+        {
+          "severity": "high",
+          "title": "1.8 تريليون جنيه حجم المصرفية الإسلامية في مصر.. و«ADIB» يتصدر - شبكة تواصل الإخبارية",
+          "type": "legal"
+        },
+        {
+          "severity": "high",
+          "title": "عمرو أديب يهاجم الأهلي بعد هزيمته أمام بيراميدز 2-0 ويطالب ببقاء عموتة - شبكة تواصل الإخبا",
+          "type": "management"
+        }
+      ],
+      "flags": [
+        "earnings event: ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+        "earnings event: عمرو أديب بعد حادث دائري الوراق: خسائر الطرق في مصر مرعبة وأعدادها غريبة - فيتو",
+        "earnings event: عمرو أديب يعلق على حادث الوراق: الظلام على الطريق الدائري مرعب - Masrawy"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.05,
+        "max3": 0.28
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0219,
+    "sigma_daily": 0.0219,
+    "sigma_source": "egx-data/egxpy_adib.csv (σ60=0.0219, σ10=0.0106)",
+    "ticker": "ADIB.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.079,
+    "sentiment": 0.253,
+    "technicals": -0.3
+  },
+  "finished": "2026-11-26T23:25:10.642266+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ADIB.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ADIB.CA.json",
+    "sharia-row-missing: AAOIFI ADIB.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ADIB.CA",
+    "sharia-row-missing: FTSE ADIB.CA",
+    "sharia-row-missing: ISLAMICLY ADIB.CA",
+    "sharia-row-missing: MSCI ADIB.CA",
+    "sharia-row-missing: MSCI_M ADIB.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.253
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.1453,
+      "net_score": 0.253,
+      "range_high_pct": 3.77,
+      "range_low_pct": -3.77,
+      "tilt_centre_pct": 0.11,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.1879
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": 0.253,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.5774,
+      "net_score": 0.105,
+      "range_high_pct": 18.05,
+      "range_low_pct": -18.05,
+      "tilt_centre_pct": 0.68,
+      "trading_sessions": 21,
+      "vol_h_pct": 10.0262
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.253,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.3045,
+      "net_score": -0.063,
+      "range_high_pct": 9.39,
+      "range_low_pct": -9.39,
+      "tilt_centre_pct": -0.14,
+      "trading_sessions": 5,
+      "vol_h_pct": 4.8923
+    }
+  },
+  "job": "sweep-lite ADIB.CA market=EGX",
+  "job_shape": "sweep-lite ADIB.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 50.2975,
+    "support": 41.6625
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere+nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-26T17:48:45Z",
+    "latest_news_date_raw": "Thu, 26 Nov 2026 17:48:45 GMT",
+    "news_count": 40,
+    "news_items": [
+      {
+        "date": "Thu, 26 Nov 2026 17:48:45 GMT",
+        "identity_key": "https://www.thenationalnews.com/business/2026/11/26/adib-raises-500m-in-perpetual-sukuk-to-support-growth-strategy/",
+        "key_type": "resolved_url",
+        "source": "The National",
+        "title": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 11:52:21 GMT",
+        "identity_key": "https://hafryat.com/ar/blog/%D9%85%D9%86%D9%8A%D8%B1-%D8%A3%D8%AF%D9%8A%D8%A8-%D9%85%D8%AE%D8%A7%D9%88%D9%81-%D8%A3%D9%88%D8%B1%D9%88%D8%A8%D8%A7-%D9%85%D9%86-%D8%A7%D9%84%D8%A5%D8%AE%D9%88%D8%A7%D9%86-%D8%AA%D8%AD%D9%88%D9%84%D8%AA-%D9%84%D8%AD%D9%82%D8%A7%D8%A6%D9%82-%D8%A8%D8%B9%D8%AF-%D8%AA%D8%BA%D9%84%D8%BA%D9%84%D9%87%D8%A7-%D8%A8%D8%A7%D9%84%D9%85%D8%A4%D8%B3%D8%B3%D8%A7%D8%AA",
+        "key_type": "resolved_url",
+        "source": "حفريات",
+        "title": "منير أديب: مخاوف أوروبا من الإخوان تحولت لحقائق بعد تغلغلها بالمؤسسات.. - حفريات"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 02:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/26/%D9%85%D9%86%D9%8A%D8%B1-%D8%A3%D8%AF%D9%8A%D8%A8-%D8%A3%D9%88%D8%B1%D9%88%D8%A8%D8%A7-%D8%A8%D8%AF%D8%A3%D8%AA-%D8%AA%D8%AF%D8%B1%D9%83-%D8%AE%D8%B7%D9%88%D8%B1%D8%A9-%D8%A7%D9%84%D8%A5%D8%AE%D9%88%D8%A7%D9%86-%D8%A8%D8%B9%D8%AF-%D8%A7%D9%84%D8%AA%D8%AD%D8%B0%D9%8A%D8%B1%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A%D8%A9/7632547",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "منير أديب: أوروبا بدأت تدرك خطورة الإخوان بعد التحذيرات المصرية - اليوم السابع"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 01:46:02 GMT",
+        "identity_key": "https://www.alraeesnews.com/348770",
+        "key_type": "resolved_url",
+        "source": "الرئيس نيوز",
+        "title": "عمرو أديب عن حريق دائري الوراق: كارثة بكل المقاييس.. والظلام على الطريق مرعب - الرئيس نيوز"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 00:57:03 GMT",
+        "identity_key": "85e2593069441721",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب عن حريق دائري الوراق: الظلام على الطريق مرعب والسيارات تسير بلا حساب - أهل مصر"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 00:04:00 GMT",
+        "identity_key": "https://www.vetogate.com/5778430",
+        "key_type": "resolved_url",
+        "source": "فيتو",
+        "title": "عمرو أديب بعد حادث دائري الوراق: خسائر الطرق في مصر مرعبة وأعدادها غريبة - فيتو"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 22:11:25 GMT",
+        "identity_key": "https://www.masrawy.com/news/news_egypt/details/2026/11/26/3084663/%D8%B9%D9%85%D8%B1%D9%88-%D8%A3%D8%AF%D9%8A%D8%A8-%D9%8A%D8%B9%D9%84%D9%82-%D8%B9%D9%84%D9%89-%D8%AD%D8%A7%D8%AF%D8%AB-%D8%A7%D9%84%D9%88%D8%B1%D8%A7%D9%82-%D8%A7%D9%84%D8%B8%D9%84%D8%A7%D9%85-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%B7%D8%B1%D9%8A%D9%82-%D8%A7%D9%84%D8%AF%D8%A7%D8%A6%D8%B1%D9%8A-%D9%85%D8%B1%D8%B9%D8%A8",
+        "key_type": "resolved_url",
+        "source": "Masrawy",
+        "title": "عمرو أديب يعلق على حادث الوراق: الظلام على الطريق الدائري مرعب - Masrawy"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 20:51:00 GMT",
+        "identity_key": "https://www.almasryalyoum.com/news/details/4420625",
+        "key_type": "resolved_url",
+        "source": "المصري اليوم",
+        "title": "عمرو أديب عن حريق الوراق: «أستخدم امتداد هذا الطريق يوميًا.. والظلام فيه مرعب» - المصري اليوم"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 13:23:07 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/8287623/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "1.8 تريليون جنيه حجم المصرفية الإسلامية في مصر.. و«ADIB» يتصدر - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 10:21:28 GMT",
+        "identity_key": "6d42677e22ddd109",
+        "key_type": "title-date-hash",
+        "source": "مبتدا",
+        "title": "منير أديب: العواصم الأوروبية أدركت أن الإرهابية تمثل خطرًا على أمنها (فيديو) - مبتدا"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 14:53:55 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/8236383/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "عمرو أديب يهاجم الأهلي بعد هزيمته أمام بيراميدز 2-0 ويطالب ببقاء عموتة - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 08:57:48 GMT",
+        "identity_key": "https://alqhat.com/q/522184",
+        "key_type": "resolved_url",
+        "source": "alqhat.com",
+        "title": "القطيف - القلعة: الأديب والشاعر الحاج محمد سعيد ابن الشيخ علي ابو الحسن الخنيزي في ذمة الله - alqhat.com"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 23:20:26 GMT",
+        "identity_key": "d45a3bcd19809d65",
+        "key_type": "title-date-hash",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "عمرو أديب يعلّق على سقوط الأهلي أمام بيراميدز ويوجه رسالة مهمة بشأن مستقبل عموتة - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 21:13:08 GMT",
+        "identity_key": "6e52adf2fc385dcd",
+        "key_type": "title-date-hash",
+        "source": "ايجي بودكاست",
+        "title": "عمرو أديب يهاجم لاعبي الأهلي: «مستواهم زي الزفت.. والدلع زاد عن حده» - ايجي بودكاست"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 21:12:42 GMT",
+        "identity_key": "6c89238fc484f068",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب بعد مباراة بيراميدز: ليه النادي الأهلي ميجبش حسام وإبراهيم حسن؟ - أهل مصر"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 21:08:17 GMT",
+        "identity_key": "b01872257b3d6f17",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب بعد الفوز على الأهلي: بيراميدز قدموا كل فنون كرة القدم - أهل مصر"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 21:05:26 GMT",
+        "identity_key": "ea9600dff64d45b3",
+        "key_type": "title-date-hash",
+        "source": "https://www.youlyou.com/",
+        "title": "عمرو أديب يهاجم لاعبي الأهلي: فين روح الفانلة الحمراء؟ - https://www.youlyou.com/"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 20:51:45 GMT",
+        "identity_key": "e0f134105bf43092",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب بعد خسارة الأهلي أمام بيراميدز: الفريق السماوي يستحق لقب الدوري.. وتمسكوا بعموتة (فيديو) - أهل مصر"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 20:47:46 GMT",
+        "identity_key": "df5c950796e1ebab",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب: الأهلي من سيئ إلى أسوأ.. وحال جمهوره يصعب عليك - أهل مصر"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 20:36:33 GMT",
+        "identity_key": "2abfad120b62d988",
+        "key_type": "title-date-hash",
+        "source": "elmaser.com",
+        "title": "عمرو أديب يفتح النار على الأهلي بعد السقوط أمام بيراميدز.. فماذا قال؟ - elmaser.com"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 20:21:33 GMT",
+        "identity_key": "07f84829134e198c",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب لـ إدارة النادي الأهلي بعد مباراة بيراميدز: \"اوعوا تمشوا عموتة.. خلوه عشان الشرط الجزائي\" - أهل مصر"
+      },
+      {
+        "date": "Sun, 22 Nov 2026 15:49:00 GMT",
+        "identity_key": "5a2bab8d5327d297",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "عمرو أديب ينتقد الإعجاب بـ حسن أحمديان: غدا سيظهر لنا شاب جديد يقنعنا بيهودية فلسطين! - المصري اليوم"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 22:27:16 GMT",
+        "identity_key": "2e0e9e96fbf2c1c3",
+        "key_type": "title-date-hash",
+        "source": "https://www.youlyou.com/",
+        "title": "عمرو أديب: مذكرات بايدن تكشف حقيقة الموقف المصري من حرب غزة - https://www.youlyou.com/"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 22:16:46 GMT",
+        "identity_key": "031f711d3f2c38f5",
+        "key_type": "title-date-hash",
+        "source": "youlyou.com",
+        "title": "عمرو أديب: الكونجرس الجديد لا يحب مصر ولابد من التحرك سريعا لمواجهة الضغوط الأمريكية المرتقبة - youlyou.com"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 21:53:00 GMT",
+        "identity_key": "044bf8c36ede560e",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "عمرو أديب يحذر من ضغوط أمريكية مرتقبة: «الكونجرس الجديد لا يحب مصر» - المصري اليوم"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 21:39:00 GMT",
+        "identity_key": "6638dcf423f93535",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "عمرو أديب: مذكرات بايدن تكشف موقف السيسي من تهجير الفلسطينيين إلى مصر - المصري اليوم"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 21:17:00 GMT",
+        "identity_key": "afaba51918bc5171",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "عمرو أديب: مفيش حاجة قفزت زي الجبنة البيضاء.. والدماطي يربط ارتفاع أسعارها بـ«بروتين بوم» وأدوية التخسيس - المصري اليوم"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 18:31:16 GMT",
+        "identity_key": "25ae31e7eb09c55e",
+        "key_type": "title-date-hash",
+        "source": "مبتدا",
+        "title": "منير أديب: مخاوف أوروبا من الإخوان تحولت لحقائق ومصر واجهت التنظيم مبكرًا - مبتدا"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 22:53:10 GMT",
+        "identity_key": "3f6ccd2c9e7928a9",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "أديب: 4250 أمريكيًا أصبحوا مليونيرات ومليارديرات في ساعات بسبب \"كلود\" - Masrawy"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 22:18:00 GMT",
+        "identity_key": "916ae2101212a0a1",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«لو وصل 39 أو 40 هنزل اشتري».. عمرو أديب يكشف السعر الذي ينتظره في سوق الذهب - المصري اليوم"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 22:01:41 GMT",
+        "identity_key": "e6d6ed6d9930287c",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "هل تهدد الاتفاقية التركية الليبية الحقوق البحرية المصرية؟.. عمرو أديب يوضح - Masrawy"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 10:38:09 GMT",
+        "identity_key": "6a3c9892ed32ff2d",
+        "key_type": "title-date-hash",
+        "source": "جريدة المال",
+        "title": "سعر الدولار يقترب من 54 جنيهًا بالبنوك اليوم الأربعاء 18 نوفمبر 2026 - جريدة المال"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 08:00:00 GMT",
+        "identity_key": "e13b86b493acef87",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "أول تعليق من عمرو أديب بعد قرار منع عبدالحليم قنديل من الظهور إعلاميًا - Masrawy"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 08:00:00 GMT",
+        "identity_key": "50d9d468ff41534d",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "عمرو أديب ممازحًا مجدي الجلاد: \"أول ما شفتك قلت دا\".. والأخير: \"أكلتني حلاوة بالقشطة\" - Masrawy"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 08:00:00 GMT",
+        "identity_key": "0672b3a92cb721c7",
+        "key_type": "title-date-hash",
+        "source": "Masrawy",
+        "title": "عمرو أديب يعتذر عن لفظ خارج صدر من عبد الحليم قنديل على الهواء.. ماذا قال؟ - Masrawy"
+      },
+      {
+        "date": "Tue, 17 Nov 2026 02:29:08 GMT",
+        "identity_key": "cbca37d90c10957d",
+        "key_type": "title-date-hash",
+        "source": "أهل مصر",
+        "title": "عمرو أديب يعتذر للمشاهدين عن لفظ خارج صدر من عبد الحليم قنديل على الهواء - أهل مصر"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 23:07:48 GMT",
+        "identity_key": "ffdd56a659af43a5",
+        "key_type": "title-date-hash",
+        "source": "ad-hoc-news.de",
+        "title": "Abu Dhabi Islamic Bank Egypt stock: 9-month profit rises 22.8% - ad-hoc-news.de"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "8b9e7439658c2984",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "9 أعوام من الريادة.. مصرف أبو ظبي الإسلامي– مصر ADIB-Egypt» يحصد جائزة \"أفضل مؤسسة مالية إسلامية في مصر 2026 للعام التاسع على التوالي من مجلة Global Finance - اليوم السابع"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "42024c23f3e0890a",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«بنرفع الحد الأدنى على الورق».. عمرو أديب يشكك في وصول المرتبات إلى 15 ألف جنيه - المصري اليوم"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "962710be37976b99",
+        "key_type": "title-date-hash",
+        "source": "المصري اليوم",
+        "title": "«الدولة معندهاش حاجة تجيب بيها فلوس».. عمرو أديب يسأل: هنسدد الديون إزاي؟ - المصري اليوم"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 45.98,
+    "base_source": "egx-data/egxpy_adib.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_adib.csv",
+      "base_stale": false,
+      "base_used": 45.98,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_adib.csv": 46.15,
+        "openbb/adib_ca.csv": 46.150001525878906,
+        "pandas-ta/indicators.csv": 46.150001525878906,
+        "talib/indicators.csv": 46.150001525878906,
+        "yahooquery/adib.ca.csv": 46.150001525878906
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0219,
+    "sigma_source": "egx-data/egxpy_adib.csv (σ60=0.0219, σ10=0.0106)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 45.98,
+      "last_date": "2026-11-26",
+      "last_high": 46.1,
+      "last_low": 45.3,
+      "last_open": 45.93,
+      "last_volume": 412555.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_adib.csv",
+      "stale": false
+    },
+    {
+      "last_close": 45.93000030517578,
+      "last_date": "2026-11-25",
+      "last_high": 46.5,
+      "last_low": 45.5,
+      "last_open": 46.150001525878906,
+      "last_volume": 211934.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ADIB_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 45.93000030517578,
+      "last_date": "2026-11-25",
+      "last_high": 46.5,
+      "last_low": 45.5,
+      "last_open": 46.150001525878906,
+      "last_volume": 211934.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 45.93000030517578,
+      "last_date": "2026-11-25",
+      "last_high": 46.5,
+      "last_low": 45.5,
+      "last_open": 46.150001525878906,
+      "last_volume": 211934.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 46.150001525878906,
+      "last_date": "2026-11-24",
+      "last_high": 47.0,
+      "last_low": 46.150001525878906,
+      "last_open": 46.43000030517578,
+      "last_volume": 420854.0,
+      "note": null,
+      "rows": 1210,
+      "source": "yahooquery/ADIB.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-adib-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-adib-002",
+    "source_runs": [
+      "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ADIB.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+        "type": "earnings"
+      },
+      {
+        "severity": "high",
+        "title": "عمرو أديب بعد حادث دائري الوراق: خسائر الطرق في مصر مرعبة وأعدادها غريبة - فيتو",
+        "type": "earnings"
+      },
+      {
+        "severity": "high",
+        "title": "عمرو أديب يعلق على حادث الوراق: الظلام على الطريق الدائري مرعب - Masrawy",
+        "type": "earnings"
+      },
+      {
+        "severity": "high",
+        "title": "عمرو أديب عن حريق الوراق: «أستخدم امتداد هذا الطريق يوميًا.. والظلام فيه مرعب» - المصري ال",
+        "type": "earnings"
+      },
+      {
+        "severity": "high",
+        "title": "1.8 تريليون جنيه حجم المصرفية الإسلامية في مصر.. و«ADIB» يتصدر - شبكة تواصل الإخبارية",
+        "type": "legal"
+      },
+      {
+        "severity": "high",
+        "title": "عمرو أديب يهاجم الأهلي بعد هزيمته أمام بيراميدز 2-0 ويطالب ببقاء عموتة - شبكة تواصل الإخبا",
+        "type": "management"
+      }
+    ],
+    "flags": [
+      "earnings event: ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+      "earnings event: عمرو أديب بعد حادث دائري الوراق: خسائر الطرق في مصر مرعبة وأعدادها غريبة - فيتو",
+      "earnings event: عمرو أديب يعلق على حادث الوراق: الظلام على الطريق الدائري مرعب - Masrawy"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.05,
+      "max3": 0.28
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ADIB.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-26T23:20:21.186612+00:00",
+  "sweep_dir": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002",
+  "ticker": "ADIB.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ADIB.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ADIB.CA.csv_last_close": 46.150001525878906,
+          "ADIB.CA.csv_last_date": "2026-11-24",
+          "rows_ADIB.CA.csv": 1210
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "bbf4493dbb20a55d2bd8d4828dda63a72d5cda8baca3981227ff56aebb01d0e9",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ADIB_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ADIB_CA.csv_last_close": 45.93000030517578,
+          "ADIB_CA.csv_last_date": "2026-11-25",
+          "rows_ADIB_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "f1a45663a400214dde91e8a464d22ddbd016f2d165746d7ec9a4a19745caa9d0",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_adib.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_adib.csv_last_close": 45.98,
+          "egxpy_adib.csv_last_date": "2026-11-26",
+          "rows_egxpy_adib.csv": 3000,
+          "symbol": "ADIB",
+          "ticker": "ADIB.CA"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "db39b9f19ea1f92e566e06db83dfb509e0949d7c4976c0b137618b429a2c68a0",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 28.6098,
+          "atr_14": 1.5346,
+          "bb_lower": 44.6223,
+          "bb_mid": 47.6205,
+          "bb_pctb": 0.2181,
+          "bb_upper": 50.6187,
+          "close": 45.93,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 47.2471,
+          "ema_200": 45.3151,
+          "ema_50": 48.1016,
+          "first_date_used": "2019-01-01",
+          "high": 46.5,
+          "indicators.csv_last_close": 45.93000030517578,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 45.5,
+          "macd": -0.4521,
+          "macd_hist": -0.225,
+          "macd_signal": -0.2271,
+          "open": 46.15,
+          "rows_fetched": 6536,
+          "rows_indicators.csv": 250,
+          "rows_used": 1932,
+          "rsi_14": 42.7208,
+          "stoch_d": 27.0994,
+          "stoch_k": 27.8798,
+          "ticker": "ADIB.CA"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "0b4db388720d1620331f156754c06d4e37623ee6a09c85530d9bd6321d858ef9",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 45.93000030517578,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 45.93000030517578,
+          "last_date": "2026-11-25",
+          "rows_fetched": 6536,
+          "rows_indicators.csv": 250,
+          "rows_used": 1932,
+          "ticker": "ADIB.CA"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "9459820591627f2e192ed5ee4fe1553e5d272953c429e5bfd5f404fd4d2736f0",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "dda80d064990bdeacf8e2acadeb246178e75436ddb28815bd6ddee222d356715",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "6be8b91b79e28f709582b644f4dc3271c03a2768659536e6a4dac2a360be60f9",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 13
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "4e0960af501ab04e12b308a72d02dbbfaba19c49495336335140ffbd8a7b0fdd",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 30,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "6c0942fafe1d797998156eabdffa8c019d989bddee5dc1b20b97e7407e7c5333",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 30,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "e13bf3655fc74a0b323081a85860a40e38bd97137c8fed339fedebde2383ee19",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 31,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "27cbd94e4d7a814698935990e5e0e8bea7504f00e13bc582e8c3364b2f75a5c4",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 46.7053,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "78b855618276832fa6279fda0480b93c1f7a3f52d0885af3c9178097d70f9de7",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "f888e1d15d2b221b068ce75db18ccc1a889705e5560e73de4b83623d8aa7e605",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-adib-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 38,
+          "bodies_fetched": 10,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-26T23:25:09Z",
+          "finbert_negative": 0.018,
+          "finbert_neutral": 0.136,
+          "finbert_positive": 0.846,
+          "finbert_scored": 2,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Thu, 26 Nov 2026 17:48:45 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.547,
+          "multilingual_neutral": 0.211,
+          "multilingual_positive": 0.241,
+          "multilingual_scored": 38,
+          "news_count": 40,
+          "ticker": "ADIB.CA",
+          "tool": "news-disclosure",
+          "top_headline": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+          "translated_negative": 0.294,
+          "translated_neutral": 0.596,
+          "translated_positive": 0.111,
+          "translated_scored": 38,
+          "translation_provider": "cohere+nllb"
+        },
+        "status": "ok",
+        "ticker": "ADIB.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "96c794673d70ace437647bc698eecd9d3b8c1ae05aabd1e79c093ec0ab38ce90",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

@@ -1,0 +1,776 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 30,
+  "label_counts": {
+    "positive": 2,
+    "negative": 0,
+    "neutral": 28
+  },
+  "label_counts_raw": {
+    "neutral": 28,
+    "positive": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.06764326948274733,
+    "negative": 0.002038139232478405,
+    "neutral": 0.93031859449693
+  },
+  "items": [
+    {
+      "text": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0022121246438473463,
+        "negative": 7.410176294797566e-06,
+        "neutral": 0.9977805018424988
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9977805018424988
+        },
+        {
+          "label": "Positive",
+          "score": 0.0022121246438473463
+        },
+        {
+          "label": "Negative",
+          "score": 7.410176294797566e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB raises $500 million in US dollar-denominated tier-one perpetual sukuk; demand exceeds initial offer by over three times - www.wam.ae",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0019778304267674685,
+        "negative": 2.823456088663079e-05,
+        "neutral": 0.9979939460754395
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9979939460754395
+        },
+        {
+          "label": "Positive",
+          "score": 0.0019778304267674685
+        },
+        {
+          "label": "Negative",
+          "score": 2.823456088663079e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB raises $500m in AT1 sukuk as investor demand tops $1.5 billion - Khaleej Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0010944642126560211,
+        "negative": 2.8660044790740358e-06,
+        "neutral": 0.9989026784896851
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9989026784896851
+        },
+        {
+          "label": "Positive",
+          "score": 0.0010944642126560211
+        },
+        {
+          "label": "Negative",
+          "score": 2.8660044790740358e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB raises $500M in oversubscribed AT1 perpetual sukuk at 7% - Dealroom",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00011727387754945084,
+        "negative": 7.856451134102826e-07,
+        "neutral": 0.9998818635940552
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998818635940552
+        },
+        {
+          "label": "Positive",
+          "score": 0.00011727387754945084
+        },
+        {
+          "label": "Negative",
+          "score": 7.856451134102826e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "The things that can wait — Nahrizul Adib Kadri - Malay Mail",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.952977618202567e-05,
+        "negative": 0.0005081940325908363,
+        "neutral": 0.9994723200798035
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9994723200798035
+        },
+        {
+          "label": "Negative",
+          "score": 0.0005081940325908363
+        },
+        {
+          "label": "Positive",
+          "score": 1.952977618202567e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What came home on Fridays — Nahrizul Adib Kadri - Malay Mail",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6324939906553482e-06,
+        "negative": 9.887026681099087e-05,
+        "neutral": 0.9998995065689087
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998995065689087
+        },
+        {
+          "label": "Negative",
+          "score": 9.887026681099087e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.6324939906553482e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB-Egypt named Global Finance’s best Islamic financial institution in Egypt for 9th year - Daily News Egypt",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00035841073258779943,
+        "negative": 8.812506166577805e-06,
+        "neutral": 0.999632716178894
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999632716178894
+        },
+        {
+          "label": "Positive",
+          "score": 0.00035841073258779943
+        },
+        {
+          "label": "Negative",
+          "score": 8.812506166577805e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB Ventures and DIFC Innovation Hub announce winner of ADIB SME innovation challenge - Zawya",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9996758699417114,
+        "negative": 1.5656973118893802e-05,
+        "neutral": 0.0003084993804804981
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9996758699417114
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0003084993804804981
+        },
+        {
+          "label": "Negative",
+          "score": 1.5656973118893802e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Wasl beat Al Nasr 2–0 in ADIB Cup derby - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 9.781308472156525e-05,
+        "negative": 0.00012515412527136505,
+        "neutral": 0.9997770190238953
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997770190238953
+        },
+        {
+          "label": "Negative",
+          "score": 0.00012515412527136505
+        },
+        {
+          "label": "Positive",
+          "score": 9.781308472156525e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "United and Sharjah draw 1–1 in ADIB Cup - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.3831952350737993e-06,
+        "negative": 4.055828867421951e-06,
+        "neutral": 0.9999926090240479
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999926090240479
+        },
+        {
+          "label": "Negative",
+          "score": 4.055828867421951e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.3831952350737993e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kalba and Shabab Al Ahli draw 1–1 in ADIB Cup - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.858186457568081e-07,
+        "negative": 2.9553846161434194e-06,
+        "neutral": 0.999996542930603
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999996542930603
+        },
+        {
+          "label": "Negative",
+          "score": 2.9553846161434194e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.858186457568081e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Jazira beat Bani Yas 1–0 in ADIB Cup - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.192164402003982e-06,
+        "negative": 1.5604447980877012e-05,
+        "neutral": 0.9999822378158569
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999822378158569
+        },
+        {
+          "label": "Negative",
+          "score": 1.5604447980877012e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.192164402003982e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Wahda beat Khorfakkan 3–1 in ADIB Cup - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.172639134798374e-07,
+        "negative": 1.3117240996507462e-05,
+        "neutral": 0.9999864101409912
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999864101409912
+        },
+        {
+          "label": "Negative",
+          "score": 1.3117240996507462e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.172639134798374e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Ain claim first ADIB Cup win of the season - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00423681503161788,
+        "negative": 0.00017834032769314945,
+        "neutral": 0.9955847859382629
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9955847859382629
+        },
+        {
+          "label": "Positive",
+          "score": 0.00423681503161788
+        },
+        {
+          "label": "Negative",
+          "score": 0.00017834032769314945
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Al Dhafra beat Ajman for first ADIB Cup win - Sharjah24",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.10996706038713455,
+        "negative": 0.00020691340614575893,
+        "neutral": 0.8898260593414307
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.8898260593414307
+        },
+        {
+          "label": "Positive",
+          "score": 0.10996706038713455
+        },
+        {
+          "label": "Negative",
+          "score": 0.00020691340614575893
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Aldar and ADIB Launch Co-Branded Darna Covered Cards in Abu Dhabi - The Fintech Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.726410356350243e-05,
+        "negative": 5.160847649676725e-06,
+        "neutral": 0.9999276399612427
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999276399612427
+        },
+        {
+          "label": "Positive",
+          "score": 6.726410356350243e-05
+        },
+        {
+          "label": "Negative",
+          "score": 5.160847649676725e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Selangor defender Adib falls victim to concert ticket scam - NST Online",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.7105984890549735e-07,
+        "negative": 0.0004967191489413381,
+        "neutral": 0.9995027780532837
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9995027780532837
+        },
+        {
+          "label": "Negative",
+          "score": 0.0004967191489413381
+        },
+        {
+          "label": "Positive",
+          "score": 4.7105984890549735e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "How to build smart savings habits with ADIB for long-term financial security - Gulf News",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.8504668474197388,
+        "negative": 0.00016679811233188957,
+        "neutral": 0.1493663489818573
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.8504668474197388
+        },
+        {
+          "label": "Neutral",
+          "score": 0.1493663489818573
+        },
+        {
+          "label": "Negative",
+          "score": 0.00016679811233188957
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB launches ADIB Arrive proposition for new residents in the UAE - The Paypers",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.03634447976946831,
+        "negative": 2.3856420739321038e-05,
+        "neutral": 0.9636316299438477
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9636316299438477
+        },
+        {
+          "label": "Positive",
+          "score": 0.03634447976946831
+        },
+        {
+          "label": "Negative",
+          "score": 2.3856420739321038e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB Launches ‘ADIB Arrive’ to Streamline Banking for New UAE Residents - FF News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.001521181664429605,
+        "negative": 1.0116336852661334e-05,
+        "neutral": 0.9984686970710754
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9984686970710754
+        },
+        {
+          "label": "Positive",
+          "score": 0.001521181664429605
+        },
+        {
+          "label": "Negative",
+          "score": 1.0116336852661334e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB opens $476 million rights issue, FAB acquires Yasira and Qatar eases SME lending rules - The Asian Banker",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0009425547323189676,
+        "negative": 1.0188132364419289e-05,
+        "neutral": 0.9990472197532654
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9990472197532654
+        },
+        {
+          "label": "Positive",
+          "score": 0.0009425547323189676
+        },
+        {
+          "label": "Negative",
+          "score": 1.0188132364419289e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Subscription to ADIB’s new shares as part of its AED1.75 billion rights issue to begin on 10 November - www.wam.ae",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.643630513281096e-06,
+        "negative": 4.692771199188428e-06,
+        "neutral": 0.9999886751174927
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999886751174927
+        },
+        {
+          "label": "Positive",
+          "score": 6.643630513281096e-06
+        },
+        {
+          "label": "Negative",
+          "score": 4.692771199188428e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB’s Dh1.75 billion rights issue opens on Nov 10 - Gulf News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.4973701329145115e-07,
+        "negative": 2.1852045506420836e-07,
+        "neutral": 0.9999995231628418
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999995231628418
+        },
+        {
+          "label": "Positive",
+          "score": 2.4973701329145115e-07
+        },
+        {
+          "label": "Negative",
+          "score": 2.1852045506420836e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB adds real-time EGP transfers to Egypt via Visa Direct - The Paypers",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.01730615273118019,
+        "negative": 1.9699322365340777e-05,
+        "neutral": 0.9826741814613342
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9826741814613342
+        },
+        {
+          "label": "Positive",
+          "score": 0.01730615273118019
+        },
+        {
+          "label": "Negative",
+          "score": 1.9699322365340777e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB Launches UAE’s First 24/7 Real-Time EGP Transfers to Egypt via Visa Direct - FF News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.465001933975145e-05,
+        "negative": 1.8254088445246452e-06,
+        "neutral": 0.9999336004257202
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999336004257202
+        },
+        {
+          "label": "Positive",
+          "score": 6.465001933975145e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.8254088445246452e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Surgeon to mediate over alleged rape - The Australian",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.002795953070744872,
+        "negative": 0.058210860937833786,
+        "neutral": 0.9389931559562683
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9389931559562683
+        },
+        {
+          "label": "Negative",
+          "score": 0.058210860937833786
+        },
+        {
+          "label": "Positive",
+          "score": 0.002795953070744872
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Former Queensland premier Annastacia Palaszczuk’s ex-partner Reza Adib’s bail altered for Gold Coast rape charges - SMH.com.au",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.930133516405476e-06,
+        "negative": 0.00010735507385106757,
+        "neutral": 0.9998886585235596
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998886585235596
+        },
+        {
+          "label": "Negative",
+          "score": 0.00010735507385106757
+        },
+        {
+          "label": "Positive",
+          "score": 3.930133516405476e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Gold Coast surgeon Reza Adib fronts court - The Australian",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.137418166763382e-05,
+        "negative": 0.0008673188276588917,
+        "neutral": 0.999121367931366
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999121367931366
+        },
+        {
+          "label": "Negative",
+          "score": 0.0008673188276588917
+        },
+        {
+          "label": "Positive",
+          "score": 1.137418166763382e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ADIB rights trading period for AED 1.75 billion rights issue begins on 4 November - www.wam.ae",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.613876616436755e-07,
+        "negative": 1.577397711116646e-06,
+        "neutral": 0.999997615814209
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999997615814209
+        },
+        {
+          "label": "Negative",
+          "score": 1.577397711116646e-06
+        },
+        {
+          "label": "Positive",
+          "score": 8.613876616436755e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Adib opens trading for Dh1.75 billion rights issue; key dates investors should know - Khaleej Times",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.779045236271486e-08,
+        "negative": 8.187885214283597e-07,
+        "neutral": 0.9999990463256836
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999990463256836
+        },
+        {
+          "label": "Negative",
+          "score": 8.187885214283597e-07
+        },
+        {
+          "label": "Positive",
+          "score": 6.779045236271486e-08
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

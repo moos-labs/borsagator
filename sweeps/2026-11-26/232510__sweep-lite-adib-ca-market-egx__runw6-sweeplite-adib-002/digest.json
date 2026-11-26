@@ -1,0 +1,456 @@
+{
+  "job": "sweep-lite ADIB.CA market=EGX",
+  "ticker": "ADIB.CA",
+  "date": "2026-11-26",
+  "started": "2026-11-26T23:20:21.186612+00:00",
+  "finished": "2026-11-26T23:25:10.642266+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ADIB.CA.csv": 1210,
+          "ADIB.CA.csv_last_date": "2026-11-24",
+          "ADIB.CA.csv_last_close": "46.150001525878906"
+        },
+        "files": [
+          "ADIB.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ADIB_CA.csv": 484,
+          "ADIB_CA.csv_last_date": "2026-11-25",
+          "ADIB_CA.csv_last_close": "45.93000030517578"
+        },
+        "files": [
+          "ADIB_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ADIB.CA",
+          "symbol": "ADIB",
+          "rows_egxpy_adib.csv": 3000,
+          "egxpy_adib.csv_last_date": "2026-11-26",
+          "egxpy_adib.csv_last_close": "45.98"
+        },
+        "files": [
+          "egxpy_adib.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ADIB.CA",
+          "date": "2026-11-25",
+          "open": 46.15,
+          "high": 46.5,
+          "low": 45.5,
+          "close": 45.93,
+          "rsi_14": 42.7208,
+          "macd": -0.4521,
+          "macd_signal": -0.2271,
+          "macd_hist": -0.225,
+          "ema_20": 47.2471,
+          "ema_50": 48.1016,
+          "ema_200": 45.3151,
+          "adx_14": 28.6098,
+          "bb_upper": 50.6187,
+          "bb_mid": 47.6205,
+          "bb_lower": 44.6223,
+          "bb_pctb": 0.2181,
+          "atr_14": 1.5346,
+          "stoch_k": 27.8798,
+          "stoch_d": 27.0994,
+          "rows_fetched": 6536,
+          "rows_used": 1932,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "45.93000030517578"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ADIB.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 6536,
+          "rows_used": 1932,
+          "last_date": "2026-11-25",
+          "last_close": 45.93000030517578,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "45.93000030517578"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2437,
+          "poul_ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 13
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 30
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 30
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 31
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-23",
+          "forecast.csv_last_close": "46.7053"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "ADIB.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ADIB.CA",
+          "fetched_at": "2026-11-26T23:25:09Z",
+          "tool": "news-disclosure",
+          "news_count": 40,
+          "disclosure_count": 0,
+          "arabic_headlines": 38,
+          "latest_news_date": "Thu, 26 Nov 2026 17:48:45 GMT",
+          "latest_disclosure_date": "",
+          "top_headline": "ADIB raises $500m in perpetual sukuk to support growth strategy - The National",
+          "llm_provider": "cohere",
+          "finbert_positive": 0.846,
+          "finbert_negative": 0.018,
+          "finbert_neutral": 0.136,
+          "finbert_scored": 2,
+          "multilingual_positive": 0.241,
+          "multilingual_negative": 0.547,
+          "multilingual_neutral": 0.211,
+          "multilingual_scored": 38,
+          "bodies_fetched": 10,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "translation_provider": "cohere+nllb",
+          "translated_positive": 0.111,
+          "translated_negative": 0.294,
+          "translated_neutral": 0.596,
+          "translated_scored": 38
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-26/w6-sweeplite-adib-002",
+      "claim_id": "w6-sweeplite-adib-002"
+    }
+  ]
+}

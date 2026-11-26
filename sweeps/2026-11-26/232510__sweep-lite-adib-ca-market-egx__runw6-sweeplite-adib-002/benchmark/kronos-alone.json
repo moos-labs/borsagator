@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 45.98,
+ "base_source": "egx-data/egxpy_adib.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-26T23:25:11.008775+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.15,
+   "families": {
+    "price-forecast": 0.033
+   },
+   "horizon_short": false,
+   "net_score": 0.033,
+   "range_high_pct": 2.09,
+   "range_low_pct": -1.76,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.58,
+   "families": {
+    "price-forecast": 0.079
+   },
+   "horizon_short": false,
+   "net_score": 0.079,
+   "range_high_pct": 4.03,
+   "range_low_pct": -0.67,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.3,
+   "families": {
+    "price-forecast": -0.031
+   },
+   "horizon_short": false,
+   "net_score": -0.031,
+   "range_high_pct": 1.85,
+   "range_low_pct": -2.22,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "6ccc4fbb4aaceb63a6c20971bc2bd6965bc74326a406899ea51c005edad5b769",
+  "digest.json": "71857c4bbb0f3abe98e0848b83afd0c0e4fa0df93970dbd06f1018b4dcc8fe4a",
+  "ensemble.json": "445dae1f8b17f75add41fb8999c25d3b1e1702483588fb4b87647b9e2be1dfa4"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0219,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002",
+ "ticker": "ADIB.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

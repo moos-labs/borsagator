@@ -1,0 +1,6 @@
+headlines: 30 English scored-input, 0 Arabic skipped, window 30d, ticker ADIB.CA
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4380.35it/s]
+Scored 30 texts | counts={'positive': 12, 'neutral': 15, 'negative': 3} | means=positive=0.3996, negative=0.0941, neutral=0.5063
+WARN gnews failed (ADIB.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=ADIB.CA%20stock%20when%3A30d&hl=en&gl=US&ceid=US:en

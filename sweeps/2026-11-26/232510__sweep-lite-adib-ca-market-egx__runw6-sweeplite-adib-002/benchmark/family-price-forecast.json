@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 45.98,
+ "base_source": "egx-data/egxpy_adib.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-26T23:25:11.007374+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "6ccc4fbb4aaceb63a6c20971bc2bd6965bc74326a406899ea51c005edad5b769",
+  "digest.json": "71857c4bbb0f3abe98e0848b83afd0c0e4fa0df93970dbd06f1018b4dcc8fe4a",
+  "ensemble.json": "445dae1f8b17f75add41fb8999c25d3b1e1702483588fb4b87647b9e2be1dfa4"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/232510__sweep-lite-adib-ca-market-egx__runw6-sweeplite-adib-002",
+ "ticker": "ADIB.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
