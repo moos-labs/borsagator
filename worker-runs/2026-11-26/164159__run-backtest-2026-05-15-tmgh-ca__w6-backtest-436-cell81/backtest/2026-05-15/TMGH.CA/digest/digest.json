@@ -1,0 +1,61 @@
+{
+ "ticker": "TMGH.CA",
+ "date": "2026-05-15",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 64.1034
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "TMGH.CA",
+     "as_of": "2026-05-15",
+     "date": "2026-05-14",
+     "open": 97.05,
+     "high": 97.6,
+     "low": 95.11,
+     "close": 95.15,
+     "rsi_14": 58.0714,
+     "macd": 3.328,
+     "macd_signal": 3.674,
+     "macd_hist": -0.346,
+     "ema_20": 94.0948,
+     "ema_50": 89.0218,
+     "ema_200": 76.0184,
+     "adx_14": 41.5355,
+     "bb_upper": 100.7357,
+     "bb_mid": 95.063,
+     "bb_lower": 89.3903,
+     "bb_pctb": 0.5077,
+     "atr_14": 2.5922,
+     "stoch_k": 44.9057,
+     "stoch_d": 58.271,
+     "rows_fetched": 4707,
+     "rows_used": 1801,
+     "first_date_used": "2019-01-01",
+     "last_date": "2026-05-14",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 95.1500015258789
+    }
+   }
+  }
+ ]
+}

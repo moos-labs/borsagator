@@ -1,0 +1,191 @@
+walk-forward backtest cell 2026-05-15 TMGH.CA
+gate: {"ticker": "TMGH.CA", "passed": true, "reasons": [], "rows": 1892, "first_date": "2019-01-01", "last_date": "2026-09-30", "history_needed_from": "2023-09-28", "max_gap_days": 10, "max_gap_sessions_est": 6, "longest_flat_run": 6, "events_available": true, "events_parse_error": null, "series_start": null, "history_floor": "2019-01-01", "full_history_rows": 4669, "full_history_first_date": "2007-11-28", "full_history_longest_flat_run": 37, "full_history_max_gap_days": 10, "full_history_max_gap_sessions_est": 6, "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."}
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker TMGH.CA --pred-len 21 --as-of 2026-05-15 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=4706
+[as-of] cutoff=2026-05-15 rows_on_or_before=1801 last_session=2026-05-14
+[data] cleaned_rows=1801 range=2019-01-01..2026-05-14
+[context] preferred_sessions=1801 using=1801 fallback=False
+[context] supplied=1801 used=512 max_context=512
+[samples] draws=32 aggregation=per-step median (close_p10/close_p90 across draws)
+[samples] draw 1/32 in 10.0s
+[samples] draw 2/32 in 9.8s
+[samples] draw 3/32 in 12.1s
+[samples] draw 4/32 in 9.9s
+[samples] draw 5/32 in 9.9s
+[samples] draw 6/32 in 9.9s
+[samples] draw 7/32 in 10.0s
+[samples] draw 8/32 in 9.8s
+[samples] draw 9/32 in 9.8s
+[samples] draw 10/32 in 9.9s
+[samples] draw 11/32 in 9.8s
+[samples] draw 12/32 in 9.8s
+[samples] draw 13/32 in 9.9s
+[samples] draw 14/32 in 9.9s
+[samples] draw 15/32 in 9.9s
+[samples] draw 16/32 in 9.9s
+[samples] draw 17/32 in 9.8s
+[samples] draw 18/32 in 9.9s
+[samples] draw 19/32 in 9.9s
+[samples] draw 20/32 in 9.9s
+[samples] draw 21/32 in 10.0s
+[samples] draw 22/32 in 9.9s
+[samples] draw 23/32 in 9.8s
+[samples] draw 24/32 in 9.9s
+[samples] draw 25/32 in 9.9s
+[samples] draw 26/32 in 9.8s
+[samples] draw 27/32 in 9.9s
+[samples] draw 28/32 in 9.8s
+[samples] draw 29/32 in 9.9s
+[samples] draw 30/32 in 9.9s
+[samples] draw 31/32 in 10.0s
+[samples] draw 32/32 in 10.0s
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=95.1500015258789 date=2026-05-14 pct_change=-32.63%
+[result] forecasted_closes=[96.9264, 96.7254, 97.0757, 96.4283, 96.0126, 95.1926, 95.0081, 92.3324, 89.9362, 87.0671, 79.1805, 71.7457, 70.4231, 68.8534, 67.683, 66.5362, 66.4458, 65.0548, 64.8668, 63.8626, 64.1034]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:216: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.10it/s]
+ 10%|▉         | 2/21 [00:00<00:08,  2.11it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.12it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.08it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.09it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.11it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.13it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.14it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.15it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.14it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.15it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.12it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.14it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.14it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.11it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.10it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.11it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.12it/s]
+ 90%|█████████ | 19/21 [00:08<00:00,  2.13it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.12it/s]
+[rc=0]
+
+$ /opt/gator/venvs/pandas-ta/bin/python /opt/gator/runners/pandas-ta/scripts/ta_snapshot.py --ticker TMGH.CA --as-of 2026-05-15 (cwd=/opt/gator/runners/pandas-ta)
+[data] TMGH.CA: 4707 rows, 2007-11-28 -> 2026-11-25, last close 78.94999694824219
+[data] after drop-before 2019-01-01: 1930 rows
+[as-of] cutoff=2026-05-15 rows_on_or_before=1801 last_session=2026-05-14
+[done] snapshot for TMGH.CA on 2026-05-14: close 95.15, RSI 58.0714, MACD 3.328 vs signal 3.674
+[rc=0]
+
+$ /opt/gator/venvs/talib/bin/python /opt/gator/runners/talib/scripts/ta.py TMGH.CA --as-of 2026-05-15 (cwd=/opt/gator/runners/talib)
+[data] after drop-before 2019-01-01: 1930 rows
+[as-of] cutoff=2026-05-15 rows_on_or_before=1801 last_session=2026-05-14
+{
+  "ticker": "TMGH.CA",
+  "as_of": "2026-05-15",
+  "drop_before": "2019-01-01",
+  "rows_fetched": 4707,
+  "rows_used": 1801,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-05-14"
+  },
+  "last_date": "2026-05-14",
+  "last_close": 95.1500015258789,
+  "indicators": {
+    "RSI_14": 58.07135274349095,
+    "MACD": 3.3279728480289066,
+    "MACD_signal": 3.6740127902017146,
+    "MACD_hist": -0.346039942172808,
+    "EMA_20": 94.09476584251782,
+    "EMA_50": 89.02178604047629,
+    "ADX_14": 41.53550925503249
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-05-06",
+    "CDLENGULFING": "2026-05-10",
+    "CDLHAMMER": "2026-03-01",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-cell-r8h8id74, 2-family mode)
+ensemble v2: written for TMGH.CA | sigma 0.0265 | sigma60 0.0265 | horizons: ['day', 'week', 'month']
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker TMGH.CA --pred-len 21 --as-of 2026-05-15 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=4706
+[as-of] cutoff=2026-05-15 rows_on_or_before=1801 last_session=2026-05-14
+[data] cleaned_rows=1801 range=2019-01-01..2026-05-14
+[context] preferred_sessions=1801 using=1801 fallback=False
+[context] supplied=1801 used=512 max_context=512
+[samples] draws=32 aggregation=per-step median (close_p10/close_p90 across draws)
+[samples] draw 1/32 in 10.5s
+[samples] draw 2/32 in 10.4s
+[samples] draw 3/32 in 10.4s
+[samples] draw 4/32 in 10.5s
+[samples] draw 5/32 in 10.9s
+[samples] draw 6/32 in 10.4s
+[samples] draw 7/32 in 10.5s
+[samples] draw 8/32 in 10.4s
+[samples] draw 9/32 in 10.4s
+[samples] draw 10/32 in 10.4s
+[samples] draw 11/32 in 10.4s
+[samples] draw 12/32 in 10.4s
+[samples] draw 13/32 in 10.7s
+[samples] draw 14/32 in 10.5s
+[samples] draw 15/32 in 10.5s
+[samples] draw 16/32 in 10.4s
+[samples] draw 17/32 in 10.3s
+[samples] draw 18/32 in 10.4s
+[samples] draw 19/32 in 10.4s
+[samples] draw 20/32 in 10.5s
+[samples] draw 21/32 in 10.5s
+[samples] draw 22/32 in 10.4s
+[samples] draw 23/32 in 10.4s
+[samples] draw 24/32 in 10.5s
+[samples] draw 25/32 in 10.5s
+[samples] draw 26/32 in 10.4s
+[samples] draw 27/32 in 10.6s
+[samples] draw 28/32 in 10.5s
+[samples] draw 29/32 in 10.5s
+[samples] draw 30/32 in 10.5s
+[samples] draw 31/32 in 10.5s
+[samples] draw 32/32 in 10.4s
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=95.1500015258789 date=2026-05-14 pct_change=-32.63%
+[result] forecasted_closes=[96.9264, 96.7254, 97.0757, 96.4283, 96.0126, 95.1926, 95.0081, 92.3324, 89.9362, 87.0671, 79.1805, 71.7457, 70.4231, 68.8534, 67.683, 66.5362, 66.4458, 65.0548, 64.8668, 63.8626, 64.1034]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:216: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:10,  1.95it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.01it/s]
+ 14%|█▍        | 3/21 [00:01<00:09,  1.99it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.01it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.02it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.02it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.03it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.03it/s]
+ 43%|████▎     | 9/21 [00:04<00:06,  1.98it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  1.98it/s]
+ 52%|█████▏    | 11/21 [00:05<00:05,  2.00it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.01it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.02it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.01it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.02it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.03it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.04it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.04it/s]
+ 90%|█████████ | 19/21 [00:09<00:00,  2.03it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.02it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.02it/s]
+100%|██████████| 21/21 [00:10<00:00,  2.02it/s]
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-repeat-gzy_b2jb, 2-family mode)
+ensemble v2: written for TMGH.CA | sigma 0.0265 | sigma60 0.0265 | horizons: ['day', 'week', 'month']
