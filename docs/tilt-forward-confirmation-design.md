@@ -23,8 +23,12 @@ archive branch, 2026-11-27)
 - `ledger/ledger.json` rows do NOT carry the tilt. `tilt_centre_pct` lives
   in each sweep's `ensemble.json` (`horizons.<h>.tilt_centre_pct`), found
   from the ledger row's `sweep` path (`sweeps/<date>/<dir>/ensemble.json`).
-- Only 10 sweep directories carry it, all dated 2026-11-25 (5) and
-  2026-11-26 (5). Of the 204 ledger rows, 6 per horizon (day, week, month,
+- Only a few sweep directories carry it, and the count grows with each
+  sweep: 10 when this doc was first written, 12 at one later archive tip,
+  14 at archive tip d6ab6b30 (2026-11-25: 5, 2026-11-26: 9, counted by
+  reading `horizons.<h>.tilt_centre_pct` in every
+  `sweeps/*/*/ensemble.json`). The 6 pending rows per horizon below are
+  from the first 10 and were not re-joined for the later count. Of the 204 ledger rows, 6 per horizon (day, week, month,
   all still pending) join to a tilt-bearing sweep. None of the 48 matured
   rows does, so there is no forward history to score today.
 - On the 10 day-horizon blocks the tilt moves the centre by -0.12 to
@@ -53,16 +57,26 @@ so this is the "relative to frozen v2 on the same rows" comparison the
 loop already requires, and since widths are equal it isolates the centre.
 
 On one scoring at the pre-declared n, per horizon:
-1. n >= 30 matured forward rows, >= 10 tickers, >= 10 cutoff clusters
-   (distinct `as_of`). The cluster count is the binding limit, not n.
+1. n >= 30 matured forward rows, >= 10 distinct tickers counted across
+   all forward rows of that horizon (not per sweep), >= 10 cutoff
+   clusters (distinct `as_of`). The cluster count is the binding limit,
+   not n.
 2. RangeSkill_fwd cutoff-clustered 95% CI lower bound > 0.
 3. Coverage of the tilt band: cutoff-clustered CI overlaps
    [0.75, 0.85] with width <= 0.15 (`coverage_ci_ok`).
 4. Reported beside, not gated: ticker-block CI, effective n, the
    `ci_audit` jackknife / sign-flip / wild CIs (sign-flip is attainable
    at 10 clusters, smallest p 1/1024).
-5. Multiple testing: Holm across the 3 horizons (family 3), p from the
-   same clustered bootstrap draws as the CI.
+5. Multiple testing: Holm across the 3 horizons (family 3). The p-value,
+   defined here before registration, follows the loop convention
+   (#805): one-sided bootstrap p from the same cutoff-clustered draws as
+   the CI. Null: RangeSkill_fwd = 0. Alternative: RangeSkill_fwd > 0.
+   p = (1 + #{draws with resampled RangeSkill <= 0}) / (1 + B), B =
+   5000 (Phipson-Smyth +1, so p is never 0). Ties (draw exactly 0) count
+   against the tilt, i.e. as <= 0. The Holm step-down compares the sorted
+   p to 0.05/3, 0.05/2, 0.05/1. If Muhammad prefers a two-sided p or a
+   different tie rule, that is an open ruling (below); this default is
+   proposed, not ruled.
 Adoption needs all three horizons to pass 1-3 and the Holm-adjusted p
 < 0.05 on each. A day-horizon failure blocks adoption of the tilt as one
 object; a horizon-specific tilt is a different, separately pre-registered
@@ -82,14 +96,16 @@ claim.
 ## How long it takes (arithmetic, assumptions stated)
 
 Assumption: one tilt-bearing sweep per EGX session (Sunday to Thursday),
-at least 10 tickers per sweep, starting the next session after
-registration. That cadence is the cycle's, and today's tilt-bearing
-sweeps are 5 tickers per date. Cutoff clusters needed = 10, so the 10th
+at least 10 tickers across the forward rows of each horizon (the
+tickers can rotate between sweeps), starting the next session after
+registration. That cadence is the cycle's, and the tilt-bearing sweeps
+so far are 5 to 9 tickers per date. Cutoff clusters needed = 10, so the 10th
 cutoff is session 10. Verdict sessions after registration: day about 11,
 week about 15, month about 31 (10th cutoff plus 1, 5 and 21 sessions).
 With one sweep date per week these become 10 weeks for day, plus the
-horizon. Fewer than 10 tickers per sweep also blocks rule 1 whatever the
-dates.
+horizon. Fewer than 10 distinct tickers across the forward rows of a horizon
+blocks rule 1 whatever the dates. Tickers per sweep do not need to reach
+10 if the sweeps rotate through at least 10 between them.
 
 ## Prerequisites (cycle items, not done here)
 
@@ -99,4 +115,5 @@ dates.
    (a separate PR once the rule is ruled on).
 3. A ruling on the open points: published-band comparison (vs naive-band
    in the backtest), Holm family of 3, all-horizons requirement, and
-   MIN_CUTOFFS raise to 10 for future verdicts.
+   MIN_CUTOFFS raise to 10 for future verdicts, and the p-value
+   definition in rule 5 (one-sided, +1, ties against the tilt).
