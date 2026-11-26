@@ -33,7 +33,9 @@ KEEP when both hold, REJECT when the sample is enough and either
 fails, INSUFFICIENT otherwise. While a horizon is INSUFFICIENT the
 default output prints only sample counts; numbers need --descriptive.
 The same scorer takes the fundamentals family via --family
-fundamentals when its rows mature (same rule, GAMMA fixed at 0.25).
+fundamentals when its rows mature (same rule). GAMMA 0.25 is
+confirmed for sentiment only; for fundamentals it is fixed after its
+score scale is read from matured rows.
 
 Usage:
   python3 benchmarks/score_ledger_sentiment_tilt.py
