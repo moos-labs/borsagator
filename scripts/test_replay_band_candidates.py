@@ -77,8 +77,9 @@ def test_fit_k():
           R.loco_cv([_row(1.0, 0.02)] * 5, "s60")["day"] is None)
 
 
-def _res(n, sk, cov, v2):
+def _res(n, sk, cov, v2, cci=None):
     return {h: {"n": n, "ch": {"range_skill": sk, "coverage": cov},
+                "ch_cov_ci_cutoff": cci or [cov - 0.03, cov + 0.03],
                 "v2": {"range_skill": v2}} for h in R.HORIZONS}
 
 
@@ -90,6 +91,26 @@ def test_keep_rule():
           == "REJECT")
     check("reject on coverage", R.keep_verdict(_res(30, .1, .9, .0))[0]
           == "REJECT")
+    check("point outside band but coverage CI overlaps: keep",
+          R.keep_verdict(_res(30, .06, .72, .0, [.66, .80]))[0] == "KEEP")
+    check("coverage CI touching 0.85 overlaps",
+          R.keep_verdict(_res(30, .06, .90, .0, [.85, .95]))[0] == "KEEP")
+    check("coverage CI entirely below rejects",
+          R.keep_verdict(_res(30, .06, .6, .0, [.5, .7]))[0] == "REJECT")
+    check("undefined coverage CI rejects",
+          R.keep_verdict(_res(30, .06, .8, .0, [None, None]))[0]
+          == "REJECT")
+    check("coverage_ci_ok helper",
+          R.coverage_ci_ok([.7, .76]) and not R.coverage_ci_ok([.86, .9])
+          and not R.coverage_ci_ok(None))
+    import inspect
+    check("#594 verdict takes no coverage input (unchanged by the "
+          "coverage rule)",
+          list(inspect.signature(R.A.verdict).parameters)
+          == ["n", "n_tickers", "ci_lo"])
+    check("#594 DO NOT ADOPT stands: day CI lower -0.055, month -0.033",
+          R.A.verdict(31, 6, -0.055) == "DO NOT ADOPT"
+          and R.A.verdict(31, 6, -0.033) == "DO NOT ADOPT")
     check("reject when worse than v2",
           R.keep_verdict(_res(30, .06, .8, .08))[0] == "REJECT")
 

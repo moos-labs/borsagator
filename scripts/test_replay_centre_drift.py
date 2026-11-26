@@ -79,7 +79,8 @@ def test_score_rows():
 
 def res_with(n, tickers, cutoffs, lo, cov):
     return {h: {"n": n, "tickers": tickers, "cutoffs": cutoffs,
-                "ch_ci_cutoff": [lo, 0.1], "ch": {"coverage": cov}}
+                "ch_ci_cutoff": [lo, 0.1], "ch": {"coverage": cov},
+                "ch_cov_ci_cutoff": [cov - 0.03, cov + 0.03]}
             for h in D.HORIZONS}
 
 
@@ -95,12 +96,33 @@ def test_verdict():
           D.keep_verdict(res_with(36, 6, 3, 0.05, 0.6))[0] == "REJECT")
     mixed = res_with(36, 6, 3, 0.05, 0.8)
     mixed["month"]["ch"]["coverage"] = 0.5
+    mixed["month"]["ch_cov_ci_cutoff"] = [0.47, 0.53]
     check("one bad horizon rejects", D.keep_verdict(mixed)[0]
           == "REJECT")
     short = res_with(36, 6, 3, 0.05, 0.8)
     short["day"]["n"] = 20
     check("one short horizon is insufficient",
           D.keep_verdict(short)[0] == "INSUFFICIENT")
+
+
+def test_coverage_ci_overlap():
+    def with_ci(ci, cov):
+        r = res_with(36, 6, 3, 0.05, cov)
+        for h in D.HORIZONS:
+            r[h]["ch_cov_ci_cutoff"] = ci
+        return r
+    check("point outside the band but CI overlaps: keep",
+          D.keep_verdict(with_ci([0.66, 0.81], 0.73))[0] == "KEEP")
+    check("CI entirely below the band rejects",
+          D.keep_verdict(with_ci([0.55, 0.70], 0.62))[0] == "REJECT")
+    check("CI entirely above the band rejects",
+          D.keep_verdict(with_ci([0.86, 0.95], 0.90))[0] == "REJECT")
+    check("CI touching 0.85 overlaps",
+          D.keep_verdict(with_ci([0.85, 0.95], 0.90))[0] == "KEEP")
+    check("CI touching 0.75 overlaps",
+          D.keep_verdict(with_ci([0.60, 0.75], 0.68))[0] == "KEEP")
+    check("undefined CI is not an overlap",
+          D.keep_verdict(with_ci([None, None], 0.80))[0] == "REJECT")
 
 
 def test_refuses_seen_cells():
@@ -110,7 +132,8 @@ def test_refuses_seen_cells():
 
 def main():
     for fn in (test_constants, test_mean_ret, test_centre, test_score_rows,
-               test_verdict, test_refuses_seen_cells):
+               test_verdict, test_coverage_ci_overlap,
+               test_refuses_seen_cells):
         fn()
     print("test_replay_centre_drift: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

@@ -19,7 +19,8 @@ forward-ledger rule and the plan to pre-register this one in Slack on
   tickers and at least 2 cutoffs,
     (1) tilt RangeSkill vs naive has a cutoff-clustered 95% CI lower
         bound > 0, and
-    (2) tilt coverage is within 0.75-0.85.
+    (2) the cutoff-clustered tilt coverage CI overlaps 0.75-0.85
+        (round 11 ruling by Moos; was point coverage within the band).
   REJECT when n, tickers and cutoffs are enough and (1) or (2) fails.
   INSUFFICIENT otherwise: numbers are printed, no keep/reject.
 One scoring of cells 73-78, no re-fit, no change to the tilt.
@@ -147,11 +148,14 @@ def tilt_rule(cell):
                    MIN_ROWS, MIN_TICKERS, MIN_CUTOFFS))
     lo = cell["skill_ci_cutoff"][0]
     cov = cell["coverage"]
-    ok = (lo is not None and lo > 0 and cov is not None
-          and COV_LO <= cov <= COV_HI)
+    cci = cell.get("coverage_ci_cutoff") or [None, None]
+    cov_ok = (cci[0] is not None and cci[1] is not None
+              and cci[0] <= COV_HI and cci[1] >= COV_LO)
+    ok = lo is not None and lo > 0 and cov_ok
     return ("KEEP" if ok else "REJECT") + (
-        " (RangeSkill CI lower bound %s vs 0; coverage %s vs %.2f-%.2f)"
-        % (_f(lo), _f(cov), COV_LO, COV_HI))
+        " (RangeSkill CI lower bound %s vs 0; coverage %s, CI [%s, %s] "
+        "must overlap %.2f-%.2f)"
+        % (_f(lo), _f(cov), _f(cci[0]), _f(cci[1]), COV_LO, COV_HI))
 
 
 def _f(v, nd=3):

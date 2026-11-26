@@ -92,7 +92,8 @@ def test_fit_and_score():
 
 def res_with(n, tickers, cutoffs, lo, cov):
     return {h: {"n": n, "tickers": tickers, "cutoffs": cutoffs,
-                "ch_ci_cutoff": [lo, 0.1], "ch": {"coverage": cov}}
+                "ch_ci_cutoff": [lo, 0.1], "ch": {"coverage": cov},
+                "ch_cov_ci_cutoff": [cov - 0.03, cov + 0.03]}
             for h in V.HORIZONS}
 
 
@@ -108,7 +109,28 @@ def test_verdict():
           V.keep_verdict(res_with(36, 6, 3, 0.05, 0.9))[0] == "REJECT")
     m = res_with(36, 6, 3, 0.05, 0.8)
     m["month"]["ch"]["coverage"] = 0.42
+    m["month"]["ch_cov_ci_cutoff"] = [0.39, 0.45]
     check("one bad horizon rejects", V.keep_verdict(m)[0] == "REJECT")
+
+
+def test_coverage_ci_overlap():
+    def with_ci(ci, cov):
+        r = res_with(36, 6, 3, 0.05, cov)
+        for h in V.HORIZONS:
+            r[h]["ch_cov_ci_cutoff"] = ci
+        return r
+    check("point outside the band but CI overlaps: keep",
+          V.keep_verdict(with_ci([0.66, 0.81], 0.73))[0] == "KEEP")
+    check("CI entirely below the band rejects",
+          V.keep_verdict(with_ci([0.55, 0.70], 0.62))[0] == "REJECT")
+    check("CI entirely above the band rejects",
+          V.keep_verdict(with_ci([0.86, 0.95], 0.90))[0] == "REJECT")
+    check("CI touching 0.85 overlaps",
+          V.keep_verdict(with_ci([0.85, 0.95], 0.90))[0] == "KEEP")
+    check("CI touching 0.75 overlaps",
+          V.keep_verdict(with_ci([0.60, 0.75], 0.68))[0] == "KEEP")
+    check("undefined CI is not an overlap",
+          V.keep_verdict(with_ci([None, None], 0.80))[0] == "REJECT")
 
 
 def test_refuses_seen_cells():
@@ -119,7 +141,8 @@ def test_refuses_seen_cells():
 
 def main():
     for fn in (test_constants, test_sigma_eff, test_sigma_long,
-               test_fit_and_score, test_verdict, test_refuses_seen_cells):
+               test_fit_and_score, test_verdict, test_coverage_ci_overlap,
+               test_refuses_seen_cells):
         fn()
     print("test_replay_vol_adaptive: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
