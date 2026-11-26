@@ -82,7 +82,8 @@ def test_no_frozen_edit():
           {"day": 1.15, "week": 1.28, "month": 1.20},
           str(ensemble.V2_BAND_K))
 
-for fn in (test_constants, test_rule, test_evaluate, test_no_frozen_edit):
-    fn()
-print("%d passed, %d failed" % (CHECKS["pass"], CHECKS["fail"]))
-sys.exit(1 if CHECKS["fail"] else 0)
+if __name__ == "__main__":
+    for fn in (test_constants, test_rule, test_evaluate, test_no_frozen_edit):
+        fn()
+    print("%d passed, %d failed" % (CHECKS["pass"], CHECKS["fail"]))
+    sys.exit(1 if CHECKS["fail"] else 0)
