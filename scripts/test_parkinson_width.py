@@ -72,7 +72,8 @@ def test_score_rows():
 
 def test_verdict():
     res = {h: {"n": 5, "tickers": 2, "cutoffs": 1,
-               "ch_ci_cutoff": [0.1, 0.2], "ch": {"coverage": 0.8}}
+               "ch_ci_cutoff": [0.1, 0.2], "ch": {"coverage": 0.8},
+               "ch_cov_ci_cutoff": [0.76, 0.84]}
            for h in P.HORIZONS}
     check("small insufficient", P.keep_verdict(res)[0] == "INSUFFICIENT")
     for h in P.HORIZONS:
@@ -82,7 +83,19 @@ def test_verdict():
     check("ci spans zero rejects", P.keep_verdict(res)[0] == "REJECT")
     res["day"]["ch_ci_cutoff"] = [0.1, 0.2]
     res["week"]["ch"]["coverage"] = 0.7
-    check("coverage rejects", P.keep_verdict(res)[0] == "REJECT")
+    res["week"]["ch_cov_ci_cutoff"] = [0.60, 0.72]
+    check("coverage CI below the band rejects",
+          P.keep_verdict(res)[0] == "REJECT")
+    res["week"]["ch_cov_ci_cutoff"] = [0.62, 0.79]
+    check("point outside band but CI overlaps keeps",
+          P.keep_verdict(res)[0] == "KEEP")
+    res["week"]["ch_cov_ci_cutoff"] = [0.62, 0.75]
+    check("CI touching the lower edge overlaps",
+          P.keep_verdict(res)[0] == "KEEP")
+    res["week"]["ch_cov_ci_cutoff"] = [0.86, 0.95]
+    check("CI above the band rejects", P.keep_verdict(res)[0] == "REJECT")
+    res["week"]["ch_cov_ci_cutoff"] = [None, None]
+    check("undefined CI rejects", P.keep_verdict(res)[0] == "REJECT")
 
 
 def test_refusal():
