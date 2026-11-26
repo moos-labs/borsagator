@@ -33,6 +33,15 @@ against the naive band on matured rows from the captures, cells >=
 decisions). The audit functions take any pair dicts with is_naive and
 is_<band>, so a challenger's rows audit the same way.
 
+Minimum cluster count (--min-cluster-sim, descriptive recommendation):
+simulates a no-skill world (naive and band interval scores independent,
+same exponential law, 6 rows per cutoff, true RangeSkill 0) and counts
+how often each method reports "lower bound > 0" by number of cutoffs k.
+The recommended minimum is the smallest tested k whose existing-
+bootstrap false-pass rate, and that of every larger tested k, is <=
+0.05 (nominal one-sided 0.025). A recommendation about the scorers'
+minimum-cutoff setting; it changes no scorer and no verdict.
+
 Usage:
   python3 benchmarks/ci_audit.py --captures DIR ... [--min-cell 48]
       [--reps 5000] [--json OUT]
@@ -168,6 +177,57 @@ def audit_pairs(pairs, name, reps=A.DEFAULT_REPS, seed=A.DEFAULT_SEED):
     return out
 
 
+NULL_KS = (2, 3, 4, 5, 6, 8, 10, 12, 16, 20)
+NULL_ROWS = 6
+FALSE_KEEP_LIMIT = 0.05
+
+
+def _null_clusters(k, rng, rows=NULL_ROWS):
+    """k clusters of a no-skill world: naive and band interval scores
+    are independent draws from the same law (exponential), so the true
+    RangeSkill is 0 and any lower bound > 0 is a false pass."""
+    cl = []
+    for _ in range(k):
+        d = n = 0.0
+        for _r in range(rows):
+            a, b = rng.expovariate(1.0), rng.expovariate(1.0)
+            n += a
+            d += a - b
+        cl.append((d, n))
+    return cl
+
+
+def null_false_keep(ks=NULL_KS, sims=400, reps=300, seed=A.DEFAULT_SEED):
+    """Rate of a false 'lower bound > 0' per method under no skill, by
+    number of cutoff clusters. The nominal one-sided rate is 0.025."""
+    out = {}
+    for k in ks:
+        hit = {"existing": 0, "jackknife": 0, "signflip": 0, "wild": 0}
+        for i in range(sims):
+            rng = random.Random(seed + 1000 * k + i)
+            cl = _null_clusters(k, rng)
+            lo, _hi = existing_ci(cl, reps, seed + i)
+            hit["existing"] += lo is not None and lo > 0
+            jl = jackknife_ci(cl)[0]
+            hit["jackknife"] += jl is not None and jl > 0
+            p, _m = signflip_p(cl, seed + i, 2000)
+            hit["signflip"] += p is not None and p < 0.025
+            wl, _wh = wild_ci(cl, reps, seed + i)
+            hit["wild"] += wl is not None and wl > 0
+        out[k] = {m: v / float(sims) for m, v in hit.items()}
+    return out
+
+
+def recommend_min_clusters(rates, limit=FALSE_KEEP_LIMIT):
+    """Smallest tested k whose existing-bootstrap false-pass rate and
+    that of every larger tested k are <= limit; None when none is."""
+    ks = sorted(rates)
+    for i, k in enumerate(ks):
+        if all(rates[j]["existing"] <= limit for j in ks[i:]):
+            return k
+    return None
+
+
 def v2_pairs(rows):
     out = []
     for r in rows:
@@ -216,6 +276,25 @@ def render(res, min_cell):
     return "\n".join(L)
 
 
+def render_min_clusters(rates, rec, sims):
+    L = ["MINIMUM CLUSTER COUNT (descriptive recommendation, no verdict): "
+         "false 'lower bound > 0' rate under no skill, %d sims per k, "
+         "nominal one-sided 0.025, limit %.2f" % (sims, FALSE_KEEP_LIMIT),
+         "  k   existing  jackknife  sign-flip  wild"]
+    for k in sorted(rates):
+        r = rates[k]
+        L.append("  %-3d %.3f     %.3f      %.3f      %.3f"
+                 % (k, r["existing"], r["jackknife"], r["signflip"],
+                    r["wild"]))
+    L.append("Recommended minimum: %s cutoff clusters for the existing "
+             "percentile bootstrap (smallest k, and every tested k above "
+             "it, with false-pass rate <= %.2f)."
+             % (rec if rec is not None else "none tested", FALSE_KEEP_LIMIT))
+    L.append("At k = 2 (the ledger scorers' minimum) the existing rate is "
+             "%.3f." % rates[2]["existing"] if 2 in rates else "")
+    return "\n".join(L)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.
@@ -225,6 +304,10 @@ def main(argv=None):
     ap.add_argument("--reps", type=int, default=A.DEFAULT_REPS)
     ap.add_argument("--seed", type=int, default=A.DEFAULT_SEED)
     ap.add_argument("--json", default=None)
+    ap.add_argument("--min-cluster-sim", action="store_true",
+                    help="also run the no-skill simulation and print a "
+                         "minimum cluster count recommendation")
+    ap.add_argument("--sims", type=int, default=400)
     a = ap.parse_args(argv)
     allc = A.find_captures(a.captures, None)
     caps = [c for c in A.find_captures(a.captures, a.min_cell)
@@ -232,11 +315,20 @@ def main(argv=None):
     rows, _gaps = R.build_rows(caps, allc)
     res = audit_pairs(v2_pairs(rows), "v2", a.reps, a.seed)
     print(render(res, a.min_cell))
+    out = {"descriptive": True, "min_cell": a.min_cell,
+           "reps": a.reps, "seed": a.seed, "results": res}
+    if a.min_cluster_sim:
+        rates = null_false_keep(sims=a.sims, seed=a.seed)
+        rec = recommend_min_clusters(rates)
+        print(render_min_clusters(rates, rec, a.sims))
+        out["min_clusters"] = {"sims": a.sims, "rows_per_cluster": NULL_ROWS,
+                               "limit": FALSE_KEEP_LIMIT,
+                               "false_keep_rate": {str(k): v for k, v
+                                                   in rates.items()},
+                               "recommended_min_clusters": rec}
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
-            json.dump({"descriptive": True, "min_cell": a.min_cell,
-                       "reps": a.reps, "seed": a.seed, "results": res},
-                      fh, indent=1)
+            json.dump(out, fh, indent=1)
     return 0
 
 

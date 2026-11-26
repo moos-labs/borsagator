@@ -106,5 +106,73 @@
    },
    "verdict_would_change_under": []
   }
+ },
+ "min_clusters": {
+  "sims": 400,
+  "rows_per_cluster": 6,
+  "limit": 0.05,
+  "false_keep_rate": {
+   "2": {
+    "existing": 0.2075,
+    "jackknife": 0.1325,
+    "signflip": 0.0,
+    "wild": 0.245
+   },
+   "3": {
+    "existing": 0.1375,
+    "jackknife": 0.1275,
+    "signflip": 0.0,
+    "wild": 0.21
+   },
+   "4": {
+    "existing": 0.09,
+    "jackknife": 0.0825,
+    "signflip": 0.0,
+    "wild": 0.1375
+   },
+   "5": {
+    "existing": 0.0925,
+    "jackknife": 0.085,
+    "signflip": 0.0,
+    "wild": 0.115
+   },
+   "6": {
+    "existing": 0.0675,
+    "jackknife": 0.075,
+    "signflip": 0.0125,
+    "wild": 0.095
+   },
+   "8": {
+    "existing": 0.06,
+    "jackknife": 0.075,
+    "signflip": 0.0125,
+    "wild": 0.1025
+   },
+   "10": {
+    "existing": 0.0425,
+    "jackknife": 0.055,
+    "signflip": 0.025,
+    "wild": 0.0725
+   },
+   "12": {
+    "existing": 0.0425,
+    "jackknife": 0.065,
+    "signflip": 0.0225,
+    "wild": 0.0725
+   },
+   "16": {
+    "existing": 0.05,
+    "jackknife": 0.065,
+    "signflip": 0.035,
+    "wild": 0.0675
+   },
+   "20": {
+    "existing": 0.0425,
+    "jackknife": 0.0475,
+    "signflip": 0.035,
+    "wild": 0.0525
+   }
+  },
+  "recommended_min_clusters": 10
  }
 }

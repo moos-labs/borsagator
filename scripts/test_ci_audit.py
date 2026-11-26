@@ -114,6 +114,28 @@ def test_audit_pairs():
                or c["signflip"]["pass"] or c["wild"]["pass"]), c)
 
 
+def test_min_clusters():
+    rates = {2: {"existing": 0.2}, 4: {"existing": 0.09},
+             6: {"existing": 0.06}, 8: {"existing": 0.04},
+             10: {"existing": 0.045}, 12: {"existing": 0.03}}
+    check("smallest k with all larger k <= 0.05",
+          C.recommend_min_clusters(rates) == 8)
+    bumpy = dict(rates)
+    bumpy[10] = {"existing": 0.07}
+    check("a later k above the limit pushes the minimum up",
+          C.recommend_min_clusters(bumpy) == 12)
+    check("none when never under the limit",
+          C.recommend_min_clusters({2: {"existing": 0.3}}) is None)
+    r = C.null_false_keep(ks=(2, 12), sims=120, reps=100, seed=3)
+    check("fewer clusters pass falsely more often",
+          r[2]["existing"] > r[12]["existing"], r)
+    check("sign-flip never passes at k = 2 (min p = 0.25)",
+          r[2]["signflip"] == 0.0, r)
+    check("null clusters have zero true skill on average",
+          abs(sum(C.skill(C._null_clusters(40, __import__("random").Random(i)))
+                  for i in range(30)) / 30.0) < 0.05)
+
+
 def test_main_empty():
     import contextlib
     import io
@@ -132,7 +154,7 @@ def test_main_empty():
 def main():
     for fn in (test_clusters_and_skill, test_existing_matches_boot,
                test_signflip_exact, test_jackknife_and_wild,
-               test_audit_pairs, test_main_empty):
+               test_audit_pairs, test_min_clusters, test_main_empty):
         fn()
     print("test_ci_audit: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
