@@ -243,6 +243,35 @@ def test_cutoff_cluster_bootstrap():
           and "cutoff_cluster" in res["day"])
 
 
+def test_dedup_prefers_numbered_and_cell_anchor():
+    check("cell number read from a real archive name",
+          A.cell_number("/a/150649__run-x__w5-backtest-436-cell2-r2/b")
+          == 2)
+    check("rerun suffix kept", A.cell_number("/a/w5-cell49-r2/b") == 49)
+    check("last match wins", A.cell_number("/cell12/x/w5-cell7") == 7)
+    check("component start is anchored", A.cell_number("/a/cell91/b")
+          == 91)
+    check("embedded in a word is not a cell number",
+          A.cell_number("/a/notcell91/b") is None
+          and A.cell_number("/a/cell91x/b") is None
+          and A.cell_number("/a/subcell3-r1/b") is None)
+    with tempfile.TemporaryDirectory() as tmp:
+        closes = [100 + 0.3 * i for i in range(21)]
+        make_capture(tmp, "r1__w5-backtest-436-cell60", "2025-09-30",
+                     "AAA.CA", closes)
+        make_capture(tmp, "zz-rerun-unnumbered", "2025-09-30",
+                     "AAA.CA", closes)
+        make_capture(tmp, "r2__notcell91", "2025-09-30", "BBB.CA", closes)
+        caps = A.find_captures([tmp], 48)
+        a = [c for c in caps if c.endswith("AAA.CA")]
+        check("numbered cell60 wins the dedup over the unnumbered rerun",
+              len(a) == 1 and "cell60" in a[0], repr(a))
+        b = [c for c in A.find_captures([tmp], 100)
+             if c.endswith("BBB.CA")]
+        check("notcell91 is unnumbered, so min-cell does not drop it",
+              len(b) == 1 and A.cell_number(b[0]) is None, repr(b))
+
+
 def test_no_pycache_written():
     bad = []
     for dp, dn, fn in os.walk(ROOT):
@@ -262,6 +291,7 @@ if __name__ == "__main__":
     test_verdict_rules()
     test_cutoff_cluster_bootstrap()
     test_discovery_and_end_to_end()
+    test_dedup_prefers_numbered_and_cell_anchor()
     test_no_pycache_written()
     print("test_adoption_594: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

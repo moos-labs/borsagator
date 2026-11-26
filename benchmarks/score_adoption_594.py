@@ -158,14 +158,21 @@ def v1_horizons(ens, kronos_path, base):
 
 # ------------------------------------------------------------ captures
 def cell_number(path):
-    m = re.findall(r"cell(\d+)", path)
+    # "cell<N>" must stand alone: not preceded or followed by another
+    # letter or digit, so "notcell91" is unnumbered while the real
+    # archive names (...-cell2-r2, ...-cell47) still match. The last
+    # match wins.
+    m = re.findall(r"(?<![A-Za-z0-9])cell(\d+)(?![A-Za-z0-9])", path)
     return int(m[-1]) if m else None
 
 
 def find_captures(roots, min_cell=None):
     """Capture dirs under roots: <cutoff>/<TICKER>/ holding the three
     scoring inputs. One (cutoff, ticker) is one observation: when a
-    cell was rerun, the lexically latest path wins."""
+    cell was rerun, the lexically latest path wins, but a numbered path
+    always beats an unnumbered one (an unnumbered capture is dropped by
+    every scorer, so letting it win the dedup would lose the numbered
+    observation)."""
     found = {}
     for root in roots:
         for dp, dn, fn in os.walk(root):
@@ -182,9 +189,10 @@ def find_captures(roots, min_cell=None):
                         and num < min_cell:
                     continue
                 key = (cutoff, os.path.basename(dp).upper())
-                if key not in found or dp > found[key]:
-                    found[key] = dp
-    return [found[k] for k in sorted(found)]
+                rank = (num is not None, dp)
+                if key not in found or rank > found[key][0]:
+                    found[key] = (rank, dp)
+    return [found[k][1] for k in sorted(found)]
 
 
 def _stage(capture, variant, tmp):
