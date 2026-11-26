@@ -1242,6 +1242,19 @@ def main():
     family_skill = {fam: {"mean_skill": round(sum(v) / len(v), 3), "n": len(v)}
                     for fam, v in sorted(fam_vals.items())}
 
+    # INS-IMPROVE-007 ledger fields (additive, optional): news_count and
+    # has_disclosure per ticker-session from the Mubasher harvest, only
+    # when LEDGER_DISCLOSURE_DIR points at the harvest directory. Unset
+    # means no key is added and the ledger is byte-identical to before.
+    disc_dir = os.environ.get("LEDGER_DISCLOSURE_DIR")
+    if disc_dir:
+        import disclosure_counts as DC
+        n_ann = DC.annotate_rows(rows, DC.load_counts(disc_dir))
+        gaps.append(f"disclosure fields: {n_ann} forecast row(s) carry "
+                    "news_count/has_disclosure from "
+                    "LEDGER_DISCLOSURE_DIR (session-date rule pending "
+                    "confirmation, see scripts/disclosure_counts.py)")
+
     ledger = {
         "tool": "calibration-ledger", "version": 1,
         "source": {"repo": REPO, "branch": BRANCH,

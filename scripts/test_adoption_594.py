@@ -217,6 +217,32 @@ def test_discovery_and_end_to_end():
               and "month" in data["results"])
 
 
+def test_cutoff_cluster_bootstrap():
+    """INS-IMPROVE-001: cutoff blocks resample whole cutoffs, the
+    default (ticker) path is unchanged, and the coverage draws sit
+    inside [0, 1]."""
+    pairs = []
+    for i, cut in enumerate(("2026-03-31", "2026-06-30", "2026-09-30")):
+        for t in ("AAA", "BBB"):
+            pairs.append({"ticker": t, "as_of": cut, "horizon": "day",
+                          "is_v1": 2.0, "is_v2": 1.0 + i, "is_naive": 2.0,
+                          "in_v1": True, "in_v2": i != 2})
+    d = A.block_bootstrap(pairs, reps=200, seed=1, by="as_of")
+    check("cluster draws made", len(d["v2"]) == 200, str(len(d["v2"])))
+    d0 = A.block_bootstrap(pairs, reps=200, seed=1)
+    check("default is by ticker",
+          d0 == A.block_bootstrap(pairs, reps=200, seed=1, by="ticker"))
+    cov = A.coverage_bootstrap(pairs, "v2", reps=200, seed=1)
+    check("coverage draws in [0,1]",
+          len(cov) == 200 and all(0.0 <= c <= 1.0 for c in cov))
+    check("empty pairs give no draws",
+          A.coverage_bootstrap([], "v2", reps=10) == [])
+    res = A.evaluate(pairs, reps=100, seed=1)
+    check("evaluate reports cutoffs",
+          res["day"]["cutoffs"] == 3
+          and "cutoff_cluster" in res["day"])
+
+
 def test_no_pycache_written():
     bad = []
     for dp, dn, fn in os.walk(ROOT):
@@ -234,6 +260,7 @@ if __name__ == "__main__":
     test_v1_formula()
     test_block_bootstrap_by_ticker()
     test_verdict_rules()
+    test_cutoff_cluster_bootstrap()
     test_discovery_and_end_to_end()
     test_no_pycache_written()
     print("test_adoption_594: %d passed, %d failed"
