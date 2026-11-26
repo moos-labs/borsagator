@@ -101,6 +101,16 @@ def test_unnumbered_and_json():
         open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
         out = os.path.join(d, "o.json")
         buf = io.StringIO()
+        # build_rows is stubbed so any capture that reaches it yields a
+        # scorable row; the "{}" fixture files alone build no row, and
+        # the test could not tell whether the unnumbered filter ran.
+        def fake_rows(caps, allc, model):
+            return [{"ticker": "TST", "as_of": "2025-11-14",
+                     "horizon": h, "real": 1.0, "naive_half": 5.0,
+                     "mult": 1.0, "v2_sigma": 0.02, "tsfm_half": 4.0}
+                    for c in caps for h in ("day", "week", "month")], []
+        real_build = T.build_rows
+        T.build_rows = fake_rows
         check("unnumbered capture is findable by find_captures",
               T.A.find_captures([d], 48) != [])
         with contextlib.redirect_stdout(buf):
@@ -117,6 +127,7 @@ def test_unnumbered_and_json():
                     "--json", out])
         check("clean json carries a verdict",
               "verdict" in json.load(open(out)))
+        T.build_rows = real_build
 
 
 def main():
