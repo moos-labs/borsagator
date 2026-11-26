@@ -3,6 +3,7 @@
 Standalone, stdlib only: python3 scripts/test_replay_vol_adaptive.py
 """
 import importlib.util
+import json
 import math
 import os
 import random
@@ -139,10 +140,37 @@ def test_refuses_seen_cells():
          "--min-cell", "48"]) == 2)
 
 
+def test_descriptive_json_has_no_verdict():
+    import contextlib
+    import io
+    import tempfile
+    frozen = os.path.join(ROOT, "benchmarks", "frozen_vol_adaptive_r3.json")
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "o.json")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = V.main(["score", "--frozen", frozen, "--captures", d,
+                         "--min-cell", "48", "--descriptive",
+                         "--reps", "50", "--json", out])
+        data = json.load(open(out))
+        check("descriptive run exits 0", rc == 0)
+        check("descriptive json carries no verdict",
+              "verdict" not in data and data["descriptive"] is True)
+        with contextlib.redirect_stdout(buf):
+            rc = V.main(["score", "--frozen", frozen, "--captures", d,
+                         "--min-cell", "73", "--reps", "50",
+                         "--json", out])
+        data = json.load(open(out))
+        check("clean run exits 0", rc == 0)
+        check("clean json carries a verdict",
+              "verdict" in data and data["descriptive"] is False)
+
+
 def main():
     for fn in (test_constants, test_sigma_eff, test_sigma_long,
                test_fit_and_score, test_verdict, test_coverage_ci_overlap,
-               test_refuses_seen_cells):
+               test_refuses_seen_cells,
+               test_descriptive_json_has_no_verdict):
         fn()
     print("test_replay_vol_adaptive: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
