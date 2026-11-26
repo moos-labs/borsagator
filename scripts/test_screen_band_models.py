@@ -136,9 +136,107 @@ def test_refusal_and_json():
               "effective n (cutoff clusters)" in buf.getvalue())
 
 
+def test_holm_family_and_adjust():
+    check("family is 5 models x 3 horizons x 2 regimes = 30",
+          S.FAMILY_SIZE == 30 and len(S.MODELS) == 5
+          and len(S.HORIZONS) == 3 and len(S.REGIMES) == 2)
+    check("primary reading is Arm 1 park60", S.PRIMARY == "park60")
+    p = {"a": 0.001, "b": 0.01, "c": 0.04, "d": 0.5}
+    r = S.holm_adjust(p, m=4)
+    check("holm on a known family of 4",
+          all(abs(r[k] - v) < 1e-12 for k, v in
+              {"a": 0.004, "b": 0.03, "c": 0.08, "d": 0.5}.items()),
+          str(r))
+    r = S.holm_adjust(p)
+    check("default family is 30, not the number of readings given",
+          abs(r["a"] - 0.03) < 1e-12 and abs(r["b"] - 0.29) < 1e-12
+          and r["c"] == 1.0 and r["d"] == 1.0, str(r))
+    r = S.holm_adjust({"a": 0.02, "b": 0.001, "c": 0.0105}, m=3)
+    check("adjusted p is monotone in the raw ordering",
+          abs(r["b"] - 0.003) < 1e-12 and abs(r["c"] - 0.021) < 1e-12
+          and abs(r["a"] - 0.021) < 1e-12, str(r))
+    check("undefined readings are skipped",
+          S.holm_adjust({"a": None, "b": 0.01}, m=30) == {"b": 0.3})
+
+
+def synth_pairs(skill_pos, n_cut=12):
+    """Each cutoff cluster carries one pair; is_ch beats (skill_pos) or
+    loses to the naive score."""
+    out = []
+    for i in range(n_cut):
+        out.append({"ticker": "T%d" % (i % 3), "as_of": "2020-01-%02d"
+                    % (i + 1), "horizon": "day", "is_naive": 10.0,
+                    "is_ch": 5.0 if skill_pos else 15.0,
+                    "is_v2": 10.0, "in_ch": True, "in_v2": True})
+    return out
+
+
+def test_reading_p():
+    lo = S.reading_p(synth_pairs(True), 200)
+    hi = S.reading_p(synth_pairs(False), 200)
+    check("always-positive skill gives the smallest p", abs(lo - 1 / 201.0)
+          < 1e-12, str(lo))
+    check("always-negative skill gives p of 1", hi == 1.0, str(hi))
+    check("no pairs gives no p", S.reading_p([], 50) is None)
+    mixed = [dict(q, ticker="ONE", is_ch=5.0 if i < 8 else 15.0)
+             for i, q in enumerate(synth_pairs(True))]
+    pm = S.reading_p(mixed, 400)
+    check("p resamples whole cutoff clusters, not tickers (one ticker "
+          "would collapse every draw to the pooled skill)",
+          pm > 0.05, str(pm))
+
+
+def test_holm_in_output():
+    import contextlib
+    import io
+    import json
+    import datetime as dt
+    with tempfile.TemporaryDirectory() as d:
+        write_csv(os.path.join(d, "AAA.csv"),
+                  dt.date(2023, 1, 1).toordinal(), 360)
+        out = os.path.join(d, "o.json")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            S.main(["--history", d, "--reps", "50", "--json", out])
+        data = json.load(open(out))
+        h = data["holm"]
+        check("json holm block, family 30, primary park60",
+              h["family_size"] == 30 and h["primary_model"] == "park60"
+              and h["method"] == "Holm-Bonferroni")
+        prim = [r for r in h["readings"] if r["primary"]]
+        check("every reading is park60 when primary",
+              all(r["model"] == "park60" for r in prim)
+              and len(prim) == len([r for r in h["readings"]
+                                    if r["model"] == "park60"]))
+        ok = [r for r in h["readings"] if r["p"] is not None]
+        check("holm adjusted p never below the raw p and capped at 1",
+              all(r["p"] <= r["holm_adj_p"] <= 1.0 for r in ok) and ok,
+              str(ok[:2]))
+        check("numbers only: no verdict and no pass flag anywhere",
+              "verdict" not in data and all(
+                  set(r) == {"model", "horizon", "regime", "primary", "p",
+                             "holm_adj_p"} for r in h["readings"]))
+        txt = buf.getvalue()
+        check("text prints the primary Holm-adjusted p",
+              "Holm-Bonferroni over the screen's 30 readings" in txt
+              and "Holm-adjusted p" in txt)
+        check("descriptive screen text still has no verdict",
+              "KEEP" not in txt and "REJECT" not in txt)
+        with contextlib.redirect_stdout(io.StringIO()):
+            S.main(["--history", d, "--reps", "50", "--regime", "post",
+                    "--json", out])
+        data = json.load(open(out))
+        check("one-regime run keeps family size 30",
+              data["holm"]["family_size"] == 30
+              and {r["regime"] for r in data["holm"]["readings"]}
+              == {"post"})
+
+
 def main():
     for fn in (test_constants, test_exclusion_rule, test_regime_split,
-               test_models_differ_and_v2_column, test_refusal_and_json):
+               test_models_differ_and_v2_column, test_refusal_and_json,
+               test_holm_family_and_adjust, test_reading_p,
+               test_holm_in_output):
         fn()
     print("test_screen_band_models: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

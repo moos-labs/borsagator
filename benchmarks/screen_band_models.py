@@ -37,6 +37,17 @@ CI (the #775 reading); no keep verdict is produced.
 Challengers tried to date: A-F and the item 4 rolling conformal, plus
 these six estimators (read any single win against that count).
 
+Multiple testing (round 9, Muhammad's call (d)): the family is the
+readings this screen makes, FAMILY_SIZE = models x horizons x regimes
+= 5 x 3 x 2 = 30, fixed whatever --regime selects (an unrun reading
+counts as p = 1, so a one-regime run is never less strict). Each reading
+gets a one-sided p for H0 "RangeSkill <= 0" from the same cutoff-
+clustered bootstrap draws as its CI, p = (draws <= 0, plus 1) / (draws
++ 1). Holm-Bonferroni is applied across all 30; the PRIMARY reading is
+Arm 1 (park60, three horizons x two regimes) and its Holm-adjusted p is
+printed and written to the JSON beside the raw p. These are numbers
+only: no pass flag, no verdict, nothing here is an adoption.
+
 Usage:
   python3 benchmarks/screen_band_models.py --captures DIR ... [--reps N]
       [--json OUT]
@@ -65,6 +76,9 @@ LOOKBACK = 60               # sessions behind a sigma estimate
 STEP = 21
 MIN_HIST = 120
 MODELS = ("s20", "ewma94", "blend2060", "park60", "gk60")
+REGIMES = ("pre", "post")
+PRIMARY = "park60"          # Arm 1
+FAMILY_SIZE = len(MODELS) * len(HORIZONS) * len(REGIMES)   # 30
 _f = lambda v: "n/a" if v is None else "%.3f" % v  # noqa: E731
 
 
@@ -172,6 +186,53 @@ def screen_pairs(by_t, step=STEP, min_hist=MIN_HIST, regime=None):
     return out
 
 
+def reading_p(pairs, reps, seed=A.DEFAULT_SEED):
+    """One-sided p for H0 RangeSkill <= 0 from the cutoff-clustered
+    bootstrap draws; None when there are no draws."""
+    skill, _ = R._boot(pairs, "as_of", reps, seed)
+    if not skill:
+        return None
+    return (sum(1 for x in skill if x <= 0) + 1.0) / (len(skill) + 1.0)
+
+
+def holm_adjust(pvals, m=FAMILY_SIZE):
+    """Holm-Bonferroni over a family of m readings. pvals is
+    {key: p or None}; None readings are skipped (they count as p = 1 in
+    the family of m, which is what m already assumes). Returns
+    {key: adjusted p}, monotone, capped at 1."""
+    items = sorted((p, k) for k, p in pvals.items() if p is not None)
+    out, run = {}, 0.0
+    for i, (p, k) in enumerate(items):
+        run = max(run, min(1.0, (m - i) * p))
+        out[k] = run
+    return out
+
+
+def holm_table(readings):
+    """readings {(model, horizon, regime): p}. Rows for every reading
+    with raw and Holm-adjusted p; no pass flag."""
+    adj = holm_adjust(readings)
+    rows = []
+    for k in sorted(readings):
+        rows.append({"model": k[0], "horizon": k[1], "regime": k[2],
+                     "primary": k[0] == PRIMARY, "p": readings[k],
+                     "holm_adj_p": adj.get(k)})
+    return rows
+
+
+def render_holm(rows):
+    L = ["", "MULTIPLE TESTING: Holm-Bonferroni over the screen's %d "
+         "readings (one-sided p for RangeSkill <= 0, cutoff-clustered "
+         "bootstrap); numbers only, no verdict" % FAMILY_SIZE,
+         "Arm 1 (%s), the primary reading:" % PRIMARY]
+    for r in rows:
+        if r["primary"]:
+            L.append("  %s %s: p %s  Holm-adjusted p %s"
+                     % (r["regime"], r["horizon"], _f(r["p"]),
+                        _f(r["holm_adj_p"])))
+    return "\n".join(L)
+
+
 def render(results, title=""):
     L = ["SCREEN of cheap band models on long history (windows end <= "
          "%s), frozen v2 k, descriptive, no verdict%s"
@@ -213,20 +274,31 @@ def main(argv=None):
         return 2
     caps = A.find_captures(a.captures, None) if a.captures else []
     by_t = load(a.history, caps)
-    regimes = [a.regime] if a.regime else ["pre", "post"]
+    regimes = [a.regime] if a.regime else list(REGIMES)
     allres = {}
+    readings = {}
     for rg in regimes:
         pairs = screen_pairs(by_t, regime=rg)
         allres[rg] = {m: R.evaluate(pairs[m], a.reps) for m in MODELS}
+        for m in MODELS:
+            for h in HORIZONS:
+                readings[(m, h, rg)] = reading_p(
+                    [p for p in pairs[m] if p["horizon"] == h], a.reps)
         print(render(allres[rg], ", regime %s (break %s)"
                      % (rg, BREAK_DATE)))
         print()
+    holm = holm_table(readings)
+    print(render_holm(holm))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"screen_end": SCREEN_END, "step": STEP,
                        "min_hist": MIN_HIST, "break_date": BREAK_DATE,
                        "lookback": LOOKBACK, "descriptive": True,
-                       "models": list(MODELS), "regimes": allres},
+                       "models": list(MODELS), "regimes": allres,
+                       "holm": {"family_size": FAMILY_SIZE,
+                                "primary_model": PRIMARY,
+                                "method": "Holm-Bonferroni",
+                                "readings": holm}},
                       fh, indent=1)
     return 0
 

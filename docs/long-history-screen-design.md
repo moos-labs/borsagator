@@ -47,6 +47,13 @@ Arm 1 is park60: Parkinson 60-session sigma with the frozen v2 k table
   Only arm 1 is pre-registered as the primary; the others are exploratory
   and any "supports" among them is read against the count of 30, plus
   the 7 shadow challengers already tried (A-F, item 4).
+  Round 9 (Muhammad's call (d), relayed in Moos 1795722327.752229):
+  Holm-Bonferroni is applied across the 30 readings (family size fixed
+  at 30, whatever --regime selects) for the primary Arm 1 reading. Each
+  reading's one-sided p (H0 RangeSkill <= 0) comes from the same
+  cutoff-clustered bootstrap draws as its CI; the script prints and
+  writes the raw and Holm-adjusted p for park60. Numbers only, no pass
+  flag.
 - Nothing is fitted. If a later arm needs a k fit, it fits on the pre
   regime only and is scored on the post regime, and is its own
   pre-registered item.
