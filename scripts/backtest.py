@@ -74,6 +74,11 @@ TICKERS_V1 = ["COMI.CA", "ETEL.CA", "ORAS.CA", "TMGH.CA", "NVDA",
 SERIES_START = {"POUL.CA": "2026-09-28"}
 CONTEXT_START = {"POUL.CA": "2026-09-28"}
 INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
+# Issue #768 (INS-PARALLEL-001 T3): Yahoo indexes GOUR under its ISIN
+# symbol, not GOUR.CA — the chart API 404s on GOUR.CA (verified live
+# 2026-11-26: EGS540S1C014.CA returns 1 bar, close 13.42). The manifest
+# records the same override on the GOUR listing (yahoo_ticker).
+YAHOO_SYMBOL_OVERRIDES = {"GOUR.CA": "EGS540S1C014.CA"}
 SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
@@ -609,7 +614,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     for tests (defaults to the Yahoo chart API)."""
     fetcher = fetcher or backtest_gate.fetch_chart
     rows, events, ev_ok, ev_error, dropped = backtest_gate.unpack_fetch(
-        fetcher(ticker))
+        fetcher(YAHOO_SYMBOL_OVERRIDES.get(ticker, ticker)))
     # The realised window's actions must be VERIFIED, not merely
     # empty: the admission fetch may have retrieved actions while
     # this separate realised fetch reports the feed unavailable

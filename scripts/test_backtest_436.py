@@ -2450,6 +2450,45 @@ def test_realised_index_window():
 
 
 
+def test_yahoo_symbol_override_gour():
+    """#768 (INS-PARALLEL-001 T3): Yahoo indexes GOUR under its ISIN
+    symbol, not GOUR.CA — fetch_realised must ask the fetcher for
+    EGS540S1C014.CA while the index leg still uses ^EGX30."""
+    print("== yahoo symbol override (GOUR) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"),
+                     "backtest_gour_override")
+    check("GOUR override is its ISIN symbol",
+          bt.YAHOO_SYMBOL_OVERRIDES.get("GOUR.CA") == "EGS540S1C014.CA")
+    series = synthetic_series(n=820, cutoff="2025-08-04")
+    index_full = [{"date": r["date"],
+                   "close": round(30000.0 + 2.0 * i, 4)}
+                  for i, r in enumerate(series)]
+    seen = []
+    base = _stub_fetcher(series, index_full)
+
+    def recording(ticker):
+        seen.append(ticker)
+        return base(ticker)
+
+    realised, err = bt.fetch_realised(
+        "GOUR.CA", FIXTURE_CUTOFF, fetcher=recording)
+    check("GOUR realised publishes through the override",
+          realised is not None, err)
+    check("stock fetch used the ISIN symbol, not GOUR.CA",
+          "EGS540S1C014.CA" in seen and "GOUR.CA" not in seen,
+          "seen=%r" % (seen,))
+    check("index leg still fetched ^EGX30",
+          "^EGX30" in seen, "seen=%r" % (seen,))
+    # Control: an unmapped ticker passes through unchanged.
+    seen.clear()
+    realised2, err2 = bt.fetch_realised(
+        FIXTURE_TICKER, FIXTURE_CUTOFF, fetcher=recording)
+    check("unmapped ticker passes through unchanged",
+          realised2 is not None and FIXTURE_TICKER in seen
+          and "EGS540S1C014.CA" not in seen,
+          "seen=%r err=%r" % (seen, err2))
+
+
 def test_scorer_689_range_guards():
     """#689: scorer hardening follow-ups from the #676 review —
     fnum() on the range fields (a NaN cannot poison the Winkler
@@ -2557,6 +2596,7 @@ def run_backtest_checks(verbose=True):
     test_cell_guards()
     test_realised_index_window()
     test_realised_dropped_close()
+    test_yahoo_symbol_override_gour()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
     test_runner_python_override()

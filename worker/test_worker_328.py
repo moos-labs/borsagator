@@ -18,14 +18,16 @@ The wiring under test (worker/worker.py):
     dishonest one (closure over failures, missing route, FAITA
     defaulted, clipped body as full hash, complete/pass verdict
     from collection-only output) fails.
-  build_top30_required_cells — the frozen 90-cell universe
-    (30 issuers x 3 event types; FAIT/FAITA is ONE issuer).
+  build_top30_required_cells — the required universe, derived
+    from the live manifest (issuers x 3 event types; FAIT/FAITA
+    is ONE issuer; 35 x 3 = 105 cells after the 2026-11-26
+    T1/T2 round).
   _execute_body top30 branch — publishes via the stubbed publish
     and marks done only on a successful publish, like harvest-egx.
 
 Deterministic replay (no live EGX needed): the fixtures-mode run
 uses the REAL fixture pages (scripts/top30_enumerate_fixtures/ —
-SIMULATED NewsSearch pages for POUL/COMI only, so the other 29
+SIMULATED NewsSearch pages for POUL/COMI only, so all 35
 issuers fail with the named "no fixture for URL" failure and the
 ledger is honestly open). The probe-mode run uses the REAL
 enumerator probe (one pilot request; fails fast where EGX is
@@ -153,6 +155,32 @@ def real_probe_ledger():
             encoding="utf-8"))
 
 
+def manifest_for_ledger(led, manifest):
+    """Rebuild the manifest a committed ledger was recorded
+    against: the current manifest restricted to the ledger's own
+    issuer set, with each listing's ISIN restored to the ledger's
+    recorded value. Only the route-coverage check is neutralised
+    by construction (the manifest is derived from the ledger's
+    routes); every other fail-closed rule — window, base_commit,
+    FAITA B-02, closure honesty, reconciliation, provenance —
+    still runs against real recorded data."""
+    led_codes = {}
+    for irec in led.get("issuers", []) or []:
+        for lrec in irec.get("listings", []) or []:
+            if isinstance(lrec, dict) and lrec.get("code"):
+                led_codes[lrec["code"]] = lrec.get("isin")
+    era = copy.deepcopy(manifest)
+    era["issuers"] = [
+        iss for iss in era.get("issuers", [])
+        if iss.get("issuer") in {i.get("issuer")
+                                 for i in led.get("issuers", []) or []}]
+    for iss in era["issuers"]:
+        for lst in iss.get("listings", []) or []:
+            if lst.get("code") in led_codes:
+                lst["isin"] = led_codes[lst["code"]]
+    return era
+
+
 def test_parse():
     plan = worker.parse_top30_job("top30-enumerate")
     check("parse: bare job parses to a non-empty plan",
@@ -187,9 +215,13 @@ def test_parse():
 
 def test_required_cells():
     manifest = real_manifest()
+    n_issuers = len(manifest["issuers"])
+    n_types = len(manifest["event_types"])
     doc, cells = worker.build_top30_required_cells(manifest)
-    check("required cells: 30 issuers x 3 types = 90",
-          doc["count"] == 90 and len(cells) == 90)
+    check("required cells: %d issuers x %d types = %d"
+          % (n_issuers, n_types, n_issuers * n_types),
+          doc["count"] == n_issuers * n_types
+          and len(cells) == n_issuers * n_types)
     check("required cells: FAIT/FAITA is ONE issuer (3 cells, not 6)",
           sum(1 for c in cells if c["issuer"] == "FAIT") == 3)
     doc2, _ = worker.build_top30_required_cells(manifest)
@@ -206,6 +238,15 @@ def test_required_cells():
 def test_validate_honest_probe_ledger():
     manifest = real_manifest()
     led = real_probe_ledger()
+    # The committed ledger predates the 2026-11-26 T1/T2 round
+    # (30 issuers, FAITA ISIN unverified), so it is validated
+    # against the manifest of its own era — the current manifest
+    # restricted to the ledger's issuer set, with FAITA's ISIN
+    # restored to the ledger's value. The next live run
+    # regenerates the committed file for the current universe;
+    # until then the historical record is judged on its own
+    # frozen manifest, not the grown one.
+    era_manifest = manifest_for_ledger(led, manifest)
     # The committed ledger is validated in the mode it records:
     # probe-mode before the first live run, live-mode once a live
     # run has landed (#283 run 4, 2026-11-20). The mode-mismatch
@@ -218,7 +259,7 @@ def test_validate_honest_probe_ledger():
     check("validate: committed ledger records a supported mode",
           led.get("mode") in worker.TOP30_MODES)
     ok, reasons = worker._validate_top30_ledger(
-        led, manifest, led.get("mode"))
+        led, era_manifest, led.get("mode"))
     check("validate: committed honest ledger passes (mode=%s)"
           % led.get("mode"),
           ok and reasons == [])
@@ -279,15 +320,27 @@ def test_validate_dishonest_ledgers():
     check("validate: missing listing route fails",
           not ok and any("missing from ledger" in r for r in reasons))
 
+    # The B-02 rule applies only while the manifest carries no
+    # FAITA ISIN, so these two cases run against a manifest with
+    # FAITA's ISIN removed (the pre-T1 state, 2026-11-26); the
+    # committed ledger's FAITA already carries isin None, so it
+    # matches that manifest.
+    no_isin_manifest = copy.deepcopy(manifest)
+    for iss in no_isin_manifest["issuers"]:
+        for lst in iss.get("listings", []) or []:
+            if lst.get("code") == "FAITA":
+                lst["isin"] = None
+
     led = copy.deepcopy(base)
     for irec in led["issuers"]:
         for lrec in irec["listings"]:
             if lrec["code"] == "FAITA":
                 lrec["enumeration_status"] = "enumerated"
                 lrec["failures"] = []
-    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
-    check("validate: FAITA enumerated fails (B-02: never default "
-          "to the FAIT ISIN)",
+    ok, reasons = worker._validate_top30_ledger(
+        led, no_isin_manifest, mode)
+    check("validate: FAITA enumerated fails when the manifest has "
+          "no FAITA ISIN (B-02: never default to the FAIT ISIN)",
           not ok and any("FAITA enumerated" in r for r in reasons))
 
     led = copy.deepcopy(base)
@@ -295,8 +348,10 @@ def test_validate_dishonest_ledgers():
         for lrec in irec["listings"]:
             if lrec["code"] == "FAITA":
                 lrec["failures"] = []
-    ok, reasons = worker._validate_top30_ledger(led, manifest, mode)
-    check("validate: FAITA without its B-02 named failure fails",
+    ok, reasons = worker._validate_top30_ledger(
+        led, no_isin_manifest, mode)
+    check("validate: FAITA without its B-02 named failure fails "
+          "when the manifest has no FAITA ISIN",
           not ok and any("B-02-missing-isin" in r for r in reasons))
 
     led = copy.deepcopy(base)
@@ -367,17 +422,24 @@ def test_entry_point_fixtures_end_to_end():
           ledger["collection"]["enumeration_closed"] is False)
     faita = [l for i in ledger["issuers"] for l in i["listings"]
              if l["code"] == "FAITA"][0]
-    check("entry point (fixtures): FAITA carried as named blocked "
-          "route",
-          faita["enumeration_status"] == "blocked" and any(
-              f.get("kind") == "B-02-missing-isin"
-              for f in faita["failures"]))
+    check("entry point (fixtures): FAITA enumerates with its "
+          "verified ISIN (B-02 resolved 2026-11-26), not as a "
+          "blocked route",
+          faita["isin"] == "EGS60322C012"
+          and faita["enumeration_status"] != "blocked"
+          and not any(f.get("kind") == "B-02-missing-isin"
+                      for f in faita["failures"])
+          and any(f.get("kind") == "fetch_failed"
+                  for f in faita["failures"]))
     validation = json.loads(
         (wd / "top30-validation.json").read_text(encoding="utf-8"))
-    check("entry point (fixtures): validation record valid, 90 "
-          "required cells",
+    manifest = real_manifest()
+    expected_cells = (len(manifest["issuers"])
+                      * len(manifest["event_types"]))
+    check("entry point (fixtures): validation record valid, %d "
+          "required cells" % expected_cells,
           validation["valid"] is True
-          and validation["required_cells_count"] == 90)
+          and validation["required_cells_count"] == expected_cells)
     check("entry point (fixtures): done marked only after publish",
           done.get("archive_sha") == "fake-archive-sha-328")
 

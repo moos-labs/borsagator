@@ -3498,12 +3498,14 @@ def parse_top30_job(job):
 
 
 def build_top30_required_cells(manifest):
-    """Frozen 90-cell required universe (issue #283 gates re-check
-    schema addition): 30 issuers x the manifest's event types, one
-    cell per issuer x type — FAIT/FAITA is ONE issuer, so its two
-    listings form one cell per type, not two. Returns (cells_doc,
-    cells); cells_doc carries the versioned sha256 the later runner
-    consumes as `required_cells`."""
+    """Required universe (issue #283 gates re-check schema
+    addition): one cell per manifest issuer x event type — FAIT/
+    FAITA is ONE issuer, so its two listings form one cell per
+    type, not two. The count is derived from the live manifest
+    (35 issuers x 3 types = 105 cells after the 2026-11-26 T1/T2
+    round). Returns (cells_doc, cells); cells_doc carries the
+    versioned sha256 the later runner consumes as
+    `required_cells`."""
     issuers = [i["issuer"] for i in manifest.get("issuers", [])]
     types = list(manifest.get("event_types", []))
     cells = [{"issuer": iss, "event_type": t,
@@ -3608,7 +3610,7 @@ def _validate_top30_ledger(ledger, manifest, mode):
     # Per-listing coverage: every manifest route must be present.
     # Issue #346 F5/F6: the frozen route set is enforced both ways
     # — a listing record's ISIN must equal the manifest ISIN for
-    # its code (FAITA's is None: never defaulted), an unknown code
+    # its code (never defaulted to another listing's ISIN), an unknown code
     # is rejected, a code recorded under the wrong issuer is
     # rejected, and a duplicate route record is rejected instead
     # of silently collapsing into `seen`.
@@ -3755,19 +3757,24 @@ def _validate_top30_ledger(ledger, manifest, mode):
                                "frozen route (expected documents / "
                                "routes only)" % m)
     # FAITA: a named blocked route (B-02), never enumerated under
-    # another listing's ISIN and never silently omitted.
+    # another listing's ISIN and never silently omitted. This rule
+    # applies ONLY while the frozen manifest carries no FAITA ISIN
+    # (B-02 open); once the ISIN is verified (T1, 2026-11-26:
+    # EGS60322C012), FAITA enumerates like any other listing and
+    # no B-02 named failure is required or expected.
     faita = seen.get("FAITA")
-    if faita is None:
-        reasons.append("FAITA route missing (B-02 named failure "
-                       "required)")
-    elif faita.get("enumeration_status") == "enumerated":
-        reasons.append("FAITA enumerated despite missing ISIN "
-                       "(B-02: never default to the FAIT ISIN)")
-    elif not any(isinstance(f, dict)
-                 and f.get("kind") == "B-02-missing-isin"
-                 for f in faita.get("failures", []) or []):
-        reasons.append("FAITA carries no B-02-missing-isin named "
-                       "failure")
+    if expected.get("FAITA") is None:
+        if faita is None:
+            reasons.append("FAITA route missing (B-02 named failure "
+                           "required)")
+        elif faita.get("enumeration_status") == "enumerated":
+            reasons.append("FAITA enumerated despite missing ISIN "
+                           "(B-02: never default to the FAIT ISIN)")
+        elif not any(isinstance(f, dict)
+                     and f.get("kind") == "B-02-missing-isin"
+                     for f in faita.get("failures", []) or []):
+            reasons.append("FAITA carries no B-02-missing-isin named "
+                           "failure")
     # enumeration_closed honesty: closed only with zero failures,
     # every route at an evidenced terminal state, pagination done.
     failures = ledger.get("failures")

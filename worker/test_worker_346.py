@@ -157,6 +157,32 @@ def real_probe_ledger():
             encoding="utf-8"))
 
 
+def manifest_for_ledger(led, manifest):
+    """Rebuild the manifest a committed ledger was recorded
+    against: the current manifest restricted to the ledger's own
+    issuer set, with each listing's ISIN restored to the ledger's
+    recorded value. Only the route-coverage check is neutralised
+    by construction; every other fail-closed rule still runs
+    against real recorded data. (Same helper as in
+    test_worker_328.py — the two files do not import each
+    other.)"""
+    led_codes = {}
+    for irec in led.get("issuers", []) or []:
+        for lrec in irec.get("listings", []) or []:
+            if isinstance(lrec, dict) and lrec.get("code"):
+                led_codes[lrec["code"]] = lrec.get("isin")
+    era = copy.deepcopy(manifest)
+    era["issuers"] = [
+        iss for iss in era.get("issuers", [])
+        if iss.get("issuer") in {i.get("issuer")
+                                 for i in led.get("issuers", []) or []}]
+    for iss in era["issuers"]:
+        for lst in iss.get("listings", []) or []:
+            if lst.get("code") in led_codes:
+                lst["isin"] = led_codes[lst["code"]]
+    return era
+
+
 # --- Synthetic manifest/ledger (Moos's tick0409_verify339.py shape,
 # with listing ISINs + document attribution, as the real producer
 # writes them) -----------------------------------------------------------
@@ -596,13 +622,19 @@ def test_f8_corpus_hash_shape():
 def test_honest_controls():
     manifest = real_manifest()
     led = real_probe_ledger()
+    # The committed ledger predates the 2026-11-26 T1/T2 round
+    # (30 issuers, FAITA ISIN unverified) — see
+    # test_worker_328.manifest_for_ledger for the era-manifest
+    # rule: judge the historical record on its own frozen
+    # manifest, not the grown one.
+    era_manifest = manifest_for_ledger(led, manifest)
     # The committed ledger is validated in the mode it records:
     # probe-mode before the first live run, live-mode once a live
     # run has landed (#283 run 4, 2026-11-20). The mode-mismatch
     # rule itself is still enforced by the validator.
     mode = led.get("mode")
     ok, reasons = worker._validate_top30_ledger(
-        led, manifest, mode)
+        led, era_manifest, mode)
     check("control: committed honest ledger still passes (mode=%s)"
           % mode,
           ok and reasons == [])
@@ -615,7 +647,7 @@ def test_honest_controls():
         for lrec in irec["listings"]:
             lrec["terminal_state"] = "exhausted"
     ok, reasons = worker._validate_top30_ledger(
-        led, manifest, mode)
+        led, era_manifest, mode)
     check("control: #340 variant-A ledger still fails closed",
           not ok and any("listing-level failure" in r
                          for r in reasons))
@@ -921,11 +953,12 @@ def test_f2_live_mode_runs_through_the_profile():
               "reachable") is True
           and ledger["live_access"]["probes"][0].get("url") in
           [g.get("url") for g in gotos])
-    check("F2: live ledger mode is live, honestly open (FAITA "
-          "blocked, canned empty pages)",
+    check("F2: live ledger mode is live, honestly closed (canned "
+          "empty pages: every route terminal empty, zero failures)",
           ledger["mode"] == "live"
-          and ledger["collection"]["enumeration_closed"] is False
-          and len(ledger["issuers"]) == 30
+          and ledger["collection"]["enumeration_closed"] is True
+          and len(ledger["issuers"])
+          == len(real_manifest()["issuers"])
           and len(gotos) == 1 + sum(
               l.get("pages_fetched", 0)
               for i in ledger["issuers"] for l in i["listings"])
@@ -937,11 +970,14 @@ def test_f2_live_mode_runs_through_the_profile():
                       for f in ledger.get("failures", [])))
     faita = [l for i in ledger["issuers"] for l in i["listings"]
              if l["code"] == "FAITA"][0]
-    check("F2: live ledger still carries FAITA as the named "
-          "blocked route",
-          faita["enumeration_status"] == "blocked" and any(
-              f.get("kind") == "B-02-missing-isin"
-              for f in faita["failures"]))
+    check("F2: live ledger carries FAITA with its verified ISIN "
+          "(B-02 resolved 2026-11-26), enumerated empty like the "
+          "other listings",
+          faita["isin"] == "EGS60322C012"
+          and faita["enumeration_status"] == "enumerated"
+          and faita["terminal_state"] == "empty"
+          and not any(f.get("kind") == "B-02-missing-isin"
+                      for f in faita["failures"]))
     validation = json.loads(
         (wd / "top30-validation.json").read_text(encoding="utf-8"))
     check("F2: validation record carries transport=profile",

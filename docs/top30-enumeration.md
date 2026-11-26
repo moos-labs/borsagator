@@ -17,7 +17,9 @@ step.
 
 - Window: **2026-08-19 → 2026-11-19, both endpoints inclusive**
   (the frozen quarter in `evaluation/top30_manifest.json`).
-- Universe: the 30 issuers / 31 listings of the frozen manifest.
+- Universe: the 35 issuers / 36 listings of the frozen manifest
+  (extended 2026-11-26: CLHO, GOUR, ICFC, LCSW, RACC joined;
+  FAITA's ISIN verified the same round).
   POUL/COMI are regression controls outside the 30 and are
   enumerated the same way in pilot runs.
 - Query: EGX NewsSearch per listing, ISIN-keyed, exactly the shape
