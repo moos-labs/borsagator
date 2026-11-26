@@ -284,13 +284,18 @@ def range_skill(pairs, name):
     return 1.0 - sum(p["is_" + name] for p in pairs) / n
 
 
-def block_bootstrap(pairs, reps=DEFAULT_REPS, seed=DEFAULT_SEED):
-    """Block bootstrap by ticker. Returns {name: [skill draws]} for
-    v1, v2 and their difference (v2 - v1). Draws whose resample has
-    an undefined skill are dropped (counted by the caller)."""
+def block_bootstrap(pairs, reps=DEFAULT_REPS, seed=DEFAULT_SEED,
+                    by="ticker"):
+    """Block bootstrap. Returns {name: [skill draws]} for v1, v2 and
+    their difference (v2 - v1). `by` is the pair field whose values
+    are resampled as whole blocks: "ticker" (default, the #594
+    criterion) or "as_of" (cutoff blocks, INS-IMPROVE-001: rows that
+    share a cutoff share market shocks, so a ticker bootstrap can be
+    too narrow). Draws whose resample has an undefined skill are
+    dropped (counted by the caller)."""
     by_t = {}
     for p in pairs:
-        by_t.setdefault(p["ticker"], []).append(p)
+        by_t.setdefault(p[by], []).append(p)
     tickers = sorted(by_t)
     rng = random.Random(seed)
     out = {"v1": [], "v2": [], "diff": []}
@@ -306,6 +311,26 @@ def block_bootstrap(pairs, reps=DEFAULT_REPS, seed=DEFAULT_SEED):
         out["v1"].append(s1)
         out["v2"].append(s2)
         out["diff"].append(s2 - s1)
+    return out
+
+
+def coverage_bootstrap(pairs, name, reps=DEFAULT_REPS,
+                       seed=DEFAULT_SEED, by="as_of"):
+    """Block-bootstrap draws of the in-range rate of `name`
+    (cutoff blocks by default). Empty list when there are no pairs."""
+    by_t = {}
+    for p in pairs:
+        by_t.setdefault(p[by], []).append(p)
+    keys = sorted(by_t)
+    rng = random.Random(seed)
+    out = []
+    if not keys:
+        return out
+    for _ in range(reps):
+        draw = []
+        for _ in keys:
+            draw.extend(by_t[rng.choice(keys)])
+        out.append(sum(p["in_" + name] for p in draw) / len(draw))
     return out
 
 
@@ -344,6 +369,17 @@ def evaluate(pairs, reps=DEFAULT_REPS, seed=DEFAULT_SEED):
                 "range_skill": range_skill(hp, name),
                 "ci": [lo, hi],
                 "verdict": verdict(len(hp), len(tick), lo)}
+        cdraws = block_bootstrap(hp, reps, seed, by="as_of")
+        cell["cutoffs"] = len({p["as_of"] for p in hp})
+        cell["cutoff_cluster"] = {}
+        for name in ("v1", "v2"):
+            clo, chi = percentile_ci(cdraws[name])
+            vlo, vhi = percentile_ci(coverage_bootstrap(
+                hp, name, reps, seed))
+            cell["cutoff_cluster"][name] = {
+                "skill_ci": [clo, chi], "coverage_ci": [vlo, vhi]}
+        dlo, dhi = percentile_ci(cdraws["diff"])
+        cell["cutoff_cluster"]["v2_minus_v1_ci"] = [dlo, dhi]
         lo, hi = percentile_ci(draws["diff"])
         cell["v2_minus_v1_skill"] = {
             "point": (None if not hp else
@@ -363,7 +399,8 @@ def render(res, n_captures, gaps):
     L = ["#594 adoption test: frozen v2 vs retired v1 (RangeSkill, "
          "Winkler 80%)",
          "captures scored: %d" % n_captures,
-         "CI: block bootstrap by ticker, 95%%, percentile. "
+         "CI: block bootstrap by ticker, 95%%, percentile (cutoff-cluster "
+         "CI shown alongside). "
          "INSUFFICIENT below %d rows or %d tickers." % (MIN_ROWS,
                                                         MIN_TICKERS),
          "", "ADOPTION CRITERION: " + CRITERION, ""]
@@ -381,6 +418,18 @@ def render(res, n_captures, gaps):
         d = c["v2_minus_v1_skill"]
         L.append("  v2 minus v1 RangeSkill %s  CI [%s, %s]"
                  % (_f(d["point"]), _f(d["ci"][0]), _f(d["ci"][1])))
+        cc = c["cutoff_cluster"]
+        L.append("  cutoff-cluster CI (%d cutoffs; reported next to the "
+                 "ticker CI, never replaces it):" % c["cutoffs"])
+        for name, label in (("v2", "v2"), ("v1", "v1")):
+            x = cc[name]
+            L.append("    %s RangeSkill [%s, %s]  coverage [%s, %s]"
+                     % (label, _f(x["skill_ci"][0]),
+                        _f(x["skill_ci"][1]), _f(x["coverage_ci"][0]),
+                        _f(x["coverage_ci"][1])))
+        L.append("    v2 minus v1 [%s, %s]"
+                 % (_f(cc["v2_minus_v1_ci"][0]),
+                    _f(cc["v2_minus_v1_ci"][1])))
     L.append("")
     for g in gaps:
         L.append("gap: " + g)
