@@ -1,0 +1,44 @@
+{
+ "sweep_id": "sched-2026-11-26",
+ "origin": "scheduled",
+ "mode": "sweep-live",
+ "intraday_alerting": false,
+ "started": "2026-11-26T07:36:37.273321+00:00",
+ "tickers": {
+  "POUL": {
+   "refresh": "refreshed",
+   "detail": "harvested_at=2026-11-26T07:38:15Z items=10",
+   "harvested_at": "2026-11-26T07:38:15Z",
+   "items": 10,
+   "cache_age_hours": 0.0
+  }
+ },
+ "status": "ok",
+ "refresh_status": "ok",
+ "extraction": {
+  "POUL": {
+   "status": "extracted",
+   "events_file": "disclosure-events/POUL-events.json",
+   "events": 5,
+   "verified": 4,
+   "candidates": 1,
+   "by_type": {
+    "board_decision": 2,
+    "dividend": 1,
+    "earnings": 2
+   },
+   "harvested_at": "2026-11-26T07:38:15Z",
+   "quarter": {
+    "start": "2026-08-28",
+    "end": "2026-11-26"
+   },
+   "sweep_id": "sched-2026-11-26",
+   "pdf_verification": {
+    "status": "skipped-no-attachments",
+    "summary": {},
+    "verification_file": null,
+    "detail": "no attachments dir on disk for this sweep (refresh was cached, or the harvest captured none)"
+   }
+  }
+ }
+}
