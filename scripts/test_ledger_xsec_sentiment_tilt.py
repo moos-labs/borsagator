@@ -115,7 +115,7 @@ def test_spearman():
 
 def res_ok(lo=0.05):
     return {h: {"ch_ci_cutoff": [lo, 0.2], "ch": {"coverage": 0.8},
-                "ch_cov_ci_cutoff": [0.7, 0.9]} for h in X.HORIZONS}
+                "ch_cov_ci_cutoff": [0.72, 0.87]} for h in X.HORIZONS}
 
 
 def ic_with(lo, cutoffs=5):
@@ -145,6 +145,12 @@ def test_verdict():
         r[h]["ch_cov_ci_cutoff"] = [0.4, 0.6]
     v = X.verdicts(p, r, ic_with(0.05))
     check("coverage CI below the band rejects", v["day"][0] == "REJECT")
+    r = res_ok()
+    for h in X.HORIZONS:
+        r[h]["ch_cov_ci_cutoff"] = [0.65, 0.88]
+    v = X.verdicts(p, r, ic_with(0.05))
+    check("overlapping CI wider than the cap rejects",
+          v["day"][0] == "REJECT" and "cap" in v["day"][1], str(v))
     v = X.verdicts(fake_pairs(n=20), res_ok(), ic_with(0.05))
     check("under 30 rows insufficient", v["day"][0] == "INSUFFICIENT")
     v = X.verdicts(fake_pairs(tickers=9), res_ok(), ic_with(0.05))

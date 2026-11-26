@@ -37,8 +37,9 @@ SCORE (mode `score`): scores the frozen file on cells >= 73 only
 (refuses lower cells unless --descriptive, which prints a banner).
 Pre-registered keep rule, per horizon, on >= 30 untouched rows:
   (a) RangeSkill >= +0.05 vs naive,
-  (b) the cutoff-clustered coverage CI overlaps [0.75, 0.85]
-      (round 11 ruling; was: point coverage inside the band),
+  (b) the cutoff-clustered coverage CI overlaps [0.75, 0.85] and is no
+      wider than MAX_CI_WIDTH = 0.15 (round 11 ruling; round 9 cap;
+      was: point coverage inside the band),
   (c) RangeSkill >= frozen-v2 RangeSkill on the same rows.
 KEEP only if (a), (b) and (c) hold on every horizon. Below 30 rows
 the verdict is INSUFFICIENT. The formal adoption gate (CI lower
@@ -83,6 +84,13 @@ K_GRID = [round(0.50 + 0.01 * i, 2) for i in range(201)]
 MIN_ROWS = 30
 SKILL_FLOOR = 0.05
 COV_BAND = (0.75, 0.85)
+# Design parameter (round 9, Muhammad's call (a)): an absolute cap on the
+# width of the cutoff-clustered coverage CI, 1.5x the band width. A CI
+# wider than this cannot establish overlap, however it straddles the
+# band. No relaxation below n = 30: the small-k case is exactly where the
+# cap matters. Revisit with evidence if it proves too tight or too loose.
+MAX_CI_WIDTH = 0.15
+_W_EPS = 1e-9
 
 
 def coverage_ci_ok(ci, band=None):
@@ -90,15 +98,24 @@ def coverage_ci_ok(ci, band=None):
     cutoff-clustered 95% coverage CI must OVERLAP [0.75, 0.85], using
     the same clustering and draws as the scorer's RangeSkill CI. A point
     check on n = 30 rejects a perfect 80% model about half the time. An
-    undefined CI (fewer than two cutoffs) is not an overlap."""
+    undefined CI (fewer than two cutoffs) is not an overlap, and a CI
+    wider than MAX_CI_WIDTH (round 9) cannot establish overlap."""
     lo, hi = band or COV_BAND
     if not ci or ci[0] is None or ci[1] is None:
+        return False
+    if ci[1] - ci[0] > MAX_CI_WIDTH + _W_EPS:
         return False
     return ci[0] <= hi and ci[1] >= lo
 
 
 def coverage_ci_reason(h, ci, cov, band=None):
     lo, hi = band or COV_BAND
+    if (ci and ci[0] is not None and ci[1] is not None
+            and ci[1] - ci[0] > MAX_CI_WIDTH + _W_EPS):
+        return ("%s coverage CI [%.3f, %.3f] is %.3f wide, over the "
+                "%.2f cap, so it cannot establish overlap with "
+                "[%.2f, %.2f]" % (h, ci[0], ci[1], ci[1] - ci[0],
+                                  MAX_CI_WIDTH, lo, hi))
     return ("%s coverage CI [%s, %s] (point %s) does not overlap "
             "[%.2f, %.2f]" % (h, *(("n/a" if v is None else "%.3f" % v)
                                    for v in (ci or (None, None))),
