@@ -1,0 +1,31 @@
+{
+ "plan": "borsagator #436 grid extension, batch A (INS-IMPROVE-001 P5, target T1)",
+ "status": "definitions only: runs are dispatched by the cycle on the worker bus, not from this repo change",
+ "purpose": "untouched cells for the #594 adoption test; every quarter-end through 2026-09-30 is already used by cells 1-72, so new (ticker, cutoff) pairs need a mid-quarter cutoff",
+ "documented_exception": {
+  "rule": "design section 3: 12 quarter-ends, 2023-12-29 to 2026-09-30 (scripts/backtest.py CUTOFFS_V1)",
+  "deviation": "cutoff 2026-08-14 is a mid-quarter date, not a quarter-end",
+  "reason": "all quarter-end cutoffs are used by cells 1-72; fit discipline requires scoring parameter changes only on cells never seen",
+  "independence": "the 21-session month window (2026-08-14 to about 2026-09-14) sits between the 2026-06-30 window (ends about 2026-07-30) and the 2026-09-30 window, so it overlaps neither",
+  "recorded_on": "https://github.com/moos-labs/borsagator/issues/436"
+ },
+ "cutoff": "2026-08-14",
+ "tickers_excluded": {
+  "ORAS.CA": "stays excluded (stale-flat, cell 3)",
+  "POUL.CA": "no usable series before 2026-09-28"
+ },
+ "cells": [
+  {"cell": 73, "ticker": "COMI.CA", "cutoff": "2026-08-14"},
+  {"cell": 74, "ticker": "ETEL.CA", "cutoff": "2026-08-14"},
+  {"cell": 75, "ticker": "TMGH.CA", "cutoff": "2026-08-14"},
+  {"cell": 76, "ticker": "NVDA", "cutoff": "2026-08-14"},
+  {"cell": 77, "ticker": "SWDY.CA", "cutoff": "2026-08-14"},
+  {"cell": 78, "ticker": "HRHO.CA", "cutoff": "2026-08-14"}
+ ],
+ "order_note": "plan order follows cells 56-61 and 62-67: COMI, ETEL, TMGH, NVDA, SWDY, HRHO",
+ "held_back": {
+  "note": "only after batch A scores clean; not defined here",
+  "cutoffs": ["2026-05-15", "2026-02-13"]
+ },
+ "expected_adoption_n": "25 captures (cell 70 landed) + 6 = 31 rows per horizon, above the 30-row minimum"
+}
