@@ -166,11 +166,60 @@ def test_descriptive_json_has_no_verdict():
               "verdict" in data and data["descriptive"] is False)
 
 
+def test_unnumbered_dropped_both_paths():
+    import contextlib
+    import io
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        cap = os.path.join(d, "2025-11-14", "TST")
+        os.makedirs(os.path.join(cap, "digest"))
+        for fn in ("manifest.json", "realised.json"):
+            open(os.path.join(cap, fn), "w").write("{}")
+        open(os.path.join(cap, "digest", "ensemble.json"), "w").write("{}")
+        frozen = os.path.join(ROOT, "benchmarks",
+                              "frozen_vol_adaptive_r3.json")
+        out = os.path.join(d, "o.json")
+        seen = []
+
+        def fake_rows(caps, allc):
+            seen.append(list(caps))
+            return [{"ticker": "TST", "as_of": "2025-11-14", "horizon": h,
+                     "real": 1.0, "naive_half": 5.0, "mult": 1.0,
+                     "v2_sigma": 0.02, "sigma_long": 0.02,
+                     "sigma_eff": 0.02, "cell": 0}
+                    for c in caps for h in V.HORIZONS], []
+        real_build, real_fit = V.build_rows, V.fit
+        real_render = V.render_fit
+        V.render_fit = lambda fz: "fit"
+        V.build_rows = fake_rows
+        V.fit = lambda rows: {"k": {h: 1.0 for h in V.HORIZONS},
+                              "eps": 0.2, "n": len(rows)}
+        buf = io.StringIO()
+        try:
+            check("unnumbered capture is findable",
+                  V.A.find_captures([d], None) != [])
+            with contextlib.redirect_stdout(buf):
+                V.main(["fit", "--captures", d, "--out", out])
+            check("fit path drops unnumbered capture", seen[-1] == [])
+            with contextlib.redirect_stdout(buf):
+                V.main(["score", "--frozen", frozen, "--captures", d,
+                        "--min-cell", "48", "--descriptive",
+                        "--reps", "50", "--json", out])
+            check("score path drops unnumbered capture", seen[-1] == [])
+            data = json.load(open(out))
+            check("nothing scored",
+                  all(data["results"][h]["n"] == 0 for h in V.HORIZONS))
+        finally:
+            V.build_rows, V.fit = real_build, real_fit
+            V.render_fit = real_render
+
+
 def main():
     for fn in (test_constants, test_sigma_eff, test_sigma_long,
                test_fit_and_score, test_verdict, test_coverage_ci_overlap,
                test_refuses_seen_cells,
-               test_descriptive_json_has_no_verdict):
+               test_descriptive_json_has_no_verdict,
+               test_unnumbered_dropped_both_paths):
         fn()
     print("test_replay_vol_adaptive: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
