@@ -286,7 +286,8 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz, "results": res,
-                       "verdict": keep_verdict(res)[0],
+                       **({} if a.descriptive
+                          else {"verdict": keep_verdict(res)[0]}),
                        "descriptive": a.descriptive}, fh, indent=1)
     return 0
 
