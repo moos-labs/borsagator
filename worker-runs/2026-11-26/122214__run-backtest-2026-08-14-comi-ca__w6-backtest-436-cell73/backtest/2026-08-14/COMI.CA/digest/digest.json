@@ -1,0 +1,61 @@
+{
+ "ticker": "COMI.CA",
+ "date": "2026-08-14",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 126.4418
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "COMI.CA",
+     "as_of": "2026-08-14",
+     "date": "2026-08-13",
+     "open": 139.99,
+     "high": 139.99,
+     "low": 138.8,
+     "close": 139.27,
+     "rsi_14": 53.5507,
+     "macd": 1.2409,
+     "macd_signal": 1.5438,
+     "macd_hist": -0.3029,
+     "ema_20": 138.8944,
+     "ema_50": 136.6063,
+     "ema_200": 124.744,
+     "adx_14": 16.4177,
+     "bb_upper": 143.0855,
+     "bb_mid": 139.4025,
+     "bb_lower": 135.7195,
+     "bb_pctb": 0.482,
+     "atr_14": 1.9417,
+     "stoch_k": 23.8239,
+     "stoch_d": 35.0934,
+     "rows_fetched": 6537,
+     "rows_used": 1859,
+     "first_date_used": "2019-01-01",
+     "last_date": "2026-08-13",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 139.27000427246094
+    }
+   }
+  }
+ ]
+}
