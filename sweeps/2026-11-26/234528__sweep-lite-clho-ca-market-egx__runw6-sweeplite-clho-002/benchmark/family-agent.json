@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 14.4,
+ "base_source": "egx-data/egxpy_clho.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-26T23:45:28.907312+00:00",
+ "inputs_sha256": {
+  "digest.json": "ba70bcddd45ecb2bc02661ab8b37d9f5c8abd2640832f3476ea713d0fc356db1",
+  "ensemble.json": "03bca40cca25dac8ecb186b8f893cc44cea323f2196484b02a6801369d5cba37"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002",
+ "ticker": "CLHO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

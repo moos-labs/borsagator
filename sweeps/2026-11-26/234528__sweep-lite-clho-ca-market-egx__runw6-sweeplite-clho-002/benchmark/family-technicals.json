@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 14.4,
+ "base_source": "egx-data/egxpy_clho.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-26T23:45:28.906768+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.45,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 4.19,
+   "range_low_pct": -3.29,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.06,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 19.22,
+   "range_low_pct": -15.1,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 1.0,
+   "families": {
+    "technicals": 0.45
+   },
+   "horizon_short": false,
+   "net_score": 0.45,
+   "range_high_pct": 9.38,
+   "range_low_pct": -7.37,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "ba70bcddd45ecb2bc02661ab8b37d9f5c8abd2640832f3476ea713d0fc356db1",
+  "ensemble.json": "03bca40cca25dac8ecb186b8f893cc44cea323f2196484b02a6801369d5cba37"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0195,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002",
+ "ticker": "CLHO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

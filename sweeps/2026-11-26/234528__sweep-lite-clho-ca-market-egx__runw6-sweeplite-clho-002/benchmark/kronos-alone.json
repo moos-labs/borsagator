@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-26",
+ "base_price": 14.4,
+ "base_source": "egx-data/egxpy_clho.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-26T23:45:28.907920+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -2.0,
+   "families": {
+    "price-forecast": -0.513
+   },
+   "horizon_short": false,
+   "net_score": -0.513,
+   "range_high_pct": -0.72,
+   "range_low_pct": -4.19,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -6.22,
+   "families": {
+    "price-forecast": -0.348
+   },
+   "horizon_short": false,
+   "net_score": -0.348,
+   "range_high_pct": -4.09,
+   "range_low_pct": -8.14,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -3.61,
+   "families": {
+    "price-forecast": -0.414
+   },
+   "horizon_short": false,
+   "net_score": -0.414,
+   "range_high_pct": -3.05,
+   "range_low_pct": -7.36,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "c5ff31e99135d920470ead93855a0948e5363d4976441c996bc7f9c2de7eebdd",
+  "digest.json": "ba70bcddd45ecb2bc02661ab8b37d9f5c8abd2640832f3476ea713d0fc356db1",
+  "ensemble.json": "03bca40cca25dac8ecb186b8f893cc44cea323f2196484b02a6801369d5cba37"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0195,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002",
+ "ticker": "CLHO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

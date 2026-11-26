@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-clho-002",
+  "job": "sweep-lite CLHO.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-26T23:41:43.763288+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-clho-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-26T23:41:43.763288+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "CLHO"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['CLHO']",
+  "extraction": {}
+ },
+ "finished": "2026-11-26T23:45:28.555310+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002",
+  "model": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002/report-model.json",
+  "model_sha256": "4610500036d6fe1c777d5ea4b21f080ab71978c5bc671f2bf0a81269ca3f93c5",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/CLHO.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/CLHO.CA.json",
+   "sharia-row-missing: AAOIFI CLHO.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 CLHO.CA",
+   "sharia-row-missing: FTSE CLHO.CA",
+   "sharia-row-missing: ISLAMICLY CLHO.CA",
+   "sharia-row-missing: MSCI CLHO.CA",
+   "sharia-row-missing: MSCI_M CLHO.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "affe1bc306297bd39077fbceef3caa5e2c3d9284",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 134210,
+    "sha256": "8085d6219a70049b7bb08c776b0b784a6927e9b84d9ea80d481bb819b85c60f7"
+   },
+   {
+    "path": "report.md",
+    "bytes": 25995,
+    "sha256": "2b0c3980eaea387b32bee69964eb752263fddc8ac9985fa4b5618df68d0329d2"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "CLHO.CA"
+ }
+}

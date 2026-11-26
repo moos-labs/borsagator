@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "CLHO.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "CLHO.CA",
+    "fetched_at": "2026-11-26T23:45:27Z",
+    "tool": "news-disclosure",
+    "news_count": 31,
+    "disclosure_count": 0,
+    "arabic_headlines": 30,
+    "latest_news_date": "Thu, 26 Nov 2026 19:24:07 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "تيفاني ترامب: ابنها ألكسندر هو \"عالمها كله\" في صورة طريفة · دايلي بيروت - Daily Beirut",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.018,
+    "finbert_negative": 0.302,
+    "finbert_neutral": 0.68,
+    "finbert_scored": 1,
+    "multilingual_positive": 0.328,
+    "multilingual_negative": 0.41,
+    "multilingual_neutral": 0.262,
+    "multilingual_scored": 30,
+    "bodies_fetched": 8,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.092,
+    "translated_negative": 0.282,
+    "translated_neutral": 0.626,
+    "translated_scored": 30
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
