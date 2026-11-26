@@ -57,7 +57,7 @@ def test_estimators():
 
 
 def _row(real, sigma, h="day", cut="c1"):
-    return {"cell": 1, "ticker": "T", "as_of": cut, "horizon": h,
+    return {"cell": 1, "mult": 1.0, "ticker": "T", "as_of": cut, "horizon": h,
             "real": real, "naive_half": 1.2816 * sigma * 100,
             "v2_sigma": sigma, "sig": {"s60": sigma}}
 
@@ -94,6 +94,28 @@ def test_keep_rule():
           R.keep_verdict(_res(30, .06, .8, .08))[0] == "REJECT")
 
 
+def test_risk_mult_carried():
+    check("half_pct applies mult",
+          abs(R.half_pct(0.02, "day", 1.0, 1.3) - 2.6) < 1e-9)
+    check("default mult is 1",
+          abs(R.half_pct(0.02, "day", 1.0) - 2.0) < 1e-9)
+    frozen = {"candidate": "s60", "k": {"day": 1.0, "week": 1.0,
+                                        "month": 1.0}}
+    row = _row(2.5, 0.02)
+    row["mult"] = 1.0
+    plain = R.score_rows([row], frozen)[0]
+    row2 = dict(row)
+    row2["mult"] = 1.3
+    wide = R.score_rows([row2], frozen)[0]
+    check("candidate band widens with mult",
+          not plain["in_ch"] and wide["in_ch"])
+    check("v2 band widens with mult",
+          not plain["in_v2"] or wide["in_v2"])
+    check("v2 uses frozen k and mult",
+          abs(R.half_pct(0.02, "day", R.ens_mod.V2_BAND_K["day"], 1.3)
+              - 1.15 * 2.0 * 1.3) < 1e-9)
+
+
 def test_refuses_seen_cells():
     rc = R.main(["score", "--frozen", __file__, "--captures", "/nonexistent",
                  "--min-cell", "72"])
@@ -104,6 +126,7 @@ if __name__ == "__main__":
     test_estimators()
     test_fit_k()
     test_keep_rule()
+    test_risk_mult_carried()
     test_refuses_seen_cells()
     print("test_replay_band_candidates: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

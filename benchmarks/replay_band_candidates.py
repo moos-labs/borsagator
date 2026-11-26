@@ -17,9 +17,12 @@ date only; nothing after the cutoff is read):
   blend2060  sqrt(0.5 s20^2 + 0.5 s60^2)
   park60     Parkinson high-low estimator over the last 60 bars
   gk60       Garman-Klass OHLC estimator over the last 60 bars
-Band: centre 0, half = k_h x sigma x sqrt(sessions_h) (sessions
-1/5/21 as ledger.DEFAULT_SESSIONS). RISK_MULT is not applied: every
-backtest capture carries risk "none" (benchmarks/audit_risk_mult_594).
+Band: centre 0, half = k_h x sigma x sqrt(sessions_h) x RISK_MULT
+(sessions 1/5/21 as ledger.DEFAULT_SESSIONS). RISK_MULT comes from
+each capture's own risk level and is applied to every band in fit and
+score, as in the frozen v2 band. It is inert today: every backtest
+capture carries risk "none" (benchmarks/audit_risk_mult_594), but a
+future non-"none" capture must not silently mis-state v2.
 
 FIT (mode `fit`): for each candidate and horizon, k is the grid value
 (0.50 to 2.50, step 0.01) that minimises mean Winkler interval score
@@ -259,12 +262,15 @@ def build_rows(capture_dirs, ref_dirs=None):
                 "real": r["realized_move_pct"],
                 "naive_half": (r["range_high_pct"] - r["range_low_pct"])
                 / 2.0,
+                "mult": ens_mod.RISK_MULT.get(
+                    ((ens or {}).get("risk") or {}).get("level"), 1.0),
                 "v2_sigma": v2sig, "sig": sig})
     return rows, gaps
 
 
-def half_pct(sigma, horizon, k):
-    return k * sigma * math.sqrt(SESSIONS[horizon]) * 100
+def half_pct(sigma, horizon, k, mult=1.0):
+    """Half-width in pp: k x sigma x sqrt(sessions) x RISK_MULT."""
+    return k * sigma * math.sqrt(SESSIONS[horizon]) * mult * 100
 
 
 def row_is(row, half):
@@ -280,7 +286,7 @@ def fit_k(rows, cand, horizon):
         return None
     best, best_k = None, None
     for k in K_GRID:
-        m = sum(row_is(r, half_pct(r["sig"][cand], horizon, k))
+        m = sum(row_is(r, half_pct(r["sig"][cand], horizon, k, r["mult"]))
                 for r in hp) / len(hp)
         if best is None or m < best - 1e-12:
             best, best_k = m, k
@@ -305,7 +311,7 @@ def loco_cv(rows, cand):
             test = [r for r in hp if r["as_of"] == c]
             k = fit_k(train, cand, h)
             for r in test:
-                tot += row_is(r, half_pct(r["sig"][cand], h, k))
+                tot += row_is(r, half_pct(r["sig"][cand], h, k, r["mult"]))
                 naive += row_is(r, r["naive_half"])
                 n += 1
         out[h] = tot / naive if naive > 0 else None
@@ -347,8 +353,8 @@ def score_rows(rows, frozen):
         if not s or not r["v2_sigma"]:
             continue
         h = r["horizon"]
-        ch = half_pct(s, h, k[h])
-        v2 = half_pct(r["v2_sigma"], h, ens_mod.V2_BAND_K[h])
+        ch = half_pct(s, h, k[h], r["mult"])
+        v2 = half_pct(r["v2_sigma"], h, ens_mod.V2_BAND_K[h], r["mult"])
         out.append({
             "ticker": r["ticker"], "as_of": r["as_of"], "horizon": h,
             "is_naive": row_is(r, r["naive_half"]),
