@@ -12,22 +12,26 @@ scripts/ensemble.py: V2_BAND_K is pinned by the #594 freeze tests
 and is the "frozen v2" baseline of score_adoption_594.py, so
 changing it would move the baseline under the comparison.
 
-Pre-registered keep/reject rule (as set by Moos on #436 thread,
-2026-11-26; decided before any new cell is scored; use only on
-cells NOT seen when this rule was written, i.e. not cells 1-72):
+Pre-registered keep/reject rule (written by Ins before any new
+cell was scored and accepted by Moos in Slack on 2026-11-26; the
+first wording used an absolute floor and was replaced by this
+relative one before use). Use only on cells NOT seen when the rule
+was written, i.e. not cells 1-72:
   KEEP the challenger's day k when, on at least 30 untouched rows,
     (1) challenger day coverage >= 0.75, and
-    (2) challenger day RangeSkill >= -0.036 (the frozen-v2 day
-        RangeSkill on cells 48-72, an absolute floor).
+    (2) challenger day RangeSkill >= frozen-v2 day RangeSkill on the
+        same rows (no worsening).
   REJECT otherwise. Fewer than 30 rows is INSUFFICIENT: the numbers
   are printed but no keep/reject is issued.
 How to read it: every backtest capture carries risk "none"
 (benchmarks/audit_risk_mult_594.py, P0), so RISK_MULT is 1.00 and
 the challenger at k = 1.2816 IS the naive band on day: its day
-RangeSkill is exactly 0, which clears (2) by construction. The rule
-is therefore a day-coverage test. The challenger-minus-v2 delta is
-still printed for information. If P0 ever reports a risk level other
-than "none" on new cells, re-read the result with that in mind.
+RangeSkill is exactly 0. Rule (2) then asks whether frozen v2 is
+worse than naive on the new rows, and (1) asks whether the wider
+band reaches 0.75 coverage. An absolute floor such as -0.036 would
+be vacuous at RangeSkill 0, which is why the rule is relative. If
+P0 reports a risk level other than "none" on new cells, re-read the
+result with that in mind.
 Run on cells 48-72 the output is descriptive only: those cells were
 seen before the rule was written.
 
@@ -62,7 +66,6 @@ HORIZONS = A.HORIZONS
 SESSIONS = A.SESSIONS
 MIN_ROWS = A.MIN_ROWS
 COVERAGE_FLOOR = 0.75
-SKILL_FLOOR_DAY = -0.036  # absolute floor, frozen v2 day RangeSkill
 
 
 def challenger_k(overrides=None):
@@ -177,12 +180,13 @@ def day_rule(cell):
         return "INSUFFICIENT (n=%d < %d): no keep/reject" % (
             cell["n"], MIN_ROWS)
     cov = cell["ch"]["coverage"]
-    sk = cell["ch"]["range_skill"]
+    sk, v2 = cell["ch"]["range_skill"], cell["v2"]["range_skill"]
     ok = cov is not None and cov >= COVERAGE_FLOOR \
-        and sk is not None and sk >= SKILL_FLOOR_DAY
+        and sk is not None and v2 is not None and sk >= v2
     return ("KEEP" if ok else "REJECT") + (
-        " (day coverage %s vs floor %.2f; day RangeSkill %s vs floor "
-        "%.3f)" % (_f(cov), COVERAGE_FLOOR, _f(sk), SKILL_FLOOR_DAY))
+        " (day coverage %s vs floor %.2f; challenger day RangeSkill %s "
+        "vs frozen v2 %s on the same rows)"
+        % (_f(cov), COVERAGE_FLOOR, _f(sk), _f(v2)))
 
 
 def _f(v, nd=3):

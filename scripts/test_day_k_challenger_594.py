@@ -52,20 +52,24 @@ def test_half_pct():
     check("no sigma gives None", D.half_pct({}, "day", 1.0) is None)
 
 
-def _cell(n, cov, skill):
-    return {"n": n, "ch": {"coverage": cov, "range_skill": skill}}
+def _cell(n, cov, skill, v2):
+    return {"n": n, "ch": {"coverage": cov, "range_skill": skill},
+            "v2": {"range_skill": v2}}
 
 
 def test_rule():
     check("insufficient below 30",
-          D.day_rule(_cell(29, 0.9, 0.1)).startswith("INSUFFICIENT"))
-    check("keep", D.day_rule(_cell(30, 0.75, 0.0)).startswith("KEEP"))
-    check("keep at the floor",
-          D.day_rule(_cell(30, 0.8, -0.036)).startswith("KEEP"))
+          D.day_rule(_cell(29, 0.9, 0.1, 0.0)).startswith("INSUFFICIENT"))
+    check("keep", D.day_rule(_cell(30, 0.75, 0.0, -0.03))
+          .startswith("KEEP"))
+    check("keep when equal to v2",
+          D.day_rule(_cell(30, 0.8, -0.02, -0.02)).startswith("KEEP"))
     check("reject on coverage",
-          D.day_rule(_cell(30, 0.74, 0.1)).startswith("REJECT"))
-    check("reject below skill floor",
-          D.day_rule(_cell(30, 0.8, -0.037)).startswith("REJECT"))
+          D.day_rule(_cell(30, 0.74, 0.1, 0.0)).startswith("REJECT"))
+    check("reject when worse than v2",
+          D.day_rule(_cell(30, 0.8, -0.01, 0.02)).startswith("REJECT"))
+    check("missing v2 skill rejects",
+          D.day_rule(_cell(30, 0.8, 0.0, None)).startswith("REJECT"))
 
 
 if __name__ == "__main__":
