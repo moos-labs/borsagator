@@ -1,0 +1,70 @@
+{
+ "tool": "walkforward-backtest",
+ "version": 1,
+ "issue": 436,
+ "ticker": "HRHO.CA",
+ "cutoff": "2025-11-14",
+ "status": "ok",
+ "gate": {
+  "ticker": "HRHO.CA",
+  "passed": true,
+  "reasons": [],
+  "rows": 1892,
+  "first_date": "2019-01-01",
+  "last_date": "2026-09-30",
+  "history_needed_from": "2023-09-28",
+  "max_gap_days": 10,
+  "max_gap_sessions_est": 6,
+  "longest_flat_run": 6,
+  "events_available": true,
+  "events_parse_error": null,
+  "series_start": null,
+  "history_floor": "2019-01-01",
+  "full_history_rows": 6101,
+  "full_history_first_date": "2002-06-10",
+  "full_history_longest_flat_run": 37,
+  "full_history_max_gap_days": 10,
+  "full_history_max_gap_sessions_est": 6,
+  "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."
+ },
+ "warmup_sessions": 1680,
+ "weights_source": "base-v1",
+ "base_price": 27.989999771118164,
+ "base_date": "2025-11-13",
+ "runner_refs": {
+  "kronos": "6964de99501d6fb855f253150f9421635d820c36",
+  "pandas-ta": "cddf15f3b7fd601eac85cf37a6385996e2b4ed10",
+  "talib": "d41956ca272c430c58c49a743eacc43fcbebc8e4"
+ },
+ "kronos": {
+  "seed": 42,
+  "pred_len": 21,
+  "context_start": "2019-01-01"
+ },
+ "determinism": {
+  "rerun": true,
+  "diffs": []
+ },
+ "realised": {
+  "maturity_date": "2025-12-14",
+  "index_ticker": "^EGX30"
+ },
+ "audit": {
+  "passed": true,
+  "violations": []
+ },
+ "files": {
+  "harness.log": "22eafe5d9542ba8958cedb92cabeef2987ee0df467f57ab369477a0d9dc27319",
+  "price.csv": "7e3d853215f610cdbdaf86c1b414a6a4693a578f61729f34f009bd594db146e7",
+  "realised.json": "a552a2480732a66f13c53cf3e116326cd1fdcd6c9503fc60692a50c9f08fd80d",
+  "collected/pandas-ta/indicators.csv": "fb50a54676f468054a29f46d1776086485f726221876e9ea095a6d9e63e14533",
+  "collected/pandas-ta/ta_snapshot.json": "6ad342c6dc79feda2e4a90191786296be03bd6445b9217d09f1692700aed2e20",
+  "collected/talib/indicators.csv": "f74e360500825cb23280a93d1089b8cf6abb70e9b63817ae41757688c907c9cc",
+  "collected/talib/ta_latest.json": "4ffa6da2508bc7bfdedcbe455410f2dbf5b7020fa26f143e2703eb7baf064bb3",
+  "collected/kronos/forecast.csv": "c3aea9a7817883dc6c449c39e3ee4eb9c66744d48974a64131b27a29c4a290ed",
+  "collected/kronos/report.md": "10f6a166c55d27cb920709cb70d6bdc374ab2eefce19ac1c666232e7f145c66d",
+  "digest/digest.json": "105ab00e785ef268617123a1e4a2064a36519f48d7c2636ed7645fc01758daaa",
+  "digest/digest.md": "1ed75c2a74b6e24ea99a0f21850f65a32a779eddf87ad53c7166ccd9714f0a81",
+  "digest/ensemble.json": "f071e5b2910e5f81ef34e976ee7c19bdf5e8c658752ac9692837e4e9a8d655e3"
+ }
+}
