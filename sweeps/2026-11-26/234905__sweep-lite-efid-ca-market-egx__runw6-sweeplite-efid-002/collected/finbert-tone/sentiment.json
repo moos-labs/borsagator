@@ -1,0 +1,126 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 3,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "neutral": 1,
+    "positive": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.749932780626807,
+    "negative": 9.728217690629926e-06,
+    "neutral": 0.25005750421292783
+  },
+  "items": [
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.8600827590707922e-06,
+        "negative": 3.828828994301148e-05,
+        "neutral": 0.999958872795105
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999958872795105
+        },
+        {
+          "label": "Negative",
+          "score": 3.828828994301148e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.8600827590707922e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "These Are the Best RFID-blocking Wallets For Travelers, According to T+L Editors - Travel + Leisure",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9997307658195496,
+        "negative": 4.6198272229958093e-07,
+        "neutral": 0.00026877957861870527
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9997307658195496
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00026877957861870527
+        },
+        {
+          "label": "Negative",
+          "score": 4.6198272229958093e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Edita’s Q3 profit jumps 41.5% on record sales - Dailynewsegypt",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 1.0,
+        "negative": 6.656874607102736e-09,
+        "neutral": 9.724809402200663e-09
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 1.0
+        },
+        {
+          "label": "Neutral",
+          "score": 9.724809402200663e-09
+        },
+        {
+          "label": "Negative",
+          "score": 6.656874607102736e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "EFID: 9M profit reached EGP 2.61bn as capacity investment expands amid rising risks - TradingView",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999974966049194,
+        "negative": 1.5594122260154109e-07,
+        "neutral": 2.3547531782242004e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999974966049194
+        },
+        {
+          "label": "Neutral",
+          "score": 2.3547531782242004e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.5594122260154109e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

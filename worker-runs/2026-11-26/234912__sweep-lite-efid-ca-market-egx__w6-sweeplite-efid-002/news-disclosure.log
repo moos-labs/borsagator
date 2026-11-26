@@ -1,0 +1,27 @@
+WARN body http 404: https://sg.finance.yahoo.com/quote/EFID.CA/seasonality/
+bodies: 2/3 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EFID.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5928.16it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15029.06it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16692.58it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5953.53it/s]
+{"tool": "news-disclosure", "ticker": "EFID.CA", "news_count": 2, "disclosure_count": 1, "arabic_headlines": 2, "latest_news_date": "Mon, 16 Nov 2026 08:21:03 GMT", "latest_disclosure_date": "Wed, 18 Nov 2026 19:05:53 GMT", "top_headline": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore", "llm_provider": "cohere", "finbert_positive": 0.033, "finbert_negative": 0.06, "finbert_neutral": 0.907, "finbert_scored": 1, "multilingual_positive": 0.923, "multilingual_negative": 0.004, "multilingual_neutral": 0.073, "multilingual_scored": 2, "bodies_fetched": 2, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.947, "translated_negative": 0.015, "translated_neutral": 0.037, "translated_scored": 2}
+BRIEF:
+- Edita Food Industries Company (EFID.CA) has released its seasonal returns chart, indicating a strong performance.
+- The company achieved its highest quarterly revenues ever, reaching 7.3 billion Egyptian pounds in the third quarter of 2026.
+- A significant year-over-year increase of 32.9% was recorded for the quarter, with net profit rising by an impressive 41.5% to 938.1 million Egyptian pounds.
+- This growth is attributed to strong sales volume and continued expansion across Edita's core sectors.
+- The first nine months of 2026 saw a 32.6% increase in revenue and a 54.0% surge in net profit year-over-year.
+- Edita's total sales volume for the quarter reached an impressive 1.2 billion units.
+- The company's exports grew by 23.6% to 673.6 million Egyptian pounds, showcasing its expanding international presence.
+- Edita's operations in Iraq contributed 144.4 million Egyptian pounds to its third-quarter revenue.

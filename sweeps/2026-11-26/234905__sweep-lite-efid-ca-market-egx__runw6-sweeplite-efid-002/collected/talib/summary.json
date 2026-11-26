@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "EFID.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EFID.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 2863,
+    "rows_used": 1930,
+    "last_date": "2026-11-25",
+    "last_close": 20.700000762939453,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-25",
+    "indicators.csv_last_close": "20.700000762939453"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 3,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.6654436176322633,
+    "negative": 0.000538498665264342,
+    "neutral": 0.33401790508651175
+  },
+  "items": [
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006191274733282626,
+        "negative": 0.000150120205944404,
+        "neutral": 0.9992307424545288
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992307424545288,
+        "positive": 0.0006191274733282626,
+        "negative": 0.000150120205944404
+      }
+    },
+    {
+      "text": "These Are the Best RFID-blocking Wallets For Travelers, According to T+L Editors - Travel + Leisure",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.6647899150848389,
+        "negative": 0.0005752755096182227,
+        "neutral": 0.33463484048843384
+      },
+      "raw_probabilities": {
+        "positive": 0.6647899150848389,
+        "neutral": 0.33463484048843384,
+        "negative": 0.0005752755096182227
+      }
+    },
+    {
+      "text": "Edita’s Q3 profit jumps 41.5% on record sales - Dailynewsegypt",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9982484579086304,
+        "negative": 0.0007653598440811038,
+        "neutral": 0.0009862331207841635
+      },
+      "raw_probabilities": {
+        "positive": 0.9982484579086304,
+        "neutral": 0.0009862331207841635,
+        "negative": 0.0007653598440811038
+      }
+    },
+    {
+      "text": "EFID: 9M profit reached EGP 2.61bn as capacity investment expands amid rising risks - TradingView",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981169700622559,
+        "negative": 0.0006632391014136374,
+        "neutral": 0.0012198042823001742
+      },
+      "raw_probabilities": {
+        "positive": 0.9981169700622559,
+        "neutral": 0.0012198042823001742,
+        "negative": 0.0006632391014136374
+      }
+    }
+  ]
+}

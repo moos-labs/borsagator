@@ -1,0 +1,8 @@
+headlines: 4 English scored-input, 0 Arabic skipped, window 30d, ticker EFID.CA
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 393/393 [00:00<00:00, 14011.79it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Scored 4 texts | counts={'neutral': 1, 'positive': 3} | means=positive=0.6654, negative=0.0005, neutral=0.3340

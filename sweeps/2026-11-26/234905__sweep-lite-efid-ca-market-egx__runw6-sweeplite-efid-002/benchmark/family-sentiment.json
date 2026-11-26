@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-24",
+ "base_price": 20.399999618530273,
+ "base_source": "consensus median",
+ "base_stale": true,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-26T23:49:05.776287+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 1.05,
+   "families": {
+    "sentiment": 0.644
+   },
+   "horizon_short": false,
+   "net_score": 0.644,
+   "range_high_pct": 5.12,
+   "range_low_pct": -3.02,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 4.8,
+   "families": {
+    "sentiment": 0.644
+   },
+   "horizon_short": false,
+   "net_score": 0.644,
+   "range_high_pct": 23.46,
+   "range_low_pct": -13.85,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 2.34,
+   "families": {
+    "sentiment": 0.644
+   },
+   "horizon_short": false,
+   "net_score": 0.644,
+   "range_high_pct": 11.45,
+   "range_low_pct": -6.76,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "b9e5cd3dd33c9e5ee3d209ac734fb20f515c3d6fabc4d387febf4061ab19f8dd",
+  "ensemble.json": "9e0bf4a735a36804ac5813dfd701994515794b170734e3fab317c8516f0a175c"
+ },
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0318,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002",
+ "ticker": "EFID.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

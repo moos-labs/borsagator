@@ -1,0 +1,91 @@
+{
+ "job": {
+  "id": "w6-sweeplite-efid-002",
+  "job": "sweep-lite EFID.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-26T23:45:50.568764+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-efid-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-26T23:45:50.568764+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "EFID"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['EFID']",
+  "extraction": {}
+ },
+ "finished": "2026-11-26T23:49:05.434021+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002",
+  "model": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002/report-model.json",
+  "model_sha256": "60575bb88295240ac6d989f6dc6e4446346ab9c9cd176f22a908e36ac6c104e6",
+  "degraded": null,
+  "flags": [
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/EFID.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/EFID.CA.json",
+   "sharia-row-missing: AAOIFI EFID.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 EFID.CA",
+   "sharia-row-missing: FTSE EFID.CA",
+   "sharia-row-missing: ISLAMICLY EFID.CA",
+   "sharia-row-missing: MSCI EFID.CA",
+   "sharia-row-missing: MSCI_M EFID.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "d080b3f559076c235332f344d6e5adbe4cfc2ff2",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 118293,
+    "sha256": "e53d5752c6a2937e21bcc5cf7aa4b50b296f467bf53331ec90b52016fe7b3787"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23739,
+    "sha256": "83911eea05cd1e113741cfabbbdc66e6d57f8b3e7f245f7a682ca1d5c715016e"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg-forecast-only",
+  "sweep_dir_fallback": true,
+  "ticker": "EFID.CA"
+ }
+}

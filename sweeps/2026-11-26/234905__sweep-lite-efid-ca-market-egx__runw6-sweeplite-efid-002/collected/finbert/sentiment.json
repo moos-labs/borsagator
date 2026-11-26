@@ -1,0 +1,53 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 4,
+  "label_counts": {
+    "positive": 2,
+    "negative": 0,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.5837812973186374,
+    "negative": 0.03013008087873459,
+    "neutral": 0.3860885901376605
+  },
+  "items": [
+    {
+      "text": "Edita Food Industries Company (S.A.E) (EFID.CA) Seasonal returns chart - Yahoo Finance Singapore",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.0332270972430706,
+        "negative": 0.05950705334544182,
+        "neutral": 0.907265841960907
+      }
+    },
+    {
+      "text": "These Are the Best RFID-blocking Wallets For Travelers, According to T+L Editors - Travel + Leisure",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.4197900593280792,
+        "negative": 0.008212987333536148,
+        "neutral": 0.5719969272613525
+      }
+    },
+    {
+      "text": "Edita’s Q3 profit jumps 41.5% on record sales - Dailynewsegypt",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.9298743009567261,
+        "negative": 0.03430870920419693,
+        "neutral": 0.0358169823884964
+      }
+    },
+    {
+      "text": "EFID: 9M profit reached EGP 2.61bn as capacity investment expands amid rising risks - TradingView",
+      "predicted": "positive",
+      "probabilities": {
+        "positive": 0.9522337317466736,
+        "negative": 0.018491573631763458,
+        "neutral": 0.029274608939886093
+      }
+    }
+  ]
+}

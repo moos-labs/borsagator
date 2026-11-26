@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-26",
+ "base_date": "2026-11-24",
+ "base_price": 20.399999618530273,
+ "base_source": "consensus median",
+ "base_stale": true,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-26T23:49:11.488757+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.75,
+   "direction": "up",
+   "expected_move_pct": 1.42,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 2.03,
+   "range_low_pct": 0.81,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.52,
+   "direction": "up",
+   "expected_move_pct": 3.21,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.53,
+   "range_low_pct": 1.89,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.68,
+   "direction": "up",
+   "expected_move_pct": 2.31,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.47,
+   "range_low_pct": 1.15,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_efid.csv": "0834eb3e0679f45a99cc9e9c4158d6a2f740bb390efb9876baa282a33f1abcb7",
+  "digest.json": "b9e5cd3dd33c9e5ee3d209ac734fb20f515c3d6fabc4d387febf4061ab19f8dd",
+  "ensemble.json": "9e0bf4a735a36804ac5813dfd701994515794b170734e3fab317c8516f0a175c",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_efid.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0318,
+ "status": "present",
+ "sweep": "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002",
+ "ticker": "EFID.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
