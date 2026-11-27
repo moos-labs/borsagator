@@ -46,11 +46,15 @@ Moos's rule (as relayed): macro rows present for the full [t-5, t-1] window plus
 the cutoff day. Defined here, with t = D:
 
 - C1 (the relayed criterion): every calendar day in [D-5, D] is COVERED.
-- C2 (extra, for the theme_spike width input of Proposal A): every calendar
-  day in [D-30, D-1] is also COVERED, because theme_spike compares a day with
-  its trailing 30-day mean and standard deviation
-  (docs/ins-macro-news-001-preregistration.md). A Proposal A cutoff would need
-  C1 and C2. This is the author's addition, to be confirmed.
+- C2 (extra, for the theme_spike width input of Proposal A): the day the
+  input evaluates at cutoff D is D-1, the last full UTC day before D (rows
+  stamped before 00:00 UTC of D). Its baseline is the 30 days before it, D-31
+  to D-2, as in the catalog's theme_spike (docs/ins-macro-news-001-
+  preregistration.md: the day's count against its trailing 30-day mean and
+  standard deviation). So C2 requires every calendar day in [D-31, D-1] to be
+  COVERED. A Proposal A cutoff would need C1 and C2. This is the author's
+  addition, to be confirmed; a shorter baseline would need its own
+  pre-registration.
 - COVERED is a coverage test, not a row-count test. A UTC day is covered only
   when every GKG file the master lists carry for that date has been processed
   by the macro channel (listed in STATE/macro_done.txt), for both streams
@@ -68,9 +72,11 @@ the cutoff day. Defined here, with t = D:
 Worked example on the relayed spans (round 33, #862), assuming no gaps in them:
 
 - C1 holds for 65 distinct D dates (first 2019-01-06, last 2023-02-02).
-- C1 and C2 hold for 25 distinct D dates (first 2020-02-03, last 2023-02-02).
-- Of the 6,027 grid cutoffs, 513 pass C1 (8.5%) and 219 pass C1 and C2 (3.6%,
-  about 2 per ticker-horizon grid, matching the round-33 estimate).
+- C1 and C2 hold for 23 distinct D dates (first 2020-02-03, last 2023-02-02).
+- Of the 6,027 grid cutoffs, 513 pass C1 (8.5%) and 210 pass C1 and C2 (3.5%,
+  about 2 per ticker-horizon grid). The round-33 figure of 53 qualifying
+  calendar days used a 30-day baseline ending at D-1 and no D-1 evaluation
+  day, so it is one day looser than C2 here.
 - This is availability for the dates covered so far, not for 2019-2023.
 
 ## 3. Check-script design (one command once the shards complete)
@@ -96,9 +102,11 @@ Inputs and what each gives:
   file names is the processed set; duplicates across shards are counted once
   and reported.
 - `--macro-matches` (repeatable): `macro_matches.jsonl`. Gives per-day row
-  counts from the `date` field (YYYYMMDDhhmmss), counting distinct
-  (`gkg_record_id`, `url`) as screen_news_width.load_matches does, so the zero-row anomaly and the
-  rows-per-day figures are exact.
+  counts from the `date` field (YYYYMMDDhhmmss). A (`gkg_record_id`, `url`)
+  pair is counted once, and only when both fields are present; a valid row
+  missing either field is counted on its own, as
+  screen_news_width.load_matches does. Unreadable lines are skipped and
+  counted.
 
 Steps: build the per-day coverage table (expected, processed, state COVERED,
 PARTIAL or MISSING); build the cutoff grid; flag each cutoff C1 and C1+C2
