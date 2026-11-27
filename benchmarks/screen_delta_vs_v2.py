@@ -58,6 +58,9 @@ SCREENS = ("market_factor", "exog_factor", "fx_stress")
 FAMILY_SIZE = (len(MF.MODELS) + len(XF.FACTORS) + len(FX.BETAS)) \
     * len(HORIZONS) * len(REGIMES)   # 48
 _f = SB._f
+_f4 = lambda v: "n/a" if v is None else "%.4f" % v  # noqa: E731
+# display only: deltas can be below 0.001, so delta and its interval print
+# at 4 decimals; p stays at 3. The JSON keeps full precision.
 
 
 def delta_stat(pairs):
@@ -127,8 +130,8 @@ def render(rows):
         L.append("  %s %s %s %s: n=%d cutoffs=%d delta %s (CI cutoff "
                  "[%s, %s]) p %s Holm-adjusted p %s"
                  % (r["screen"], r["name"], r["regime"], r["horizon"],
-                    r["n"], r["cutoffs"], _f(r["delta"]), _f(r["ci"][0]),
-                    _f(r["ci"][1]), _f(r["p"]), _f(r["holm_adj_p"])))
+                    r["n"], r["cutoffs"], _f4(r["delta"]), _f4(r["ci"][0]),
+                    _f4(r["ci"][1]), _f(r["p"]), _f(r["holm_adj_p"])))
     return "\n".join(L)
 
 

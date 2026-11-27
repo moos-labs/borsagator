@@ -103,6 +103,17 @@ def test_holm_family_fixed():
           [r["holm_adj_p"] for r in rows])
 
 
+def test_render_small_delta():
+    row = {"screen": "s", "name": "n", "horizon": "day", "regime": "post",
+           "n": 10, "cutoffs": 5, "delta": 0.00063,
+           "ci": [0.00021, 0.00094], "p": 0.0125, "holm_adj_p": 0.024}
+    txt = D.render([row])
+    check("small delta and interval keep 4 decimals", "delta 0.0006 "
+          "(CI cutoff [0.0002, 0.0009])" in txt, txt)
+    check("p keeps 3 decimals", "p 0.013 Holm-adjusted p 0.024" in txt, txt)
+    check("none rounds to 0.000", "0.000 " not in txt, txt)
+
+
 def test_main():
     by_t = TM.series()
     with tempfile.TemporaryDirectory() as d:
@@ -162,7 +173,8 @@ def test_main():
 
 def main():
     for fn in (test_constants, test_delta_stat, test_bootstrap_and_p,
-               test_holm_family_fixed, test_main):
+               test_holm_family_fixed, test_render_small_delta,
+               test_main):
         fn()
     print("test_screen_delta_vs_v2: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
