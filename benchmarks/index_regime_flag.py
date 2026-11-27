@@ -1,8 +1,9 @@
 """Round 68 route 2: index-regime flag, DESCRIPTIVE only (stdlib).
 
 Pre-registration: docs/round68_index_regime_prereg.md (committed before
-any number was computed). No verdict word or key. Reads cells <= --max-cell
-(default 47, the training block); refuses higher cells without --allow-extend.
+any number was computed). No verdict word or key. Reads the
+training block (cells <= 47) first; cells above 47 are read only with
+--allow-extend and only when every pre-registered threshold is met.
 
 x = ln(index close at last session <= cutoff / close 21 sessions earlier).
 y = ticker realised_move_pct (buy-and-hold row, dividend_gap rows dropped).
@@ -11,6 +12,7 @@ y = ticker realised_move_pct (buy-and-hold row, dividend_gap rows dropped).
 import argparse
 import bisect
 import csv
+import datetime as dt
 import glob
 import json
 import math
@@ -19,6 +21,7 @@ import random
 import re
 
 LOOKBACK = 21
+MAX_STALE_DAYS = 10
 HORIZONS = ("day", "week", "month")
 B_DRAWS = 2000
 SEED = 68
@@ -44,6 +47,9 @@ def trailing_x(series, asof, n=LOOKBACK):
     dates = [d for d, _ in series]
     i = bisect.bisect_right(dates, asof) - 1
     if i < n:
+        return None
+    gap = (dt.date.fromisoformat(asof) - dt.date.fromisoformat(dates[i])).days
+    if gap > MAX_STALE_DAYS:
         return None
     return math.log(series[i][1] / series[i - n][1])
 
@@ -162,6 +168,22 @@ def prereg_thresholds(res):
     return out
 
 
+def run(cells_dir, series, max_cell=TRAIN_MAX, allow_extend=False):
+    """Training block (cells 1-47) first. Cells above 47 are read only when
+    --allow-extend is given AND every pre-registered threshold is met."""
+    res, _ = build(cells_dir, series, TRAIN_MAX)
+    res["prereg_thresholds"] = prereg_thresholds(res)
+    if max_cell > TRAIN_MAX:
+        if not allow_extend:
+            raise SystemExit("cells above %d need --allow-extend" % TRAIN_MAX)
+        if not res["prereg_thresholds"]["all_met"]:
+            raise SystemExit("extension refused: training thresholds not all met: "
+                             + json.dumps(res["prereg_thresholds"]))
+        ext, _ = build(cells_dir, series, max_cell, min_cell=TRAIN_MAX + 1)
+        res["extension"] = ext
+    return res
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--cells", default="backtest/cells")
@@ -171,11 +193,8 @@ def main(argv=None):
     ap.add_argument("--allow-extend", action="store_true")
     ap.add_argument("--json")
     a = ap.parse_args(argv)
-    if a.max_cell > TRAIN_MAX and not a.allow_extend:
-        raise SystemExit("cells above %d need --allow-extend" % TRAIN_MAX)
     series = {"EGX30": load_series(a.egx30), "GSPC": load_series(a.gspc)}
-    res, _ = build(a.cells, series, a.max_cell)
-    res["prereg_thresholds"] = prereg_thresholds(res)
+    res = run(a.cells, series, a.max_cell, a.allow_extend)
     txt = json.dumps(res, indent=1)
     if a.json:
         open(a.json, "w").write(txt + "\n")

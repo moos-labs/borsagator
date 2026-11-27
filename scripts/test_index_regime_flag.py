@@ -120,11 +120,17 @@ def test_thresholds_and_cli():
     for key, val in (("n", 29), ("spearman", 0.199), ("sign_agree_share", 0.599), ("spearman_ci95", [0.0, 0.4])):
         r2 = {"horizons": {"week": dict(good), "month": dict(good, **{key: val})}}
         check("fails on " + key, not M.prereg_thresholds(r2)["all_met"], key)
-    try:
-        M.main(["--max-cell", "48"])
-        check("refuse extend", False)
-    except SystemExit as e:
-        check("refuse extend", "allow-extend" in str(e))
+    with tempfile.TemporaryDirectory() as d0:
+        for nm in ("e.csv", "g.csv"):
+            with open(os.path.join(d0, nm), "w") as f:
+                f.write("date,close\n" + "".join("%s,%s\n" % r for r in series()))
+        write_cell(d0, 1, "AAA.CA", "2024-03-05", {"day": 1.0, "week": 2.0, "month": 3.0})
+        try:
+            M.main(["--cells", d0, "--egx30", os.path.join(d0, "e.csv"), "--gspc",
+                    os.path.join(d0, "g.csv"), "--max-cell", "48"])
+            check("refuse extend without flag", False)
+        except SystemExit as e:
+            check("refuse extend without flag", "allow-extend" in str(e))
     with tempfile.TemporaryDirectory() as d:
         for nm, s in (("e.csv", series()), ("g.csv", series())):
             with open(os.path.join(d, nm), "w") as f:
@@ -137,9 +143,49 @@ def test_thresholds_and_cli():
         check("no verdict word", not any(w in txt for w in ("verdict", "keep", "reject", "adopt")))
 
 
+def test_stale_bar_and_extension_gate():
+    s = series()
+    # last bar 2024-03-12 (index 39); asof 10 days later is still allowed, 11 is None
+    check("stale 10 days ok", M.trailing_x(s, "2024-03-22") is not None)
+    check("stale 11 days None", M.trailing_x(s, "2024-03-23") is None)
+    check("stale far None", M.trailing_x(s, "2024-06-01") is None)
+    with tempfile.TemporaryDirectory() as d:
+        write_cell(d, 1, "AAA.CA", "2024-03-05", {"day": 1.0, "week": 2.0, "month": 3.0})
+        write_cell(d, 2, "BBB.CA", "2024-06-01", {"day": 1.0, "week": 2.0, "month": 3.0})  # stale bar
+        sr = {"EGX30": s, "GSPC": s}
+        res, cells = M.build(d, sr)
+        check("stale cell lacking", [r["cell"] for r in res["cells_without_index"]] == [2] and len(cells) == 1)
+        # extension gate: training fails (n < 30), so extension is refused
+        write_cell(d, 48, "CCC.CA", "2024-03-05", {"day": 1.0, "week": 1.0, "month": 1.0})
+        try:
+            M.run(d, sr, max_cell=48, allow_extend=True)
+            check("extension refused when training fails", False)
+        except SystemExit as e:
+            check("extension refused when training fails", "training thresholds not all met" in str(e))
+        # training passes: 40 cells with perfect monotone relation, extension allowed
+    with tempfile.TemporaryDirectory() as d:
+        ser = [("2024-%02d-%02d" % (1 + i // 28, 1 + i % 28), 100.0 * math.exp(0.0005 * i * i)) for i in range(200)]
+        sr = {"EGX30": ser, "GSPC": ser}
+        for k in range(1, 41):
+            asof = ser[30 + k * 2][0]
+            write_cell(d, k, "T%d.CA" % k, asof, {"day": k * 1.0, "week": k * 1.0, "month": k * 1.0})
+        write_cell(d, 48, "ZZ.CA", ser[150][0], {"day": 1.0, "week": 1.0, "month": 1.0})
+        res = M.run(d, sr, max_cell=48, allow_extend=True)
+        check("training thresholds pass", res["prereg_thresholds"]["all_met"], res["prereg_thresholds"])
+        check("training block excludes cell 48", res["n_cells_used"] == 40, res["n_cells_used"])
+        check("extension read when passing", "extension" in res and res["extension"]["n_cells_used"] == 1)
+        res_t = M.run(d, sr)
+        check("default run has no extension", "extension" not in res_t)
+        try:
+            M.run(d, sr, max_cell=48, allow_extend=False)
+            check("no flag refused", False)
+        except SystemExit as e:
+            check("no flag refused", "allow-extend" in str(e))
+
+
 def run_all():
     for fn in (test_trailing_x, test_trailing_x_nongeometric, test_spearman_and_ties, test_boot_clustered,
-               test_build_filters_and_blocks, test_thresholds_and_cli):
+               test_build_filters_and_blocks, test_thresholds_and_cli, test_stale_bar_and_extension_gate):
         fn()
 
 
