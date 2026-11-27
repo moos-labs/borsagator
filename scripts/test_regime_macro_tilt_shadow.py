@@ -120,9 +120,35 @@ def test_counts():
     check("no macro series -> no regime", R.counts(led, [])["n_with_regime"] == 0)
     check("no verdict keys", not any(w in repr(c) for w in ("verdict", "keep", "p_value")))
 
+PINNED_SERIES = [
+    ("2022-03-21", 100), ("2022-05-19", 200), ("2022-06-23", 0), ("2022-08-18", 0), ("2022-09-22", 0), ("2022-10-27", 200),
+    ("2022-12-22", 300), ("2023-02-02", 0), ("2023-03-30", 200), ("2023-05-18", 0), ("2023-06-22", 0), ("2023-08-03", 100),
+    ("2023-09-21", 0), ("2023-11-02", 0), ("2023-12-21", 0), ("2024-02-01", 200), ("2024-03-06", 600), ("2024-05-23", 0),
+    ("2024-07-18", 0), ("2024-09-05", 0), ("2024-10-17", 0), ("2024-11-21", 0), ("2024-12-26", 0), ("2025-02-20", 0),
+    ("2025-04-17", -225), ("2025-05-22", -100), ("2025-07-10", 0), ("2025-08-28", -200), ("2025-10-02", -100),
+    ("2025-11-20", 0), ("2025-12-25", -100), ("2026-02-12", -100), ("2026-04-02", 0), ("2026-05-21", 0), ("2026-07-09", 0),
+    ("2026-08-20", 0), ("2026-09-24", 0), ("2026-10-29", 100)]
+
+
+def test_collected_series():
+    """Pins the committed CBE decision series (a data file, read as-is): 2022-08-18 and 2023-02-02 holds are present,
+    the other 36 rows are unchanged, and only Feb 2023 changes a regime classification (tightening -> hold)."""
+    path = os.path.join(HERE, "..", "evaluation", "macro_series", "cbe_decisions.json")
+    ok, rej = R.load_decisions(path)
+    check("series: all usable, none rejected", rej == 0 and len(ok) == 38, (len(ok), rej))
+    check("series: exact dates and bps, chronological", [(d["published_date"], d["change_bps"]) for d in ok] == PINNED_SERIES)
+    check("series: Feb 2023 date -> hold", R.regime_from_decisions(ok, "2023-02-03") == "hold" and R.regime_from_decisions(ok, "2023-03-30") == "hold")
+    check("series: after 2023-03-30 -> tightening", R.regime_from_decisions(ok, "2023-03-31") == "tightening")
+    check("series: 2023-02-02 day-of still tightening (date-only)", R.regime_from_decisions(ok, "2023-02-02") == "tightening")
+    check("series: Aug 2022 hold date", R.regime_from_decisions(ok, "2022-08-19") == "hold")
+    without = [d for d in ok if d["published_date"] != "2023-02-02"]
+    check("series: without the Feb 2023 row the gap is tightening (the defect)", R.regime_from_decisions(without, "2023-03-01") == "tightening")
+    check("series: Aug 18 is a completeness fix, no regime change", R.regime_from_decisions([d for d in ok if d["published_date"] != "2022-08-18"], "2022-09-01") == R.regime_from_decisions(ok, "2022-09-01") == "hold")
+    check("series: sources present", all(d["source_url"].startswith("https://") and d["source_name"] for d in ok))
+
 
 def run_all():
-    for fn in (test_load_rows, test_point_in_time, test_regime, test_unusable_decisions, test_counts):
+    for fn in (test_load_rows, test_point_in_time, test_regime, test_unusable_decisions, test_counts, test_collected_series):
         fn()
 
 
