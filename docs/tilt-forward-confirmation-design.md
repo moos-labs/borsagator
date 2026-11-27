@@ -133,10 +133,14 @@ at least 10 tickers across the forward rows of each horizon (the
 tickers can rotate between sweeps), starting the next session after
 registration. That cadence is the cycle's, and the tilt-bearing sweeps
 so far are 5 to 9 tickers per date. Cutoff clusters needed = 10, so the 10th
-cutoff is session 10. Verdict sessions after registration: day about 11,
-week about 15, month about 31 (10th cutoff plus 1, 5 and 21 sessions).
-With one sweep date per week these become 10 weeks for day, plus the
-horizon. Fewer than 10 distinct tickers across the forward rows of a horizon
+cutoff is session 10. Eligibility times after registration, when each
+horizon first meets rule 1: day about 11, week about 15, month about 31
+(10th cutoff plus 1, 5 and 21 sessions). These are not verdict times. Under
+the joint scoring trigger there is one verdict, at the first point all three
+horizons are eligible, so about session 31, set by the month horizon (when the
+ticker and row minimums also hold). With one sweep date per week the sessions
+become weeks: eligibility at about 11, 15 and 31 weeks, the joint verdict at
+about 31 weeks. Fewer than 10 distinct tickers across the forward rows of a horizon
 blocks rule 1 whatever the dates. Tickers per sweep do not need to reach
 10 if the sweeps rotate through at least 10 between them.
 
