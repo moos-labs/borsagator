@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 10.45,
+ "base_source": "egx-data/egxpy_orhd.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T09:49:52.201658+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 0.5,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.5,
+   "range_low_pct": -0.5,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.4,
+   "direction": "flat",
+   "expected_move_pct": -0.2,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.8,
+   "range_low_pct": -2.2,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.7,
+   "direction": "down",
+   "expected_move_pct": -1.5,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 0.5,
+   "range_low_pct": -3.5,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_orhd.csv": "e6024cd2d4f8f342e51cae9d0d9ecbaaee02ccc6eb5904bb731b9281670cfcd6",
+  "digest.json": "b9816505f5e5ccad92ac9066fe5d106b3bac279ea437a8341f77ce9bd9ad4de1",
+  "ensemble.json": "93f3a359cd59b525b9137884b224ee56338a2de356d5b0f53c5f62210309a236",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_orhd.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0265,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+ "ticker": "ORHD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

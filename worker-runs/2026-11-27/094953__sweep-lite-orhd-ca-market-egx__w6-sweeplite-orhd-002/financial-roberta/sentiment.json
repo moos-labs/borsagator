@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.0005021083052270114,
+    "negative": 0.00015350985631812364,
+    "neutral": 0.9993442893028259
+  },
+  "items": [
+    {
+      "text": "First State Financial Corporation (FSTF) Seasonal returns chart - Yahoo Finance UK",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005021083052270114,
+        "negative": 0.00015350985631812364,
+        "neutral": 0.9993442893028259
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993442893028259,
+        "positive": 0.0005021083052270114,
+        "negative": 0.00015350985631812364
+      }
+    }
+  ]
+}

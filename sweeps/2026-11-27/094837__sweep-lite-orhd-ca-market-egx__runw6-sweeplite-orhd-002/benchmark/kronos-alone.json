@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 10.45,
+ "base_source": "egx-data/egxpy_orhd.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T09:48:37.853098+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -1.72,
+   "families": {
+    "price-forecast": -0.324
+   },
+   "horizon_short": false,
+   "net_score": -0.324,
+   "range_high_pct": 1.02,
+   "range_low_pct": -3.73,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -2.38,
+   "families": {
+    "price-forecast": -0.098
+   },
+   "horizon_short": false,
+   "net_score": -0.098,
+   "range_high_pct": 0.06,
+   "range_low_pct": -4.91,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 0.81,
+   "families": {
+    "price-forecast": 0.069
+   },
+   "horizon_short": false,
+   "net_score": 0.069,
+   "range_high_pct": 1.98,
+   "range_low_pct": -2.38,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "3ec93a322383cbc700e8441a1845f940402d8cdd116ddbc08b7fa005625b4d30",
+  "digest.json": "b9816505f5e5ccad92ac9066fe5d106b3bac279ea437a8341f77ce9bd9ad4de1",
+  "ensemble.json": "93f3a359cd59b525b9137884b224ee56338a2de356d5b0f53c5f62210309a236"
+ },
+ "kronos_first_row_date": "2026-11-26",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0265,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+ "ticker": "ORHD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

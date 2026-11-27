@@ -1,0 +1,50 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 4.063100277562626e-06,
+    "negative": 1.4685620953969192e-05,
+    "neutral": 0.9999812841415405
+  },
+  "items": [
+    {
+      "text": "First State Financial Corporation (FSTF) Seasonal returns chart - Yahoo Finance UK",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.063100277562626e-06,
+        "negative": 1.4685620953969192e-05,
+        "neutral": 0.9999812841415405
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999812841415405
+        },
+        {
+          "label": "Negative",
+          "score": 1.4685620953969192e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.063100277562626e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

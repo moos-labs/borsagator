@@ -1,0 +1,1279 @@
+{
+  "archive_commit": "a0bc53d6c9b8b9204fc070939ee497b145d8e1c8",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "0d46d70efdda6994d0f9ab4bf0153496f54cbdcf09f55dc05e3f2b277128e4a5",
+      "family-agent.json": "4db5d048dca79d8d2de4d567f40186bbd7211e9dff933bdfea3b5fb97a91b61d",
+      "family-fundamentals.json": "94f780f7759a598ec85681e97916e82be01c062787df3360400a01f0082414b7",
+      "family-price-forecast.json": "e0798ee773e304d53af36f28ff625b6cb621464325080a53f811bd7960d5c33e",
+      "family-sentiment.json": "8dc7fceb02749bc9e612aa2fbf25425c96710733cffaa3935d8144f474609c0e",
+      "family-technicals.json": "c564238cc0c2a0a3fd38cfc49c570a33a46537382fc2500539180e772557e045",
+      "kronos-alone.json": "4bc12d28cadbe515d0bb577c56a03cdb543dc0e4f7029709467b64d51ba3b654",
+      "raw-llm-cohere.json": "a27f12306423bc9a0fd2e981a8fbbfa023889e1f5bced8b81252a3a25e22ccad"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ORHD-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 10.45,
+    "base_source": "egx-data/egxpy_orhd.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": -0.098,
+      "sentiment": -0.008,
+      "technicals": 0.233
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.008
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.7158,
+        "net_score": -0.008,
+        "range_high_pct": 3.96,
+        "range_low_pct": -3.96,
+        "tilt_centre_pct": -0.0,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.6465
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": -0.008,
+          "technicals": 0.233
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.3789,
+        "net_score": 0.292,
+        "range_high_pct": 18.92,
+        "range_low_pct": -18.92,
+        "tilt_centre_pct": 2.27,
+        "trading_sessions": 21,
+        "vol_h_pct": 12.1278
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.008,
+          "technicals": 0.233
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.8124,
+        "net_score": 0.129,
+        "range_high_pct": 9.85,
+        "range_low_pct": -9.85,
+        "tilt_centre_pct": 0.34,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.9178
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_orhd.csv",
+      "base_stale": false,
+      "base_used": 10.45,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_orhd.csv": 10.38,
+        "openbb/orhd_ca.csv": 10.380000114440918,
+        "pandas-ta/indicators.csv": 10.380000114440918,
+        "talib/indicators.csv": 10.380000114440918,
+        "yahooquery/orhd.ca.csv": 10.380000114440918
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.662,
+    "sigma60_daily": 0.0265,
+    "sigma_daily": 0.0265,
+    "sigma_source": "egx-data/egxpy_orhd.csv (σ60=0.0265, σ10=0.0241)",
+    "ticker": "ORHD.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": -0.098,
+    "sentiment": -0.008,
+    "technicals": 0.233
+  },
+  "finished": "2026-11-27T09:48:37.551231+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/ORHD.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ORHD.CA.json",
+    "sharia-row-missing: AAOIFI ORHD.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ORHD.CA",
+    "sharia-row-missing: FTSE ORHD.CA",
+    "sharia-row-missing: ISLAMICLY ORHD.CA",
+    "sharia-row-missing: MSCI ORHD.CA",
+    "sharia-row-missing: MSCI_M ORHD.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.008
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.7158,
+      "net_score": -0.008,
+      "range_high_pct": 3.96,
+      "range_low_pct": -3.96,
+      "tilt_centre_pct": -0.0,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.6465
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": -0.008,
+        "technicals": 0.233
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.3789,
+      "net_score": 0.292,
+      "range_high_pct": 18.92,
+      "range_low_pct": -18.92,
+      "tilt_centre_pct": 2.27,
+      "trading_sessions": 21,
+      "vol_h_pct": 12.1278
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.008,
+        "technicals": 0.233
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.8124,
+      "net_score": 0.129,
+      "range_high_pct": 9.85,
+      "range_low_pct": -9.85,
+      "tilt_centre_pct": 0.34,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.9178
+    }
+  },
+  "job": "sweep-lite ORHD.CA market=EGX",
+  "job_shape": "sweep-lite ORHD.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 11.4793,
+    "support": 9.4207
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 10.45,
+    "base_source": "egx-data/egxpy_orhd.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_orhd.csv",
+      "base_stale": false,
+      "base_used": 10.45,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_orhd.csv": 10.38,
+        "openbb/orhd_ca.csv": 10.380000114440918,
+        "pandas-ta/indicators.csv": 10.380000114440918,
+        "talib/indicators.csv": 10.380000114440918,
+        "yahooquery/orhd.ca.csv": 10.380000114440918
+      }
+    },
+    "sessions_per_calendar_day": 0.662,
+    "sigma_daily": 0.0265,
+    "sigma_source": "egx-data/egxpy_orhd.csv (σ60=0.0265, σ10=0.0241)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 10.45,
+      "last_date": "2026-11-26",
+      "last_high": 10.5,
+      "last_low": 10.31,
+      "last_open": 10.38,
+      "last_volume": 4195177.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_orhd.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.449999809265137,
+      "last_date": "2026-11-26",
+      "last_high": 10.5,
+      "last_low": 10.3100004196167,
+      "last_open": 10.380000114440918,
+      "last_volume": 4195177.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ORHD_CA.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.449999809265137,
+      "last_date": "2026-11-26",
+      "last_high": 10.5,
+      "last_low": 10.3100004196167,
+      "last_open": 10.380000114440918,
+      "last_volume": 4195177.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.449999809265137,
+      "last_date": "2026-11-26",
+      "last_high": 10.5,
+      "last_low": 10.3100004196167,
+      "last_open": 10.380000114440918,
+      "last_volume": 4195177.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.380000114440918,
+      "last_date": "2026-11-25",
+      "last_high": 10.600000381469727,
+      "last_low": 10.300000190734863,
+      "last_open": 10.4399995803833,
+      "last_volume": 10844281.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/ORHD.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-orhd-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-orhd-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ORHD.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORHD.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T09:46:32.955540+00:00",
+  "sweep_dir": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+  "ticker": "ORHD.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ORHD.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ORHD.CA.csv_last_close": 10.380000114440918,
+          "ORHD.CA.csv_last_date": "2026-11-25",
+          "rows_ORHD.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "78865de6ecbd98a253a9cd75f4c25b9ebd45620a8432b42bc1393d12e3c4a79c",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ORHD_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ORHD_CA.csv_last_close": 10.449999809265137,
+          "ORHD_CA.csv_last_date": "2026-11-26",
+          "rows_ORHD_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "ed1f639421a205f4306f5a3c88066b095f0b73e9a839f20c3c4b38d88593ed52",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_orhd.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_orhd.csv_last_close": 10.45,
+          "egxpy_orhd.csv_last_date": "2026-11-26",
+          "rows_egxpy_orhd.csv": 3000,
+          "symbol": "ORHD",
+          "ticker": "ORHD.CA"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "6d673cc37c752992e8a3cd8b3356f68cbe8164ae48e3db9a3ba5675f1e335180",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 54.0914,
+          "atr_14": 0.5434,
+          "bb_lower": 9.6124,
+          "bb_mid": 10.193,
+          "bb_pctb": 0.7213,
+          "bb_upper": 10.7736,
+          "close": 10.45,
+          "date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.7049,
+          "ema_200": 25.9657,
+          "ema_50": 16.0543,
+          "first_date_used": "2019-01-01",
+          "high": 10.5,
+          "indicators.csv_last_close": 10.449999809265137,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_date": "2026-11-26",
+          "low": 10.31,
+          "macd": -1.2444,
+          "macd_hist": 0.5449,
+          "macd_signal": -1.7893,
+          "open": 10.38,
+          "rows_fetched": 4683,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "rsi_14": 34.9866,
+          "stoch_d": 51.1033,
+          "stoch_k": 63.0252,
+          "ticker": "ORHD.CA"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "b9c765c42302485aafb02939c9931324cd44c44e66a4fd905d9cf1bf7dbae464",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 10.449999809265137,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_close": 10.449999809265137,
+          "last_date": "2026-11-26",
+          "rows_fetched": 4683,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "ticker": "ORHD.CA"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "470d27f839c78142edf397c8cebfe192b7b9647644b4090771e900b3ff1244a8",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.829999923706055,
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "fcaba3c2ef6e4b7aee223aa0f49412f10fcf2608861aea2975512462b4d1bf22",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.829999923706055,
+          "rows_poul_ohlc.csv": 2438
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "0d1af63498a0b3d1a79b77e739997abdfc5f3256be128c1ea640e97567c15cab",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "fb4439e79470e811edb8a2e50b3982d43d6afe3a6ef680fc2575b01a5969a9d9",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "7e9d4af4e1c5bf4cb10ed5f378b4cbffd63cfe2429b469957f6e334720041943",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "93993a43ecfc607ab3d2e011ee92c7c22060244748ca69f7542034eb8e05159d",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "10ee7e1d84cfc80dba1ba1d113038b9b471a7963d264b2bb4a9d12e9cbe08e37",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 10.2014,
+          "forecast.csv_last_date": "2026-12-24",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "fe25433333384ff414e248f960f6a3bc784b54820afca12b1409490785ca024a",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ORHD.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "e6d8c62e0dcab896f4ac182ce416a6fec9eac6561eb8bd3594cbd25b4bfc54e0",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-orhd-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ORHD.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "ee9a2289e1ce30f77f1ebd01849162e985df7b19eae1ce3250b83726f711b38f",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orhd-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
