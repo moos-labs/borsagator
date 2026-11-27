@@ -22,7 +22,7 @@ timestamps; verifying that is a prerequisite for any real run.
 Feature: x = log(1 + matches for the ticker in the 7 calendar days before
 the cutoff day, rule above). z = standardised x against the same
 ticker's EARLIER pseudo-cutoffs of the same horizon grid (population
-mean and stdev, at least 8 earlier cutoffs, else z = 0; sd 0 gives z = 0).
+mean and stdev, at least 8 earlier cutoffs, else z = 0; sd 0 or within 1e-9 x max(1, |mean|) gives z = 0).
 Band: half = V2_BAND_K[h] x s60 x sqrt(sessions) x 100 x
 exp(beta x clip(z, -3, 3)); the multiplier is always positive and beta =
 0 is exactly frozen v2 (tested). Beta is NOT fitted: the family is the
@@ -64,22 +64,30 @@ FAMILY_SIZE = len(BETAS) * len(HORIZONS) * len(REGIMES)   # 12
 WINDOW_DAYS = 7
 MIN_PRIOR = 8
 Z_CLIP = 3.0
+ZSD_TOL = 1e-9   # near-constant history counts as constant (z = 0)
 _f = SB._f
 
 
 def load_matches(path):
     """{ticker: sorted [timestamp str]}; unreadable lines are skipped
-    and counted (binary read, per-line decode)."""
-    by_t, bad = {}, 0
+    and counted (binary read, per-line decode). Lines repeating a
+    (gkg_record_id, url) pair are counted once (crash-resume can write a
+    record twice); lines without both fields are kept as they are."""
+    by_t, bad, seen = {}, 0, set()
     with open(path, "rb") as f:
         for raw in f:
             try:
                 r = json.loads(raw.decode("utf-8"))
                 ts = str(r["date"])
                 tickers = list(r["tickers"])
+                rid, url = r.get("gkg_record_id"), r.get("url")
             except (UnicodeDecodeError, ValueError, KeyError, TypeError):
                 bad += 1
                 continue
+            if rid is not None and url is not None:
+                if (rid, url) in seen:
+                    continue
+                seen.add((rid, url))
             for t in tickers:
                 by_t.setdefault(t, []).append(ts)
     return {t: sorted(v) for t, v in by_t.items()}, bad
@@ -99,7 +107,7 @@ def zscore(x, prior):
         return 0.0
     mu = sum(prior) / len(prior)
     sd = math.sqrt(sum((v - mu) ** 2 for v in prior) / len(prior))
-    return 0.0 if sd == 0 else (x - mu) / sd
+    return 0.0 if sd <= ZSD_TOL * max(1.0, abs(mu)) else (x - mu) / sd
 
 
 def multiplier(beta, z):
@@ -107,8 +115,9 @@ def multiplier(beta, z):
 
 
 def ticker_key(t):
-    """store file stem 'ABCD_CA' -> match ticker 'ABCD.CA'."""
-    return t.replace("_CA", ".CA")
+    """store file stem 'ABCD_CA' -> producer ticker 'ABCD' (the alias
+    table and matches.jsonl write bare tickers, no .CA suffix)."""
+    return t[:-3] if t.endswith("_CA") else t
 
 
 def screen_pairs(by_t, news, step=SB.STEP, min_hist=SB.MIN_HIST,
