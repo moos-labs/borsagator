@@ -4,26 +4,26 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "4d3ba3bb73b5112a84109832269d15c033d0018e",
-  "commit_sha": "4d3ba3bb73b5112a84109832269d15c033d0018e",
+  "tree_sha": "dc41ae4600b6f0af3dbae5c1447d7c7c0190aa48",
+  "commit_sha": "dc41ae4600b6f0af3dbae5c1447d7c7c0190aa48",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 110,
-  "sweeps_with_freeze": 66,
-  "entrant_rows": 1149,
-  "matured": 181,
-  "pending": 914,
+  "sweeps": 116,
+  "sweeps_with_freeze": 72,
+  "entrant_rows": 1254,
+  "matured": 216,
+  "pending": 984,
   "invalid": 54,
   "excluded_flagged": 0
  },
  "by_entrant": {
   "ensemble": {
    "day": {
-    "n": 39,
-    "hit_rate": 0.128,
-    "mean_abs_error_pp": 6.99,
-    "range_coverage": 0.692
+    "n": 45,
+    "hit_rate": 0.156,
+    "mean_abs_error_pp": 6.4,
+    "range_coverage": 0.711
    },
    "week": {
     "n": 15,
@@ -40,10 +40,10 @@
   },
   "buy-and-hold": {
    "day": {
-    "n": 25,
-    "hit_rate": 0.36,
-    "mean_abs_error_pp": 1.97,
-    "range_coverage": 0.88
+    "n": 31,
+    "hit_rate": 0.387,
+    "mean_abs_error_pp": 1.92,
+    "range_coverage": 0.871
    },
    "week": {
     "n": 6,
@@ -80,9 +80,9 @@
   },
   "family-fundamentals": {
    "day": {
-    "n": 24,
+    "n": 30,
     "hit_rate": 0.333,
-    "mean_abs_error_pp": 2.45,
+    "mean_abs_error_pp": 2.28,
     "range_coverage": 1.0
    },
    "week": {
@@ -100,10 +100,10 @@
   },
   "family-price-forecast": {
    "day": {
-    "n": 24,
-    "hit_rate": 0.167,
-    "mean_abs_error_pp": 5.19,
-    "range_coverage": 0.75
+    "n": 30,
+    "hit_rate": 0.2,
+    "mean_abs_error_pp": 4.72,
+    "range_coverage": 0.767
    },
    "week": {
     "n": 6,
@@ -120,9 +120,9 @@
   },
   "family-sentiment": {
    "day": {
-    "n": 24,
-    "hit_rate": 0.375,
-    "mean_abs_error_pp": 1.93,
+    "n": 29,
+    "hit_rate": 0.379,
+    "mean_abs_error_pp": 1.94,
     "range_coverage": 1.0
    },
    "week": {
@@ -140,9 +140,9 @@
   },
   "family-technicals": {
    "day": {
-    "n": 24,
-    "hit_rate": 0.333,
-    "mean_abs_error_pp": 2.52,
+    "n": 30,
+    "hit_rate": 0.367,
+    "mean_abs_error_pp": 2.36,
     "range_coverage": 1.0
    },
    "week": {
@@ -160,10 +160,10 @@
   },
   "kronos-alone": {
    "day": {
-    "n": 24,
-    "hit_rate": 0.167,
-    "mean_abs_error_pp": 5.75,
-    "range_coverage": 0.333
+    "n": 30,
+    "hit_rate": 0.2,
+    "mean_abs_error_pp": 5.26,
+    "range_coverage": 0.367
    },
    "week": {
     "n": 6,
@@ -14748,8 +14748,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:42:41.411791+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.59,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14769,7 +14780,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:42:41.411791+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14789,7 +14800,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:42:41.411791+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14810,8 +14821,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:42:41.400637+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.46,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.1
+   },
+   "net_skill": 0.1,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14833,7 +14857,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:42:41.400637+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14855,7 +14879,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:42:41.400637+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14876,8 +14900,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:42:41.399584+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 2.11,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.35
+   },
+   "net_skill": -0.35,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14899,7 +14936,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:42:41.399584+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14921,7 +14958,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:42:41.399584+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14942,8 +14979,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:42:41.400223+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.6,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.005
+   },
+   "net_skill": -0.005,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14965,7 +15015,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:42:41.400223+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -14987,7 +15037,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:42:41.400223+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15008,8 +15058,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:42:41.399985+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.33,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.2
+   },
+   "net_skill": 0.2,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15031,7 +15094,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:42:41.399985+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15053,7 +15116,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:42:41.399985+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15074,8 +15137,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:42:41.401038+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 21.72,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.59,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 2.37,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.351
+   },
+   "net_skill": -0.351,
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15097,7 +15173,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:42:41.401038+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -15119,7 +15195,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:42:41.401038+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15138,8 +15214,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:50:03.244760+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.71,
+   "in_range": false,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15159,7 +15246,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:50:03.244760+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15179,7 +15266,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:50:03.244760+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15200,8 +15287,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:50:03.233458+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.47,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.15
+   },
+   "net_skill": 0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15223,7 +15323,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:50:03.233458+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15245,7 +15345,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:50:03.233458+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15266,8 +15366,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:50:03.232348+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 6.78,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.394
+   },
+   "net_skill": -0.394,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15289,7 +15402,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:50:03.232348+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15311,7 +15424,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:50:03.232348+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15332,8 +15445,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:50:03.233011+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.7,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.009
+   },
+   "net_skill": 0.009,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15355,7 +15481,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:50:03.233011+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15377,7 +15503,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:50:03.233011+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15398,8 +15524,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:50:03.232767+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.24,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.3
+   },
+   "net_skill": 0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15421,7 +15560,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:50:03.232767+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15443,7 +15582,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:50:03.232767+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15464,8 +15603,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:50:03.233868+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 43.34,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 4.71,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 7.13,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.394
+   },
+   "net_skill": -0.394,
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15487,7 +15639,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:50:03.233868+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "LCSW.CA",
@@ -15509,7 +15661,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:50:03.233868+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15528,8 +15680,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:59:53.507196+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 1.93,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15549,7 +15712,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:59:53.507196+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15569,7 +15732,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:59:53.507196+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15590,8 +15753,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:59:53.495832+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 1.22,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.4
+   },
+   "net_skill": 0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15613,7 +15789,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:59:53.495832+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15635,7 +15811,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:59:53.495832+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15656,8 +15832,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:59:53.494679+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": true,
+   "move_error_pp": 0.22,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.36
+   },
+   "net_skill": 0.36,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15679,7 +15868,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:59:53.494679+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15701,7 +15890,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:59:53.494679+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15722,8 +15911,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:59:53.495285+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.1,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.094
+   },
+   "net_skill": -0.094,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15745,7 +15947,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:59:53.495285+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15767,7 +15969,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:59:53.495285+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15788,8 +15990,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:59:53.495051+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.47,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3
+   },
+   "net_skill": -0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15811,7 +16026,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:59:53.495051+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15833,7 +16048,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:59:53.495051+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15854,8 +16069,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:59:53.496083+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.35,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 1.93,
+   "realized_direction": "up",
+   "direction_hit": true,
+   "move_error_pp": 0.58,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.36
+   },
+   "net_skill": 0.36,
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15877,7 +16105,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:59:53.496083+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MASR.CA",
@@ -15899,7 +16127,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:59:53.496083+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -15918,8 +16146,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:09:17.389138+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.47,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -15939,7 +16178,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:09:17.389138+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -15959,7 +16198,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:09:17.389138+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -15980,8 +16219,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:09:17.377623+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.79,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16003,7 +16255,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:09:17.377623+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16025,7 +16277,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:09:17.377623+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16046,8 +16298,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:09:17.376518+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 1.27,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.112
+   },
+   "net_skill": -0.112,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16069,7 +16334,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:09:17.376518+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16091,7 +16356,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:09:17.376518+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16112,8 +16377,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:09:17.377149+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.77,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.14
+   },
+   "net_skill": -0.14,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16135,7 +16413,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:09:17.377149+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16157,7 +16435,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:09:17.377149+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16178,8 +16456,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:09:17.376911+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.79,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16201,7 +16492,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:09:17.376911+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16223,7 +16514,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:09:17.376911+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16244,8 +16535,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:09:17.378024+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 173.49,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.47,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 1.4,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.112
+   },
+   "net_skill": -0.112,
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16267,7 +16571,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:09:17.378024+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MCQE.CA",
@@ -16289,7 +16593,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:09:17.378024+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16308,8 +16612,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:16:25.647337+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.87,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.53,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.53,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16329,7 +16644,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:16:25.647337+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16349,7 +16664,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:16:25.647337+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16370,8 +16685,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:16:25.635595+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.87,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.53,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 0.32,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.35
+   },
+   "net_skill": 0.35,
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16393,7 +16721,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:16:25.635595+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16415,7 +16743,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:16:25.635595+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16436,8 +16764,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:16:25.634687+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.87,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.53,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 3.25,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.333
+   },
+   "net_skill": -0.333,
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16459,7 +16800,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:16:25.634687+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16481,7 +16822,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:16:25.634687+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16502,8 +16843,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:16:25.635048+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.87,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.53,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.9,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16525,7 +16879,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:16:25.635048+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16547,7 +16901,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:16:25.635048+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16568,8 +16922,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:16:25.635981+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.87,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.53,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 3.71,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.333
+   },
+   "net_skill": -0.333,
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16591,7 +16958,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:16:25.635981+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MPCO.CA",
@@ -16613,7 +16980,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:16:25.635981+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16632,8 +16999,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:25:51.523261+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.93,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16653,7 +17031,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:25:51.523261+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16673,7 +17051,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:25:51.523261+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16694,8 +17072,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:25:51.514030+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.19,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16717,7 +17108,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:25:51.514030+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16739,7 +17130,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:25:51.514030+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16760,8 +17151,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:25:51.512787+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": true,
+   "move_error_pp": 3.61,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.962
+   },
+   "net_skill": 0.962,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16783,7 +17187,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:25:51.512787+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16805,7 +17209,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:25:51.512787+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16826,8 +17230,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:25:51.513493+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.87,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.032
+   },
+   "net_skill": 0.032,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16849,7 +17266,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:25:51.513493+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16871,7 +17288,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T14:25:51.513493+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16892,8 +17309,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:25:51.513207+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.59,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.2
+   },
+   "net_skill": 0.2,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16915,7 +17345,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:25:51.513207+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16937,7 +17367,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:25:51.513207+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16958,8 +17388,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:25:51.514270+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 6.62,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.93,
+   "realized_direction": "down",
+   "direction_hit": true,
+   "move_error_pp": 4.54,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": 0.963
+   },
+   "net_skill": 0.963,
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -16981,7 +17424,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:25:51.514270+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "MTIE.CA",
@@ -17003,7 +17446,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:25:51.514270+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -28830,6 +29273,2262 @@
    "prompt_version": "v1",
    "status": "pending",
    "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.25,
+   "range_high_pct": 3.25,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:39:07.431514+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -7.27,
+   "range_high_pct": 7.27,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:39:07.431514+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -14.9,
+   "range_high_pct": 14.9,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:39:07.431514+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.13,
+   "range_low_pct": -4.36,
+   "range_high_pct": 4.1,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 21.72,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:39:03.161157+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.29,
+   "range_low_pct": -9.74,
+   "range_high_pct": 9.16,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 21.72,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:39:03.161157+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.6,
+   "range_low_pct": -19.96,
+   "range_high_pct": 18.77,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 21.72,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:39:03.161157+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.01,
+   "range_low_pct": -4.22,
+   "range_high_pct": 4.23,
+   "confidence": 0.35,
+   "net_score": 0.005,
+   "base_price": 21.72,
+   "families": {
+    "sentiment": 0.005
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:39:03.160576+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.01,
+   "range_low_pct": -9.44,
+   "range_high_pct": 9.47,
+   "confidence": 0.35,
+   "net_score": 0.005,
+   "base_price": 21.72,
+   "families": {
+    "sentiment": 0.005
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:39:03.160576+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.03,
+   "range_low_pct": -19.34,
+   "range_high_pct": 19.4,
+   "confidence": 0.35,
+   "net_score": 0.005,
+   "base_price": 21.72,
+   "families": {
+    "sentiment": 0.005
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:39:03.160576+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.26,
+   "range_low_pct": -4.49,
+   "range_high_pct": 3.97,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 21.72,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:39:03.160330+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.58,
+   "range_low_pct": -10.03,
+   "range_high_pct": 8.87,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 21.72,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:39:03.160330+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.19,
+   "range_low_pct": -20.56,
+   "range_high_pct": 18.18,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 21.72,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:39:03.160330+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.77,
+   "range_low_pct": 0.03,
+   "range_high_pct": 4.24,
+   "confidence": null,
+   "net_score": 0.348,
+   "base_price": 21.72,
+   "families": {
+    "price-forecast": 0.348
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:39:03.161462+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 3.78,
+   "range_low_pct": 2.45,
+   "range_high_pct": 6.75,
+   "confidence": null,
+   "net_score": 0.333,
+   "base_price": 21.72,
+   "families": {
+    "price-forecast": 0.333
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:39:03.161462+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 7.09,
+   "range_low_pct": 5.91,
+   "range_high_pct": 9.97,
+   "confidence": null,
+   "net_score": 0.304,
+   "base_price": 21.72,
+   "families": {
+    "price-forecast": 0.304
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:39:03.161462+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.32,
+   "range_low_pct": 0.66,
+   "range_high_pct": 1.98,
+   "confidence": 0.75,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:39:07.431148+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 3.12,
+   "range_low_pct": 1.56,
+   "range_high_pct": 4.68,
+   "confidence": 0.68,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:39:07.431148+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "JUFO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.35,
+   "range_low_pct": -3.52,
+   "range_high_pct": -1.18,
+   "confidence": 0.55,
+   "net_score": null,
+   "base_price": 21.72,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:39:07.431148+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.96,
+   "range_high_pct": 3.96,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:41:35.750765+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -8.84,
+   "range_high_pct": 8.84,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:41:35.750765+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -18.13,
+   "range_high_pct": 18.13,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:41:35.750765+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.24,
+   "range_low_pct": -4.9,
+   "range_high_pct": 5.38,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 43.34,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:41:32.196705+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.53,
+   "range_low_pct": -10.97,
+   "range_high_pct": 12.03,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 43.34,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:41:32.196705+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.09,
+   "range_low_pct": -22.48,
+   "range_high_pct": 24.65,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 43.34,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:41:32.196705+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.33,
+   "range_low_pct": -4.81,
+   "range_high_pct": 5.47,
+   "confidence": 0.35,
+   "net_score": 0.208,
+   "base_price": 43.34,
+   "families": {
+    "sentiment": 0.208
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:41:32.196211+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.74,
+   "range_low_pct": -10.76,
+   "range_high_pct": 12.23,
+   "confidence": 0.35,
+   "net_score": 0.208,
+   "base_price": 43.34,
+   "families": {
+    "sentiment": 0.208
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:41:32.196211+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.51,
+   "range_low_pct": -22.05,
+   "range_high_pct": 25.07,
+   "confidence": 0.35,
+   "net_score": 0.208,
+   "base_price": 43.34,
+   "families": {
+    "sentiment": 0.208
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:41:32.196211+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.16,
+   "range_low_pct": -5.3,
+   "range_high_pct": 4.98,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 43.34,
+   "families": {
+    "technicals": -0.1
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:41:32.195966+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.35,
+   "range_low_pct": -11.85,
+   "range_high_pct": 11.14,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 43.34,
+   "families": {
+    "technicals": -0.1
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:41:32.195966+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.73,
+   "range_low_pct": -24.29,
+   "range_high_pct": 22.84,
+   "confidence": 0.35,
+   "net_score": -0.1,
+   "base_price": 43.34,
+   "families": {
+    "technicals": -0.1
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:41:32.195966+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -5.1,
+   "range_low_pct": -7.01,
+   "range_high_pct": -4.32,
+   "confidence": null,
+   "net_score": -0.825,
+   "base_price": 43.34,
+   "families": {
+    "price-forecast": -0.825
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:41:32.196999+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -6.03,
+   "range_low_pct": -8.74,
+   "range_high_pct": -5.92,
+   "confidence": null,
+   "net_score": -0.436,
+   "base_price": 43.34,
+   "families": {
+    "price-forecast": -0.436
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:41:32.196999+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -16.54,
+   "range_low_pct": -18.7,
+   "range_high_pct": -15.61,
+   "confidence": null,
+   "net_score": -0.584,
+   "base_price": 43.34,
+   "families": {
+    "price-forecast": -0.584
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:41:32.196999+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.16,
+   "range_low_pct": 0.56,
+   "range_high_pct": 1.76,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:41:35.750416+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.32,
+   "range_low_pct": 0.92,
+   "range_high_pct": 3.72,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:41:35.750416+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "LCSW.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.22,
+   "range_low_pct": -2.44,
+   "range_high_pct": 0.0,
+   "confidence": 0.43,
+   "net_score": null,
+   "base_price": 43.34,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:41:35.750416+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.48,
+   "range_high_pct": 4.48,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:50:48.972261+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.02,
+   "range_high_pct": 10.02,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:50:48.972261+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -20.53,
+   "range_high_pct": 20.53,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T08:50:48.972261+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.72,
+   "range_low_pct": -6.0,
+   "range_high_pct": 7.44,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 6.35,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:50:43.902050+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.6,
+   "range_low_pct": -13.42,
+   "range_high_pct": 16.63,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 6.35,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:50:43.902050+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 3.28,
+   "range_low_pct": -27.51,
+   "range_high_pct": 34.08,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 6.35,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T08:50:43.902050+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.28,
+   "range_low_pct": -7.0,
+   "range_high_pct": 6.44,
+   "confidence": 0.3,
+   "net_score": -0.158,
+   "base_price": 6.35,
+   "families": {
+    "sentiment": -0.158
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:50:43.901455+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.63,
+   "range_low_pct": -15.66,
+   "range_high_pct": 14.39,
+   "confidence": 0.3,
+   "net_score": -0.158,
+   "base_price": 6.35,
+   "families": {
+    "sentiment": -0.158
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:50:43.901455+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.3,
+   "range_low_pct": -32.09,
+   "range_high_pct": 29.5,
+   "confidence": 0.3,
+   "net_score": -0.158,
+   "base_price": 6.35,
+   "families": {
+    "sentiment": -0.158
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T08:50:43.901455+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.54,
+   "range_low_pct": -7.26,
+   "range_high_pct": 6.18,
+   "confidence": 0.3,
+   "net_score": -0.3,
+   "base_price": 6.35,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:50:43.901172+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.2,
+   "range_low_pct": -16.23,
+   "range_high_pct": 13.82,
+   "confidence": 0.3,
+   "net_score": -0.3,
+   "base_price": 6.35,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:50:43.901172+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.46,
+   "range_low_pct": -33.26,
+   "range_high_pct": 28.33,
+   "confidence": 0.3,
+   "net_score": -0.3,
+   "base_price": 6.35,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T08:50:43.901172+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -2.23,
+   "range_low_pct": -4.25,
+   "range_high_pct": 0.09,
+   "confidence": null,
+   "net_score": -0.318,
+   "base_price": 6.35,
+   "families": {
+    "price-forecast": -0.318
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:50:43.902309+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -4.31,
+   "range_high_pct": 2.15,
+   "confidence": null,
+   "net_score": -0.078,
+   "base_price": 6.35,
+   "families": {
+    "price-forecast": -0.078
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:50:43.902309+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 4.41,
+   "range_low_pct": 0.86,
+   "range_high_pct": 7.44,
+   "confidence": null,
+   "net_score": 0.138,
+   "base_price": 6.35,
+   "families": {
+    "price-forecast": 0.138
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T08:50:43.902309+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.27,
+   "range_low_pct": -2.54,
+   "range_high_pct": -0.01,
+   "confidence": 0.75,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:50:48.971864+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -2.54,
+   "range_low_pct": -4.81,
+   "range_high_pct": -0.27,
+   "confidence": 0.66,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:50:48.971864+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MASR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -4.75,
+   "range_low_pct": -7.02,
+   "range_high_pct": -2.48,
+   "confidence": 0.58,
+   "net_score": null,
+   "base_price": 6.35,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T08:50:48.971864+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -5.32,
+   "range_high_pct": 5.32,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:12:18.061114+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -11.91,
+   "range_high_pct": 11.91,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:12:18.061114+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -24.4,
+   "range_high_pct": 24.4,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:12:18.061114+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.32,
+   "range_low_pct": -6.07,
+   "range_high_pct": 6.71,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:12:14.263504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.71,
+   "range_low_pct": -13.57,
+   "range_high_pct": 15.0,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:12:14.263504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.46,
+   "range_low_pct": -27.82,
+   "range_high_pct": 30.75,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:12:14.263504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.07,
+   "range_low_pct": -6.32,
+   "range_high_pct": 6.46,
+   "confidence": 0.45,
+   "net_score": 0.032,
+   "base_price": 173.49,
+   "families": {
+    "sentiment": 0.032
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:12:14.263150+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.15,
+   "range_low_pct": -14.14,
+   "range_high_pct": 14.44,
+   "confidence": 0.45,
+   "net_score": 0.032,
+   "base_price": 173.49,
+   "families": {
+    "sentiment": 0.032
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:12:14.263150+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.31,
+   "range_low_pct": -28.97,
+   "range_high_pct": 29.59,
+   "confidence": 0.45,
+   "net_score": 0.032,
+   "base_price": 173.49,
+   "families": {
+    "sentiment": 0.032
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:12:14.263150+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.32,
+   "range_low_pct": -6.07,
+   "range_high_pct": 6.71,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:12:14.262902+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.71,
+   "range_low_pct": -13.57,
+   "range_high_pct": 15.0,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:12:14.262902+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.46,
+   "range_low_pct": -27.82,
+   "range_high_pct": 30.75,
+   "confidence": 0.45,
+   "net_score": 0.15,
+   "base_price": 173.49,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:12:14.262902+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.03,
+   "range_low_pct": -0.69,
+   "range_high_pct": 4.22,
+   "confidence": null,
+   "net_score": 0.123,
+   "base_price": 173.49,
+   "families": {
+    "price-forecast": 0.123
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:12:14.263914+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.05,
+   "range_low_pct": 0.1,
+   "range_high_pct": 4.8,
+   "confidence": null,
+   "net_score": 0.11,
+   "base_price": 173.49,
+   "families": {
+    "price-forecast": 0.11
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:12:14.263914+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.43,
+   "range_low_pct": -6.34,
+   "range_high_pct": 1.72,
+   "confidence": null,
+   "net_score": -0.064,
+   "base_price": 173.49,
+   "families": {
+    "price-forecast": -0.064
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:12:14.263914+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.15,
+   "range_low_pct": -2.3,
+   "range_high_pct": -0.01,
+   "confidence": 0.7,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:12:18.060708+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -2.2,
+   "range_low_pct": -4.4,
+   "range_high_pct": -0.02,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:12:18.060708+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MCQE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.3,
+   "range_low_pct": -6.6,
+   "range_high_pct": -0.03,
+   "confidence": 0.6,
+   "net_score": null,
+   "base_price": 173.49,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:12:18.060708+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -6.11,
+   "range_high_pct": 6.11,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:15:01.031575+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -13.65,
+   "range_high_pct": 13.65,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:15:01.031575+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -27.98,
+   "range_high_pct": 27.98,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:15:01.031575+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.85,
+   "range_low_pct": -8.79,
+   "range_high_pct": 7.08,
+   "confidence": 0.35,
+   "net_score": -0.35,
+   "base_price": 1.87,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:14:37.511088+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.91,
+   "range_low_pct": -19.66,
+   "range_high_pct": 15.84,
+   "confidence": 0.35,
+   "net_score": -0.35,
+   "base_price": 1.87,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:14:37.511088+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.92,
+   "range_low_pct": -40.29,
+   "range_high_pct": 32.46,
+   "confidence": 0.35,
+   "net_score": -0.35,
+   "base_price": 1.87,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:14:37.511088+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.49,
+   "range_low_pct": -8.43,
+   "range_high_pct": 7.45,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 1.87,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:14:37.510490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.09,
+   "range_low_pct": -18.84,
+   "range_high_pct": 16.66,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 1.87,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:14:37.510490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.24,
+   "range_low_pct": -38.61,
+   "range_high_pct": 34.13,
+   "confidence": 0.35,
+   "net_score": -0.2,
+   "base_price": 1.87,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:14:37.510490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 0.87,
+   "range_low_pct": -2.64,
+   "range_high_pct": 4.44,
+   "confidence": null,
+   "net_score": 0.091,
+   "base_price": 1.87,
+   "families": {
+    "price-forecast": 0.091
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:14:37.511479+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 5.67,
+   "range_low_pct": 0.2,
+   "range_high_pct": 7.13,
+   "confidence": null,
+   "net_score": 0.266,
+   "base_price": 1.87,
+   "families": {
+    "price-forecast": 0.266
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:14:37.511479+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.72,
+   "range_low_pct": -1.36,
+   "range_high_pct": 6.79,
+   "confidence": null,
+   "net_score": 0.062,
+   "base_price": 1.87,
+   "families": {
+    "price-forecast": 0.062
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:14:37.511479+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.07,
+   "range_low_pct": -2.14,
+   "range_high_pct": -0.01,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:15:01.031208+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -2.13,
+   "range_low_pct": -4.26,
+   "range_high_pct": -0.02,
+   "confidence": 0.72,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:15:01.031208+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MPCO.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.2,
+   "range_low_pct": -6.4,
+   "range_high_pct": -0.03,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 1.87,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:15:01.031208+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.31,
+   "range_high_pct": 4.31,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:19:52.233677+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -9.65,
+   "range_high_pct": 9.65,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:19:52.233677+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -19.77,
+   "range_high_pct": 19.77,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:19:52.233677+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.26,
+   "range_low_pct": -6.21,
+   "range_high_pct": 6.73,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 6.62,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:19:48.471043+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.58,
+   "range_low_pct": -13.89,
+   "range_high_pct": 15.05,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 6.62,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:19:48.471043+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.19,
+   "range_low_pct": -28.47,
+   "range_high_pct": 30.84,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 6.62,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:19:48.471043+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.05,
+   "range_low_pct": -6.52,
+   "range_high_pct": 6.42,
+   "confidence": 0.3,
+   "net_score": -0.029,
+   "base_price": 6.62,
+   "families": {
+    "sentiment": -0.029
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:19:48.470442+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.11,
+   "range_low_pct": -14.58,
+   "range_high_pct": 14.36,
+   "confidence": 0.3,
+   "net_score": -0.029,
+   "base_price": 6.62,
+   "families": {
+    "sentiment": -0.029
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:19:48.470442+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.23,
+   "range_low_pct": -29.88,
+   "range_high_pct": 29.42,
+   "confidence": 0.3,
+   "net_score": -0.029,
+   "base_price": 6.62,
+   "families": {
+    "sentiment": -0.029
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:19:48.470442+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.52,
+   "range_low_pct": -5.95,
+   "range_high_pct": 6.99,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 6.62,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:19:48.470029+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.16,
+   "range_low_pct": -13.31,
+   "range_high_pct": 15.63,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 6.62,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:19:48.470029+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.37,
+   "range_low_pct": -27.28,
+   "range_high_pct": 32.02,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 6.62,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:19:48.470029+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 3.26,
+   "range_low_pct": -1.28,
+   "range_high_pct": 6.65,
+   "confidence": null,
+   "net_score": 0.484,
+   "base_price": 6.62,
+   "families": {
+    "price-forecast": 0.484
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:19:48.471310+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.13,
+   "range_low_pct": -0.96,
+   "range_high_pct": 6.98,
+   "confidence": null,
+   "net_score": 0.141,
+   "base_price": 6.62,
+   "families": {
+    "price-forecast": 0.141
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:19:48.471310+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 5.67,
+   "range_low_pct": 1.99,
+   "range_high_pct": 6.89,
+   "confidence": null,
+   "net_score": 0.183,
+   "base_price": 6.62,
+   "families": {
+    "price-forecast": 0.183
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:19:48.471310+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.96,
+   "range_low_pct": 1.47,
+   "range_high_pct": 2.45,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:19:52.233303+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.36,
+   "range_low_pct": -2.04,
+   "range_high_pct": -0.68,
+   "confidence": 0.62,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:19:52.233303+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "MTIE.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.12,
+   "range_low_pct": -1.36,
+   "range_high_pct": 1.6,
+   "confidence": 0.41,
+   "net_score": null,
+   "base_price": 6.62,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:19:52.233303+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
@@ -28978,6 +31677,19 @@
   "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002: family-price-forecast absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002: family-agent absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002: family-sentiment absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-price-forecast absent (family-did-not-vote) — no rows",
   "54 benchmark row(s) invalidated (validation mismatch or the issue-#87 guard) — never scored: buy-and-hold POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002"
  ],
  "warnings": []
