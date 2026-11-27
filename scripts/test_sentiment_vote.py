@@ -86,6 +86,11 @@ def test_rank_zero_sentiment_unscored():
     # zero row still shifts the boundary: dropping it from the universe changes n and k
     no_zero = [r for r in rows if r["ticker"] != "T1"]
     check("zero row stays in universe", V.rank_votes(no_zero) != V.rank_votes(rows))
+    nine = [row("d1", "N%d" % i, "day", float(i), "up") for i in range(9)]
+    v9 = V.rank_votes(nine)
+    # n=9, k=3: bottom N0 (sentiment 0, in universe but unscored), N1, N2; top N6, N7, N8
+    check("nine rows: five scored votes", len(v9) == 5, v9)
+    check("nine rows: scored are N1,N2 down and N6-N8 up", [x[2] for x in v9] == [False, False, True, True, True], v9)
     # eligibility via rank path: month and flat realised stay unscored
     flat = [dict(r) for r in rows]
     flat[0]["realized_direction"] = "flat"
