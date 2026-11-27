@@ -67,7 +67,13 @@ No source on file gives a verified release time for every event. The CBE news UR
 
 The numbers move. The scheduled-CBE post-split mean CAR is -0.0067 (before), -0.0094 (page_time), -0.0099 (after): same sign, larger magnitude when shifted. Budget post changes sign under `after` (+0.0115 to -0.0037). Pre cells have n 1 to 2 and stay uninformative. Which rule is right needs a sourced release time per event; none is chosen here.
 
-Reproduce: python3 benchmarks/macro_event_study.py --release-rule {before,page_time,after} --json <path>. Outputs: macro_event_study_descriptive.json (before), _page_time.json, _after.json.
+Reproduce (run from the repo root, one command per rule):
+
+    python3 benchmarks/macro_event_study.py --release-rule before --json evaluation/macro_event/macro_event_study_descriptive.json
+    python3 benchmarks/macro_event_study.py --release-rule page_time --json evaluation/macro_event/macro_event_study_descriptive_page_time.json
+    python3 benchmarks/macro_event_study.py --release-rule after --json evaluation/macro_event/macro_event_study_descriptive_after.json
+
+To try another rule, change the --release-rule value (before, page_time or after) and the output file name to match.
 
 ## Calendar URLs (round 74, finding b)
 
