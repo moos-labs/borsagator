@@ -143,19 +143,32 @@ def row_id(r):
     return "%s %s %s" % (r.get("ticker"), str(r.get("as_of"))[:10], r.get("horizon"))
 
 
-def exclusion_lines(gaps, dropped_rows, unnumbered):
+def new_omitted():
+    return {"diagnostics": [], "rows": [], "non_naive": 0}
+
+
+def exclusion_lines(gaps, dropped_rows, unnumbered, omitted=None):
     """Everything that did not enter the run, with reasons. gaps: the list
     R.build_rows returns; dropped_rows: identifiers of rows without a v2
     sigma; unnumbered: paths of captures with no cell number. Each omitted
-    observation gets its own line."""
+    observation gets its own line. omitted is the dict R.build_rows fills:
+    score_capture diagnostics and naive-range rows skipped as not matured
+    or dividend-gapped are listed; non-naive-range entrant rows are only
+    counted (the scorer reads the band from the naive-range entrant)."""
+    om = omitted or new_omitted()
     drops = [g for g in gaps if NOTE_MARK not in g]
     notes = [g for g in gaps if NOTE_MARK in g]
     L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
          "%d unnumbered capture(s) never scored; %d note(s) (rebuild notes, not exclusions)" % (
              len(drops), len(dropped_rows), len(unnumbered), len(notes))]
+    L[0] += ("; %d score_capture diagnostic(s), %d naive-range row(s) skipped as not matured or "
+             "dividend-gapped, %d non-naive-range entrant row(s) not band rows" % (
+                 len(om["diagnostics"]), len(om["rows"]), om["non_naive"]))
     L.extend("excluded: %s" % g for g in drops)
     L.extend("excluded: row %s: no v2 sigma" % x for x in dropped_rows)
     L.extend("excluded: capture %s: no cell number, never scored" % x for x in unnumbered)
+    L.extend("excluded: score_capture: %s" % x for x in om["diagnostics"])
+    L.extend("excluded: row %s" % x for x in om["rows"])
     L.extend("note: %s" % g for g in notes)
     return L
 
@@ -225,7 +238,8 @@ def main(argv=None):
     unnumbered = [c for c in allc if num(c) is None]
     if a.mode == "fit":
         caps = [c for c in allc if num(c) is not None and num(c) <= TRAIN_MAX_CELL]
-        rows, gaps = R.build_rows(caps, allc)
+        omit = new_omitted()
+        rows, gaps = R.build_rows(caps, allc, omitted=omit)
         if not rows:
             print("refusing: no training rows; %s not written" % a.out)
             return 2
@@ -236,7 +250,7 @@ def main(argv=None):
         for h in HORIZONS:
             L.append("%s: " % h + ", ".join("%s n=%d fitted=%s w=%.2f" % (
                 g, p["n"], p["fitted"], p["w"]) for g, p in fz["horizons"][h].items()))
-        L.extend(exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered))
+        L.extend(exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered, omit))
         print("\n".join(L))
         with open(a.out, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz, "training_regime_counts": counts}, fh, indent=1)
@@ -244,9 +258,10 @@ def main(argv=None):
     fz = json.load(open(a.frozen))["frozen"]
     hi = a.max_cell if a.mode == "describe" else 10 ** 9
     caps = [c for c in allc if num(c) is not None and a.min_cell <= num(c) <= hi]
-    rows, gaps = R.build_rows(caps, allc)
+    omit = new_omitted()
+    rows, gaps = R.build_rows(caps, allc, omitted=omit)
     pairs = score_rows(rows, fz, decisions)
-    ex = exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered)
+    ex = exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered, omit)
     res = R.evaluate(pairs, a.reps)
     counts = group_counts(pairs)
     rc = regime_counts(rows, decisions)

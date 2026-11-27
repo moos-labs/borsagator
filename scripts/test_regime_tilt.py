@@ -237,7 +237,10 @@ def test_modes_with_mocked_discovery():
     train = _grp("week", D_TIGHT, 0.5, 6)
     bad = {**_row("week", D_TIGHT, 0.5), "v2_sigma": None}
 
-    def build(caps, refs):
+    def build(caps, refs, omitted=None):
+        omitted["diagnostics"].append("%s: no realised.json - not scored" % caps[0])
+        omitted["rows"].append("%s T 2024-02-01 week: status pending" % caps[0])
+        omitted["non_naive"] += 4
         if caps == ["/x/c5"]:
             return train + [bad], ["/x/c5: no usable pre-cutoff OHLC history"]
         return _grp("week", D_EASE, 0.5, 2) + [bad], []
@@ -255,6 +258,11 @@ def test_modes_with_mocked_discovery():
             check("fit lists gap, dropped row and unnumbered capture", "excluded: /x/c5: no usable" in o
                   and "1 row(s) without a v2 sigma" in o and "excluded: row T 2024-02-01 week: no v2 sigma" in o
                   and "1 unnumbered" in o and "excluded: capture /x/u: no cell number" in o, o[-400:])
+            check("fit lists build_rows diagnostics, skipped rows and non-naive count",
+                  "excluded: score_capture: /x/c5: no realised.json - not scored" in o
+                  and "excluded: row /x/c5 T 2024-02-01 week: status pending" in o
+                  and "1 score_capture diagnostic(s), 1 naive-range row(s) skipped" in o
+                  and "4 non-naive-range entrant row(s)" in o, o[-500:])
             fz = json.load(open(out))
             check("fitted w stored", fz["frozen"]["degenerate"] is True and fz["frozen"]["horizons"]["week"]["tightening"]["w"] == 0.9)
             for mode in ("describe", "score"):
@@ -265,6 +273,9 @@ def test_modes_with_mocked_discovery():
                       and "excluded: row T 2024-02-01 week: no v2 sigma" in o
                       and "excluded: capture /x/u: no cell number" in o, o[-300:])
                 check("%s prints regime in counts" % mode, "easing" in o)
+                check("%s lists build_rows diagnostics and skipped rows" % mode,
+                      "excluded: score_capture: /x/c60: no realised.json" in o.replace("/x/c95", "/x/c60")
+                      and "naive-range row(s) skipped" in o and "excluded: row /x/c" in o, o[-400:])
             check("score prints degenerate note", "TILT DEGENERATE: cells >= 91" in o, o[-300:])
             check("score output has no metric words", "RangeSkill" not in o and "coverage" not in o, o[:400])
             open(out, "w").write("SENTINEL")
@@ -273,6 +284,55 @@ def test_modes_with_mocked_discovery():
                   and open(out).read() == "SENTINEL", o[:200])
     finally:
         S.A.find_captures, S.R.build_rows, S.A.cell_number = old
+
+
+def _srow(entrant="naive-range", status="matured", div=False, h="week", t="T"):
+    return {"entrant": entrant, "status": status, "dividend_gap": div, "ticker": t,
+            "as_of": "2025-01-02T00:00:00", "horizon": h, "realized_move_pct": 1.5,
+            "range_high_pct": 3.0, "range_low_pct": -3.0}
+
+
+def test_build_rows_omitted():
+    """R.build_rows keeps its rows and gaps and fills the omitted dict."""
+    R = S.R
+    names = ("price_reference", "_extend_realised", "sigmas", "read_ohlc")
+    old = {n: getattr(R, n) for n in names}
+    old_a = (R.A._stage, R.A._sigma60, R.A.cell_number)
+    old_bs = (R.bs.score_capture, R.bs.load_json)
+    R.price_reference = lambda dirs: {}
+    R._extend_realised = lambda staged, px: False
+    R.sigmas = lambda ohlc: {"s60": 0.02}
+    R.read_ohlc = lambda cap, d: []
+    R.A._stage = lambda cap, name, tmp: tmp
+    R.A._sigma60 = lambda ens: 0.02
+    R.A.cell_number = lambda cap: 5
+    R.bs.load_json = lambda path: {"base_date": "2025-01-02"}
+    scored = [_srow(), _srow(status="pending", h="month"), _srow(div=True, h="day"),
+              _srow(entrant="other"), _srow(entrant="other", status="pending")]
+    R.bs.score_capture = lambda staged: (list(scored), ["cap: no realised.json - not scored"])
+    try:
+        om = S.new_omitted()
+        rows, gaps = R.build_rows(["/x/cap"], ["/x/cap"], omitted=om)
+        rows0, gaps0 = R.build_rows(["/x/cap"], ["/x/cap"])
+        check("one matured naive row kept", len(rows) == 1 and rows[0]["horizon"] == "week", str(rows))
+        check("rows and gaps identical with and without omitted", rows == rows0 and gaps == gaps0)
+        check("diagnostic kept with its capture", om["diagnostics"] == ["/x/cap: cap: no realised.json - not scored"], str(om))
+        check("pending and dividend-gap naive rows listed with identifiers", om["rows"] == [
+            "/x/cap T 2025-01-02 month: status pending", "/x/cap T 2025-01-02 day: dividend gap"], str(om))
+        check("non-naive entrant rows counted", om["non_naive"] == 2)
+        L = S.exclusion_lines(gaps, [], [], om)
+        check("exclusion list carries them", "excluded: row /x/cap T 2025-01-02 month: status pending" in L
+              and "excluded: score_capture: /x/cap: cap: no realised.json - not scored" in L
+              and "1 score_capture diagnostic(s), 2 naive-range row(s) skipped" in L[0], str(L))
+        R.sigmas = lambda ohlc: {"s60": None}
+        om = S.new_omitted()
+        rows, gaps = R.build_rows(["/x/cap"], ["/x/cap"], omitted=om)
+        check("s60 gap still a gaps entry and no row loop", rows == [] and len(gaps) == 1 and om["rows"] == [])
+    finally:
+        for n, v in old.items():
+            setattr(R, n, v)
+        R.A._stage, R.A._sigma60, R.A.cell_number = old_a
+        R.bs.score_capture, R.bs.load_json = old_bs
 
 
 def test_decisions_file():
@@ -284,7 +344,7 @@ def run_all():
     for fn in (test_constants, test_regime_boundaries, test_fit_picks_per_regime, test_fit_min_group_and_tie,
                test_fit_uses_only_given_rows_and_skips_no_sigma, test_score_rows_uses_frozen,
                test_regime_counts_and_degenerate, test_counts_only, test_loop_bar, test_exclusions_listed, test_refusals,
-               test_modes_with_mocked_discovery, test_decisions_file):
+               test_modes_with_mocked_discovery, test_build_rows_omitted, test_decisions_file):
         fn()
 
 
