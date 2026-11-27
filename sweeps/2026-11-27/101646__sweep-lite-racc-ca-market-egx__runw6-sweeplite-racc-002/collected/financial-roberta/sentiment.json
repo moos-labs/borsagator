@@ -1,0 +1,82 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.3660692290213774,
+    "negative": 0.000250474320637295,
+    "neutral": 0.6336803156882524
+  },
+  "items": [
+    {
+      "text": "RACC: Research Alliance Corporation III filed SEC Form 8-K: Submission of Matters to a Vote of Security Holders - Quantisnow",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003756947990041226,
+        "negative": 0.00022635815548710525,
+        "neutral": 0.9993979930877686
+      },
+      "raw_probabilities": {
+        "neutral": 0.9993979930877686,
+        "positive": 0.0003756947990041226,
+        "negative": 0.00022635815548710525
+      }
+    },
+    {
+      "text": "Over 3.2 million shares were put up for redemption as Research Alliance Corp III (RACC) held a deal vote. - Stock Titan",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00114095164462924,
+        "negative": 0.000180767776328139,
+        "neutral": 0.9986782670021057
+      },
+      "raw_probabilities": {
+        "neutral": 0.9986782670021057,
+        "positive": 0.00114095164462924,
+        "negative": 0.000180767776328139
+      }
+    },
+    {
+      "text": "RACC seeks families to foster pets for Thanksgiving - WWBT",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9949493408203125,
+        "negative": 0.0002500181144569069,
+        "neutral": 0.004800684750080109
+      },
+      "raw_probabilities": {
+        "positive": 0.9949493408203125,
+        "neutral": 0.004800684750080109,
+        "negative": 0.0002500181144569069
+      }
+    },
+    {
+      "text": "From shelter to snuggles: RACC seeks Thanksgiving foster homes for pets - WWBT",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.4678109288215637,
+        "negative": 0.0003447532362770289,
+        "neutral": 0.5318443179130554
+      },
+      "raw_probabilities": {
+        "neutral": 0.5318443179130554,
+        "positive": 0.4678109288215637,
+        "negative": 0.0003447532362770289
+      }
+    }
+  ]
+}

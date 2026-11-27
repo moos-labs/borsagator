@@ -1,0 +1,250 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 9
+  },
+  "label_counts_raw": {
+    "neutral": 9
+  },
+  "mean_probabilities": {
+    "positive": 5.5050217951367765e-05,
+    "negative": 0.0003208897065986902,
+    "neutral": 0.9996240668826633
+  },
+  "items": [
+    {
+      "text": "RACC: Research Alliance Corporation III filed SEC Form 8-K: Submission of Matters to a Vote of Security Holders - Quantisnow",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.987512380059343e-05,
+        "negative": 0.002647070912644267,
+        "neutral": 0.9973230957984924
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9973230957984924
+        },
+        {
+          "label": "Negative",
+          "score": 0.002647070912644267
+        },
+        {
+          "label": "Positive",
+          "score": 2.987512380059343e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Over 3.2 million shares were put up for redemption as Research Alliance Corp III (RACC) held a deal vote. - Stock Titan",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.413142884615809e-05,
+        "negative": 2.889630422941991e-06,
+        "neutral": 0.9999229907989502
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999229907989502
+        },
+        {
+          "label": "Positive",
+          "score": 7.413142884615809e-05
+        },
+        {
+          "label": "Negative",
+          "score": 2.889630422941991e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "RACC seeks families to foster pets for Thanksgiving - WWBT",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.8308832295588218e-05,
+        "negative": 8.459296623186674e-06,
+        "neutral": 0.9999731779098511
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999731779098511
+        },
+        {
+          "label": "Positive",
+          "score": 1.8308832295588218e-05
+        },
+        {
+          "label": "Negative",
+          "score": 8.459296623186674e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "From shelter to snuggles: RACC seeks Thanksgiving foster homes for pets - WWBT",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00033734561293385923,
+        "negative": 1.3674418369191699e-05,
+        "neutral": 0.999648928642273
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999648928642273
+        },
+        {
+          "label": "Positive",
+          "score": 0.00033734561293385923
+        },
+        {
+          "label": "Negative",
+          "score": 1.3674418369191699e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "RACC asks community to foster or adopt as shelter reaches capacity - WWBT",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1269006705560969e-07,
+        "negative": 5.391630566009553e-06,
+        "neutral": 0.9999945163726807
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999945163726807
+        },
+        {
+          "label": "Negative",
+          "score": 5.391630566009553e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.1269006705560969e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Portland arts leader talks about why her organization is still relevant after 30 years - The Business Journals",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.5495591298986255e-07,
+        "negative": 1.4143398402666207e-05,
+        "neutral": 0.9999856948852539
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999856948852539
+        },
+        {
+          "label": "Negative",
+          "score": 1.4143398402666207e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.5495591298986255e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "RACC applies for grant for pocket park improvements in Clearfield - The Progress",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.9321627152967267e-05,
+        "negative": 0.00015365252329502255,
+        "neutral": 0.9998170733451843
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998170733451843
+        },
+        {
+          "label": "Negative",
+          "score": 0.00015365252329502255
+        },
+        {
+          "label": "Positive",
+          "score": 2.9321627152967267e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "RACC Tommie Fund gets nearly $160k from license plate purchases - WWBT",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.92698291054694e-06,
+        "negative": 3.47401037288364e-05,
+        "neutral": 0.9999604225158691
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999604225158691
+        },
+        {
+          "label": "Negative",
+          "score": 3.47401037288364e-05
+        },
+        {
+          "label": "Positive",
+          "score": 4.92698291054694e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "RACC Tommie Fund running dry, shelter seeks donations: ‘Word is getting out’ - WWBT",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2747076425512205e-06,
+        "negative": 7.98544533608947e-06,
+        "neutral": 0.999990701675415
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999990701675415
+        },
+        {
+          "label": "Negative",
+          "score": 7.98544533608947e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.2747076425512205e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

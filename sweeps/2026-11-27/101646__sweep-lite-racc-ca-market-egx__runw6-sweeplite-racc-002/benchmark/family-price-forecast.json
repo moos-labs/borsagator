@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 7.8,
+ "base_source": "egx-data/egxpy_racc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T10:16:46.497661+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "5014207bd83dee0292db6a62596cfe30d50d77c983c5c3cc79f03f11ec36bfd7",
+  "digest.json": "baee2c68ded0b912b58ee90f62f78f6f746e72e65b39ab755b30d1ba42ea8659",
+  "ensemble.json": "513d72ecee746c1cba536d1686f2e7d25271c911792959a3ce880b94f72953a0"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/101646__sweep-lite-racc-ca-market-egx__runw6-sweeplite-racc-002",
+ "ticker": "RACC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

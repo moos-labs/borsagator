@@ -1,0 +1,24 @@
+WARN body http 403: https://quantisnow.com/insight/research-alliance-corporation-iii-filed-sec-form-8-k-submis
+WARN body http 403: https://www.stocktitan.net/sec-filings/RACC/8-k-research-alliance-corp-iii-reports-materia
+bodies: 3/5 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/RACC.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5727.04it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 20237.05it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5640.37it/s]
+{"tool": "news-disclosure", "ticker": "RACC.CA", "news_count": 5, "disclosure_count": 0, "arabic_headlines": 3, "latest_news_date": "Tue, 24 Nov 2026 22:06:39 GMT", "latest_disclosure_date": "", "top_headline": "RACC: Research Alliance Corporation III filed SEC Form 8-K: Submission of Matters to a Vote of Security Holders - Quantisnow", "llm_provider": "cohere", "finbert_positive": 0.03, "finbert_negative": 0.048, "finbert_neutral": 0.921, "finbert_scored": 2, "multilingual_positive": 0.391, "multilingual_negative": 0.026, "multilingual_neutral": 0.583, "multilingual_scored": 3, "bodies_fetched": 3, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere", "translated_positive": 0.164, "translated_negative": 0.398, "translated_neutral": 0.438, "translated_scored": 3}
+BRIEF:
+- Research Alliance Corporation III (RACC) filed SEC Form 8-K, indicating a submission of matters to a vote by security holders.
+- Over 3.2 million shares were put up for redemption as part of this vote, which could potentially impact the company's shareholder structure.
+- The vote outcome and any resulting changes may influence RACC's future direction and stock performance.
+- The article mentions a deal vote, suggesting a potential transaction or significant decision that could affect the company's operations and stock value.
+- The number of shares up for redemption is a notable figure, indicating a substantial portion of the company's shares being considered for this vote.
+- A vote outcome in favor of the deal could lead to strategic changes, impacting RACC's business model and market position.
+- Conversely, a negative vote outcome may result in maintaining the status quo, which could influence investor sentiment and stock movement.
+- The vote's impact on RACC's stock price and overall market perception will depend on the specific details and outcomes of the matters voted upon.

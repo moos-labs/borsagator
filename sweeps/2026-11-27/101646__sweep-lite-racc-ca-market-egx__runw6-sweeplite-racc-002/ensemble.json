@@ -1,0 +1,138 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "RACC.CA",
+ "base_price": 7.8,
+ "base_source": "egx-data/egxpy_racc.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_racc.csv": 7.51,
+   "openbb/racc_ca.csv": 7.510000228881836,
+   "pandas-ta/indicators.csv": 7.510000228881836,
+   "talib/indicators.csv": 7.510000228881836,
+   "yahooquery/racc.ca.csv": 7.510000228881836
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-25",
+  "base_used": 7.8,
+  "base_source_used": "egx-data/egxpy_racc.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.03,
+ "sigma60_daily": 0.03,
+ "sigma_source": "egx-data/egxpy_racc.csv (σ60=0.0300, σ10=0.0184)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.54,
+ "date": "2026-11-27",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "legal event: شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية"
+  ],
+  "events": [
+   {
+    "type": "legal",
+    "severity": "high",
+    "title": "شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية"
+   }
+  ],
+  "move_z": {
+   "last": 1.26,
+   "max3": 1.26
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": 0.15,
+  "sentiment": 0.105,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": -0.087
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -5.17,
+   "range_high_pct": 5.17,
+   "confidence": 0.3,
+   "net_score": 0.105,
+   "tilt_centre_pct": 0.06,
+   "families": {
+    "sentiment": 0.105
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": -3.091,
+   "vol_h_pct": 2.9956,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -12.86,
+   "range_high_pct": 12.86,
+   "confidence": 0.3,
+   "net_score": 0.131,
+   "tilt_centre_pct": 0.39,
+   "families": {
+    "technicals": 0.15,
+    "sentiment": 0.105
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": -2.5359,
+   "vol_h_pct": 6.6984,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -24.71,
+   "range_high_pct": 24.71,
+   "confidence": 0.3,
+   "net_score": 0.271,
+   "tilt_centre_pct": 2.38,
+   "families": {
+    "technicals": 0.15,
+    "sentiment": 0.105,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": -2.3808,
+   "vol_h_pct": 13.7276,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

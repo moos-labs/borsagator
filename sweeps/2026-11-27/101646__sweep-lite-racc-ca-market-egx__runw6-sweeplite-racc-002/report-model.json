@@ -1,0 +1,1383 @@
+{
+  "archive_commit": "c2f27f2b69d1b6124c5fc74fc29d71ccd06eab27",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "11890d7c42247b645685084841a879184693f698d951194487712cb35df9840e",
+      "family-agent.json": "c628c50f556921d06560bf4bcb05a65eb941e5e9e0b5b4e5e67ec746ef666352",
+      "family-fundamentals.json": "8ff6dd7a0530dfe6d9606f390110f5e94a0e97cb41252a222a4c2736fdad7b1d",
+      "family-price-forecast.json": "c98272d1918d040b1e6a5bb1e4727a8395a7a471cb92a7536322940cadd577e5",
+      "family-sentiment.json": "ffca28c80937656eabfa5a6bb930b5b9fa326c2500bdf705d84d3c37da44c970",
+      "family-technicals.json": "aeb6b008b65a7d6e324df3a72eef27f35ee22642c0738d0190fa1abdd1b9bafd",
+      "kronos-alone.json": "292a655b9de89a79ff198fcc531e1aac94d979fe88759c17ab3f445ea5a5ae2f",
+      "raw-llm-cohere.json": "333c38fb6db9558ed3d7ef097a3337036bde1679932d4455c61cab36243499c0"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/RACC-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 7.8,
+    "base_source": "egx-data/egxpy_racc.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": -0.087,
+      "sentiment": 0.105,
+      "technicals": 0.15
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.105
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -3.091,
+        "net_score": 0.105,
+        "range_high_pct": 5.17,
+        "range_low_pct": -5.17,
+        "tilt_centre_pct": 0.06,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.9956
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": 0.105,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.3808,
+        "net_score": 0.271,
+        "range_high_pct": 24.71,
+        "range_low_pct": -24.71,
+        "tilt_centre_pct": 2.38,
+        "trading_sessions": 21,
+        "vol_h_pct": 13.7276
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.105,
+          "technicals": 0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -2.5359,
+        "net_score": 0.131,
+        "range_high_pct": 12.86,
+        "range_low_pct": -12.86,
+        "tilt_centre_pct": 0.39,
+        "trading_sessions": 5,
+        "vol_h_pct": 6.6984
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_racc.csv",
+      "base_stale": false,
+      "base_used": 7.8,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_racc.csv": 7.51,
+        "openbb/racc_ca.csv": 7.510000228881836,
+        "pandas-ta/indicators.csv": 7.510000228881836,
+        "talib/indicators.csv": 7.510000228881836,
+        "yahooquery/racc.ca.csv": 7.510000228881836
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية",
+          "type": "legal"
+        }
+      ],
+      "flags": [
+        "legal event: شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 1.26,
+        "max3": 1.26
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.54,
+    "sigma60_daily": 0.03,
+    "sigma_daily": 0.03,
+    "sigma_source": "egx-data/egxpy_racc.csv (σ60=0.0300, σ10=0.0184)",
+    "ticker": "RACC.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": -0.087,
+    "sentiment": 0.105,
+    "technicals": 0.15
+  },
+  "finished": "2026-11-27T10:16:46.173908+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/RACC.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/RACC.CA.json",
+    "sharia-row-missing: AAOIFI RACC.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 RACC.CA",
+    "sharia-row-missing: FTSE RACC.CA",
+    "sharia-row-missing: ISLAMICLY RACC.CA",
+    "sharia-row-missing: MSCI RACC.CA",
+    "sharia-row-missing: MSCI_M RACC.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.105
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -3.091,
+      "net_score": 0.105,
+      "range_high_pct": 5.17,
+      "range_low_pct": -5.17,
+      "tilt_centre_pct": 0.06,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.9956
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": 0.105,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.3808,
+      "net_score": 0.271,
+      "range_high_pct": 24.71,
+      "range_low_pct": -24.71,
+      "tilt_centre_pct": 2.38,
+      "trading_sessions": 21,
+      "vol_h_pct": 13.7276
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.105,
+        "technicals": 0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -2.5359,
+      "net_score": 0.131,
+      "range_high_pct": 12.86,
+      "range_low_pct": -12.86,
+      "tilt_centre_pct": 0.39,
+      "trading_sessions": 5,
+      "vol_h_pct": 6.6984
+    }
+  },
+  "job": "sweep-lite RACC.CA market=EGX",
+  "job_shape": "sweep-lite RACC.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 8.8031,
+    "support": 6.7969
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-24T22:06:39Z",
+    "latest_news_date_raw": "Tue, 24 Nov 2026 22:06:39 GMT",
+    "news_count": 5,
+    "news_items": [
+      {
+        "date": "Tue, 24 Nov 2026 22:06:39 GMT",
+        "identity_key": "9c2c841ac8e87d73",
+        "key_type": "title-date-hash",
+        "source": "Quantisnow",
+        "title": "RACC: Research Alliance Corporation III filed SEC Form 8-K: Submission of Matters to a Vote of Security Holders - Quantisnow"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 22:03:45 GMT",
+        "identity_key": "a00f572b08dedf27",
+        "key_type": "title-date-hash",
+        "source": "Stock Titan",
+        "title": "Over 3.2 million shares were put up for redemption as Research Alliance Corp III (RACC) held a deal vote. - Stock Titan"
+      },
+      {
+        "date": "Tue, 24 Nov 2026 13:53:31 GMT",
+        "identity_key": "https://www.goud.ma/%D8%B4%D8%A8%D9%83%D8%A9-%D8%A3%D9%84%D9%88-%D8%B1%D8%A7%D9%83-%D8%B1%D8%A8%D8%AD%D8%AA%D9%8A-%D9%85%D8%B9%D8%A7%D9%86%D8%A7-%D9%85%D8%B9%D9%84%D9%88%D9%85%D8%A7%D8%AA-%D9%85%D9%86-%D8%A7%D9%84-1056276/",
+        "key_type": "resolved_url",
+        "source": "كود",
+        "title": "شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية ففاس - كود"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 12:00:20 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/7674781/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "«حفيت وراك عشان تعملي تيتو».. أحمد السقا يرفض اعتذار هشام سليمان ويوجه له رسالة مؤثرة - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Fri, 06 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.albayan.ae/economy/business/uae-economy/1563192",
+        "key_type": "resolved_url",
+        "source": "البيان",
+        "title": "استكمال الأعمال الإنشائية لمشروع راك سنترال سكوير في رأس الخيمة - البيان"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 7.8,
+    "base_source": "egx-data/egxpy_racc.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_racc.csv",
+      "base_stale": false,
+      "base_used": 7.8,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_racc.csv": 7.51,
+        "openbb/racc_ca.csv": 7.510000228881836,
+        "pandas-ta/indicators.csv": 7.510000228881836,
+        "talib/indicators.csv": 7.510000228881836,
+        "yahooquery/racc.ca.csv": 7.510000228881836
+      }
+    },
+    "sessions_per_calendar_day": 0.54,
+    "sigma_daily": 0.03,
+    "sigma_source": "egx-data/egxpy_racc.csv (σ60=0.0300, σ10=0.0184)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 7.8,
+      "last_date": "2026-11-26",
+      "last_high": 7.96,
+      "last_low": 7.5,
+      "last_open": 7.51,
+      "last_volume": 946126.0,
+      "note": null,
+      "rows": 2326,
+      "source": "egx-data/egxpy_racc.csv",
+      "stale": false
+    },
+    {
+      "last_close": 7.800000190734863,
+      "last_date": "2026-11-26",
+      "last_high": 7.960000038146973,
+      "last_low": 7.5,
+      "last_open": 7.510000228881836,
+      "last_volume": 946126.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/RACC_CA.csv",
+      "stale": false
+    },
+    {
+      "last_close": 7.800000190734863,
+      "last_date": "2026-11-26",
+      "last_high": 7.960000038146973,
+      "last_low": 7.5,
+      "last_open": 7.510000228881836,
+      "last_volume": 946126.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 7.800000190734863,
+      "last_date": "2026-11-26",
+      "last_high": 7.960000038146973,
+      "last_low": 7.5,
+      "last_open": 7.510000228881836,
+      "last_volume": 946126.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 7.510000228881836,
+      "last_date": "2026-11-25",
+      "last_high": 7.940000057220459,
+      "last_low": 7.5,
+      "last_open": 7.710000038146973,
+      "last_volume": 755747.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/RACC.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-racc-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-racc-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "RACC.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية",
+        "type": "legal"
+      }
+    ],
+    "flags": [
+      "legal event: شبكة “ألو راك ربحتي معانا”.. معلومات من الديستي طيحات متورط جديد كتقلب عليه الفرقة الجهوية"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 1.26,
+      "max3": 1.26
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for RACC.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T10:14:12.325163+00:00",
+  "sweep_dir": "sweeps/2026-11-27/101646__sweep-lite-racc-ca-market-egx__runw6-sweeplite-racc-002",
+  "ticker": "RACC.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "RACC.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "RACC.CA.csv_last_close": 7.510000228881836,
+          "RACC.CA.csv_last_date": "2026-11-25",
+          "rows_RACC.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "9e20466fd794e9385a091effac2e132272cfa35a8e52d098ad166af2a267f18e",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "RACC_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "RACC_CA.csv_last_close": 7.800000190734863,
+          "RACC_CA.csv_last_date": "2026-11-26",
+          "rows_RACC_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "b93fc2e385eb2e7604ab06713241e420a159568b850b4c7fb02a07e3cdf43576",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_racc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_racc.csv_last_close": 7.8,
+          "egxpy_racc.csv_last_date": "2026-11-26",
+          "rows_egxpy_racc.csv": 2326,
+          "symbol": "RACC",
+          "ticker": "RACC.CA"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "023d728bc1a7d1883b956acb809f6472a04d0f31e84baae989976c09c8811fab",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 40.9897,
+          "atr_14": 0.3916,
+          "bb_lower": 7.1527,
+          "bb_mid": 7.8065,
+          "bb_pctb": 0.495,
+          "bb_upper": 8.4603,
+          "close": 7.8,
+          "date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "ema_20": 7.8797,
+          "ema_200": 8.9382,
+          "ema_50": 8.3479,
+          "first_date_used": "2019-01-01",
+          "high": 7.96,
+          "indicators.csv_last_close": 7.800000190734863,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_date": "2026-11-26",
+          "low": 7.5,
+          "macd": -0.1702,
+          "macd_hist": 0.0215,
+          "macd_signal": -0.1916,
+          "open": 7.51,
+          "rows_fetched": 2255,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "rsi_14": 46.2969,
+          "stoch_d": 45.203,
+          "stoch_k": 45.7023,
+          "ticker": "RACC.CA"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "db405d546c0b8646ceeaaa3a656bd37631ef355154607007ba870f2e38fe017d",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 7.800000190734863,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_close": 7.800000190734863,
+          "last_date": "2026-11-26",
+          "rows_fetched": 2255,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "ticker": "RACC.CA"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "4eda5a6154eaa362fdde69f15ff4ff69fead21f81408c944bf2e984438791d69",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.829999923706055,
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "a2868bf0a70209800b444c1ec72b75d76191be61ecad6eb1737b706d94b95503",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.829999923706055,
+          "rows_poul_ohlc.csv": 2438
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "a5e9ce6f11d3094449e25c8931902ca3099633f6cbca544e51b8f0dac2dc4e8e",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "b4122eb8dbaa598a4537d8059e1b66186570aaae3dbf24a2ec7468f85a14c6ff",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "1923e6e57e50807cf4b4de22589f7f6ab303a7770611fa1804420390752b2441",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 9,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "9ef2245483b7c6a1f17ebd6332dfab648400d466ada75d7fc6241c3f09f38c7f",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "4f555b1d09c28fdd7c94e108cb8a03229854d3266e4e4dde619b2a50f8399002",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 7.6143,
+          "forecast.csv_last_date": "2026-12-24",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "01c1adc3930bc99229472ddf657ee03bcc1e7be06530e5b6ca997aeff6638aec",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "f3623b6ff6aa4dc5d364bfabf4e8b6d7a26760c98a9e70739f0c9bd099ce26bf",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-racc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 3,
+          "bodies_fetched": 3,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T10:16:45Z",
+          "finbert_negative": 0.048,
+          "finbert_neutral": 0.921,
+          "finbert_positive": 0.03,
+          "finbert_scored": 2,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Tue, 24 Nov 2026 22:06:39 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.026,
+          "multilingual_neutral": 0.583,
+          "multilingual_positive": 0.391,
+          "multilingual_scored": 3,
+          "news_count": 5,
+          "ticker": "RACC.CA",
+          "tool": "news-disclosure",
+          "translated_negative": 0.398,
+          "translated_neutral": 0.438,
+          "translated_positive": 0.164,
+          "translated_scored": 3,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "RACC.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "7488916c87796e86fd3e811b486c839b8ded20437e84d0de80a00c85e8c6682b",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-racc-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
