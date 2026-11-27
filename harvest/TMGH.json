@@ -2,7 +2,7 @@
  "ticker": "TMGH.CA",
  "company_ar": "طلعت مصطفى",
  "isin": "EGS691S1C011",
- "harvested_at": "2026-11-27T10:29:56Z",
+ "harvested_at": "2026-11-27T12:47:57Z",
  "count": 5,
  "items": [
   {
@@ -65,36 +65,36 @@
    "detail_error": null,
    "attachments": [
     {
-     "status": "not_pdf",
+     "status": "fetch_failed",
      "path": null,
      "sha256": null,
      "size_bytes": null,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/347205_1.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": "fetch raised: APIRequestContext.get: read ECONNRESET\nCall log:\n  - → GET https://www.egx.com.eg/downloads/Bulletins/347205_1.pdf\n    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML"
     },
     {
-     "status": "not_pdf",
+     "status": "fetch_failed",
      "path": null,
      "sha256": null,
      "size_bytes": null,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/347205_2.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": "fetch raised: APIRequestContext.get: read ECONNRESET\nCall log:\n  - → GET https://www.egx.com.eg/downloads/Bulletins/347205_2.pdf\n    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML"
     },
     {
-     "status": "not_pdf",
-     "path": null,
-     "sha256": null,
-     "size_bytes": null,
+     "status": "captured",
+     "path": "attachments/297618_3.pdf",
+     "sha256": "536562d2fc7819c3a8ae203c0cd824b7a16f5ae448b2923c64992b0b5b1a859a",
+     "size_bytes": 553549,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/347205_3.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": null
     },
     {
-     "status": "not_pdf",
-     "path": null,
-     "sha256": null,
-     "size_bytes": null,
+     "status": "captured",
+     "path": "attachments/297618_4.pdf",
+     "sha256": "b18625c619097780ba1d9d311ef5e644d2a693d74cb16b73ff4bbcdd84028770",
+     "size_bytes": 3322590,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/347205_4.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": null
     }
    ]
   },
@@ -112,12 +112,12 @@
    "detail_error": null,
    "attachments": [
     {
-     "status": "not_pdf",
-     "path": null,
-     "sha256": null,
-     "size_bytes": null,
+     "status": "captured",
+     "path": "attachments/296285.pdf",
+     "sha256": "034c53d3ac85fc9b9257059ff84ce977455fcc60db7082bcbd5ded33e4d7ca2f",
+     "size_bytes": 643935,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/345818_1.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": null
     }
    ]
   },
@@ -135,12 +135,12 @@
    "detail_error": null,
    "attachments": [
     {
-     "status": "not_pdf",
-     "path": null,
-     "sha256": null,
-     "size_bytes": null,
+     "status": "captured",
+     "path": "attachments/295927.pdf",
+     "sha256": "c989a2f1cc3ad42d380c5119862ac367f54a7755e650bfc9547f7310206dea24",
+     "size_bytes": 3313908,
      "source_url": "https://www.egx.com.eg/downloads/Bulletins/345388_1.pdf",
-     "reason": "fetched bytes are not a PDF (no %PDF- header)"
+     "reason": null
     }
    ]
   }
