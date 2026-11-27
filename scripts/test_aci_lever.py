@@ -111,11 +111,24 @@ def test_alpha_restored_and_applied():
 
 
 def test_score_refuses_training_cells():
-    buf = io.StringIO()
-    with contextlib.redirect_stdout(buf):
-        rc = L.main(["score", "--selected", os.path.join(BENCH, "..", "evaluation", "aci_lever_selected.json"), "--captures", "/nonexistent",
-                     "--min-cell", "90"])
-    check("score refuses min-cell below 91", rc == 2 and "refusing" in buf.getvalue())
+    # Mock discovery so the run gets past the no-captures guard and the
+    # min-cell guard itself is what refuses.
+    sel = os.path.join(BENCH, "..", "evaluation", "aci_lever_selected.json")
+    old_find, old_build = L.A.find_captures, L.R.build_rows
+    L.A.find_captures = lambda dirs, min_cell: ["fake-capture"]
+    L.R.build_rows = lambda caps, refs: ([], [])
+    try:
+        for cell, expect in ((90, True), (47, True), (91, False)):
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = L.main(["score", "--selected", sel, "--captures", "fake",
+                             "--min-cell", str(cell), "--reps", "5"])
+            out = buf.getvalue()
+            refused = rc == 2 and "score is for cells >= 91 only" in out
+            check("min-cell %d refused=%s" % (cell, expect), refused == expect, out[:120])
+            check("min-cell %d not stopped by capture guard" % cell, "no captures found" not in out)
+    finally:
+        L.A.find_captures, L.R.build_rows = old_find, old_build
 
 
 def test_counts_only_emits_no_metrics():
