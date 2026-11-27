@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 292.5,
+ "base_source": "egx-data/egxpy_egal.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T03:07:49.891557+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.67,
+   "direction": "down",
+   "expected_move_pct": -0.51,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 0.49,
+   "range_low_pct": -1.51,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.89,
+   "direction": "down",
+   "expected_move_pct": -3.51,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -1.51,
+   "range_low_pct": -5.51,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.78,
+   "direction": "down",
+   "expected_move_pct": -1.51,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.51,
+   "range_low_pct": -3.51,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_egal.csv": "ed1d0e3c734b37237352ca3cc08d754afa565cb4f742b7a9fd93e0ee5673bad9",
+  "digest.json": "5c285e372a22d9046a1415c1d33ab3b07534b8092afd97a8b7b234a96a2fef5a",
+  "ensemble.json": "26a20ba126c7cb48c8b32f3e31c88fcb64ad43550e8c64e1ed6316416eaf0dd9",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_egal.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0221,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+ "ticker": "EGAL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

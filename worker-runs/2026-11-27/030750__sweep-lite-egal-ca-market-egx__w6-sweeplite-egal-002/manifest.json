@@ -1,0 +1,92 @@
+{
+ "job": {
+  "id": "w6-sweeplite-egal-002",
+  "job": "sweep-lite EGAL.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:05:03.438895+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-egal-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:05:03.438895+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "EGAL"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['EGAL']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:07:46.006505+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+  "model": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002/report-model.json",
+  "model_sha256": "f69e84bcf7eb31e26a56e87703cf78c70a9955a2714addb0d9a06453f5b08d44",
+  "degraded": null,
+  "flags": [
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/EGAL.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/EGAL.CA.json",
+   "sharia-row-missing: AAOIFI EGAL.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 EGAL.CA",
+   "sharia-row-missing: FTSE EGAL.CA",
+   "sharia-row-missing: ISLAMICLY EGAL.CA",
+   "sharia-row-missing: MSCI EGAL.CA",
+   "sharia-row-missing: MSCI_M EGAL.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "f839924802376e062bd7a57a1bd6513cc2b50bd4",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 150569,
+    "sha256": "05d093d8b68976cad2974f2ebe4bfe9f46579fa49055ce6a0f5a1b6453f0c216"
+   },
+   {
+    "path": "report.md",
+    "bytes": 40841,
+    "sha256": "fe1e910452a8282ba441dd33d9c337806a186ed963d47ddfe2f5c9064b56402c"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "EGAL.CA"
+ }
+}

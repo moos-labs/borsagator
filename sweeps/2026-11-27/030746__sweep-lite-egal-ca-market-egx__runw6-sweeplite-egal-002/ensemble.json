@@ -1,0 +1,150 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "EGAL.CA",
+ "base_price": 292.5,
+ "base_source": "egx-data/egxpy_egal.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_egal.csv": 298.0,
+   "openbb/egal_ca.csv": 302.0,
+   "pandas-ta/indicators.csv": 302.0,
+   "talib/indicators.csv": 302.0,
+   "yahooquery/egal.ca.csv": 302.0
+  },
+  "outliers": {},
+  "spread_pct": 1.32,
+  "common_date": "2026-11-24",
+  "base_used": 292.5,
+  "base_source_used": "egx-data/egxpy_egal.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0221,
+ "sigma60_daily": 0.0221,
+ "sigma_source": "egx-data/egxpy_egal.csv (σ60=0.0221, σ10=0.0179)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.659,
+ "date": "2026-11-27",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: Agnico Eagle Mines Limited (AEM.TO) Stock Price, News, Quote & History - Yahoo! Finance Ca",
+   "earnings event: Agnico Eagle Mines Limited (AEM.TO) stock price, news, quote and history - Yahoo Finance U",
+   "earnings event: American Eagle options signal 13% move around Dec. 2 earnings By Investing.com - Investing"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Agnico Eagle Mines Limited (AEM.TO) Stock Price, News, Quote & History - Yahoo! Finance Ca"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "Agnico Eagle Mines Limited (AEM.TO) stock price, news, quote and history - Yahoo Finance U"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "American Eagle options signal 13% move around Dec. 2 earnings By Investing.com - Investing"
+   }
+  ],
+  "move_z": {
+   "last": 0.13,
+   "max3": 0.71
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.2,
+  "sentiment": 0.141,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.119
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.8,
+   "range_high_pct": 3.8,
+   "confidence": 0.3,
+   "net_score": 0.141,
+   "tilt_centre_pct": 0.06,
+   "families": {
+    "sentiment": 0.141
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": 2.1101,
+   "vol_h_pct": 2.2051,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -9.47,
+   "range_high_pct": 9.47,
+   "confidence": 0.3,
+   "net_score": -0.054,
+   "tilt_centre_pct": -0.12,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": 0.141
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": 2.0159,
+   "vol_h_pct": 4.9307,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -18.19,
+   "range_high_pct": 18.19,
+   "confidence": 0.3,
+   "net_score": 0.134,
+   "tilt_centre_pct": 0.87,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": 0.141,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": 2.4023,
+   "vol_h_pct": 10.105,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

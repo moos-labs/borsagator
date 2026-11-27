@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 292.5,
+ "base_source": "egx-data/egxpy_egal.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T03:07:46.357130+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "978e739014055b760efcb87075a62f3c4647b700bf99c3126e520481cd4813b0",
+  "digest.json": "5c285e372a22d9046a1415c1d33ab3b07534b8092afd97a8b7b234a96a2fef5a",
+  "ensemble.json": "26a20ba126c7cb48c8b32f3e31c88fcb64ad43550e8c64e1ed6316416eaf0dd9"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+ "ticker": "EGAL.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
