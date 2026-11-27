@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 15.89,
+ "base_source": "egx-data/egxpy_ifap.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T04:05:48.219763+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.66,
+   "families": {
+    "price-forecast": 0.117
+   },
+   "horizon_short": false,
+   "net_score": 0.117,
+   "range_high_pct": 3.74,
+   "range_low_pct": -1.06,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.4,
+   "families": {
+    "price-forecast": 0.132
+   },
+   "horizon_short": false,
+   "net_score": 0.132,
+   "range_high_pct": 6.39,
+   "range_low_pct": 0.91,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.08,
+   "families": {
+    "price-forecast": 0.086
+   },
+   "horizon_short": false,
+   "net_score": 0.086,
+   "range_high_pct": 4.2,
+   "range_low_pct": -1.12,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "8f8f5175cf75bba1fc98b5dd2acce5d97d5037af64e16b3612f6b043df9856c2",
+  "digest.json": "2e750dad285b4140708a6221631b2f9415be1b623cf6013eb767c92111f1e922",
+  "ensemble.json": "47786984ec8219fdab251237079d1aa76192dcafbda2a1a143ec77f0d82c557e"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0281,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+ "ticker": "IFAP.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

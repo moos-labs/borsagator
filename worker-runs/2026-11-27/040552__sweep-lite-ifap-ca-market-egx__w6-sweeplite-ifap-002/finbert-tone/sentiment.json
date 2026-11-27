@@ -1,0 +1,101 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "neutral": 2,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.2702508834033021,
+    "negative": 0.038500854835547216,
+    "neutral": 0.6912482753396034
+  },
+  "items": [
+    {
+      "text": "Kyiv commemorates IFAP's 25th Anniversary - UNESCO",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.150853419560008e-05,
+        "negative": 1.0497603398107458e-05,
+        "neutral": 0.9999480247497559
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999480247497559
+        },
+        {
+          "label": "Positive",
+          "score": 4.150853419560008e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.0497603398107458e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Three new projects to advance inclusive knowledge societies for IFAP’s 25th anniversary - UNESCO",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.010913725942373276,
+        "negative": 2.0949704776285216e-05,
+        "neutral": 0.9890652894973755
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9890652894973755
+        },
+        {
+          "label": "Positive",
+          "score": 0.010913725942373276
+        },
+        {
+          "label": "Negative",
+          "score": 2.0949704776285216e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "25 Years of IFAP: People and Information in a World of Global challenges and Opportunities - Національна рада України з питань телебачення і радіомовлення",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.7997974157333374,
+        "negative": 0.11547111719846725,
+        "neutral": 0.08473151177167892
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.7997974157333374
+        },
+        {
+          "label": "Negative",
+          "score": 0.11547111719846725
+        },
+        {
+          "label": "Neutral",
+          "score": 0.08473151177167892
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

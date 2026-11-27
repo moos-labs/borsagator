@@ -1,0 +1,44 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.2916109611590703,
+    "negative": 0.011336466607948145,
+    "neutral": 0.6970525979995728
+  },
+  "items": [
+    {
+      "text": "Kyiv commemorates IFAP's 25th Anniversary - UNESCO",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.43359172344207764,
+        "negative": 0.012958847917616367,
+        "neutral": 0.5534494519233704
+      }
+    },
+    {
+      "text": "Three new projects to advance inclusive knowledge societies for IFAP’s 25th anniversary - UNESCO",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.2771838903427124,
+        "negative": 0.008184470236301422,
+        "neutral": 0.7146316766738892
+      }
+    },
+    {
+      "text": "25 Years of IFAP: People and Information in a World of Global challenges and Opportunities - Національна рада України з питань телебачення і радіомовлення",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.16405726969242096,
+        "negative": 0.012866081669926643,
+        "neutral": 0.8230766654014587
+      }
+    }
+  ]
+}

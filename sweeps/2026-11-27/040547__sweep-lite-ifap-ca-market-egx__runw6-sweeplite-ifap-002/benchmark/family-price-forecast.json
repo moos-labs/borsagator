@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 15.89,
+ "base_source": "egx-data/egxpy_ifap.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T04:05:48.218394+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "8f8f5175cf75bba1fc98b5dd2acce5d97d5037af64e16b3612f6b043df9856c2",
+  "digest.json": "2e750dad285b4140708a6221631b2f9415be1b623cf6013eb767c92111f1e922",
+  "ensemble.json": "47786984ec8219fdab251237079d1aa76192dcafbda2a1a143ec77f0d82c557e"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+ "ticker": "IFAP.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

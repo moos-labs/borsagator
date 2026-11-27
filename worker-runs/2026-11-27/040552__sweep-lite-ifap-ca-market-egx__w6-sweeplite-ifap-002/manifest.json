@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w6-sweeplite-ifap-002",
+  "job": "sweep-lite IFAP.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T04:03:46.957899+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-ifap-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T04:03:46.957899+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "IFAP"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['IFAP']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T04:05:47.913495+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+  "model": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002/report-model.json",
+  "model_sha256": "c32f8482243679405d970099cacd7467ec3aaa81109f6c805c927ae5d0f7c17d",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/IFAP.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/IFAP.CA.json",
+   "sharia-row-missing: AAOIFI IFAP.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 IFAP.CA",
+   "sharia-row-missing: FTSE IFAP.CA",
+   "sharia-row-missing: ISLAMICLY IFAP.CA",
+   "sharia-row-missing: MSCI IFAP.CA",
+   "sharia-row-missing: MSCI_M IFAP.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "ba60540834ee4a26b2c5e453c7c99b6d1922fde4",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 114712,
+    "sha256": "330f4b3ff85e796ab0489e1e64f7a1e43316f32399ab6ea645e17e17c594c2e7"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23322,
+    "sha256": "26ceb8df60bd95298a1faa2b29596f1fd5758cbbddcdd164ccf694b535830599"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "IFAP.CA"
+ }
+}
