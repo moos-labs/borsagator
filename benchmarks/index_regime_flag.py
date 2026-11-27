@@ -26,6 +26,7 @@ HORIZONS = ("day", "week", "month")
 B_DRAWS = 2000
 SEED = 68
 TRAIN_MAX = 47
+EXT_MIN = 91  # preregistered extension population: cells 91+ (48-90 are descriptive only)
 
 
 def load_series(path):
@@ -171,7 +172,7 @@ def prereg_thresholds(res):
 def run(cells_dir, series, max_cell=TRAIN_MAX, allow_extend=False):
     """Training block (cells 1-47) first. Cells above 47 are read only when
     --allow-extend is given AND every pre-registered threshold is met."""
-    res, _ = build(cells_dir, series, TRAIN_MAX)
+    res, _ = build(cells_dir, series, min(max_cell, TRAIN_MAX))
     res["prereg_thresholds"] = prereg_thresholds(res)
     if max_cell > TRAIN_MAX:
         if not allow_extend:
@@ -179,7 +180,7 @@ def run(cells_dir, series, max_cell=TRAIN_MAX, allow_extend=False):
         if not res["prereg_thresholds"]["all_met"]:
             raise SystemExit("extension refused: training thresholds not all met: "
                              + json.dumps(res["prereg_thresholds"]))
-        ext, _ = build(cells_dir, series, max_cell, min_cell=TRAIN_MAX + 1)
+        ext, _ = build(cells_dir, series, max_cell, min_cell=EXT_MIN)
         res["extension"] = ext
     return res
 

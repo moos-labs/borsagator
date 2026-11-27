@@ -170,11 +170,21 @@ def test_stale_bar_and_extension_gate():
             asof = ser[30 + k * 2][0]
             write_cell(d, k, "T%d.CA" % k, asof, {"day": k * 1.0, "week": k * 1.0, "month": k * 1.0})
         write_cell(d, 48, "ZZ.CA", ser[150][0], {"day": 1.0, "week": 1.0, "month": 1.0})
-        res = M.run(d, sr, max_cell=48, allow_extend=True)
+        write_cell(d, 90, "Y0.CA", ser[151][0], {"day": 1.0, "week": 1.0, "month": 1.0})
+        write_cell(d, 91, "Y1.CA", ser[152][0], {"day": 1.0, "week": 1.0, "month": 1.0})
+        res = M.run(d, sr, max_cell=91, allow_extend=True)
         check("training thresholds pass", res["prereg_thresholds"]["all_met"], res["prereg_thresholds"])
         check("training block excludes cell 48", res["n_cells_used"] == 40, res["n_cells_used"])
         check("extension read when passing", "extension" in res and res["extension"]["n_cells_used"] == 1)
+        ext_cells = [c[0] for c in M.build(d, sr, 91, min_cell=M.EXT_MIN)[1]]
+        check("extension is cell 91 only", ext_cells == [91] and res["extension"]["n_cells_used"] == 1, ext_cells)
+        check("cell 48 and 90 excluded from extension", 48 not in ext_cells and 90 not in ext_cells)
+        check("EXT_MIN is 91", M.EXT_MIN == 91)
         res_t = M.run(d, sr)
+        res_r = M.run(d, sr, max_cell=1)
+        check("reduced training limit", res_r["n_cells_used"] == 1 and res_r["horizons"]["week"]["n"] == 1, res_r["n_cells_used"])
+        check("reduced limit thresholds on reduced set", res_r["prereg_thresholds"]["week"]["n_ge_30"] is False
+              if "n_ge_30" in res_r["prereg_thresholds"].get("week", {}) else not res_r["prereg_thresholds"]["all_met"])
         check("default run has no extension", "extension" not in res_t)
         try:
             M.run(d, sr, max_cell=48, allow_extend=False)
