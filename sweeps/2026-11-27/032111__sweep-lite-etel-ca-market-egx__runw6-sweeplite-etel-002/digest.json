@@ -1,0 +1,456 @@
+{
+  "job": "sweep-lite ETEL.CA market=EGX",
+  "ticker": "ETEL.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T03:12:20.371071+00:00",
+  "finished": "2026-11-27T03:21:11.719335+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ETEL.CA.csv": 1208,
+          "ETEL.CA.csv_last_date": "2026-11-24",
+          "ETEL.CA.csv_last_close": "141.0"
+        },
+        "files": [
+          "ETEL.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ETEL_CA.csv": 483,
+          "ETEL_CA.csv_last_date": "2026-11-25",
+          "ETEL_CA.csv_last_close": "139.1999969482422"
+        },
+        "files": [
+          "ETEL_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ETEL.CA",
+          "symbol": "ETEL",
+          "rows_egxpy_etel.csv": 3000,
+          "egxpy_etel.csv_last_date": "2026-11-26",
+          "egxpy_etel.csv_last_close": "135.9"
+        },
+        "files": [
+          "egxpy_etel.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ETEL.CA",
+          "date": "2026-11-25",
+          "open": 141.0,
+          "high": 141.28,
+          "low": 138.51,
+          "close": 139.2,
+          "rsi_14": 55.7887,
+          "macd": 2.2101,
+          "macd_signal": 1.337,
+          "macd_hist": 0.8731,
+          "ema_20": 135.9337,
+          "ema_50": 132.1286,
+          "ema_200": 108.2431,
+          "adx_14": 18.8858,
+          "bb_upper": 148.2939,
+          "bb_mid": 132.4445,
+          "bb_lower": 116.5951,
+          "bb_pctb": 0.7131,
+          "atr_14": 5.5973,
+          "stoch_k": 70.8455,
+          "stoch_d": 70.8131,
+          "rows_fetched": 5219,
+          "rows_used": 1930,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "139.1999969482422"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ETEL.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 5219,
+          "rows_used": 1930,
+          "last_date": "2026-11-25",
+          "last_close": 139.1999969482422,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "139.1999969482422"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2437,
+          "poul_ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 28
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 28
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 28
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-23",
+          "forecast.csv_last_close": "138.7034"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "ETEL.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ETEL.CA",
+          "fetched_at": "2026-11-27T03:21:10Z",
+          "tool": "news-disclosure",
+          "news_count": 40,
+          "disclosure_count": 10,
+          "arabic_headlines": 38,
+          "latest_news_date": "Thu, 26 Nov 2026 23:43:11 GMT",
+          "latest_disclosure_date": "Thu, 05 Nov 2026 07:31:27 GMT",
+          "llm_provider": "cohere",
+          "finbert_positive": 0.386,
+          "finbert_negative": 0.08,
+          "finbert_neutral": 0.534,
+          "finbert_scored": 12,
+          "multilingual_positive": 0.689,
+          "multilingual_negative": 0.006,
+          "multilingual_neutral": 0.305,
+          "multilingual_scored": 38,
+          "bodies_fetched": 7,
+          "egx_bodies_attached": 1,
+          "egx_disclosures_added": 9,
+          "egx_harvest_source": "local-file",
+          "translation_provider": "nllb+cohere",
+          "translated_positive": 0.328,
+          "translated_negative": 0.025,
+          "translated_neutral": 0.647,
+          "translated_scored": 38
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etel-002",
+      "claim_id": "w6-sweeplite-etel-002"
+    }
+  ]
+}

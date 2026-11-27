@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1930 rows
+{
+  "ticker": "ETEL.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 5219,
+  "rows_used": 1930,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-25"
+  },
+  "last_date": "2026-11-25",
+  "last_close": 139.1999969482422,
+  "indicators": {
+    "RSI_14": 55.78867686955885,
+    "MACD": 2.2101034045790584,
+    "MACD_signal": 1.3370234029958687,
+    "MACD_hist": 0.8730800015831897,
+    "EMA_20": 135.93373310579474,
+    "EMA_50": 132.12864450779807,
+    "ADX_14": 18.885814649081485
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-22",
+    "CDLENGULFING": "2026-11-25",
+    "CDLHAMMER": "2026-10-06",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

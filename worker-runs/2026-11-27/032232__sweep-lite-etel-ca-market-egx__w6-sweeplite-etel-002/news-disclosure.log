@@ -1,0 +1,33 @@
+ARN body http 403: https://english.ahram.org.eg/NewsContent/1/2/583516/Egypt/Society/Fact-box-Warraq-ring-roa
+WARN body http 403: https://english.ahram.org.eg/News/583510.aspx
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 5, 'extract': 0}
+egx-harvest: attached 1 official bodies, added 9 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5267.65it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16134.72it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16581.35it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5393.27it/s]
+{"tool": "news-disclosure", "ticker": "ETEL.CA", "news_count": 40, "disclosure_count": 10, "arabic_headlines": 38, "latest_news_date": "Thu, 26 Nov 2026 23:43:11 GMT", "latest_disclosure_date": "Thu, 05 Nov 2026 07:31:27 GMT", "top_headline": "العنوان: المصرية للاتصالات (ETEL.CA) قرارات مجلس ادارة الشركةاسم الشركة: المصرية للاتصالاتكود الترقيم الدولي: EGS48031C016كود رويترز: - Mubasher", "llm_provider": "cohere", "finbert_positive": 0.386, "finbert_negative": 0.08, "finbert_neutral": 0.534, "finbert_scored": 12, "multilingual_positive": 0.689, "multilingual_negative": 0.006, "multilingual_neutral": 0.305, "multilingual_scored": 38, "bodies_fetched": 7, "egx_bodies_attached": 1, "egx_disclosures_added": 9, "egx_harvest_source": "local-file", "translation_provider": "nllb+cohere", "translated_positive": 0.328, "translated_negative": 0.025, "translated_neutral": 0.647, "translated_scored": 38}
+BRIEF:
+- A tragic accident occurred on the Warraq ring road, resulting in an outpouring of donations totaling EGP 318 million.
+- Egypt's mobile operators have pledged to match donations for the victims of the Warraq fire, demonstrating corporate social responsibility.
+- The Egyptian Company for Telecommunications (ECT) has announced a significant increase in customer donations through its WE Pay wallet to support victims and injured individuals from the Warraq incident.
+- ECT has expressed its deepest condolences to the families of the victims and wishes a speedy recovery to the injured.
+- The company's initiative aims to support three organizations: the Egyptian Red Crescent, Ahl Masr Hospital, and An-Nas Hospital, by doubling customer donations through WE Pay.
+- ECT has taken a proactive role by covering the costs of medications, devices, and medical supplies for hospitals treating the injured, showcasing its commitment to healthcare support.
+- Minister of Communications and Information Technology, Raaft Hindi, has launched a nationwide initiative to double citizen donations in collaboration with four mobile companies, with ECT contributing to the provision of essential medical supplies.
+- ECT's efforts to provide support and assistance to the victims and their families, as well as its contribution to the medical and humanitarian efforts, reflect its commitment to social responsibility and community engagement.

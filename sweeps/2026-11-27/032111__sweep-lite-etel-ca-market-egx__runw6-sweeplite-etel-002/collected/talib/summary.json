@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "ETEL.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ETEL.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 5219,
+    "rows_used": 1930,
+    "last_date": "2026-11-25",
+    "last_close": 139.1999969482422,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-25",
+    "indicators.csv_last_close": "139.1999969482422"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}
