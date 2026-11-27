@@ -71,19 +71,32 @@ def parse_table15(pdf, page):
     rows = {}
     for x0, y0, x1, y1, t in words:
         rows.setdefault(round(y0 / 3), []).append((x0, t))
-    range_list = []  # (x_centre, end_year, end_month, end_day)
+    range_list = []  # (x_centre, end_year, end_month, end_day, start_month, start_day)
     for k in sorted(rows):
-        line = ' '.join(t for _, t in sorted(rows[k]))
+        toks = sorted(rows[k])
+        line = ' '.join(t for _, t in toks)
+        # token start offsets inside the joined line, for per-match positions
+        starts = []
+        pos = 0
+        for _, t in toks:
+            starts.append(pos)
+            pos += len(t) + 1
+        xs = [x for x, t in toks]
         for m in re.finditer(r'From\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}))?\s*-\s*(\d{1,2})/(\d{1,2})/(\d{4})', line):
-            # x-centre: position of the 'From...' token in this line
-            xs = [x for x, t in sorted(rows[k])]
-            toks = [t for _, t in sorted(rows[k])]
+            # the match's own 'From' token: the token starting at or before m.start()
             xc = 0
-            for j, t in enumerate(toks):
-                if t.startswith('From'):
-                    xc = xs[j] + 40
+            for j, (xj, txt) in enumerate(toks):
+                if starts[j] <= m.start() < starts[j] + len(txt) and txt.startswith('From'):
+                    xc = xj + 40
                     break
-            range_list.append((xc, int(m.group(6)), int(m.group(5)), int(m.group(4))))
+            else:
+                # glued token (e.g. 'From19/6-2/7/2018'): nearest token at/before
+                for j in range(len(toks) - 1, -1, -1):
+                    if starts[j] <= m.start() and toks[j][1].startswith('From'):
+                        xc = xs[j] + 40
+                        break
+            range_list.append((xc, int(m.group(6)), int(m.group(5)), int(m.group(4)),
+                               int(m.group(2)), int(m.group(1))))
     # --- Week Ending date words: scan bands below the "Week Ending" label
     wy = None
     for x0, y0, x1, y1, t in words:
@@ -138,9 +151,12 @@ def parse_table15(pdf, page):
     range_list.sort()
     out_dates = []
     for k in range(len(cols) // 2):
-        yr = range_list[k][1]
+        _, ey, em, ed, sm, sd = range_list[k]
+        crosses = (sm, sd) > (em, ed)  # range spans New Year (e.g. 28/12-10/1)
         for j in (2 * k, 2 * k + 1):
             xc, day, mon = dates[j]
+            # a date in the pre-New-Year leg of a crossing range belongs to ey-1
+            yr = ey - 1 if (crosses and (mon, day) >= (sm, sd)) else ey
             out_dates.append(f'{yr:04d}-{mon:02d}-{day:02d}')
     series = {}
     for ten, vals in tenors.items():
