@@ -2,7 +2,7 @@
 
 Status: PRE-REGISTERED on merge. Nothing is run on the test events before this document lands. The test runs only after the merge. Changing anything below afterwards is a new pre-registration, not a silent edit.
 
-Provenance: the draft text in section 3 is carried exactly as posted in Slack C0C8EBZEF9U thread 1795747836.364159 (message 1795750716.748409, 2026-11-27 05:38 Cairo, from the research agent). The decisions in section 2 are from Moos's message 1795751043.400629 in the same thread, which I read in the channel. The instruction to write this PR was relayed by the main agent, not read.
+Provenance: the draft text in section 3 is carried exactly as posted in Slack C0C8EBZEF9U thread 1795747836.364159 (message 1795750716.748409, 2026-11-27 05:38 Cairo, from the research agent). The decisions in section 2 are from Moos's message 1795751043.400629 and the rulings 1795751376.652329 and 1795751382.221509 in the same thread, all of which I read in the channel. The instruction to write this PR was relayed by the main agent, not read.
 
 ## 1. Scope
 
@@ -14,6 +14,7 @@ One hypothesis, one horizon (21 sessions), one test. Descriptive screen results 
 2. The 1% round-trip cost assumption is accepted. The gap is reported before and after the cost.
 3. Run now at about 82 events. Power is low (a true 4% gap detected roughly 1 time in 5 or 6) and INCONCLUSIVE is a valid outcome, not a failure.
 4. The draft is accepted with the period-instability caveat carried as written.
+5. Amendment rulings (1795751376.652329, corrected by 1795751382.221509, which says Muhammad decided round 27 himself at about 05:43 and supersedes Moos's own decision-1 flag): the four clarifications in section 4 (verdict rule, cost application, event rule, section 5 fix) are added before merge. The verbatim text in section 3 is untouched.
 
 ## 3. Registered text (verbatim from the draft as posted)
 
@@ -35,11 +36,20 @@ The text below is the posted draft, unchanged. The hypothesis, design, statistic
 > 3. Run now at about 82 events, or wait for about 40 more.
 > Meanwhile round 28 runs on a different approach: how many results announcements per year the parser misses (2014 shows none, 2018-20 thin), since that sets the true event count. Checkpoint about 5:53.
 
-## 4. Clarifications that add nothing to the registered text
+## 4. Clarifications (each separate; none edits section 3)
 
-- The registered design uses no price look-back before the announcement date, so the 120-bar-before-D rule has no effect on which events are tested. An event whose 21-session window runs past the end of the series cannot be scored and is counted as an exclusion, reported, never dropped silently. This restates how the registered return is defined; it does not change a threshold.
-- The test events are the ones the draft counts (about 82, dated 2024-01-01 to 2026-10). The final count and every exclusion are reported with the result.
+Where a clarification below conflicts with a sentence of section 3, the clarification governs.
+
+C1. No look-back, and incomplete windows. The registered design uses no price look-back before the announcement date, so the 120-bar-before-D rule has no effect on which events are tested. An event whose 21-session window runs past the end of the series cannot be scored and is counted as an exclusion, reported, never dropped silently. (Reviewed as valid by Moos, 1795751376.652329.)
+
+C2. Verdict rule for one source (Moos, 1795751376.652329, CodeRabbit finding on the Statistic). Section 3 says "otherwise INCONCLUSIVE" and also "in one source only, is reported as failing", which overlap for a significant positive gap in one source only. Ruling: a significant positive gap in ONE source only is FAILING, because it fails the replication requirement. INCONCLUSIVE applies only when the gap is not significant in either source and not significantly negative. A positive result needs a significant positive gap in both sources.
+
+C3. How the 1% cost is applied (Moos, same message). The 1% round-trip cost is subtracted once, directly from the gap: post-cost gap = gross gap minus 1 percentage point. It is not subtracted per group, since taking 1% off each group would leave the gap unchanged. The gap is reported before and after the cost.
+
+C4. Event rule extended to interim and annual results (Moos, same message, approved). Test events are interim AND annual results, found with the extended parser: the interim "Reports 3/6/9 Months" format, the annual "Reports Year Ended" format, and the newer 2025-26 "Reports its Financial Results" format. A bare release without figures is not an event, and a bare release counts only once its PDF figures are parsed. The primary test is on the POOLED set (interim plus annual). Interim-only and annual-only splits are reported as secondary rows. Everything else in section 3 (dates from 2024-01-01, sign-only surprise, entry, exclusions, statistic, cost) applies unchanged to the pooled set. The "about 82 events" and the power note in section 3 describe the interim-only set. The pooled event count and power come from the round-28 extended count, which uses no returns or outcome data, and are reported with the result, not tuned. The run-now decision in section 2 stands.
+
+C5. Final count. The final event count and every exclusion are reported with the result.
 
 ## 5. Cycle item (queued, not part of this registration)
 
-Flag any ledger or realised window that holds a cash-dividend effectiveDate (the ex-date, per data round G), optionally adding the dividend back. Source: Moos 1795751043.400629 (data round H, cash dividends are about 1 to 3% of price, 8 of 83 matured windows contain one). Cash dividends only: bonus issues differ. This is a pipeline item, not a research round, and it changes nothing here.
+Flag any ledger or realised window that holds a cash-dividend, bonus-share or split effectiveDate, optionally adding the dividend back for cash dividends. effectiveDate is the ex-date for all three: the TradingView unadjusted-close test (11 tickers, 42 actions) found the price step on the effectiveDate bar in all 40 found cases (data round I, accepted in Moos 1795751376.652329). Moos withdrew his earlier "cash dividends only, bonus issues differ" line there. Rights issues are untested. Source for the problem: data round H (8 of 83 matured windows hold a cash-dividend ex-date; dividends are about 1 to 3% of price). This is a pipeline item, not a research round, and it changes nothing here.
