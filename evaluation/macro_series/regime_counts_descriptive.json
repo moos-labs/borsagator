@@ -1,0 +1,24 @@
+{
+ "n_decisions_rejected": 0,
+ "design": "docs/round78_regime_macro_tilt_design.md",
+ "macro_series": "present",
+ "counts": {
+  "n_captures": 309,
+  "n_with_regime": 309,
+  "n_without_regime": 0,
+  "by_regime_horizon": {
+   "tightening|day": {
+    "n": 103,
+    "n_cutoff_dates": 13
+   },
+   "tightening|week": {
+    "n": 103,
+    "n_cutoff_dates": 13
+   },
+   "tightening|month": {
+    "n": 103,
+    "n_cutoff_dates": 13
+   }
+  }
+ }
+}
