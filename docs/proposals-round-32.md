@@ -59,8 +59,9 @@ text only.
   INS-MACRO-NEWS-001 event-study implementation. It does not start before
   Muhammad's GO on that implementation and the lead's feed is available.
 - Honest limit: 2019 to 2023 gives few independent macro regimes, and the
-  news-width screen of round 24 on the ticker-level feed already failed to
-  beat v2 (that was ticker news, not macro themes).
+  round-24 news-width harness (screen_news_width.py) has not been scored
+  against v2 with the paired delta, so there is no prior result on this feed
+  to lean on.
 
 ## Proposal B: consensus-forecast surprise (source UNVERIFIED, cannot run)
 
