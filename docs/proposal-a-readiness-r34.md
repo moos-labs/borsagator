@@ -45,15 +45,15 @@ Counts read from the store by the author (the same grid code the screens use,
 Moos's rule (as relayed): macro rows present for the full [t-5, t-1] window plus
 the cutoff day. Defined here, with t = D:
 
-- C1 (the relayed criterion): every calendar day in [D-5, D] is COVERED.
+- C1 (event window only, ruled by Moos, Slack 1795748022.101229, relayed, not read): every calendar day in [D-5, D-1] is COVERED. D's own day is not in C1.
 - C2 (extra, for the theme_spike width input of Proposal A): the day the
   input evaluates at cutoff D is D-1, the last full UTC day before D (rows
   stamped before 00:00 UTC of D). Its baseline is the 30 days before it, D-31
   to D-2, as in the catalog's theme_spike (docs/ins-macro-news-001-
   preregistration.md: the day's count against its trailing 30-day mean and
   standard deviation). So C2 requires every calendar day in [D-31, D-1] to be
-  COVERED. A Proposal A cutoff would need C1 and C2. This is the author's
-  addition, to be confirmed; a shorter baseline would need its own
+  COVERED. A Proposal A cutoff needs C1 and C2 (C2 confirmed by Moos, same
+  message, relayed, not read). A shorter baseline would need its own
   pre-registration.
 - COVERED is a coverage test, not a row-count test. A UTC day is covered only
   when every GKG file the master lists carry for that date has been processed
@@ -61,9 +61,8 @@ the cutoff day. Defined here, with t = D:
   (english and translation). A covered day with zero macro rows is reported as
   an anomaly count, not as uncovered, and a day with some but not all files is
   PARTIAL and counts as not covered.
-- D's own day is in C1 as a completeness check only (the shard has reached D).
-  Its rows are not used, per the point-in-time rule above. Whether D's day
-  should be required at all is Moos's call and is flagged here, not decided.
+- D's own day is not required: C1 is [D-5, D-1] only (ruled, same message).
+  D's rows are never used, per the point-in-time rule above.
 - Why coverage and not row counts: with 15-minute files, 96 per stream per day
   (70,010 files for 2019 is about 2 x 96 x 365, an inference from the relayed
   count, not stated in the relay), a day with half its files gives a plausible
@@ -71,10 +70,12 @@ the cutoff day. Defined here, with t = D:
 
 Worked example on the relayed spans (round 33, #862), assuming no gaps in them:
 
-- C1 holds for 65 distinct D dates (first 2019-01-06, last 2023-02-02).
-- C1 and C2 hold for 23 distinct D dates (first 2020-02-03, last 2023-02-02).
-- Of the 6,027 grid cutoffs, 513 pass C1 (8.5%) and 210 pass C1 and C2 (3.5%,
-  about 2 per ticker-horizon grid). The round-33 figure of 53 qualifying
+- C1 ([D-5, D-1]) holds for 68 distinct D dates (first 2019-01-06, last 2023-02-02).
+  The earlier 65 included D in C1.
+- C1 and C2 hold for 24 distinct D dates (first 2020-02-03, last 2023-02-02).
+  The earlier 23 included D in C1.
+- Of the 6,027 grid cutoffs, 540 pass C1 (9.0%) and 225 pass C1 and C2 (3.7%,
+  about 2.1 per ticker-horizon grid; the earlier 513 and 210 included D). The round-33 figure of 53 qualifying
   calendar days used a 30-day baseline ending at D-1 and no D-1 evaluation
   day, so it is one day looser than C2 here.
 - This is availability for the dates covered so far, not for 2019-2023.
@@ -128,10 +129,10 @@ on D do not change
 coverage; duplicate names across two shards counted once; the same grid as
 `screen_pairs` (cutoff count equals the grid's on a fixed series). Mutants to
 check: coverage replaced by row-count, window off by one on either side, D's
-day dropped, union replaced by one shard.
+day added to C1, union replaced by one shard.
 
-## Not decided here
+## Ruled and not decided here
 
-- Whether D itself belongs in C1 (relayed as yes).
-- Whether the width input needs C2, or only the event window needs C1.
+- Whether D itself belongs in C1: ruled no (Slack 1795748022.101229, relayed, not read).
+- Whether the width input needs C2: ruled yes (same message).
 - Anything about Proposal A's result or its GO.
