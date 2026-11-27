@@ -1,0 +1,276 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 10,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 9
+  },
+  "label_counts_raw": {
+    "neutral": 9,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.08956226124428782,
+    "negative": 0.00031512239715425494,
+    "neutral": 0.9101226106286049
+  },
+  "items": [
+    {
+      "text": "Terry Palmer Obituary - The Press Democrat",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.9736325814155862e-05,
+        "negative": 0.0031026562210172415,
+        "neutral": 0.9968675971031189
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9968675971031189
+        },
+        {
+          "label": "Negative",
+          "score": 0.0031026562210172415
+        },
+        {
+          "label": "Positive",
+          "score": 2.9736325814155862e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Vegas Golden Knights NHL Line Combinations - Daily Faceoff",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.378535780029779e-07,
+        "negative": 1.0048319154520868e-06,
+        "neutral": 0.9999986886978149
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999986886978149
+        },
+        {
+          "label": "Negative",
+          "score": 1.0048319154520868e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.378535780029779e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Las Vegas Grand Prix 2026: Race start time, how to watch, full schedule, predictions - TSN",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2614788147402578e-07,
+        "negative": 1.8798928067553788e-06,
+        "neutral": 0.9999979734420776
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999979734420776
+        },
+        {
+          "label": "Negative",
+          "score": 1.8798928067553788e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.2614788147402578e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ubisoft Reportedly Greenlights New Rainbow Six: Vegas Game After 18 Years Without a Another Installment - IGN",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.567428989801556e-05,
+        "negative": 6.047076112736249e-06,
+        "neutral": 0.9999783039093018
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999783039093018
+        },
+        {
+          "label": "Positive",
+          "score": 1.567428989801556e-05
+        },
+        {
+          "label": "Negative",
+          "score": 6.047076112736249e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "PWHL unveils Las Vegas team name, logo as Vegas Vanguards - FOX5 Vegas",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.6738942437987134e-07,
+        "negative": 2.793802195810713e-06,
+        "neutral": 0.9999970197677612
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999970197677612
+        },
+        {
+          "label": "Negative",
+          "score": 2.793802195810713e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.6738942437987134e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "EGAS, Cheiron Ink $42 Mn Natural Gas Exploration Agreement - Egypt Oil & Gas",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.1348523659980856e-06,
+        "negative": 1.2468413842725568e-05,
+        "neutral": 0.9999853372573853
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999853372573853
+        },
+        {
+          "label": "Negative",
+          "score": 1.2468413842725568e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.1348523659980856e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Harry Reid International Airport [LAS]: Ultimate Terminal Guide - Upgraded Points",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.038387887954741e-07,
+        "negative": 9.253308803636173e-07,
+        "neutral": 0.9999986886978149
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999986886978149
+        },
+        {
+          "label": "Negative",
+          "score": 9.253308803636173e-07
+        },
+        {
+          "label": "Positive",
+          "score": 3.038387887954741e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt's EGAS And Cheiron Sign Gas Exploration Deal With Over $42M Investment Commitment - Forbes Middle East",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.751080526446458e-05,
+        "negative": 1.8895029825216625e-06,
+        "neutral": 0.9999805688858032
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999805688858032
+        },
+        {
+          "label": "Positive",
+          "score": 1.751080526446458e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.8895029825216625e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "NHRA Las Vegas Results: Championship Battles Head to Pomona - Autoweek",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.188634971389547e-05,
+        "negative": 1.0216286682407372e-05,
+        "neutral": 0.9999678134918213
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999678134918213
+        },
+        {
+          "label": "Positive",
+          "score": 2.188634971389547e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.0216286682407372e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Review: This is the best steakhouse in Las Vegas, and beyond - Los Angeles Times",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.8955346345901489,
+        "negative": 1.1342613106535282e-05,
+        "neutral": 0.10445411503314972
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.8955346345901489
+        },
+        {
+          "label": "Neutral",
+          "score": 0.10445411503314972
+        },
+        {
+          "label": "Negative",
+          "score": 1.1342613106535282e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

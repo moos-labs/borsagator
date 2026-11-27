@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "EGAS.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "EGAS.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 6423,
+    "rows_used": 1931,
+    "last_date": "2026-11-25",
+    "last_close": 48.58000183105469,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-25",
+    "indicators.csv_last_close": "48.58000183105469"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

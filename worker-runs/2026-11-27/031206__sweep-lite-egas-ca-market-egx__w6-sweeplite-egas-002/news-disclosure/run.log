@@ -1,0 +1,18 @@
+bodies: 6/6 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EGAS.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5376.73it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 13996.10it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16411.42it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5736.90it/s]
+{"tool": "news-disclosure", "ticker": "EGAS.CA", "news_count": 6, "disclosure_count": 0, "arabic_headlines": 5, "latest_news_date": "Thu, 26 Nov 2026 10:52:41 GMT", "latest_disclosure_date": "", "top_headline": "غازتك تعقد اجتماع جمعية عامة غير عادية بشركة إيـجـاس لتعديل بعض مواد النظام الأساسي لمواكبة التوسع في أنشطة الشركة - المستقبل اليوم", "llm_provider": "cohere", "finbert_positive": 0.031, "finbert_negative": 0.048, "finbert_neutral": 0.921, "finbert_scored": 1, "multilingual_positive": 0.956, "multilingual_negative": 0.004, "multilingual_neutral": 0.041, "multilingual_scored": 5, "bodies_fetched": 6, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb", "translated_positive": 0.538, "translated_negative": 0.012, "translated_neutral": 0.45, "translated_scored": 5}
+BRIEF:
+- GasTech holds an extraordinary general meeting with EIGAS to amend some articles of the company's constitution to keep up with the expansion of its activities.
+- 'Etisalat Egypt' and EIGAS collaborate on digital payments and gas service app development.
+- EIGAS launches the 'Greener Today – Better Tomorrow' initiative to promote energy conservation and sustainability.
+- A new agreement between EIGAS and Cairon for gas exploration in East Alexandria, with a minimum investment of $42 million.
+- The former president of EIGAS calls for the merger of the Ministries of Petroleum and Electricity, suggesting a 25% allocation for coal in the energy mix.
+- The NHRA Top Fuel championship will be decided at the In-N-Out Burger Finals in Pomona, California, with a points-and-a-half format.
+- Matt Hagan, the Funny Car points leader, suffered a second-round loss to J.R. Todd, affecting his championship chances.
+- These developments highlight EIGAS's strategic moves, collaborations, and initiatives, which could impact its operations, expansion plans, and overall performance, potentially affecting stock prices and investor interest.

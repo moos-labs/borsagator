@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 48.08,
+ "base_source": "egx-data/egxpy_egas.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T03:11:55.957703+00:00",
+ "inputs_sha256": {
+  "digest.json": "a86a931235811af333b9792307de26409c8787da9e00e8f95d93c37c450c5ded",
+  "ensemble.json": "3dbae6438b901b16002823f9edbbd07e9fad96bbb3c94ca525e5a105bcb8d234"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+ "ticker": "EGAS.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
