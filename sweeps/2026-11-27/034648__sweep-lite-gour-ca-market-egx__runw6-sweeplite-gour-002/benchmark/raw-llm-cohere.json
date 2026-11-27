@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 13.42,
+ "base_source": "egx-data/egxpy_gour.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T03:46:52.087814+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.78,
+   "direction": "down",
+   "expected_move_pct": -1.56,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.01,
+   "range_low_pct": -3.12,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": -0.09,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.99,
+   "range_low_pct": -2.18,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.67,
+   "direction": "down",
+   "expected_move_pct": -2.31,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.02,
+   "range_low_pct": -4.62,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_gour.csv": "84189e110f3e83c2d4de1737a4c77345d14f76ece78bb18d07a59b28a2cec470",
+  "digest.json": "76b7a66308b2e68dfb4c8f1823f572b1172fd3ee05466fc6e6ceb996f6a21e5c",
+  "ensemble.json": "4e21c4761c65c7a65c925491c36dfb9aa3b4fd673475ccb97c65cc0b2633f3a4",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_gour.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0353,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+ "ticker": "GOUR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

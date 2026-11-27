@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w6-sweeplite-gour-002",
+  "job": "sweep-lite GOUR.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:44:47.842733+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "exit-1",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-gour-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:44:47.842733+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "GOUR"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['GOUR']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:46:48.227264+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+  "model": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002/report-model.json",
+  "model_sha256": "b01e75a49c76e90721dbf6b6e9337bb4d1fa085bd165cef0915b5ab3f43fdadb",
+  "degraded": {
+   "absent_families": [
+    "price-forecast"
+   ],
+   "absent_tools": [
+    "kronos"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: price-forecast)",
+   "recommendation-unavailable: no profiles/GOUR.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/GOUR.CA.json",
+   "sharia-row-missing: AAOIFI GOUR.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 GOUR.CA",
+   "sharia-row-missing: FTSE GOUR.CA",
+   "sharia-row-missing: ISLAMICLY GOUR.CA",
+   "sharia-row-missing: MSCI GOUR.CA",
+   "sharia-row-missing: MSCI_M GOUR.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "1dc4e26a126c6171b681358bafa02021acf9fc97",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 113257,
+    "sha256": "83623313f4e4e3d45b9a944e4a27290b08afb805663f7f8c78869ec59bb74a08"
+   },
+   {
+    "path": "report.md",
+    "bytes": 20915,
+    "sha256": "84dad6b8a3e91da3f03fed1f6763168d30d99f2f05e2e959d1b96f55c8ed5844"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "GOUR.CA"
+ }
+}

@@ -1,0 +1,1287 @@
+{
+  "archive_commit": "1dc4e26a126c6171b681358bafa02021acf9fc97",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "a7faaeaa2ca837c1714202711b8feb6ca4ea6be83a217e9e5a66fd8b3f8bdc17",
+      "family-agent.json": "c88b3ddb8791d63a784a4bc3b9386a5724843763e64bfbd8b0b07ed1c3048181",
+      "family-fundamentals.json": "36ca4408b8c851eac0183716416444b088895fb17bd55143195ca8c93317d544",
+      "family-price-forecast.json": "8831b543cacb556fda355318637ec75f9319ae7d1bacfba706c212e67eab8c30",
+      "family-sentiment.json": "17892016a3113f431d8b48d0c963f444dbc11a08337bea4f169b66f6086f183a",
+      "family-technicals.json": "56747eb5ca5ce5917818120372bfd024c176edf91992ce60bd8f7b516d113c18",
+      "kronos-alone.json": "4d2a95efd6333184f4c580cacff1ea3afe7a0b390c88e4ed6cb74c0b82cee562",
+      "raw-llm-cohere.json": "4e12e267965de3d7b992b285570c51135eb756180c36a78e876d15fe01a02f80"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "absent",
+      "kronos-alone.json": "absent",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [
+      "price-forecast"
+    ],
+    "absent_tools": [
+      "kronos"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/GOUR-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 13.42,
+    "base_source": "egx-data/egxpy_gour.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.3,
+      "price-forecast": null,
+      "sentiment": 0.289,
+      "technicals": null
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.289
+        },
+        "horizon_short": false,
+        "kronos_move_pct": null,
+        "net_score": 0.289,
+        "range_high_pct": 6.1,
+        "range_low_pct": -6.1,
+        "tilt_centre_pct": 0.2,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.5338
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.3,
+          "sentiment": 0.289
+        },
+        "horizon_short": false,
+        "kronos_move_pct": null,
+        "net_score": 0.298,
+        "range_high_pct": 29.15,
+        "range_low_pct": -29.15,
+        "tilt_centre_pct": 1.85,
+        "trading_sessions": 21,
+        "vol_h_pct": 16.1937
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.289
+        },
+        "horizon_short": false,
+        "kronos_move_pct": null,
+        "net_score": 0.289,
+        "range_high_pct": 15.17,
+        "range_low_pct": -15.17,
+        "tilt_centre_pct": 0.44,
+        "trading_sessions": 5,
+        "vol_h_pct": 7.9017
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_gour.csv",
+      "base_stale": false,
+      "base_used": 13.42,
+      "common_date": null,
+      "latest_collected_date": "2026-11-26",
+      "spread_pct": null,
+      "status": "single-source",
+      "witnesses": {
+        "egx-data/egxpy_gour.csv": 13.42
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب",
+          "type": "legal"
+        }
+      ],
+      "flags": [
+        "legal event: تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.11,
+        "max3": 0.85
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0353,
+    "sigma_daily": 0.0353,
+    "sigma_source": "egx-data/egxpy_gour.csv (σ60=0.0353, σ10=0.0263)",
+    "ticker": "GOUR.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.3,
+    "price-forecast": null,
+    "sentiment": 0.289,
+    "technicals": null
+  },
+  "finished": "2026-11-27T03:46:48.227264+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: price-forecast)",
+    "recommendation-unavailable: no profiles/GOUR.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/GOUR.CA.json",
+    "sharia-row-missing: AAOIFI GOUR.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 GOUR.CA",
+    "sharia-row-missing: FTSE GOUR.CA",
+    "sharia-row-missing: ISLAMICLY GOUR.CA",
+    "sharia-row-missing: MSCI GOUR.CA",
+    "sharia-row-missing: MSCI_M GOUR.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.289
+      },
+      "horizon_short": false,
+      "kronos_move_pct": null,
+      "net_score": 0.289,
+      "range_high_pct": 6.1,
+      "range_low_pct": -6.1,
+      "tilt_centre_pct": 0.2,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.5338
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.3,
+        "sentiment": 0.289
+      },
+      "horizon_short": false,
+      "kronos_move_pct": null,
+      "net_score": 0.298,
+      "range_high_pct": 29.15,
+      "range_low_pct": -29.15,
+      "tilt_centre_pct": 1.85,
+      "trading_sessions": 21,
+      "vol_h_pct": 16.1937
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.289
+      },
+      "horizon_short": false,
+      "kronos_move_pct": null,
+      "net_score": 0.289,
+      "range_high_pct": 15.17,
+      "range_low_pct": -15.17,
+      "tilt_centre_pct": 0.44,
+      "trading_sessions": 5,
+      "vol_h_pct": 7.9017
+    }
+  },
+  "job": "sweep-lite GOUR.CA market=EGX",
+  "job_shape": "sweep-lite GOUR.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 15.4558,
+    "support": 11.3842
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-25T18:04:05Z",
+    "latest_news_date_raw": "Wed, 25 Nov 2026 18:04:05 GMT",
+    "news_count": 7,
+    "news_items": [
+      {
+        "date": "Wed, 25 Nov 2026 18:04:05 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/8301686/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب واعي» - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Sun, 08 Nov 2026 08:00:00 GMT",
+        "identity_key": "65bf175ee027fc90",
+        "key_type": "title-date-hash",
+        "source": "Sofascore",
+        "title": "إف سي ديلا جوري ضد دينامو تبليسي النتيجة المباشرة, المواجهات المباشرة والتشكيلات - Sofascore"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "ae4d035b2eeba855",
+        "key_type": "title-date-hash",
+        "source": "الوطن",
+        "title": "في سبيل الحب.. جوري بكر تخوض تجربة درامية جديدة - الوطن"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://www.youlyou.com/85988",
+        "key_type": "resolved_url",
+        "source": "https://www.youlyou.com/",
+        "title": "جوري بكر تتألق بجلسة تصوير سينمائية ساحرة مفعمة بالأنوثة - https://www.youlyou.com/"
+      },
+      {
+        "date": "Fri, 30 Oct 2026 21:55:47 GMT",
+        "identity_key": "https://www.adenobserver.com/151350/",
+        "key_type": "resolved_url",
+        "source": "عدن اوبزيرفر",
+        "title": "جوري قطان: “غيب ويختفي حِسك.. وإنت بداخلِي موجود” - عدن اوبزيرفر"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "https://www.okaz.com.sa/culture/art/2272805",
+        "key_type": "resolved_url",
+        "source": "عكاظ",
+        "title": "نجاح أم نفوذ وعلاقات؟ رسالة حادة من جوري بكر حول التكريمات - عكاظ"
+      },
+      {
+        "date": "Wed, 28 Oct 2026 07:00:00 GMT",
+        "identity_key": "0c1ee5cab21e625d",
+        "key_type": "title-date-hash",
+        "source": "المركز الفلسطيني للإعلام",
+        "title": "جوري والانتخابات الإسرائيلية!! - المركز الفلسطيني للإعلام"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 13.42,
+    "base_source": "egx-data/egxpy_gour.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_gour.csv",
+      "base_stale": false,
+      "base_used": 13.42,
+      "common_date": null,
+      "latest_collected_date": "2026-11-26",
+      "spread_pct": null,
+      "status": "single-source",
+      "witnesses": {
+        "egx-data/egxpy_gour.csv": 13.42
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0353,
+    "sigma_source": "egx-data/egxpy_gour.csv (σ60=0.0353, σ10=0.0263)"
+  },
+  "price_series_excluded": [],
+  "price_series_last": [
+    {
+      "last_close": 13.42,
+      "last_date": "2026-11-26",
+      "last_high": 13.5,
+      "last_low": 13.06,
+      "last_open": 13.37,
+      "last_volume": 450444.0,
+      "note": null,
+      "rows": 193,
+      "source": "egx-data/egxpy_gour.csv",
+      "stale": false
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-gour-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-gour-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "GOUR.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب",
+        "type": "legal"
+      }
+    ],
+    "flags": [
+      "legal event: تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.11,
+      "max3": 0.85
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for GOUR.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T03:44:47.842733+00:00",
+  "sweep_dir": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+  "ticker": "GOUR.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {},
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "05aed9744c1a5af65d4ba645a430af098e74237ec542e1044e9239f2aa93a250",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {},
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "7890229838dce59b762133f0c857dfedece8a3a689587b6550fc5e483a23597b",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_gour.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_gour.csv_last_close": 13.42,
+          "egxpy_gour.csv_last_date": "2026-11-26",
+          "rows_egxpy_gour.csv": 193,
+          "symbol": "GOUR",
+          "ticker": "GOUR.CA"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "dc397e9d3a07f205b37eed688050b1375703fac06c9ceab6d5d0fa6243759d55",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "ticker": "GOUR.CA",
+          "verdict": "NO DATA: GOUR.CA returned no rows from the Yahoo chart API on this runner."
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "69b56462b7eb40371452a8c272f9c7bbfd12639290d201fad495134dcda1b41a",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "run.log"
+        ],
+        "metrics": {},
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "650e77ed569d023e05b291e046e0ff2138003a9d009564d8001368fb5042ab61",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "37c3031aa0b5d97c8c85ce9b7c4703e1b8648036db86c8ab18674e01a9850e2e",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "13808a811df326d096499909c7e733c9178750ee76165a64dc67cabab8de0739",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "9d9eeb1685fd40c84ef4736125164b02d2e1cd6897a603eb384b27cd8ee87660",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "0ca7297e6fdb0702ec341c55d33b06f607988b1ef497b5b18b1f2eff66f52fe7",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "a1d6d82842f9f25c57034d69988be5f012353461e05714f9c82bb3151bf8594d",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 4,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "1f4138d6b1e74d9f6470be27b7aeda339e6f04966c1742e0a36e4b32f4e2876c",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "kronos-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "GOUR.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "0d52c1032ab0ec2c561e40d78158bd917eb76fc4d0edce5e373da25df6affaba",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "0cdda305b13dbcffde4a008e94c0f8d7c72be0df21873a16dee36fdcbd6e06d1",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-gour-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 7,
+          "bodies_fetched": 4,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T03:46:47Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Wed, 25 Nov 2026 18:04:05 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.031,
+          "multilingual_neutral": 0.46,
+          "multilingual_positive": 0.509,
+          "multilingual_scored": 7,
+          "news_count": 7,
+          "ticker": "GOUR.CA",
+          "tool": "news-disclosure",
+          "top_headline": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب واعي» - شبكة تواصل الإخبارية",
+          "translated_negative": 0.077,
+          "translated_neutral": 0.83,
+          "translated_positive": 0.093,
+          "translated_scored": 7,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "GOUR.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "2d8e017f53f77b300d60f8702acb187b0be9f19c846b16412b41f669ccb47933",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "RuntimeError: All data sources failed: yahooquery: yahooquery returned no rows \\| yahoo-chart-api: 404 Client Error: Not Found for url: https://query1.finance.yahoo.com/v8/finance/chart/GOUR.CA?period1",
+      "status": "failed",
+      "tool": "kronos"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

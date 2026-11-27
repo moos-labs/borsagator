@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 13.42,
+ "base_source": "egx-data/egxpy_gour.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-27T03:46:48.435315+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.54,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 7.32,
+   "range_low_pct": -6.24,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 2.48,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 33.54,
+   "range_low_pct": -28.57,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "up",
+   "expected_move_pct": 1.21,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "horizon_short": false,
+   "net_score": 0.3,
+   "range_high_pct": 16.37,
+   "range_low_pct": -13.94,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "76b7a66308b2e68dfb4c8f1823f572b1172fd3ee05466fc6e6ceb996f6a21e5c",
+  "ensemble.json": "4e21c4761c65c7a65c925491c36dfb9aa3b4fd673475ccb97c65cc0b2633f3a4"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0353,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+ "ticker": "GOUR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,404 @@
+{
+  "job": "sweep-lite GOUR.CA market=EGX",
+  "ticker": "GOUR.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T03:44:47.842733+00:00",
+  "finished": "2026-11-27T03:46:48.227264+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {},
+        "files": [
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {},
+        "files": [
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "GOUR.CA",
+          "symbol": "GOUR",
+          "rows_egxpy_gour.csv": 193,
+          "egxpy_gour.csv_last_date": "2026-11-26",
+          "egxpy_gour.csv_last_close": "13.42"
+        },
+        "files": [
+          "egxpy_gour.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "GOUR.CA",
+          "verdict": "NO DATA: GOUR.CA returned no rows from the Yahoo chart API on this runner."
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {},
+        "files": [
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2437,
+          "poul_ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 4
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002",
+      "detail": "RuntimeError: All data sources failed: yahooquery: yahooquery returned no rows \\| yahoo-chart-api: 404 Client Error: Not Found for url: https://query1.finance.yahoo.com/v8/finance/chart/GOUR.CA?period1"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "GOUR.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "GOUR.CA",
+          "fetched_at": "2026-11-27T03:46:47Z",
+          "tool": "news-disclosure",
+          "news_count": 7,
+          "disclosure_count": 0,
+          "arabic_headlines": 7,
+          "latest_news_date": "Wed, 25 Nov 2026 18:04:05 GMT",
+          "latest_disclosure_date": "",
+          "top_headline": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب واعي» - شبكة تواصل الإخبارية",
+          "llm_provider": "cohere",
+          "multilingual_positive": 0.509,
+          "multilingual_negative": 0.031,
+          "multilingual_neutral": 0.46,
+          "multilingual_scored": 7,
+          "bodies_fetched": 4,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "translation_provider": "cohere",
+          "translated_positive": 0.093,
+          "translated_negative": 0.077,
+          "translated_neutral": 0.83,
+          "translated_scored": 7
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-gour-002",
+      "claim_id": "w6-sweeplite-gour-002"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "price-forecast"
+    ],
+    "absent_tools": [
+      "kronos"
+    ]
+  }
+}

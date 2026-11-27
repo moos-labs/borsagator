@@ -1,0 +1,54 @@
+$GOUR.CA: possibly delisted; no timezone found
+
+1 Failed download:
+['GOUR.CA']: possibly delisted; no timezone found
+GOUR.CA: ERROR: no provider attempt succeeded rows=0 provider_used= error=EmptyDataError: 
+[Empty] -> No results found. Try adjusting the query parameters.
+{
+  "tool": "openbb",
+  "provider": "yahoo",
+  "start_date": "2024-11-27",
+  "end_date": "2026-11-27",
+  "tickers": {
+    "GOUR.CA": {
+      "symbol": "GOUR.CA",
+      "provider_requested": "yahoo",
+      "attempts": [
+        {
+          "provider": "yahoo",
+          "error": "OpenBBError: \n[Error] -> 1 validations error(s)\n[Arg] provider -> input: yahoo -> Input should be 'fmp', 'intrinio', 'tiingo' or 'yfinance'",
+          "traceback_tail": [
+            "    res = self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(args, kwargs))",
+            "          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "openbb_core.app.model.abstract.error.OpenBBError: ",
+            "[Error] -> 1 validations error(s)",
+            "[Arg] provider -> input: yahoo -> Input should be 'fmp', 'intrinio', 'tiingo' or 'yfinance'"
+          ]
+        },
+        {
+          "provider": "yfinance",
+          "error": "EmptyDataError: \n[Empty] -> No results found. Try adjusting the query parameters.",
+          "traceback_tail": [
+            "    raise EmptyDataError(f\"\\n[Empty] -> {e}\").with_traceback(tb) from None",
+            "  File \"/opt/gator/venvs/openbb/lib/python3.12/site-packages/openbb_yfinance/utils/helpers.py\", line 579, in yf_download",
+            "    raise EmptyDataError()",
+            "openbb_core.provider.utils.errors.EmptyDataError: ",
+            "[Empty] -> No results found. Try adjusting the query parameters."
+          ]
+        }
+      ],
+      "rows": 0,
+      "verdict": "ERROR: no provider attempt succeeded",
+      "error": "EmptyDataError: \n[Empty] -> No results found. Try adjusting the query parameters."
+    }
+  },
+  "openbb_version": "unknown",
+  "provider_requested": "yahoo",
+  "provider_chain_tried": [
+    "yahoo",
+    "yfinance"
+  ],
+  "coverage_verdict": {
+    "GOUR.CA": "NO \u2014 EmptyDataError: \n[Empty] -> No results found. Try adjusting the query parameters."
+  }
+}

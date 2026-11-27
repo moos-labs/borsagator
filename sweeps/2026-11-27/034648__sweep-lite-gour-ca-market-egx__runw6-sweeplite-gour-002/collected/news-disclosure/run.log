@@ -1,0 +1,20 @@
+WARN gnews failed (GOUR.CA stock): 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=GOUR.CA+stock+when:30d&hl=en-US&gl=US&ceid=US:en
+WARN body http 403: https://www.sofascore.com/ar/football/match/fc-dila-gori-dinamo-tbilisi/wdcsuBn
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body http 403: https://palinfo.com/news/opinion_articles/%D8%AC%D9%88%D8%B1%D9%8A-%D9%88%D8%A7%D9%84%D8%A
+bodies: 4/7 fetched; failures by stage: {'decode': 0, 'http': 3, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/GOUR.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5695.32it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16343.66it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 6056.78it/s]
+{"tool": "news-disclosure", "ticker": "GOUR.CA", "news_count": 7, "disclosure_count": 0, "arabic_headlines": 7, "latest_news_date": "Wed, 25 Nov 2026 18:04:05 GMT", "latest_disclosure_date": "", "top_headline": "تألق الإعلامية يارا أحمد ومي كساب وجوري بكر وأحمد الرافعي في احتفالية تكريم ضمن حملة «شباب واعي» - شبكة تواصل الإخبارية", "llm_provider": "cohere", "multilingual_positive": 0.509, "multilingual_negative": 0.031, "multilingual_neutral": 0.46, "multilingual_scored": 7, "bodies_fetched": 4, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere", "translated_positive": 0.093, "translated_negative": 0.077, "translated_neutral": 0.83, "translated_scored": 7}
+BRIEF:
+- Media personalities Yara Ahmed, Mai Kassab, Gouri Bakr, and Ahmed Al-Rafai were honored at an event as part of the "Aware Youth" campaign.
+- The event, organized by the Egyptian Russian University, recognized the cast of the TV series "Noun Al-Niswa" for their outstanding performance and impact on audiences.
+- Gouri Bakr is featured in a new dramatic role, showcasing her versatility as an actress.
+- Bakr's recent photoshoot, shared on Instagram, highlights her cinematic presence and feminine charm.
+- Saudi artist Gouri Qattan releases a new song, "Tughib," exploring themes of longing and the enduring presence of emotions.
+- Gouri Bakr sparks a debate with a thought-provoking message questioning the authenticity of artistic awards and the role of influence and connections in the selection process.
+- The article mentions Bakr's Instagram post, where she raises valid concerns about the criteria for artistic recognition.
+- The brief mentions of Gouri and the Israeli elections are intriguing, but further context is needed to understand the relevance to the stock market.

@@ -1,0 +1,126 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 4,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 3
+  },
+  "label_counts_raw": {
+    "neutral": 3,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.24940259173328627,
+    "negative": 8.237219719831046e-05,
+    "neutral": 0.750515058694873
+  },
+  "items": [
+    {
+      "text": "Statkraft acquires 225MW Clash Gour wind farm - reNEWS",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.382082599680871e-05,
+        "negative": 0.0001548202708363533,
+        "neutral": 0.9997913241386414
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997913241386414
+        },
+        {
+          "label": "Negative",
+          "score": 0.0001548202708363533
+        },
+        {
+          "label": "Positive",
+          "score": 5.382082599680871e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Jammu and Kashmir Bank MD to address investors at Emerging India CEO Conference - scanx.trade",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.1734772442650865e-06,
+        "negative": 5.273951046547154e-06,
+        "neutral": 0.9999935626983643
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999935626983643
+        },
+        {
+          "label": "Negative",
+          "score": 5.273951046547154e-06
+        },
+        {
+          "label": "Positive",
+          "score": 1.1734772442650865e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "SpaceX stock could see massive buying on Nasdaq 100 rebalance: will SPCX rally? - Invezz",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.997553288936615,
+        "negative": 0.00010918011685134843,
+        "neutral": 0.002337575191631913
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.997553288936615
+        },
+        {
+          "label": "Neutral",
+          "score": 0.002337575191631913
+        },
+        {
+          "label": "Negative",
+          "score": 0.00010918011685134843
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Donald Ervin Gour Obituary (2026) - Bridgewater, MA - Chapman Funerals & Cremations - Bridgewater - Legacy | Obituary",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.0836932890233584e-06,
+        "negative": 6.021445005899295e-05,
+        "neutral": 0.9999377727508545
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999377727508545
+        },
+        {
+          "label": "Negative",
+          "score": 6.021445005899295e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.0836932890233584e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
