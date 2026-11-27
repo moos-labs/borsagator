@@ -1,0 +1,52 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 2,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.0010019462497439235,
+    "negative": 0.0002487551828380674,
+    "neutral": 0.9987492859363556
+  },
+  "items": [
+    {
+      "text": "Alexandra Andrew, Wife of Michael Andrew, Shares Their Relocation Back to California on Instagram - SwimSwam",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0010974447941407561,
+        "negative": 0.0002053258358500898,
+        "neutral": 0.9986972212791443
+      },
+      "raw_probabilities": {
+        "neutral": 0.9986972212791443,
+        "positive": 0.0010974447941407561,
+        "negative": 0.0002053258358500898
+      }
+    },
+    {
+      "text": "Michael Andrew Races at Legends of Coaching Meet (SCY) for FAST; Clocks 19.15 50 FR, 52.28 100 BR - SwimSwam",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000906447705347091,
+        "negative": 0.00029218452982604504,
+        "neutral": 0.9988013505935669
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988013505935669,
+        "positive": 0.000906447705347091,
+        "negative": 0.00029218452982604504
+      }
+    }
+  ]
+}

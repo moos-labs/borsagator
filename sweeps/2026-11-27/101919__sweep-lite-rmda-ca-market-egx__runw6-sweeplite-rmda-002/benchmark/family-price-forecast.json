@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 5.01,
+ "base_source": "egx-data/egxpy_rmda.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T10:19:19.662647+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "3a0c337ab7f213387f1cbe3a3996f2c6d97cb5185a1764dd82af90c22f3c246e",
+  "digest.json": "51d22b2c9aacfe7a6f8720bab924beb9c6be921df6af742bd396a4dfb7b7f309",
+  "ensemble.json": "a4116aad8bfa204dd6c5d04c9564dc0afbc7ae3d7110b6ce291c349fb96f135b"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/101919__sweep-lite-rmda-ca-market-egx__runw6-sweeplite-rmda-002",
+ "ticker": "RMDA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

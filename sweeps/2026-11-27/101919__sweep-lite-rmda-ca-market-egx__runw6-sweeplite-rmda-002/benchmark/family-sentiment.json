@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 5.01,
+ "base_source": "egx-data/egxpy_rmda.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-27T10:19:19.663246+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.06,
+   "families": {
+    "sentiment": 0.042
+   },
+   "horizon_short": false,
+   "net_score": 0.042,
+   "range_high_pct": 4.47,
+   "range_low_pct": -4.35,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.26,
+   "families": {
+    "sentiment": 0.042
+   },
+   "horizon_short": false,
+   "net_score": 0.042,
+   "range_high_pct": 20.47,
+   "range_low_pct": -19.95,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "flat",
+   "expected_move_pct": 0.13,
+   "families": {
+    "sentiment": 0.042
+   },
+   "horizon_short": false,
+   "net_score": 0.042,
+   "range_high_pct": 9.99,
+   "range_low_pct": -9.73,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "51d22b2c9aacfe7a6f8720bab924beb9c6be921df6af742bd396a4dfb7b7f309",
+  "ensemble.json": "a4116aad8bfa204dd6c5d04c9564dc0afbc7ae3d7110b6ce291c349fb96f135b"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0265,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/101919__sweep-lite-rmda-ca-market-egx__runw6-sweeplite-rmda-002",
+ "ticker": "RMDA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
