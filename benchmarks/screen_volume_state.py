@@ -226,7 +226,8 @@ def render(results, deltas, title=""):
                         _f(c["ch_ci_cutoff"][0]), _f(c["ch_ci_cutoff"][1]),
                         _f(c["v2"]["coverage"]), _f(c["v2"]["range_skill"])))
             L.append("    delta vs v2 %s (CI cutoff [%s, %s])"
-                     % (_f(d["delta"]), _f(d["ci"][0]), _f(d["ci"][1])))
+                     % (D._fs(d["delta"]), D._fs(d["ci"][0]),
+                        D._fs(d["ci"][1])))
     return "\n".join(L)
 
 
@@ -268,7 +269,7 @@ def main(argv=None):
     for r in rows:
         print("  beta %.2f %s %s: p %s Holm %s | delta %s p %s Holm %s"
               % (r["beta"], r["regime"], r["horizon"], _f(r["p"]),
-                 _f(r["holm_adj_p"]), _f(r["delta"]), _f(r["delta_p"]),
+                 _f(r["holm_adj_p"]), D._fs(r["delta"]), _f(r["delta_p"]),
                  _f(r["delta_holm_adj_p"])))
     print("tickers loaded: %d, market-wide zero-volume days: %d"
           % (len(by_t), len(zero)))
