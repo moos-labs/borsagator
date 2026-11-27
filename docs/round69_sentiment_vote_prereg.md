@@ -3,7 +3,7 @@
 Written and committed BEFORE the scorer was run on any ledger row. Descriptive scoring of a vote only; no verdict word, not a RangeSkill candidate by itself, never a width input. Source: Moos Slack 1795782740.762559 (thread 1795782526.668949), and the round 68/69 findings that sentiment magnitude does not support a range input.
 
 ## Data
-`ledger/ledger.json` `forecasts_detail` on main. A row is eligible when: status is `matured`, `dividend_gap` is null, `horizons` is day or week, `families.sentiment` exists and is not 0, and `realized_direction` is up or down. Month rows are excluded (they mature too late). Invalid and pending rows are never scored.
+`ledger/ledger.json` `forecasts_detail` on main. A row is eligible when: status is `matured`, `dividend_gap` is null, `horizon` is day or week, `families.sentiment` exists and is not 0, and `realized_direction` is up or down. Month rows are excluded (they mature too late). Invalid and pending rows are never scored.
 
 ## Unit
 The independent unit is the as_of DATE (tickers on one date share one market move). Rows within a date stay in the pooled count; the bootstrap resamples whole dates.
@@ -24,4 +24,4 @@ Percentile bootstrap, resampling dates with replacement, B = 2000, seed 69, 95% 
 Centre/direction input only, never width. Any implementation as a forecast candidate runs under the loop-bar keep rule (RangeSkill cutoff-clustered CI lower bound > 0 AND coverage CI overlaps 0.75-0.85, at least 10 cutoffs for a KEEP), on untouched data only. Passing this vote check is not a keep.
 
 ## State at registration
-The ledger has 13 distinct as_of dates; 8 have matured day rows and 6 have matured week rows. The run is expected to wait about 17 more dates (an estimate, roughly mid-December).
+Counted with the scorer's own eligibility rule (the gate counts only; no agreement statistic was computed): the ledger has 13 distinct as_of dates; 7 dates hold an eligible matured day row, 3 hold an eligible matured week row, and 3 hold both. (The first draft of this note counted 8 and 6 dates with any matured row, which is a looser rule; it was corrected here before any statistic existed.) The run waits for 30 dates with both, an estimated several more weeks given only 3 qualify today.
