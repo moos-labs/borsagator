@@ -15,6 +15,7 @@ No network, no browser: fake pages stand in for Playwright.
 import importlib.util
 import os
 import sys
+import tempfile
 import unittest
 from unittest.mock import MagicMock
 
@@ -217,6 +218,10 @@ class TestCaptureOneEnrichment(unittest.TestCase):
             os.path.join(_HERE, "attachment_capture.py"))
         self.capture = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.capture)
+        # Each test writes its PDFs into its own temp dir (CodeRabbit #880:
+        # a shared /tmp/297291.pdf collides across tests and parallel runs).
+        self.tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmpdir.cleanup)
 
     def test_not_pdf_enriched_with_content_type_and_body_preview(self):
         """When fetch returns non-PDF, not_pdf record must include
@@ -226,7 +231,7 @@ class TestCaptureOneEnrichment(unittest.TestCase):
             return 200, html, "text/html; charset=utf-8", b"<html>TSPD wall</html>"
 
         rec = self.capture.capture_one(fetch_with_diagnostics, PDF_URL,
-                                       "/tmp", "297291")
+                                       self.tmpdir.name, "297291")
         self.assertEqual(rec["status"], "not_pdf")
         self.assertIn("content-type: text/html; charset=utf-8", rec["reason"])
         self.assertIn("body preview:", rec["reason"])
@@ -238,7 +243,7 @@ class TestCaptureOneEnrichment(unittest.TestCase):
             return 200, b"", "application/json", b""
 
         rec = self.capture.capture_one(fetch_with_diagnostics, PDF_URL,
-                                       "/tmp", "297291")
+                                       self.tmpdir.name, "297291")
         self.assertEqual(rec["status"], "not_pdf")
         self.assertIn("content-type: application/json", rec["reason"])
         # body preview should not be added for empty body
@@ -249,7 +254,7 @@ class TestCaptureOneEnrichment(unittest.TestCase):
         def old_fetch(url):
             return 200, b"%PDF-1.4 test"
 
-        rec = self.capture.capture_one(old_fetch, PDF_URL, "/tmp", "297291")
+        rec = self.capture.capture_one(old_fetch, PDF_URL, self.tmpdir.name, "297291")
         self.assertEqual(rec["status"], "captured")
         self.assertIsNone(rec.get("reason"))
 
@@ -259,7 +264,7 @@ class TestCaptureOneEnrichment(unittest.TestCase):
             return 200, b"%PDF-1.4 test", "application/pdf", b"%PDF-1.4 test"
 
         rec = self.capture.capture_one(fetch_with_diagnostics, PDF_URL,
-                                       "/tmp", "297291")
+                                       self.tmpdir.name, "297291")
         self.assertEqual(rec["status"], "captured")
         self.assertIsNone(rec.get("reason"))
 
