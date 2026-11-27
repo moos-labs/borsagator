@@ -9,7 +9,10 @@ paths named below.
 
 ## What the A and B screens say
 
-- Proposal A (USD/EGP stress, #848): no reading beats frozen v2.
+- Proposal A (USD/EGP stress, #848): no reading is significant (smallest
+  Holm-adjusted p 0.300), and the point estimates sit at or below frozen v2
+  except beta 0.10 month (-0.001 vs v2 -0.004, a raw +0.003 whose
+  RangeSkill CI [-0.010, 0.009] contains 0).
   Post-break RangeSkill day / week / month, beta 0.10: 0.010 vs v2 0.015,
   -0.002 vs 0.000, -0.001 vs -0.004; beta 0.20: -0.009 vs 0.015, -0.015 vs
   0.000, -0.006 vs -0.004. Smallest Holm-adjusted p 0.300.
@@ -48,19 +51,22 @@ paths named below.
 
 ## Proposal B: volume and turnover state as a width input (store data, non-price)
 
-- Source (verified in the archive store, ohlcv/yahoo/*_CA.csv, column
-  `volume`): 29 of 36 tickers have a non-zero volume on at least 90% of
-  bars; 7 do not (ORAS_CA has non-zero volume on 3% of bars). The Yahoo
-  `volume` column is a daily share count and is dated with its bar.
-  Source of the claim: a direct count over the CSVs on 2026-11-27, not
-  an external document.
+- Source (archive store, ohlcv/yahoo/*_CA.csv, column `volume`): the
+  Yahoo `volume` column is a daily share count dated with its bar. A
+  descriptive count over the whole CSVs on 2026-11-27 found 29 of 36
+  tickers with non-zero volume on at least 90% of bars (ORAS_CA: 3%). That
+  archive-wide count is context only and is NOT the eligibility rule,
+  because it uses bars after a cutoff.
 - PIT rule: at a cutoff on date D use only bars dated before D (as the
-  EGP=X screen).
+  EGP=X screen). Eligibility is evaluated per cutoff on the same bars
+  (specified by this document): a ticker enters a cutoff only if at least
+  90% of its last 120 bars dated before D (MIN_HIST) have non-zero volume;
+  no bar on or after D can qualify or disqualify it.
 - Feature: z of log(1 + mean volume over the last 20 bars) against the
   same ticker's earlier cutoffs (at least 8, else 0), band = v2 x
   exp(beta x clip(z, -3, 3)), beta in (0.10, 0.20), fixed grid, not
-  fitted. Same builder as `screen_fx_stress.py`; tickers with less than
-  90% non-zero-volume bars are excluded by rule, stated before the run.
+  fitted. Same builder as `screen_fx_stress.py`; ineligible cutoffs are
+  skipped by the per-cutoff rule above, stated before the run.
   Family 12 = 2 betas x 3 horizons x 2 regimes, Holm over 12; the delta
   statistic from Proposal A is reported next to the existing p.
 - Honest limit: this is still the names' own series (volume, not price),
