@@ -1,0 +1,100 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "label_counts_raw": {
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 6.182806875661602e-06,
+    "negative": 7.046394520671129e-05,
+    "neutral": 0.9999233682950338
+  },
+  "items": [
+    {
+      "text": "Mandatory Sage Firmware Update Requires ETRS Form One Revision - Radio World",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.429520852980204e-05,
+        "negative": 0.00020678671717178077,
+        "neutral": 0.9997789263725281
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9997789263725281
+        },
+        {
+          "label": "Negative",
+          "score": 0.00020678671717178077
+        },
+        {
+          "label": "Positive",
+          "score": 1.429520852980204e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "November 2026 Regulatory Dates for Broadcasters – Nationwide EAS Test and ETRS Reporting, NCE FM Translator Filing Window, Daylight Savings Time, and more - Broadcast Law Blog",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6474601238769537e-07,
+        "negative": 4.319765878335602e-07,
+        "neutral": 0.9999994039535522
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999994039535522
+        },
+        {
+          "label": "Negative",
+          "score": 4.319765878335602e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.6474601238769537e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Filing FCC ETRS Form One for Radio - Radio World",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.088466084795073e-06,
+        "negative": 4.173141860519536e-06,
+        "neutral": 0.999991774559021
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999991774559021
+        },
+        {
+          "label": "Negative",
+          "score": 4.173141860519536e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.088466084795073e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

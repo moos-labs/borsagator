@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 11.03,
+ "base_source": "egx-data/egxpy_etrs.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T03:25:07.258353+00:00",
+ "inputs_sha256": {
+  "digest.json": "64893dcaf50778c4944baa99ed24b66cf7a5f1b86cc0d65d025c55d478ca8980",
+  "ensemble.json": "db12e3edc80acea53924a8d54102d333350578c21bd3c56ccf5ed1cc4fef95e2"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+ "ticker": "ETRS.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

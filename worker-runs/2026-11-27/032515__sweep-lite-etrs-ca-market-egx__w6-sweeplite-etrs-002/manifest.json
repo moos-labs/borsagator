@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-etrs-002",
+  "job": "sweep-lite ETRS.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:22:49.072002+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-etrs-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:22:49.072002+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ETRS"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ETRS']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:25:06.886899+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+  "model": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002/report-model.json",
+  "model_sha256": "b2741d0ba49773e0beecd719c2f58ee04b254fcd318f52cb5a5d161d2ff157e8",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/ETRS.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ETRS.CA.json",
+   "sharia-row-missing: AAOIFI ETRS.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ETRS.CA",
+   "sharia-row-missing: FTSE ETRS.CA",
+   "sharia-row-missing: ISLAMICLY ETRS.CA",
+   "sharia-row-missing: MSCI ETRS.CA",
+   "sharia-row-missing: MSCI_M ETRS.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "20d1ca0843f09ca6c1d62b93081cb89c803103df",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 117377,
+    "sha256": "c3abab000f239067de511e5c7b535e4b4c652001a64cc6a38219423d1041b34a"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23503,
+    "sha256": "93e8a7039228873e4af87a5b042b99aec42f5c601f48071ae951b9e2a42b7889"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ETRS.CA"
+ }
+}

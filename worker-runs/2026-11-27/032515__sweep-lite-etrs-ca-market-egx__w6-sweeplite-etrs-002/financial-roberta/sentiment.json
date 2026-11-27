@@ -1,0 +1,67 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.00036097589569787186,
+    "negative": 0.0001988484679410855,
+    "neutral": 0.9994401733080546
+  },
+  "items": [
+    {
+      "text": "Mandatory Sage Firmware Update Requires ETRS Form One Revision - Radio World",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00015763292321935296,
+        "negative": 0.00022383143368642777,
+        "neutral": 0.9996185302734375
+      },
+      "raw_probabilities": {
+        "neutral": 0.9996185302734375,
+        "negative": 0.00022383143368642777,
+        "positive": 0.00015763292321935296
+      }
+    },
+    {
+      "text": "November 2026 Regulatory Dates for Broadcasters – Nationwide EAS Test and ETRS Reporting, NCE FM Translator Filing Window, Daylight Savings Time, and more - Broadcast Law Blog",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00030793267069384456,
+        "negative": 0.0001830006658565253,
+        "neutral": 0.9995090961456299
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995090961456299,
+        "positive": 0.00030793267069384456,
+        "negative": 0.0001830006658565253
+      }
+    },
+    {
+      "text": "Filing FCC ETRS Form One for Radio - Radio World",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.000617362093180418,
+        "negative": 0.00018971330428030342,
+        "neutral": 0.9991928935050964
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991928935050964,
+        "positive": 0.000617362093180418,
+        "negative": 0.00018971330428030342
+      }
+    }
+  ]
+}

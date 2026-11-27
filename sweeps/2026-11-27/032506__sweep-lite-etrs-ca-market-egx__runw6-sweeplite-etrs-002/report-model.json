@@ -1,0 +1,1337 @@
+{
+  "archive_commit": "20d1ca0843f09ca6c1d62b93081cb89c803103df",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "4af67dc0ff21d83cf28900c637579a8005992bee8ec9c465f76d88d0d75294cb",
+      "family-agent.json": "87370a1eac0d7c227b26cdda2b61d6f483e6b6f71b7f34e44da85c4e21906611",
+      "family-fundamentals.json": "dc5e9ff481a187f2dd1d6228366cbe62c8f21391e15a477ad6fd6dc35021fb6c",
+      "family-price-forecast.json": "d487addfe6f80e6a06de87a62d9ed3a175864303c5aebdae3a0d504aec8dfbb9",
+      "family-sentiment.json": "0a77e4744c9d942c5b4667798f7742f775ab09fb07a5598cb99c42836cf4609e",
+      "family-technicals.json": "40c517ec7eb20e12b03a7a751dc1ec5fda2201da67d51841a14fc1e0a2b9540d",
+      "kronos-alone.json": "518fb82846ce4aabd0b62d4c4b73d8fc9d8da81441bf27066f3150bbd31833c8",
+      "raw-llm-cohere.json": "7e26dfabfbee82531f2456e97d3ab4c1581693f4edeb0095b9c7461664855f96"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ETRS-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 11.03,
+    "base_source": "egx-data/egxpy_etrs.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": -0.165,
+      "sentiment": -0.07,
+      "technicals": 0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.07
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.2956,
+        "net_score": -0.07,
+        "range_high_pct": 2.86,
+        "range_low_pct": -2.86,
+        "tilt_centre_pct": -0.03,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.4907
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.1,
+          "sentiment": -0.07,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -3.767,
+        "net_score": 0.063,
+        "range_high_pct": 13.7,
+        "range_low_pct": -13.7,
+        "tilt_centre_pct": 0.46,
+        "trading_sessions": 21,
+        "vol_h_pct": 11.4137
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.07,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.01,
+        "net_score": 0.142,
+        "range_high_pct": 7.13,
+        "range_low_pct": -7.13,
+        "tilt_centre_pct": 0.35,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.5693
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_etrs.csv",
+      "base_stale": false,
+      "base_used": 11.03,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.09,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_etrs.csv": 11.04,
+        "openbb/etrs_ca.csv": 11.050000190734863,
+        "pandas-ta/indicators.csv": 11.050000190734863,
+        "talib/indicators.csv": 11.050000190734863,
+        "yahooquery/etrs.ca.csv": 11.050000190734863
+      }
+    },
+    "risk": {
+      "conf_cap": 0.6,
+      "events": [],
+      "flags": [],
+      "level": "none",
+      "move_z": {
+        "last": 0.43,
+        "max3": 0.43
+      },
+      "price_mult": 1.0
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.0249,
+    "sigma_daily": 0.0249,
+    "sigma_source": "egx-data/egxpy_etrs.csv (σ60=0.0249, σ10=0.0169)",
+    "ticker": "ETRS.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": -0.165,
+    "sentiment": -0.07,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-27T03:25:06.886899+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ETRS.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ETRS.CA.json",
+    "sharia-row-missing: AAOIFI ETRS.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ETRS.CA",
+    "sharia-row-missing: FTSE ETRS.CA",
+    "sharia-row-missing: ISLAMICLY ETRS.CA",
+    "sharia-row-missing: MSCI ETRS.CA",
+    "sharia-row-missing: MSCI_M ETRS.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.07
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.2956,
+      "net_score": -0.07,
+      "range_high_pct": 2.86,
+      "range_low_pct": -2.86,
+      "tilt_centre_pct": -0.03,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.4907
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.1,
+        "sentiment": -0.07,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -3.767,
+      "net_score": 0.063,
+      "range_high_pct": 13.7,
+      "range_low_pct": -13.7,
+      "tilt_centre_pct": 0.46,
+      "trading_sessions": 21,
+      "vol_h_pct": 11.4137
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.07,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.01,
+      "net_score": 0.142,
+      "range_high_pct": 7.13,
+      "range_low_pct": -7.13,
+      "tilt_centre_pct": 0.35,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.5693
+    }
+  },
+  "job": "sweep-lite ETRS.CA market=EGX",
+  "job_shape": "sweep-lite ETRS.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 11.8164,
+    "support": 10.2436
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-16T05:05:00Z",
+    "latest_news_date_raw": "Mon, 16 Nov 2026 05:05:00 GMT",
+    "news_count": 1,
+    "news_items": [
+      {
+        "date": "Mon, 16 Nov 2026 05:05:00 GMT",
+        "identity_key": "981a6e94bafa2c39",
+        "key_type": "title-date-hash",
+        "source": "ARABNEWS24.CA",
+        "title": "وفاة بيل واترز المسؤول السابق في تورونتو مابل ليفز عن 83 عاماً — أخبار العرب ٢٤ - ARABNEWS24.CA"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 11.03,
+    "base_source": "egx-data/egxpy_etrs.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_etrs.csv",
+      "base_stale": false,
+      "base_used": 11.03,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.09,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_etrs.csv": 11.04,
+        "openbb/etrs_ca.csv": 11.050000190734863,
+        "pandas-ta/indicators.csv": 11.050000190734863,
+        "talib/indicators.csv": 11.050000190734863,
+        "yahooquery/etrs.ca.csv": 11.050000190734863
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0249,
+    "sigma_source": "egx-data/egxpy_etrs.csv (σ60=0.0249, σ10=0.0169)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 11.03,
+      "last_date": "2026-11-26",
+      "last_high": 11.31,
+      "last_low": 10.94,
+      "last_open": 11.15,
+      "last_volume": 1445567.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_etrs.csv",
+      "stale": false
+    },
+    {
+      "last_close": 11.149999618530273,
+      "last_date": "2026-11-25",
+      "last_high": 11.489999771118164,
+      "last_low": 10.9399995803833,
+      "last_open": 11.050000190734863,
+      "last_volume": 2995187.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/ETRS_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.149999618530273,
+      "last_date": "2026-11-25",
+      "last_high": 11.489999771118164,
+      "last_low": 10.9399995803833,
+      "last_open": 11.050000190734863,
+      "last_volume": 2995187.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.149999618530273,
+      "last_date": "2026-11-25",
+      "last_high": 11.489999771118164,
+      "last_low": 10.9399995803833,
+      "last_open": 11.050000190734863,
+      "last_volume": 2995187.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 11.050000190734863,
+      "last_date": "2026-11-24",
+      "last_high": 11.350000381469727,
+      "last_low": 10.920000076293945,
+      "last_open": 11.100000381469727,
+      "last_volume": 603949.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ETRS.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-etrs-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-etrs-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ETRS.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.6,
+    "events": [],
+    "flags": [],
+    "level": "none",
+    "move_z": {
+      "last": 0.43,
+      "max3": 0.43
+    },
+    "price_mult": 1.0
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ETRS.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T03:22:49.072002+00:00",
+  "sweep_dir": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+  "ticker": "ETRS.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ETRS.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ETRS.CA.csv_last_close": 11.050000190734863,
+          "ETRS.CA.csv_last_date": "2026-11-24",
+          "rows_ETRS.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "55596b3a50a65cbb3abe2cfb9c9850deb9ce9c41d93c8ab454517af5d3809963",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ETRS_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ETRS_CA.csv_last_close": 11.149999618530273,
+          "ETRS_CA.csv_last_date": "2026-11-25",
+          "rows_ETRS_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "e8566e5ec95cdf114999ec167536980c37f246789198f35e8d38087a5e7493f2",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_etrs.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_etrs.csv_last_close": 11.03,
+          "egxpy_etrs.csv_last_date": "2026-11-26",
+          "rows_egxpy_etrs.csv": 3000,
+          "symbol": "ETRS",
+          "ticker": "ETRS.CA"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "66efcb1d043b5c58a75646e438bfc87dade956c586160713c68fefad6b1b13b4",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 18.9067,
+          "atr_14": 0.4077,
+          "bb_lower": 10.3051,
+          "bb_mid": 10.8555,
+          "bb_pctb": 0.7675,
+          "bb_upper": 11.4059,
+          "close": 11.15,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.8922,
+          "ema_200": 9.6277,
+          "ema_50": 10.7463,
+          "first_date_used": "2019-01-01",
+          "high": 11.49,
+          "indicators.csv_last_close": 11.149999618530273,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 10.94,
+          "macd": 0.144,
+          "macd_hist": 0.0248,
+          "macd_signal": 0.1192,
+          "open": 11.05,
+          "rows_fetched": 6150,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 57.3674,
+          "stoch_d": 58.4001,
+          "stoch_k": 53.8628,
+          "ticker": "ETRS.CA"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "eee10d65ef256a59c24ceb808801da08b8ce9eb1bf89dc5197459bef4d44c3a7",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 11.149999618530273,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 11.149999618530273,
+          "last_date": "2026-11-25",
+          "rows_fetched": 6150,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "ETRS.CA"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "15c426ceb75af013afc1380d170ce61c8e1f9466f2b253cae5655818b47dd10e",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "bcfbdbe11725173e678453b4716aaaa5944f21c51fa3dca990fa2002e1bc0425",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "82941b7dd1ddaf50dff210655597b810b89e607e35230ed9ec464816a2b0a9c0",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "f49d93fd37232059ccaf386c52f4174f29f408895af510d15de9c60f60a937e1",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "23bad36a9d1e946b04ae569a28f719f37d490593239793cd6fcef42687ef51b7",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "5b3de43704f6b9e91d26fb3486c8cbf6b0a41e7fee8030987cfe8b15e5c7e721",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "f9b3281f738566e5b4cb07889ba5b2f94e1572fd185abacd806ad3a990410516",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 10.6145,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "b6af06185f32c2558e39be4b4bad8a4f7cad5fa8bfce9dc69443ff7f868169e5",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "9fd48a015e54d6bf7429ad90e9ed7dbe5357c3f21cd2d8f56ad63fea5743ddb6",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-etrs-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 1,
+          "bodies_fetched": 0,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T03:25:05Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Mon, 16 Nov 2026 05:05:00 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.606,
+          "multilingual_neutral": 0.379,
+          "multilingual_positive": 0.015,
+          "multilingual_scored": 1,
+          "news_count": 1,
+          "ticker": "ETRS.CA",
+          "tool": "news-disclosure",
+          "top_headline": "وفاة بيل واترز المسؤول السابق في تورونتو مابل ليفز عن 83 عاماً — أخبار العرب ٢٤ - ARABNEWS24.CA",
+          "translated_negative": 0.034,
+          "translated_neutral": 0.937,
+          "translated_positive": 0.03,
+          "translated_scored": 1,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "ETRS.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "fd87b2d9902cbe84359c2545ddc7bb0bd6fa14a3ebe6be882b3769543e25278f",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-etrs-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
