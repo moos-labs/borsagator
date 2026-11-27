@@ -1,0 +1,20 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 2/3 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/EFIH.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5680.54it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14499.93it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5530.51it/s]
+WARN cohere brief attempt 1 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+{"tool": "news-disclosure", "ticker": "EFIH.CA", "news_count": 3, "disclosure_count": 0, "arabic_headlines": 3, "latest_news_date": "Fri, 20 Nov 2026 00:42:45 GMT", "latest_disclosure_date": "", "top_headline": "جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك", "llm_provider": "cohere", "multilingual_positive": 0.041, "multilingual_negative": 0.213, "multilingual_neutral": 0.746, "multilingual_scored": 3, "bodies_fetched": 2, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere", "translated_positive": 0.036, "translated_negative": 0.163, "translated_neutral": 0.801, "translated_scored": 3}
+BRIEF:
+Here is a brief summary of the market news: 
+
+- The headlines indicate a focus on Egyptian comedy and the challenges of translating comedic material, specifically "efih" (jokes or comedic one-liners), into other languages. 
+- The first article discusses the difficulty of translating Egyptian humor, highlighting the potential loss of impact when translating from Arabic to other languages. 
+- The second headline mentions a quote from writer and producer Nader Salah El Din, who states that situational comedy is more challenging than one-liners, suggesting a focus on the art of comedy creation. 
+- The third article features actor Ashraf Abdelbaki, who reveals insights into the mechanics of comedic timing and delivery in theater, emphasizing the importance of understanding character, situation, and audience connection. 
+- These articles showcase the expertise and insights of industry professionals, offering a glimpse into the creative processes behind Egyptian comedy. 
+- The topics covered are relevant to the entertainment industry, particularly in the context of Egyptian media and theater. 
+- The articles provide an opportunity to explore the nuances of comedy, its translation, and the unique challenges faced by Egyptian comedians and writers. 
+- While no specific stock or financial information is mentioned, these articles could be of interest to investors in media and entertainment sectors, offering insights into the creative processes and challenges faced by industry professionals.

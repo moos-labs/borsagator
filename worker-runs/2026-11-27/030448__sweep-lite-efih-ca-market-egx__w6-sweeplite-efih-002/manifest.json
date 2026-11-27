@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-efih-002",
+  "job": "sweep-lite EFIH.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:00:55.953701+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-efih-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:00:55.953701+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "EFIH"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['EFIH']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:04:40.492291+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+  "model": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002/report-model.json",
+  "model_sha256": "06c95c6f994ad8a8058bdf58ac352b6c648fd5e69772a4472c8262d989e9974c",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/EFIH.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/EFIH.CA.json",
+   "sharia-row-missing: AAOIFI EFIH.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 EFIH.CA",
+   "sharia-row-missing: FTSE EFIH.CA",
+   "sharia-row-missing: ISLAMICLY EFIH.CA",
+   "sharia-row-missing: MSCI EFIH.CA",
+   "sharia-row-missing: MSCI_M EFIH.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "ae8d10d4c2a8f96ea2bd6de441fb10e437f15a9c",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 118266,
+    "sha256": "d7dc3d127e50ded927cd93ecdc909f0af0b0accfba3076f69cd3eebec5787c85"
+   },
+   {
+    "path": "report.md",
+    "bytes": 22885,
+    "sha256": "a467c00d66e15e811519be9d563d7d544a9c8989596ab2d6b88f5c9e44c029ea"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "EFIH.CA"
+ }
+}

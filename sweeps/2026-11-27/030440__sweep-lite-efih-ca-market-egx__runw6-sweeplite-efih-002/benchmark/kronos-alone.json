@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 24.61,
+ "base_source": "egx-data/egxpy_efih.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T03:04:40.799314+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.2,
+   "families": {
+    "price-forecast": 0.561
+   },
+   "horizon_short": false,
+   "net_score": 0.561,
+   "range_high_pct": 4.08,
+   "range_low_pct": 1.06,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -1.3,
+   "families": {
+    "price-forecast": -0.05
+   },
+   "horizon_short": false,
+   "net_score": -0.05,
+   "range_high_pct": 0.48,
+   "range_low_pct": -3.91,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.84,
+   "families": {
+    "price-forecast": 0.144
+   },
+   "horizon_short": false,
+   "net_score": 0.144,
+   "range_high_pct": 2.9,
+   "range_low_pct": -0.36,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "e7e6c78479b7852cc08df960433835e9fcc1f789e53f40fe40c5652d66ac3351",
+  "digest.json": "63fadf0dd4743fec92ebf80f85c55e3551e4139dd2a434d74180819e8a8a7e6a",
+  "ensemble.json": "6f37007cb9716395ded980f95ee277cf47bbda52859e8ef23bdea3865568211f"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0285,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+ "ticker": "EFIH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 24.61,
+ "base_source": "egx-data/egxpy_efih.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T03:04:40.798717+00:00",
+ "inputs_sha256": {
+  "digest.json": "63fadf0dd4743fec92ebf80f85c55e3551e4139dd2a434d74180819e8a8a7e6a",
+  "ensemble.json": "6f37007cb9716395ded980f95ee277cf47bbda52859e8ef23bdea3865568211f"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+ "ticker": "EFIH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

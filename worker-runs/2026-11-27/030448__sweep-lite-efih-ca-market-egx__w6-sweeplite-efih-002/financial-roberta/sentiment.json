@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.9980375170707703,
+    "negative": 0.0007756110280752182,
+    "neutral": 0.0011869390727952123
+  },
+  "items": [
+    {
+      "text": "EFIH: 9M net profit reached EGP2.216bn as shareholders approved the Tamweely acquisition - TradingView",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9980375170707703,
+        "negative": 0.0007756110280752182,
+        "neutral": 0.0011869390727952123
+      },
+      "raw_probabilities": {
+        "positive": 0.9980375170707703,
+        "neutral": 0.0011869390727952123,
+        "negative": 0.0007756110280752182
+      }
+    }
+  ]
+}

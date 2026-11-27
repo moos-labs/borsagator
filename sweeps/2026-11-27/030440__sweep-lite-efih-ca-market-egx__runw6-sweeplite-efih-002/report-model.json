@@ -1,0 +1,1351 @@
+{
+  "archive_commit": "ae8d10d4c2a8f96ea2bd6de441fb10e437f15a9c",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "22b9aab25f45c1851645158cae0c02cf6f27d0b1574743b94aaf1b8f7f3506be",
+      "family-agent.json": "7475086bc493cabe025566a522d3b199e6722b625128248ec5ba6da890538393",
+      "family-fundamentals.json": "badb4db1e8250f56101bcfaa702ac024aa254cdd38431d91dacd35a01d352ed9",
+      "family-price-forecast.json": "cfa108e9d08fa08512df196b94200e8888469737ee435a98f22f21af32b46dd7",
+      "family-sentiment.json": "bf91e3d0931ae91a414020bc2e1d2566c601116b57f6f5cd320d08647b732292",
+      "family-technicals.json": "6e01668db86a785b7a503b16ac5f79bbe690b0575e3286f49876b3196958d26c",
+      "kronos-alone.json": "500e9dbbeb15d2ef630f93701f5aee58c9eba45dc0d5c38978ac220f89443cfc",
+      "raw-llm-cohere.json": "fe5a26816c3f252213155e35220febfb6b0c7debc501d7e5ec89c670457358c5"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/EFIH-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 24.61,
+    "base_source": "egx-data/egxpy_efih.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.35,
+      "price-forecast": -0.05,
+      "sentiment": 0.691,
+      "technicals": 0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.691
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.1963,
+        "net_score": 0.691,
+        "range_high_pct": 3.27,
+        "range_low_pct": -3.27,
+        "tilt_centre_pct": 0.38,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.8458
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.54,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.35,
+          "sentiment": 0.691,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.3031,
+        "net_score": 0.014,
+        "range_high_pct": 15.65,
+        "range_low_pct": -15.65,
+        "tilt_centre_pct": 0.12,
+        "trading_sessions": 21,
+        "vol_h_pct": 13.0409
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.691,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.8411,
+        "net_score": 0.468,
+        "range_high_pct": 8.15,
+        "range_low_pct": -8.15,
+        "tilt_centre_pct": 1.33,
+        "trading_sessions": 5,
+        "vol_h_pct": 6.3633
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_efih.csv",
+      "base_stale": false,
+      "base_used": 24.61,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_efih.csv": 25.29,
+        "openbb/efih_ca.csv": 25.290000915527344,
+        "pandas-ta/indicators.csv": 25.290000915527344,
+        "talib/indicators.csv": 25.290000915527344,
+        "yahooquery/efih.ca.csv": 25.290000915527344
+      }
+    },
+    "risk": {
+      "conf_cap": 0.6,
+      "events": [],
+      "flags": [],
+      "level": "none",
+      "move_z": {
+        "last": 0.55,
+        "max3": 0.69
+      },
+      "price_mult": 1.0
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0285,
+    "sigma_daily": 0.0285,
+    "sigma_source": "egx-data/egxpy_efih.csv (σ60=0.0285, σ10=0.0235)",
+    "ticker": "EFIH.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.35,
+    "price-forecast": -0.05,
+    "sentiment": 0.691,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-27T03:04:40.492291+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/EFIH.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/EFIH.CA.json",
+    "sharia-row-missing: AAOIFI EFIH.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 EFIH.CA",
+    "sharia-row-missing: FTSE EFIH.CA",
+    "sharia-row-missing: ISLAMICLY EFIH.CA",
+    "sharia-row-missing: MSCI EFIH.CA",
+    "sharia-row-missing: MSCI_M EFIH.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.691
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.1963,
+      "net_score": 0.691,
+      "range_high_pct": 3.27,
+      "range_low_pct": -3.27,
+      "tilt_centre_pct": 0.38,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.8458
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.54,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.35,
+        "sentiment": 0.691,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.3031,
+      "net_score": 0.014,
+      "range_high_pct": 15.65,
+      "range_low_pct": -15.65,
+      "tilt_centre_pct": 0.12,
+      "trading_sessions": 21,
+      "vol_h_pct": 13.0409
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.691,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.8411,
+      "net_score": 0.468,
+      "range_high_pct": 8.15,
+      "range_low_pct": -8.15,
+      "tilt_centre_pct": 1.33,
+      "trading_sessions": 5,
+      "vol_h_pct": 6.3633
+    }
+  },
+  "job": "sweep-lite EFIH.CA market=EGX",
+  "job_shape": "sweep-lite EFIH.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 26.6157,
+    "support": 22.6043
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-20T00:42:45Z",
+    "latest_news_date_raw": "Fri, 20 Nov 2026 00:42:45 GMT",
+    "news_count": 3,
+    "news_items": [
+      {
+        "date": "Fri, 20 Nov 2026 00:42:45 GMT",
+        "identity_key": "https://jawak.com/%D8%AA%D8%B1%D8%AC%D9%85%D8%A9-%D8%A7%D9%84%D8%A7%D9%81%D9%8A%D9%87-%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%8A-%D8%A8%D9%8A%D9%86-%D8%A7%D9%84%D9%85%D8%B9%D9%86%D9%89-%D8%A7%D9%84%D8%AD%D8%B1%D9%81%D9%8A-%D9%88%D8%A7%D9%84%D8%AB%D9%82%D8%A7%D9%81%D9%8A-86548",
+        "key_type": "resolved_url",
+        "source": "جوَّك",
+        "title": "جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك"
+      },
+      {
+        "date": "Sat, 07 Nov 2026 08:00:00 GMT",
+        "identity_key": "e8c1443900afbb4e",
+        "key_type": "title-date-hash",
+        "source": "فيتو",
+        "title": "نادر صلاح الدين: كوميديا الموقف أصعب من الإفيه، ولكل نجم مدرسته الخاصة في صناعة الضحك - فيتو"
+      },
+      {
+        "date": "Mon, 02 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://almalnews.com/2144985/%D8%A3%D8%B4%D8%B1%D9%81-%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D9%8A-%D9%8A%D9%83%D8%B4%D9%81-%D8%A2%D9%84%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%A5%D9%81%D9%8A%D9%87-%D8%A7%D9%84%D9%83%D9%88%D9%85%D9%8A%D8%AF%D9%8A-%D9%88%D9%8A%D8%AA%D8%AD%D8%AF%D8%AB/",
+        "key_type": "resolved_url",
+        "source": "جريدة المال",
+        "title": "أشرف عبدالباقي يكشف آليات الإفيه الكوميدي ويتحدث عن مسرح مصر - جريدة المال"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 24.61,
+    "base_source": "egx-data/egxpy_efih.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_efih.csv",
+      "base_stale": false,
+      "base_used": 24.61,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_efih.csv": 25.29,
+        "openbb/efih_ca.csv": 25.290000915527344,
+        "pandas-ta/indicators.csv": 25.290000915527344,
+        "talib/indicators.csv": 25.290000915527344,
+        "yahooquery/efih.ca.csv": 25.290000915527344
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0285,
+    "sigma_source": "egx-data/egxpy_efih.csv (σ60=0.0285, σ10=0.0235)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 24.61,
+      "last_date": "2026-11-26",
+      "last_high": 25.0,
+      "last_low": 24.48,
+      "last_open": 25.0,
+      "last_volume": 1465117.0,
+      "note": null,
+      "rows": 1239,
+      "source": "egx-data/egxpy_efih.csv",
+      "stale": false
+    },
+    {
+      "last_close": 25.0,
+      "last_date": "2026-11-25",
+      "last_high": 25.280000686645508,
+      "last_low": 24.809999465942383,
+      "last_open": 25.290000915527344,
+      "last_volume": 668062.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/EFIH_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 25.0,
+      "last_date": "2026-11-25",
+      "last_high": 25.280000686645508,
+      "last_low": 24.809999465942383,
+      "last_open": 25.290000915527344,
+      "last_volume": 668062.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 25.0,
+      "last_date": "2026-11-25",
+      "last_high": 25.280000686645508,
+      "last_low": 24.809999465942383,
+      "last_open": 25.290000915527344,
+      "last_volume": 668062.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 25.290000915527344,
+      "last_date": "2026-11-24",
+      "last_high": 25.399999618530273,
+      "last_low": 24.81999969482422,
+      "last_open": 24.799999237060547,
+      "last_volume": 2627648.0,
+      "note": null,
+      "rows": 1210,
+      "source": "yahooquery/EFIH.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-efih-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-efih-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "EFIH.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.6,
+    "events": [],
+    "flags": [],
+    "level": "none",
+    "move_z": {
+      "last": 0.55,
+      "max3": 0.69
+    },
+    "price_mult": 1.0
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for EFIH.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T03:00:55.953701+00:00",
+  "sweep_dir": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+  "ticker": "EFIH.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EFIH.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EFIH.CA.csv_last_close": 25.290000915527344,
+          "EFIH.CA.csv_last_date": "2026-11-24",
+          "rows_EFIH.CA.csv": 1210
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "86fd15f222f16524227e0e441c75d55bac3bbb199f86df3153f96057ef9847fe",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "EFIH_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "EFIH_CA.csv_last_close": 25.0,
+          "EFIH_CA.csv_last_date": "2026-11-25",
+          "rows_EFIH_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "b7ef39a61151123a25050a6028821458002e7f422b3fcd2ac8d4658a4042c09f",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_efih.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_efih.csv_last_close": 24.61,
+          "egxpy_efih.csv_last_date": "2026-11-26",
+          "rows_egxpy_efih.csv": 1239,
+          "symbol": "EFIH",
+          "ticker": "EFIH.CA"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "166bd61411b1043fcb477e52477c65d601b9cd2ece648110ea2be7737f35007f",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 13.8215,
+          "atr_14": 0.9952,
+          "bb_lower": 22.2683,
+          "bb_mid": 24.1865,
+          "bb_pctb": 0.712,
+          "bb_upper": 26.1047,
+          "close": 25.0,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 24.3626,
+          "ema_200": 21.9566,
+          "ema_50": 23.8188,
+          "first_date_used": "2021-10-20",
+          "high": 25.28,
+          "indicators.csv_last_close": 25.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 24.81,
+          "macd": 0.4865,
+          "macd_hist": 0.0705,
+          "macd_signal": 0.416,
+          "open": 25.29,
+          "rows_fetched": 1237,
+          "rows_indicators.csv": 250,
+          "rows_used": 1237,
+          "rsi_14": 56.9856,
+          "stoch_d": 67.1362,
+          "stoch_k": 66.5926,
+          "ticker": "EFIH.CA"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "9305ab7848f638624cb4f6765e3a5cde88d789e6dd7bf9c7336ae4535b7d8007",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 25.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 25.0,
+          "last_date": "2026-11-25",
+          "rows_fetched": 1237,
+          "rows_indicators.csv": 250,
+          "rows_used": 1237,
+          "ticker": "EFIH.CA"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "201ea7a81dfd21b7e9df7d5a46488124c20ddf4e31085dea0a69450c6203bfde",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "610359925220e6c52dafb72edfe1cdb46cd34d9b3965341934c559dcf9477fb5",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "3b0e8009dcb5d2aa083ea4b2096a3a79cb4b9c469075f9bcb10f6aded5f49f06",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "4151d8a9c7fe794538a2f112f10b55466d4cf91bd0ca1fa43871f876004903f7",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "de0a9466b6f9e398a9090ca679616c760afd5c75f805df2aca9ed41f160ee5af",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "519e3f23ef5bad707cd28dfd56ddfe05f6d8c28c3d24caadee76faa5dc3e3b8c",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "52970851630f5ba0fe6c1c26a02d3a031d6e59ba5d4403929b0c2007f64969ae",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 24.2893,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "ef54b4b0f1dcb9ad2d65cffee9a9fab4fa22fd0f6be25d80b8c6efb04001d73b",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "4000a91095da966f9d6fa4b589a5fb8a08e1adccb63405ccf8b88a768620992c",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-efih-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 3,
+          "bodies_fetched": 2,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T03:04:39Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Fri, 20 Nov 2026 00:42:45 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.213,
+          "multilingual_neutral": 0.746,
+          "multilingual_positive": 0.041,
+          "multilingual_scored": 3,
+          "news_count": 3,
+          "ticker": "EFIH.CA",
+          "tool": "news-disclosure",
+          "top_headline": "جوَّك | كيف تترجم الإفيه المصري إلى لغات أخرى دون أن يفقد طرافته؟ - بقلم جوَّك آداب - جوَّك",
+          "translated_negative": 0.163,
+          "translated_neutral": 0.801,
+          "translated_positive": 0.036,
+          "translated_scored": 3,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "EFIH.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "ea21dd444782b2b0468b3cbb50f7390febec7e4cd4e3e6f1468715ae7a201e86",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-efih-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
