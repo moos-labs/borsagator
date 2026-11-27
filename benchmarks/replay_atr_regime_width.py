@@ -15,7 +15,8 @@ TRAINING rows. Factors f[regime, horizon] are the grid value in
 [0.50, 2.00] step 0.01 minimising mean Winkler IS on the TRAINING
 rows of that regime and horizon; a bucket with fewer than
 MIN_FIT_ROWS training rows keeps f = 1.0. Training = cells 1-47 of
-the --captures dirs only (--fit-max-cell); thresholds and factors
+the --captures dirs only (--fit-max-cell, never above 47 and
+exactly 47 for a clean run); thresholds and factors
 are refitted from those cells on every run, never from the scored
 cells, and are printed. Centre 0, RISK_MULT carried as in v2, the v2
 k table is imported from scripts/ensemble.py.
@@ -30,6 +31,9 @@ scoring, per horizon, >= 30 rows over >= 5 tickers and >= 2 cutoffs:
 (2) the cutoff-clustered coverage CI overlaps [0.75, 0.85], untouched
 cells only (>= 91). Cells 48-90 are scored only with --descriptive,
 which prints no verdict and writes no verdict key.
+The fit's price reference comes from the training captures only;
+the JSON records the effective fit window and the price-reference
+provenance of the fit and of the scored window.
 
 Usage:
   python3 benchmarks/replay_atr_regime_width.py score --captures DIR ...
@@ -142,9 +146,10 @@ def score_rows(rows, thr, factors):
     return out
 
 
-def build_rows(caps, allc):
-    """R.build_rows with the ATR regime statistic added to each
-    capture's sigma dict."""
+def build_rows(caps, ref):
+    """R.build_rows(caps, ref) with the ATR regime statistic added to
+    each capture's sigma dict. ref is the capture set the price
+    reference (realised-window rebuild) is selected from."""
     orig = R.sigmas
     ohlc_seen = {}
 
@@ -155,7 +160,7 @@ def build_rows(caps, allc):
         return d
     R.sigmas = with_atr
     try:
-        return R.build_rows(caps, allc)
+        return R.build_rows(caps, ref)
     finally:
         R.sigmas = orig
 
@@ -173,17 +178,45 @@ def _f(v, nd=3):
     return PK._f(v, nd)
 
 
-def render(res, thr, factors, counts, skipped, descriptive, title):
+def count_gaps(gaps, text):
+    return sum(1 for g in gaps if text in g)
+
+
+def provenance(caps, gaps, source):
+    return {"price_reference": source, "captures": len(caps),
+            "realised_rebuilt": count_gaps(gaps, "realised window "
+                                           "rebuilt"),
+            "dropped_no_ohlc_captures": count_gaps(
+                gaps, "no usable pre-cutoff OHLC")}
+
+
+def make_report(res, thr, factors, counts, skipped, descriptive,
+                fit_max, prov):
+    out = {"k": ens_mod.V2_BAND_K, "thresholds": list(thr),
+           "factors": factors, "training_rows": counts,
+           "skipped_no_regime": skipped, "results": res,
+           "descriptive": descriptive,
+           "fit_window": {"first_cell": 1, "last_cell": fit_max,
+                          "registered_last_cell": FIT_MAX_CELL},
+           "provenance": prov}
+    if not descriptive:
+        out["verdict"] = keep_verdict(res)[0]
+    return out
+
+
+def render(res, thr, factors, counts, skipped, descriptive, title,
+           fit_max=FIT_MAX_CELL, dropped=0):
     L = [title, "ATR20/ATR60 regime width on the v2 band, v2 k = %s"
          % json.dumps(ens_mod.V2_BAND_K),
          "fit (training cells <= %d only): thresholds low<=%s high>%s"
-         % (FIT_MAX_CELL, _f(thr[0]), _f(thr[1]))]
+         % (fit_max, _f(thr[0]), _f(thr[1]))]
     for h in HORIZONS:
         L.append("  %s factors %s (training rows %s)" % (
             h, " ".join("%s %.2f" % (g, factors["%s/%s" % (h, g)])
                         for g in REGIMES),
             "/".join(str(counts["%s/%s" % (h, g)]) for g in REGIMES)))
-    L.append("rows skipped, no regime: %d" % skipped)
+    L.append("rows skipped, no regime: %d; captures dropped before "
+             "the regime (no pre-cutoff OHLC): %d" % (skipped, dropped))
     for h in HORIZONS:
         c = res[h]
         L.append("%s: n=%d, %d cutoffs, %d tickers"
@@ -204,25 +237,33 @@ def render(res, thr, factors, counts, skipped, descriptive, title):
 
 def _run(a, lo, hi, descriptive, title):
     allc = A.find_captures(a.captures, None)
-    train, _g = build_rows(select_caps(allc, 1, a.fit_max_cell), allc)
+    train_caps = select_caps(allc, 1, a.fit_max_cell)
+    # The fit sees outcomes only through training captures: its price
+    # reference is selected from the training captures, never from the
+    # held-out ones.
+    train, train_gaps = build_rows(train_caps, train_caps)
     f = fit(train)
     if f is None:
         print("refusing: no training rows (cells 1-%d, 61+ bars)"
               % a.fit_max_cell)
         return 2, None
     thr, factors, counts = f
-    rows, _g = build_rows(select_caps(allc, lo, hi), allc)
+    score_caps = select_caps(allc, lo, hi)
+    rows, gaps = build_rows(score_caps, allc)
     pairs = score_rows(rows, thr, factors)
     skipped = len(rows) - len(pairs)
     res = R.evaluate(pairs, a.reps, getattr(a, "seed", A.DEFAULT_SEED))
-    print(render(res, thr, factors, counts, skipped, descriptive, title))
-    out = {"k": ens_mod.V2_BAND_K, "thresholds": list(thr),
-           "factors": factors, "training_rows": counts,
-           "skipped_no_regime": skipped, "results": res,
-           "descriptive": descriptive}
-    if not descriptive:
-        out["verdict"] = keep_verdict(res)[0]
-    return 0, out
+    prov = {"fit": provenance(
+                train_caps, train_gaps,
+                "training captures only (cells 1-%d)" % a.fit_max_cell),
+            "scored": provenance(
+                score_caps, gaps,
+                "all --captures dirs, latest last date per ticker")}
+    print(render(res, thr, factors, counts, skipped, descriptive, title,
+                 a.fit_max_cell,
+                 prov["scored"]["dropped_no_ohlc_captures"]))
+    return 0, make_report(res, thr, factors, counts, skipped,
+                          descriptive, a.fit_max_cell, prov)
 
 
 def main(argv=None):
@@ -244,6 +285,10 @@ def main(argv=None):
     s.add_argument("--seed", type=int, default=A.DEFAULT_SEED)
     s.add_argument("--json", default=None)
     a = ap.parse_args(argv)
+    if a.fit_max_cell > FIT_MAX_CELL:
+        print("refusing: --fit-max-cell above the registered %d"
+              % FIT_MAX_CELL)
+        return 2
     if a.mode == "diag":
         rc, _o = _run(a, 1, a.fit_max_cell, True,
                       "FIT CELLS 1-%d, descriptive only" % a.fit_max_cell)
@@ -251,6 +296,10 @@ def main(argv=None):
     if a.min_cell < CLEAN_MIN_CELL and not a.descriptive:
         print("refusing: cells below %d need --descriptive"
               % CLEAN_MIN_CELL)
+        return 2
+    if not a.descriptive and a.fit_max_cell != FIT_MAX_CELL:
+        print("refusing: clean scoring needs --fit-max-cell %d"
+              % FIT_MAX_CELL)
         return 2
     if a.min_cell <= a.fit_max_cell:
         print("refusing: scored cells overlap the training cells (<= %d)"
