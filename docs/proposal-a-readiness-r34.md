@@ -97,7 +97,7 @@ Inputs and what each gives:
   and reported.
 - `--macro-matches` (repeatable): `macro_matches.jsonl`. Gives per-day row
   counts from the `date` field (YYYYMMDDhhmmss), counting distinct
-  (`gkg_record_id`, `url`) as the filter does, so the zero-row anomaly and the
+  (`gkg_record_id`, `url`) as screen_news_width.load_matches does, so the zero-row anomaly and the
   rows-per-day figures are exact.
 
 Steps: build the per-day coverage table (expected, processed, state COVERED,
