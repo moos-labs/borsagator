@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 14.7,
+ "base_source": "egx-data/egxpy_skpc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T10:26:21.932956+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "c2066bd19565943ce86a62c1d54822c65d5fe8bdf64206bc9119495cdc585258",
+  "digest.json": "559fa84fab7662b0f8ce8ed40b5a3ab0f1cdd769cd6b48eb7b8f53e64c2a578b",
+  "ensemble.json": "2922b481f549660d98c2ca898118f671480d474fb850e4b1bc68ba3586700329"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/102621__sweep-lite-skpc-ca-market-egx__runw6-sweeplite-skpc-002",
+ "ticker": "SKPC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

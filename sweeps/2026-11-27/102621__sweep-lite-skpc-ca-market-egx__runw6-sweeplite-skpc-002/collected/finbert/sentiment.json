@@ -1,0 +1,26 @@
+{
+  "label": "live",
+  "model": "ProsusAI/finbert",
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.1096024140715599,
+    "negative": 0.08773137629032135,
+    "neutral": 0.802666187286377
+  },
+  "items": [
+    {
+      "text": "Bank staff cheat bank! - Star of Mysore",
+      "predicted": "neutral",
+      "probabilities": {
+        "positive": 0.1096024140715599,
+        "negative": 0.08773137629032135,
+        "neutral": 0.802666187286377
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "label_counts_raw": {
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 3.7150819025555393e-06,
+    "negative": 1.4327377357403748e-05,
+    "neutral": 0.9999819993972778
+  },
+  "items": [
+    {
+      "text": "Bank staff cheat bank! - Star of Mysore",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.7150819025555393e-06,
+        "negative": 1.4327377357403748e-05,
+        "neutral": 0.9999819993972778
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999819993972778
+        },
+        {
+          "label": "Negative",
+          "score": 1.4327377357403748e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.7150819025555393e-06
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

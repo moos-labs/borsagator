@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.0003523025952745229,
+    "negative": 0.9986182451248169,
+    "neutral": 0.001029500039294362
+  },
+  "items": [
+    {
+      "text": "Bank staff cheat bank! - Star of Mysore",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003523025952745229,
+        "negative": 0.9986182451248169,
+        "neutral": 0.001029500039294362
+      },
+      "raw_probabilities": {
+        "negative": 0.9986182451248169,
+        "neutral": 0.001029500039294362,
+        "positive": 0.0003523025952745229
+      }
+    }
+  ]
+}
