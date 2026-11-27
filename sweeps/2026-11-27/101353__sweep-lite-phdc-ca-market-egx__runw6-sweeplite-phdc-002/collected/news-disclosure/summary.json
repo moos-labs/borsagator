@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "PHDC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "PHDC.CA",
+    "fetched_at": "2026-11-27T10:13:52Z",
+    "tool": "news-disclosure",
+    "news_count": 6,
+    "disclosure_count": 0,
+    "arabic_headlines": 6,
+    "latest_news_date": "Mon, 16 Nov 2026 08:00:00 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964",
+    "llm_provider": "cohere",
+    "multilingual_positive": 0.167,
+    "multilingual_negative": 0.32,
+    "multilingual_neutral": 0.513,
+    "multilingual_scored": 6,
+    "bodies_fetched": 4,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.08,
+    "translated_negative": 0.229,
+    "translated_neutral": 0.692,
+    "translated_scored": 6
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

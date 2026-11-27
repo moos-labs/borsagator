@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1931 rows
+{
+  "ticker": "PHDC.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 4591,
+  "rows_used": 1931,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-26"
+  },
+  "last_date": "2026-11-26",
+  "last_close": 11.34000015258789,
+  "indicators": {
+    "RSI_14": 42.58952824240645,
+    "MACD": -0.26671295291849795,
+    "MACD_signal": -0.2822758443079001,
+    "MACD_hist": 0.015562891389402145,
+    "EMA_20": 11.68380227859275,
+    "EMA_50": 12.327445433332993,
+    "ADX_14": 25.403639350730238
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-26",
+    "CDLENGULFING": "2026-11-22",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 11.34,
+ "base_source": "egx-data/egxpy_phdc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T10:13:53.467234+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": 0.54,
+   "families": {
+    "price-forecast": 0.102
+   },
+   "horizon_short": false,
+   "net_score": 0.102,
+   "range_high_pct": 3.62,
+   "range_low_pct": -1.91,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.67,
+   "families": {
+    "price-forecast": 0.069
+   },
+   "horizon_short": false,
+   "net_score": 0.069,
+   "range_high_pct": 5.32,
+   "range_low_pct": -0.86,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.56,
+   "families": {
+    "price-forecast": 0.132
+   },
+   "horizon_short": false,
+   "net_score": 0.132,
+   "range_high_pct": 4.93,
+   "range_low_pct": -0.99,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "2176d7f146fb36d972908e22ccfae7a81c8499b55f02539d4e6087ec05b3ec00",
+  "digest.json": "c08f5184345fff5ddf9af3ef3c8ea8c10a7d377c7ca54bfe906b9d10e7528023",
+  "ensemble.json": "716e95f552f77669cdc9138fdcee3e44e65a06e9b219a1e09317d971596cb33b"
+ },
+ "kronos_first_row_date": "2026-11-26",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0263,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/101353__sweep-lite-phdc-ca-market-egx__runw6-sweeplite-phdc-002",
+ "ticker": "PHDC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

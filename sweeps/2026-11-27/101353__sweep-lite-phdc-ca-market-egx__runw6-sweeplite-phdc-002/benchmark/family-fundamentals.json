@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 11.34,
+ "base_source": "egx-data/egxpy_phdc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-27T10:13:53.466794+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": 0.54,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "net_score": 0.4,
+   "range_high_pct": 3.91,
+   "range_low_pct": -2.83,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 2.47,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "net_score": 0.4,
+   "range_high_pct": 17.9,
+   "range_low_pct": -12.96,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 1.2,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "net_score": 0.4,
+   "range_high_pct": 8.73,
+   "range_low_pct": -6.32,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "c08f5184345fff5ddf9af3ef3c8ea8c10a7d377c7ca54bfe906b9d10e7528023",
+  "ensemble.json": "716e95f552f77669cdc9138fdcee3e44e65a06e9b219a1e09317d971596cb33b"
+ },
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0263,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/101353__sweep-lite-phdc-ca-market-egx__runw6-sweeplite-phdc-002",
+ "ticker": "PHDC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

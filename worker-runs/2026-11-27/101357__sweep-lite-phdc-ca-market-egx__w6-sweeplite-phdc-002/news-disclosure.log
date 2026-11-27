@@ -1,0 +1,24 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 4/6 fetched; failures by stage: {'decode': 0, 'http': 2, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/PHDC.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5873.76it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16019.44it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5728.37it/s]
+{"tool": "news-disclosure", "ticker": "PHDC.CA", "news_count": 6, "disclosure_count": 0, "arabic_headlines": 6, "latest_news_date": "Mon, 16 Nov 2026 08:00:00 GMT", "latest_disclosure_date": "", "top_headline": "خلاف أبو فدك والحميداوي يشطر الكتائب.. مفاوضو جرف الصخر “في صدمة” - شبكة 964", "llm_provider": "cohere", "multilingual_positive": 0.167, "multilingual_negative": 0.32, "multilingual_neutral": 0.513, "multilingual_scored": 6, "bodies_fetched": 4, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere", "translated_positive": 0.08, "translated_negative": 0.229, "translated_neutral": 0.692, "translated_scored": 6}
+BRIEF:
+- A disagreement between Abu Fodka and Al-Hameedawi has divided the battalions, with negotiators from Jurf Al-Sakhar in shock.
+- Prime Minister Ali Al-Zaidi sends spies instead of generals as part of an agreement with Abu Fodka, which changed the committee's composition.
+- Fodka is described as a key to reinterpreting the legitimacy of the caliphate.
+- High-level meetings are held to contain the escalating tensions between the government and the battalions of the Party of God.
+- The Zaidi-led mobilization differs from the Abu Fodka-led mobilization in 20 paragraphs, with army officers leading the "Mujahideen" brigades.
+- Objections from Al-Amiri, Al-Fayadh, and Al-Asa'ib indicate a disagreement over the future leadership of the Popular Mobilization Forces.
+- The investigation's results have surprised the resistance, revealing a split within the battalions over the future of Jurf Al-Sakhar.
+- The articles highlight political and military tensions, with potential implications for the distribution of power and resources, which could impact the stock market's perception of stability.
