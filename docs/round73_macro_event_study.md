@@ -3,7 +3,7 @@
 Task INS-IMPROVE-073 (Moos, Slack 1795786265.970709, read in full). Follow-up to the #929 design (docs/round72_macro_event_design.md; its section 7 secondary-source lists are superseded by this doc). DESCRIPTIVE: no p-value, no verdict word or key. The calendar commit precedes the code and every number.
 
 ## Scope
-EGX30 Mubasher close (evaluation/index_regime/EGX30_mubasher_close.csv, 2019-01-02 to 2026-11-26). Scope decision (Moos, 15:30 reply ts 1795786179511379): KEEP 5 YEARS — the briefed scope; the whole CBE history adds stale regimes and the ledger starts Nov 2026. The 2021-09-05 split is an analytical split only (pre-split cells n≤2, no regime comparison), not a scope decision; events on or after 2021-09-05 are 'post'. The delivered calendar (47 events, primary-sourced, including pre-window events) is accepted as delivered; for future collection the scope stays 5 years. The series starts in 2019, so usable history is 2019 onward.
+EGX30 Mubasher close (evaluation/index_regime/EGX30_mubasher_close.csv, 2019-01-02 to 2026-11-26). Scope decision (Moos reply ts 1795786179511379; corrected by Muhammad 15:38:16, relayed 1795786696.109159): KEEP 5 YEARS — the briefed scope; the whole CBE history adds stale regimes and the ledger starts Nov 2026. The 2021-09-05 split is an analytical split only (pre-split cells n≤2, no regime comparison), not a scope decision; events on or after 2021-09-05 are 'post'. The delivered calendar (47 events, primary-sourced, including pre-window events) is accepted as delivered; for future collection the scope stays 5 years. The series starts in 2019, so usable history is 2019 onward.
 
 ## Calendar (evaluation/macro_event/calendar_primary.json)
 47 primary-sourced events: 39 scheduled CBE MPC decision days, 4 special CBE meetings (2020-03-16, 2022-03-21, 2022-10-27, 2024-03-06) and 4 budget presentations (2021-04-30, 2022-05-09, 2025-04-15, 2026-04-22). Primary = CBE press release or annual report, MoF release. Resolved: Mar 2024 = 6 Mar 2024 (special MPC, CBE release); Apr 2025 = 17 Apr 2025 (CBE release). The 2026-04-22 budget date is the date of the MoF release about the House presentation, not a separately stated session date.
@@ -33,4 +33,42 @@ Session 0 = first EGX30 session on or after the event date (time of day is not m
 
 Reading limits: pre-split cells hold 1 to 2 events, so no pre/post comparison is supported. The three post-split special CBE meetings (2022-03-21, 2022-10-27, 2024-03-06) are devaluation or float events and are not a scheduled-decision effect. EGX30 index only; no per-ticker returns used.
 
-No band replay and no keep rule is run (decision 2, 1795786248.607069). Reproduce: python3 benchmarks/macro_event_study.py --json evaluation/macro_event/macro_event_study_descriptive.json; tests: scripts/test_macro_event_study.py (20 checks).
+No band replay and no keep rule is run (decision 2, 1795786248.607069). Reproduce: python3 benchmarks/macro_event_study.py --json evaluation/macro_event/macro_event_study_descriptive.json; tests: scripts/test_macro_event_study.py.
+
+
+## Release-time sensitivity (round 74, CodeRabbit finding a)
+
+No source on file gives a verified release time for every event. The CBE news URL carries a page-creation time (HH/MM in the path). It lags the real announcement (2026-07-09 URL 17:02 vs 11:20 aggregator; 2026-10-29 13:08 vs 11:00; 2026-09-24 15:38 vs 9:30), so it is NOT a sourced release time. It is stored as `page_time` and used only as a bound for a sensitivity run. EGX close is taken as 14:30 Cairo (assumed). Three rules, session 0 = the event date's session unless shifted to the next session:
+
+- before (default): every event on its date. Rows with no time stay here.
+- page_time: shifted when page_time >= 14:30. 17 of 47 events have one at or after 14:30; 21 have no page_time (stay before).
+- after: all events shifted.
+
+| rule | type | regime | n | mean CAR | LOEO min..max |
+|---|---|---|---|---|---|
+| before (default) | budget | post | 3 | +0.0115 | +0.0016..+0.0173 |
+| before (default) | budget | pre | 1 | +0.0198 | n=1 |
+| before (default) | cbe_scheduled | post | 37 | -0.0067 | -0.0088..-0.0048 |
+| before (default) | cbe_scheduled | pre | 2 | +0.0025 | -0.0017..+0.0068 |
+| before (default) | cbe_special | post | 3 | +0.0939 | +0.0917..+0.0955 |
+| before (default) | cbe_special | pre | 1 | -0.2414 | n=1 |
+| page_time | budget | post | 3 | +0.0110 | +0.0009..+0.0174 |
+| page_time | budget | pre | 1 | +0.0198 | n=1 |
+| page_time | cbe_scheduled | post | 37 | -0.0094 | -0.0115..-0.0061 |
+| page_time | cbe_scheduled | pre | 2 | +0.0025 | -0.0017..+0.0068 |
+| page_time | cbe_special | post | 3 | +0.0918 | +0.0885..+0.0955 |
+| page_time | cbe_special | pre | 1 | -0.2414 | n=1 |
+| after | budget | post | 3 | -0.0037 | -0.0167..+0.0040 |
+| after | budget | pre | 1 | +0.0198 | n=1 |
+| after | cbe_scheduled | post | 37 | -0.0099 | -0.0121..-0.0067 |
+| after | cbe_scheduled | pre | 2 | +0.0094 | +0.0076..+0.0112 |
+| after | cbe_special | post | 3 | +0.0751 | +0.0639..+0.0896 |
+| after | cbe_special | pre | 1 | -0.1835 | n=1 |
+
+The numbers move. The scheduled-CBE post-split mean CAR is -0.0067 (before), -0.0094 (page_time), -0.0099 (after): same sign, larger magnitude when shifted. Budget post changes sign under `after` (+0.0115 to -0.0037). Pre cells have n 1 to 2 and stay uninformative. Which rule is right needs a sourced release time per event; none is chosen here.
+
+Reproduce: python3 benchmarks/macro_event_study.py --release-rule {before,page_time,after} --json <path>. Outputs: macro_event_study_descriptive.json (before), _page_time.json, _after.json.
+
+## Calendar URLs (round 74, finding b)
+
+Every event in calendar_primary.json carries a `url`; 37 distinct URLs, each read through the fetch tool on 2026-11-27. Notes: the CBE English page for 2025-02-20 is rejected by the site firewall for the fetcher, so the Arabic page of the same release is stored (it resolves). Event 2022-10-27 (special MPC) has no press-release URL; the CBE annual report 2022/23 PDF is stored as its source. Events with no resolvable URL: none after this change. Rows excluded for lack of a primary source stay listed in `excluded`.

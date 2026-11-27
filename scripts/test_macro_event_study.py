@@ -111,9 +111,37 @@ def test_min_estimation():
     check("insufficient estimation skipped", r["t|pre"]["n_events"] == 0 and r["t|pre"]["n_skipped"] == 1, r.get("t|pre"))
 
 
+def test_release_rule():
+    # 5% jump on series index 101; event dated index 100 (its own session has no jump)
+    s = mk(jump_at=101, jump=0.05)
+    dates = [d for d, _ in s]
+    check("session_after strict", M.session_after(dates, dates[10]) == 11 and M.session_after(dates, dates[-1]) is None)
+    base = {"type": "t", "date": dates[100]}
+    def aar0(ev, rule):
+        r = M.study(s, [ev], rule=rule)["t|pre"]
+        return r["aar_by_offset"]["0"], r["aar_by_offset"]["-1"], r["aar_by_offset"]["1"]
+    a0, am1, a1 = aar0(base, "before")
+    check("before: jump at +1", abs(a1 - 0.05) < 1e-9 and abs(a0) < 1e-9)
+    a0, am1, a1 = aar0(base, "after")
+    check("after: jump at 0", abs(a0 - 0.05) < 1e-9 and abs(am1) < 1e-9)
+    # page_time boundary at 14:30
+    for hhmm, shifted in (("14:29", False), ("14:30", True), ("14:31", True), ("09:30", False)):
+        ev = dict(base, page_time=hhmm)
+        a0, _, a1 = aar0(ev, "page_time")
+        check("page_time %s shifted=%s" % (hhmm, shifted),
+              (abs(a0 - 0.05) < 1e-9) if shifted else (abs(a1 - 0.05) < 1e-9))
+    # unknown time handled as before, also under page_time
+    a0, _, a1 = aar0(base, "page_time")
+    check("unknown -> before", abs(a1 - 0.05) < 1e-9 and abs(a0) < 1e-9)
+    ev = dict(base, page_time="")
+    check("empty time -> before", abs(aar0(ev, "page_time")[2] - 0.05) < 1e-9)
+    check("default rule is before", M.study(s, [base]) == M.study(s, [base], rule="before"))
+    check("is_after_close page_time none", M.is_after_close({"page_time": None}, "page_time") is False)
+
+
 def run_all():
     for fn in (test_session0_and_windows, test_estimation_excludes_other_events_and_edges,
-               test_regime_split_and_loeo, test_edge_boundaries, test_min_estimation):
+               test_regime_split_and_loeo, test_edge_boundaries, test_min_estimation, test_release_rule):
         fn()
 
 

@@ -13,7 +13,7 @@ tabs go back to 2005, so 5 years is a cut, not a source limit).
 
 | Type | Event date definition | Status of the calendar |
 |---|---|---|
-| CBE MPC decision | decision day (Thursday) | 2026: 8 dates taken from the CBE schedule as reported by press and aggregators (12 Feb, 2 Apr, 21 May, 9 Jul, 20 Aug, 24 Sep, 29 Oct, 17 Dec). Dec 2023 to Dec 2025: aggregator list (wealthbranch.com) with 16 dates; two are ambiguous (Mar 2024 decision shown 5 Mar 20:30 vs 6 Mar; Apr 2025 shown 17 and 18 Apr). 2021 to Nov 2023 not yet collected. PRIMARY page (cbe.org.eg/en/monetary-policy/mpc-meetings-schedule) shows year tabs that the fetcher does not render, so each date must be read from the CBE page or CBE press release before use. Extraordinary meetings count only if CBE announced them. |
+| CBE MPC decision | decision day (Thursday) | 2026: 7 dates through 29 Oct (12 Feb, 2 Apr, 21 May, 9 Jul, 20 Aug, 24 Sep, 29 Oct); 17 Dec 2026 is outside the 27 Nov window and is dropped. Dec 2023 to Dec 2025: aggregator list (wealthbranch.com) with 16 dates; two are ambiguous (Mar 2024 decision shown 5 Mar 20:30 vs 6 Mar; Apr 2025 shown 17 and 18 Apr). 2021 to Nov 2023 not yet collected. PRIMARY page (cbe.org.eg/en/monetary-policy/mpc-meetings-schedule) shows year tabs that the fetcher does not render, so each date must be read from the CBE page or CBE press release before use. Extraordinary meetings count only if CBE announced them. |
 | Budget announcement | date the finance minister presents the draft budget to the House (not parliamentary approval) | MoF release: 2025/26 presented 15 Apr 2025 (mof.gov.eg press release dated 15 Apr 2025); approvals 17 Jun 2025 (Ahram, 19 Jun 2025) and 22 Jun 2026. Presentation dates for 2021/22 to 2024/25 and 2026/27 still to collect from MoF. |
 | Election release | National Elections Authority results announcement, per round | Senate 2025 round 1 held 4 Aug 2025 (IFES), House 2025 round 1 held 10 Nov 2025 (IFES). Results announcement dates and the 2023 presidential and any 2021 to 2024 releases still to collect from elections.eg. |
 
@@ -125,7 +125,7 @@ Collected for the window start (2021-11-27) to Dec 2023:
 Note: the aggregator showed 28 Sep 2023 nowhere; the CBE release gives 21 Sep.
 Still SECONDARY and to confirm from CBE releases before use: 2024 (1 Feb,
 23 May, 18 Jul, 5 Sep, 17 Oct, 21 Nov, 26 Dec), 2025 (20 Feb, 22 May, 10 Jul,
-28 Aug, 2 Oct, 20 Nov, 25 Dec), 2026 (8 dates; 12 Feb is the cut).
+28 Aug, 2 Oct, 20 Nov, 25 Dec), 2026 (7 dates through 29 Oct; 12 Feb is the cut).
 Special meetings (21 Mar 2022, 27 Oct 2022, 6 Mar 2024) are flagged
 "special" and are analysed separately from scheduled decisions.
 

@@ -42,11 +42,35 @@ def session0(dates, d):
     return None
 
 
-def study(series, events, split=SPLIT):
+def session_after(dates, d):
+    """First session strictly after calendar date d (an after-close release counts for it)."""
+    for i, x in enumerate(dates):
+        if x > d:
+            return i
+    return None
+
+
+CLOSE_HHMM = "14:30"   # EGX close, Cairo time (assumed; the rule below uses it as the boundary)
+
+
+def is_after_close(e, rule):
+    """before: never shifted (default; unknown-time rows stay on the event date).
+    page_time: shifted when the row carries a page_time >= CLOSE_HHMM (unknown stays before).
+    after: every event shifted."""
+    if rule == "after":
+        return True
+    if rule == "page_time":
+        t = e.get("page_time")
+        return bool(t) and t >= CLOSE_HHMM
+    return False
+
+
+def study(series, events, split=SPLIT, rule="before"):
     rets = log_returns(series)          # index i of rets = return on session dates_r[i]
     dates = [d for d, _ in rets]
     r = [x for _, x in rets]
-    idx = [session0(dates, e["date"]) for e in events]
+    idx = [session_after(dates, e["date"]) if is_after_close(e, rule) else session0(dates, e["date"])
+           for e in events]
     blocked = set()
     for i in idx:
         if i is not None:
@@ -89,11 +113,13 @@ def main(argv=None):
     ap.add_argument("--series", default="evaluation/index_regime/EGX30_mubasher_close.csv")
     ap.add_argument("--calendar", default="evaluation/macro_event/calendar_primary.json")
     ap.add_argument("--json")
+    ap.add_argument("--release-rule", choices=["before", "page_time", "after"], default="before")
     a = ap.parse_args(argv)
     cal = json.load(open(a.calendar))
     res = {"basis": cal["basis"], "regime_split": SPLIT, "windows": "sessions -2..+2",
            "estimation": "sessions -60..-11", "n_calendar_events": len(cal["events"]),
-           "results": study(load_series(a.series), cal["events"], SPLIT)}
+           "release_rule": a.release_rule,
+           "results": study(load_series(a.series), cal["events"], SPLIT, a.release_rule)}
     txt = json.dumps(res, indent=1)
     if a.json:
         open(a.json, "w").write(txt + "\n")
