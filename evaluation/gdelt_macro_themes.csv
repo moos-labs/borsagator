@@ -1,0 +1,68 @@
+kind,family,value,gkg_lookup_usage_count,notes
+theme,monetary_fx,ECON_CENTRALBANK,10700000,
+theme,monetary_fx,ECON_INFLATION,10400000,
+theme,monetary_fx,ECON_INTEREST_RATES,10500000,
+theme,monetary_fx,ECON_CURRENCY_EXCHANGE_RATE,9600000,
+theme,monetary_fx,ECON_CURRENCY_RESERVES,652000,
+theme,monetary_fx,EPU_POLICY_MONETARY_POLICY,2000000,
+theme,monetary_fx,EPU_POLICY_CENTRAL_BANK,8000000,
+theme,monetary_fx,EPU_CATS_SOVEREIGN_DEBT_CURRENCY_CRISES,4300000,
+theme,monetary_fx,ECON_DEVELOPMENTORGS_INTERNATIONAL_MONETARY_FUND,2100000,
+theme,monetary_fx,ECON_SUBSIDIES,5800000,
+theme,monetary_fx,ECON_BUDGET_DEFICIT,4500000,
+theme,monetary_fx,ECON_TAXATION,44000000,
+theme,energy,ENV_OIL,35000000,
+theme,energy,ECON_OILPRICE,9700000,
+theme,energy,ENV_NATURALGAS,5500000,
+theme,energy,ECON_NATGASPRICE,453000,
+theme,energy,ECON_GASOLINEPRICE,1400000,
+theme,wheat_food,TAX_FOODSTAPLES_WHEAT,3100000,
+theme,wheat_food,TAX_FOODSTAPLES_GRAIN,3500000,
+theme,wheat_food,FOOD_SECURITY,,
+theme,wheat_food,AGRICULTURE,,
+theme,shipping_red_sea,MARITIME,55000000,
+theme,shipping_red_sea,MARITIME_INCIDENT,29000000,
+theme,shipping_red_sea,MARITIME_PIRACY,2500000,
+theme,shipping_red_sea,PIRACY,2400000,
+theme,shipping_red_sea,MANMADE_DISASTER_MARITIME_DISASTER,18000,no Suez-specific theme exists; Suez/Red Sea come from the geo rows plus this family
+theme,tourism,TOURISM,34700000,
+theme,tourism,WB_825_TOURISM,18900000,
+theme,conflict_security,ARMEDCONFLICT,,
+theme,conflict_security,MILITARY,,
+theme,conflict_security,TERROR,,
+theme,conflict_security,BLOCKADE,,
+theme,conflict_security,POLITICAL_TURMOIL,7800000,
+theme,conflict_security,PROTEST,58000000,
+theme,conflict_security,STRIKE,9400000,
+theme,conflict_security,ELECTION,85000000,
+theme,health,HEALTH_PANDEMIC,28000000,
+theme,health,WB_2167_PANDEMICS,46600000,
+theme,health,TAX_DISEASE_EPIDEMIC,10700000,GENERAL_HEALTH (262M) too broad alone - excluded per design
+theme,disasters,NATURAL_DISASTER,72000000,
+theme,disasters,NATURAL_DISASTER_EARTHQUAKE,7100000,
+theme,disasters,NATURAL_DISASTER_FLOOD,6500000,
+geo,egypt,country:EG,,FIPS country code in V2EnhancedLocations field 3
+geo,mena,country:AG,,Algeria (FIPS)
+geo,mena,country:BA,,Bahrain (FIPS)
+geo,mena,country:DJ,,Djibouti (FIPS)
+geo,mena,country:IR,,Iran (FIPS)
+geo,mena,country:IZ,,Iraq (FIPS)
+geo,mena,country:IS,,Israel (FIPS)
+geo,mena,country:JO,,Jordan (FIPS)
+geo,mena,country:KU,,Kuwait (FIPS)
+geo,mena,country:LE,,Lebanon (FIPS)
+geo,mena,country:LY,,Libya (FIPS)
+geo,mena,country:MO,,Morocco (FIPS)
+geo,mena,country:MU,,Oman (FIPS)
+geo,mena,country:QA,,Qatar (FIPS)
+geo,mena,country:SA,,Saudi Arabia (FIPS)
+geo,mena,country:SU,,Sudan (FIPS)
+geo,mena,country:SY,,Syria (FIPS)
+geo,mena,country:TS,,Tunisia (FIPS)
+geo,mena,country:AE,,United Arab Emirates (FIPS)
+geo,mena,country:WE,,West Bank (FIPS)
+geo,mena,country:GZ,,Gaza Strip (FIPS)
+geo,mena,country:YM,,Yemen (FIPS)
+geo,suez,name:suez,,location full-name substring; catches Suez Canal/Gulf of Suez entries
+feature,context,EPU_POLICY,,count feature only, never a row filter (per design ruling)
+feature,context,WB_696_PUBLIC_SECTOR_MANAGEMENT,,count feature only, never a row filter (per design ruling)

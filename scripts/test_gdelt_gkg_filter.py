@@ -40,14 +40,14 @@ ALIASES_CSV = os.path.join(ROOT, "evaluation", "gdelt_alias_table.csv")
 def gkg_line(rec="20240515000000-T1075", date="20240515000000",
              source="dostor.org", url="https://www.dostor.org/1",
              orgs="Telecom Egypt,123", themes="ECON_STOCKMARKET",
-             tone="1.27,2.22,0.95,3.17,1.5,0.5,400", ncols=27):
+             locs="", tone="1.27,2.22,0.95,3.17,1.5,0.5,400", ncols=27):
     """27-column layout, both streams: id 0, date 1, source-collection-id 2,
-    source 3, url 4, themes 7, orgs 14, tone 15."""
+    source 3, url 4, themes 7, locations 10, orgs 14, tone 15."""
     cols = [""] * ncols
     if ncols == 27:
         cols[0], cols[1], cols[2] = rec, date, "1"
         cols[3], cols[4] = source, url
-        cols[7], cols[14], cols[15] = themes, orgs, tone
+        cols[7], cols[10], cols[14], cols[15] = themes, locs, orgs, tone
     return "\t".join(cols)
 
 
@@ -164,7 +164,7 @@ def test_process_blob():
                  source="reuters.com", url="https://www.reuters.com/x"),
         "too\tfew\ttelecom egypt",  # hits the prefilter, then malformed
     ])
-    rows, bad = G.process_blob("20240515000000.gkg.csv.zip", "english",
+    rows, mrows, bad = G.process_blob("20240515000000.gkg.csv.zip", "english",
                                lines.encode(), items, blocks, reqs, pre)
     by_id = {r["gkg_record_id"]: r for r in rows}
     check("R1 alias+both", by_id["R1"]["reason"] == "both"
@@ -186,7 +186,86 @@ def test_process_blob():
     check("blob without needles yields nothing",
           G.process_blob("f", "english", gkg_line(
               rec="Z", orgs="Nope,1", source="x.io",
-              url="https://x.io/").encode(), items, blocks, reqs, pre) == ([], 0))
+              url="https://x.io/").encode(), items, blocks, reqs, pre) == ([], [], 0))
+
+
+THEMES_CSV = os.path.join(ROOT, "evaluation", "gdelt_macro_themes.csv")
+
+
+def test_macro_filter():
+    t2f, countries, names, feats, sha = G.load_themes(THEMES_CSV)
+    check("macro lookup: verified token present",
+          t2f.get("ECON_INFLATION") == "monetary_fx")
+    check("macro lookup: fabricated name absent", "ECON_INTERESTRATES" not in t2f)
+    check("macro lookup: EPU_POLICY is feature-only",
+          "EPU_POLICY" in feats and "EPU_POLICY" not in t2f)
+    check("macro lookup: WB_696 is feature-only",
+          "WB_696_PUBLIC_SECTOR_MANAGEMENT" in feats
+          and "WB_696_PUBLIC_SECTOR_MANAGEMENT" not in t2f)
+    check("macro lookup: too-broad bucket excluded", "GENERAL_HEALTH" not in t2f)
+    check("macro lookup: geo parsed",
+          "EG" in countries and "MU" in countries and "suez" in names)
+    check("macro lookup: sha", len(sha) == 64)
+    items, blocks, reqs, _ = loaded()
+    needles = ([G.norm(t) for t in t2f] + [G.norm(n) for n in names])
+    pre = G.load_aliases(ALIASES_CSV, extra_needles=needles)[3]
+    macro = (t2f, countries, names, feats)
+
+    def blob(lines):
+        return G.process_blob("f", "english", "\n".join(lines).encode(),
+                              items, blocks, reqs, pre, macro=macro,
+                              do_company=True, do_macro=True)
+
+    loc_eg = "2#Cairo#EG#EG#31.25#30.05#EG"
+    loc_us = "2#Washington#US#US#38.9#-77.03#US"
+    loc_mu = "2#Muscat#MU#MU#23.6#58.5#MU"
+    loc_suez_nocc = "2#Suez Canal#XX#XX#30.5#32.3#XX"
+    rows, mrows, bad = blob([
+        gkg_line(rec="M1", orgs="Nope,1", source="example.com",
+                 url="https://example.com/1", themes="ECON_INFLATION;EPU_POLICY",
+                 locs=loc_eg),
+        gkg_line(rec="M2", orgs="Nope,1", source="example.com",
+                 url="https://example.com/2", themes="ECON_INFLATION", locs=loc_us),
+        gkg_line(rec="M3", orgs="Nope,1", source="example.com",
+                 url="https://example.com/3", themes="ECON_INFLATION", locs=""),
+        gkg_line(rec="M4", orgs="Nope,1", source="example.com",
+                 url="https://example.com/4", themes="UNRELATED_TOKEN", locs=loc_eg),
+        gkg_line(rec="M5", orgs="Nope,1", source="example.com",
+                 url="https://example.com/5", themes="MARITIME", locs=loc_suez_nocc),
+        gkg_line(rec="M6", orgs="Nope,1", source="example.com",
+                 url="https://example.com/6", themes="ECON_OILPRICE", locs=loc_mu),
+        gkg_line(rec="M7", orgs="Nope,1", source="example.com",
+                 url="https://example.com/7", themes="EPU_POLICY", locs=loc_eg),
+    ])
+    by_id = {r["gkg_record_id"]: r for r in mrows}
+    check("macro theme+EG captured", "M1" in by_id
+          and by_id["M1"]["themes"] == ["ECON_INFLATION"]
+          and by_id["M1"]["families"] == ["monetary_fx"]
+          and by_id["M1"]["features"] == ["EPU_POLICY"], str(by_id.get("M1")))
+    check("macro theme+US dropped", "M2" not in by_id)
+    check("macro theme, no geo dropped", "M3" not in by_id)
+    check("macro EG-only (no theme) dropped", "M4" not in by_id)
+    check("macro suez name-rule captured", "M5" in by_id, str(by_id.get("M5")))
+    check("macro FIPS MU captured", "M6" in by_id, str(by_id.get("M6")))
+    check("macro feature token never a row filter", "M7" not in by_id)
+    check("macro captured rows keep company channel independent",
+          all(r["gkg_record_id"] not in {x["gkg_record_id"] for x in rows}
+              for r in mrows))
+    rows_off, mrows_off, _ = G.process_blob(
+        "f", "english", gkg_line(rec="M8", orgs="Nope,1", source="example.com",
+                                 url="https://example.com/8",
+                                 themes="ECON_INFLATION", locs=loc_eg).encode(),
+        items, blocks, reqs, pre)
+    check("macro off -> no macro rows", mrows_off == [] and rows_off == [])
+    # done-but-not-macro_done: company channel skipped, macro still captured
+    rows_c, mrows_c, _ = G.process_blob(
+        "f", "english", gkg_line(rec="M9", orgs="Telecom Egypt,9",
+                                 themes="ECON_INFLATION", locs=loc_eg).encode(),
+        items, blocks, reqs, pre, macro=macro,
+        do_company=False, do_macro=True)
+    check("done-but-not-macro_done selection",
+          rows_c == [] and len(mrows_c) == 1
+          and mrows_c[0]["gkg_record_id"] == "M9", str((rows_c, mrows_c)))
 
 
 def test_list_files_and_range():
@@ -300,7 +379,7 @@ def test_restart_and_finalize():
         with zipfile.ZipFile(zpath, "w") as z:
             z.writestr("20240515000000.gkg.csv", blob.decode())
         with zipfile.ZipFile(zpath) as z:
-            rows, _ = G.process_blob("f", "english", z.read(z.namelist()[0]),
+            rows, _, _ = G.process_blob("f", "english", z.read(z.namelist()[0]),
                                      items, blocks, reqs, pre)
         # duplicate lines (reprocess after crash) dedupe in finalize;
         # a truncated line (interrupted append) is skipped, not fatal
@@ -418,9 +497,9 @@ def test_crash_recovery_tail():
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
-               test_process_blob, test_list_files_and_range, test_fetch_guards,
-               test_config_binding, test_config_atomic_and_restart,
-               test_restart_and_finalize):
+               test_process_blob, test_macro_filter, test_list_files_and_range,
+               test_fetch_guards, test_config_binding,
+               test_config_atomic_and_restart, test_restart_and_finalize):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
