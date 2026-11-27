@@ -1,0 +1,25 @@
+bodies: 12/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/MASR.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5696.32it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 15601.44it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 14117.41it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5330.09it/s]
+WARN cohere brief attempt 1 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+WARN cohere brief attempt 2 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+{"tool": "news-disclosure", "ticker": "MASR.CA", "news_count": 40, "disclosure_count": 0, "arabic_headlines": 35, "latest_news_date": "Fri, 27 Nov 2026 06:22:50 GMT", "latest_disclosure_date": "", "top_headline": "أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026.. تحديث عيار 21 - CNN الاقتصادية", "llm_provider": "extractive", "finbert_positive": 0.31, "finbert_negative": 0.061, "finbert_neutral": 0.629, "finbert_scored": 5, "multilingual_positive": 0.24, "multilingual_negative": 0.435, "multilingual_neutral": 0.325, "multilingual_scored": 35, "bodies_fetched": 12, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "nllb+cohere", "translated_positive": 0.234, "translated_negative": 0.364, "translated_neutral": 0.402, "translated_scored": 35}
+BRIEF:
+Extractive brief (no LLM used — top items by recency):
+- [Fri, 27 Nov 2026 06:22:50 GMT] (CNN الاقتصادية) أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026.. تحديث عيار 21 - CNN الاقتصادية
+- [Fri, 27 Nov 2026 05:00:00 GMT] (اليوم السابع) الجنيه الذهب يرتفع 640 جنيهًا في مصر.. السعر يسجل 45040 مع قفزة الأوقية - اليوم السابع
+- [Fri, 27 Nov 2026 03:00:00 GMT] (اليوم السابع) ارتفاع أم استقرار.. أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026 - اليوم السابع
+- [Fri, 27 Nov 2026 00:48:01 GMT] (DW.com) كارثة الوراق تهز مصر.. ماذا تكشف ردود الفعل على حريق صهريج الوقود؟ - DW.com
+- [Fri, 27 Nov 2026 00:00:00 GMT] (اليوم السابع) الجنيه الذهب اليوم الجمعة في مصر عند 45040 جنيهًا - اليوم السابع
+- [Thu, 26 Nov 2026 23:33:55 GMT] (الشرق الأوسط) جريمة قتل بدافع «الشرف» تُثير جدلاً في مصر - الشرق الأوسط
+- [Thu, 26 Nov 2026 21:33:20 GMT] (DW.com) مأساة هزّت مصر! 31 قتيلاً... من المسؤول؟ - DW.com
+- [Thu, 26 Nov 2026 16:39:40 GMT] (Masrawy) سعر الذهب اليوم في مصر يرتفع بحلول التعاملات المسائية - Masrawy

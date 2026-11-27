@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 6.35,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-27T08:50:48.972261+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.48,
+   "range_low_pct": -4.48,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 20.53,
+   "range_low_pct": -20.53,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 10.02,
+   "range_low_pct": -10.02,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "a09ed4fc498d9292c6fd7cfa8b74aab7956a14cce2dc44f0e1d74548ab4861d0",
+  "ensemble.json": "59d2ae8a6143e88a18e7895c6c2903739abe8526165d69336e28ccc021bf27b9"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.035,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+ "ticker": "MASR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

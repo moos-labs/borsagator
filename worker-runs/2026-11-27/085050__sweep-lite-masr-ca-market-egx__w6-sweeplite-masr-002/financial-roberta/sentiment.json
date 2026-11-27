@@ -1,0 +1,487 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 31,
+  "label_counts": {
+    "positive": 5,
+    "negative": 13,
+    "neutral": 13
+  },
+  "mean_probabilities": {
+    "positive": 0.15753447510594984,
+    "negative": 0.4025853598361737,
+    "neutral": 0.43988015813069536
+  },
+  "items": [
+    {
+      "text": "Orange Egypt Doubles Customer Donations to Ahl Masr Burn Hospital Through Orange Cash - Sponsored - Advertising - Ahram Online",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9981448650360107,
+        "negative": 0.0006915908306837082,
+        "neutral": 0.0011635817354544997
+      },
+      "raw_probabilities": {
+        "positive": 0.9981448650360107,
+        "neutral": 0.0011635817354544997,
+        "negative": 0.0006915908306837082
+      }
+    },
+    {
+      "text": "Roundhill Space & Technology ETF (MARS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005204865010455251,
+        "negative": 0.00018069060752168298,
+        "neutral": 0.9992988109588623
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992988109588623,
+        "positive": 0.0005204865010455251,
+        "negative": 0.00018069060752168298
+      }
+    },
+    {
+      "text": "Rights Group Calls on Egypt to Reverse Mada Masr Shutdown - allAfrica.com",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.8904563188552856,
+        "negative": 0.00048342678928747773,
+        "neutral": 0.10906026512384415
+      },
+      "raw_probabilities": {
+        "positive": 0.8904563188552856,
+        "neutral": 0.10906026512384415,
+        "negative": 0.00048342678928747773
+      }
+    },
+    {
+      "text": "Egypt Court Hears Mada Masr Appeal as Editor Faces Retrial - https://streamlinefeed.co.ke/",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0008810803410597146,
+        "negative": 0.0594092532992363,
+        "neutral": 0.9397096633911133
+      },
+      "raw_probabilities": {
+        "neutral": 0.9397096633911133,
+        "negative": 0.0594092532992363,
+        "positive": 0.0008810803410597146
+      }
+    },
+    {
+      "text": "Egypt: Authorities must reverse decision to close Mada Masr and drop all charges against its editor in chief Lina Attalah - Amnesty International",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.002396570984274149,
+        "negative": 0.0004596661019604653,
+        "neutral": 0.9971438050270081
+      },
+      "raw_probabilities": {
+        "neutral": 0.9971438050270081,
+        "positive": 0.002396570984274149,
+        "negative": 0.0004596661019604653
+      }
+    },
+    {
+      "text": "Bruno Mars shares heartbreaking post announcing father’s dead - Nine.com.au",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00020945898722857237,
+        "negative": 0.9912427663803101,
+        "neutral": 0.008547724224627018
+      },
+      "raw_probabilities": {
+        "negative": 0.9912427663803101,
+        "neutral": 0.008547724224627018,
+        "positive": 0.00020945898722857237
+      }
+    },
+    {
+      "text": "Bruno Mars' father, Peter Hernandez, passes away; singer shares emotional tribute - ANI News",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0004467260732781142,
+        "negative": 0.0032734195701777935,
+        "neutral": 0.9962798953056335
+      },
+      "raw_probabilities": {
+        "neutral": 0.9962798953056335,
+        "negative": 0.0032734195701777935,
+        "positive": 0.0004467260732781142
+      }
+    },
+    {
+      "text": "Bruno Mars shares news of father Peter Hernandez's death - The News International",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00035542267141863704,
+        "negative": 0.9133434891700745,
+        "neutral": 0.08630110323429108
+      },
+      "raw_probabilities": {
+        "negative": 0.9133434891700745,
+        "neutral": 0.08630110323429108,
+        "positive": 0.00035542267141863704
+      }
+    },
+    {
+      "text": "Egyptian court suspends retrial of Mada Masr editor Lina Attalah - The National",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.008501601405441761,
+        "negative": 0.6292935013771057,
+        "neutral": 0.362204909324646
+      },
+      "raw_probabilities": {
+        "negative": 0.6292935013771057,
+        "neutral": 0.362204909324646,
+        "positive": 0.008501601405441761
+      }
+    },
+    {
+      "text": "\"The world cannot afford to lose the vital reporting that Mada Masr provides.\" - Progressive International",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.03868042677640915,
+        "negative": 0.0003278061340097338,
+        "neutral": 0.9609917998313904
+      },
+      "raw_probabilities": {
+        "neutral": 0.9609917998313904,
+        "positive": 0.03868042677640915,
+        "negative": 0.0003278061340097338
+      }
+    },
+    {
+      "text": "Mada Masr’s Lina Attalah due to appear before court in Egypt - Al Jazeera",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00040916132275015116,
+        "negative": 0.005379478447139263,
+        "neutral": 0.9942113757133484
+      },
+      "raw_probabilities": {
+        "neutral": 0.9942113757133484,
+        "negative": 0.005379478447139263,
+        "positive": 0.00040916132275015116
+      }
+    },
+    {
+      "text": "Egypt court suspends trial of Mada Masr editor Lina Attalah - Africanews",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.10245443880558014,
+        "negative": 0.0229943934828043,
+        "neutral": 0.8745511174201965
+      },
+      "raw_probabilities": {
+        "neutral": 0.8745511174201965,
+        "positive": 0.10245443880558014,
+        "negative": 0.0229943934828043
+      }
+    },
+    {
+      "text": "The Sham Case Against Mada Masr - Columbia Journalism Review",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.002651846269145608,
+        "negative": 0.8622875809669495,
+        "neutral": 0.13506051898002625
+      },
+      "raw_probabilities": {
+        "negative": 0.8622875809669495,
+        "neutral": 0.13506051898002625,
+        "positive": 0.002651846269145608
+      }
+    },
+    {
+      "text": "‘I’m not ready to go to jail’: co-founder of Egypt’s last independent media outlet faces prison - The Guardian",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00021743759862147272,
+        "negative": 0.9980249404907227,
+        "neutral": 0.0017575667006894946
+      },
+      "raw_probabilities": {
+        "negative": 0.9980249404907227,
+        "neutral": 0.0017575667006894946,
+        "positive": 0.00021743759862147272
+      }
+    },
+    {
+      "text": "Madinet Masr stock: 9M sales rise 25% to EGP 45.4 billion - ad-hoc-news.de",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.998206615447998,
+        "negative": 0.0008695521391928196,
+        "neutral": 0.0009237960912287235
+      },
+      "raw_probabilities": {
+        "positive": 0.998206615447998,
+        "neutral": 0.0009237960912287235,
+        "negative": 0.0008695521391928196
+      }
+    },
+    {
+      "text": "Egypt’s Mada Masr Chief Lina Attalah’s Trial Postponed - Egyptian Streets",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0002887738519348204,
+        "negative": 0.9982746839523315,
+        "neutral": 0.0014365374809131026
+      },
+      "raw_probabilities": {
+        "negative": 0.9982746839523315,
+        "neutral": 0.0014365374809131026,
+        "positive": 0.0002887738519348204
+      }
+    },
+    {
+      "text": "Egypt’s independent press fights to survive as Mada Masr editor returns to court - The Straits Times",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.003735075006261468,
+        "negative": 0.0004215385124552995,
+        "neutral": 0.9958433508872986
+      },
+      "raw_probabilities": {
+        "neutral": 0.9958433508872986,
+        "positive": 0.003735075006261468,
+        "negative": 0.0004215385124552995
+      }
+    },
+    {
+      "text": "Cairo’s shut down of Mada Masr ‘an unprecedented attack’ on free press, says editor-in-chief - CNN",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0004418023454491049,
+        "negative": 0.9988653659820557,
+        "neutral": 0.0006928984075784683
+      },
+      "raw_probabilities": {
+        "negative": 0.9988653659820557,
+        "neutral": 0.0006928984075784683,
+        "positive": 0.0004418023454491049
+      }
+    },
+    {
+      "text": "‘We are not the problem,’ editor of news outlet that Egyptian court ordered to close tells AP - AP News",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0058576143346726894,
+        "negative": 0.0009736325591802597,
+        "neutral": 0.9931687116622925
+      },
+      "raw_probabilities": {
+        "neutral": 0.9931687116622925,
+        "positive": 0.0058576143346726894,
+        "negative": 0.0009736325591802597
+      }
+    },
+    {
+      "text": "Why Mada Masr and Lina Attalah’s fight matters for press freedom - The New Arab",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007964902906678617,
+        "negative": 0.0004183681448921561,
+        "neutral": 0.9987850785255432
+      },
+      "raw_probabilities": {
+        "neutral": 0.9987850785255432,
+        "positive": 0.0007964902906678617,
+        "negative": 0.0004183681448921561
+      }
+    },
+    {
+      "text": "Fighting to Expand the Margins of Journalism in Egypt - Drop Site News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976562261581421,
+        "negative": 0.0004700968274846673,
+        "neutral": 0.0018736557103693485
+      },
+      "raw_probabilities": {
+        "positive": 0.9976562261581421,
+        "neutral": 0.0018736557103693485,
+        "negative": 0.0004700968274846673
+      }
+    },
+    {
+      "text": "Zamalek SC vs Masr Lel Taamen Lineups | Egypt Cup · 6 Nov 2026 - YSscores",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006258377688936889,
+        "negative": 0.0003867936902679503,
+        "neutral": 0.9989873766899109
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989873766899109,
+        "positive": 0.0006258377688936889,
+        "negative": 0.0003867936902679503
+      }
+    },
+    {
+      "text": "Egypt: Mada Masr faces closure, editor risks prison - Amnesty International Canada",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00032822275534272194,
+        "negative": 0.9979946613311768,
+        "neutral": 0.0016771438531577587
+      },
+      "raw_probabilities": {
+        "negative": 0.9979946613311768,
+        "neutral": 0.0016771438531577587,
+        "positive": 0.00032822275534272194
+      }
+    },
+    {
+      "text": "Egypt’s crackdown on independent media reaches Mada Masr as editor faces trial - Global Voices",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00046378051047213376,
+        "negative": 0.9984739422798157,
+        "neutral": 0.0010622837580740452
+      },
+      "raw_probabilities": {
+        "negative": 0.9984739422798157,
+        "neutral": 0.0010622837580740452,
+        "positive": 0.00046378051047213376
+      }
+    },
+    {
+      "text": "Egypt’s Supreme Judicial Council rejects claims of trial irregularities in Mada Masr case - Courts & Law - Egypt - Ahram Online",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.8224852085113525,
+        "negative": 0.0007666663732379675,
+        "neutral": 0.1767480969429016
+      },
+      "raw_probabilities": {
+        "positive": 0.8224852085113525,
+        "neutral": 0.1767480969429016,
+        "negative": 0.0007666663732379675
+      }
+    },
+    {
+      "text": "Egyptian authorities have ordered independent news outlet Mada Masr to shut down and fined its Editor-in-Chief Lina Attalah after a court convicted her of managing an unlicensed website. The outlet insisted it first applied for a media license in 2018, but for y - Facebook",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003503708285279572,
+        "negative": 0.9984379410743713,
+        "neutral": 0.0012116803554818034
+      },
+      "raw_probabilities": {
+        "negative": 0.9984379410743713,
+        "neutral": 0.0012116803554818034,
+        "positive": 0.0003503708285279572
+      }
+    },
+    {
+      "text": "Equitas SFB shares tank 17% as CEO exit mars Q2 show, down 27% in 2 days - Business Standard",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00031134343589656055,
+        "negative": 0.9990092515945435,
+        "neutral": 0.0006794522050768137
+      },
+      "raw_probabilities": {
+        "negative": 0.9990092515945435,
+        "neutral": 0.0006794522050768137,
+        "positive": 0.00031134343589656055
+      }
+    },
+    {
+      "text": "Egyptian court orders closure of news site Mada Masr and fines editor Lina Attalah, sparking international outcry - International Consortium of Investigative Journalists - ICIJ",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00034558618790470064,
+        "negative": 0.998925507068634,
+        "neutral": 0.0007288711494766176
+      },
+      "raw_probabilities": {
+        "negative": 0.998925507068634,
+        "neutral": 0.0007288711494766176,
+        "positive": 0.00034558618790470064
+      }
+    },
+    {
+      "text": "Zamalek - Misr Insurance 3-2 - Flashscore.co.za",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007467585382983088,
+        "negative": 0.00037193053867667913,
+        "neutral": 0.9988813996315002
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988813996315002,
+        "positive": 0.0007467585382983088,
+        "negative": 0.00037193053867667913
+      }
+    },
+    {
+      "text": "How to host your neighbours this October and have a Halloween to remember - Daily Hive",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0036550818476825953,
+        "negative": 0.00017001056403387338,
+        "neutral": 0.9961748123168945
+      },
+      "raw_probabilities": {
+        "neutral": 0.9961748123168945,
+        "positive": 0.0036550818476825953,
+        "negative": 0.00017001056403387338
+      }
+    },
+    {
+      "text": "Egypt: Court orders to shut down investigative media outlet Mada Masr - International Federation of Journalists - IFJ",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0009480988373979926,
+        "negative": 0.9979242086410522,
+        "neutral": 0.001127619412727654
+      },
+      "raw_probabilities": {
+        "negative": 0.9979242086410522,
+        "neutral": 0.001127619412727654,
+        "positive": 0.0009480988373979926
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 6.35,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-27T08:50:43.901172+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": -0.54,
+   "families": {
+    "technicals": -0.3
+   },
+   "horizon_short": false,
+   "net_score": -0.3,
+   "range_high_pct": 6.18,
+   "range_low_pct": -7.26,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -2.46,
+   "families": {
+    "technicals": -0.3
+   },
+   "horizon_short": false,
+   "net_score": -0.3,
+   "range_high_pct": 28.33,
+   "range_low_pct": -33.26,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "down",
+   "expected_move_pct": -1.2,
+   "families": {
+    "technicals": -0.3
+   },
+   "horizon_short": false,
+   "net_score": -0.3,
+   "range_high_pct": 13.82,
+   "range_low_pct": -16.23,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "a09ed4fc498d9292c6fd7cfa8b74aab7956a14cce2dc44f0e1d74548ab4861d0",
+  "ensemble.json": "59d2ae8a6143e88a18e7895c6c2903739abe8526165d69336e28ccc021bf27b9"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.035,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002",
+ "ticker": "MASR.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "MASR.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "MASR.CA",
+    "fetched_at": "2026-11-27T08:50:42Z",
+    "tool": "news-disclosure",
+    "news_count": 40,
+    "disclosure_count": 0,
+    "arabic_headlines": 35,
+    "latest_news_date": "Fri, 27 Nov 2026 06:22:50 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026.. تحديث عيار 21 - CNN الاقتصادية",
+    "llm_provider": "extractive",
+    "finbert_positive": 0.31,
+    "finbert_negative": 0.061,
+    "finbert_neutral": 0.629,
+    "finbert_scored": 5,
+    "multilingual_positive": 0.24,
+    "multilingual_negative": 0.435,
+    "multilingual_neutral": 0.325,
+    "multilingual_scored": 35,
+    "bodies_fetched": 12,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "nllb+cohere",
+    "translated_positive": 0.234,
+    "translated_negative": 0.364,
+    "translated_neutral": 0.402,
+    "translated_scored": 35
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

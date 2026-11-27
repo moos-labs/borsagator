@@ -1,0 +1,150 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "MASR.CA",
+ "base_price": 6.35,
+ "base_source": "egx-data/egxpy_masr.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_masr.csv": 6.23,
+   "openbb/masr_ca.csv": 6.230000019073486,
+   "pandas-ta/indicators.csv": 6.230000019073486,
+   "talib/indicators.csv": 6.230000019073486,
+   "yahooquery/masr.ca.csv": 6.230000019073486
+  },
+  "outliers": {},
+  "spread_pct": 0.0,
+  "common_date": "2026-11-25",
+  "base_used": 6.35,
+  "base_source_used": "egx-data/egxpy_masr.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.035,
+ "sigma60_daily": 0.035,
+ "sigma_source": "egx-data/egxpy_masr.csv (σ60=0.0350, σ10=0.0245)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.665,
+ "date": "2026-11-27",
+ "risk": {
+  "level": "shock",
+  "conf_cap": 0.3,
+  "price_mult": 0.5,
+  "flags": [
+   "earnings event: أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026.. تحديث عيار 21 - CNN الاقتصادية",
+   "legal event: جريمة قتل بدافع «الشرف» تُثير جدلاً في مصر - الشرق الأوسط",
+   "earnings event: مصر.. النيابة تعلن ضبط المتهم بالتسبب في حادث \"حريق دائري الوراق\" - الشرق للأخبار"
+  ],
+  "events": [
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "أسعار الذهب في مصر اليوم الجمعة 27 نوفمبر 2026.. تحديث عيار 21 - CNN الاقتصادية"
+   },
+   {
+    "type": "legal",
+    "severity": "high",
+    "title": "جريمة قتل بدافع «الشرف» تُثير جدلاً في مصر - الشرق الأوسط"
+   },
+   {
+    "type": "earnings",
+    "severity": "high",
+    "title": "مصر.. النيابة تعلن ضبط المتهم بالتسبب في حادث \"حريق دائري الوراق\" - الشرق للأخبار"
+   }
+  ],
+  "move_z": {
+   "last": 0.54,
+   "max3": 0.59
+  }
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.3,
+  "sentiment": -0.158,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.137
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -6.04,
+   "range_high_pct": 6.04,
+   "confidence": 0.3,
+   "net_score": -0.158,
+   "tilt_centre_pct": -0.11,
+   "families": {
+    "sentiment": -0.158
+   },
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": -2.2252,
+   "vol_h_pct": 3.5009,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -15.03,
+   "range_high_pct": 15.03,
+   "confidence": 0.3,
+   "net_score": -0.239,
+   "tilt_centre_pct": -0.84,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.158
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": -1.2283,
+   "vol_h_pct": 7.8283,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -28.88,
+   "range_high_pct": 28.88,
+   "confidence": 0.3,
+   "net_score": 0.064,
+   "tilt_centre_pct": 0.66,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": -0.158,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": 4.411,
+   "vol_h_pct": 16.0433,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}
