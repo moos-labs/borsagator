@@ -1,0 +1,106 @@
+{
+ "archive_tip": "2c96d037701638056fb935b7604f007054327119",
+ "design": "docs/round88_regime_tilt_scorer_prereg.md",
+ "fit_command": "benchmarks/score_regime_tilt.py fit --captures <archive checkout at archive_tip>",
+ "frozen": {
+  "decisions_rejected": 0,
+  "degenerate": false,
+  "horizons": {
+   "day": {
+    "tightening": {
+     "n": 6,
+     "w": 0.9,
+     "fitted": true
+    },
+    "easing": {
+     "n": 10,
+     "w": 0.9,
+     "fitted": true
+    },
+    "hold": {
+     "n": 30,
+     "w": 0.9,
+     "fitted": true
+    }
+   },
+   "week": {
+    "tightening": {
+     "n": 6,
+     "w": 0.9,
+     "fitted": true
+    },
+    "easing": {
+     "n": 10,
+     "w": 0.9,
+     "fitted": true
+    },
+    "hold": {
+     "n": 30,
+     "w": 1.1,
+     "fitted": true
+    }
+   },
+   "month": {
+    "tightening": {
+     "n": 6,
+     "w": 0.9,
+     "fitted": true
+    },
+    "easing": {
+     "n": 10,
+     "w": 0.9,
+     "fitted": true
+    },
+    "hold": {
+     "n": 30,
+     "w": 0.9,
+     "fitted": true
+    }
+   }
+  }
+ },
+ "training_regime_counts": {
+  "day": {
+   "hold": {
+    "rows": 30,
+    "cutoffs": 5
+   },
+   "tightening": {
+    "rows": 6,
+    "cutoffs": 1
+   },
+   "easing": {
+    "rows": 10,
+    "cutoffs": 2
+   }
+  },
+  "week": {
+   "hold": {
+    "rows": 30,
+    "cutoffs": 5
+   },
+   "tightening": {
+    "rows": 6,
+    "cutoffs": 1
+   },
+   "easing": {
+    "rows": 10,
+    "cutoffs": 2
+   }
+  },
+  "month": {
+   "hold": {
+    "rows": 30,
+    "cutoffs": 5
+   },
+   "tightening": {
+    "rows": 6,
+    "cutoffs": 1
+   },
+   "easing": {
+    "rows": 10,
+    "cutoffs": 2
+   }
+  }
+ }
+}

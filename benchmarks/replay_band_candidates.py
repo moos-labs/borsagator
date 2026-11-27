@@ -259,9 +259,15 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
-def build_rows(capture_dirs, ref_dirs=None):
+def build_rows(capture_dirs, ref_dirs=None, omitted=None):
     """One row per matured, non-gap (capture, horizon) with realised
-    move, naive band, v2 sigma, and each candidate's daily sigma."""
+    move, naive band, v2 sigma, and each candidate's daily sigma.
+
+    omitted: optional dict {"diagnostics": [], "rows": [], "non_naive": 0}
+    filled in place with what the row loop skips without a gaps entry:
+    score_capture diagnostics, naive-range rows that are not matured or
+    carry a dividend gap (with their identifiers), and a count of
+    non-naive-range entrant rows. None keeps the old behaviour exactly."""
     rows, gaps = [], []
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
@@ -278,6 +284,8 @@ def build_rows(capture_dirs, ref_dirs=None):
                 gaps.append("%s: realised window rebuilt to 21 sessions "
                             "from price.csv" % cap)
             scored, _g = bs.score_capture(staged)
+            if omitted is not None:
+                omitted["diagnostics"].extend("%s: %s" % (cap, g) for g in _g)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
@@ -294,6 +302,15 @@ def build_rows(capture_dirs, ref_dirs=None):
             if (r.get("entrant") != "naive-range"
                     or r.get("status") != "matured"
                     or r.get("dividend_gap")):
+                if omitted is not None:
+                    if r.get("entrant") != "naive-range":
+                        omitted["non_naive"] += 1
+                    else:
+                        why = ("dividend gap" if r.get("status") == "matured"
+                               else "status %s" % r.get("status"))
+                        omitted["rows"].append("%s %s %s %s: %s" % (
+                            cap, r.get("ticker"), str(r.get("as_of"))[:10],
+                            r.get("horizon"), why))
                 continue
             rows.append({
                 "cell": A.cell_number(cap), "ticker": r["ticker"],

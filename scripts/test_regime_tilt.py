@@ -1,0 +1,367 @@
+"""Tests for benchmarks/score_regime_tilt.py: fixed synthetic inputs."""
+import contextlib
+import importlib.util
+import io
+import json
+import os
+import sys
+import tempfile
+import unittest
+
+sys.dont_write_bytecode = True
+HERE = os.path.dirname(os.path.abspath(__file__))
+BENCH = os.path.join(HERE, "..", "benchmarks")
+sys.path.insert(0, BENCH)
+sys.path.insert(0, HERE)
+
+
+def _load(name):
+    spec = importlib.util.spec_from_file_location(name, os.path.join(BENCH, name + ".py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+S = _load("score_regime_tilt")
+CHECKS = {"pass": 0, "fail": 0}
+
+
+def check(name, ok, detail=""):
+    CHECKS["pass" if ok else "fail"] += 1
+    if not ok:
+        print("FAIL: %s %s" % (name, detail))
+
+
+def _dec(date, bps):
+    return {"published_date": date, "change_bps": bps, "source_url": "u", "source_name": "n"}
+
+
+# tightening from 2024-01-10, easing from 2024-06-10, hold from 2024-09-10
+DECS = [_dec("2024-01-10", 100.0), _dec("2024-06-10", -100.0), _dec("2024-09-10", 0.0)]
+D_TIGHT, D_EASE, D_HOLD = "2024-02-01", "2024-07-01", "2024-10-01"
+
+
+def _row(h, as_of, frac=None, v2s=0.02):
+    r = {"horizon": h, "as_of": as_of, "real": 0.0, "v2_sigma": v2s, "mult": 1.0,
+         "naive_half": 5.0, "ticker": "T"}
+    if frac is not None:
+        r["real"] = frac * S.v2_half(r)
+    return r
+
+
+def test_constants():
+    check("grid", S.W_GRID == (0.9, 1.0, 1.1))
+    check("clip bounds", S.W_MIN == 0.9 and S.W_MAX == 1.1)
+    check("clip applied", S.clip(0.5) == 0.9 and S.clip(2.0) == 1.1 and S.clip(1.0) == 1.0)
+    check("min group", S.MIN_GROUP == 5)
+    check("cells", S.TRAIN_MAX_CELL == 47 and S.CLEAN_MIN_CELL == 91 and S.DESC_MAX_CELL == 90)
+    check("regimes", set(S.REGIMES) == {"tightening", "easing", "hold"})
+
+
+def test_regime_boundaries():
+    g = lambda d: S.regime_of({"as_of": d}, DECS)
+    check("before first decision has none", g("2024-01-09") is None)
+    check("decision day itself does not count (next session)", g("2024-01-10") is None)
+    check("day after counts", g("2024-01-11") == "tightening")
+    check("easing", g(D_EASE) == "easing")
+    check("hold", g(D_HOLD) == "hold")
+    check("time part ignored", g("2024-01-11T00:00:00") == "tightening")
+    check("decision day with time part still not counted", g("2024-01-10T00:00:00") is None)
+
+
+def _grp(h, as_of, frac, n):
+    return [_row(h, as_of, frac) for _ in range(n)]
+
+
+def test_fit_picks_per_regime():
+    rows = (_grp("week", D_TIGHT, 0.5, 6) + _grp("week", D_EASE, 1.05, 6) + _grp("week", D_HOLD, 0.97, 6))
+    f = S.fit_horizon(rows, "week", DECS)
+    check("all fitted", all(f[g]["fitted"] and f[g]["n"] == 6 for g in S.REGIMES), str(f))
+    check("deep inside band narrows to 0.9", f["tightening"]["w"] == 0.9, str(f))
+    check("just outside band widens to 1.1", f["easing"]["w"] == 1.1, str(f))
+    check("inside close to edge keeps 1.0", f["hold"]["w"] == 1.0, str(f))
+    check("other horizon untouched", S.fit_horizon(rows, "day", DECS)["easing"]["n"] == 0)
+
+
+def test_fit_min_group_and_tie():
+    rows = _grp("week", D_TIGHT, 0.5, 4) + _grp("week", D_EASE, 0.5, 5)
+    f = S.fit_horizon(rows, "week", DECS)
+    check("4 rows not fitted, w stays 1.0", not f["tightening"]["fitted"] and f["tightening"]["w"] == 1.0)
+    check("exactly 5 fits", f["easing"]["fitted"] and f["easing"]["w"] == 0.9)
+    old = S.R.row_is
+    S.R.row_is = lambda row, half: 1.0
+    try:
+        f = S.fit_horizon(_grp("week", D_TIGHT, 0.5, 6), "week", DECS)
+    finally:
+        S.R.row_is = old
+    check("flat objective ties to 1.0", f["tightening"]["fitted"] and f["tightening"]["w"] == 1.0, str(f))
+
+
+def test_fit_uses_only_given_rows_and_skips_no_sigma():
+    rows = _grp("week", D_TIGHT, 0.5, 5) + [{**_row("week", D_TIGHT, 0.5), "v2_sigma": None}]
+    f = S.fit_horizon(rows, "week", DECS)
+    check("row without sigma not counted", f["tightening"]["n"] == 5)
+
+
+def test_score_rows_uses_frozen():
+    frozen = {"horizons": {h: {"tightening": {"w": 0.9}, "easing": {"w": 1.1}, "hold": {"w": 1.0}}
+                           for h in S.HORIZONS}}
+    a = _row("week", D_TIGHT, 0.95)
+    b = _row("week", D_EASE, 1.05)
+    c = _row("week", "2023-01-01", 0.5)
+    out = S.score_rows([a, b, c], frozen, DECS)
+    check("tightening 0.9 excludes 0.95 of v2", out[0]["regime"] == "tightening" and out[0]["in_ch"] is False and out[0]["in_v2"] is True)
+    check("easing 1.1 includes 1.05 of v2", out[1]["regime"] == "easing" and out[1]["in_ch"] is True and out[1]["in_v2"] is False)
+    check("no regime keeps v2 exactly", out[2]["regime"] == "none" and out[2]["is_ch"] == out[2]["is_v2"])
+    check("group counts", S.group_counts(out)["week"] == {"tightening": 1, "easing": 1, "none": 1})
+    e = _row("week", D_HOLD, 1.0)
+    check("real exactly on the band edge is inside", S.score_rows([e], frozen, DECS)[0]["in_ch"] is True)
+    check("no-sigma row skipped", S.score_rows([{**a, "v2_sigma": None}], frozen, DECS) == [])
+
+
+def test_regime_counts_and_degenerate():
+    rows = [_row(h, d) for h in S.HORIZONS for d in (D_TIGHT, D_TIGHT, "2024-02-02")]
+    c = S.regime_counts(rows, DECS)
+    check("rows and cutoffs", c["week"]["tightening"] == {"rows": 3, "cutoffs": 2}, str(c))
+    check("single regime is degenerate", S.degenerate(c))
+    L = S.count_lines("TITLE", c)
+    check("title first, degenerate said", L[0] == "TITLE" and any("TILT DEGENERATE" in x for x in L))
+    check("degenerate line makes no claim about weights", not any(w in " ".join(L) for w in ("w_r", "unfitted", "1.0")), str(L))
+    c2 = S.regime_counts(rows + [_row(h, D_EASE) for h in S.HORIZONS], DECS)
+    check("two regimes not degenerate", not S.degenerate(c2))
+    check("no degenerate line then", not any("DEGENERATE" in x for x in S.count_lines("T", c2)))
+    c3 = S.regime_counts([_row("week", "2023-01-01")], DECS)
+    check("no regime counted as none, and not degenerate-by-none",
+          c3["week"]["none"]["rows"] == 1 and S.degenerate(c3))
+
+
+def test_counts_only():
+    res = {h: {"n": 60, "cutoffs": 3, "ch": {"coverage": 0.123456, "range_skill": 0.654321},
+               "v2": {"coverage": 0.222222, "range_skill": 0.333333},
+               "ch_ci_cutoff": (-0.111111, 0.444444), "ch_cov_ci_cutoff": (0.55, 0.66)}
+           for h in S.HORIZONS}
+    counts = {h: {"easing": 7, "hold": 9} for h in S.HORIZONS}
+    v, why = S.loop_bar.loop_bar_verdict(res)
+    text, payload = S.clean_report(res, counts, 91, v, why)
+    blob = (text + json.dumps(payload)).lower()
+    check("counts only verdict", v == "COUNTS ONLY")
+    check("no metric words", not any(w in blob for w in ("coverage", "rangeskill", "range_skill", "ci_cutoff", "ci cutoff")))
+    check("no metric numbers", not any(n in blob for n in ("0.123456", "0.654321", "0.222222", "0.333333", "0.111111", "0.444444")))
+    check("counts kept", "'easing': 7" in text and payload["counts"]["day"]["by_regime"]["hold"] == 9)
+
+
+def _res(cutoffs=10, lo=0.05, cov=(0.74, 0.84), per=None):
+    base = {"n": 100, "cutoffs": cutoffs, "ch": {"coverage": 0.8, "range_skill": 0.1},
+            "v2": {"coverage": 0.8, "range_skill": 0.0},
+            "ch_ci_cutoff": (lo, 0.2 if lo is not None else None), "ch_cov_ci_cutoff": cov}
+    res = {h: dict(base) for h in S.HORIZONS}
+    for h, d in (per or {}).items():
+        res[h] = {**res[h], **d}
+    return res
+
+
+def test_loop_bar():
+    lb = S.loop_bar.loop_bar_verdict
+    check("ten clusters on all horizons reaches metrics and passes", lb(_res(10)) == ("KEEP", []), str(lb(_res(10))))
+    v, why = lb(_res(9))
+    check("nine clusters is counts only", v == "COUNTS ONLY" and len(why) == 3, str((v, why)))
+    v, why = lb(_res(10, per={"week": {"cutoffs": 9}}))
+    check("one short horizon is counts only even if others pass", v == "COUNTS ONLY" and len(why) == 1
+          and why[0].startswith("week has 9"), str((v, why)))
+    check("each horizon alone gates", all(lb(_res(10, per={h: {"cutoffs": 9}}))[0] == "COUNTS ONLY" for h in S.HORIZONS))
+    v, why = lb(_res(10, lo=None))
+    check("CI lower bound None fails", v == "REJECT" and len(why) == 3 and all("RangeSkill CI lower bound" in x for x in why), str((v, why)))
+    check("CI lower bound zero fails", lb(_res(10, lo=0.0))[0] == "REJECT")
+    check("CI lower bound negative fails", lb(_res(10, lo=-0.01))[0] == "REJECT")
+    check("CI lower bound just positive passes", lb(_res(10, lo=1e-9))[0] == "KEEP")
+    v, why = lb(_res(10, cov=(0.60, 0.70)))
+    check("coverage CI below the band fails", v == "REJECT" and len(why) == 3, str((v, why)))
+    check("coverage CI above the band fails", lb(_res(10, cov=(0.90, 0.99)))[0] == "REJECT")
+    check("coverage CI touching 0.75 edge passes", lb(_res(10, cov=(0.65, 0.75)))[0] == "KEEP")
+    check("coverage CI touching 0.85 edge passes", lb(_res(10, cov=(0.85, 0.95)))[0] == "KEEP")
+    check("coverage CI width just under 0.15 passes", lb(_res(10, cov=(0.70, 0.849)))[0] == "KEEP")
+    check("coverage CI width exactly 0.15 passes", lb(_res(10, cov=(0.70, 0.85)))[0] == "KEEP")
+    check("coverage CI width 0.16 fails", lb(_res(10, cov=(0.70, 0.86)))[0] == "REJECT")
+    check("coverage CI width 0.20 fails", lb(_res(10, cov=(0.70, 0.90)))[0] == "REJECT")
+    check("undefined coverage CI fails", lb(_res(10, cov=(None, None)))[0] == "REJECT")
+    v, why = lb(_res(10, per={"month": {"ch_ci_cutoff": (-0.1, 0.1)}}))
+    check("one failing horizon rejects, others pass", v == "REJECT" and len(why) == 1 and why[0].startswith("month"), str((v, why)))
+
+
+def test_exclusions_listed():
+    L = S.exclusion_lines(["cap1: no usable pre-cutoff OHLC history",
+                           "cap3: realised window rebuilt to 21 sessions from price.csv"],
+                          ["T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month"], ["/x/a", "/x/b"])
+    check("header counts", "1 capture(s) dropped" in L[0] and "3 row(s) without a v2 sigma" in L[0]
+          and "2 unnumbered" in L[0] and "1 note(s)" in L[0], L[0])
+    check("drop line", L[1] == "excluded: cap1: no usable pre-cutoff OHLC history")
+    check("each row without sigma listed", L[2:5] == ["excluded: row %s: no v2 sigma" % x for x in (
+        "T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month")], str(L))
+    check("each unnumbered capture listed", L[5:7] == [
+        "excluded: capture /x/a: no cell number, never scored", "excluded: capture /x/b: no cell number, never scored"])
+    check("note line last", L[7].startswith("note: cap3") and len(L) == 8)
+    check("row id", S.row_id({"ticker": "T", "as_of": "2025-01-02T00:00:00", "horizon": "week"}) == "T 2025-01-02 week")
+
+
+def _run(args):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = S.main(args)
+    return rc, buf.getvalue()
+
+
+def test_refusals():
+    rc, o = _run(["score", "--captures", "/nonexistent", "--frozen", "x", "--min-cell", "90"])
+    check("score refuses min-cell 90", rc == 2 and "score is for cells" in o)
+    rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x", "--min-cell", "47"])
+    for lo, hi in ((47, 90), (48, 91), (60, 50), (0, 90), (48, 500), (91, 102)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe refuses %d-%d" % (lo, hi), rc == 2 and "describe needs 48 <= min-cell" in o, o[:120])
+    for lo, hi in ((48, 90), (48, 48), (90, 90)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe passes validation %d-%d" % (lo, hi), "describe needs" not in o and "no captures" in o, o[:120])
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "f.json")
+        open(out, "w").write("SENTINEL")
+        rc, o = _run(["fit", "--captures", d + "/missing", "--out", out])
+        check("fit refuses empty discovery", rc == 2 and "no captures" in o)
+        check("fit leaves out untouched", open(out).read() == "SENTINEL")
+
+
+def test_modes_with_mocked_discovery():
+    old = (S.A.find_captures, S.R.build_rows, S.A.cell_number)
+    S.A.find_captures = lambda dirs, mc: ["/x/c5", "/x/c60", "/x/c95", "/x/u"]
+    S.A.cell_number = lambda p: {"/x/c5": 5, "/x/c60": 60, "/x/c95": 95}.get(p)
+    train = _grp("week", D_TIGHT, 0.5, 6)
+    bad = {**_row("week", D_TIGHT, 0.5), "v2_sigma": None}
+
+    def build(caps, refs, omitted=None):
+        omitted["diagnostics"].append("%s: no realised.json - not scored" % caps[0])
+        omitted["rows"].append("%s T 2024-02-01 week: status pending" % caps[0])
+        omitted["non_naive"] += 4
+        if caps == ["/x/c5"]:
+            return train + [bad], ["/x/c5: no usable pre-cutoff OHLC history"]
+        return _grp("week", D_EASE, 0.5, 2) + [bad], []
+    S.R.build_rows = build
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            dec = os.path.join(d, "d.json")
+            json.dump(DECS, open(dec, "w"))
+            out = os.path.join(d, "f.json")
+            rc, o = _run(["fit", "--captures", "x", "--out", out, "--decisions", dec])
+            check("fit ok", rc == 0, o[:200])
+            first = o.splitlines()[0]
+            check("training regime counts printed first", first.startswith("TRAINING CELLS 1-47 regime counts"), first)
+            check("fit says degenerate", "TILT DEGENERATE" in o)
+            check("fit lists gap, dropped row and unnumbered capture", "excluded: /x/c5: no usable" in o
+                  and "1 row(s) without a v2 sigma" in o and "excluded: row T 2024-02-01 week: no v2 sigma" in o
+                  and "1 unnumbered" in o and "excluded: capture /x/u: no cell number" in o, o[-400:])
+            check("fit lists build_rows diagnostics, skipped rows and non-naive count",
+                  "excluded: score_capture: /x/c5: no realised.json - not scored" in o
+                  and "excluded: row /x/c5 T 2024-02-01 week: status pending" in o
+                  and "1 score_capture diagnostic(s), 1 naive-range row(s) skipped" in o
+                  and "4 non-naive-range entrant row(s)" in o, o[-500:])
+            fz = json.load(open(out))
+            check("fitted w stored", fz["frozen"]["degenerate"] is True and fz["frozen"]["horizons"]["week"]["tightening"]["w"] == 0.9)
+            for mode in ("describe", "score"):
+                rc, o = _run([mode, "--captures", "x", "--frozen", out, "--reps", "5", "--decisions", dec,
+                              "--min-cell", "48" if mode == "describe" else "91"])
+                check("%s ok" % mode, rc == 0, o[:300])
+                check("%s lists dropped row" % mode, "1 row(s) without a v2 sigma" in o
+                      and "excluded: row T 2024-02-01 week: no v2 sigma" in o
+                      and "excluded: capture /x/u: no cell number" in o, o[-300:])
+                check("%s prints regime in counts" % mode, "easing" in o)
+                check("%s lists build_rows diagnostics and skipped rows" % mode,
+                      "excluded: score_capture: /x/c60: no realised.json" in o.replace("/x/c95", "/x/c60")
+                      and "naive-range row(s) skipped" in o and "excluded: row /x/c" in o, o[-400:])
+            check("score prints degenerate note", "TILT DEGENERATE: cells >= 91" in o, o[-300:])
+            check("score output has no metric words", "RangeSkill" not in o and "coverage" not in o, o[:400])
+            open(out, "w").write("SENTINEL")
+            rc, o = _run(["fit", "--captures", "x", "--out", out, "--decisions", dec + ".missing"])
+            check("missing decisions refused, out untouched", rc == 2 and "no usable decisions" in o
+                  and open(out).read() == "SENTINEL", o[:200])
+    finally:
+        S.A.find_captures, S.R.build_rows, S.A.cell_number = old
+
+
+def _srow(entrant="naive-range", status="matured", div=False, h="week", t="T"):
+    return {"entrant": entrant, "status": status, "dividend_gap": div, "ticker": t,
+            "as_of": "2025-01-02T00:00:00", "horizon": h, "realized_move_pct": 1.5,
+            "range_high_pct": 3.0, "range_low_pct": -3.0}
+
+
+def test_build_rows_omitted():
+    """R.build_rows keeps its rows and gaps and fills the omitted dict."""
+    R = S.R
+    names = ("price_reference", "_extend_realised", "sigmas", "read_ohlc")
+    old = {n: getattr(R, n) for n in names}
+    old_a = (R.A._stage, R.A._sigma60, R.A.cell_number)
+    old_bs = (R.bs.score_capture, R.bs.load_json)
+    R.price_reference = lambda dirs: {}
+    R._extend_realised = lambda staged, px: False
+    R.sigmas = lambda ohlc: {"s60": 0.02}
+    R.read_ohlc = lambda cap, d: []
+    R.A._stage = lambda cap, name, tmp: tmp
+    R.A._sigma60 = lambda ens: 0.02
+    R.A.cell_number = lambda cap: 5
+    R.bs.load_json = lambda path: {"base_date": "2025-01-02"}
+    scored = [_srow(), _srow(status="pending", h="month"), _srow(div=True, h="day"),
+              _srow(entrant="other"), _srow(entrant="other", status="pending")]
+    R.bs.score_capture = lambda staged: (list(scored), ["cap: no realised.json - not scored"])
+    try:
+        om = S.new_omitted()
+        rows, gaps = R.build_rows(["/x/cap"], ["/x/cap"], omitted=om)
+        rows0, gaps0 = R.build_rows(["/x/cap"], ["/x/cap"])
+        check("one matured naive row kept", len(rows) == 1 and rows[0]["horizon"] == "week", str(rows))
+        check("rows and gaps identical with and without omitted", rows == rows0 and gaps == gaps0)
+        check("diagnostic kept with its capture", om["diagnostics"] == ["/x/cap: cap: no realised.json - not scored"], str(om))
+        check("pending and dividend-gap naive rows listed with identifiers", om["rows"] == [
+            "/x/cap T 2025-01-02 month: status pending", "/x/cap T 2025-01-02 day: dividend gap"], str(om))
+        check("non-naive entrant rows counted", om["non_naive"] == 2)
+        L = S.exclusion_lines(gaps, [], [], om)
+        check("exclusion list carries them", "excluded: row /x/cap T 2025-01-02 month: status pending" in L
+              and "excluded: score_capture: /x/cap: cap: no realised.json - not scored" in L
+              and "1 score_capture diagnostic(s), 2 naive-range row(s) skipped" in L[0], str(L))
+        R.sigmas = lambda ohlc: {"s60": None}
+        om = S.new_omitted()
+        rows, gaps = R.build_rows(["/x/cap"], ["/x/cap"], omitted=om)
+        check("s60 gap still a gaps entry and no row loop", rows == [] and len(gaps) == 1 and om["rows"] == [])
+    finally:
+        for n, v in old.items():
+            setattr(R, n, v)
+        R.A._stage, R.A._sigma60, R.A.cell_number = old_a
+        R.bs.score_capture, R.bs.load_json = old_bs
+
+
+def test_decisions_file():
+    ds, n = S.load_decisions()
+    check("38 usable, none rejected", len(ds) == 38 and n == 0, "%d %d" % (len(ds), n))
+
+
+def run_all():
+    for fn in (test_constants, test_regime_boundaries, test_fit_picks_per_regime, test_fit_min_group_and_tie,
+               test_fit_uses_only_given_rows_and_skips_no_sigma, test_score_rows_uses_frozen,
+               test_regime_counts_and_degenerate, test_counts_only, test_loop_bar, test_exclusions_listed, test_refusals,
+               test_modes_with_mocked_discovery, test_build_rows_omitted, test_decisions_file):
+        fn()
+
+
+class Suite(unittest.TestCase):
+    def test_checks(self):
+        CHECKS["pass"] = CHECKS["fail"] = 0
+        run_all()
+        self.assertEqual(CHECKS["fail"], 0)
+        self.assertGreater(CHECKS["pass"], 0)
+
+
+def main():
+    CHECKS["pass"] = CHECKS["fail"] = 0
+    run_all()
+    print("test_regime_tilt: %d passed, %d failed" % (CHECKS["pass"], CHECKS["fail"]))
+    return 1 if CHECKS["fail"] else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
