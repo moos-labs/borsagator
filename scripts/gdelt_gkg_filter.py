@@ -60,6 +60,35 @@ Finalize mode:
       -> out/matches.parquet (if pyarrow installed) else out/matches.csv,
          out/alias_hit_summary.csv (per ticker x matched org entry counts,
          paired per ticker so multi-issuer rows never cross-pair)
+      with macro rows present also -> out/macro_matches.parquet (or .csv)
+         and out/macro_theme_summary.csv (theme, family, rows, distinct_days)
+
+Macro channel (INS-MACRO-NEWS-001, opt-in via --themes
+  evaluation/gdelt_macro_themes.csv): a second, independent capture
+  channel for MENA macro research. Rows are captured when a GKG line
+  carries at least one configured V1Themes token (exact token match; the
+  lookup lists only tokens verified to exist in GDELT theme output, with
+  usage counts) AND at least one MENA geo signal from V2EnhancedLocations
+  (FIPS10-4 country code in field 3, e.g. EG Egypt / MU Oman / WE West
+  Bank / GZ Gaza, or an exact name rule such as suez). EPU_POLICY and
+  WB_696_PUBLIC_SECTOR_MANAGEMENT are kind=feature tokens: recorded on
+  captured rows as count features, never row filters. Broad buckets like
+  GENERAL_HEALTH are excluded by omission from the lookup.
+  Macro rows go to out/macro_matches.jsonl (slim schema: file, stream,
+  gkg_record_id, date, source, url, themes, families, theme_families,
+  features, geo[:5], tone, positive, negative, word_count), never into
+  matches.jsonl. State is independent too: STATE/macro_done.txt and
+  STATE/macro_config.json (same atomic bind + refuse-on-mismatch semantics
+  as config.json; a fresh bind refuses a non-empty macro_matches.jsonl).
+  done.txt and matches.jsonl are byte-identical whether or not --themes is
+  passed.
+  Shard pickup with no progress lost: git pull the merged branch, restart
+  the same command plus --themes evaluation/gdelt_macro_themes.csv. The
+  company channel resumes from done.txt untouched; macro_done.txt starts
+  empty, so files already processed before the restart are reprocessed
+  once, macro-only (downloaded once, company rows not rewritten), until
+  macro_done.txt catches up; from then on both channels run in the same
+  pass.
 
 Only https://data.gdeltproject.org URLs are fetched (http master-list
 entries are upgraded); files over 200 MB are refused. pyahocorasick and
@@ -74,7 +103,7 @@ from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 # 27-column GKG 2.x layout, both streams (see module docstring).
-C_ID, C_DATE, C_SOURCE, C_URL, C_THEMES, C_ORGS, C_TONE = 0, 1, 3, 4, 7, 14, 15
+C_ID, C_DATE, C_SOURCE, C_URL, C_THEMES, C_LOCS, C_ORGS, C_TONE = 0, 1, 3, 4, 7, 10, 14, 15
 N_COLS = 27
 
 ALLOWED_HOST = "data.gdeltproject.org"
@@ -125,11 +154,12 @@ def _make_prefilter(needles):
         hit.engine = "regex"
         return hit
 
-def load_aliases(path):
+def load_aliases(path, extra_needles=()):
     """Return (alias_items, block_map, require_map, prefilter). alias_items:
     list of (normalized alias, tickers) sorted longest first. require_map is
     keyed by normalized alias (not ticker): a context gate on that alias,
-    e.g. the generic short aliases, never on full-name aliases."""
+    e.g. the generic short aliases, never on full-name aliases. extra_needles
+    are added to the line prefilter (macro theme capture)."""
     alias_map, block_map, require_map = {}, {}, {}
     with open(path, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
@@ -145,9 +175,72 @@ def load_aliases(path):
                 require_map.setdefault(a, set()).update(
                     norm(b) for b in req.split("|") if b.strip())
     needles = sorted(alias_map) + sorted(norm(d) for d in EG_DOMAINS)
+    needles += sorted(extra_needles)
     prefilter = _make_prefilter(needles)
     alias_items = sorted(alias_map.items(), key=lambda kv: -len(kv[0]))
     return alias_items, block_map, require_map, prefilter
+
+def load_themes(path):
+    """Macro theme lookup (evaluation/gdelt_macro_themes.csv). Returns
+    (theme_to_family, geo_countries, geo_names, feature_tokens, sha256 of
+    the file). kind=theme rows are exact V1Themes tokens that capture a
+    row; kind=feature rows are exact tokens counted on captured rows but
+    never capturing one themselves (EPU_POLICY, WB_696_PUBLIC_SECTOR_MANAGEMENT);
+    kind=geo rows are 'country:<FIPS code>' matched on V2EnhancedLocations
+    field 3 or 'name:<substring>' matched on the lowercased location full
+    name. A row is captured only when BOTH a theme and a geo rule match
+    (Egypt/Suez/MENA scope, per the INS-MACRO-NEWS-001 design)."""
+    theme2family, geo_countries, geo_names, features = {}, set(), set(), set()
+    with open(path, newline="", encoding="utf-8") as f:
+        raw = f.read()
+    sha = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    for r in csv.DictReader(io.StringIO(raw)):
+        kind, val = (r.get("kind") or "").strip(), (r.get("value") or "").strip()
+        if not val:
+            continue
+        if kind == "theme":
+            theme2family[val] = (r.get("family") or "").strip()
+        elif kind == "feature":
+            features.add(val)
+        elif kind == "geo" and val.startswith("country:"):
+            geo_countries.add(val.split(":", 1)[1].strip())
+        elif kind == "geo" and val.startswith("name:"):
+            geo_names.add(val.split(":", 1)[1].strip().lower())
+    return theme2family, geo_countries, geo_names, features, sha
+
+def match_macro(themes_field, locs_field, theme2family, geo_countries,
+                geo_names, feature_tokens=frozenset()):
+    """Capture a row for the macro channel: at least one exact V1Themes token
+    in the lookup AND at least one V2EnhancedLocations entry matching the geo
+    rules. Returns (matched {theme: family}, sorted families, geo hits,
+    feature hits) or None. Theme matching is exact-token, never substring;
+    geo hits are kept as location names (capped) for review. Feature tokens
+    (EPU_POLICY, WB_696_PUBLIC_SECTOR_MANAGEMENT) are counted on captured
+    rows but never capture a row by themselves."""
+    matched = {}
+    feats = []
+    for tok in themes_field.split(";"):
+        tok = tok.strip()
+        fam = theme2family.get(tok)
+        if fam is not None:
+            matched[tok] = fam
+        elif tok in feature_tokens:
+            feats.append(tok)
+    if not matched:
+        return None
+    geo_hits = []
+    for ent in locs_field.split(";"):
+        parts = ent.split("#")
+        if len(parts) < 3:
+            continue
+        fullname, cc = parts[1], parts[2]
+        if cc in geo_countries:
+            geo_hits.append(fullname or cc)
+        elif any(n in fullname.lower() for n in geo_names):
+            geo_hits.append(fullname)
+    if not geo_hits:
+        return None
+    return matched, sorted(set(matched.values())), geo_hits[:5], feats
 
 def match_orgs(org_field, alias_items, block_map, require_map):
     """Match V2Organizations entries ('Name,charoffset';'-separated) against
@@ -182,10 +275,14 @@ def parse_tone(field):
     p = field.split(",")
     return (p + [""] * 7)[:7]
 
-def process_blob(name, stream, blob, alias_items, block_map, require_map, prefilter):
-    """Returns (rows, n_malformed). Lines with != 27 columns are skipped,
-    never parsed with a guessed layout."""
-    out = []
+def process_blob(name, stream, blob, alias_items, block_map, require_map, prefilter,
+                 macro=None, do_company=True, do_macro=False):
+    """Returns (rows, macro_rows, n_malformed). Lines with != 27 columns are
+    skipped, never parsed with a guessed layout. macro is the load_themes()
+    triple; do_company/do_macro select the channels computed for THIS file
+    (a file already in done.txt still gets macro-only processing until it
+    lands in macro_done.txt)."""
+    out, macro_out = [], []
     n_malformed = 0
     text = blob.decode("utf-8", errors="replace")
     for line in text.split("\n"):
@@ -196,24 +293,41 @@ def process_blob(name, stream, blob, alias_items, block_map, require_map, prefil
             n_malformed += 1
             continue
         src = cols[C_SOURCE]
-        eg = is_eg_domain(src)
-        by_ticker = match_orgs(cols[C_ORGS], alias_items, block_map, require_map)
-        if not by_ticker and not eg:
-            continue
-        reason = ("both" if eg else "alias") if by_ticker else "eg_domain"
-        tone = parse_tone(cols[C_TONE])
-        entries = sorted({e for es in by_ticker.values() for e in es})
-        out.append({
-            "file": name, "stream": stream, "gkg_record_id": cols[C_ID],
-            "date": cols[C_DATE], "source": src, "url": cols[C_URL],
-            "tickers": sorted(by_ticker),
-            "matched_by_ticker": {t: sorted(es) for t, es in sorted(by_ticker.items())},
-            "matched_org_entries": entries,
-            "reason": reason, "tone": tone[0], "positive": tone[1],
-            "negative": tone[2], "word_count": tone[6],
-            "themes": cols[C_THEMES][:500],
-        })
-    return out, n_malformed
+        if do_company:
+            eg = is_eg_domain(src)
+            by_ticker = match_orgs(cols[C_ORGS], alias_items, block_map, require_map)
+            if by_ticker or eg:
+                reason = ("both" if eg else "alias") if by_ticker else "eg_domain"
+                tone = parse_tone(cols[C_TONE])
+                entries = sorted({e for es in by_ticker.values() for e in es})
+                out.append({
+                    "file": name, "stream": stream, "gkg_record_id": cols[C_ID],
+                    "date": cols[C_DATE], "source": src, "url": cols[C_URL],
+                    "tickers": sorted(by_ticker),
+                    "matched_by_ticker": {t: sorted(es) for t, es in sorted(by_ticker.items())},
+                    "matched_org_entries": entries,
+                    "reason": reason, "tone": tone[0], "positive": tone[1],
+                    "negative": tone[2], "word_count": tone[6],
+                    "themes": cols[C_THEMES][:500],
+                })
+        if do_macro and macro is not None:
+            theme2family, geo_countries, geo_names, feature_tokens = macro
+            mm = match_macro(cols[C_THEMES], cols[C_LOCS],
+                             theme2family, geo_countries, geo_names,
+                             feature_tokens)
+            if mm is not None:
+                matched, families, geo_hits, feats = mm
+                tone = parse_tone(cols[C_TONE])
+                macro_out.append({
+                    "file": name, "stream": stream, "gkg_record_id": cols[C_ID],
+                    "date": cols[C_DATE], "source": src, "url": cols[C_URL],
+                    "themes": sorted(matched), "families": families,
+                    "theme_families": matched, "features": feats,
+                    "geo": geo_hits,
+                    "tone": tone[0], "positive": tone[1],
+                    "negative": tone[2], "word_count": tone[6],
+                })
+    return out, macro_out, n_malformed
 
 def list_files(master_specs, start, end):
     """master_specs: [(path, stream)]. (url, stream) pairs sorted, filtered
@@ -320,61 +434,125 @@ def run_fetch(a):
     done = set()
     if os.path.exists(done_path):
         done = set(open(done_path, encoding="utf-8").read().split())
-    alias_items, block_map, require_map, prefilter = load_aliases(a.aliases)
+    macro = None
+    macro_done = set()
+    macro_matches_path = os.path.join(a.out, "macro_matches.jsonl")
+    md_path = os.path.join(a.state, "macro_done.txt")
+    if getattr(a, "themes", None):
+        theme2family, geo_countries, geo_names, feature_tokens, tsha = load_themes(a.themes)
+        macro = (theme2family, geo_countries, geo_names, feature_tokens)
+        mcfg = {"themes_sha256": tsha, "start": a.start, "end": a.end,
+                "out": os.path.abspath(a.out)}
+        mcfg_path = os.path.join(a.state, "macro_config.json")
+        if os.path.exists(mcfg_path):
+            try:
+                oldm = json.load(open(mcfg_path))
+            except (json.JSONDecodeError, OSError) as e:
+                sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
+                         f"directory: delete {mcfg_path} and macro_done.txt")
+            if oldm != mcfg:
+                sys.exit(f"macro state config mismatch: {oldm} vs {mcfg}; rebind with a "
+                         f"fresh --out directory (delete {mcfg_path} and macro_done.txt), "
+                         f"or delete macro_matches.jsonl as well to reuse the out dir")
+        else:
+            if os.path.exists(macro_matches_path) and os.path.getsize(macro_matches_path) > 0:
+                sys.exit(f"{macro_matches_path} has rows from a previous configuration; use a "
+                         f"fresh --out directory or delete it before rebinding")
+            tmp = mcfg_path + ".tmp"
+            with open(tmp, "w") as f:
+                json.dump(mcfg, f, indent=1)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, mcfg_path)
+        for pth in (macro_matches_path, md_path):
+            cut = truncate_incomplete_tail(pth)
+            if cut:
+                print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
+        if os.path.exists(md_path):
+            macro_done = set(open(md_path, encoding="utf-8").read().split())
+    extra_needles = ([norm(t) for t in macro[0]] + [norm(n) for n in macro[2]]) if macro else ()
+    alias_items, block_map, require_map, prefilter = load_aliases(a.aliases, extra_needles=extra_needles)
     specs = []
     if a.master:
         specs.append((a.master, "english"))
     if a.master_translation:
         specs.append((a.master_translation, "translation"))
-    files = [(u, s) for u, s in list_files(specs, a.start, a.end)
-             if u.rsplit("/", 1)[-1] not in done]
-    t0, n_done, n_bytes, n_rows, n_malformed = time.time(), 0, 0, 0, 0
-    print(f"todo={len(files)} done_prev={len(done)} prefilter={prefilter.engine}", flush=True)
+    files = []
+    for u, s in list_files(specs, a.start, a.end):
+        name = u.rsplit("/", 1)[-1]
+        need_c = name not in done
+        need_m = macro is not None and name not in macro_done
+        if need_c or need_m:
+            files.append((u, s, need_c, need_m))
+    t0, n_done, n_bytes, n_rows, n_mrows, n_malformed = time.time(), 0, 0, 0, 0, 0
+    print(f"todo={len(files)} done_prev={len(done)} macro_done_prev={len(macro_done)} "
+          f"prefilter={prefilter.engine}", flush=True)
 
     def work(item):
-        url, stream = item
+        url, stream, need_c, need_m = item
         name = url.rsplit("/", 1)[-1]
         try:
             raw = fetch(url)
             z = zipfile.ZipFile(io.BytesIO(raw))
             blob = z.read(z.namelist()[0])
         except Exception as e:
-            return name, stream, 0, None, 0, f"{type(e).__name__}: {e}"
-        rows, bad = process_blob(name, stream, blob, alias_items, block_map,
-                                 require_map, prefilter)
-        return name, stream, len(raw), rows, bad, None
+            return name, stream, 0, None, None, 0, need_c, need_m, f"{type(e).__name__}: {e}"
+        rows, mrows, bad = process_blob(name, stream, blob, alias_items, block_map,
+                                        require_map, prefilter, macro=macro,
+                                        do_company=need_c, do_macro=need_m)
+        return name, stream, len(raw), rows, mrows, bad, need_c, need_m, None
 
     batch = max(a.workers * 4, 8)
-    with open(done_path, "a", encoding="utf-8") as done_f, \
-         open(matches_path, "a", encoding="utf-8") as out_f, \
-         ThreadPoolExecutor(max_workers=a.workers) as ex:
-        i = 0
-        while i < len(files):
-            chunk = files[i:i + batch]
-            for name, stream, nbytes, rows, bad, err in ex.map(work, chunk):
-                if err:
-                    print(f"skip {name}: {err}", flush=True)
-                    continue  # NOT marked done: retried on the next run
-                for r in rows:
-                    out_f.write(json.dumps(r, ensure_ascii=False) + "\n")
-                out_f.flush()
-                os.fsync(out_f.fileno())
-                done_f.write(name + "\n")
-                done_f.flush()
-                os.fsync(done_f.fileno())
-                n_done += 1
-                n_bytes += nbytes
-                n_rows += len(rows)
-                n_malformed += bad
-            i += batch
-            el = time.time() - t0
-            rate = n_bytes / 1e6 / el if el else 0
-            print(f"progress {n_done}/{len(files)} rows={n_rows} malformed={n_malformed} "
-                  f"mb={n_bytes/1e6:.0f} rate={rate:.1f}MB/s elapsed={el:.0f}s", flush=True)
-            if a.budget_seconds and el > a.budget_seconds:
-                print("budget exhausted; rerun to resume", flush=True)
-                break
-    print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows}", flush=True)
+    done_f = open(done_path, "a", encoding="utf-8")
+    out_f = open(matches_path, "a", encoding="utf-8")
+    macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
+    mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
+    try:
+        with ThreadPoolExecutor(max_workers=a.workers) as ex:
+            i = 0
+            while i < len(files):
+                chunk = files[i:i + batch]
+                for name, stream, nbytes, rows, mrows, bad, need_c, need_m, err in ex.map(work, chunk):
+                    if err:
+                        print(f"skip {name}: {err}", flush=True)
+                        continue  # NOT marked done: retried on the next run
+                    if need_c:
+                        for r in rows:
+                            out_f.write(json.dumps(r, ensure_ascii=False) + "\n")
+                        out_f.flush()
+                        os.fsync(out_f.fileno())
+                        done_f.write(name + "\n")
+                        done_f.flush()
+                        os.fsync(done_f.fileno())
+                    if need_m:
+                        for r in mrows:
+                            macro_f.write(json.dumps(r, ensure_ascii=False) + "\n")
+                        macro_f.flush()
+                        os.fsync(macro_f.fileno())
+                        mdone_f.write(name + "\n")
+                        mdone_f.flush()
+                        os.fsync(mdone_f.fileno())
+                    n_done += 1
+                    n_bytes += nbytes
+                    n_rows += len(rows)
+                    n_mrows += len(mrows)
+                    n_malformed += bad
+                i += batch
+                el = time.time() - t0
+                rate = n_bytes / 1e6 / el if el else 0
+                print(f"progress {n_done}/{len(files)} rows={n_rows} macro_rows={n_mrows} malformed={n_malformed} "
+                      f"mb={n_bytes/1e6:.0f} rate={rate:.1f}MB/s elapsed={el:.0f}s", flush=True)
+                if a.budget_seconds and el > a.budget_seconds:
+                    print("budget exhausted; rerun to resume", flush=True)
+                    break
+    finally:
+        done_f.close()
+        out_f.close()
+        if macro_f:
+            macro_f.close()
+        if mdone_f:
+            mdone_f.close()
+    print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows} macro_rows={n_mrows}", flush=True)
 
 def run_finalize(a):
     rows, seen, n_corrupt = [], set(), 0
@@ -432,10 +610,65 @@ def run_finalize(a):
     eg_only = sum(1 for r in rows if r["reason"] == "eg_domain")
     print(f"rows={len(rows)} alias_rows={len(rows)-eg_only} eg_domain_only={eg_only} "
           f"corrupt_lines_skipped={n_corrupt} -> {wrote} + alias_hit_summary.csv")
+    mpath = os.path.join(a.out, "macro_matches.jsonl")
+    if os.path.exists(mpath):
+        mrows, mseen, m_corrupt = [], set(), 0
+        with open(mpath, "rb") as f:
+            for raw_line in f:
+                try:
+                    r = json.loads(raw_line.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    m_corrupt += 1  # interrupted append; skip, do not block
+                    continue
+                k = (r["gkg_record_id"], r["url"])
+                if k in mseen:
+                    continue
+                mseen.add(k)
+                mrows.append(r)
+        mrows.sort(key=lambda r: (r["date"], r["gkg_record_id"]))
+        mflat = [{
+            "gkg_record_id": r["gkg_record_id"], "date": r["date"], "stream": r["stream"],
+            "source": r["source"], "url": r["url"], "themes": ";".join(r["themes"]),
+            "families": ";".join(r["families"]), "features": ";".join(r["features"]),
+            "geo": ";".join(r["geo"]),
+            "tone": r["tone"], "positive": r["positive"], "negative": r["negative"],
+            "word_count": r["word_count"],
+        } for r in mrows]
+        mcols = ["gkg_record_id", "date", "stream", "source", "url", "themes",
+                 "families", "features", "geo", "tone", "positive", "negative", "word_count"]
+        try:
+            import pyarrow as pa
+            import pyarrow.parquet as pq
+            pq.write_table(pa.Table.from_pylist(mflat, schema=pa.schema([(c, pa.string()) for c in mcols])),
+                           os.path.join(a.out, "macro_matches.parquet"))
+            mwrote = "macro_matches.parquet"
+        except ImportError:
+            mwrote = "macro_matches.csv"
+            with open(os.path.join(a.out, mwrote), "w", newline="", encoding="utf-8") as f:
+                w = csv.DictWriter(f, fieldnames=mcols)
+                w.writeheader()
+                w.writerows(mflat)
+        tcounts, tdays, tfam = {}, {}, {}
+        for r in mrows:
+            d = r["date"][:8]
+            for t, f2 in r["theme_families"].items():
+                tdays.setdefault(t, set()).add(d)
+                tcounts[t] = tcounts.get(t, 0) + 1
+                tfam[t] = f2
+        with open(os.path.join(a.out, "macro_theme_summary.csv"), "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["theme", "family", "rows", "distinct_days"])
+            for t, n in sorted(tcounts.items(), key=lambda kv: (-kv[1], kv[0])):
+                w.writerow([t, tfam[t], n, len(tdays[t])])
+        print(f"macro_rows={len(mrows)} corrupt_lines_skipped={m_corrupt} -> "
+              f"{mwrote} + macro_theme_summary.csv")
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--aliases", default="evaluation/gdelt_alias_table.csv")
+    p.add_argument("--themes", help="macro theme lookup CSV (evaluation/gdelt_macro_themes.csv); "
+                   "enables the parallel macro channel (macro_matches.jsonl + macro_done.txt)",
+                   default=None)
     p.add_argument("--master")
     p.add_argument("--master-translation")
     p.add_argument("--start", default="20150218235900")  # first GKG 2.0 file
