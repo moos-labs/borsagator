@@ -80,6 +80,17 @@ INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
 # records the same override on the GOUR listing (yahoo_ticker).
 YAHOO_SYMBOL_OVERRIDES = {"GOUR.CA": "EGS540S1C014.CA"}
 SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21
+# INS-436-HOLIDAY-001 (Moos, Slack 1795757695.747979, relayed): EGX
+# market-wide non-sessions that fetch_realised may excuse. A date is
+# excused only when it is listed here AND every other EGX ticker in
+# TICKERS_V1 shows the same date as unusable (cross-ticker
+# agreement, see market_non_session). No published EGX holiday list
+# has been verified in this repo (proposal C is parked), so the table
+# holds only dates the cycle verified from Yahoo bars: 2024-05-01 was
+# Labour Day, EGX closed, and COMI/ETEL/TMGH/SWDY/HRHO all return a
+# null-close bar for it. Extending the table is a reviewed change.
+EGX_MARKET_HOLIDAYS = {"2024-05-01": "Labour Day"}
+MIN_AGREEING_PEERS = 2
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
 # the runner; Kronos enforces --min-context). Match the refusal
@@ -605,6 +616,37 @@ def validate_capture_path(out_root, cutoff, ticker):
 # --------------------------------------------------------------------------
 # Realised closes (scoring input, fetched separately — §1.4.4)
 # --------------------------------------------------------------------------
+def market_non_session(ticker, date_iso, fetcher, holidays=None):
+    """True only when `date_iso` is a market-wide non-session for the
+    ticker's market: an EGX ticker, the date in the holiday table,
+    and cross-ticker agreement. Every other EGX ticker in
+    TICKERS_V1 is fetched with the same fetcher; the date counts as
+    agreed only when at least MIN_AGREEING_PEERS peers carry a
+    dropped (null-close) bar on it and NO peer has a usable close on
+    it. A peer fetch that fails or is unverifiable, or any peer that
+    traded, returns False, so the cell stays blocked exactly as
+    before (fail-closed). The US market and the index path are never
+    excused."""
+    table = EGX_MARKET_HOLIDAYS if holidays is None else holidays
+    if market_of(ticker) != "EGX" or date_iso not in table:
+        return False
+    peers = [t for t in TICKERS_V1
+             if market_of(t) == "EGX" and t.upper() != ticker.upper()]
+    agreeing = 0
+    for peer in peers:
+        try:
+            prows, _pev, _pok, _perr, pdropped = \
+                backtest_gate.unpack_fetch(
+                    fetcher(YAHOO_SYMBOL_OVERRIDES.get(peer, peer)))
+        except Exception:  # noqa: BLE001 - unverifiable peer
+            return False
+        if any(r["date"] == date_iso for r in prows):
+            return False  # a peer traded: not a market non-session
+        if date_iso in set(pdropped or []):
+            agreeing += 1
+    return agreeing >= MIN_AGREEING_PEERS
+
+
 def fetch_realised(ticker, cutoff, fetcher=None):
     """Realised closes for scoring: the C row plus the first 21
     sessions after C, the index closes on the same dates, and the
@@ -653,6 +695,14 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     dropped_in_window = [d for d in dropped or []
                          if parse_iso(d) is not None
                          and c < parse_iso(d) <= parse_iso(maturity)]
+    # A market-wide non-session (a listed EGX holiday that every
+    # other EGX ticker also shows as unusable) is not a missing
+    # session: no session was skipped, so the 21 usable sessions
+    # are the true ones. Any other dropped date blocks as before.
+    excused = [d for d in dropped_in_window
+               if market_non_session(ticker, d, fetcher)]
+    dropped_in_window = [d for d in dropped_in_window
+                         if d not in excused]
     if dropped_in_window:
         return None, (
             "realised: %d session(s) inside the realised window "
@@ -758,7 +808,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                 window_actions.append(ev)
             elif ev.get("type") == "split":
                 window_splits.append(ev)
-    return {"ticker": ticker.upper(), "cutoff": cutoff,
+    out = {"ticker": ticker.upper(), "cutoff": cutoff,
             "base_close": base_close, "base_date": base_date,
             "sessions": [{"date": s["date"], "close": s["close"]}
                          for s in sessions],
@@ -769,7 +819,14 @@ def fetch_realised(ticker, cutoff, fetcher=None):
             "index_gap": index_gap,
             "actions": window_actions,
             "splits": window_splits,
-            "fetched_at": date.today().isoformat()}, ""
+            "fetched_at": date.today().isoformat()}
+    if excused:
+        # Recorded only when used, so every capture without an
+        # excused date is byte-identical to before.
+        out["excused_non_sessions"] = [
+            {"date": d, "reason": EGX_MARKET_HOLIDAYS.get(d, "")}
+            for d in excused]
+    return out, ""
 
 
 # --------------------------------------------------------------------------

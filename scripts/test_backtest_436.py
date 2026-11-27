@@ -2392,6 +2392,100 @@ def test_realised_dropped_close():
         _urlreq.urlopen = real_urlopen
 
 
+def test_realised_market_holiday_excuse():
+    """INS-436-HOLIDAY-001: a listed EGX market-wide non-session
+    (2024-05-01, Labour Day) is excused only with cross-ticker
+    agreement; every other dropped close still blocks."""
+    print("== realised market-holiday excuse ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    cutoff = "2024-04-10"
+    days = []
+    d = date(2024, 4, 1)
+    while d <= date(2024, 5, 24):
+        if d.weekday() < 5:
+            days.append(d)
+        d += timedelta(days=1)
+
+    def _rows(null_dates=(), skip_dates=()):
+        rows, dropped = [], []
+        for i, dd in enumerate(days):
+            iso = dd.isoformat()
+            if iso in skip_dates:
+                continue
+            if iso in null_dates:
+                dropped.append(iso)
+            else:
+                rows.append({"date": iso, "close": 100.0 + i})
+        return rows, dropped
+
+    events = []
+
+    def make_fetcher(per_symbol, calls):
+        def fetcher(symbol):
+            calls.append(symbol)
+            spec = per_symbol.get(symbol, per_symbol["*"])
+            if spec == "raise":
+                raise RuntimeError("peer feed down")
+            rows, dropped = spec
+            return rows, events, True, None, dropped
+        return fetcher
+
+    holiday = "2024-05-01"
+    all_null = _rows(null_dates=(holiday,))
+    traded = _rows()
+    calls = []
+    # 1. The holiday dropped by the ticker and its EGX peers: the
+    # excuse publishes the true 21 sessions, skipping 2024-05-01.
+    f = make_fetcher({"*": all_null, "POUL.CA": ([], [])}, calls)
+    real, err = bt.fetch_realised("ETEL.CA", cutoff, fetcher=f)
+    check("excused holiday publishes a realised capture",
+          real is not None, err)
+    if real is not None:
+        dates = [x["date"] for x in real["sessions"]]
+        check("excused holiday leaves 21 true sessions without it",
+              len(dates) == 21 and holiday not in dates
+              and dates[0] == "2024-04-11"
+              and real["maturity_date"] == "2024-05-10",
+              "got %d sessions, first %s, maturity %s"
+              % (len(dates), dates[:1], real["maturity_date"]))
+        check("excused date is recorded in the capture",
+              real.get("excused_non_sessions")
+              == [{"date": holiday, "reason": "Labour Day"}],
+              "got %r" % (real.get("excused_non_sessions"),))
+    check("index path unchanged: index fetched once, never as a peer",
+          calls.count("^EGX30") == 1,
+          "calls=%r" % (calls,))
+    # 2. A dropped TRADING-DAY close (not in the table) still
+    # blocks even when every peer shows the same drop.
+    other = "2024-04-17"
+    f = make_fetcher({"*": _rows(null_dates=(other,))}, [])
+    real2, err2 = bt.fetch_realised("ETEL.CA", cutoff, fetcher=f)
+    check("dropped trading-day close still blocks",
+          real2 is None and other in err2, "err=%r" % (err2,))
+    # 3. The holiday, but a peer has a usable close on it: that
+    # peer traded, so it is not a market non-session.
+    f = make_fetcher({"*": all_null, "COMI.CA": traded}, [])
+    real3, err3 = bt.fetch_realised("ETEL.CA", cutoff, fetcher=f)
+    check("holiday with a trading peer still blocks",
+          real3 is None and holiday in err3, "err=%r" % (err3,))
+    # 4. The holiday, but a peer feed is unverifiable: fail closed.
+    f = make_fetcher({"*": all_null, "TMGH.CA": "raise"}, [])
+    real4, err4 = bt.fetch_realised("ETEL.CA", cutoff, fetcher=f)
+    check("holiday with an unverifiable peer still blocks",
+          real4 is None and holiday in err4, "err=%r" % (err4,))
+    # 5. Too few agreeing peers (the others have no bar at all).
+    f = make_fetcher({"*": ([], []), "ETEL.CA": all_null,
+                      "COMI.CA": all_null}, [])
+    real5, err5 = bt.fetch_realised("ETEL.CA", cutoff, fetcher=f)
+    check("holiday with one agreeing peer still blocks",
+          real5 is None and holiday in err5, "err=%r" % (err5,))
+    # 6. The US market is never excused.
+    f = make_fetcher({"*": all_null}, [])
+    real6, err6 = bt.fetch_realised("NVDA", cutoff, fetcher=f)
+    check("US ticker dropped on the EGX holiday still blocks",
+          real6 is None and holiday in err6, "err=%r" % (err6,))
+
+
 def test_realised_index_window():
     print("== realised index window (flat index = gap) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -2596,6 +2690,7 @@ def run_backtest_checks(verbose=True):
     test_cell_guards()
     test_realised_index_window()
     test_realised_dropped_close()
+    test_realised_market_holiday_excuse()
     test_yahoo_symbol_override_gour()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
