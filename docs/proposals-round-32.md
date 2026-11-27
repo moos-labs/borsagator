@@ -55,6 +55,14 @@ text only.
   band = v2 x exp(beta x clip(z, -3, 3)), beta in the fixed grid (0.10,
   0.20), not fitted. Family 2 betas x 3 horizons x 2 regimes = 12, Holm over
   12; both p and the paired delta against v2 are printed.
+- Input for the count (specified by this document): the macro-theme count
+  reads the COMPLETE Themes field of each GKG record, from the raw GKG row or
+  from a macro export that does not truncate it. It must not read the
+  `themes` value of the company-matched export on main, which keeps only the
+  first 500 characters (scripts/gdelt_gkg_filter.py line 214); a macro tag
+  after that point would be missing and the z-score undercounted without an
+  error. Whether the macro capture channel of #846 keeps the full field is
+  not checked here and must be confirmed before any run.
 - Relation to the held work: this is a screen on the same feed, not the
   INS-MACRO-NEWS-001 event-study implementation. It does not start before
   Muhammad's GO on that implementation and the lead's feed is available.
