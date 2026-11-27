@@ -1,0 +1,191 @@
+walk-forward backtest cell 2026-02-13 ORWE.CA
+gate: {"ticker": "ORWE.CA", "passed": true, "reasons": [], "rows": 1892, "first_date": "2019-01-01", "last_date": "2026-09-30", "history_needed_from": "2023-09-28", "max_gap_days": 10, "max_gap_sessions_est": 6, "longest_flat_run": 6, "events_available": true, "events_parse_error": null, "series_start": null, "history_floor": "2019-01-01", "full_history_rows": 6496, "full_history_first_date": "2000-11-27", "full_history_longest_flat_run": 240, "full_history_max_gap_days": 10, "full_history_max_gap_sessions_est": 6, "cohort_note": "Admission evaluates history through the latest cutoff 2026-09-30; for a cell whose own cutoff is earlier, cohort selection uses data after that cell's cutoff (future-informed relative to the cell). history_needed_from 2023-09-28 is the plan-depth bound (3 years before the latest cutoff), not the gate's history floor."}
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker ORWE.CA --pred-len 21 --as-of 2026-02-13 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=6533
+[as-of] cutoff=2026-02-13 rows_on_or_before=1742 last_session=2026-02-12
+[data] cleaned_rows=1742 range=2019-01-01..2026-02-12
+[context] preferred_sessions=1742 using=1742 fallback=False
+[context] supplied=1742 used=512 max_context=512
+[samples] draws=32 aggregation=per-step median (close_p10/close_p90 across draws)
+[samples] draw 1/32 in 9.9s
+[samples] draw 2/32 in 9.9s
+[samples] draw 3/32 in 10.0s
+[samples] draw 4/32 in 9.8s
+[samples] draw 5/32 in 9.7s
+[samples] draw 6/32 in 9.9s
+[samples] draw 7/32 in 9.8s
+[samples] draw 8/32 in 9.8s
+[samples] draw 9/32 in 10.0s
+[samples] draw 10/32 in 9.9s
+[samples] draw 11/32 in 9.8s
+[samples] draw 12/32 in 9.8s
+[samples] draw 13/32 in 9.8s
+[samples] draw 14/32 in 10.0s
+[samples] draw 15/32 in 9.8s
+[samples] draw 16/32 in 9.8s
+[samples] draw 17/32 in 9.8s
+[samples] draw 18/32 in 9.9s
+[samples] draw 19/32 in 10.0s
+[samples] draw 20/32 in 10.0s
+[samples] draw 21/32 in 9.9s
+[samples] draw 22/32 in 9.7s
+[samples] draw 23/32 in 9.7s
+[samples] draw 24/32 in 9.8s
+[samples] draw 25/32 in 9.8s
+[samples] draw 26/32 in 9.7s
+[samples] draw 27/32 in 9.9s
+[samples] draw 28/32 in 9.8s
+[samples] draw 29/32 in 9.9s
+[samples] draw 30/32 in 9.9s
+[samples] draw 31/32 in 9.8s
+[samples] draw 32/32 in 9.9s
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=23.25 date=2026-02-12 pct_change=-2.10%
+[result] forecasted_closes=[23.1378, 23.1041, 23.0854, 23.0761, 23.338, 23.0947, 23.0503, 22.8532, 22.9929, 22.9497, 22.7604, 22.6821, 23.0513, 23.0541, 22.8238, 22.9591, 22.5738, 22.4845, 22.806, 22.9033, 22.7613]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:216: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.12it/s]
+ 10%|▉         | 2/21 [00:00<00:08,  2.14it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.16it/s]
+ 19%|█▉        | 4/21 [00:01<00:07,  2.15it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.17it/s]
+ 29%|██▊       | 6/21 [00:02<00:06,  2.16it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.16it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.15it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.16it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.16it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.17it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.17it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.17it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.16it/s]
+ 71%|███████▏  | 15/21 [00:06<00:02,  2.15it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.15it/s]
+ 81%|████████  | 17/21 [00:07<00:01,  2.15it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.13it/s]
+ 90%|█████████ | 19/21 [00:08<00:00,  2.13it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.13it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.12it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.15it/s]
+[rc=0]
+
+$ /opt/gator/venvs/pandas-ta/bin/python /opt/gator/runners/pandas-ta/scripts/ta_snapshot.py --ticker ORWE.CA --as-of 2026-02-13 (cwd=/opt/gator/runners/pandas-ta)
+[data] ORWE.CA: 6534 rows, 2000-11-27 -> 2026-11-25, last close 24.0
+[data] after drop-before 2019-01-01: 1930 rows
+[as-of] cutoff=2026-02-13 rows_on_or_before=1742 last_session=2026-02-12
+[done] snapshot for ORWE.CA on 2026-02-12: close 23.25, RSI 58.9642, MACD 0.1645 vs signal 0.0276
+[rc=0]
+
+$ /opt/gator/venvs/talib/bin/python /opt/gator/runners/talib/scripts/ta.py ORWE.CA --as-of 2026-02-13 (cwd=/opt/gator/runners/talib)
+[data] after drop-before 2019-01-01: 1930 rows
+[as-of] cutoff=2026-02-13 rows_on_or_before=1742 last_session=2026-02-12
+{
+  "ticker": "ORWE.CA",
+  "as_of": "2026-02-13",
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6534,
+  "rows_used": 1742,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-02-12"
+  },
+  "last_date": "2026-02-12",
+  "last_close": 23.25,
+  "indicators": {
+    "RSI_14": 58.964160961961596,
+    "MACD": 0.16453504075606062,
+    "MACD_signal": 0.02763130440312036,
+    "MACD_hist": 0.13690373635294026,
+    "EMA_20": 22.826833623141205,
+    "EMA_50": 22.81298437092227,
+    "ADX_14": 19.97374593502549
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-02-12",
+    "CDLENGULFING": "2026-02-10",
+    "CDLHAMMER": "none in last 60 sessions",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-cell-6suv62l6, 2-family mode)
+ensemble v2: written for ORWE.CA | sigma 0.0133 | sigma60 0.0133 | horizons: ['day', 'week', 'month']
+
+$ /opt/gator/venvs/kronos/bin/python /opt/gator/runners/kronos/scripts/kronos_forecast.py --ticker ORWE.CA --pred-len 21 --as-of 2026-02-13 --context-start 2019-01-01 (cwd=/opt/gator/runners/kronos)
+[data] source=yahooquery raw_rows=6533
+[as-of] cutoff=2026-02-13 rows_on_or_before=1742 last_session=2026-02-12
+[data] cleaned_rows=1742 range=2019-01-01..2026-02-12
+[context] preferred_sessions=1742 using=1742 fallback=False
+[context] supplied=1742 used=512 max_context=512
+[samples] draws=32 aggregation=per-step median (close_p10/close_p90 across draws)
+[samples] draw 1/32 in 10.0s
+[samples] draw 2/32 in 9.8s
+[samples] draw 3/32 in 9.8s
+[samples] draw 4/32 in 9.9s
+[samples] draw 5/32 in 9.8s
+[samples] draw 6/32 in 9.8s
+[samples] draw 7/32 in 9.8s
+[samples] draw 8/32 in 9.8s
+[samples] draw 9/32 in 9.9s
+[samples] draw 10/32 in 9.9s
+[samples] draw 11/32 in 9.8s
+[samples] draw 12/32 in 9.8s
+[samples] draw 13/32 in 9.8s
+[samples] draw 14/32 in 9.8s
+[samples] draw 15/32 in 9.7s
+[samples] draw 16/32 in 9.8s
+[samples] draw 17/32 in 9.7s
+[samples] draw 18/32 in 9.8s
+[samples] draw 19/32 in 9.8s
+[samples] draw 20/32 in 9.9s
+[samples] draw 21/32 in 9.8s
+[samples] draw 22/32 in 9.8s
+[samples] draw 23/32 in 9.8s
+[samples] draw 24/32 in 9.8s
+[samples] draw 25/32 in 9.9s
+[samples] draw 26/32 in 9.8s
+[samples] draw 27/32 in 9.8s
+[samples] draw 28/32 in 9.9s
+[samples] draw 29/32 in 9.9s
+[samples] draw 30/32 in 9.8s
+[samples] draw 31/32 in 9.8s
+[samples] draw 32/32 in 9.9s
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=23.25 date=2026-02-12 pct_change=-2.10%
+[result] forecasted_closes=[23.1378, 23.1041, 23.0854, 23.0761, 23.338, 23.0947, 23.0503, 22.8532, 22.9929, 22.9497, 22.7604, 22.6821, 23.0513, 23.0541, 22.8238, 22.9591, 22.5738, 22.4845, 22.806, 22.9033, 22.7613]
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:216: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+
+  0%|          | 0/21 [00:00<?, ?it/s]
+  5%|▍         | 1/21 [00:00<00:09,  2.04it/s]
+ 10%|▉         | 2/21 [00:00<00:09,  2.05it/s]
+ 14%|█▍        | 3/21 [00:01<00:08,  2.06it/s]
+ 19%|█▉        | 4/21 [00:01<00:08,  2.05it/s]
+ 24%|██▍       | 5/21 [00:02<00:07,  2.06it/s]
+ 29%|██▊       | 6/21 [00:02<00:07,  2.09it/s]
+ 33%|███▎      | 7/21 [00:03<00:06,  2.10it/s]
+ 38%|███▊      | 8/21 [00:03<00:06,  2.12it/s]
+ 43%|████▎     | 9/21 [00:04<00:05,  2.12it/s]
+ 48%|████▊     | 10/21 [00:04<00:05,  2.14it/s]
+ 52%|█████▏    | 11/21 [00:05<00:04,  2.11it/s]
+ 57%|█████▋    | 12/21 [00:05<00:04,  2.12it/s]
+ 62%|██████▏   | 13/21 [00:06<00:03,  2.13it/s]
+ 67%|██████▋   | 14/21 [00:06<00:03,  2.13it/s]
+ 71%|███████▏  | 15/21 [00:07<00:02,  2.13it/s]
+ 76%|███████▌  | 16/21 [00:07<00:02,  2.14it/s]
+ 81%|████████  | 17/21 [00:08<00:01,  2.14it/s]
+ 86%|████████▌ | 18/21 [00:08<00:01,  2.13it/s]
+ 90%|█████████ | 19/21 [00:08<00:00,  2.14it/s]
+ 95%|█████████▌| 20/21 [00:09<00:00,  2.15it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.15it/s]
+100%|██████████| 21/21 [00:09<00:00,  2.12it/s]
+[rc=0]
+
+$ /usr/bin/python3 /opt/gator/release/scripts/ensemble.py (cwd=/tmp/bt436-repeat-dwondxbc, 2-family mode)
+ensemble v2: written for ORWE.CA | sigma 0.0133 | sigma60 0.0133 | horizons: ['day', 'week', 'month']
