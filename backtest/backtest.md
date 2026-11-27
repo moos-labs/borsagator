@@ -4,7 +4,7 @@
 
 > Out of scope for this backtest (design §5.2): sentiment/news (no complete historical headline archive exists), agent/LLM (training knowledge leaks the future), fundamentals (no verified point-in-time statement vintages), and validation / backtest-category tools (qlib, vectorbt, backtrader) which are not direction voters. Only price-forecast (Kronos) and technicals (pandas-ta voter + talib cross-check) are scored, separately and as a 2-family ensemble.
 
-**Forecasts found: 1584 · matured: 1584 · pending: 0 · invalid: 0 · captures: 91**
+**Forecasts found: 1659 · matured: 1659 · pending: 0 · invalid: 0 · captures: 96**
 
 No quality claim is made for any (entrant, horizon) cell with n < 10 matured rows. Backtest n never counts toward the forward ledger's D4 threshold (n ≥ 30 matured).
 
@@ -12,35 +12,35 @@ No quality claim is made for any (entrant, horizon) cell with n < 10 matured row
 
 | Ticker | Found | Matured | Pending | Invalid |
 |---|---|---|---|---|
-| COMI.CA | 255 | 255 | 0 | 0 |
-| ETEL.CA | 252 | 252 | 0 | 0 |
-| HRHO.CA | 237 | 237 | 0 | 0 |
+| COMI.CA | 270 | 270 | 0 | 0 |
+| ETEL.CA | 267 | 267 | 0 | 0 |
+| HRHO.CA | 252 | 252 | 0 | 0 |
 | NVDA | 333 | 333 | 0 | 0 |
-| SWDY.CA | 255 | 255 | 0 | 0 |
-| TMGH.CA | 252 | 252 | 0 | 0 |
+| SWDY.CA | 270 | 270 | 0 | 0 |
+| TMGH.CA | 267 | 267 | 0 | 0 |
 
 ## By entrant and horizon (matured only, gap-flagged rows excluded from skill)
 
 | Entrant | Horizon | n | Hit rate | MAE pp | Range cov. | Hit vs B&H | MAE vs B&H | Hit vs index | MAE vs index |
 |---|---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 91 | 0.341 | 2.46 | 0.692 | 0.044 | 0.42 | -0.647 | 1.95 |
-| 2-family-ensemble | week | 91 | 0.253 | 5.67 | 0.67 | 0.154 | 1.69 | -0.236 | 8.25 |
-| 2-family-ensemble | month | 91 | 0.176 | 12.52 | 0.549 | 0.088 | 4.09 | 0.235 | 14.82 |
-| kronos-alone | day | 91 | 0.319 | 2.87 | 0.527 | 0.022 | 0.83 | -0.647 | 2.36 |
-| kronos-alone | week | 91 | 0.451 | 8.22 | 0.319 | 0.352 | 4.24 | 0.117 | 11.2 |
-| kronos-alone | month | 91 | 0.374 | 20.85 | 0.099 | 0.286 | 12.42 | 0.529 | 21.14 |
-| family-technicals | day | 91 | 0.286 | 2.12 | 0.813 | -0.011 | 0.08 | -0.647 | 1.18 |
-| family-technicals | week | 91 | 0.231 | 4.03 | 0.747 | 0.132 | 0.05 | -0.177 | 2.14 |
-| family-technicals | month | 91 | 0.33 | 8.49 | 0.758 | 0.242 | 0.06 | 0.412 | 6.19 |
-| buy-and-hold | day | 91 | 0.297 | 2.04 | 0.802 | 0.0 | 0.0 | -0.647 | 1.1 |
-| buy-and-hold | week | 91 | 0.099 | 3.98 | 0.747 | 0.0 | 0.0 | -0.412 | 2.27 |
-| buy-and-hold | month | 91 | 0.088 | 8.43 | 0.769 | 0.0 | 0.0 | 0.117 | 6.35 |
+| 2-family-ensemble | day | 96 | 0.344 | 2.55 | 0.698 | 0.063 | 0.42 | -0.647 | 1.95 |
+| 2-family-ensemble | week | 96 | 0.281 | 5.58 | 0.688 | 0.187 | 1.64 | -0.236 | 8.25 |
+| 2-family-ensemble | month | 96 | 0.177 | 12.95 | 0.552 | 0.094 | 4.58 | 0.235 | 14.82 |
+| kronos-alone | day | 96 | 0.323 | 2.93 | 0.531 | 0.042 | 0.8 | -0.647 | 2.36 |
+| kronos-alone | week | 96 | 0.469 | 8.06 | 0.323 | 0.375 | 4.12 | 0.117 | 11.2 |
+| kronos-alone | month | 96 | 0.365 | 21.12 | 0.104 | 0.282 | 12.75 | 0.529 | 21.14 |
+| family-technicals | day | 96 | 0.271 | 2.23 | 0.812 | -0.01 | 0.1 | -0.647 | 1.18 |
+| family-technicals | week | 96 | 0.219 | 4.02 | 0.76 | 0.125 | 0.08 | -0.177 | 2.14 |
+| family-technicals | month | 96 | 0.344 | 8.45 | 0.771 | 0.261 | 0.08 | 0.412 | 6.19 |
+| buy-and-hold | day | 96 | 0.281 | 2.13 | 0.802 | 0.0 | 0.0 | -0.647 | 1.1 |
+| buy-and-hold | week | 96 | 0.094 | 3.94 | 0.76 | 0.0 | 0.0 | -0.412 | 2.27 |
+| buy-and-hold | month | 96 | 0.083 | 8.37 | 0.781 | 0.0 | 0.0 | 0.117 | 6.35 |
 | index-baseline | day | 17 | 0.882 | 0.35 | — | 0.647 | -1.1 | 0.0 | 0.0 |
 | index-baseline | week | 17 | 0.412 | 1.6 | — | 0.412 | -2.27 | 0.0 | 0.0 |
 | index-baseline | month | 17 | 0.059 | 2.19 | — | -0.117 | -6.35 | 0.0 | 0.0 |
-| naive-range | day | 91 | 0.297 | 2.04 | 0.791 | 0.0 | 0.0 | -0.647 | 1.1 |
-| naive-range | week | 91 | 0.099 | 3.98 | 0.78 | 0.0 | 0.0 | -0.412 | 2.27 |
-| naive-range | month | 91 | 0.088 | 8.43 | 0.791 | 0.0 | 0.0 | 0.117 | 6.35 |
+| naive-range | day | 96 | 0.281 | 2.13 | 0.792 | 0.0 | 0.0 | -0.647 | 1.1 |
+| naive-range | week | 96 | 0.094 | 3.94 | 0.792 | 0.0 | 0.0 | -0.412 | 2.27 |
+| naive-range | month | 96 | 0.083 | 8.37 | 0.802 | 0.0 | 0.0 | 0.117 | 6.35 |
 | tilt-technicals | day | 56 | 0.304 | 2.34 | 0.696 | 0.0 | 0.0 | -0.778 | 0.75 |
 | tilt-technicals | week | 56 | 0.107 | 3.61 | 0.786 | -0.018 | 0.1 | -0.333 | 2.39 |
 | tilt-technicals | month | 56 | 0.214 | 8.97 | 0.661 | 0.125 | 0.1 | 0.333 | 2.9 |
@@ -53,24 +53,24 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 
 | Entrant | Horizon | n | Mean IS | Naive IS | RangeSkill | Gap 95% CI | Coverage | Gate |
 |---|---|---|---|---|---|---|---|---|
-| 2-family-ensemble | day | 91 | 12.75 | 11.43 | -0.115 | [-2.21, -0.57] | 0.692 | FAIL |
-| 2-family-ensemble | week | 91 | 32.1 | 18.81 | -0.707 | [-24.14, -4.73] | 0.67 | FAIL |
-| 2-family-ensemble | month | 91 | 66.39 | 39.32 | -0.688 | [-44.46, -13.28] | 0.549 | FAIL |
-| kronos-alone | day | 91 | 15.64 | 11.43 | -0.368 | [-6.37, -2.14] | 0.527 | FAIL |
-| kronos-alone | week | 91 | 62.51 | 18.81 | -2.323 | [-66.37, -25.2] | 0.319 | FAIL |
-| kronos-alone | month | 91 | 189.32 | 39.32 | -3.815 | [-190.0, -113.81] | 0.099 | FAIL |
-| family-technicals | day | 91 | 11.75 | 11.43 | -0.028 | [-0.71, 0.1] | 0.813 | FAIL |
-| family-technicals | week | 91 | 19.19 | 18.81 | -0.02 | [-1.42, 0.62] | 0.747 | FAIL |
-| family-technicals | month | 91 | 40.29 | 39.32 | -0.025 | [-3.22, 0.93] | 0.758 | FAIL |
-| buy-and-hold | day | 91 | 11.43 | 11.43 | 0.0 | [-0.31, 0.34] | 0.802 | FAIL |
-| buy-and-hold | week | 91 | 19.4 | 18.81 | -0.031 | [-1.58, 0.4] | 0.747 | FAIL |
-| buy-and-hold | month | 91 | 38.98 | 39.32 | 0.009 | [-1.47, 1.89] | 0.769 | FAIL |
+| 2-family-ensemble | day | 96 | 12.77 | 11.6 | -0.101 | [-2.11, -0.29] | 0.698 | FAIL |
+| 2-family-ensemble | week | 96 | 31.57 | 19.08 | -0.655 | [-23.08, -4.45] | 0.688 | FAIL |
+| 2-family-ensemble | month | 96 | 67.89 | 39.84 | -0.704 | [-45.36, -14.17] | 0.552 | FAIL |
+| kronos-alone | day | 96 | 15.5 | 11.6 | -0.336 | [-6.02, -1.93] | 0.531 | FAIL |
+| kronos-alone | week | 96 | 60.46 | 19.08 | -2.169 | [-62.35, -23.93] | 0.323 | FAIL |
+| kronos-alone | month | 96 | 191.83 | 39.84 | -3.815 | [-190.52, -116.4] | 0.104 | FAIL |
+| family-technicals | day | 96 | 11.94 | 11.6 | -0.029 | [-0.72, 0.05] | 0.812 | FAIL |
+| family-technicals | week | 96 | 19.16 | 19.08 | -0.004 | [-1.15, 0.97] | 0.76 | FAIL |
+| family-technicals | month | 96 | 40.29 | 39.84 | -0.011 | [-2.76, 1.41] | 0.771 | FAIL |
+| buy-and-hold | day | 96 | 11.6 | 11.6 | 0.0 | [-0.29, 0.33] | 0.802 | FAIL |
+| buy-and-hold | week | 96 | 19.36 | 19.08 | -0.015 | [-1.29, 0.7] | 0.76 | FAIL |
+| buy-and-hold | month | 96 | 39.05 | 39.84 | 0.02 | [-1.0, 2.33] | 0.781 | FAIL |
 | index-baseline | day | 17 | — | 6.98 | — | — | — | n<30 |
 | index-baseline | week | 17 | — | 15.46 | — | — | — | n<30 |
 | index-baseline | month | 17 | — | 39.23 | — | — | — | n<30 |
-| naive-range | day | 91 | 11.43 | 11.43 | 0.0 | [0.0, 0.0] | 0.791 | FAIL |
-| naive-range | week | 91 | 18.81 | 18.81 | 0.0 | [0.0, 0.0] | 0.78 | FAIL |
-| naive-range | month | 91 | 39.32 | 39.32 | 0.0 | [0.0, 0.0] | 0.791 | FAIL |
+| naive-range | day | 96 | 11.6 | 11.6 | 0.0 | [0.0, 0.0] | 0.792 | FAIL |
+| naive-range | week | 96 | 19.08 | 19.08 | 0.0 | [0.0, 0.0] | 0.792 | FAIL |
+| naive-range | month | 96 | 39.84 | 39.84 | 0.0 | [0.0, 0.0] | 0.802 | FAIL |
 | tilt-technicals | day | 56 | 14.07 | 13.86 | -0.015 | [-0.55, 0.11] | 0.696 | FAIL |
 | tilt-technicals | week | 56 | 15.87 | 15.83 | -0.003 | [-0.43, 0.34] | 0.786 | FAIL |
 | tilt-technicals | month | 56 | 43.58 | 42.06 | -0.036 | [-3.2, 0.03] | 0.661 | FAIL |
@@ -79,9 +79,9 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 
 | Family | Mean skill | n |
 |---|---|---|
-| ensemble (net_score) | -0.049 | 217 |
-| price-forecast | -0.088 | 105 |
-| technicals | -0.000 | 217 |
+| ensemble (net_score) | -0.051 | 232 |
+| price-forecast | -0.080 | 120 |
+| technicals | -0.008 | 232 |
 
 ## Forecasts
 
@@ -1671,6 +1671,81 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 | COMI.CA | 2023-12-29 | day | tilt-technicals | flat | +0.00 | -0.40 | ✅ | 0.40 | ✅ |  | matured 2023-12-31 |
 | COMI.CA | 2023-12-29 | week | tilt-technicals | flat | -0.59 | +2.48 | ❌ | 3.07 | ✅ |  | matured 2024-01-08 |
 | COMI.CA | 2023-12-29 | month | tilt-technicals | down | -1.21 | +20.78 | ❌ | 21.99 | ❌ |  | matured 2024-01-31 |
+| COMI.CA | 2024-03-31 | day | 2-family-ensemble | up | +1.68 | +6.52 | ✅ | 4.84 | ✅ |  | matured 2024-04-01 |
+| COMI.CA | 2024-03-31 | week | 2-family-ensemble | up | +3.10 | +3.92 | ✅ | 0.82 | ✅ |  | matured 2024-04-07 |
+| COMI.CA | 2024-03-31 | month | 2-family-ensemble | down | -4.80 | -5.03 | ✅ | 0.23 | ✅ |  | matured 2024-05-08 |
+| COMI.CA | 2024-03-31 | day | kronos-alone | up | +2.42 | +6.52 | ✅ | 4.10 | ❌ |  | matured 2024-04-01 |
+| COMI.CA | 2024-03-31 | week | kronos-alone | up | +4.29 | +3.92 | ✅ | 0.37 | ✅ |  | matured 2024-04-07 |
+| COMI.CA | 2024-03-31 | month | kronos-alone | down | -5.64 | -5.03 | ✅ | 0.61 | ✅ |  | matured 2024-05-08 |
+| COMI.CA | 2024-03-31 | day | family-technicals | flat | -0.36 | +6.52 | ❌ | 6.88 | ❌ |  | matured 2024-04-01 |
+| COMI.CA | 2024-03-31 | week | family-technicals | flat | -0.63 | +3.92 | ❌ | 4.55 | ✅ |  | matured 2024-04-07 |
+| COMI.CA | 2024-03-31 | month | family-technicals | down | -1.35 | -5.03 | ✅ | 3.68 | ✅ |  | matured 2024-05-08 |
+| COMI.CA | 2024-03-31 | day | buy-and-hold | flat | +0.00 | +6.52 | ❌ | 6.52 | ❌ |  | matured 2024-04-01 |
+| COMI.CA | 2024-03-31 | week | buy-and-hold | flat | +0.00 | +3.92 | ❌ | 3.92 | ✅ |  | matured 2024-04-07 |
+| COMI.CA | 2024-03-31 | month | buy-and-hold | flat | +0.00 | -5.03 | ❌ | 5.03 | ✅ |  | matured 2024-05-08 |
+| COMI.CA | 2024-03-31 | day | naive-range | flat | +0.00 | +6.52 | ❌ | 6.52 | ❌ |  | matured 2024-04-01 |
+| COMI.CA | 2024-03-31 | week | naive-range | flat | +0.00 | +3.92 | ❌ | 3.92 | ✅ |  | matured 2024-04-07 |
+| COMI.CA | 2024-03-31 | month | naive-range | flat | +0.00 | -5.03 | ❌ | 5.03 | ✅ |  | matured 2024-05-08 |
+| ETEL.CA | 2024-03-31 | day | 2-family-ensemble | flat | -0.11 | +1.38 | ❌ | 1.49 | ✅ |  | matured 2024-04-01 |
+| ETEL.CA | 2024-03-31 | week | 2-family-ensemble | up | +5.05 | +2.67 | ✅ | 2.38 | ✅ |  | matured 2024-04-07 |
+| ETEL.CA | 2024-03-31 | month | 2-family-ensemble | up | +3.20 | -5.20 | ❌ | 8.40 | ✅ |  | matured 2024-05-08 |
+| ETEL.CA | 2024-03-31 | day | kronos-alone | flat | +0.06 | +1.38 | ❌ | 1.32 | ✅ |  | matured 2024-04-01 |
+| ETEL.CA | 2024-03-31 | week | kronos-alone | up | +6.84 | +2.67 | ✅ | 4.17 | ❌ |  | matured 2024-04-07 |
+| ETEL.CA | 2024-03-31 | month | kronos-alone | up | +4.50 | -5.20 | ❌ | 9.70 | ❌ |  | matured 2024-05-08 |
+| ETEL.CA | 2024-03-31 | day | family-technicals | flat | -0.39 | +1.38 | ❌ | 1.77 | ✅ |  | matured 2024-04-01 |
+| ETEL.CA | 2024-03-31 | week | family-technicals | flat | -0.68 | +2.67 | ❌ | 3.35 | ✅ |  | matured 2024-04-07 |
+| ETEL.CA | 2024-03-31 | month | family-technicals | down | -1.46 | -5.20 | ✅ | 3.74 | ✅ |  | matured 2024-05-08 |
+| ETEL.CA | 2024-03-31 | day | buy-and-hold | flat | +0.00 | +1.38 | ❌ | 1.38 | ✅ |  | matured 2024-04-01 |
+| ETEL.CA | 2024-03-31 | week | buy-and-hold | flat | +0.00 | +2.67 | ❌ | 2.67 | ✅ |  | matured 2024-04-07 |
+| ETEL.CA | 2024-03-31 | month | buy-and-hold | flat | +0.00 | -5.20 | ❌ | 5.20 | ✅ |  | matured 2024-05-08 |
+| ETEL.CA | 2024-03-31 | day | naive-range | flat | +0.00 | +1.38 | ❌ | 1.38 | ✅ |  | matured 2024-04-01 |
+| ETEL.CA | 2024-03-31 | week | naive-range | flat | +0.00 | +2.67 | ❌ | 2.67 | ✅ |  | matured 2024-04-07 |
+| ETEL.CA | 2024-03-31 | month | naive-range | flat | +0.00 | -5.20 | ❌ | 5.20 | ✅ |  | matured 2024-05-08 |
+| HRHO.CA | 2024-03-31 | day | 2-family-ensemble | up | +1.12 | +2.59 | ✅ | 1.47 | ✅ |  | matured 2024-04-01 |
+| HRHO.CA | 2024-03-31 | week | 2-family-ensemble | up | +7.12 | -1.15 | ❌ | 8.27 | ✅ |  | matured 2024-04-07 |
+| HRHO.CA | 2024-03-31 | month | 2-family-ensemble | up | +4.55 | -15.16 | ❌ | 19.71 | ❌ |  | matured 2024-05-08 |
+| HRHO.CA | 2024-03-31 | day | kronos-alone | up | +1.67 | +2.59 | ✅ | 0.92 | ✅ |  | matured 2024-04-01 |
+| HRHO.CA | 2024-03-31 | week | kronos-alone | up | +9.50 | -1.15 | ❌ | 10.65 | ❌ |  | matured 2024-04-07 |
+| HRHO.CA | 2024-03-31 | month | kronos-alone | up | +6.16 | -15.16 | ❌ | 21.32 | ❌ |  | matured 2024-05-08 |
+| HRHO.CA | 2024-03-31 | day | family-technicals | flat | -0.35 | +2.59 | ❌ | 2.94 | ✅ |  | matured 2024-04-01 |
+| HRHO.CA | 2024-03-31 | week | family-technicals | flat | -0.61 | -1.15 | ❌ | 0.54 | ✅ |  | matured 2024-04-07 |
+| HRHO.CA | 2024-03-31 | month | family-technicals | down | -1.33 | -15.16 | ✅ | 13.83 | ✅ |  | matured 2024-05-08 |
+| HRHO.CA | 2024-03-31 | day | buy-and-hold | flat | +0.00 | +2.59 | ❌ | 2.59 | ✅ |  | matured 2024-04-01 |
+| HRHO.CA | 2024-03-31 | week | buy-and-hold | flat | +0.00 | -1.15 | ❌ | 1.15 | ✅ |  | matured 2024-04-07 |
+| HRHO.CA | 2024-03-31 | month | buy-and-hold | flat | +0.00 | -15.16 | ❌ | 15.16 | ✅ |  | matured 2024-05-08 |
+| HRHO.CA | 2024-03-31 | day | naive-range | flat | +0.00 | +2.59 | ❌ | 2.59 | ✅ |  | matured 2024-04-01 |
+| HRHO.CA | 2024-03-31 | week | naive-range | flat | +0.00 | -1.15 | ❌ | 1.15 | ✅ |  | matured 2024-04-07 |
+| HRHO.CA | 2024-03-31 | month | naive-range | flat | +0.00 | -15.16 | ❌ | 15.16 | ✅ |  | matured 2024-05-08 |
+| SWDY.CA | 2024-03-31 | day | 2-family-ensemble | down | -2.14 | +1.75 | ❌ | 3.89 | ✅ |  | matured 2024-04-01 |
+| SWDY.CA | 2024-03-31 | week | 2-family-ensemble | up | +1.65 | +5.08 | ✅ | 3.43 | ✅ |  | matured 2024-04-07 |
+| SWDY.CA | 2024-03-31 | month | 2-family-ensemble | down | -6.71 | +9.46 | ❌ | 16.17 | ✅ |  | matured 2024-05-08 |
+| SWDY.CA | 2024-03-31 | day | kronos-alone | down | -2.56 | +1.75 | ❌ | 4.31 | ❌ |  | matured 2024-04-01 |
+| SWDY.CA | 2024-03-31 | week | kronos-alone | up | +2.53 | +5.08 | ✅ | 2.55 | ❌ |  | matured 2024-04-07 |
+| SWDY.CA | 2024-03-31 | month | kronos-alone | down | -7.85 | +9.46 | ❌ | 17.31 | ❌ |  | matured 2024-05-08 |
+| SWDY.CA | 2024-03-31 | day | family-technicals | flat | -0.52 | +1.75 | ❌ | 2.27 | ✅ |  | matured 2024-04-01 |
+| SWDY.CA | 2024-03-31 | week | family-technicals | down | -0.91 | +5.08 | ❌ | 5.99 | ✅ |  | matured 2024-04-07 |
+| SWDY.CA | 2024-03-31 | month | family-technicals | down | -1.96 | +9.46 | ❌ | 11.42 | ✅ |  | matured 2024-05-08 |
+| SWDY.CA | 2024-03-31 | day | buy-and-hold | flat | +0.00 | +1.75 | ❌ | 1.75 | ✅ |  | matured 2024-04-01 |
+| SWDY.CA | 2024-03-31 | week | buy-and-hold | flat | +0.00 | +5.08 | ❌ | 5.08 | ✅ |  | matured 2024-04-07 |
+| SWDY.CA | 2024-03-31 | month | buy-and-hold | flat | +0.00 | +9.46 | ❌ | 9.46 | ✅ |  | matured 2024-05-08 |
+| SWDY.CA | 2024-03-31 | day | naive-range | flat | +0.00 | +1.75 | ❌ | 1.75 | ✅ |  | matured 2024-04-01 |
+| SWDY.CA | 2024-03-31 | week | naive-range | flat | +0.00 | +5.08 | ❌ | 5.08 | ✅ |  | matured 2024-04-07 |
+| SWDY.CA | 2024-03-31 | month | naive-range | flat | +0.00 | +9.46 | ❌ | 9.46 | ✅ |  | matured 2024-05-08 |
+| TMGH.CA | 2024-03-31 | day | 2-family-ensemble | down | -3.16 | +6.03 | ❌ | 9.19 | ❌ |  | matured 2024-04-01 |
+| TMGH.CA | 2024-03-31 | week | 2-family-ensemble | up | +8.68 | +3.25 | ✅ | 5.43 | ✅ |  | matured 2024-04-07 |
+| TMGH.CA | 2024-03-31 | month | 2-family-ensemble | down | -57.75 | +1.38 | ❌ | 59.13 | ❌ |  | matured 2024-05-08 |
+| TMGH.CA | 2024-03-31 | day | kronos-alone | down | -3.59 | +6.03 | ❌ | 9.62 | ✅ |  | matured 2024-04-01 |
+| TMGH.CA | 2024-03-31 | week | kronos-alone | up | +12.12 | +3.25 | ✅ | 8.87 | ✅ |  | matured 2024-04-07 |
+| TMGH.CA | 2024-03-31 | month | kronos-alone | down | -79.25 | +1.38 | ❌ | 80.63 | ❌ |  | matured 2024-05-08 |
+| TMGH.CA | 2024-03-31 | day | family-technicals | down | -1.14 | +6.03 | ❌ | 7.17 | ✅ |  | matured 2024-04-01 |
+| TMGH.CA | 2024-03-31 | week | family-technicals | down | -1.97 | +3.25 | ❌ | 5.22 | ✅ |  | matured 2024-04-07 |
+| TMGH.CA | 2024-03-31 | month | family-technicals | down | -4.26 | +1.38 | ❌ | 5.64 | ✅ |  | matured 2024-05-08 |
+| TMGH.CA | 2024-03-31 | day | buy-and-hold | flat | +0.00 | +6.03 | ❌ | 6.03 | ✅ |  | matured 2024-04-01 |
+| TMGH.CA | 2024-03-31 | week | buy-and-hold | flat | +0.00 | +3.25 | ❌ | 3.25 | ✅ |  | matured 2024-04-07 |
+| TMGH.CA | 2024-03-31 | month | buy-and-hold | flat | +0.00 | +1.38 | ❌ | 1.38 | ✅ |  | matured 2024-05-08 |
+| TMGH.CA | 2024-03-31 | day | naive-range | flat | +0.00 | +6.03 | ❌ | 6.03 | ✅ |  | matured 2024-04-01 |
+| TMGH.CA | 2024-03-31 | week | naive-range | flat | +0.00 | +3.25 | ❌ | 3.25 | ✅ |  | matured 2024-04-07 |
+| TMGH.CA | 2024-03-31 | month | naive-range | flat | +0.00 | +1.38 | ❌ | 1.38 | ✅ |  | matured 2024-05-08 |
 
 ## Data gaps & notes
 
@@ -1888,5 +1963,30 @@ RangeSkill = 1 − mean interval score / naive mean interval score (Winkler, 80%
 - rescore592/2026-09-30/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 - rescore592/2026-09-30/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 - cell1-r3/2023-12-29/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- repair001/2024-03-31/COMI.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/COMI.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/COMI.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/COMI.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
+- repair001/2024-03-31/COMI.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- repair001/2024-03-31/ETEL.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/ETEL.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/ETEL.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/ETEL.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
+- repair001/2024-03-31/ETEL.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- repair001/2024-03-31/HRHO.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/HRHO.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/HRHO.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/HRHO.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
+- repair001/2024-03-31/HRHO.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- repair001/2024-03-31/SWDY.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/SWDY.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/SWDY.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/SWDY.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
+- repair001/2024-03-31/SWDY.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
+- repair001/2024-03-31/TMGH.CA: tilt-technicals day: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/TMGH.CA: tilt-technicals week: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/TMGH.CA: tilt-technicals month: no usable tilt_centre_pct — horizon skipped (#689)
+- repair001/2024-03-31/TMGH.CA: ensemble.json has no sigma60_daily — naive-range built from sigma_daily as proxy (#594)
+- repair001/2024-03-31/TMGH.CA: index-baseline unavailable — index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found
 
 _Backtest scores are an upper bound on live skill (see the warning above). The forward ledger remains the only basis for accuracy claims._

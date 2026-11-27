@@ -2392,6 +2392,138 @@ def test_realised_dropped_close():
         _urlreq.urlopen = real_urlopen
 
 
+def test_realised_close_repair():
+    """REPAIR-001 (#436): a dropped close with a verified repair
+    entry for THIS ticker is re-inserted as a session with its
+    repaired close; any other dropped close still blocks."""
+    print("== realised close repair (REPAIR-001) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    cutoff = "2024-04-10"
+    days = []
+    d = date(2024, 3, 25)
+    while d <= date(2024, 5, 24):
+        if d.weekday() < 5:
+            days.append(d)
+        d += timedelta(days=1)
+
+    def _rows(null_dates=()):
+        rows, dropped = [], []
+        for i, dd in enumerate(days):
+            iso = dd.isoformat()
+            if iso in null_dates:
+                dropped.append(iso)
+            else:
+                rows.append({"date": iso, "close": 100.0 + i})
+        return rows, dropped
+
+    events = []
+
+    def make_fetcher(per_symbol):
+        def fetcher(symbol):
+            spec = per_symbol.get(symbol, per_symbol["*"])
+            rows, dropped = spec
+            return rows, events, True, None, dropped
+        return fetcher
+
+    repair_date = "2024-05-01"
+    repaired_only = _rows(null_dates=(repair_date,))
+    clean = _rows()
+    # 1. The repaired date dropped by the ticker: the capture
+    # publishes with the repaired close as its true session.
+    f = make_fetcher({"*": repaired_only})
+    real, err = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("repaired close publishes a realised capture",
+          real is not None, err)
+    if real is not None:
+        dates = [x["date"] for x in real["sessions"]]
+        check("repaired close sits at its true session position",
+              len(dates) == 21 and dates[14] == repair_date
+              and real["maturity_date"] == "2024-05-09",
+              "got %d sessions, [14]=%s, maturity %s"
+              % (len(dates), dates[14:15], real["maturity_date"]))
+        check("repaired close carries the verified value",
+              [x["close"] for x in real["sessions"]
+               if x["date"] == repair_date] == [73.01],
+              "got %r" % ([x for x in real["sessions"]
+                           if x["date"] == repair_date],))
+        check("repaired close is recorded in the capture",
+              real.get("repaired_closes")
+              == [{"date": repair_date, "ticker": "COMI.CA",
+                   "close": 73.01, "source": "TradingView",
+                   "basis": "raw close; press-verified to the cent"}],
+              "got %r" % (real.get("repaired_closes"),))
+    # 2. A dropped close with no repair entry still blocks,
+    # even on a ticker that has a repair for another date.
+    other = "2024-04-17"
+    f = make_fetcher({"*": _rows(null_dates=(other,))})
+    real2, err2 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("dropped close without a repair entry still blocks",
+          real2 is None and other in err2, "err=%r" % (err2,))
+    # 3. The repaired date dropped by a ticker with no entry
+    # for it (ORAS has no 2024-05-01 repair) still blocks.
+    f = make_fetcher({"*": repaired_only})
+    real3, err3 = bt.fetch_realised("ORAS.CA", cutoff, fetcher=f)
+    check("repaired date still blocks a ticker with no entry",
+          real3 is None and repair_date in err3, "err=%r" % (err3,))
+    # 4. The US market is never repaired.
+    f = make_fetcher({"*": repaired_only})
+    real4, err4 = bt.fetch_realised("NVDA", cutoff, fetcher=f)
+    check("US ticker dropped on the repair date still blocks",
+          real4 is None and repair_date in err4, "err=%r" % (err4,))
+    # 5. Control: a clean feed publishes with no repair key,
+    # so captures without a repaired close are unchanged.
+    f = make_fetcher({"*": clean})
+    real5, err5 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("clean feed publishes without a repair record",
+          real5 is not None and "repaired_closes" not in real5,
+          "err=%r keys=%r" % (err5, sorted(real5 or {})))
+    # 6. A repaired date plus another unrepairable drop in the
+    # window still blocks — the repair masks nothing else.
+    f = make_fetcher(
+        {"*": _rows(null_dates=(repair_date, other))})
+    real6, err6 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("repair plus another dropped close still blocks",
+          real6 is None and other in err6, "err=%r" % (err6,))
+    # 7. CodeRabbit on PR #889: repairs apply BEFORE the
+    # minimum-session check — a feed ending on 20 usable
+    # sessions plus the repairable date is mature, not short.
+    def _rows_until(end, null_dates=()):
+        rows, dropped = [], []
+        for i, dd in enumerate(days):
+            if dd > end:
+                break
+            iso = dd.isoformat()
+            if iso in null_dates:
+                dropped.append(iso)
+            else:
+                rows.append({"date": iso, "close": 100.0 + i})
+        return rows, dropped
+
+    f = make_fetcher(
+        {"*": _rows_until(date(2024, 5, 9),
+                          null_dates=(repair_date,))})
+    real7, err7 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("truncated feed with a repairable date publishes",
+          real7 is not None, err7)
+    if real7 is not None:
+        check("truncated feed matures on the repaired 21st session",
+              len(real7["sessions"]) == 21
+              and real7["maturity_date"] == "2024-05-09"
+              and real7.get("repaired_closes")
+              and real7["repaired_closes"][0]["date"] == repair_date,
+              "sessions=%d maturity=%s repaired=%r"
+              % (len(real7["sessions"]), real7["maturity_date"],
+                 real7.get("repaired_closes")))
+    # 8. Control: the same truncated feed with an unrepairable
+    # drop stays short — the repair fixes its own date only.
+    f = make_fetcher(
+        {"*": _rows_until(date(2024, 5, 9), null_dates=(other,))})
+    real8, err8 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("truncated feed with an unrepairable drop stays short",
+          real8 is None and "only 20 sessions" in err8,
+          "err=%r" % (err8,))
+
+
 def test_realised_index_window():
     print("== realised index window (flat index = gap) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -2596,6 +2728,7 @@ def run_backtest_checks(verbose=True):
     test_cell_guards()
     test_realised_index_window()
     test_realised_dropped_close()
+    test_realised_close_repair()
     test_yahoo_symbol_override_gour()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
