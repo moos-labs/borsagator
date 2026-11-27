@@ -31,7 +31,7 @@ screen run.
 
 - Totals: 3,182,569 rows over 188 covered days out of 1,826 days in 2019-2023,
   which is 10.3%. The processed share of each shard tracks its covered-day
-  share within 1.1 points, so the unit of "processed / total" behaves like the
+  share within 1 point, so the unit of "processed / total" behaves like the
   GKG files in date order. The relay does not name the unit.
 - Mean rows per covered day (arithmetic): 2019 Jan 22,157; 2020 Jan 28,060,
   Feb 17,607 (9 days); 2021 Jan 14,040, Feb 14,458, Mar 15,323 (10 days); 2022
@@ -62,11 +62,11 @@ span (no earlier rows are known to exist).
 |---|---|---|
 | 2019 | none (29 covered days) | 0 |
 | 2020 | 2020-01-31 | 10 calendar days (Jan 31 to Feb 9) |
-| 2021 | 2021-01-31 | 40 calendar days (Jan 31 to Mar 10) |
+| 2021 | 2021-01-31 | 39 calendar days (Jan 31 to Mar 10) |
 | 2022 | none (16 covered days) | 0 |
 | 2023 | 2023-01-31 | 4 calendar days (Jan 31 to Feb 3) |
 
-- That is 54 calendar days, about 38 sessions (Sunday to Thursday), across the
+- That is 53 calendar days, about 38 sessions (Sunday to Thursday), across the
   five years. The screens place a cutoff every 21 sessions per ticker and
   horizon, so on average roughly 2 distinct cutoff dates per ticker-horizon
   grid would see a full trailing window today. This is an expectation from
