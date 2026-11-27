@@ -155,7 +155,7 @@ def exclusion_lines(gaps, dropped_rows, unnumbered):
     drops = [g for g in gaps if NOTE_MARK not in g]
     notes = [g for g in gaps if NOTE_MARK in g]
     L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
-         "%d unnumbered capture(s) never scored; %d rebuild note(s) (not exclusions)" % (
+         "%d unnumbered capture(s) never scored; %d note(s) (rebuild notes, not exclusions)" % (
              len(drops), dropped_rows, unnumbered, len(notes))]
     L.extend("excluded: %s" % g for g in drops)
     L.extend("note: %s" % g for g in notes)
