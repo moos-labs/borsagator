@@ -2,6 +2,8 @@
 import contextlib
 import importlib.util
 import io
+import json
+import tempfile
 import os
 import sys
 import unittest
@@ -116,9 +118,46 @@ def test_score_refuses_training_cells():
     check("score refuses min-cell below 91", rc == 2 and "refusing" in buf.getvalue())
 
 
+def test_counts_only_emits_no_metrics():
+    res = _res(cut=3)
+    for h in LB.HORIZONS:
+        res[h]["v2"] = {"coverage": 0.123456, "range_skill": 0.654321}
+        res[h]["ch_ci_cutoff"] = (-0.111111, 0.222222)
+    v, why = LB.loop_bar_verdict(res)
+    text, payload = L.clean_report(res, {"day": 0.3, "week": 0.3, "month": 0.3}, 91, v, why)
+    blob = (text + json.dumps(payload)).lower()
+    check("counts-only verdict", v == "COUNTS ONLY" and payload["verdict"] == "COUNTS ONLY")
+    check("counts-only has no coverage/skill/CI words",
+          not any(w in blob for w in ("coverage", "rangeskill", "range_skill", "ci_cutoff", "ci cutoff")), blob)
+    check("counts-only has no metric numbers", not any(n in blob for n in ("0.123456", "0.654321", "0.111111", "0.222222", "0.8")))
+    check("counts-only keeps counts and reasons",
+          payload["counts"]["day"] == {"n": 60, "cutoffs": 3} and len(payload["reasons"]) == 3 and "cutoffs=3" in text)
+    res = _res(cut=10)
+    for h in LB.HORIZONS:
+        res[h]["v2"] = {"coverage": 0.7, "range_skill": 0.0}
+    v, why = LB.loop_bar_verdict(res)
+    text, payload = L.clean_report(res, {}, 91, v, why)
+    check("scorable run still reports metrics", "coverage" in text and "results" in payload)
+
+
+def test_fit_refuses_empty_captures():
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "sel.json")
+        open(out, "w").write("SENTINEL")
+        empty = os.path.join(d, "empty")
+        os.makedirs(empty)
+        for caps in (empty, os.path.join(d, "missing")):
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = L.main(["fit", "--captures", caps, "--out", out])
+            check("fit refuses %s" % os.path.basename(caps), rc == 2 and "refusing" in buf.getvalue())
+            check("fit leaves out file untouched", open(out).read() == "SENTINEL")
+
+
 def run_all():
     for fn in (test_grid_registered, test_select, test_loop_bar,
-               test_alpha_restored_and_applied, test_score_refuses_training_cells):
+               test_alpha_restored_and_applied, test_score_refuses_training_cells, test_counts_only_emits_no_metrics,
+               test_fit_refuses_empty_captures):
         fn()
 
 

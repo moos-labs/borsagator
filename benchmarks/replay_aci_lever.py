@@ -90,6 +90,27 @@ def render_table(tab, title):
     return "\n".join(L)
 
 
+def clean_report(res, sel, cells, v, why):
+    """Stdout text and JSON payload of the clean scoring. COUNTS ONLY
+    carries counts and insufficiency reasons, no coverage, RangeSkill or CI."""
+    L = ["CLEAN SCORING cells >= %d, selected alpha %s" % (cells, sel)]
+    if v == "COUNTS ONLY":
+        counts = {h: {"n": res[h]["n"], "cutoffs": res[h]["cutoffs"]} for h in HORIZONS}
+        for h in HORIZONS:
+            L.append("%s: n=%d cutoffs=%d" % (h, counts[h]["n"], counts[h]["cutoffs"]))
+        L.append("LOOP BAR: COUNTS ONLY (%s)" % "; ".join(why))
+        return "\n".join(L), {"selected": sel, "counts": counts,
+                              "verdict": v, "reasons": why}
+    for h in HORIZONS:
+        c = res[h]
+        L.append("%s: n=%d cutoffs=%d coverage %s RangeSkill %s CI cutoff [%s, %s] | v2 coverage %s RangeSkill %s" % (
+            h, c["n"], c["cutoffs"], R._f(c["ch"]["coverage"]), R._f(c["ch"]["range_skill"]),
+            R._f(c["ch_ci_cutoff"][0]), R._f(c["ch_ci_cutoff"][1]),
+            R._f(c["v2"]["coverage"]), R._f(c["v2"]["range_skill"])))
+    L.append("LOOP BAR: %s%s" % (v, " (" + "; ".join(why) + ")" if why else ""))
+    return "\n".join(L), {"selected": sel, "results": res, "verdict": v, "reasons": why}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -112,12 +133,19 @@ def main(argv=None):
     s.add_argument("--json", default=None)
     a = ap.parse_args(argv)
     allc = A.find_captures(a.captures, None)
+    if not allc:
+        print("refusing: no captures found under %s" % " ".join(a.captures))
+        return 2
     rows, _gaps = R.build_rows(allc, allc)
     if a.mode == "fit":
         tab = trade_off(rows, lambda r: r["cell"] is not None and r["cell"] <= TRAIN_MAX_CELL, a.reps)
         sel = {h: select_alpha({al: tab[al][h] for al in tab}) for h in HORIZONS}
         print(render_table(tab, "TRAINING CELLS 1-%d (walk-forward)" % TRAIN_MAX_CELL))
         print("selected alpha per horizon:", sel)
+        if any(v is None for v in sel.values()):
+            print("refusing: no selectable alpha on %s (empty training rows); %s not written" % (
+                [h for h in HORIZONS if sel[h] is None], a.out))
+            return 2
         with open(a.out, "w", encoding="utf-8") as fh:
             json.dump({"grid": list(ALPHA_GRID), "selected": sel,
                        "training_max_cell": TRAIN_MAX_CELL,
@@ -144,17 +172,11 @@ def main(argv=None):
         _p, rs = run_alpha(rows, al, lambda r: r["cell"] is not None and r["cell"] >= a.min_cell, a.reps)
         res[h] = rs[h]
     v, why = loop_bar.loop_bar_verdict(res)
-    print("CLEAN SCORING cells >= %d, selected alpha %s" % (a.min_cell, sel))
-    for h in HORIZONS:
-        c = res[h]
-        print("%s: n=%d cutoffs=%d coverage %s RangeSkill %s CI cutoff [%s, %s] | v2 coverage %s RangeSkill %s" % (
-            h, c["n"], c["cutoffs"], R._f(c["ch"]["coverage"]), R._f(c["ch"]["range_skill"]),
-            R._f(c["ch_ci_cutoff"][0]), R._f(c["ch_ci_cutoff"][1]),
-            R._f(c["v2"]["coverage"]), R._f(c["v2"]["range_skill"])))
-    print("LOOP BAR: %s%s" % (v, " (" + "; ".join(why) + ")" if why else ""))
+    text, payload = clean_report(res, sel, a.min_cell, v, why)
+    print(text)
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
-            json.dump({"selected": sel, "results": res, "verdict": v, "reasons": why}, fh, indent=1)
+            json.dump(payload, fh, indent=1)
     return 0
 
 
