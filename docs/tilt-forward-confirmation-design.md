@@ -138,9 +138,12 @@ horizon first meets rule 1: day about 11, week about 15, month about 31
 (10th cutoff plus 1, 5 and 21 sessions). These are not verdict times. Under
 the joint scoring trigger there is one verdict, at the first point all three
 horizons are eligible, so about session 31, set by the month horizon (when the
-ticker and row minimums also hold). With one sweep date per week the sessions
-become weeks: eligibility at about 11, 15 and 31 weeks, the joint verdict at
-about 31 weeks. Fewer than 10 distinct tickers across the forward rows of a horizon
+ticker and row minimums also hold). With one sweep date per week the horizons still count sessions (1, 5, 21)
+and only the cutoff cadence changes: the 10th cutoff falls in about week 10,
+the day horizon matures about 1 session later, the week horizon about 1 week
+later and the month horizon about 21 sessions (about 4 weeks and 1 session)
+later. Eligibility is about 10, 11 and 14 to 15 weeks, and the joint verdict,
+set by the month horizon, is about 14 to 15 weeks. Fewer than 10 distinct tickers across the forward rows of a horizon
 blocks rule 1 whatever the dates. Tickers per sweep do not need to reach
 10 if the sweeps rotate through at least 10 between them.
 
