@@ -66,6 +66,10 @@ span (no earlier rows are known to exist).
 | 2022 | none (16 covered days) | 0 |
 | 2023 | 2023-01-31 | 4 calendar days (Jan 31 to Feb 3) |
 
+Each count in this table assumes its covered span has no gaps. The relay gave
+no per-day counts, so this is not verified (see "What this does not
+establish").
+
 - That is 53 calendar days, about 38 sessions (Sunday to Thursday), across the
   five years. The screens place a cutoff every 21 sessions per ticker and
   horizon, so on average roughly 2 distinct cutoff dates per ticker-horizon
