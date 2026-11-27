@@ -237,13 +237,17 @@ def test_fit_reference_and_provenance():
                 "x: realised window rebuilt to 21 sessions from price.csv",
                 "y: no usable pre-cutoff OHLC history"]
         return [row(1.0, 0.5, a="s%d" % i) for i in range(3)], []
-    old = (W.build_rows, W.A.find_captures)
+    old = (W.build_rows, W.A.find_captures, W.windowed_captures)
     W.build_rows, W.A.find_captures = fake_build, lambda *a: caps
+    W.windowed_captures = lambda roots, lo, hi: [
+        c for c in caps if W.A.cell_number(c) is not None
+        and lo <= W.A.cell_number(c) <= (hi or 10 ** 9)]
     try:
         with contextlib.redirect_stdout(io.StringIO()):
             rc, out = W._run(fake_args(), 48, 90, True, "DESCRIPTIVE ONLY")
     finally:
-        W.build_rows, W.A.find_captures = old
+        (W.build_rows, W.A.find_captures,
+         W.windowed_captures) = old
     train_caps, train_ref = calls[0]
     check("fit reference is the training captures only",
           train_ref == train_caps and not any(
@@ -274,6 +278,75 @@ def test_fit_reference_and_provenance():
                                          "t", 40))
 
 
+def make_capture(root, cell_dir, cutoff, ticker):
+    d = os.path.join(root, cell_dir, cutoff, ticker)
+    os.makedirs(os.path.join(d, "digest"))
+    for fn in ("manifest.json", "realised.json"):
+        open(os.path.join(d, fn), "w").write("{}")
+    open(os.path.join(d, "digest", "ensemble.json"), "w").write("{}")
+    return d
+
+
+def test_dedup_within_window():
+    with tempfile.TemporaryDirectory() as t:
+        tr = make_capture(t, "run-cell47", "2025-01-01", "COMI.CA")
+        ho = make_capture(t, "run-cell91", "2025-01-01", "COMI.CA")
+        other = make_capture(t, "run-cell30", "2025-01-02", "ETEL.CA")
+        un = make_capture(t, "run-unnumbered", "2025-01-03", "TMGH.CA")
+        old = W.A.find_captures([t], None)
+        check("global dedup lets the later cell replace the training "
+              "capture (the defect this guards against)",
+              ho in old and tr not in old, old)
+        train = W.windowed_captures([t], 1, 47)
+        check("training window keeps the training-cell capture",
+              tr in train and ho not in train, train)
+        check("training window keeps other training captures",
+              other in train)
+        held = W.windowed_captures([t], 91, None)
+        check("clean window deduplicates to the later cell",
+              held == [ho], held)
+        check("descriptive window 48-90 excludes both",
+              W.windowed_captures([t], 48, 90) == [])
+        check("unnumbered never enters a window",
+              un not in train and un not in held
+              and un not in W.windowed_captures([t], 1, None))
+        later = make_capture(t, "run-cell9", "2025-01-01", "COMI.CA")
+        check("within one window the lexically latest path wins",
+              W.windowed_captures([t], 1, 47) == [later, other] and tr not in W.windowed_captures(
+                      [t], 1, 47), W.windowed_captures([t], 1, 47))
+
+
+
+def test_run_uses_window_dedup():
+    with tempfile.TemporaryDirectory() as t:
+        tr = make_capture(t, "run-cell47", "2025-01-01", "COMI.CA")
+        ho = make_capture(t, "run-cell91", "2025-01-01", "COMI.CA")
+        sc = make_capture(t, "run-cell60", "2025-01-05", "TMGH.CA")
+        make_capture(t, "run-cell95", "2025-01-05", "TMGH.CA")
+        calls = []
+
+        def fake_build(cs, ref):
+            calls.append((list(cs), list(ref)))
+            return (training() if cs and cs[0] == tr else
+                    [row(1.0, 0.5, t="S%d" % j, a="s%d" % (j % 3))
+                     for j in range(6)]), []
+        old = W.build_rows
+        W.build_rows = fake_build
+        try:
+            ns = fake_args()
+            ns.captures = [t]
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc, out = W._run(ns, 48, 90, True, "DESCRIPTIVE ONLY")
+        finally:
+            W.build_rows = old
+        check("_run fits on the training-cell capture despite the later "
+              "cell", rc == 0 and calls[0][0] == [tr], calls)
+        check("_run scores the in-window capture despite a later cell",
+              calls[1][0] == [sc], calls[1])
+        check("reference set stays the full dedup'd set for the score "
+              "rebuild", calls[1][1] == W.A.find_captures([t], None))
+
+
 class Suite(unittest.TestCase):
     """Runs the checks under `unittest discover -s scripts`."""
 
@@ -288,6 +361,7 @@ def run_all():
     for fn in (test_constants, test_atr_ratio, test_percentile_regime,
                test_fit, test_score_rows, test_cell_selection,
                test_cli_guards, test_render_and_json,
+               test_dedup_within_window, test_run_uses_window_dedup,
                test_fit_window_guards, test_fit_reference_and_provenance):
         fn()
 
