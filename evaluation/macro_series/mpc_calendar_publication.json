@@ -1,0 +1,33 @@
+{
+ "note": "Per-year CBE MPC meeting calendars and when each became public. The CBE schedule page (https://www.cbe.org.eg/en/monetary-policy/mpc-meetings-schedule) renders its year tabs with a script and shows no publication date; 'first_public_on_or_before' is the date of the earliest press report found that says the CBE announced the schedule (SECONDARY evidence). The primary page is only a bound: the Wayback snapshot of 2023-11-10 lists year tabs 2023 back to 2005, i.e. no 2024 tab yet.",
+ "primary_bound": {
+  "url": "http://web.archive.org/web/20231110182034/https://www.cbe.org.eg/en/monetary-policy/mpc-meetings-schedule",
+  "reading": "tab list starts at 2023 (no 2024 tab) on 2023-11-10"
+ },
+ "years": {
+  "2024": {
+   "dates": ["2024-02-01", "2024-03-28", "2024-05-23", "2024-07-18", "2024-09-05", "2024-10-17", "2024-11-21", "2024-12-26"],
+   "first_public_on_or_before": "2023-12-22",
+   "evidence": "https://www.almasryalyoum.com/news/details/3059375 (dated 2023-12-22, reports the CBE statement); https://www.masrawy.com/news/news-banking/details/2023/12/23/2514029/ (2023-12-23, all 8 dates)",
+   "evidence_kind": "secondary"
+  },
+  "2025": {
+   "dates": ["2025-02-20", "2025-04-17", "2025-05-22", "2025-07-10", "2025-08-28", "2025-10-02", "2025-11-20", "2025-12-25"],
+   "first_public_on_or_before": "2024-12-28",
+   "evidence": "https://almalnews.com/1928572/ (dated 2024-12-28, says the CBE announced it on its website); https://banksmorning.com/ (2024-12-27 listing, not read to the end)",
+   "evidence_kind": "secondary"
+  },
+  "2026": {
+   "dates": ["2026-02-12", "2026-04-02", "2026-05-21", "2026-07-09", "2026-08-20", "2026-09-24", "2026-10-29", "2026-12-17"],
+   "first_public_on_or_before": "2025-12-29",
+   "evidence": "https://www.elwatannews.com/news/details/8198821 (dated 2025-12-29); https://www.elnabaa.net/1151778 (2025-12-31, all 8 dates)",
+   "evidence_kind": "secondary"
+  }
+ },
+ "cancelled": [
+  {"date": "2024-03-28", "announced": "2024-03-20", "url": "https://www.cbe.org.eg/en/news-publications/news/2024/03/20/11/52/press-release-the-mpc-meeting-scheduled-for-28-march-2024-has-been-cancelled", "evidence_kind": "primary"}
+ ],
+ "special": [
+  {"date": "2024-03-06", "announced": "2024-03-06", "url": "https://www.cbe.org.eg/en/news-publications/news/2024/03/06/05/42/special-mpc-press-release-6-march-2024", "evidence_kind": "primary"}
+ ]
+}
