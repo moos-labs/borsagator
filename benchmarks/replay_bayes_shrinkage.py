@@ -44,6 +44,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 
 sys.dont_write_bytecode = True
@@ -131,6 +132,34 @@ def unpooled_rows(rows):
                     or pool[r["as_of"]][1] < MIN_POOL))
 
 
+def windowed_captures(roots, lo, hi):
+    """Capture dirs whose cell number is in [lo, hi], deduplicated
+    WITHIN that window with the find_captures rule (one observation
+    per (cutoff, ticker), lexically latest path wins). The window is
+    applied before the dedup so a later-cell rerun of the same cutoff
+    and ticker cannot replace the capture inside the window. Unnumbered
+    captures never enter a window."""
+    found = {}
+    for root in roots:
+        for dp, _dn, fn in os.walk(root):
+            if ".tmp-" in dp or ".old-" in dp:
+                continue
+            if not ("manifest.json" in fn and "realised.json" in fn
+                    and os.path.exists(os.path.join(
+                        dp, "digest", "ensemble.json"))):
+                continue
+            cutoff = os.path.basename(os.path.dirname(dp))
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", cutoff):
+                continue
+            num = A.cell_number(dp)
+            if num is None or num < lo or (hi is not None and num > hi):
+                continue
+            key = (cutoff, os.path.basename(dp).upper())
+            if key not in found or dp > found[key]:
+                found[key] = dp
+    return [found[k] for k in sorted(found)]
+
+
 def select_caps(allc, lo, hi):
     out = []
     for c in allc:
@@ -197,8 +226,10 @@ def render(res, lam, counts, unpooled, descriptive, title,
 
 
 def _run(a, lo, hi, descriptive, title):
+    # Full reference set (price rebuild only); the cell windows below
+    # are applied before the capture dedup, never after it.
     allc = A.find_captures(a.captures, None)
-    train_caps = select_caps(allc, 1, a.fit_max_cell)
+    train_caps = windowed_captures(a.captures, 1, a.fit_max_cell)
     # The fit sees outcomes only through training captures: its price
     # reference is selected from the training captures, never from the
     # held-out ones.
@@ -207,7 +238,7 @@ def _run(a, lo, hi, descriptive, title):
         print("refusing: no training rows (cells 1-%d)" % a.fit_max_cell)
         return 2, None
     lam, counts, _p = fit(train)
-    score_caps = select_caps(allc, lo, hi)
+    score_caps = windowed_captures(a.captures, lo, hi)
     rows, gaps = R.build_rows(score_caps, allc)
     pairs = score_rows(rows, lam)
     up = unpooled_rows(rows)
