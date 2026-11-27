@@ -94,6 +94,29 @@ INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
 # the shared EGX feed only). ORWE 17.73 (Mubasher matches TV) is
 # verified but not a v1-grid ticker, so it is recorded on #436,
 # not here. Extending the table is a reviewed change.
+# REPAIR-002 (#436, 2026-11-27): the SAME Yahoo gap class on
+# 2024-07-01 — EGX30 printed a close (27,969.59, +0.73%,
+# countryeconomy July-2024 table; 07-02 27,985.89) and the
+# Yahoo probe drops 2024-07-01 on all six tickers with usable
+# closes 06-27 + 07-02, so it was a real session the feed lost.
+# Cells 10/11/12/22/23 (cutoff 2024-06-30) gate-skipped on it
+# and hold no captures — the repair unblocks their re-runs.
+# Closes are Mubasher chartData (free, keyless, same route as
+# the 40-ticker pull): ETEL/TMGH/HRHO equal Yahoo's usable
+# closes on 06-27 + 07-02 to the cent; SWDY within 0.06%
+# (same as 2024-05-01). COMI is the exception: Mubasher
+# carries COMI on the ADJUSTED basis (66.37 on 2024-05-01 =
+# TV adjusted 66.37266272; 70.36 on 06-27 vs Yahoo 77.40),
+# so the table records Mubasher 70.93 x the exact 1.1
+# Yahoo-basis factor = 78.02, verified on both neighbours
+# (06-27: 77.40/70.36 = 1.1000; 07-02: 77.13/70.12 = 1.1000)
+# and on the 2024-05-01 pair (73.01/66.37 = 1.1000).
+# ORWE 23.40 (Mubasher; Yahoo neighbours match to the cent)
+# is verified but not a v1-grid ticker — recorded on #436,
+# not here. No press print was found for the 2024-07-01
+# individual closes, so all five carry the Mubasher basis
+# flag (second vendor, shared EGX feed — corroboration,
+# not independent verification, per the REPAIR-001 ruling).
 EGX_CLOSE_REPAIRS = {
     "2024-05-01": {
         "COMI.CA": {"close": 73.01, "source": "TradingView",
@@ -106,6 +129,23 @@ EGX_CLOSE_REPAIRS = {
                     "basis": "raw close; Mubasher within 0.06%"},
         "HRHO.CA": {"close": 15.14, "source": "TradingView",
                     "basis": "raw close; press-verified"},
+    },
+    "2024-07-01": {
+        "COMI.CA": {"close": 78.02, "source": "Mubasher",
+                    "basis": "Mubasher 70.93 x 1.1 Yahoo-basis factor; "
+                             "verified on 06-27 + 07-02 neighbours"},
+        "ETEL.CA": {"close": 30.99, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
+        "TMGH.CA": {"close": 57.12, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
+        "SWDY.CA": {"close": 47.63, "source": "Mubasher",
+                    "basis": "Mubasher close; within 0.06% of Yahoo "
+                             "on 06-27 + 07-02"},
+        "HRHO.CA": {"close": 19.38, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
     },
 }
 SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21

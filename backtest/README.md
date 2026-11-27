@@ -37,7 +37,13 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
   harness rule changes — no workaround was applied.
 - **6 cells have no captures at all** (gate-skipped worker runs, never
   scored): cells 3 (ORAS.CA 2023-12-29, stale-flat), 10, 11, 12, 22, 23
-  (whole 2024-06-30 cutoff — the 2024-07-01 gap).
+  (whole 2024-06-30 cutoff — the 2024-07-01 gap). REPAIR-002
+  (PR pending, #436): the 2024-07-01 closes are verified (EGX30
+  printed 27,969.59, +0.73%; Mubasher chartData: COMI 78.02 on the
+  Yahoo basis, ETEL 30.99, TMGH 57.12, SWDY 47.63, HRHO 19.38)
+  and the repair table now covers the date — the five cells await
+  re-dispatch to the worker once the repair reaches worker-release
+  (promotion, then `run backtest 2024-06-30 <ticker>`).
 
 ## Headline (67 cells, month = 21)
 
