@@ -62,7 +62,7 @@ def test_audit_values():
     w, m, d = res["week"], res["month"], res["day"]
     check("week skill 0.1", abs(w["range_skill"] - 0.1) < 1e-9, w)
     s = w["scorer"]
-    check("week scorer legs", s["skill_leg"] and s["coverage_overlap_leg"],
+    check("week scorer legs", s["skill_leg"] and s["coverage_leg"],
           s)
     check("week fails the 10-cluster bar",
           w["cluster_bar"] == {"needed": 10, "met": False})
@@ -73,10 +73,20 @@ def test_audit_values():
     check("cap passes on a zero-width coverage CI",
           w["cap"]["coverage_ci_ok"] and w["cap"]["coverage_ci_width"]
           < 1e-9, w["cap"])
-    check("wide coverage CI fails the cap but overlaps",
-          d["scorer"]["coverage_overlap_leg"]
+    check("wide coverage CI that overlaps the band fails the scorer leg "
+          "exactly as it fails the cap (scorer legs follow the scorer)",
+          d["scorer"]["coverage_ci"][0] <= 0.85
+          and d["scorer"]["coverage_ci"][1] >= 0.75
+          and not d["scorer"]["coverage_leg"]
           and not d["cap"]["coverage_ci_ok"]
           and d["cap"]["coverage_ci_width"] > 0.15, (d["scorer"], d["cap"]))
+    check("scorer leg equals the scorer's own coverage test", all(
+        res[h]["scorer"]["coverage_leg"] == K.T.R.coverage_ci_ok(
+            res[h]["scorer"]["coverage_ci"], (K.T.COV_LO, K.T.COV_HI))
+        for h in ("day", "week", "month")))
+    check("printed line states the width requirement",
+          "width <= 0.15" in K.render(res, 3).split("scorer legs")[1]
+          .split("\n")[0])
     check("jackknife of identical clusters", w["ci_audit"]["jackknife"][
         "pass"] and abs(w["ci_audit"]["jackknife"]["ci"][0] - 0.1) < 1e-9)
     check("sign-flip min p = 2^-k and unattainable at k = 5",
