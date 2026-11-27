@@ -67,6 +67,13 @@ def test_zscore_and_multiplier():
     check("z against earlier values only", abs(
         N.zscore(4.5, pri) - (4.5 - 2.5) / sd) < 1e-12)
     check("constant history gives 0", N.zscore(9.0, [2.0] * 8) == 0.0)
+    check("near-constant history (float noise) gives 0",
+          N.zscore(9.0, [2.0 + 1e-13 * k for k in range(8)]) == 0.0)
+    check("a real spread still scores", N.zscore(
+        9.0, [2.0 + 0.01 * k for k in range(8)]) > 3)
+    check("ticker_key strips _CA to the bare producer ticker",
+          N.ticker_key("COMI_CA") == "COMI"
+          and N.ticker_key("ETEL_CA") == "ETEL")
     check("beta 0 is exactly 1", N.multiplier(0.0, 2.7) == 1.0)
     check("always positive at the clip (beta 0.5, z -3)",
           N.multiplier(0.5, -3.0) > 0
@@ -79,7 +86,7 @@ def news_for(by_t):
     """Synthetic matches: a burst of records before some days."""
     out = {}
     for t, bars in by_t.items():
-        key = N.ticker_key(t)
+        key = t[:-3]    # bare producer ticker, independent of ticker_key
         ts = []
         for k, (d, _) in enumerate(bars):
             reps = 1 + (k % 11 == 0) * 6
@@ -126,7 +133,7 @@ def test_screen_pairs_semantics():
     bars = by_t["T00_CA"]
     idx = list(range(N.SB.MIN_HIST, len(bars) - N.R.SESSIONS["day"] + 1,
                      N.SB.STEP))
-    xs = [math.log1p(N.window_count(news["T00.CA"], bars[i - 1][0]))
+    xs = [math.log1p(N.window_count(news["T00"], bars[i - 1][0]))
           for i in idx]
     want = N.zscore(xs[11], xs[:11])
     got = [p["z_news"] for p in p0 if p["ticker"] == "T00_CA"
@@ -136,12 +143,12 @@ def test_screen_pairs_semantics():
     # point in time: records on or after the cutoff day cannot move z
     k = 200
     d = by_t["T00_CA"][k][0]
-    base = N.window_count(news["T00.CA"], d)
+    base = N.window_count(news["T00"], d)
     news2 = dict(news)
-    news2["T00.CA"] = sorted(news["T00.CA"] + [d.replace("-", "") + "000000"]
+    news2["T00"] = sorted(news["T00"] + [d.replace("-", "") + "000000"]
                              * 50)
     check("50 extra records stamped on the cutoff day change nothing",
-          N.window_count(news2["T00.CA"], d) == base)
+          N.window_count(news2["T00"], d) == base)
 
 
 def test_matches_loader_and_main():
@@ -160,12 +167,28 @@ def test_matches_loader_and_main():
                 for s in stamps[:200]:
                     f.write((json.dumps({"date": s, "tickers": [tk]})
                              + "\n").encode())
+            dup = json.dumps({"gkg_record_id": "R1", "url": "u1",
+                              "date": "20240102000000",
+                              "tickers": ["DUPT"]}) + "\n"
+            f.write(dup.encode())
+            f.write(dup.encode())                 # crash-resume repeat
+            f.write(json.dumps({"gkg_record_id": "R2", "url": "u1",
+                                "date": "20240103000000",
+                                "tickers": ["DUPT"]}).encode() + b"\n")
             f.write(b'{"date": "2024')            # truncated line
             f.write(b"\n")
             f.write('{"date":"20240101000000","tickers":["caf\u00e9"]}'
                     .encode("utf-8")[:-8] + b"\xc3\n")  # split UTF-8
         loaded, bad = N.load_matches(mp)
         check("bad lines counted, not fatal", bad == 2, bad)
+        check("repeated (record id, url) counted once; a different "
+              "record id with the same url is kept",
+              loaded["DUPT"] == ["20240102000000", "20240103000000"],
+              loaded.get("DUPT"))
+        t0 = sorted(by_t)[0]
+        check("loaded mapping is keyed by bare producer ticker with the "
+              "stamps written", loaded[t0[:-3]] == news[t0[:-3]][:200]
+              and t0 not in loaded, sorted(loaded)[:3])
         out = io.StringIO()
         js = os.path.join(d, "o.json")
         with contextlib.redirect_stdout(out):
