@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5). Sweeps archived: 107 (86 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree 8bc35c89, commit 8bc35c89). Sweeps archived: 110 (89 with an ensemble).
 
-**Forecasts found: 252 · matured: 63 · pending: 174 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 261 · matured: 66 · pending: 180 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -25,9 +25,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 | FAIT.CA | 6 | 1 | 5 | 0 | 2014-06-26 → 2026-11-26 |
 | FAITA.CA | 6 | 1 | 5 | 0 | 2014-07-13 → 2026-11-26 |
 | GOUR.CA | 6 | 1 | 5 | 0 | 2026-02-10 → 2026-11-26 |
-| ICFC.CA | 3 | 0 | 3 | 0 | 2014-06-11 → 2026-11-25 |
-| IFAP.CA | 3 | 0 | 3 | 0 | 2014-07-16 → 2026-11-25 |
-| ISPH.CA | 3 | 0 | 3 | 0 | 2017-12-11 → 2026-11-25 |
+| ICFC.CA | 6 | 1 | 5 | 0 | 2014-06-11 → 2026-11-26 |
+| IFAP.CA | 6 | 1 | 5 | 0 | 2014-07-16 → 2026-11-26 |
+| ISPH.CA | 6 | 1 | 5 | 0 | 2017-12-11 → 2026-11-26 |
 | JUFO.CA | 3 | 0 | 3 | 0 | 2014-07-17 → 2026-11-25 |
 | LCSW.CA | 3 | 0 | 3 | 0 | 2014-05-21 → 2026-11-25 |
 | MASR.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
@@ -51,7 +51,7 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 
 | Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| day | 36 | 0.139 | 7.38 | 0.667 |
+| day | 39 | 0.128 | 6.99 | 0.692 |
 | week | 15 | 0.0 | 18.28 | 1.0 |
 | month | 0 | — | — | — |
 
@@ -60,10 +60,10 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 | Family | Mean skill | n |
 |---|---|---|
 | agent | +0.750 | 1 |
-| ensemble (net_score) | -0.219 | 51 |
-| price-forecast | -0.473 | 48 |
-| sentiment | +0.021 | 50 |
-| technicals | -0.228 | 50 |
+| ensemble (net_score) | -0.201 | 54 |
+| price-forecast | -0.433 | 51 |
+| sentiment | +0.033 | 53 |
+| technicals | -0.222 | 53 |
 
 ## Forecasts
 
@@ -210,15 +210,15 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 | GOUR.CA | 2026-11-25 | day | flat | +0.42 | +0.37 | ✅ | 0.05 | ✅ |  | matured 2026-11-26 |
 | GOUR.CA | 2026-11-25 | week | flat | +0.73 | — | — | — | — | | pending (1/3 sessions) |
 | GOUR.CA | 2026-11-25 | month | up | +1.98 | — | — | — | — | | pending (1/14 sessions) |
-| ICFC.CA | 2026-11-25 | day | down | -1.53 | — | — | — | — | | pending (0/1 sessions) |
-| ICFC.CA | 2026-11-25 | week | down | -3.48 | — | — | — | — | | pending (0/3 sessions) |
-| ICFC.CA | 2026-11-25 | month | down | -8.88 | — | — | — | — | | pending (0/14 sessions) |
-| IFAP.CA | 2026-11-25 | day | up | +2.16 | — | — | — | — | | pending (0/1 sessions) |
-| IFAP.CA | 2026-11-25 | week | up | +2.33 | — | — | — | — | | pending (0/3 sessions) |
-| IFAP.CA | 2026-11-25 | month | up | +3.89 | — | — | — | — | | pending (0/14 sessions) |
-| ISPH.CA | 2026-11-25 | day | up | +1.23 | — | — | — | — | | pending (0/1 sessions) |
-| ISPH.CA | 2026-11-25 | week | up | +2.28 | — | — | — | — | | pending (0/3 sessions) |
-| ISPH.CA | 2026-11-25 | month | flat | +0.09 | — | — | — | — | | pending (0/14 sessions) |
+| ICFC.CA | 2026-11-25 | day | down | -1.53 | +3.17 | ❌ | 4.70 | ✅ |  | matured 2026-11-26 |
+| ICFC.CA | 2026-11-25 | week | down | -3.48 | — | — | — | — | | pending (1/3 sessions) |
+| ICFC.CA | 2026-11-25 | month | down | -8.88 | — | — | — | — | | pending (1/14 sessions) |
+| IFAP.CA | 2026-11-25 | day | up | +2.16 | +0.44 | ❌ | 1.72 | ✅ |  | matured 2026-11-26 |
+| IFAP.CA | 2026-11-25 | week | up | +2.33 | — | — | — | — | | pending (1/3 sessions) |
+| IFAP.CA | 2026-11-25 | month | up | +3.89 | — | — | — | — | | pending (1/14 sessions) |
+| ISPH.CA | 2026-11-25 | day | up | +1.23 | +0.70 | ❌ | 0.53 | ✅ |  | matured 2026-11-26 |
+| ISPH.CA | 2026-11-25 | week | up | +2.28 | — | — | — | — | | pending (1/3 sessions) |
+| ISPH.CA | 2026-11-25 | month | flat | +0.09 | — | — | — | — | | pending (1/14 sessions) |
 | JUFO.CA | 2026-11-25 | day | up | +1.12 | — | — | — | — | | pending (0/1 sessions) |
 | JUFO.CA | 2026-11-25 | week | up | +2.71 | — | — | — | — | | pending (0/3 sessions) |
 | JUFO.CA | 2026-11-25 | month | up | +4.70 | — | — | — | — | | pending (0/14 sessions) |
@@ -321,6 +321,15 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 | GOUR.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | GOUR.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | GOUR.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| ICFC.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| ICFC.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| ICFC.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| IFAP.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| IFAP.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| IFAP.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| ISPH.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| ISPH.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| ISPH.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
 
 ## Data gaps & notes
 
@@ -342,9 +351,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree 375a46c5, commit 375a46c5)
 - FAIT.CA: actuals series has 3001 sessions, 2014-06-26 → 2026-11-26 (last source: sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002/collected/egx-data/egxpy_fait.csv)
 - FAITA.CA: actuals series has 3001 sessions, 2014-07-13 → 2026-11-26 (last source: sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002/collected/egx-data/egxpy_faita.csv)
 - GOUR.CA: actuals series has 193 sessions, 2026-02-10 → 2026-11-26 (last source: sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002/collected/egx-data/egxpy_gour.csv)
-- ICFC.CA: actuals series has 3000 sessions, 2014-06-11 → 2026-11-25 (last source: sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001/collected/egx-data/egxpy_icfc.csv)
-- IFAP.CA: actuals series has 3000 sessions, 2014-07-16 → 2026-11-25 (last source: sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001/collected/egx-data/egxpy_ifap.csv)
-- ISPH.CA: actuals series has 2173 sessions, 2017-12-11 → 2026-11-25 (last source: sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001/collected/egx-data/egxpy_isph.csv)
+- ICFC.CA: actuals series has 3001 sessions, 2014-06-11 → 2026-11-26 (last source: sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002/collected/egx-data/egxpy_icfc.csv)
+- IFAP.CA: actuals series has 3001 sessions, 2014-07-16 → 2026-11-26 (last source: sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002/collected/egx-data/egxpy_ifap.csv)
+- ISPH.CA: actuals series has 2174 sessions, 2017-12-11 → 2026-11-26 (last source: sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002/collected/egx-data/egxpy_isph.csv)
 - JUFO.CA: actuals series has 3000 sessions, 2014-07-17 → 2026-11-25 (last source: sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001/collected/egx-data/egxpy_jufo.csv)
 - LCSW.CA: actuals series has 3000 sessions, 2014-05-21 → 2026-11-25 (last source: sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001/collected/egx-data/egxpy_lcsw.csv)
 - MASR.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001/collected/egx-data/egxpy_masr.csv)
