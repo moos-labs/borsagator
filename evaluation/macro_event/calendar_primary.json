@@ -527,8 +527,8 @@
    "release_time": null,
    "release_time_source": null,
    "earliest_publication_cairo": "2021-04-30T13:27",
-   "earliest_publication_source": "https://www.egyonlinetoday.com/2021/04/blog-post_95.html (page stamp 2021-04-30T13:27:00+02:00 = Africa/Cairo; blog post, earliest found, not exhaustive)",
-   "settles_before": true
+   "earliest_publication_source": "https://www.egyonlinetoday.com/2021/04/blog-post_95.html (page stamp 2021-04-30T13:27:00+02:00 = Africa/Cairo; blog post, earliest found, not exhaustive) [Moos 2026-11-27: kept as provenance; does not settle — a blog post is not a press-wire/release page]",
+   "settles_before": false
   },
   {
    "type": "budget",
@@ -598,5 +598,5 @@
   }
  ],
  "release_time_note": "release_time (HH:MM Cairo) only from a timestamped press wire or release page, never page_time. null = not sourced (study default 'before'). Round 75: none sourced yet.",
- "earliest_publication_note": "Article-page stamps with an explicit zone, converted to Africa/Cairo. settles_before only when the stamp is strictly before 14:30 Cairo. A late stamp settles nothing. page_time never used. Default rule 'before' unchanged. Round 76."
+ "earliest_publication_note": "Article-page stamps with an explicit zone, converted to Africa/Cairo. settles_before only when the stamp is strictly before 14:30 Cairo. A late stamp settles nothing. page_time never used. Default rule 'before' unchanged. Round 76. 2021-04-30 blog-post stamp kept as provenance but does not settle (blog posts are not press-wire/release pages)."
 }
