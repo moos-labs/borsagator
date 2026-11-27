@@ -10,7 +10,7 @@ horizon matches, realized_move_pct and the signal are not null. One row per
 (as_of, horizon, ticker): the FIRST such row in ledger order is kept (the
 ledger holds re-issued forecasts for some tickers; sources do not settle
 which to keep, so the earliest is used and this is flagged for review).
-A wide date has >= 20 distinct tickers. Excess return = realised move minus
+A wide date has >= 20 distinct tickers (non-finite signal or move values are dropped first); wide dates are counted from the clean rows even where the IC is undefined (constant signal), and the defined-IC dates are tracked separately. Excess return = realised move minus
 the date's mean over its clean tickers. IC = Spearman rank correlation of
 signal vs excess return (average ranks; zero signals stay in).
 """
@@ -27,6 +27,11 @@ B_DRAWS = 2000
 SEED = 70
 
 
+def _finite(x):
+    return (isinstance(x, (int, float)) and not isinstance(x, bool)
+            and math.isfinite(x))
+
+
 def signal_value(f, sig):
     if sig == "net_score":
         return f.get("net_score")
@@ -38,9 +43,9 @@ def clean_rows(rows, sig, h):
     out = []
     for f in rows:
         v = signal_value(f, sig)
+        mv = f.get("realized_move_pct")
         if (f.get("status") != "matured" or f.get("dividend_gap") is not None
-                or f.get("horizon") != h or v is None
-                or f.get("realized_move_pct") is None):
+                or f.get("horizon") != h or not _finite(v) or not _finite(mv)):
             continue
         key = (f["as_of"], f["ticker"])
         if key in seen:
@@ -113,24 +118,39 @@ def icir(vals):
     return None if sd == 0 else m / sd
 
 
+def wide_dates(rows):
+    """Dates with >= WIDE distinct clean tickers, whether or not an IC is
+    defined on them (clean_rows holds one row per (as_of, ticker))."""
+    by = {}
+    for d, t, _s, _m in rows:
+        by.setdefault(d, set()).add(t)
+    return {d for d, ts in by.items() if len(ts) >= WIDE}
+
+
 def pass_leg(res):
     return all(res[h]["ci95"][0] is not None and res[h]["ci95"][0] > 0
-               and res[h]["n_dates"] >= GATE_DATES for h in HORIZONS)
+               and res[h]["n_ic_defined"] >= GATE_DATES for h in HORIZONS)
 
 
 def score(rows):
     out = {"wide_min_tickers": WIDE, "gate_required": GATE_DATES, "signals": {}}
     for sig in SIGNALS:
-        ics = {h: date_ics(clean_rows(rows, sig, h)) for h in HORIZONS}
-        both = set(ics["day"]) & set(ics["week"])
-        s = {"wide_dates_day": len(ics["day"]), "wide_dates_week": len(ics["week"]),
+        cr = {h: clean_rows(rows, sig, h) for h in HORIZONS}
+        wide = {h: wide_dates(cr[h]) for h in HORIZONS}
+        ics = {h: date_ics(cr[h]) for h in HORIZONS}
+        both = wide["day"] & wide["week"]
+        s = {"wide_dates_day": len(wide["day"]), "wide_dates_week": len(wide["week"]),
              "wide_dates_both": len(both), "gate_reached": len(both) >= GATE_DATES}
         if s["gate_reached"]:
             for h in HORIZONS:
                 v = [ics[h][d] for d in sorted(ics[h])]
-                lo, hi = boot_ci(ics[h])
-                s[h] = {"n_dates": len(v), "mean_ic": sum(v) / len(v), "icir": icir(v),
-                        "ci95": [lo, hi]}
+                if v:
+                    lo, hi = boot_ci(ics[h])
+                    mean = sum(v) / len(v)
+                else:
+                    lo = hi = mean = None
+                s[h] = {"n_dates": len(wide[h]), "n_ic_defined": len(v),
+                        "mean_ic": mean, "icir": icir(v), "ci95": [lo, hi]}
             s["ci_lower_gt_0_both"] = pass_leg(s)
         out["signals"][sig] = s
     return out

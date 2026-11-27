@@ -97,12 +97,12 @@ def test_pass_leg_and_ci():
     check("mean IC 1", abs(s["day"]["mean_ic"] - 1) < 1e-9)
     s = M.score(ledger(20, sign=-1))["signals"]["technicals"]
     check("negative IC not pass", s["day"]["ci95"][1] < 0 and not s["ci_lower_gt_0_both"])
-    leg = {"day": {"ci95": (0.1, 0.2), "n_dates": 20}, "week": {"ci95": (0.0, 0.2), "n_dates": 20}}
+    leg = {"day": {"ci95": (0.1, 0.2), "n_ic_defined": 20}, "week": {"ci95": (0.0, 0.2), "n_ic_defined": 20}}
     check("lower bound exactly 0 fails", not M.pass_leg(leg))
     leg["week"]["ci95"] = (0.01, 0.2)
     check("both >0 passes", M.pass_leg(leg))
-    leg["week"]["n_dates"] = 19
-    check("n_dates<20 fails", not M.pass_leg(leg))
+    leg["week"]["n_ic_defined"] = 19
+    check("n_ic_defined<20 fails", not M.pass_leg(leg))
     ics = {"d%d" % i: v for i, v in enumerate([0.1, 0.5, -0.2, 0.3, 0.05, 0.4, -0.1, 0.25])}
     a = M.boot_ci(ics)
     check("seed fixed", a == M.boot_ci(ics))
@@ -127,9 +127,42 @@ def test_signals_separate_and_cli():
               and "day" not in out["signals"]["technicals"])
 
 
+def test_nonfinite_and_constant_signal():
+    nan, inf = float("nan"), float("inf")
+    rows = [row("D", 1, "day", nan, 1, 1, 1), row("D", 2, "day", inf, 1, 1, 1),
+            row("D", 3, "day", 1, 1, 1, nan), row("D", 4, "day", 1, 1, 1, -inf),
+            row("D", 5, "day", 1, 1, 1, 1), row("D", 6, "day", True, 1, 1, 1)]
+    c = M.clean_rows(rows, "technicals", "day")
+    check("non-finite dropped", [x[1] for x in c] == ["T05"], c)
+    check("bool signal dropped", all(x[1] != "T06" for x in c))
+    check("nan net_score dropped", M.clean_rows([row("D", 1, "day", 1, 1, nan, 1)], "net_score", "day") == [])
+    # 20 tickers, 20 dates: technicals constant (IC undefined) but dates still wide
+    led = ledger(20)
+    for f in led:
+        f["families"]["technicals"] = 0.5
+    s = M.score(led)["signals"]["technicals"]
+    check("constant signal: wide counted", s["wide_dates_day"] == 20 and s["wide_dates_both"] == 20 and s["gate_reached"], s)
+    check("constant signal: no IC defined", s["day"]["n_ic_defined"] == 0 and s["day"]["n_dates"] == 20)
+    check("constant signal: no mean on empty", s["day"]["mean_ic"] is None and s["day"]["icir"] is None and s["day"]["ci95"] == [None, None])
+    check("constant signal: not pass", s["ci_lower_gt_0_both"] is False)
+    # 19 dates constant + 1 date non-constant is wide 20, defined 20 only for others
+    led = ledger(20)
+    for f in led:
+        if f["as_of"] == "D00":
+            f["families"]["technicals"] = 0.5
+    s = M.score(led)["signals"]["technicals"]
+    check("one undefined date: wide 20, defined 19", s["day"]["n_dates"] == 20 and s["day"]["n_ic_defined"] == 19, s["day"])
+    check("one undefined date: pass needs 20 defined", s["ci_lower_gt_0_both"] is False)
+    # NaN rows reduce a date below 20 clean tickers
+    led = ledger(20)
+    led[0]["realized_move_pct"] = nan
+    s = M.score(led)["signals"]["technicals"]
+    check("nan row removes wide date at day", s["wide_dates_day"] == 19 and s["wide_dates_week"] == 20 and not s["gate_reached"], s)
+
+
 def run_all():
     for fn in (test_spearman_and_ranks, test_wide_boundary_and_excess, test_clean_filters,
-               test_gate_counts_only, test_pass_leg_and_ci, test_signals_separate_and_cli):
+               test_gate_counts_only, test_nonfinite_and_constant_signal, test_pass_leg_and_ci, test_signals_separate_and_cli):
         fn()
 
 
