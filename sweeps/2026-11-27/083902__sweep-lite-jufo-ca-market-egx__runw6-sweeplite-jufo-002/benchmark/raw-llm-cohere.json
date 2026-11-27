@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 21.72,
+ "base_source": "egx-data/egxpy_jufo.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T08:39:07.431148+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.75,
+   "direction": "up",
+   "expected_move_pct": 1.32,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.98,
+   "range_low_pct": 0.66,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.55,
+   "direction": "down",
+   "expected_move_pct": -2.35,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -1.18,
+   "range_low_pct": -3.52,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.68,
+   "direction": "up",
+   "expected_move_pct": 3.12,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.68,
+   "range_low_pct": 1.56,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_jufo.csv": "b72de4ba16f778aef85e203e1213c3c879ea06859d9421c572dc2f844f791ea6",
+  "digest.json": "96f0f6489328a2d90b83ce0cb0c30b4dbc619b111ef47735407ddbe326149f03",
+  "ensemble.json": "4cb1130e7749dcef5b6dd8ef287d944ef8122b507a619cdfbbf45add05f7ae26",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_jufo.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0254,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+ "ticker": "JUFO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

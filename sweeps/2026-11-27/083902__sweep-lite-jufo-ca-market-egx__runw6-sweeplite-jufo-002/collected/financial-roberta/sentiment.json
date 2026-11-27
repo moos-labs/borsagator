@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.0023192160297185183,
+    "negative": 0.00021116610150784254,
+    "neutral": 0.9974696636199951
+  },
+  "items": [
+    {
+      "text": "Montreal Panamerican Open 2026 - IJF.org",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0023192160297185183,
+        "negative": 0.00021116610150784254,
+        "neutral": 0.9974696636199951
+      },
+      "raw_probabilities": {
+        "neutral": 0.9974696636199951,
+        "positive": 0.0023192160297185183,
+        "negative": 0.00021116610150784254
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 21.72,
+ "base_source": "egx-data/egxpy_jufo.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T08:39:03.160791+00:00",
+ "inputs_sha256": {
+  "digest.json": "96f0f6489328a2d90b83ce0cb0c30b4dbc619b111ef47735407ddbe326149f03",
+  "ensemble.json": "4cb1130e7749dcef5b6dd8ef287d944ef8122b507a619cdfbbf45add05f7ae26"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+ "ticker": "JUFO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,24 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite JUFO.CA market=EGX",
+  "job_shape": "sweep-lite JUFO.CA market=EGX",
+  "claim_id": "w6-sweeplite-jufo-002",
+  "source_runs": [
+    "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+  ],
+  "sweep_dir": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+  "finished": "2026-11-27T08:39:02.856534+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

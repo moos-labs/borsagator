@@ -1,0 +1,44 @@
+/opt/gator/runners/kronos/scripts/kronos_forecast.py:216: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  d += pd.Timedelta(days=1)
+[data] source=yahooquery raw_rows=4067
+[data] cleaned_rows=1930 range=2019-01-01..2026-11-25
+[context] preferred_sessions=41 using=41 fallback=False
+[context] supplied=41 used=41 max_context=512
+[samples] draws=32 aggregation=per-step median (close_p10/close_p90 across draws)
+  0%|          | 0/21 [00:00<?, ?it/s] 10%|▉         | 2/21 [00:00<00:00, 19.62it/s] 19%|█▉        | 4/21 [00:00<00:00, 19.41it/s] 29%|██▊       | 6/21 [00:00<00:00, 19.04it/s] 38%|███▊      | 8/21 [00:00<00:00, 18.79it/s] 48%|████▊     | 10/21 [00:00<00:00, 18.55it/s] 57%|█████▋    | 12/21 [00:00<00:00, 18.26it/s] 67%|██████▋   | 14/21 [00:00<00:00, 17.85it/s] 76%|███████▌  | 16/21 [00:00<00:00, 17.43it/s] 86%|████████▌ | 18/21 [00:01<00:00, 16.17it/s] 95%|█████████▌| 20/21 [00:01<00:00, 15.45it/s]100%|██████████| 21/21 [00:01<00:00, 17.05it/s]
+[samples] draw 1/32 in 1.3s
+[samples] draw 2/32 in 1.2s
+[samples] draw 3/32 in 1.2s
+[samples] draw 4/32 in 1.2s
+[samples] draw 5/32 in 1.2s
+[samples] draw 6/32 in 1.2s
+[samples] draw 7/32 in 1.2s
+[samples] draw 8/32 in 1.2s
+[samples] draw 9/32 in 1.2s
+[samples] draw 10/32 in 1.2s
+[samples] draw 11/32 in 1.3s
+[samples] draw 12/32 in 1.3s
+[samples] draw 13/32 in 1.2s
+[samples] draw 14/32 in 1.2s
+[samples] draw 15/32 in 1.2s
+[samples] draw 16/32 in 1.2s
+[samples] draw 17/32 in 1.2s
+[samples] draw 18/32 in 1.2s
+[samples] draw 19/32 in 1.2s
+[samples] draw 20/32 in 1.2s
+[samples] draw 21/32 in 1.2s
+[samples] draw 22/32 in 1.2s
+[samples] draw 23/32 in 1.2s
+[samples] draw 24/32 in 1.2s
+[samples] draw 25/32 in 1.2s
+[samples] draw 26/32 in 1.2s
+[samples] draw 27/32 in 1.2s
+[samples] draw 28/32 in 1.2s
+[samples] draw 29/32 in 1.2s
+[samples] draw 30/32 in 1.2s
+[samples] draw 31/32 in 1.2s
+[samples] draw 32/32 in 1.2s
+[out] wrote results/forecast.csv
+[out] wrote results/report.md
+[result] last_actual_close=21.850000381469727 date=2026-11-25 pct_change=+6.45%
+[result] forecasted_closes=[22.1045, 22.2218, 22.3655, 22.8622, 22.541, 22.6718, 22.7198, 22.9073, 23.0826, 23.2146, 22.9258, 22.7866, 22.7873, 22.8983, 22.8487, 22.9861, 22.9589, 23.1695, 23.2929, 23.4276, 23.2596]

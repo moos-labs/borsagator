@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head><meta charset="utf-8">
+<title data-i18n-tpl="ui.title" data-tpl-date="2026-11-27" data-tpl-ticker="JUFO.CA">Borsagator report — JUFO.CA (2026-11-27)</title>
+<link rel="icon" href="data:,">
+<style>
+body{font-family:'IBM Plex Sans','IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;max-width:860px;margin:0 auto;padding:16px;color:#111;line-height:1.55}
+h1{font-size:1.5em}h2{font-size:1.2em;border-top:1px solid #ddd;padding-top:12px}h3{font-size:1.05em}
+table{border-collapse:collapse;margin:8px 0}th,td{border:1px solid #ccc;padding:4px 8px;text-align:left}
+.num{font-variant-numeric:tabular-nums}.dim{color:#555}.flag{color:#8a1f1f}.headline{font-weight:600}
+.framing{border:1px solid #888;padding:8px}.disclaimer{border:1px solid #888;padding:8px;margin:12px 0}
+.watermark{opacity:.55}.banner{background:#fff3cd;border:1px solid #d9a400;padding:8px}
+button{font:inherit;padding:4px 10px;margin:4px 4px 4px 0}
+pre{white-space:pre-wrap;word-break:break-word;background:#f6f6f6;padding:8px}
+code{font-family:ui-monospace,Menlo,monospace}
+</style></head>
+<body>
+<p><button id="langEn" type="button">English</button><button id="langAr" type="button">العربية</button><button id="copyJson" type="button" data-i18n="ui.copy">Copy model JSON</button><span id="copyMsg"></span></p>
+<p class="banner" data-i18n-tpl="flags.degraded" data-tpl-value="{&#x27;absent_families&#x27;: [], &#x27;absent_tools&#x27;: [&#x27;news-disclosure&#x27;], &#x27;reason&#x27;: &#x27;partial-fleet&#x27;}">Degraded: {&#x27;absent_families&#x27;: [], &#x27;absent_tools&#x27;: [&#x27;news-disclosure&#x27;], &#x27;reason&#x27;: &#x27;partial-fleet&#x27;}</p>
+<div class="disclaimer"><p data-i18n="disclaimer.short">Borsagator is not an investment adviser. This report is a computational output, not a recommendation to buy or sell. Verdicts are computed by the named analysis tools from public data; past performance does not predict future results. You decide — and you carry the risk. Securities involve risk of loss. You may lose money.</p></div>
+<h1 data-i18n-tpl="ui.title" data-tpl-date="2026-11-27" data-tpl-ticker="JUFO.CA">Borsagator report — JUFO.CA (2026-11-27)</h1>
+<p data-i18n-tpl="header.job" data-tpl-job="sweep-lite JUFO.CA market=EGX" data-tpl-market="EGX" data-tpl-shape="sweep-lite JUFO.CA market=EGX" data-tpl-display="market:sentinel">Job: sweep-lite JUFO.CA market=EGX · shape: sweep-lite JUFO.CA market=EGX · market: EGX</p>
+<p data-i18n-tpl="header.model" data-tpl-commit="4a13412f7f07ff7c718a67f70a4172dfc1106646" data-tpl-schema="borsagator-report-model/2" data-tpl-sweep="sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002" data-tpl-display="commit:sentinel">Model: borsagator-report-model/2 · sweep: sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002 · archive commit: 4a13412f7f07ff7c718a67f70a4172dfc1106646</p>
+<section id="bands"><h2 data-i18n="sec.bands">Model range (from the forecast)</h2><p><span data-i18n="bands.support">Model range low at</span> <span class="num">19.66</span></p>
+<p><span data-i18n="bands.resistance">Model range high at</span> <span class="num">23.78</span></p>
+<p class="dim"><span data-i18n="display.levels-basis.week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)">week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)</span></p>
+<p class="framing" data-i18n="framing">This is a description of a computed model output, not a recommendation to buy, sell, or hold any security. You must make your own investment decisions.</p>
+<p data-i18n="rec.none">Recommendation not available for this sweep.</p></section>
+<section id="families"><h2 data-i18n="sec.families">Family scores</h2><p class="headline" data-i18n-tpl="headline.disagree" data-tpl-hi="price-forecast" data-tpl-hi_val="+0.30" data-tpl-lo="technicals" data-tpl-lo_val="-0.20" data-tpl-spread="+0.50" data-tpl-display="hi:family,lo:family">Families disagree: price-forecast +0.30 vs technicals -0.20 (spread +0.50)</p>
+<table><thead><tr><th data-i18n="th.family">Family</th><th data-i18n="th.score">Score</th></tr></thead><tbody>
+<tr><td><span data-i18n="display.family.price-forecast">price-forecast</span></td><td class="num">+0.30</td></tr>
+<tr><td><span data-i18n="display.family.technicals">technicals</span></td><td class="num">-0.20</td></tr>
+<tr><td><span data-i18n="display.family.sentiment">sentiment</span></td><td class="num">+0.01</td></tr>
+<tr><td><span data-i18n="display.family.fundamentals">fundamentals</span></td><td class="num">-0.10</td></tr>
+<tr><td><span data-i18n="display.family.agent">agent</span></td><td class="num"><span data-i18n="fam.nodata">no data</span></td></tr>
+</tbody></table>
+<p><span data-i18n="weights.applied.label">Applied weights (ledger):</span> <span data-i18n="display.family.agent">agent</span> ×1.000, <span data-i18n="display.family.fundamentals">fundamentals</span> ×1.000, <span data-i18n="display.family.price-forecast">price-forecast</span> ×1.000, <span data-i18n="display.family.sentiment">sentiment</span> ×1.000, <span data-i18n="display.family.technicals">technicals</span> ×1.000</p>
+<p><span data-i18n="weights.confidence.label">Confidence basis:</span> frozen v2 (factors 1.0 until n&gt;=30 per family, #594)</p></section>
+<section id="delta"><h2 data-i18n="sec.delta">What changed</h2><p data-i18n="delta.none">First sweep of this ticker + job shape — nothing to compare against yet.</p></section>
+<section id="horizons"><h2 data-i18n="sec.horizons">Horizons + price</h2><table><thead><tr><th data-i18n="th.horizon">Horizon</th><th data-i18n="th.direction">Direction</th><th data-i18n="th.expected">Expected</th><th data-i18n="th.range">Range</th><th data-i18n="th.confidence">Confidence</th></tr></thead><tbody>
+<tr><td><span data-i18n="display.horizon.day">day</span></td><td><span data-i18n="display.direction.flat">flat</span></td><td class="num">+0.00%</td><td class="num">-3.80% … +3.80%</td><td class="num">0.35</td></tr>
+<tr><td><span data-i18n="display.horizon.week">week</span></td><td><span data-i18n="display.direction.flat">flat</span></td><td class="num">+0.00%</td><td class="num">-9.47% … +9.47%</td><td class="num">0.35</td></tr>
+<tr><td><span data-i18n="display.horizon.month">month</span></td><td><span data-i18n="display.direction.flat">flat</span></td><td class="num">+0.00%</td><td class="num">-18.19% … +18.19%</td><td class="num">0.35</td></tr>
+</tbody></table>
+<p data-i18n-tpl="price.base" data-tpl-date="2026-11-26" data-tpl-price="21.72" data-tpl-source="egx-data/egxpy_jufo.csv" data-tpl-display="date:sentinel">Base price: 21.72 (egx-data/egxpy_jufo.csv, 2026-11-26)</p>
+<p data-i18n-tpl="price.crosscheck" data-tpl-base="2026-11-26" data-tpl-common="2026-11-25" data-tpl-status="agree" data-tpl-display="status:crosscheck">Price cross-check: agree (common date 2026-11-25, base date 2026-11-26)</p>
+<p class="flag" data-i18n-tpl="price.stale-note" data-tpl-base="2026-11-26" data-tpl-common="2026-11-25">Witnesses stale: common date 2026-11-25 trails base date 2026-11-26.</p>
+<table><thead><tr><th data-i18n="th.source">Source</th><th data-i18n="th.lastdate">Last date</th><th data-i18n="th.lastclose">Last close</th><th data-i18n="th.volume">Volume</th></tr></thead><tbody>
+<tr><td>egx-data/egxpy_jufo.csv</td><td>2026-11-26</td><td class="num">21.72</td><td>1134457.0</td></tr>
+<tr><td>openbb/JUFO_CA.csv</td><td>2026-11-26</td><td class="num">21.72</td><td>1134457.0</td></tr>
+<tr><td>pandas-ta/indicators.csv</td><td>2026-11-26</td><td class="num">21.72</td><td>1134457.0</td></tr>
+<tr><td>talib/indicators.csv</td><td>2026-11-26</td><td class="num">21.72</td><td>1134457.0</td></tr>
+<tr><td>yahooquery/JUFO.CA.csv</td><td>2026-11-25</td><td class="num">21.85</td><td>2436241.0<span data-i18n="price.stale"> (stale)</span></td></tr>
+</tbody></table></section>
+<section id="reaction"><h2 data-i18n="sec.reaction">Reaction profile</h2><p data-i18n="profile.none">No reaction profile for this ticker — no nudge applied.</p></section>
+<section id="tools"><h2 data-i18n="sec.tools">Per-tool sections</h2><h3>yahooquery</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>JUFO.CA.csv_last_close</td><td>21.85</td></tr><tr><td>JUFO.CA.csv_last_date</td><td>2026-11-25</td></tr><tr><td>rows_JUFO.CA.csv</td><td>1209</td></tr></tbody></table>
+<p data-i18n="tool.noreport">No report for this tool.</p>
+<h3>openbb</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>JUFO_CA.csv_last_close</td><td>21.72</td></tr><tr><td>JUFO_CA.csv_last_date</td><td>2026-11-26</td></tr><tr><td>rows_JUFO_CA.csv</td><td>484</td></tr></tbody></table>
+<p data-i18n="tool.noreport">No report for this tool.</p>
+<h3>egx-data</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>egxpy_jufo.csv_last_close</td><td>21.72</td></tr><tr><td>egxpy_jufo.csv_last_date</td><td>2026-11-26</td></tr><tr><td>rows_egxpy_jufo.csv</td><td>3000</td></tr><tr><td>symbol</td><td>JUFO</td></tr><tr><td>ticker</td><td>JUFO.CA</td></tr></tbody></table>
+<h2>EGX data sources for JUFO — verdict</h2>
+<p>No POUL reference material applies to JUFO; the series below is reported as fetched.</p>
+<h3>egxpy — ok</h3>
+<ul><li>Rows: 3000 · Range: 2014-07-20 → 2026-11-26</li><li>Latest: 2026-11-26 close 21.72</li></ul>
+<h3>borsa — no_history</h3>
+<ul><li>API surface: REST API exposes quotes only (/v1/quote/{symbol}, /v1/quotes, /v1/stocks, /v1/health); Fetcher protocol = fetch_quote. No history/OHLC endpoint exists in the published API.</li><li>Failure/finding: Borsa is a quote service by design: no historical OHLC endpoint or library function exists, so it cannot provide ex-day opens or any price history. Demo-service probe results above show its live surface.</li></ul>
+<h3>pandas-ta</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>adx_14</td><td>27.80</td></tr><tr><td>atr_14</td><td>0.85</td></tr><tr><td>bb_lower</td><td>21.23</td></tr><tr><td>bb_mid</td><td>23.25</td></tr><tr><td>bb_pctb</td><td>0.12</td></tr><tr><td>bb_upper</td><td>25.27</td></tr><tr><td>close</td><td>21.72</td></tr><tr><td>date</td><td>2026-11-26</td></tr><tr><td>drop_before</td><td>2019-01-01</td></tr><tr><td>ema_20</td><td>23.03</td></tr><tr><td>ema_200</td><td>26.28</td></tr><tr><td>ema_50</td><td>24.09</td></tr><tr><td>first_date_used</td><td>2019-01-01</td></tr><tr><td>high</td><td>22.08</td></tr><tr><td>indicators.csv_last_close</td><td>21.72</td></tr><tr><td>indicators.csv_last_date</td><td>2026-11-26</td></tr><tr><td>last_date</td><td>2026-11-26</td></tr><tr><td>low</td><td>21.57</td></tr><tr><td>macd</td><td>-0.60</td></tr><tr><td>macd_hist</td><td>-0.17</td></tr><tr><td>macd_signal</td><td>-0.42</td></tr><tr><td>open</td><td>21.85</td></tr><tr><td>rows_fetched</td><td>4068</td></tr><tr><td>rows_indicators.csv</td><td>250</td></tr><tr><td>rows_used</td><td>1931</td></tr><tr><td>rsi_14</td><td>35.45</td></tr><tr><td>stoch_d</td><td>6.32</td></tr><tr><td>stoch_k</td><td>5.21</td></tr><tr><td>ticker</td><td>JUFO.CA</td></tr></tbody></table>
+<h2>Technical snapshot — JUFO.CA</h2>
+<ul><li>Last session: <strong>2026-11-26</strong></li><li>Data used: 1931 rows (2019-01-01 → 2026-11-26), after dropping rows before 2019-01-01; 4068 rows fetched in total.</li></ul>
+<h3>Latest values</h3>
+<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody><tr><td>Open</td><td>21.85</td></tr><tr><td>High</td><td>22.08</td></tr><tr><td>Low</td><td>21.57</td></tr><tr><td>Close</td><td>21.72</td></tr><tr><td>RSI(14)</td><td>35.4497</td></tr><tr><td>MACD</td><td>-0.5981</td></tr><tr><td>MACD signal</td><td>-0.4249</td></tr><tr><td>MACD histogram</td><td>-0.1732</td></tr><tr><td>EMA(20)</td><td>23.0343</td></tr><tr><td>EMA(50)</td><td>24.0921</td></tr><tr><td>EMA(200)</td><td>26.2754</td></tr><tr><td>ADX(14)</td><td>27.7957</td></tr><tr><td>Bollinger upper</td><td>25.273</td></tr><tr><td>Bollinger mid</td><td>23.2505</td></tr><tr><td>Bollinger lower</td><td>21.228</td></tr><tr><td>Bollinger %B</td><td>0.1216</td></tr><tr><td>ATR(14)</td><td>0.8524</td></tr><tr><td>Stochastic %K</td><td>5.206</td></tr><tr><td>Stochastic %D</td><td>6.3161</td></tr></tbody></table>
+<h3>Trend read (facts only)</h3>
+<ul><li>Close 21.72 is below EMA_20 23.0343 (-5.71%).</li><li>Close 21.72 is below EMA_50 24.0921 (-9.85%).</li><li>Close 21.72 is below EMA_200 26.2754 (-17.34%).</li><li>RSI(14) is 35.4497, in the neutral zone (30-70).</li><li>MACD -0.5981 is below its signal line -0.4249 (histogram -0.1732).</li><li>Price sits at %B 0.1216 of the Bollinger range (lower 21.228, mid 23.2505, upper 25.273).</li><li>ADX(14) is 27.7957, indicating a strong trend by the standard ADX scale (&gt;= 25).</li><li>Stochastic %K 5.206 is below %D 6.3161.</li><li>ATR(14) is 0.8524 (3.92% of the close).</li></ul>
+<h3>Notes</h3>
+<ul><li>Source: Yahoo Finance chart API (raw daily OHLC, not dividend-adjusted), fetched directly — yfinance is not used because it crashes on Africa/Cairo DST timestamps.</li><li>Indicators computed with pandas-ta-classic.</li></ul>
+<h3>talib</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>drop_before</td><td>2019-01-01</td></tr><tr><td>indicators.csv_last_close</td><td>21.72</td></tr><tr><td>indicators.csv_last_date</td><td>2026-11-26</td></tr><tr><td>last_close</td><td>21.72</td></tr><tr><td>last_date</td><td>2026-11-26</td></tr><tr><td>rows_fetched</td><td>4068</td></tr><tr><td>rows_indicators.csv</td><td>250</td></tr><tr><td>rows_used</td><td>1931</td></tr><tr><td>ticker</td><td>JUFO.CA</td></tr></tbody></table>
+<p data-i18n="tool.noreport">No report for this tool.</p>
+<h3>quantstats</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>exchange_tz</td><td>Africa/Cairo</td></tr><tr><td>ohlc.csv_last_close</td><td>6.83</td></tr><tr><td>rows</td><td>2189</td></tr><tr><td>rows_ohlc.csv</td><td>2189</td></tr><tr><td>source</td><td>Yahoo chart API (direct, via requests)</td></tr><tr><td>ticker</td><td>POUL.CA</td></tr></tbody></table>
+<h2>QuantStats report — POUL.CA</h2>
+<p>Data: Yahoo chart API (direct), 2189 sessions, 2018-01-01 → 2026-11-26 (Africa/Cairo).</p>
+<h3>(1) Daily returns from 2026-09-28 (window start 2026-09-28)</h3>
+<ul><li>Sessions: 42 (41 daily returns)</li><li>Close: 9.7100 → 6.8300</li><li>Cumulative return: -29.66%</li><li>Sharpe: -2.8831</li><li>Sortino: -3.1275</li><li>Max drawdown: -34.66%</li><li>Volatility (annualised): 66.46%</li><li>Daily win rate: 41.5%</li><li>Tearsheet: ok (results/tearsheet.html)</li></ul>
+<p>&gt; ⚠ Short-window caveat: this window is only a few dozen sessions (post-merger trading resumption), so Sharpe/Sortino/volatility are annualised from very little data — treat them as indicative, not stable.</p>
+<h3>(2) Dividend-capture events (recomputed from the fetched data)</h3>
+<table><thead><tr><th>End</th><th>Ex</th><th>Div</th><th>Entry close</th><th>Ex close</th><th>Capture @ ex close</th><th>Payday close</th><th>Capture @ payday</th></tr></thead><tbody><tr><td>2019-07-14</td><td>2019-07-15</td><td>0.25</td><td>4.9700</td><td>4.7800</td><td>+1.21%</td><td>4.6200</td><td>-2.01%</td></tr><tr><td>2021-05-17</td><td>2021-05-18</td><td>0.16</td><td>2.9300</td><td>2.8400</td><td>+2.39%</td><td>3.1400</td><td>+12.63%</td></tr><tr><td>2024-10-21</td><td>2024-10-22</td><td>0.847875</td><td>12.2500</td><td>12.0100</td><td>+4.96%</td><td>13.1800</td><td>+14.51%</td></tr><tr><td>2026-04-26</td><td>2026-04-27</td><td>0.33</td><td>34.9100</td><td>35.3500</td><td>+2.21%</td><td>35.7500</td><td>+3.35%</td></tr></tbody></table>
+<p><strong>Ex-day close</strong> — n=4, mean +2.69%, win rate 100%, min +1.21%, max +4.96%</p>
+<p><strong>Payday close (ex+2)</strong> — n=4, mean +7.12%, win rate 75%, min -2.01%, max +14.51%</p>
+<p>Capture = exit close + dividend − entry (last-cum) close, as % of entry close. Note: Yahoo&#x27;s raw series is not merger-adjusted; % captures are scale-consistent per event. Events whose pre-2019 segment is corrupted in Yahoo&#x27;s data are excluded from this runner&#x27;s default event set.</p>
+<h3>vectorbt</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>poul_ohlc.csv_last_close</td><td>6.83</td></tr><tr><td>rows_poul_ohlc.csv</td><td>2438</td></tr></tbody></table>
+<h2>Dividend-capture study — pilot run</h2>
+<ul><li>Ticker used: <strong>POUL.CA</strong></li><li>Fetch strategy used: <strong>yahoo_chart_api</strong></li><li>Data: 2438 rows, 2017-01-02 → 2026-11-26 (first close 3.6559998989105225, last close 6.829999923706055)</li><li>Attempts: POUL.CA via yf_download_ignore_tz (0 rows), POUL.CA via yf_ticker_history (0 rows), POUL.CA via yahoo_chart_api (2438 rows)</li></ul>
+<p>Capture = dividend − (entry close − exit price); entry = close of the last session before the ex-date.</p>
+<table><thead><tr><th>Event</th><th>Rights-end</th><th>Ex-date</th><th>Div</th><th>Entry session</th><th>Entry close</th><th>Ex open → capture (% )</th><th>Ex close → capture (%)</th><th>Payday close → capture (%)</th></tr></thead><tbody><tr><td>2018 ⚠</td><td>2018-04-05</td><td>2018-04-10</td><td>0.25</td><td>2018-04-09</td><td>3.7120</td><td>3.7120 → 0.2500 (6.73%)</td><td>3.7120 → 0.2500 (6.73%)</td><td>3.7120 → 0.2500 (6.73%)</td></tr><tr><td>2019</td><td>2019-07-14</td><td>2019-07-15</td><td>0.25</td><td>2019-07-14</td><td>4.9700</td><td>4.9700 → 0.2500 (5.03%)</td><td>4.7800 → 0.0600 (1.21%)</td><td>4.6200 → -0.1000 (-2.01%)</td></tr><tr><td>2021</td><td>2021-05-17</td><td>2021-05-18</td><td>0.16</td><td>2021-05-17</td><td>2.9300</td><td>2.9300 → 0.1600 (5.46%)</td><td>2.8400 → 0.0700 (2.39%)</td><td>3.1400 → 0.3700 (12.63%)</td></tr><tr><td>2024</td><td>2024-10-21</td><td>2024-10-22</td><td>0.847875</td><td>2024-10-21</td><td>12.2500</td><td>12.2500 → 0.8479 (6.92%)</td><td>12.0100 → 0.6079 (4.96%)</td><td>13.1800 → 1.7779 (14.51%)</td></tr><tr><td>Apr 2026</td><td>2026-04-26</td><td>2026-04-27</td><td>0.33</td><td>2026-04-26</td><td>34.9100</td><td>34.9100 → 0.3300 (0.95%)</td><td>35.3500 → 0.7700 (2.21%)</td><td>35.7500 → 1.1700 (3.35%)</td></tr></tbody></table>
+<h3>Averages (across events with data)</h3>
+<table><thead><tr><th>Exit</th><th>Avg capture</th><th>Avg capture %</th><th>Events</th></tr></thead><tbody><tr><td>ex_open</td><td>0.3676</td><td>5.02%</td><td>5</td></tr><tr><td>ex_close</td><td>0.3516</td><td>3.50%</td><td>5</td></tr><tr><td>payday_close</td><td>0.6936</td><td>7.04%</td><td>5</td></tr></tbody></table>
+<h3>vectorbt showcase — Portfolio.from_signals (entries at cum closes, exits at ex-day closes)</h3>
+<ul><li>Events used: 5</li><li>Init cash: 100000.0 → final value: 92548.36</li><li>Total return: -7.4516%</li><li>Trade count: 5</li></ul>
+<h3>Notes</h3>
+<ul><li>Downloaded entry closes match the verified exchange closes (median ratio 1.0000); the series is on the exchange scale and no rescaling was applied.</li><li>Prices fetched with auto_adjust=False (no dividend adjustment), which is what a capture study needs.</li><li>No fees, slippage or taxes are modelled.</li><li>Event 2018: Downloaded prices around this event sit on a different scale than the verified exchange closes (ratio 0.4115); that segment of the provider series appears split-adjusted and/or stale, so this row&#x27;s captures are not reliable.</li></ul>
+<h3>financetoolkit</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>rows_statements.csv</td><td>17</td></tr></tbody></table>
+<h2>Fundamentals (generic) — JUFO.CA</h2>
+<p>Source: StockAnalysis.com EGX pages, fetched 2026-11-27T08:37:44.029191+00:00. Vendor statement basis; per-share figures computed here, never copied.</p>
+<p>Shares: 1471000000.0 (vendor shares outstanding (may lag corporate actions)). Live price: 21.719999313354492.</p>
+<p>Periods: TTM, FY2025, FY2024, FY2023, FY2022, FY2021. Latest FY block: {&quot;revenue_EGPm&quot;: {&quot;value&quot;: 29984.0, &quot;basis&quot;: &quot;vendor income statement&quot;}, &quot;net_income_EGPm&quot;: {&quot;value&quot;: 1632.0, &quot;basis&quot;: &quot;vendor income statement&quot;}, &quot;gross_margin_pct&quot;: {&quot;value&quot;: 22.89, &quot;basis&quot;: &quot;vendor gross profit / revenue&quot;}, &quot;operating_margin_pct&quot;: {&quot;value&quot;: 11.86, &quot;basis&quot;: &quot;vendor operating income / revenue&quot;}, &quot;net_margin_pct&quot;: {&quot;value&quot;: 5.44, &quot;basis&quot;: &quot;vendor net income / revenue&quot;}, &quot;roe_pct&quot;: {&quot;value&quot;: 20.32, &quot;basis&quot;: &quot;vendor net income / period-end shareholders&#x27; equity&quot;}, &quot;roa_pct&quot;: {&quot;value&quot;: 8.86, &quot;basis&quot;: &quot;vendor net income / period-end total assets&quot;}, &quot;debt_to_equity_x&quot;: {&quot;value&quot;: 0.9</p>
+<h3>finbert</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>count</td><td>1</td></tr><tr><td>label</td><td>live</td></tr><tr><td>model</td><td>ProsusAI/finbert</td></tr></tbody></table>
+<h2>FinBERT sentiment — live</h2>
+<ul><li>Model: <code>ProsusAI/finbert</code> (CPU)</li><li>Texts scored: 1</li><li>Label counts: positive=0, negative=0, neutral=1</li><li>Mean probabilities: positive=0.0320, negative=0.0186, neutral=0.9493</li></ul>
+<table><thead><tr><th>#</th><th>Predicted</th><th>P(pos)</th><th>P(neg)</th><th>P(neu)</th><th>Text</th></tr></thead><tbody><tr><td>1</td><td>neutral</td><td>0.0320</td><td>0.0186</td><td>0.9493</td><td>Montreal Panamerican Open 2026 - IJF.org</td></tr></tbody></table>
+<h3>finbert-tone</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>count</td><td>1</td></tr><tr><td>label</td><td>live</td></tr><tr><td>model</td><td>yiyanghkust/finbert-tone</td></tr></tbody></table>
+<h2>FinBERT-tone sentiment</h2>
+<ul><li>Model: <code>yiyanghkust/finbert-tone</code> (CPU)</li><li>id2label: <code>{0: &#x27;Neutral&#x27;, 1: &#x27;Positive&#x27;, 2: &#x27;Negative&#x27;}</code></li><li>Texts scored: 1</li><li>Label counts: positive=0, negative=0, neutral=1</li><li>Mean probabilities: positive=0.0000, negative=0.0006, neutral=0.9994</li></ul>
+<table><thead><tr><th>#</th><th>Predicted</th><th>Raw label</th><th>P(pos)</th><th>P(neg)</th><th>P(neu)</th><th>Text</th></tr></thead><tbody><tr><td>1</td><td>neutral</td><td>Neutral</td><td>0.0000</td><td>0.0006</td><td>0.9994</td><td>Montreal Panamerican Open 2026 - IJF.org</td></tr></tbody></table>
+<h3>financial-roberta</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>count</td><td>1</td></tr><tr><td>label</td><td>live</td></tr><tr><td>model</td><td>soleimanian/financial-roberta-large-sentiment</td></tr></tbody></table>
+<h2>RoBERTa financial sentiment — live</h2>
+<ul><li>Model: <code>soleimanian/financial-roberta-large-sentiment</code> (CPU)</li><li>id2label: <code>{0: &#x27;negative&#x27;, 1: &#x27;neutral&#x27;, 2: &#x27;positive&#x27;}</code></li><li>Texts scored: 1</li><li>Label counts: positive=0, negative=0, neutral=1</li><li>Mean probabilities: positive=0.0023, negative=0.0002, neutral=0.9975</li></ul>
+<table><thead><tr><th>#</th><th>Predicted</th><th>Raw label</th><th>P(pos)</th><th>P(neg)</th><th>P(neu)</th><th>Text</th></tr></thead><tbody><tr><td>1</td><td>neutral</td><td>neutral</td><td>0.0023</td><td>0.0002</td><td>0.9975</td><td>Montreal Panamerican Open 2026 - IJF.org</td></tr></tbody></table>
+<h3>kronos</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>forecast.csv_last_close</td><td>23.26</td></tr><tr><td>forecast.csv_last_date</td><td>2026-12-24</td></tr><tr><td>rows_forecast.csv</td><td>21</td></tr></tbody></table>
+<h2>Kronos-small forecast — JUFO.CA</h2>
+<ul><li>Model: <code>NeoQuasar/Kronos-small</code> with tokenizer <code>NeoQuasar/Kronos-Tokenizer-base</code> (CPU inference, seed 42, T=1.0, top_p=0.9, samples=32 draws aggregated per step by median; forecast.csv also carries close_p10/close_p90 across draws)</li><li>Data source: yahooquery (yfinance is never used for Cairo tickers — Africa/Cairo DST crash; rows before 2019-01-01 dropped as corrupted)</li><li>Context window used: 2026-09-28 to 2026-11-25 — 41 sessions</li><li>Context supplied to Kronos: 41 sessions, no truncation needed (max_context=512; upstream predict() normalises over all supplied bars but attends over only the last max_context — borsagator #436)</li><li>Upstream Kronos commit: <code>67b630e67f6a18c9e9be918d9b4337c960db1e9a</code> (pinned target: <code>67b630e67f6a18c9e9be918d9b4337c960db1e9a</code>)</li><li>Hugging Face revisions: model <code>NeoQuasar/Kronos-small</code> @ 901c26c1332695a2a8f243eb2f37243a37bea320; tokenizer <code>NeoQuasar/Kronos-Tokenizer-base</code> @ 0e0117387f39004a9016484a186a908917e22426</li><li>Dependency versions: torch 2.15.0+cpu, pandas 2.2.2, numpy 2.5.5, transformers not installed, yahooquery 2.4.1</li><li>Preferred post-merger context (from 2026-09-28) was accepted; no fallback needed.</li><li>Last actual close: 21.850000381469727 on 2026-11-25</li><li>Forecast horizon: next 21 sessions (Sun–Thu calendar; exchange holidays not modelled)</li></ul>
+<h3>Forecasted close path</h3>
+<ul><li>2026-11-26: 22.1045</li><li>2026-11-29: 22.2218</li><li>2026-11-30: 22.3655</li><li>2026-12-01: 22.8622</li><li>2026-12-02: 22.541</li><li>2026-12-03: 22.6718</li><li>2026-12-06: 22.7198</li><li>2026-12-07: 22.9073</li><li>2026-12-08: 23.0826</li><li>2026-12-09: 23.2146</li><li>2026-12-10: 22.9258</li><li>2026-12-13: 22.7866</li><li>2026-12-14: 22.7873</li><li>2026-12-15: 22.8983</li><li>2026-12-16: 22.8487</li><li>2026-12-17: 22.9861</li><li>2026-12-20: 22.9589</li><li>2026-12-21: 23.1695</li><li>2026-12-22: 23.2929</li><li>2026-12-23: 23.4276</li><li>2026-12-24: 23.2596</li></ul>
+<p><strong>Change over the 21 sessions (last forecasted close vs last actual close): +6.45%</strong></p>
+<h3>Caveat</h3>
+<p>Independent evaluations show Kronos direction accuracy near coin-flip — this forecast is a research lens, not a trading signal. Kronos is a sampling model: reruns can differ. Do not trade on this output alone.</p>
+<h3>financedatabase</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="0" data-tpl-status="ok" data-tpl-display="status:toolstatus">Status: ok · exit code: 0</p>
+<table><tbody><tr><td>count</td><td>11</td></tr><tr><td>method</td><td>show_options(selection=...)</td></tr><tr><td>rows_egypt_equities.csv</td><td>50</td></tr><tr><td>rows_us_sector_equities.csv</td><td>50</td></tr></tbody></table>
+<p data-i18n="tool.noreport">No report for this tool.</p>
+<h3>news-disclosure</h3>
+<p data-i18n-tpl="tools.status" data-tpl-code="1" data-tpl-status="failed" data-tpl-display="status:toolstatus">Status: failed · exit code: 1</p>
+<p data-i18n="tool.noreport">No report for this tool.</p>
+<h3 data-i18n="tools.runtable">Tool run table</h3>
+<table><thead><tr><th data-i18n="th.tool">Tool</th><th data-i18n="th.category">Category</th><th data-i18n="th.status">Status</th><th data-i18n="th.exit">Exit</th><th data-i18n="th.run">Run</th></tr></thead><tbody>
+<tr><td>yahooquery</td><td><span data-i18n="display.category.data">data</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>openbb</td><td><span data-i18n="display.category.data">data</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>egx-data</td><td><span data-i18n="display.category.data">data</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>pandas-ta</td><td><span data-i18n="display.category.technicals">technicals</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>talib</td><td><span data-i18n="display.category.technicals">technicals</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>quantstats</td><td><span data-i18n="display.category.stats">stats</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>vectorbt</td><td><span data-i18n="display.category.backtest">backtest</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>financetoolkit</td><td><span data-i18n="display.category.fundamentals">fundamentals</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>finbert</td><td><span data-i18n="display.category.sentiment">sentiment</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>finbert-tone</td><td><span data-i18n="display.category.sentiment">sentiment</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>financial-roberta</td><td><span data-i18n="display.category.sentiment">sentiment</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>kronos</td><td><span data-i18n="display.category.forecast">forecast</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>financedatabase</td><td><span data-i18n="display.category.data">data</span></td><td><span data-i18n="display.toolstatus.ok">ok</span></td><td>0</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>news-disclosure</td><td><span data-i18n="display.category.news">news</span></td><td><span data-i18n="display.toolstatus.failed">failed</span></td><td>1</td><td><span data-i18n-tpl="tools.run.worker" data-tpl-id="worker-runs/2026-11-27/w6-sweeplite-jufo-002">worker run worker-runs/2026-11-27/w6-sweeplite-jufo-002</span></td></tr>
+<tr><td>{&#x27;detail&#x27;: &#x27;ERROR: no items fetched from any source&#x27;, &#x27;status&#x27;: &#x27;failed&#x27;, &#x27;tool&#x27;: &#x27;news-disclosure&#x27;}</td><td></td><td><span data-i18n="display.toolstatus.failed">failed</span></td><td></td><td></td></tr>
+</tbody></table></section>
+<section id="news"><h2 data-i18n="sec.news">News + disclosures</h2><p data-i18n-tpl="news.line" data-tpl-disc="0" data-tpl-news="0" data-tpl-scheme="resolved_url|title-date-hash">News: 0 · disclosures: 0 · identity scheme: resolved_url|title-date-hash</p></section>
+<section id="events"><h2 data-i18n="sec.events">Disclosure events</h2><p data-i18n-tpl="events.line" data-tpl-candidates="0" data-tpl-confirmed="0" data-tpl-events="0" data-tpl-status="missing" data-tpl-display="status:events-status">Disclosure events: 0 (0 confirmed, 0 candidates) · status: missing</p>
+<p data-i18n-tpl="events.reason" data-tpl-reason="no disclosure-events/JUFO-events.json in sweep dir">Reason: no disclosure-events/JUFO-events.json in sweep dir</p></section>
+<section id="sentiment"><h2 data-i18n="sec.sentiment">Sentiment + fundamentals</h2><p>finbert: </p>
+<p>finbert-tone: </p>
+<p>financial-roberta: </p>
+<p data-i18n-tpl="sentiment.company" data-tpl-company="">Company: </p>
+<p data-i18n="fund.ratios">Valuation ratios are not carried in the model — no corrected-valuation callout in this report.</p></section>
+<section id="risks"><h2 data-i18n="sec.risks">Risks</h2><p data-i18n="risk.unknown">Risk level unknown — the news tool was missing or failed; not “no risk”.</p>
+<p class="flag">news overlay unavailable — risk unassessed, confidence capped</p>
+<p data-i18n="rescale.none">Kronos ex-date rescale state not recorded.</p></section>
+<section id="chart"><h2 data-i18n="sec.chart">Price chart</h2><svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Price chart" data-i18n-aria="chart.aria"><polyline points="8.0,111.4 22.1,130.9 36.2,88.7 50.2,59.7 64.3,102.6 78.4,252.0 92.5,199.7 106.6,112.0 120.6,130.9 134.7,112.0 148.8,161.2 162.9,145.4 177.0,130.9 191.0,71.0 205.1,78.6 219.2,93.7 233.3,11.8 247.4,8.0 261.4,23.8 275.5,59.7 289.6,49.6 303.7,74.2 317.8,95.6 331.8,103.8 345.9,120.9 360.0,208.5 374.1,194.0 388.2,182.0 402.2,203.5 416.3,211.6" fill="none" stroke="#2563eb" stroke-width="1.5"/><polyline points="430.4,187.4 444.5,180.0 458.6,171.0 472.6,139.6 486.7,159.9 500.8,151.6 514.9,148.6 529.0,136.8 543.0,125.7 557.1,117.4 571.2,135.6 585.3,144.4 599.4,144.4 613.4,137.4 627.5,140.5 641.6,131.8 655.7,133.5 669.8,120.3 683.8,112.5 697.9,104.0 712.0,114.6" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5 4"/></svg><p class="dim" data-i18n="chart.legend">Solid: recorded closes; dashed: Kronos forecast.</p></section>
+<section id="llm"><h2 data-i18n="sec.llm">LLM provenance</h2><p data-i18n="llm.none">Model not recorded (pre-#74 run).</p></section>
+<section id="ledger"><h2 data-i18n="sec.ledger">Ledger pin</h2><p data-i18n-tpl="ledger.counts" data-tpl-f="204" data-tpl-i="12" data-tpl-m="48" data-tpl-p="144" data-tpl-s="91">Ledger counts — sweeps: 91 · forecasts: 204 · matured: 48 · pending: 144 · invalid: 12</p>
+<p data-i18n-tpl="ledger.accuracy" data-tpl-n="48">No accuracy figure is published until n ≥ 30 matured forecasts (n = 48).</p></section>
+<section id="flags"><h2 data-i18n="sec.flags">Data-quality flags</h2><p class="flag" data-i18n-tpl="flag.witnesses-stale" data-tpl-base="2026-11-26" data-tpl-common="2026-11-25">witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26</p>
+<p class="flag" data-i18n="flag.tree-sha-unavailable">tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA</p>
+<p class="flag">degraded: partial-fleet (absent families: —)</p>
+<p class="flag">news-file-missing: collected/news-disclosure/news.json</p>
+<p class="flag">disclosures-file-missing: collected/news-disclosure/disclosures.json</p>
+<p class="flag" data-i18n-tpl="flag.recommendation-unavailable" data-tpl-ticker="JUFO.CA">recommendation-unavailable: no profiles/JUFO.CA.recommendation.json</p>
+<p class="flag">reaction-profile-missing: no profiles/JUFO.CA.json</p>
+<p class="flag">sharia-row-missing: AAOIFI JUFO.CA</p>
+<p class="flag" data-i18n-tpl="flag.sharia-table-missing" data-tpl-std="DJIM">sharia-table-missing: DJIM</p>
+<p class="flag">sharia-row-missing: EGX33 JUFO.CA</p>
+<p class="flag">sharia-row-missing: FTSE JUFO.CA</p>
+<p class="flag">sharia-row-missing: ISLAMICLY JUFO.CA</p>
+<p class="flag">sharia-row-missing: MSCI JUFO.CA</p>
+<p class="flag">sharia-row-missing: MSCI_M JUFO.CA</p>
+<p class="flag" data-i18n-tpl="flag.sharia-table-missing" data-tpl-std="SP_SHARIAH">sharia-table-missing: SP_SHARIAH</p>
+<p class="flag" data-i18n-tpl="flags.degraded" data-tpl-value="{&#x27;absent_families&#x27;: [], &#x27;absent_tools&#x27;: [&#x27;news-disclosure&#x27;], &#x27;reason&#x27;: &#x27;partial-fleet&#x27;}">Degraded: {&#x27;absent_families&#x27;: [], &#x27;absent_tools&#x27;: [&#x27;news-disclosure&#x27;], &#x27;reason&#x27;: &#x27;partial-fleet&#x27;}</p></section>
+<section id="sharia"><h2 data-i18n="sec.sharia">Sharia screening</h2><p class="banner">NOT A FATWA — screening results per the selected standard; no Sharia Board certification.</p>
+<p class="banner" lang="ar" dir="rtl">ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.</p>
+<p class="framing">Screening result under the named standard only, computed from the company&#x27;s published financials. This is not a fatwa, and not religious or investment advice.</p>
+<p class="framing" lang="ar" dir="rtl">نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.</p>
+<p>AAOIFI: insufficient-data</p>
+<p>DJIM: insufficient-data</p>
+<p>EGX33: insufficient-data</p>
+<p>FTSE: insufficient-data</p>
+<p>ISLAMICLY: insufficient-data</p>
+<p>MSCI: insufficient-data</p>
+<p>MSCI_M: insufficient-data</p>
+<p>SP_SHARIAH: insufficient-data</p></section>
+<section id="provenance"><h2 data-i18n="sec.provenance">Provenance</h2><p data-i18n-tpl="prov.line" data-tpl-compiler="scripts/compile_model.py" data-tpl-merged="worker" data-tpl-schema="borsagator-report-model/2" data-tpl-display="merged:merged-by">Provenance: merged by worker · compiler: scripts/compile_model.py · model: borsagator-report-model/2</p>
+<p><span data-i18n="prov.viewer">Viewer:</span> <span class="watermark">&lt;unassigned&gt;</span></p></section>
+<div class="disclaimer"><p data-i18n="disclaimer.short">Borsagator is not an investment adviser. This report is a computational output, not a recommendation to buy or sell. Verdicts are computed by the named analysis tools from public data; past performance does not predict future results. You decide — and you carry the risk. Securities involve risk of loss. You may lose money.</p><p data-i18n="disclaimer.long">Borsagator sells a computed report, not advice and not a managed service. The report shows what a fixed set of named analysis tools computed from public market data on a stated date. No person reviews your finances, no recommendation is tailored to you, and nothing in the report is a personal recommendation to buy, sell, or hold any security. Markets move; the tools can be wrong, data can be stale or corrected, and a reported figure can be superseded. Outputs are generated by automated tools with known limitations. Accuracy is not guaranteed. Past measured accuracy does not predict future results. You pay for the computation and delivery of the report, not for any outcome. Use of this product does not create an advisory or fiduciary relationship. Do not spend money you cannot afford to lose on the basis of any report. Data sources: listed per report; data may be delayed or incomplete.</p></div>
+<p class="dim" data-i18n="ui.footer">Deterministic glue over the ensemble + reaction fit — research tooling, not financial advice.</p>
+<script type="application/json" id="report-model">{
+  "archive_commit": "4a13412f7f07ff7c718a67f70a4172dfc1106646",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "ddf82ac4531b17f2d45ed8a296936dc81b07225bd1b1fda19ff1a498e37f65ca",
+      "family-agent.json": "6f14a035df2a27b88e46c5ae42761c60160b74074e704a94dac8b47848d9500c",
+      "family-fundamentals.json": "75c16d943bbd43a588129a3ad45e33a496b89080c3abf5960c2abbfe65e580d7",
+      "family-price-forecast.json": "afc637581f7c99b711f8c51dea8b2c1488c3dd29a4faec025cef1657e55fb38b",
+      "family-sentiment.json": "225161d096beeb20f751e1f89c989287809b1788aea2e0dba27e1af61fab31eb",
+      "family-technicals.json": "f8844722036962c8e8e30e7745548b16f57e71a898cd71ca001924fe0c2660ca",
+      "kronos-alone.json": "900bf71af7f375c1b6bcec5fbfd91a936aede712a33de48f43b68fbdebcfebc1",
+      "raw-llm-cohere.json": "61d2e1802a93ff8f63114282c24e78e6a770c9ba31b0949a441acb0419a3e7e9"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/JUFO-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 21.72,
+    "base_source": "egx-data/egxpy_jufo.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": 0.304,
+      "sentiment": 0.005,
+      "technicals": -0.2
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.005
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.7703,
+        "net_score": 0.005,
+        "range_high_pct": 3.8,
+        "range_low_pct": -3.8,
+        "tilt_centre_pct": 0.0,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.5442
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.1,
+          "sentiment": 0.005,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 7.0884,
+        "net_score": -0.13,
+        "range_high_pct": 18.19,
+        "range_low_pct": -18.19,
+        "tilt_centre_pct": -0.97,
+        "trading_sessions": 21,
+        "vol_h_pct": 11.6592
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.005,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.7799,
+        "net_score": -0.112,
+        "range_high_pct": 9.47,
+        "range_low_pct": -9.47,
+        "tilt_centre_pct": -0.29,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.6891
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_jufo.csv",
+      "base_stale": false,
+      "base_used": 21.72,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_jufo.csv": 21.85,
+        "openbb/jufo_ca.csv": 21.850000381469727,
+        "pandas-ta/indicators.csv": 21.850000381469727,
+        "talib/indicators.csv": 21.850000381469727,
+        "yahooquery/jufo.ca.csv": 21.850000381469727
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.0254,
+    "sigma_daily": 0.0254,
+    "sigma_source": "egx-data/egxpy_jufo.csv (σ60=0.0254, σ10=0.0196)",
+    "ticker": "JUFO.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": 0.304,
+    "sentiment": 0.005,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-27T08:39:02.856534+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/JUFO.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/JUFO.CA.json",
+    "sharia-row-missing: AAOIFI JUFO.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 JUFO.CA",
+    "sharia-row-missing: FTSE JUFO.CA",
+    "sharia-row-missing: ISLAMICLY JUFO.CA",
+    "sharia-row-missing: MSCI JUFO.CA",
+    "sharia-row-missing: MSCI_M JUFO.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.005
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.7703,
+      "net_score": 0.005,
+      "range_high_pct": 3.8,
+      "range_low_pct": -3.8,
+      "tilt_centre_pct": 0.0,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.5442
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.1,
+        "sentiment": 0.005,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 7.0884,
+      "net_score": -0.13,
+      "range_high_pct": 18.19,
+      "range_low_pct": -18.19,
+      "tilt_centre_pct": -0.97,
+      "trading_sessions": 21,
+      "vol_h_pct": 11.6592
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.005,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.7799,
+      "net_score": -0.112,
+      "range_high_pct": 9.47,
+      "range_low_pct": -9.47,
+      "tilt_centre_pct": -0.29,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.6891
+    }
+  },
+  "job": "sweep-lite JUFO.CA market=EGX",
+  "job_shape": "sweep-lite JUFO.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 23.7769,
+    "support": 19.6631
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 21.72,
+    "base_source": "egx-data/egxpy_jufo.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_jufo.csv",
+      "base_stale": false,
+      "base_used": 21.72,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_jufo.csv": 21.85,
+        "openbb/jufo_ca.csv": 21.850000381469727,
+        "pandas-ta/indicators.csv": 21.850000381469727,
+        "talib/indicators.csv": 21.850000381469727,
+        "yahooquery/jufo.ca.csv": 21.850000381469727
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0254,
+    "sigma_source": "egx-data/egxpy_jufo.csv (σ60=0.0254, σ10=0.0196)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 21.72,
+      "last_date": "2026-11-26",
+      "last_high": 22.08,
+      "last_low": 21.57,
+      "last_open": 21.85,
+      "last_volume": 1134457.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_jufo.csv",
+      "stale": false
+    },
+    {
+      "last_close": 21.719999313354492,
+      "last_date": "2026-11-26",
+      "last_high": 22.079999923706055,
+      "last_low": 21.56999969482422,
+      "last_open": 21.850000381469727,
+      "last_volume": 1134457.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/JUFO_CA.csv",
+      "stale": false
+    },
+    {
+      "last_close": 21.719999313354492,
+      "last_date": "2026-11-26",
+      "last_high": 22.079999923706055,
+      "last_low": 21.56999969482422,
+      "last_open": 21.850000381469727,
+      "last_volume": 1134457.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 21.719999313354492,
+      "last_date": "2026-11-26",
+      "last_high": 22.079999923706055,
+      "last_low": 21.56999969482422,
+      "last_open": 21.850000381469727,
+      "last_volume": 1134457.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 21.850000381469727,
+      "last_date": "2026-11-25",
+      "last_high": 22.81999969482422,
+      "last_low": 21.790000915527344,
+      "last_open": 22.190000534057617,
+      "last_volume": 2436241.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/JUFO.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-jufo-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-jufo-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "JUFO.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for JUFO.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T08:36:59.444529+00:00",
+  "sweep_dir": "sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002",
+  "ticker": "JUFO.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "JUFO.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "JUFO.CA.csv_last_close": 21.850000381469727,
+          "JUFO.CA.csv_last_date": "2026-11-25",
+          "rows_JUFO.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "b4609b6b9c13adedf8d470fbba9c8b5eabfab91699af538926e994cbbeb30673",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "JUFO_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "JUFO_CA.csv_last_close": 21.719999313354492,
+          "JUFO_CA.csv_last_date": "2026-11-26",
+          "rows_JUFO_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "39766e1639863c23864f95e81f317ca4ba0fffa54e68988329fe0d9d2f5f9072",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_jufo.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_jufo.csv_last_close": 21.72,
+          "egxpy_jufo.csv_last_date": "2026-11-26",
+          "rows_egxpy_jufo.csv": 3000,
+          "symbol": "JUFO",
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "618c9c6dd49215710da977403a428dcc7776a7abde716673cb49a7000af24601",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 27.7957,
+          "atr_14": 0.8524,
+          "bb_lower": 21.228,
+          "bb_mid": 23.2505,
+          "bb_pctb": 0.1216,
+          "bb_upper": 25.273,
+          "close": 21.72,
+          "date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "ema_20": 23.0343,
+          "ema_200": 26.2754,
+          "ema_50": 24.0921,
+          "first_date_used": "2019-01-01",
+          "high": 22.08,
+          "indicators.csv_last_close": 21.719999313354492,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_date": "2026-11-26",
+          "low": 21.57,
+          "macd": -0.5981,
+          "macd_hist": -0.1732,
+          "macd_signal": -0.4249,
+          "open": 21.85,
+          "rows_fetched": 4068,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "rsi_14": 35.4497,
+          "stoch_d": 6.3161,
+          "stoch_k": 5.206,
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "c423358fa17a8b652f10793831dc5f103171a341f41efc4e54078154cca513f9",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 21.719999313354492,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_close": 21.719999313354492,
+          "last_date": "2026-11-26",
+          "rows_fetched": 4068,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "ticker": "JUFO.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "df815806986090710290c471c3425474535d170edc2bb5cc36b5bfc8287e5808",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.829999923706055,
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "abea53c331a514c26a48703089a509c5dc1c12acd4bcab52eb7e5a9c76f9136e",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.829999923706055,
+          "rows_poul_ohlc.csv": 2438
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "96d8680070bce013e71f48214851b1c30e057c052a1e88d0adaad816cd51da58",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "f6d4e0520f044c0ea0633d2e92d7e2f7dc26f31fa6cadad8f48526d198dac18b",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "bc7e7a0d2a1ecf2a59ca59cd2db252992b97ba242775cfce2ff53c8556214a4b",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "de2891eda3b2771f80cd2c70012d4a1dc5e3298e5eac64d31fd9406d3aa1df0a",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "0f94407ab2d1bc99d99c42e9788f5d37372d35bd392c4ef137cf33f7ac32dab7",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 23.2596,
+          "forecast.csv_last_date": "2026-12-24",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "0e629468cb49908a97f6626ef41eded3211921cc79e042c9f540cbf0bbe0a050",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "JUFO.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "b9d9f09b7e2fa1be3d6a4b428e034ba5cb44633ad701e0e65890ad4dbdc70a09",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "JUFO.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "927ffa1645e7740e9efe230dffd8faa781216e5b6cd4013d2dbd1c36415ade80",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}
+</script>
+<script>window.I18N={"ar": {"bands.computed": "محسوبة بواسطة العارض من نطاق أفق الأسبوع.", "bands.none": "لا يوجد نطاق متاح لهذا المسح.", "bands.note.oneside": "كلا حدّي النطاق على جهة واحدة من السعر الحالي — النطاق لا يحيط بالسعر الأساسي.", "bands.resistance": "الحد الأعلى للنطاق النموذجي عند", "bands.support": "الحد الأدنى للنطاق النموذجي عند", "banner.partial": "مسح جزئي — أقسام التوقعات غير متاحة لهذا المسح.", "chart.aria": "مخطط السعر", "chart.aria.forecast": "مخطط السعر (توقع فقط)", "chart.legend": "متصل: إغلاقات مسجلة؛ متقطع: توقع كرونوس.", "chart.table": "بيانات المخطط غير متاحة — جدول سلسلة الأسعار بدلًا منها.", "chart.unavailable": "بيانات المخطط غير متاحة.", "delta.basemove": "حركة الأساس: {base} (ميكانيكي {mech}، متبقٍّ {res})", "delta.exdate": "تاريخ الاستحقاق {date} ضمن النافذة: الحركة الميكانيكية {pct}", "delta.none": "أول مسح لهذا السهم وشكل المهمة — لا يوجد ما يقارَن به بعد.", "delta.prevcur": "السابق: {prev} · الحالي: {cur}", "delta.unavailable": "الفرق غير متاح — {reason}", "disclaimer.long": "بورساجاتور تبيع تقريرًا محسوبًا، لا استشارة ولا خدمة إدارة. يعرض التقرير ما حسبته مجموعة ثابتة من أدوات التحليل المذكورة من بيانات سوق عامة في تاريخ محدد. لا يراجع أي شخص وضعك المالي، ولا توجد توصية مخصصة لك، ولا شيء في التقرير توصية شخصية بشراء أو بيع أو الاحتفاظ بأي ورقة مالية. الأسواق تتحرك؛ والأدوات قد تخطئ، والبيانات قد تكون قديمة أو مصححة، والأرقام قد تُستبدل. النواتج مولّدة بأدوات آلية لها قيود معروفة. الدقة غير مضمونة. الدقة المقاسة السابقة لا تتنبأ بالنتائج المستقبلية. أنت تدفع مقابل حساب التقرير وتسليمه، لا مقابل أي نتيجة. استخدام هذا المنتج لا ينشئ علاقة استشارية أو ائتمانية. لا تنفق مالًا لا تستطيع تحمل خسارته بناءً على أي تقرير. مصادر البيانات: تُذكر في كل تقرير؛ وقد تكون البيانات متأخرة أو غير مكتملة.", "disclaimer.short": "بورساجاتور ليست مستشارًا استثماريًا. هذا التقرير ناتج حسابي، وليس توصية بشراء أو بيع. النتائج الحسابية محسوبة بواسطة أدوات التحليل المذكورة من بيانات عامة؛ الأداء السابق لا يتنبأ بالنتائج المستقبلية. القرار قرارك — والمخاطرة عليك. الأوراق المالية تنطوي على مخاطر خسارة. قد تخسر مالك.", "display.category.agent": "وكيل", "display.category.backtest": "اختبار خلفي", "display.category.data": "بيانات", "display.category.forecast": "توقع", "display.category.fundamentals": "أساسيات", "display.category.news": "أخبار", "display.category.sentiment": "مشاعر", "display.category.stats": "إحصاءات", "display.category.technicals": "فني", "display.confidence-basis.calibrated (ledger skill factors applied)": "مُعايَر (طُبِّقَت عوامل مهارة السجل)", "display.confidence-basis.provisional (uncalibrated — no scoring history yet)": "مؤقت (غير مُعايَر — لا يوجد سجل تقييم بعد)", "display.corporate.dividend": "توزيع نقدي", "display.crosscheck.agree": "متفق", "display.crosscheck.disagree": "مختلف", "display.direction.down": "هابط", "display.direction.flat": "مستقر", "display.direction.up": "صاعد", "display.event-type.board_decision": "قرار مجلس", "display.event-type.capital": "رأس مال", "display.event-type.dividend": "توزيعات", "display.event-type.earnings": "أرباح", "display.event-type.governance": "حوكمة", "display.event-type.legal": "قانوني", "display.event-type.management": "إدارة", "display.event-type.other": "أخرى", "display.events-status.missing": "غير موجودة", "display.events-status.stale": "قديمة", "display.events-status.unavailable": "غير متاحة", "display.events-status.valid": "صالحة", "display.family.agent": "الوكيل", "display.family.fundamentals": "الأساسيات", "display.family.price-forecast": "توقع السعر", "display.family.sentiment": "المشاعر", "display.family.technicals": "التحليل الفني", "display.horizon.day": "يوم", "display.horizon.month": "شهر", "display.horizon.week": "أسبوع", "display.levels-basis.week horizon range_low_pct / range_high_pct": "نطاق أفق الأسبوع range_low_pct / range_high_pct", "display.levels-basis.week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)": "نطاق أفق الأسبوع range_low_pct / range_high_pct ‏(expected_move_pct ± نصف النطاق، % من الأساس)", "display.llm-role.llm": "نموذج لغوي", "display.llm-role.model": "نموذج", "display.llm-role.translation": "ترجمة", "display.merged-by.actions": "GitHub Actions", "display.merged-by.worker": "العامل", "display.risk.elevated": "مرتفع", "display.risk.none": "لا يوجد", "display.risk.shock": "صدمة", "display.risk.unknown": "غير معروف", "display.sentiment-label.negative": "سلبي", "display.sentiment-label.neutral": "محايد", "display.sentiment-label.positive": "إيجابي", "display.sentinel.base date not established": "تاريخ الأساس غير محدد", "display.sentinel.no market filter": "بدون فلتر سوق", "display.sentinel.not recorded": "غير مسجّل", "display.toolstatus.absent": "غائب", "display.toolstatus.error": "خطأ", "display.toolstatus.failed": "فشل", "display.toolstatus.no-summary": "بلا ملخص", "display.toolstatus.ok": "ناجح", "events.announced": "أُعلنت {date}", "events.candidate-label": "مرشحة", "events.confirmed": "تم التحقق منها", "events.empty": "لا توجد أحداث إفصاح في نافذة الربع.", "events.line": "أحداث الإفصاح: {events} ({confirmed} مؤكدة، {candidates} مرشحة) · الحالة: {status}", "events.not-confirmed": "لم يتم التحقق منها", "events.not-recorded": "لم تُسجَّل أحداث الإفصاح في هذا النموذج (نموذج التقارير v1 يسبق عقد الأحداث) — وهذا لا يعني عدم وجود أحداث.", "events.reason": "السبب: {reason}", "events.source": "المصدر: {doc}", "fam.horizon.notscored": "غير مُقيَّم", "fam.nodata": "لا توجد بيانات", "flag.archive-sha-unavailable": "بصمة الأرشيف غير متاحة: مجلد المسح ليس نسخة git ولم يُعطَ --archive-sha", "flag.base-from-undated-row": "الأساس من صف بلا تاريخ", "flag.disclosure-events-stale": "أحداث الإفصاح قديمة: {reason}", "flag.disclosure-events-unavailable": "أحداث الإفصاح غير متاحة: {file} — {reason}", "flag.ledger-unreadable": "السجل غير مقروء: {path}", "flag.recommendation-stale": "توصية قديمة: الملف as_of {asof} base {base1} != sweep {date} base {base2}", "flag.recommendation-unavailable": "التوصية غير متاحة: لا يوجد profiles/{ticker}.recommendation.json", "flag.sharia-insufficient-data": "بيانات شرعية غير كافية: {std}", "flag.sharia-table-missing": "جدول شرعي مفقود: {std}", "flag.sharia-verdict-indeterminate": "حكم شرعي غير محدد: {std}", "flag.summary-missing": "الملخص مفقود: {tool} ({status})", "flag.tree-sha-unavailable": "تعذّر اشتقاق بصمة الشجرة: بصمة الأرشيف معطاة كعلَم، ولا توجد نسخة git لاشتقاق بصمة الشجرة منها", "flag.undated-actions": "إجراءات بلا تاريخ: {n}", "flag.weights-sha-differs": "بصمة الأوزان تختلف عن الرئيسية", "flag.witnesses-stale": "شواهد متقادمة: common_date {common} مقابل base_date {base}", "flags.coercion-failed": "فشل التحويل: {value}", "flags.degraded": "متدهور: {value}", "flags.none": "لا توجد مؤشرات جودة بيانات.", "flags.ticker-mismatch": "عدم تطابق السهم: {value}", "forecast.noensemble": "غير متاح — لا يوجد تجميع لهذا المسح.", "forecast.partial": "غير متاح لمسح جزئي — لا يوجد توقع جماعي.", "framing": "هذا وصف لناتج نموذج محسوب، وليس توصية بشراء أو بيع أو الاحتفاظ بأي ورقة مالية. عليك أن تتخذ قراراتك الاستثمارية بنفسك.", "fund.ratios": "نسب التقييم غير محمولة في النموذج — لا توجد إشارة تقييم مصححة في هذا التقرير.", "header.job": "المهمة: {job} · الشكل: {shape} · السوق: {market}", "header.model": "النموذج: {schema} · المسح: {sweep} · بصمة الأرشيف: {commit}", "headline.disagree": "تختلف العائلات: {hi} {hi_val} مقابل {lo} {lo_val} (الفرق {spread})", "horizons.none": "لا يوجد أفق سجّل عائلة — لا يوجد توقع.", "ledger.accuracy": "لا يُنشر أي رقم دقة حتى تبلغ التوقعات الناضجة 30 (n = {n}).", "ledger.counts": "أعداد السجل — المسوح: {s} · التوقعات: {f} · الناضجة: {m} · المعلقة: {p} · غير الصالحة: {i}", "ledger.weights-changed": "تغيّرت الأوزان منذ هذا المسح — والتوقع قائم على الأوزان المثبّتة.", "llm.call": "{tool} · {role} · النموذج: {model} · الرموز الداخلة/الخارجة: {tin}/{tout} · دولار: {usd}", "llm.none": "النموذج غير مسجل (تشغيل قبل #74).", "news.line": "الأخبار: {news} · الإفصاحات: {disc} · مخطط الهوية: {scheme}", "price.base": "السعر الأساسي: {price} ({source}، {date})", "price.crosscheck": "التحقق المتقاطع للسعر: {status} (التاريخ المشترك {common}، تاريخ الأساس {base})", "price.noclose": "آخر صف يحمل إغلاقًا بلا إغلاق — انظر الملاحظة", "price.stale": " (قديم)", "price.stale-note": "الشواهد متقادمة: التاريخ المشترك {common} أقدم من تاريخ الأساس {base}.", "profile.none": "لا يوجد ملف تفاعل لهذا السهم — لم يُطبَّق أي تعديل.", "prov.line": "المصدر والتتبع: دُمج بواسطة {merged} · المُجمِّع: {compiler} · النموذج: {schema}", "prov.viewer": "المشاهد:", "reaction.built": "بُني في {built} · walk-forward: تدريب {train} / اختبار {test} · إصابات {hits} · إصابات الأساس {base}", "reaction.events": "الأحداث: {n} مسجلة.", "rec.base": "السعر الأساسي:", "rec.none": "التوصية غير متاحة لهذا المسح.", "rec.ref": "السعر المرجعي:", "rescale.none": "حالة إعادة قياس كرونوس في تاريخ الاستحقاق غير مسجلة.", "risk.corporate": "إجراء مؤسسي: {type} · تاريخ الاستحقاق: {ex} · التوزيع للسهم: {dps}", "risk.level": "مستوى الخطر: {level} · الحد الأقصى للثقة: {cap}", "risk.rescale.applied": "طُبّقت إعادة القياس: المعامل {factor}", "risk.rescale.attempted": "حاولت إعادة القياس ولم تُطبَّق — {reason}", "risk.unknown": "مستوى الخطر غير معروف — أداة الأخبار كانت غائبة أو فشلت؛ وهذا لا يعني انعدام الخطر.", "riskflag.abnormal-3": "حركة غير طبيعية: {z}σ في آخر 3 جلسات", "riskflag.abnormal-last": "حركة غير طبيعية: الجلسة الأخيرة {z}σ", "riskflag.disclosures": "{n} من الإفصاحات في آخر 3 أيام", "riskflag.event": "حدث {type}: {title}", "riskflag.price-confirms": "السعر يؤكد: الجلسة الأخيرة {z}σ", "sec.bands": "النطاق النموذجي (من التوقع)", "sec.chart": "مخطط السعر", "sec.delta": "ما الذي تغيّر", "sec.events": "أحداث الإفصاح", "sec.families": "نتائج العائلات", "sec.flags": "مؤشرات جودة البيانات", "sec.horizons": "الآفاق + السعر", "sec.ledger": "تثبيت السجل", "sec.llm": "مصدر النماذج اللغوية", "sec.narrative": "السرد", "sec.news": "الأخبار + الإفصاحات", "sec.provenance": "المصدر والتتبع", "sec.reaction": "ملف التفاعل", "sec.risks": "المخاطر", "sec.sentiment": "المشاعر + الأساسيات", "sec.sharia": "الفحص الشرعي", "sec.tools": "أقسام الأدوات", "sentiment.company": "الشركة: {company}", "sharia.not-recorded": "لم يُسجَّل الفحص الشرعي في هذا النموذج — وهذا لا يعني أن الفحص فارغ.", "th.category": "الفئة", "th.confidence": "الثقة", "th.direction": "الاتجاه", "th.eventtype": "نوع الحدث", "th.exit": "الخروج", "th.expected": "المتوقع", "th.family": "العائلة", "th.horizon": "الأفق", "th.lastclose": "آخر إغلاق", "th.lastdate": "آخر تاريخ", "th.median5d": "الوسيط +5 أيام (معدَّل للتوزيعات)", "th.n": "العدد", "th.range": "النطاق", "th.run": "التشغيل", "th.score": "النتيجة", "th.source": "المصدر", "th.status": "الحالة", "th.tool": "الأداة", "th.volume": "الحجم", "tool.noreport": "لا يوجد تقرير لهذه الأداة.", "tool.nosummary": "لا يوجد ملخص — الأداة لم تنتج ملخصًا.", "tools.refworkload": "عبء مرجعي — ليس بيانات {ticker}.", "tools.run.bare": "تشغيل العامل", "tools.run.link": "عرض التشغيل", "tools.run.worker": "تشغيل العامل {id}", "tools.runtable": "جدول تشغيل الأدوات", "tools.status": "الحالة: {status} · رمز الخروج: {code}", "ui.copied": "تم النسخ.", "ui.copy": "نسخ نموذج JSON", "ui.copy.failed": "تعذّر النسخ — حدّد نص النموذج يدويًا.", "ui.copy.unavailable": "الحافظة غير متاحة — حدّد نص النموذج يدويًا.", "ui.footer": "ربط حتمي فوق التجميع وملاءمة التفاعل — أدوات بحث، وليست استشارة مالية.", "ui.title": "تقرير بورساجاتور — {ticker} ({date})", "weights.applied.label": "الأوزان المطبّقة (السجل):", "weights.confidence.label": "أساس الثقة:", "weights.none": "الأوزان غير مسجلة لهذا المسح (تشغيل قبل #93/#94)."}, "en": {"bands.computed": "Computed by the renderer from the week horizon range.", "bands.none": "No range available for this sweep.", "bands.note.oneside": "Both ends of the range sit on one side of the current price — the range does not straddle the base.", "bands.resistance": "Model range high at", "bands.support": "Model range low at", "banner.partial": "Partial sweep — forecast sections are not available for this sweep.", "chart.aria": "Price chart", "chart.aria.forecast": "Price chart (forecast only)", "chart.legend": "Solid: recorded closes; dashed: Kronos forecast.", "chart.table": "Chart data unavailable — price-series table instead.", "chart.unavailable": "Chart data unavailable.", "delta.basemove": "Base move: {base} (mechanical {mech}, residual {res})", "delta.exdate": "Ex-date {date} in window: mechanical {pct}", "delta.none": "First sweep of this ticker + job shape — nothing to compare against yet.", "delta.prevcur": "Previous: {prev} · Current: {cur}", "delta.unavailable": "Delta unavailable — {reason}", "disclaimer.long": "Borsagator sells a computed report, not advice and not a managed service. The report shows what a fixed set of named analysis tools computed from public market data on a stated date. No person reviews your finances, no recommendation is tailored to you, and nothing in the report is a personal recommendation to buy, sell, or hold any security. Markets move; the tools can be wrong, data can be stale or corrected, and a reported figure can be superseded. Outputs are generated by automated tools with known limitations. Accuracy is not guaranteed. Past measured accuracy does not predict future results. You pay for the computation and delivery of the report, not for any outcome. Use of this product does not create an advisory or fiduciary relationship. Do not spend money you cannot afford to lose on the basis of any report. Data sources: listed per report; data may be delayed or incomplete.", "disclaimer.short": "Borsagator is not an investment adviser. This report is a computational output, not a recommendation to buy or sell. Verdicts are computed by the named analysis tools from public data; past performance does not predict future results. You decide — and you carry the risk. Securities involve risk of loss. You may lose money.", "display.category.agent": "agent", "display.category.backtest": "backtest", "display.category.data": "data", "display.category.forecast": "forecast", "display.category.fundamentals": "fundamentals", "display.category.news": "news", "display.category.sentiment": "sentiment", "display.category.stats": "stats", "display.category.technicals": "technicals", "display.confidence-basis.calibrated (ledger skill factors applied)": "calibrated (ledger skill factors applied)", "display.confidence-basis.provisional (uncalibrated — no scoring history yet)": "provisional (uncalibrated — no scoring history yet)", "display.corporate.dividend": "dividend", "display.crosscheck.agree": "agree", "display.crosscheck.disagree": "disagree", "display.direction.down": "down", "display.direction.flat": "flat", "display.direction.up": "up", "display.event-type.board_decision": "board decision", "display.event-type.capital": "capital", "display.event-type.dividend": "dividend", "display.event-type.earnings": "earnings", "display.event-type.governance": "governance", "display.event-type.legal": "legal", "display.event-type.management": "management", "display.event-type.other": "other", "display.events-status.missing": "missing", "display.events-status.stale": "stale", "display.events-status.unavailable": "unavailable", "display.events-status.valid": "valid", "display.family.agent": "agent", "display.family.fundamentals": "fundamentals", "display.family.price-forecast": "price-forecast", "display.family.sentiment": "sentiment", "display.family.technicals": "technicals", "display.horizon.day": "day", "display.horizon.month": "month", "display.horizon.week": "week", "display.levels-basis.week horizon range_low_pct / range_high_pct": "week horizon range_low_pct / range_high_pct", "display.levels-basis.week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)", "display.llm-role.llm": "llm", "display.llm-role.model": "model", "display.llm-role.translation": "translation", "display.merged-by.actions": "actions", "display.merged-by.worker": "worker", "display.risk.elevated": "elevated", "display.risk.none": "none", "display.risk.shock": "shock", "display.risk.unknown": "unknown", "display.sentiment-label.negative": "negative", "display.sentiment-label.neutral": "neutral", "display.sentiment-label.positive": "positive", "display.sentinel.base date not established": "base date not established", "display.sentinel.no market filter": "no market filter", "display.sentinel.not recorded": "not recorded", "display.toolstatus.absent": "absent", "display.toolstatus.error": "error", "display.toolstatus.failed": "failed", "display.toolstatus.no-summary": "no-summary", "display.toolstatus.ok": "ok", "events.announced": "Announced {date}", "events.candidate-label": "candidate", "events.confirmed": "confirmed", "events.empty": "No disclosure events in the quarter window.", "events.line": "Disclosure events: {events} ({confirmed} confirmed, {candidates} candidates) · status: {status}", "events.not-confirmed": "not confirmed", "events.not-recorded": "Disclosure events were not recorded in this model (report-model v1 predates the events contract) — this is not an empty events set.", "events.reason": "Reason: {reason}", "events.source": "Source: {doc}", "fam.horizon.notscored": "not scored", "fam.nodata": "no data", "flag.archive-sha-unavailable": "archive-sha-unavailable: sweep dir is not a git checkout and no --archive-sha was given", "flag.base-from-undated-row": "base-from-undated-row", "flag.disclosure-events-stale": "disclosure-events-stale: {reason}", "flag.disclosure-events-unavailable": "disclosure-events-unavailable: {file} — {reason}", "flag.ledger-unreadable": "ledger-unreadable: {path}", "flag.recommendation-stale": "recommendation-stale: profile as_of {asof} base {base1} != sweep {date} base {base2}", "flag.recommendation-unavailable": "recommendation-unavailable: no profiles/{ticker}.recommendation.json", "flag.sharia-insufficient-data": "sharia-insufficient-data: {std}", "flag.sharia-table-missing": "sharia-table-missing: {std}", "flag.sharia-verdict-indeterminate": "sharia-verdict-indeterminate: {std}", "flag.summary-missing": "summary-missing: {tool} ({status})", "flag.tree-sha-unavailable": "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA", "flag.undated-actions": "undated-actions: {n}", "flag.weights-sha-differs": "weights-sha-differs-from-main", "flag.witnesses-stale": "witnesses-stale: common_date {common} vs base_date {base}", "flags.coercion-failed": "Coercion failed: {value}", "flags.degraded": "Degraded: {value}", "flags.none": "No data-quality flags raised.", "flags.ticker-mismatch": "Ticker mismatch: {value}", "forecast.noensemble": "Not available — no ensemble for this sweep.", "forecast.partial": "Not available for a partial sweep — no ensemble forecast.", "framing": "This is a description of a computed model output, not a recommendation to buy, sell, or hold any security. You must make your own investment decisions.", "fund.ratios": "Valuation ratios are not carried in the model — no corrected-valuation callout in this report.", "header.job": "Job: {job} · shape: {shape} · market: {market}", "header.model": "Model: {schema} · sweep: {sweep} · archive commit: {commit}", "headline.disagree": "Families disagree: {hi} {hi_val} vs {lo} {lo_val} (spread {spread})", "horizons.none": "No horizon scored a family — no forecast.", "ledger.accuracy": "No accuracy figure is published until n ≥ 30 matured forecasts (n = {n}).", "ledger.counts": "Ledger counts — sweeps: {s} · forecasts: {f} · matured: {m} · pending: {p} · invalid: {i}", "ledger.weights-changed": "Weights changed since this sweep — the forecast stands on the pinned weights.", "llm.call": "{tool} · {role} · model: {model} · tokens in/out: {tin}/{tout} · USD: {usd}", "llm.none": "Model not recorded (pre-#74 run).", "news.line": "News: {news} · disclosures: {disc} · identity scheme: {scheme}", "price.base": "Base price: {price} ({source}, {date})", "price.crosscheck": "Price cross-check: {status} (common date {common}, base date {base})", "price.noclose": "last close-bearing row has no close — see note", "price.stale": " (stale)", "price.stale-note": "Witnesses stale: common date {common} trails base date {base}.", "profile.none": "No reaction profile for this ticker — no nudge applied.", "prov.line": "Provenance: merged by {merged} · compiler: {compiler} · model: {schema}", "prov.viewer": "Viewer:", "reaction.built": "Built at {built} · walk-forward train {train} / test {test} · hits {hits} · baseline hits {base}", "reaction.events": "Events: {n} recorded.", "rec.base": "Base price:", "rec.none": "Recommendation not available for this sweep.", "rec.ref": "Reference price:", "rescale.none": "Kronos ex-date rescale state not recorded.", "risk.corporate": "Corporate action: {type} · ex-date: {ex} · DPS: {dps}", "risk.level": "Risk level: {level} · confidence cap: {cap}", "risk.rescale.applied": "Rescale applied: factor {factor}", "risk.rescale.attempted": "Rescale attempted, did not apply — {reason}", "risk.unknown": "Risk level unknown — the news tool was missing or failed; not “no risk”.", "riskflag.abnormal-3": "abnormal move: {z}σ in the last 3 sessions", "riskflag.abnormal-last": "abnormal move: last session {z}σ", "riskflag.disclosures": "{n} disclosure(s) in the last 3 days", "riskflag.event": "{type} event: {title}", "riskflag.price-confirms": "price confirms: last session {z}σ", "sec.bands": "Model range (from the forecast)", "sec.chart": "Price chart", "sec.delta": "What changed", "sec.events": "Disclosure events", "sec.families": "Family scores", "sec.flags": "Data-quality flags", "sec.horizons": "Horizons + price", "sec.ledger": "Ledger pin", "sec.llm": "LLM provenance", "sec.narrative": "Narrative", "sec.news": "News + disclosures", "sec.provenance": "Provenance", "sec.reaction": "Reaction profile", "sec.risks": "Risks", "sec.sentiment": "Sentiment + fundamentals", "sec.sharia": "Sharia screening", "sec.tools": "Per-tool sections", "sentiment.company": "Company: {company}", "sharia.not-recorded": "Sharia screening was not recorded in this model — this is not an empty screening.", "th.category": "Category", "th.confidence": "Confidence", "th.direction": "Direction", "th.eventtype": "Event type", "th.exit": "Exit", "th.expected": "Expected", "th.family": "Family", "th.horizon": "Horizon", "th.lastclose": "Last close", "th.lastdate": "Last date", "th.median5d": "Median +5d (div-adj)", "th.n": "n", "th.range": "Range", "th.run": "Run", "th.score": "Score", "th.source": "Source", "th.status": "Status", "th.tool": "Tool", "th.volume": "Volume", "tool.noreport": "No report for this tool.", "tool.nosummary": "No summary — tool produced no summary.", "tools.refworkload": "Reference workload — not {ticker} data.", "tools.run.bare": "worker run", "tools.run.link": "run", "tools.run.worker": "worker run {id}", "tools.runtable": "Tool run table", "tools.status": "Status: {status} · exit code: {code}", "ui.copied": "Copied.", "ui.copy": "Copy model JSON", "ui.copy.failed": "Copy failed — select the model text manually.", "ui.copy.unavailable": "Clipboard unavailable — select the model text manually.", "ui.footer": "Deterministic glue over the ensemble + reaction fit — research tooling, not financial advice.", "ui.title": "Borsagator report — {ticker} ({date})", "weights.applied.label": "Applied weights (ledger):", "weights.confidence.label": "Confidence basis:", "weights.none": "Weights not recorded for this sweep (pre-#93/#94 run)."}};
+var LANG='en';
+function fmtTpl(tpl,args,display,t){return tpl.replace(/\{(\w+)\}/g,function(m,name){var v=args[name];if(v===undefined){return m;}var kind=display[name];if(kind){var k='display.'+kind+'.'+v;if(t[k]!==undefined){return t[k];}}return v;});}
+function tplArgs(el){var args={},display={};Array.prototype.slice.call(el.attributes).forEach(function(a){if(a.name.indexOf('data-tpl-')===0&&a.name!=='data-tpl-display'){args[a.name.slice(9)]=a.value;}});var spec=el.getAttribute('data-tpl-display');if(spec){spec.split(',').forEach(function(pair){var kv=pair.split(':');if(kv.length===2){display[kv[0]]=kv[1];}});}return {args:args,display:display};}
+document.getElementById('langEn').addEventListener('click',function(){setLang('en')});
+document.getElementById('langAr').addEventListener('click',function(){setLang('ar')});
+function setLang(l){LANG=l;var t=window.I18N[l];document.documentElement.lang=l;document.documentElement.dir=(l==='ar'?'rtl':'ltr');document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(t[k]!==undefined){el.textContent=t[k];}});document.querySelectorAll('[data-i18n-tpl]').forEach(function(el){var k=el.getAttribute('data-i18n-tpl');if(t[k]===undefined){return;}var d=tplArgs(el);el.textContent=fmtTpl(t[k],d.args,d.display,t);});document.querySelectorAll('[data-i18n-aria]').forEach(function(el){var k=el.getAttribute('data-i18n-aria');if(t[k]!==undefined){el.setAttribute('aria-label',t[k]);}});}
+document.getElementById('copyJson').addEventListener('click',function(){var s=document.getElementById('report-model').textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(function(){document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copied'];},function(){document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copy.failed'];});}else{document.getElementById('copyMsg').textContent=window.I18N[LANG]['ui.copy.unavailable'];}});
+</script>
+</body></html>

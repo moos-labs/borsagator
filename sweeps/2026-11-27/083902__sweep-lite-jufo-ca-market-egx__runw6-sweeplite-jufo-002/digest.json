@@ -1,0 +1,431 @@
+{
+  "job": "sweep-lite JUFO.CA market=EGX",
+  "ticker": "JUFO.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T08:36:59.444529+00:00",
+  "finished": "2026-11-27T08:39:02.856534+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_JUFO.CA.csv": 1209,
+          "JUFO.CA.csv_last_date": "2026-11-25",
+          "JUFO.CA.csv_last_close": "21.850000381469727"
+        },
+        "files": [
+          "JUFO.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_JUFO_CA.csv": 484,
+          "JUFO_CA.csv_last_date": "2026-11-26",
+          "JUFO_CA.csv_last_close": "21.719999313354492"
+        },
+        "files": [
+          "JUFO_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "JUFO.CA",
+          "symbol": "JUFO",
+          "rows_egxpy_jufo.csv": 3000,
+          "egxpy_jufo.csv_last_date": "2026-11-26",
+          "egxpy_jufo.csv_last_close": "21.72"
+        },
+        "files": [
+          "egxpy_jufo.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "JUFO.CA",
+          "date": "2026-11-26",
+          "open": 21.85,
+          "high": 22.08,
+          "low": 21.57,
+          "close": 21.72,
+          "rsi_14": 35.4497,
+          "macd": -0.5981,
+          "macd_signal": -0.4249,
+          "macd_hist": -0.1732,
+          "ema_20": 23.0343,
+          "ema_50": 24.0921,
+          "ema_200": 26.2754,
+          "adx_14": 27.7957,
+          "bb_upper": 25.273,
+          "bb_mid": 23.2505,
+          "bb_lower": 21.228,
+          "bb_pctb": 0.1216,
+          "atr_14": 0.8524,
+          "stoch_k": 5.206,
+          "stoch_d": 6.3161,
+          "rows_fetched": 4068,
+          "rows_used": 1931,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-26",
+          "indicators.csv_last_close": "21.719999313354492"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "JUFO.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 4068,
+          "rows_used": 1931,
+          "last_date": "2026-11-26",
+          "last_close": 21.719999313354492,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-26",
+          "indicators.csv_last_close": "21.719999313354492"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "ohlc.csv_last_close": "6.829999923706055"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2438,
+          "poul_ohlc.csv_last_close": "6.829999923706055"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 1
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 1
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 1
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-24",
+          "forecast.csv_last_close": "23.2596"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "JUFO.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-jufo-002",
+      "claim_id": "w6-sweeplite-jufo-002",
+      "detail": "ERROR: no items fetched from any source"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  }
+}
