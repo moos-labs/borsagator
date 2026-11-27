@@ -40,8 +40,10 @@ Heaviest = new information, fittable on long history, cells untouched.
    6 to 7 days, per the GDELT agent's report, not re-run by me). Design:
    per ticker and cutoff, count and mean tone of matched rows over the 5
    sessions before the cutoff, standardised within ticker; band half =
-   k x s60 x sqrt(sessions) x (1 + beta x z_news), one k per horizon and
-   one beta, fit on the post-2021-09-05 long history (windows ending
+   k x s60 x sqrt(sessions) x exp(beta x clip(z_news, -3, 3)), one k per
+   horizon and one beta. The multiplier is always positive (the earlier
+   (1 + beta x z) form goes negative, e.g. beta 0.5 and z -3 gives -0.5);
+   beta = 0 reproduces the frozen width, fit on the post-2021-09-05 long history (windows ending
    <= 2023-12-28) with the Yahoo close, scored on cells 48-90 descriptive
    then 91+ for any reading. Holm across the screen's readings.
    Prerequisite: the full-run output, the one matching rule frozen, and
@@ -56,7 +58,10 @@ Heaviest = new information, fittable on long history, cells untouched.
    `screen_band_models.py` (family size fixed in advance). Information
    not in a single name's own series, no external dependency. The EGX30
    index itself has no scripted history route (T4, Moos).
-3. Earnings and disclosure calendar as an event flag (needs G1/G2):
+3. Earnings and disclosure calendar as an event flag (needs G1/G2; same
+   point-in-time rule as route 1: a flag may use a disclosure only if its
+   publication timestamp precedes the EGX close of the cutoff day, and the
+   check is verified before any cell is scored):
    widen windows that contain a results release. Blocked on a historical
    disclosures dataset; the INS-DATA surveys did not deliver one I can
    cite here. Rank low until a dataset is verified.
