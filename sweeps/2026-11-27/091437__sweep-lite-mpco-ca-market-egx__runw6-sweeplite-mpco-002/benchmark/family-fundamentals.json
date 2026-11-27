@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 1.87,
+ "base_source": "egx-data/egxpy_mpco.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-27T09:14:37.511088+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -0.85,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 7.08,
+   "range_low_pct": -8.79,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -3.92,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 32.46,
+   "range_low_pct": -40.29,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.35,
+   "direction": "down",
+   "expected_move_pct": -1.91,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "horizon_short": false,
+   "net_score": -0.35,
+   "range_high_pct": 15.84,
+   "range_low_pct": -19.66,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "51b016ef172a4cb05e3aa1c80408efec54911358e4e7671eedab7174823f3085",
+  "ensemble.json": "95596d6e2836af1b63378c68249195661f3ab3ac7a23dcd578f23bf6d7e2eed3"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0477,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+ "ticker": "MPCO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

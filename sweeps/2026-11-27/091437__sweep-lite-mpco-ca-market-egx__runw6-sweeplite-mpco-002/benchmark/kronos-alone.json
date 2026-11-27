@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 1.87,
+ "base_source": "egx-data/egxpy_mpco.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T09:14:37.511479+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 0.87,
+   "families": {
+    "price-forecast": 0.091
+   },
+   "horizon_short": false,
+   "net_score": 0.091,
+   "range_high_pct": 4.44,
+   "range_low_pct": -2.64,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.72,
+   "families": {
+    "price-forecast": 0.062
+   },
+   "horizon_short": false,
+   "net_score": 0.062,
+   "range_high_pct": 6.79,
+   "range_low_pct": -1.36,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 5.67,
+   "families": {
+    "price-forecast": 0.266
+   },
+   "horizon_short": false,
+   "net_score": 0.266,
+   "range_high_pct": 7.13,
+   "range_low_pct": 0.2,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "9d4b6efd40157c5359e6b143437a6358965f3fab5b1b550195a6b914c91c0f08",
+  "digest.json": "51b016ef172a4cb05e3aa1c80408efec54911358e4e7671eedab7174823f3085",
+  "ensemble.json": "95596d6e2836af1b63378c68249195661f3ab3ac7a23dcd578f23bf6d7e2eed3"
+ },
+ "kronos_first_row_date": "2026-11-26",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0477,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+ "ticker": "MPCO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

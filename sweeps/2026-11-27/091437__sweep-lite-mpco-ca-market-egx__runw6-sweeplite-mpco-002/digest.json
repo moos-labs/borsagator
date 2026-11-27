@@ -1,0 +1,415 @@
+{
+  "job": "sweep-lite MPCO.CA market=EGX",
+  "ticker": "MPCO.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T09:12:37.607973+00:00",
+  "finished": "2026-11-27T09:14:37.210185+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_MPCO.CA.csv": 1209,
+          "MPCO.CA.csv_last_date": "2026-11-25",
+          "MPCO.CA.csv_last_close": "1.8799999952316284"
+        },
+        "files": [
+          "MPCO.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_MPCO_CA.csv": 484,
+          "MPCO_CA.csv_last_date": "2026-11-26",
+          "MPCO_CA.csv_last_close": "1.8700000047683716"
+        },
+        "files": [
+          "MPCO_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MPCO.CA",
+          "symbol": "MPCO",
+          "rows_egxpy_mpco.csv": 3000,
+          "egxpy_mpco.csv_last_date": "2026-11-26",
+          "egxpy_mpco.csv_last_close": "1.87"
+        },
+        "files": [
+          "egxpy_mpco.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MPCO.CA",
+          "date": "2026-11-26",
+          "open": 1.88,
+          "high": 1.9,
+          "low": 1.85,
+          "close": 1.87,
+          "rsi_14": 43.6308,
+          "macd": -0.0436,
+          "macd_signal": -0.0423,
+          "macd_hist": -0.0013,
+          "ema_20": 1.96,
+          "ema_50": 2.0462,
+          "ema_200": 1.9624,
+          "adx_14": 17.782,
+          "bb_upper": 2.2126,
+          "bb_mid": 1.938,
+          "bb_lower": 1.6634,
+          "bb_pctb": 0.3762,
+          "atr_14": 0.1336,
+          "stoch_k": 9.8333,
+          "stoch_d": 16.0311,
+          "rows_fetched": 5842,
+          "rows_used": 1931,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-26",
+          "indicators.csv_last_close": "1.8700000047683716"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "MPCO.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 5842,
+          "rows_used": 1931,
+          "last_date": "2026-11-26",
+          "last_close": 1.8700000047683716,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-26",
+          "indicators.csv_last_close": "1.8700000047683716"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "ohlc.csv_last_close": "6.829999923706055"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2438,
+          "poul_ohlc.csv_last_close": "6.829999923706055"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002",
+      "detail": "ERROR: no English headlines found for this ticker"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-24",
+          "forecast.csv_last_close": "1.9209"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "MPCO.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mpco-002",
+      "claim_id": "w6-sweeplite-mpco-002",
+      "detail": "ERROR: no items fetched from any source"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ]
+  }
+}

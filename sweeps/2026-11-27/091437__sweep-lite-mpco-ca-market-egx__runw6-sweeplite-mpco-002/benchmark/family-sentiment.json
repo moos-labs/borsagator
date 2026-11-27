@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 1.87,
+ "base_source": "egx-data/egxpy_mpco.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: sentiment score null in every horizon",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-27T09:14:37.510714+00:00",
+ "inputs_sha256": {
+  "digest.json": "51b016ef172a4cb05e3aa1c80408efec54911358e4e7671eedab7174823f3085",
+  "ensemble.json": "95596d6e2836af1b63378c68249195661f3ab3ac7a23dcd578f23bf6d7e2eed3"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002",
+ "ticker": "MPCO.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
