@@ -133,7 +133,16 @@ def parse_table15(pdf, page):
         if m:
             ten = m.group(1)
             vals = []
-            for x0, t in sorted(rowmap[k]):
+            # BAND-BOUNDARY FIX (bulletin 353): a row's values can sit just
+            # across the round(y/3) boundary from its label (353 182-day:
+            # label y=283.4 -> band 94, values y=283.5 -> band 95), so the
+            # label's own band holds no values. Merge k-1/k/k+1 like
+            # parse_table17 does. Adjacent tenor rows are ~11pt away, so
+            # the +-1 band merge cannot reach another row's values.
+            merged = []
+            for kk in (k - 1, k, k + 1):
+                merged += rowmap.get(kk, [])
+            for x0, t in sorted(merged):
                 if re.fullmatch(r'\d+\.\d+', t):
                     vals.append(((x0), float(t)))
                 elif t == '+' :
