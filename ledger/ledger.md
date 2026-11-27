@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46). Sweeps archived: 116 (95 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788). Sweeps archived: 119 (98 with an ensemble).
 
-**Forecasts found: 279 · matured: 72 · pending: 192 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 288 · matured: 75 · pending: 198 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -35,9 +35,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 | MPCO.CA | 6 | 1 | 5 | 0 | 2014-07-20 → 2026-11-26 |
 | MTIE.CA | 6 | 1 | 5 | 0 | 2005-04-26 → 2026-11-26 |
 | NVDA | 6 | 1 | 5 | 0 | 2021-11-15 → 2026-11-13 |
-| OCDI.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
-| OLFI.CA | 3 | 0 | 3 | 0 | 2016-10-03 → 2026-11-25 |
-| ORHD.CA | 3 | 0 | 3 | 0 | 2014-06-29 → 2026-11-25 |
+| OCDI.CA | 6 | 1 | 5 | 0 | 2014-07-20 → 2026-11-26 |
+| OLFI.CA | 6 | 1 | 5 | 0 | 2016-10-03 → 2026-11-26 |
+| ORHD.CA | 6 | 1 | 5 | 0 | 2014-06-29 → 2026-11-26 |
 | ORWE.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
 | PHDC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
 | POUL.CA | 90 | 47 | 34 | 9 | 2014-06-04 → 2026-11-25 |
@@ -51,7 +51,7 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 
 | Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| day | 45 | 0.156 | 6.4 | 0.711 |
+| day | 48 | 0.167 | 6.08 | 0.729 |
 | week | 15 | 0.0 | 18.28 | 1.0 |
 | month | 0 | — | — | — |
 
@@ -60,10 +60,10 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 | Family | Mean skill | n |
 |---|---|---|
 | agent | +0.750 | 1 |
-| ensemble (net_score) | -0.184 | 60 |
-| price-forecast | -0.385 | 57 |
+| ensemble (net_score) | -0.181 | 63 |
+| price-forecast | -0.373 | 60 |
 | sentiment | +0.027 | 58 |
-| technicals | -0.197 | 59 |
+| technicals | -0.194 | 62 |
 
 ## Forecasts
 
@@ -237,15 +237,15 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 | MTIE.CA | 2026-11-25 | day | down | -4.44 | -1.93 | ✅ | 2.51 | ✅ |  | matured 2026-11-26 |
 | MTIE.CA | 2026-11-25 | week | down | -2.18 | — | — | — | — | | pending (1/2 sessions) |
 | MTIE.CA | 2026-11-25 | month | up | +2.43 | — | — | — | — | | pending (1/8 sessions) |
-| OCDI.CA | 2026-11-25 | day | flat | -0.21 | — | — | — | — | | pending (0/1 sessions) |
-| OCDI.CA | 2026-11-25 | week | up | +1.03 | — | — | — | — | | pending (0/3 sessions) |
-| OCDI.CA | 2026-11-25 | month | up | +4.59 | — | — | — | — | | pending (0/14 sessions) |
-| OLFI.CA | 2026-11-25 | day | flat | -0.05 | — | — | — | — | | pending (0/1 sessions) |
-| OLFI.CA | 2026-11-25 | week | flat | -0.18 | — | — | — | — | | pending (0/3 sessions) |
-| OLFI.CA | 2026-11-25 | month | down | -2.47 | — | — | — | — | | pending (0/14 sessions) |
-| ORHD.CA | 2026-11-25 | day | down | -1.82 | — | — | — | — | | pending (0/1 sessions) |
-| ORHD.CA | 2026-11-25 | week | down | -1.62 | — | — | — | — | | pending (0/3 sessions) |
-| ORHD.CA | 2026-11-25 | month | down | -1.34 | — | — | — | — | | pending (0/14 sessions) |
+| OCDI.CA | 2026-11-25 | day | flat | -0.21 | +0.85 | ❌ | 1.06 | ✅ |  | matured 2026-11-26 |
+| OCDI.CA | 2026-11-25 | week | up | +1.03 | — | — | — | — | | pending (1/3 sessions) |
+| OCDI.CA | 2026-11-25 | month | up | +4.59 | — | — | — | — | | pending (1/14 sessions) |
+| OLFI.CA | 2026-11-25 | day | flat | -0.05 | -0.44 | ✅ | 0.39 | ✅ |  | matured 2026-11-26 |
+| OLFI.CA | 2026-11-25 | week | flat | -0.18 | — | — | — | — | | pending (1/3 sessions) |
+| OLFI.CA | 2026-11-25 | month | down | -2.47 | — | — | — | — | | pending (1/14 sessions) |
+| ORHD.CA | 2026-11-25 | day | down | -1.82 | +0.67 | ❌ | 2.49 | ✅ |  | matured 2026-11-26 |
+| ORHD.CA | 2026-11-25 | week | down | -1.62 | — | — | — | — | | pending (1/3 sessions) |
+| ORHD.CA | 2026-11-25 | month | down | -1.34 | — | — | — | — | | pending (1/14 sessions) |
 | ORWE.CA | 2026-11-25 | day | up | +2.13 | — | — | — | — | | pending (0/1 sessions) |
 | ORWE.CA | 2026-11-25 | week | up | +2.60 | — | — | — | — | | pending (0/3 sessions) |
 | ORWE.CA | 2026-11-25 | month | up | +2.82 | — | — | — | — | | pending (0/14 sessions) |
@@ -348,6 +348,15 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 | MTIE.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | MTIE.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | MTIE.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| OCDI.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| OCDI.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| OCDI.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| OLFI.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| OLFI.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| OLFI.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| ORHD.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| ORHD.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| ORHD.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
 
 ## Data gaps & notes
 
@@ -379,9 +388,9 @@ Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46)
 - MPCO.CA: actuals series has 3001 sessions, 2014-07-20 → 2026-11-26 (last source: sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002/collected/egx-data/egxpy_mpco.csv)
 - MTIE.CA: actuals series has 2335 sessions, 2005-04-26 → 2026-11-26 (last source: sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002/collected/egx-data/egxpy_mtie.csv)
 - NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)
-- OCDI.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/143311__sweep-lite-ocdi-ca-market-egx__runw5-sweeplite-ocdi-001/collected/egx-data/egxpy_ocdi.csv)
-- OLFI.CA: actuals series has 2464 sessions, 2016-10-03 → 2026-11-25 (last source: sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001/collected/egx-data/egxpy_olfi.csv)
-- ORHD.CA: actuals series has 3000 sessions, 2014-06-29 → 2026-11-25 (last source: sweeps/2026-11-25/144735__sweep-lite-orhd-ca-market-egx__runw5-sweeplite-orhd-001/collected/egx-data/egxpy_orhd.csv)
+- OCDI.CA: actuals series has 3001 sessions, 2014-07-20 → 2026-11-26 (last source: sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002/collected/egx-data/egxpy_ocdi.csv)
+- OLFI.CA: actuals series has 2465 sessions, 2016-10-03 → 2026-11-26 (last source: sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002/collected/egx-data/egxpy_olfi.csv)
+- ORHD.CA: actuals series has 3001 sessions, 2014-06-29 → 2026-11-26 (last source: sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002/collected/egx-data/egxpy_orhd.csv)
 - ORWE.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001/collected/egx-data/egxpy_orwe.csv)
 - PHDC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001/collected/egx-data/egxpy_phdc.csv)
 - POUL.CA: actuals series has 3053 sessions, 2014-06-04 → 2026-11-25 (last source: sweeps/2026-11-26/074217__sweep-lite-poul-ca-market-egx__runsched-2026-11-26/collected/egx-data/egxpy_poul.csv)
