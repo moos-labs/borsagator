@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 23.6,
+ "base_source": "egx-data/egxpy_ocdi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T09:38:03.710988+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "61cf093f1b74f2a352a825125533879db6d7b22fe4d5fa421a8d36c0e7dde287",
+  "digest.json": "d3ea59a24b66cb29655d1012afe7b2276e60c5a660ebb0ca7889134c39f32d6a",
+  "ensemble.json": "0f38cf453a524e3cfa2eb8b07701da564cdbe9367718a868659cf712de6b1150"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+ "ticker": "OCDI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

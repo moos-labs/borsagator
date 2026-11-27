@@ -1,0 +1,123 @@
+{
+ "tool": "forecast-ensemble",
+ "version": 2,
+ "ticker": "OCDI.CA",
+ "base_price": 23.6,
+ "base_source": "egx-data/egxpy_ocdi.csv",
+ "base_date": "2026-11-26",
+ "price_crosscheck": {
+  "status": "agree",
+  "witnesses": {
+   "egx-data/egxpy_ocdi.csv": 23.4,
+   "openbb/ocdi_ca.csv": 23.600000381469727,
+   "pandas-ta/indicators.csv": 23.600000381469727,
+   "talib/indicators.csv": 23.600000381469727,
+   "yahooquery/ocdi.ca.csv": 23.600000381469727
+  },
+  "outliers": {},
+  "spread_pct": 0.85,
+  "common_date": "2026-11-25",
+  "base_used": 23.6,
+  "base_source_used": "egx-data/egxpy_ocdi.csv",
+  "base_date": "2026-11-26",
+  "latest_collected_date": "2026-11-26",
+  "base_stale": false
+ },
+ "corporate_actions": [],
+ "kronos_ex_rescale": null,
+ "sigma_daily": 0.0359,
+ "sigma60_daily": 0.0344,
+ "sigma_source": "egx-data/egxpy_ocdi.csv (σ60=0.0344, σ10=0.0359)",
+ "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+ "formula": "v2-594",
+ "sessions_per_calendar_day": 0.665,
+ "date": "2026-11-27",
+ "risk": {
+  "level": "unknown",
+  "conf_cap": 0.35,
+  "price_mult": 0.8,
+  "flags": [
+   "news overlay unavailable — risk unassessed, confidence capped"
+  ]
+ },
+ "weights_source": "frozen-v2",
+ "applied_weights": {
+  "source": "frozen-v2",
+  "file": null,
+  "file_sha256": null,
+  "factors": {
+   "price-forecast": 1.0,
+   "technicals": 1.0,
+   "sentiment": 1.0,
+   "agent": 1.0,
+   "fundamentals": 1.0
+  },
+  "eligible": {}
+ },
+ "family_scores": {
+  "technicals": -0.3,
+  "sentiment": null,
+  "agent": null,
+  "fundamentals": 0.4,
+  "price-forecast": 0.098
+ },
+ "horizons": {
+  "day": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -5.14,
+   "range_high_pct": 5.14,
+   "confidence": 0.35,
+   "net_score": null,
+   "tilt_centre_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "trading_sessions": 1,
+   "kronos_move_pct": -1.5411,
+   "vol_h_pct": 3.5895,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "week": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -12.79,
+   "range_high_pct": 12.79,
+   "confidence": 0.35,
+   "net_score": -0.3,
+   "tilt_centre_pct": -0.59,
+   "families": {
+    "technicals": -0.3
+   },
+   "horizon_short": false,
+   "trading_sessions": 5,
+   "kronos_move_pct": 0.5831,
+   "vol_h_pct": 8.0265,
+   "band_calibration": {
+    "applied": false
+   }
+  },
+  "month": {
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -24.57,
+   "range_high_pct": 24.57,
+   "confidence": 0.35,
+   "net_score": 0.089,
+   "tilt_centre_pct": 0.81,
+   "families": {
+    "technicals": -0.3,
+    "fundamentals": 0.4
+   },
+   "horizon_short": false,
+   "trading_sessions": 21,
+   "kronos_move_pct": 3.2085,
+   "vol_h_pct": 16.4494,
+   "band_calibration": {
+    "applied": false
+   }
+  }
+ },
+ "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)"
+}

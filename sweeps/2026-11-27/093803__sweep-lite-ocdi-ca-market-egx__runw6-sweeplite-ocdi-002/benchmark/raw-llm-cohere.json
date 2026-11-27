@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 23.6,
+ "base_source": "egx-data/egxpy_ocdi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T09:43:23.894533+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.76,
+   "direction": "down",
+   "expected_move_pct": -1.31,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.01,
+   "range_low_pct": -2.62,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.58,
+   "direction": "down",
+   "expected_move_pct": -3.01,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.03,
+   "range_low_pct": -6.02,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.63,
+   "direction": "down",
+   "expected_move_pct": -2.14,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.02,
+   "range_low_pct": -4.28,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_ocdi.csv": "c11bb58b677971222fa84c5a15c4068103b6674fb084247f78ef4209ca2134c8",
+  "digest.json": "d3ea59a24b66cb29655d1012afe7b2276e60c5a660ebb0ca7889134c39f32d6a",
+  "ensemble.json": "0f38cf453a524e3cfa2eb8b07701da564cdbe9367718a868659cf712de6b1150",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_ocdi.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0359,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+ "ticker": "OCDI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
