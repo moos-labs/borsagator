@@ -145,6 +145,23 @@ def clean_report(res, counts, cells, v, why):
     return "\n".join(L), {"results": res, "counts": counts, "verdict": v, "reasons": why}
 
 
+NOTE_MARK = "realised window rebuilt"  # build_rows note: capture kept, not dropped
+
+
+def exclusion_lines(gaps, dropped_rows, unnumbered):
+    """Everything that did not enter the run, with reasons. gaps is the
+    list R.build_rows returns; entries that only note a rebuilt realised
+    window (the capture is kept) are printed as notes, not exclusions."""
+    drops = [g for g in gaps if NOTE_MARK not in g]
+    notes = [g for g in gaps if NOTE_MARK in g]
+    L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
+         "%d unnumbered capture(s) never scored; %d note(s) on kept captures" % (
+             len(drops), dropped_rows, unnumbered, len(notes))]
+    L.extend("excluded: %s" % g for g in drops)
+    L.extend("note: %s" % g for g in notes)
+    return L
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -177,7 +194,7 @@ def main(argv=None):
     num = A.cell_number
     if a.mode == "fit":
         caps = [c for c in allc if num(c) is not None and num(c) <= TRAIN_MAX_CELL]
-        rows, _g = R.build_rows(caps, allc)
+        rows, gaps = R.build_rows(caps, allc)
         if not rows:
             print("refusing: no training rows; %s not written" % a.out)
             return 2
@@ -187,14 +204,18 @@ def main(argv=None):
             p = fz["horizons"][h]
             print("%s: event=%d nonevent=%d fitted=%s m_event=%.2f m_nonevent=%.3f" % (
                 h, p["n_event"], p["n_nonevent"], p["fitted"], p["m_event"], p["m_nonevent"]))
+        ex = exclusion_lines(gaps, sum(1 for r in rows if not r.get("v2_sigma")),
+                             sum(1 for c in allc if num(c) is None))
+        print("\n".join(ex))
         with open(a.out, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz}, fh, indent=1)
         return 0
     fz = json.load(open(a.frozen))["frozen"]
     hi = a.max_cell if a.mode == "describe" else 10 ** 9
     caps = [c for c in allc if num(c) is not None and a.min_cell <= num(c) <= hi]
-    rows, _g = R.build_rows(caps, allc)
+    rows, gaps = R.build_rows(caps, allc)
     pairs = score_rows(rows, fz, dates)
+    ex = exclusion_lines(gaps, len(rows) - len(pairs), sum(1 for c in allc if num(c) is None))
     res = R.evaluate(pairs, a.reps)
     counts = group_counts(pairs)
     if a.mode == "describe":
@@ -202,12 +223,15 @@ def main(argv=None):
         for h in HORIZONS:
             print(_line(h, res[h]) + " event=%d nonevent=%d" % (counts[h]["event"], counts[h]["nonevent"]))
         if a.json:
-            json.dump({"descriptive": True, "results": res, "counts": counts},
+            json.dump({"descriptive": True, "results": res, "counts": counts, "excluded": ex},
                       open(a.json, "w", encoding="utf-8"), indent=1)
+        print("\n".join(ex))
         return 0
     v, why = loop_bar.loop_bar_verdict(res)
     text, payload = clean_report(res, counts, a.min_cell, v, why)
     print(text)
+    print("\n".join(ex))
+    payload["excluded"] = ex
     if a.json:
         json.dump(payload, open(a.json, "w", encoding="utf-8"), indent=1)
     return 0

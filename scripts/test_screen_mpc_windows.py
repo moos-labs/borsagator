@@ -140,6 +140,48 @@ def test_refusals():
         check("fit leaves out untouched", open(out).read() == "SENTINEL")
 
 
+def test_exclusions_listed():
+    L = S.exclusion_lines(["cap1: no usable pre-cutoff OHLC history", "cap2: scoring failed: x",
+                           "cap3: realised window rebuilt to 21 sessions from price.csv"], 3, 2)
+    check("header counts", "2 capture(s) dropped" in L[0] and "3 row(s) without a v2 sigma" in L[0]
+          and "2 unnumbered" in L[0] and "1 note(s)" in L[0], L[0])
+    check("each drop listed with reason", L[1:3] == ["excluded: cap1: no usable pre-cutoff OHLC history",
+                                                    "excluded: cap2: scoring failed: x"])
+    check("rebuild note is a note, not an exclusion",
+          L[3] == "note: cap3: realised window rebuilt to 21 sessions from price.csv")
+    check("no gaps still prints header", len(S.exclusion_lines([], 0, 0)) == 1)
+
+
+def test_modes_print_gap_list():
+    # run the three modes with mocked discovery and build_rows that returns a gap
+    old = (S.A.find_captures, S.R.build_rows, S.A.cell_number)
+    S.A.find_captures = lambda dirs, mc: ["/x/2024-06-30/T-cell5", "/x/2024-06-30/U"]
+    S.A.cell_number = lambda p: 5 if "cell5" in p else None
+    rows = [_row("week", "2025-01-02", 1.0, cell=5)] * 6 + [_row("week", "2025-03-02", 1.0, cell=5)] * 6
+    rows.append({**_row("week", "2025-03-02", 1.0), "v2_sigma": None})
+    S.R.build_rows = lambda caps, refs: (rows, ["/x/2024-06-30/T: no usable pre-cutoff OHLC history"])
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "f.json")
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = S.main(["fit", "--captures", "x", "--out", out])
+            fit_out = buf.getvalue()
+            check("fit ok", rc == 0)
+            check("fit prints gap and dropped row", "excluded: /x/2024-06-30/T: no usable pre-cutoff OHLC history" in fit_out
+                  and "1 row(s) without a v2 sigma" in fit_out and "1 unnumbered" in fit_out, fit_out[-300:])
+            for mode, extra in (("describe", []), ("score", [])):
+                buf = io.StringIO()
+                with contextlib.redirect_stdout(buf):
+                    rc = S.main([mode, "--captures", "x", "--frozen", out, "--reps", "5"] + extra)
+                o = buf.getvalue()
+                check("%s ok" % mode, rc == 0, o[:200])
+                check("%s prints gap list" % mode, "excluded: /x/2024-06-30/T: no usable pre-cutoff OHLC history" in o, o[-300:])
+                check("%s counts dropped rows" % mode, "1 row(s) without a v2 sigma" in o, o[-300:])
+    finally:
+        S.A.find_captures, S.R.build_rows, S.A.cell_number = old
+
+
 def test_decisions_file():
     ds = S.load_dates()
     check("38 decisions", len(ds) == 38, str(len(ds)))
@@ -149,7 +191,7 @@ def test_decisions_file():
 
 def run_all():
     for fn in (test_constants, test_window_end, test_flag_boundaries, test_fit_constraint_and_groups, test_fit_tie_goes_to_one,
-               test_score_rows_uses_frozen, test_counts_only, test_refusals, test_decisions_file):
+               test_score_rows_uses_frozen, test_counts_only, test_refusals, test_exclusions_listed, test_modes_print_gap_list, test_decisions_file):
         fn()
 
 
