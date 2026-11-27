@@ -72,6 +72,26 @@ def test_rank_votes():
     check("rank abstain middle", len(mid) == 6, len(mid))
 
 
+def test_rank_zero_sentiment_unscored():
+    # 6 rows, k=2: the zero-sentiment row sorts into the bottom tercile
+    rows = [row("d1", "T0", "day", -0.5, "down"), row("d1", "T1", "day", 0.0, "down"),
+            row("d1", "T2", "day", 0.2, "up"), row("d1", "T3", "day", 0.3, "up"),
+            row("d1", "T4", "day", 0.4, "up"), row("d1", "T5", "day", 0.5, "up")]
+    v = V.rank_votes(rows)
+    # bottom = T0 (-0.5), T1 (0.0): T1 is in the universe but unscored; top = T4, T5
+    check("zero row unscored in tercile", len(v) == 3 and all(x[1] == "day" for x in v), v)
+    rows2 = [dict(r) for r in rows]
+    rows2[1]["families"] = {"sentiment": -0.1}
+    check("nonzero same slot scored", len(V.rank_votes(rows2)) == 4)
+    # zero row still shifts the boundary: dropping it from the universe changes n and k
+    no_zero = [r for r in rows if r["ticker"] != "T1"]
+    check("zero row stays in universe", V.rank_votes(no_zero) != V.rank_votes(rows))
+    # eligibility via rank path: month and flat realised stay unscored
+    flat = [dict(r) for r in rows]
+    flat[0]["realized_direction"] = "flat"
+    check("flat realised unscored", len(V.rank_votes(flat)) == 2, V.rank_votes(flat))
+
+
 def test_gate_and_boot():
     rows = []
     for i in range(29):
@@ -149,7 +169,7 @@ def test_cli():
 
 
 def run_all():
-    for fn in (test_eligible_and_sign, test_rank_votes, test_gate_and_boot, test_pass_leg_and_seed, test_cli):
+    for fn in (test_eligible_and_sign, test_rank_votes, test_rank_zero_sentiment_unscored, test_gate_and_boot, test_pass_leg_and_seed, test_cli):
         fn()
 
 

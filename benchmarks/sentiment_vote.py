@@ -52,8 +52,7 @@ def rank_votes(rows):
         k = n // 3
         for side, sel in (("down", g[:k]), ("up", g[n - k:])):
             for f in sel:
-                if (f.get("status") == "matured"
-                        and f.get("realized_direction") in ("up", "down")):
+                if eligible(f):
                     out.append((d, h, side == f["realized_direction"]))
     return out
 
