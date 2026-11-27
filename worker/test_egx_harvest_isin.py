@@ -55,6 +55,23 @@ class TestIsinCheckDigit(unittest.TestCase):
         _ar, isin = EGX_COMPANIES["AMOC"]
         self.assertEqual(isin, "EGS380P1C010")
 
+    def test_abuk_isin_is_the_ipf_value(self):
+        """ABUK must be EGS38191C010 — IPF official fund-members
+        list, row 50 (checked live 2026-11-27, issue #110). The old
+        value EGS38161C013 is Unipak's ISIN (IPF row 57) and PASSES
+        the check digit, so the validator alone cannot catch this
+        class of error — only a pinned value can. The wrong ISIN
+        made the harvest query Unipak's disclosures for ABUK."""
+        _ar, isin = EGX_COMPANIES["ABUK"]
+        self.assertEqual(isin, "EGS38191C010")
+
+    def test_old_abuk_value_is_unipak_not_abuk(self):
+        """The pre-fix value EGS38161C013 is a valid ISIN — for
+        Unipak (UNIP.CA), not ABUK — so it must never appear as
+        ABUK's entry again."""
+        _ar, isin = EGX_COMPANIES["ABUK"]
+        self.assertNotEqual(isin, "EGS38161C013")
+
     def test_old_amoc_value_fails_check_digit(self):
         """The pre-fix value EGS3E2B1C018 is not a valid ISIN: the
         validator must reject it, so this test would have caught
@@ -80,7 +97,7 @@ class TestIsinCheckDigit(unittest.TestCase):
                      "EGS691S1C011",  # TMGH
                      "EGS3G0Z1C014",  # SWDY
                      "EGS3C251C013",  # ESRS
-                     "EGS38161C013",  # ABUK
+                     "EGS38191C010",  # ABUK (IPF row 50; was EGS38161C013 = Unipak, #110)
                      "EGS69082C013"):  # EKHO
             self.assertTrue(is_valid_isin(isin), isin)
 
