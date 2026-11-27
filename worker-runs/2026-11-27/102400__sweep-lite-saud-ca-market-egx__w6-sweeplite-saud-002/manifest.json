@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-saud-002",
+  "job": "sweep-lite SAUD.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T10:19:38.884077+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-saud-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T10:19:38.884077+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "SAUD"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['SAUD']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T10:23:56.053174+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002",
+  "model": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002/report-model.json",
+  "model_sha256": "1953c457ec4515bbff51fb62b5ac2dfa927788ad0fb829d54eb090d0815d0f4f",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/SAUD.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/SAUD.CA.json",
+   "sharia-row-missing: AAOIFI SAUD.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 SAUD.CA",
+   "sharia-row-missing: FTSE SAUD.CA",
+   "sharia-row-missing: ISLAMICLY SAUD.CA",
+   "sharia-row-missing: MSCI SAUD.CA",
+   "sharia-row-missing: MSCI_M SAUD.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "0684bb71628b797e3f3ba756a71119d82c1cf120",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 132951,
+    "sha256": "4b661cda2d8bf6d0b70d7e20521fdd84ab354494c9f561f2c76aae4d68322948"
+   },
+   {
+    "path": "report.md",
+    "bytes": 29863,
+    "sha256": "8bf25e853d556662a96b01e95efeff34aa4b7ac7c9abd77d290841d73c3760d0"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "SAUD.CA"
+ }
+}

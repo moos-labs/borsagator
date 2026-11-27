@@ -1,0 +1,301 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 11,
+  "label_counts": {
+    "positive": 0,
+    "negative": 3,
+    "neutral": 8
+  },
+  "label_counts_raw": {
+    "neutral": 8,
+    "negative": 3
+  },
+  "mean_probabilities": {
+    "positive": 2.094774528965166e-05,
+    "negative": 0.22377074726428378,
+    "neutral": 0.7762083119966767
+  },
+  "items": [
+    {
+      "text": "Major Saudi Conferences to Proceed, Organisers Say, Despite Deadly Airport Attack - EnergyNow",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.7398628187947907e-05,
+        "negative": 0.0011563252191990614,
+        "neutral": 0.9988263249397278
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9988263249397278
+        },
+        {
+          "label": "Negative",
+          "score": 0.0011563252191990614
+        },
+        {
+          "label": "Positive",
+          "score": 1.7398628187947907e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Rubio makes clear that Trump's foreign policy won't change after GOP election losses - San Francisco Chronicle",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.599665018962696e-05,
+        "negative": 0.045522015541791916,
+        "neutral": 0.9544220566749573
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9544220566749573
+        },
+        {
+          "label": "Negative",
+          "score": 0.045522015541791916
+        },
+        {
+          "label": "Positive",
+          "score": 5.599665018962696e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Saudi Interceptor Stocks Run Low After Riyadh Attacks - https://houseofsaud.com/",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.419023753143847e-05,
+        "negative": 0.01305894274264574,
+        "neutral": 0.986896812915802
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.986896812915802
+        },
+        {
+          "label": "Negative",
+          "score": 0.01305894274264574
+        },
+        {
+          "label": "Positive",
+          "score": 4.419023753143847e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Wife of accused spy inside powerful California tech giant fled the US — as suspect’s link to royal family revealed - New York Post",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.5242410376667976e-05,
+        "negative": 0.0011102298740297556,
+        "neutral": 0.9988545179367065
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9988545179367065
+        },
+        {
+          "label": "Negative",
+          "score": 0.0011102298740297556
+        },
+        {
+          "label": "Positive",
+          "score": 3.5242410376667976e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Saudis say Riyadh airport struck for 2nd day in a row, separate airport also attacked - CBC",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 2.9021928185102297e-06,
+        "negative": 0.8367161154747009,
+        "neutral": 0.16328096389770508
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.8367161154747009
+        },
+        {
+          "label": "Neutral",
+          "score": 0.16328096389770508
+        },
+        {
+          "label": "Positive",
+          "score": 2.9021928185102297e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Canada advises no travel to Riyadh airport after Houthi attacks, embassy remains open - CityNews Toronto",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.094681844117986e-08,
+        "negative": 2.892690417866106e-06,
+        "neutral": 0.9999971389770508
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999971389770508
+        },
+        {
+          "label": "Negative",
+          "score": 2.892690417866106e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.094681844117986e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Saudi airport passenger terminal is struck again, a day after 12 were killed - CTV News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.130700861220248e-06,
+        "negative": 0.018704460933804512,
+        "neutral": 0.9812923669815063
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9812923669815063
+        },
+        {
+          "label": "Negative",
+          "score": 0.018704460933804512
+        },
+        {
+          "label": "Positive",
+          "score": 3.130700861220248e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Multiple fatalities reported as drones, missiles hit Saudi international airports - Insurance Business",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 2.267810486955568e-06,
+        "negative": 0.9327113628387451,
+        "neutral": 0.0672864094376564
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.9327113628387451
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0672864094376564
+        },
+        {
+          "label": "Positive",
+          "score": 2.267810486955568e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Flames, smoke at Aramco facility south of Saudi capital: AFP - Region - World - Ahram Online",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.327112830855185e-06,
+        "negative": 6.028292318660533e-06,
+        "neutral": 0.9999885559082031
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999885559082031
+        },
+        {
+          "label": "Negative",
+          "score": 6.028292318660533e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.327112830855185e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Delegates walk out as Israel’s Netanyahu addresses UN - CTV News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.060164909309606e-08,
+        "negative": 3.483842192508746e-06,
+        "neutral": 0.999996542930603
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999996542930603
+        },
+        {
+          "label": "Negative",
+          "score": 3.483842192508746e-06
+        },
+        {
+          "label": "Positive",
+          "score": 5.060164909309606e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "25 Years After 9/11, Questions About the FBI’s Pursuit of Saudi Suspects in the Case Have Only Grown - ProPublica",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 6.388790643541142e-05,
+        "negative": 0.6124863624572754,
+        "neutral": 0.3874497413635254
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.6124863624572754
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3874497413635254
+        },
+        {
+          "label": "Positive",
+          "score": 6.388790643541142e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 21.77,
+ "base_source": "egx-data/egxpy_saud.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T10:23:56.406383+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "79f79b8cfb7c50ed1aabaeac95c74da0ca3eb0411e376478fe829e32a82e3196",
+  "digest.json": "1aa6d7445fea4b1ff6e4ad5f35ea5e5f9c7af67be369e192d70d8f7afc82896a",
+  "ensemble.json": "eecb121fdb9fd881623bba4c22c6556d434c0d3ee27ac91af565b1616282f4e7"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002",
+ "ticker": "SAUD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

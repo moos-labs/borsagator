@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 21.77,
+ "base_source": "egx-data/egxpy_saud.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T10:23:59.895467+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.67,
+   "direction": "down",
+   "expected_move_pct": -0.82,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.01,
+   "range_low_pct": -1.64,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.78,
+   "direction": "down",
+   "expected_move_pct": -1.56,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 0.0,
+   "range_low_pct": -3.12,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.72,
+   "direction": "down",
+   "expected_move_pct": -1.19,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.01,
+   "range_low_pct": -2.38,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_saud.csv": "5c4fa44989b578e716c11fc23d307ddc5af1d21eaaf9e4090bbdf08c8ee33fb7",
+  "digest.json": "1aa6d7445fea4b1ff6e4ad5f35ea5e5f9c7af67be369e192d70d8f7afc82896a",
+  "ensemble.json": "eecb121fdb9fd881623bba4c22c6556d434c0d3ee27ac91af565b1616282f4e7",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_saud.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.661,
+ "sigma_daily": 0.0245,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002",
+ "ticker": "SAUD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,23 @@
+bodies: 12/12 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/SAUD.json
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 4725.99it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16695.15it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]Loading weights: 100%|██████████| 512/512 [00:00<00:00, 17589.78it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5737.64it/s]
+{"tool": "news-disclosure", "ticker": "SAUD.CA", "news_count": 18, "disclosure_count": 0, "arabic_headlines": 18, "latest_news_date": "Thu, 26 Nov 2026 11:59:54 GMT", "latest_disclosure_date": "", "top_headline": "روبيو ووزير الخارجية السعودي يدينان هجمات الحوثيين ويشددان على الملاحة في هرمز - houseofsaud.com", "llm_provider": "cohere", "multilingual_positive": 0.123, "multilingual_negative": 0.554, "multilingual_neutral": 0.324, "multilingual_scored": 18, "bodies_fetched": 12, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere+nllb", "translated_positive": 0.079, "translated_negative": 0.49, "translated_neutral": 0.43, "translated_scored": 18}
+BRIEF:
+- US Secretary of State Marco Rubio and Saudi Foreign Minister Prince Faisal bin Farhan condemn Houthi attacks on Saudi civilians, infrastructure, and energy facilities.
+- The officials emphasize the importance of ensuring freedom of navigation in the Strait of Hormuz and Bab al-Mandeb.
+- Aramco's production over nine months has declined by 13.7%, with pipeline attacks keeping Yanbu below 3 million barrels per day.
+- Both main crude oil export routes in Saudi Arabia are operating well below their maximum capacity in November 2026.
+- The Houthis threaten Jeddah and Saudi ports on the Red Sea following strikes on Al Hudaydah.
+- Brent crude registers its third weekly loss, dropping below $89 per barrel for the first time since August.
+- This decline puts the global benchmark well below the level needed for Saudi Arabia to cover its wartime budget.
+- Saudi Crown Prince Mohammed bin Salman calls Kuwait's Emir Sheikh Meshal Al-Ahmad Al-Jaber Al-Sabah to inquire about his health after medical checks in the US.
+- OPEC+ will meet on November 29 to determine production quotas for 2027 without a plan for the post-December period.
+- The meeting will coincide with the 69th session of the Joint Ministerial Monitoring Committee.
+- The Saudi-led coalition intercepts two Houthi ballistic missiles over Jazan, with debris falling in Al-Shaqeeq.
+- The coalition strikes 60 targets in Yemen as Houthi forces advance to within 100 km of Aden.
+- Iranian Revolutionary Guard claims a supertanker carrying over 2 million barrels of oil sank in the Gulf after hitting a mine

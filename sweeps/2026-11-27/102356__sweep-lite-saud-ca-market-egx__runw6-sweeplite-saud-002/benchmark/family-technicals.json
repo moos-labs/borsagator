@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 21.77,
+ "base_source": "egx-data/egxpy_saud.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for technicals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-technicals",
+ "frozen_at": "2026-11-27T10:23:56.406699+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.19,
+   "families": {
+    "technicals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 3.95,
+   "range_low_pct": -3.58,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "up",
+   "expected_move_pct": 0.86,
+   "families": {
+    "technicals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 18.11,
+   "range_low_pct": -16.38,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.42,
+   "families": {
+    "technicals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 8.84,
+   "range_low_pct": -7.99,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "1aa6d7445fea4b1ff6e4ad5f35ea5e5f9c7af67be369e192d70d8f7afc82896a",
+  "ensemble.json": "eecb121fdb9fd881623bba4c22c6556d434c0d3ee27ac91af565b1616282f4e7"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.661,
+ "sigma_daily": 0.0245,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002",
+ "ticker": "SAUD.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

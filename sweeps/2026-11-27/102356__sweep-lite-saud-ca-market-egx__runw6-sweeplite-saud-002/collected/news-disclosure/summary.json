@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "SAUD.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "SAUD.CA",
+    "fetched_at": "2026-11-27T10:23:54Z",
+    "tool": "news-disclosure",
+    "news_count": 18,
+    "disclosure_count": 0,
+    "arabic_headlines": 18,
+    "latest_news_date": "Thu, 26 Nov 2026 11:59:54 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "روبيو ووزير الخارجية السعودي يدينان هجمات الحوثيين ويشددان على الملاحة في هرمز - houseofsaud.com",
+    "llm_provider": "cohere",
+    "multilingual_positive": 0.123,
+    "multilingual_negative": 0.554,
+    "multilingual_neutral": 0.324,
+    "multilingual_scored": 18,
+    "bodies_fetched": 12,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere+nllb",
+    "translated_positive": 0.079,
+    "translated_negative": 0.49,
+    "translated_neutral": 0.43,
+    "translated_scored": 18
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}
