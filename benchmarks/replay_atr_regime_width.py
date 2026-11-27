@@ -194,6 +194,19 @@ def windowed_captures(roots, lo, hi):
     return [found[k] for k in sorted(found)]
 
 
+def capture_key(path):
+    """(cutoff, TICKER) identity of a capture dir."""
+    return (os.path.basename(os.path.dirname(path)),
+            os.path.basename(path).upper())
+
+
+def exclude_trained(score_caps, train_caps):
+    """score_caps without any capture whose (cutoff, ticker) the fit
+    already saw in train_caps."""
+    seen = {capture_key(c) for c in train_caps}
+    return [c for c in score_caps if capture_key(c) not in seen]
+
+
 def select_caps(allc, lo, hi):
     out = []
     for c in allc:
@@ -280,6 +293,11 @@ def _run(a, lo, hi, descriptive, title):
         return 2, None
     thr, factors, counts = f
     score_caps = windowed_captures(a.captures, lo, hi)
+    if lo > a.fit_max_cell:
+        # A (cutoff, ticker) the fit saw is never scored when the
+        # scoring window starts after the training window. The
+        # diagnostic scoring of the training window itself is kept.
+        score_caps = exclude_trained(score_caps, train_caps)
     rows, gaps = build_rows(score_caps, allc)
     pairs = score_rows(rows, thr, factors)
     skipped = len(rows) - len(pairs)
