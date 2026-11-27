@@ -345,9 +345,10 @@ def main():
     bh = ledger["by_horizon"]
     for horizon in ("day", "week"):
         n, hits, mae = agg_head[(horizon, "ensemble")]
+        # Tolerances match the ledger's stored rounding (hit_rate 3dp, MAE 1-2dp).
         ok = (n == bh[horizon]["n"]
-              and abs(hits / n - bh[horizon]["hit_rate"]) < 1e-9
-              and abs(mae - bh[horizon]["mean_abs_error_pp"]) < 0.005)
+              and abs(hits / n - bh[horizon]["hit_rate"]) < 5e-4
+              and abs(mae - bh[horizon]["mean_abs_error_pp"]) < 0.05)
         checks.append(f"ensemble {horizon} reproduces ledger.json "
                       f"by_horizon: {'PASS' if ok else 'FAIL'} "
                       f"(n={n}, hit={hits / n:.3f}, MAE={mae:.2f})")
