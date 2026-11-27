@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb). Sweeps archived: 110 (89 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46). Sweeps archived: 116 (95 with an ensemble).
 
-**Forecasts found: 261 · matured: 66 · pending: 180 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 279 · matured: 72 · pending: 192 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -28,12 +28,12 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 | ICFC.CA | 6 | 1 | 5 | 0 | 2014-06-11 → 2026-11-26 |
 | IFAP.CA | 6 | 1 | 5 | 0 | 2014-07-16 → 2026-11-26 |
 | ISPH.CA | 6 | 1 | 5 | 0 | 2017-12-11 → 2026-11-26 |
-| JUFO.CA | 3 | 0 | 3 | 0 | 2014-07-17 → 2026-11-25 |
-| LCSW.CA | 3 | 0 | 3 | 0 | 2014-05-21 → 2026-11-25 |
-| MASR.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
-| MCQE.CA | 3 | 0 | 3 | 0 | 2014-07-08 → 2026-11-25 |
-| MPCO.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
-| MTIE.CA | 3 | 0 | 3 | 0 | 2005-04-26 → 2026-11-25 |
+| JUFO.CA | 6 | 1 | 5 | 0 | 2014-07-17 → 2026-11-26 |
+| LCSW.CA | 6 | 1 | 5 | 0 | 2014-05-21 → 2026-11-26 |
+| MASR.CA | 6 | 1 | 5 | 0 | 2014-07-21 → 2026-11-26 |
+| MCQE.CA | 6 | 1 | 5 | 0 | 2014-07-08 → 2026-11-26 |
+| MPCO.CA | 6 | 1 | 5 | 0 | 2014-07-20 → 2026-11-26 |
+| MTIE.CA | 6 | 1 | 5 | 0 | 2005-04-26 → 2026-11-26 |
 | NVDA | 6 | 1 | 5 | 0 | 2021-11-15 → 2026-11-13 |
 | OCDI.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
 | OLFI.CA | 3 | 0 | 3 | 0 | 2016-10-03 → 2026-11-25 |
@@ -51,7 +51,7 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 
 | Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| day | 39 | 0.128 | 6.99 | 0.692 |
+| day | 45 | 0.156 | 6.4 | 0.711 |
 | week | 15 | 0.0 | 18.28 | 1.0 |
 | month | 0 | — | — | — |
 
@@ -60,10 +60,10 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 | Family | Mean skill | n |
 |---|---|---|
 | agent | +0.750 | 1 |
-| ensemble (net_score) | -0.201 | 54 |
-| price-forecast | -0.433 | 51 |
-| sentiment | +0.033 | 53 |
-| technicals | -0.222 | 53 |
+| ensemble (net_score) | -0.184 | 60 |
+| price-forecast | -0.385 | 57 |
+| sentiment | +0.027 | 58 |
+| technicals | -0.197 | 59 |
 
 ## Forecasts
 
@@ -219,24 +219,24 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 | ISPH.CA | 2026-11-25 | day | up | +1.23 | +0.70 | ❌ | 0.53 | ✅ |  | matured 2026-11-26 |
 | ISPH.CA | 2026-11-25 | week | up | +2.28 | — | — | — | — | | pending (1/3 sessions) |
 | ISPH.CA | 2026-11-25 | month | flat | +0.09 | — | — | — | — | | pending (1/14 sessions) |
-| JUFO.CA | 2026-11-25 | day | up | +1.12 | — | — | — | — | | pending (0/1 sessions) |
-| JUFO.CA | 2026-11-25 | week | up | +2.71 | — | — | — | — | | pending (0/3 sessions) |
-| JUFO.CA | 2026-11-25 | month | up | +4.70 | — | — | — | — | | pending (0/14 sessions) |
-| LCSW.CA | 2026-11-25 | day | down | -1.48 | — | — | — | — | | pending (0/1 sessions) |
-| LCSW.CA | 2026-11-25 | week | down | -1.98 | — | — | — | — | | pending (0/3 sessions) |
-| LCSW.CA | 2026-11-25 | month | down | -7.95 | — | — | — | — | | pending (0/14 sessions) |
-| MASR.CA | 2026-11-25 | day | up | +1.37 | — | — | — | — | | pending (0/1 sessions) |
-| MASR.CA | 2026-11-25 | week | up | +2.48 | — | — | — | — | | pending (0/3 sessions) |
-| MASR.CA | 2026-11-25 | month | up | +5.89 | — | — | — | — | | pending (0/14 sessions) |
-| MCQE.CA | 2026-11-25 | day | up | +0.84 | — | — | — | — | | pending (0/1 sessions) |
-| MCQE.CA | 2026-11-25 | week | up | +0.75 | — | — | — | — | | pending (0/3 sessions) |
-| MCQE.CA | 2026-11-25 | month | down | -1.09 | — | — | — | — | | pending (0/14 sessions) |
-| MPCO.CA | 2026-11-25 | day | up | +2.48 | — | — | — | — | | pending (0/1 sessions) |
-| MPCO.CA | 2026-11-25 | week | up | +3.93 | — | — | — | — | | pending (0/3 sessions) |
-| MPCO.CA | 2026-11-25 | month | up | +1.20 | — | — | — | — | | pending (0/14 sessions) |
-| MTIE.CA | 2026-11-25 | day | down | -4.44 | — | — | — | — | | pending (0/1 sessions) |
-| MTIE.CA | 2026-11-25 | week | down | -2.18 | — | — | — | — | | pending (0/2 sessions) |
-| MTIE.CA | 2026-11-25 | month | up | +2.43 | — | — | — | — | | pending (0/8 sessions) |
+| JUFO.CA | 2026-11-25 | day | up | +1.12 | -0.59 | ❌ | 1.71 | ✅ |  | matured 2026-11-26 |
+| JUFO.CA | 2026-11-25 | week | up | +2.71 | — | — | — | — | | pending (1/3 sessions) |
+| JUFO.CA | 2026-11-25 | month | up | +4.70 | — | — | — | — | | pending (1/14 sessions) |
+| LCSW.CA | 2026-11-25 | day | down | -1.48 | +4.71 | ❌ | 6.19 | ❌ |  | matured 2026-11-26 |
+| LCSW.CA | 2026-11-25 | week | down | -1.98 | — | — | — | — | | pending (1/3 sessions) |
+| LCSW.CA | 2026-11-25 | month | down | -7.95 | — | — | — | — | | pending (1/14 sessions) |
+| MASR.CA | 2026-11-25 | day | up | +1.37 | +1.93 | ✅ | 0.56 | ✅ |  | matured 2026-11-26 |
+| MASR.CA | 2026-11-25 | week | up | +2.48 | — | — | — | — | | pending (1/3 sessions) |
+| MASR.CA | 2026-11-25 | month | up | +5.89 | — | — | — | — | | pending (1/14 sessions) |
+| MCQE.CA | 2026-11-25 | day | up | +0.84 | -0.47 | ❌ | 1.31 | ✅ |  | matured 2026-11-26 |
+| MCQE.CA | 2026-11-25 | week | up | +0.75 | — | — | — | — | | pending (1/3 sessions) |
+| MCQE.CA | 2026-11-25 | month | down | -1.09 | — | — | — | — | | pending (1/14 sessions) |
+| MPCO.CA | 2026-11-25 | day | up | +2.48 | -0.53 | ❌ | 3.01 | ✅ |  | matured 2026-11-26 |
+| MPCO.CA | 2026-11-25 | week | up | +3.93 | — | — | — | — | | pending (1/3 sessions) |
+| MPCO.CA | 2026-11-25 | month | up | +1.20 | — | — | — | — | | pending (1/14 sessions) |
+| MTIE.CA | 2026-11-25 | day | down | -4.44 | -1.93 | ✅ | 2.51 | ✅ |  | matured 2026-11-26 |
+| MTIE.CA | 2026-11-25 | week | down | -2.18 | — | — | — | — | | pending (1/2 sessions) |
+| MTIE.CA | 2026-11-25 | month | up | +2.43 | — | — | — | — | | pending (1/8 sessions) |
 | OCDI.CA | 2026-11-25 | day | flat | -0.21 | — | — | — | — | | pending (0/1 sessions) |
 | OCDI.CA | 2026-11-25 | week | up | +1.03 | — | — | — | — | | pending (0/3 sessions) |
 | OCDI.CA | 2026-11-25 | month | up | +4.59 | — | — | — | — | | pending (0/14 sessions) |
@@ -330,6 +330,24 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 | ISPH.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | ISPH.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | ISPH.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| JUFO.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| JUFO.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| JUFO.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| LCSW.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| LCSW.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| LCSW.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| MASR.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| MASR.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| MASR.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| MCQE.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| MCQE.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| MCQE.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| MPCO.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| MPCO.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| MPCO.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| MTIE.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| MTIE.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| MTIE.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
 
 ## Data gaps & notes
 
@@ -354,12 +372,12 @@ Source: `moos-labs/borsagator` branch `archive` (tree 4d3ba3bb, commit 4d3ba3bb)
 - ICFC.CA: actuals series has 3001 sessions, 2014-06-11 → 2026-11-26 (last source: sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002/collected/egx-data/egxpy_icfc.csv)
 - IFAP.CA: actuals series has 3001 sessions, 2014-07-16 → 2026-11-26 (last source: sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002/collected/egx-data/egxpy_ifap.csv)
 - ISPH.CA: actuals series has 2174 sessions, 2017-12-11 → 2026-11-26 (last source: sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002/collected/egx-data/egxpy_isph.csv)
-- JUFO.CA: actuals series has 3000 sessions, 2014-07-17 → 2026-11-25 (last source: sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001/collected/egx-data/egxpy_jufo.csv)
-- LCSW.CA: actuals series has 3000 sessions, 2014-05-21 → 2026-11-25 (last source: sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001/collected/egx-data/egxpy_lcsw.csv)
-- MASR.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001/collected/egx-data/egxpy_masr.csv)
-- MCQE.CA: actuals series has 3000 sessions, 2014-07-08 → 2026-11-25 (last source: sweeps/2026-11-25/140917__sweep-lite-mcqe-ca-market-egx__runw5-sweeplite-mcqe-001/collected/egx-data/egxpy_mcqe.csv)
-- MPCO.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/141625__sweep-lite-mpco-ca-market-egx__runw5-sweeplite-mpco-001/collected/egx-data/egxpy_mpco.csv)
-- MTIE.CA: actuals series has 2334 sessions, 2005-04-26 → 2026-11-25 (last source: sweeps/2026-11-25/142551__sweep-lite-mtie-ca-market-egx__runw5-sweeplite-mtie-001/collected/egx-data/egxpy_mtie.csv)
+- JUFO.CA: actuals series has 3001 sessions, 2014-07-17 → 2026-11-26 (last source: sweeps/2026-11-27/083902__sweep-lite-jufo-ca-market-egx__runw6-sweeplite-jufo-002/collected/egx-data/egxpy_jufo.csv)
+- LCSW.CA: actuals series has 3001 sessions, 2014-05-21 → 2026-11-26 (last source: sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002/collected/egx-data/egxpy_lcsw.csv)
+- MASR.CA: actuals series has 3001 sessions, 2014-07-21 → 2026-11-26 (last source: sweeps/2026-11-27/085043__sweep-lite-masr-ca-market-egx__runw6-sweeplite-masr-002/collected/egx-data/egxpy_masr.csv)
+- MCQE.CA: actuals series has 3001 sessions, 2014-07-08 → 2026-11-26 (last source: sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002/collected/egx-data/egxpy_mcqe.csv)
+- MPCO.CA: actuals series has 3001 sessions, 2014-07-20 → 2026-11-26 (last source: sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002/collected/egx-data/egxpy_mpco.csv)
+- MTIE.CA: actuals series has 2335 sessions, 2005-04-26 → 2026-11-26 (last source: sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002/collected/egx-data/egxpy_mtie.csv)
 - NVDA: actuals series has 1255 sessions, 2021-11-15 → 2026-11-13 (last source: sweeps/2026-11-16/041633__run-openbb-nvda__run43802957047/collected/openbb/NVDA.csv)
 - OCDI.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/143311__sweep-lite-ocdi-ca-market-egx__runw5-sweeplite-ocdi-001/collected/egx-data/egxpy_ocdi.csv)
 - OLFI.CA: actuals series has 2464 sessions, 2016-10-03 → 2026-11-25 (last source: sweeps/2026-11-25/144023__sweep-lite-olfi-ca-market-egx__runw5-sweeplite-olfi-001/collected/egx-data/egxpy_olfi.csv)
