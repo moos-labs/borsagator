@@ -20,7 +20,9 @@ Remaining route for the 25: further retries of the new pattern (WAF flakiness) o
 
 Parser: `scripts/extract_cbe_bulletin.py` (pdftotext -bbox word coordinates). Table 15 column years come from the
 Interbank "From d/m - d/m/yyyy" 2-week ranges printed on the same page — each range covers one pair of weekly columns;
-the range end-year is the year for both columns. No year is inferred from column order alone.
+the range end-year is the year for both columns. For a range that crosses New Year, the column dated before
+New Year takes the year before the end-year, and the column dated after New Year takes the end-year.
+No year is inferred from column order alone.
 Batch-3 parser fix (band-boundary split): a tenor row's values can sit just across the round(y/3) band boundary
 from its label (bulletin 353, 182-day: label y=283.4 -> band 94, values y=283.5 -> band 95), so the label's own
 band held no values and the row parsed all-None. Value collection now merges bands k-1/k/k+1 (same merge as
