@@ -103,6 +103,21 @@ def test_holm_family_fixed():
           [r["holm_adj_p"] for r in rows])
 
 
+def test_render_small_delta():
+    row = {"screen": "s", "name": "n", "horizon": "day", "regime": "post",
+           "n": 10, "cutoffs": 5, "delta": 0.00063,
+           "ci": [0.00021, 0.00094], "p": 0.0125, "holm_adj_p": 0.024}
+    txt = D.render([row])
+    check("small delta and interval keep 3 significant digits",
+          "delta 0.000630 (CI cutoff [0.000210, 0.000940])" in txt, txt)
+    check("p keeps 3 decimals", "p 0.013 Holm-adjusted p 0.024" in txt, txt)
+    check("fs: ordinary, negative, tiny, zero, none",
+          D._fs(0.0123) == "0.0123" and D._fs(-0.054) == "-0.0540"
+          and D._fs(0.5) == "0.500" and D._fs(-0.00000123) == "-0.00000123"
+          and D._fs(0.0) == "0.000" and D._fs(None) == "n/a",
+          [D._fs(x) for x in (0.0123, -0.054, 0.5, -0.00000123)])
+
+
 def test_main():
     by_t = TM.series()
     with tempfile.TemporaryDirectory() as d:
@@ -158,11 +173,28 @@ def test_main():
     check("a printed delta equals the delta of that screen's own pairs",
           abs(one["delta"] - D.delta_stat(hp)) < 1e-15
           and one["n"] == len(hp), (one["delta"], D.delta_stat(hp), one["n"], len(hp)))
+    # stdout regression: each printed delta is the JSON delta to 3
+    # significant digits and none collapses to 0.000
+    bad = []
+    for r in rows:
+        key = "%s %s %s %s: " % (r["screen"], r["name"], r["regime"],
+                                 r["horizon"])
+        line = [ln for ln in txt.splitlines() if key in ln]
+        if len(line) != 1:
+            bad.append((key, len(line)))
+            continue
+        shown = float(line[0].split(" delta ")[1].split(" ")[0])
+        if r["delta"] != 0 and (shown == 0 or abs(shown - r["delta"])
+                                > 0.0051 * abs(r["delta"])):
+            bad.append((key, shown, r["delta"]))
+    check("stdout deltas match the JSON to 3 significant digits", not bad
+          and len(rows) == 24, bad[:3])
 
 
 def main():
     for fn in (test_constants, test_delta_stat, test_bootstrap_and_p,
-               test_holm_family_fixed, test_main):
+               test_holm_family_fixed, test_render_small_delta,
+               test_main):
         fn()
     print("test_screen_delta_vs_v2: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

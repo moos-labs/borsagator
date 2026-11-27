@@ -37,6 +37,7 @@ Usage:
 """
 import argparse
 import json
+import math
 import os
 import random
 import sys
@@ -58,6 +59,21 @@ SCREENS = ("market_factor", "exog_factor", "fx_stress")
 FAMILY_SIZE = (len(MF.MODELS) + len(XF.FACTORS) + len(FX.BETAS)) \
     * len(HORIZONS) * len(REGIMES)   # 48
 _f = SB._f
+
+
+def _fs(v):
+    """Significant-digit format for deltas and their interval ends: 3
+    significant digits, never fewer than 3 decimals, no exponent, so a
+    delta of 0.00063 prints 0.000630 and never rounds to 0.000. Display
+    only; p stays at 3 decimals and the JSON keeps full precision."""
+    if v is None:
+        return "n/a"
+    if v == 0:
+        return "0.000"
+    dec = max(3, 2 - int(math.floor(math.log10(abs(v)))))
+    return "%.*f" % (dec, v)
+
+
 
 
 def delta_stat(pairs):
@@ -127,8 +143,8 @@ def render(rows):
         L.append("  %s %s %s %s: n=%d cutoffs=%d delta %s (CI cutoff "
                  "[%s, %s]) p %s Holm-adjusted p %s"
                  % (r["screen"], r["name"], r["regime"], r["horizon"],
-                    r["n"], r["cutoffs"], _f(r["delta"]), _f(r["ci"][0]),
-                    _f(r["ci"][1]), _f(r["p"]), _f(r["holm_adj_p"])))
+                    r["n"], r["cutoffs"], _fs(r["delta"]), _fs(r["ci"][0]),
+                    _fs(r["ci"][1]), _f(r["p"]), _f(r["holm_adj_p"])))
     return "\n".join(L)
 
 
