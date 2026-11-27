@@ -74,6 +74,80 @@ TICKERS_V1 = ["COMI.CA", "ETEL.CA", "ORAS.CA", "TMGH.CA", "NVDA",
 SERIES_START = {"POUL.CA": "2026-09-28"}
 CONTEXT_START = {"POUL.CA": "2026-09-28"}
 INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
+# REPAIR-001 (#436, settled 2026-11-27): verified closes for EGX
+# sessions the Yahoo feed carries as null-close bars. 2024-05-01
+# WAS a trading session (EGX30 official record: open 24,448.73,
+# close 25,270.55, +3.36%) — Yahoo returns a null close for it on
+# every EGX ticker, which fail-closes any 21-session realised
+# window containing it (cells 6/7/8/20/21, cutoff 2024-03-28).
+# A repair entry supplies the missing close so the window is
+# scored on its true 21 sessions; it is NOT an excuse (the
+# #884 holiday-excuse premise was wrong and that PR was closed
+# unmerged — the mechanism on ins/improve-044-holiday-excuse
+# must not be revived). Values are RAW closes, matching the
+# Yahoo quote closes the series is built from (fetch_chart uses
+# quote close, never adjclose): COMI's TradingView adjusted
+# 66.37266272 is NOT used. Basis per ticker (REPAIR-001 record):
+# COMI + TMGH press-verified to the cent; HRHO press-verified;
+# SWDY TradingView raw (Mubasher within 0.06%); ETEL tv_only —
+# no independent verification (its Mubasher bar corroborates on
+# the shared EGX feed only). ORWE 17.73 (Mubasher matches TV) is
+# verified but not a v1-grid ticker, so it is recorded on #436,
+# not here. Extending the table is a reviewed change.
+# REPAIR-002 (#436, 2026-11-27): the SAME Yahoo gap class on
+# 2024-07-01 — EGX30 printed a close (27,969.59, +0.73%,
+# countryeconomy July-2024 table; 07-02 27,985.89) and the
+# Yahoo probe drops 2024-07-01 on all six tickers with usable
+# closes 06-27 + 07-02, so it was a real session the feed lost.
+# Cells 10/11/12/22/23 (cutoff 2024-06-30) gate-skipped on it
+# and hold no captures — the repair unblocks their re-runs.
+# Closes are Mubasher chartData (free, keyless, same route as
+# the 40-ticker pull): ETEL/TMGH/HRHO equal Yahoo's usable
+# closes on 06-27 + 07-02 to the cent; SWDY within 0.06%
+# (same as 2024-05-01). COMI is the exception: Mubasher
+# carries COMI on the ADJUSTED basis (66.37 on 2024-05-01 =
+# TV adjusted 66.37266272; 70.36 on 06-27 vs Yahoo 77.40),
+# so the table records Mubasher 70.93 x the exact 1.1
+# Yahoo-basis factor = 78.02, verified on both neighbours
+# (06-27: 77.40/70.36 = 1.1000; 07-02: 77.13/70.12 = 1.1000)
+# and on the 2024-05-01 pair (73.01/66.37 = 1.1000).
+# ORWE 23.40 (Mubasher; Yahoo neighbours match to the cent)
+# is verified but not a v1-grid ticker — recorded on #436,
+# not here. No press print was found for the 2024-07-01
+# individual closes, so all five carry the Mubasher basis
+# flag (second vendor, shared EGX feed — corroboration,
+# not independent verification, per the REPAIR-001 ruling).
+EGX_CLOSE_REPAIRS = {
+    "2024-05-01": {
+        "COMI.CA": {"close": 73.01, "source": "TradingView",
+                    "basis": "raw close; press-verified to the cent"},
+        "ETEL.CA": {"close": 33.00, "source": "TradingView",
+                    "basis": "tv_only — no independent verification"},
+        "TMGH.CA": {"close": 55.060001, "source": "TradingView",
+                    "basis": "raw close; press-verified to the cent"},
+        "SWDY.CA": {"close": 32.50, "source": "TradingView",
+                    "basis": "raw close; Mubasher within 0.06%"},
+        "HRHO.CA": {"close": 15.14, "source": "TradingView",
+                    "basis": "raw close; press-verified"},
+    },
+    "2024-07-01": {
+        "COMI.CA": {"close": 78.02, "source": "Mubasher",
+                    "basis": "Mubasher 70.93 x 1.1 Yahoo-basis factor; "
+                             "verified on 06-27 + 07-02 neighbours"},
+        "ETEL.CA": {"close": 30.99, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
+        "TMGH.CA": {"close": 57.12, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
+        "SWDY.CA": {"close": 47.63, "source": "Mubasher",
+                    "basis": "Mubasher close; within 0.06% of Yahoo "
+                             "on 06-27 + 07-02"},
+        "HRHO.CA": {"close": 19.38, "source": "Mubasher",
+                    "basis": "Mubasher close; Yahoo neighbours match "
+                             "to the cent"},
+    },
+}
 SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
@@ -629,6 +703,25 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     base_rows = [r for r in rows if parse_iso(r["date"]) <= c]
     base_close = base_rows[-1]["close"] if base_rows else None
     base_date = base_rows[-1]["date"] if base_rows else None
+    # REPAIR-001 (#436): apply verified repairs BEFORE the
+    # minimum-session check, so a repaired session counts
+    # toward the 21 — a feed ending on 20 usable sessions plus
+    # the repairable date is mature, not short (CodeRabbit on
+    # PR #889). Only dates after the cutoff are eligible; a
+    # repair landing beyond the final window is inserted but
+    # not recorded (it was not used).
+    repaired = []
+    for d in dropped or []:
+        entry = (EGX_CLOSE_REPAIRS.get(d) or {}).get(ticker.upper())
+        if entry is not None and parse_iso(d) is not None \
+                and c < parse_iso(d):
+            after.append({"date": d, "close": float(entry["close"])})
+            repaired.append({"date": d, "ticker": ticker.upper(),
+                             "close": float(entry["close"]),
+                             "source": entry["source"],
+                             "basis": entry["basis"]})
+    if repaired:
+        after.sort(key=lambda r: r["date"])
     if len(after) < SESSIONS_NEEDED:
         return None, (
             "realised: only %d sessions after %s, need %d — "
@@ -636,6 +729,8 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                                          SESSIONS_NEEDED))
     sessions = after[:SESSIONS_NEEDED]
     maturity = sessions[-1]["date"]
+    session_dates = {s["date"] for s in sessions}
+    repaired = [r for r in repaired if r["date"] in session_dates]
     # A bar dropped for a missing/unusable close inside the
     # realised window must not shift the scored horizons: the
     # surviving rows alone would count the NEXT session's close
@@ -644,10 +739,13 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     # capture as complete. Block the cell instead — the same
     # fail-closed treatment as an unverifiable events feed.
     # Drops after the window touch no scored horizon and do
-    # not block.
+    # not block. A dropped date with a repair entry for this
+    # ticker is re-inserted above, so it never blocks; any
+    # other dropped date left inside the window still does.
     dropped_in_window = [d for d in dropped or []
                          if parse_iso(d) is not None
-                         and c < parse_iso(d) <= parse_iso(maturity)]
+                         and c < parse_iso(d) <= parse_iso(maturity)
+                         and d not in {r["date"] for r in repaired}]
     if dropped_in_window:
         return None, (
             "realised: %d session(s) inside the realised window "
@@ -753,7 +851,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                 window_actions.append(ev)
             elif ev.get("type") == "split":
                 window_splits.append(ev)
-    return {"ticker": ticker.upper(), "cutoff": cutoff,
+    out = {"ticker": ticker.upper(), "cutoff": cutoff,
             "base_close": base_close, "base_date": base_date,
             "sessions": [{"date": s["date"], "close": s["close"]}
                          for s in sessions],
@@ -764,7 +862,12 @@ def fetch_realised(ticker, cutoff, fetcher=None):
             "index_gap": index_gap,
             "actions": window_actions,
             "splits": window_splits,
-            "fetched_at": date.today().isoformat()}, ""
+            "fetched_at": date.today().isoformat()}
+    if repaired:
+        # Recorded only when used, so every capture without a
+        # repaired close is byte-identical to before.
+        out["repaired_closes"] = repaired
+    return out, ""
 
 
 # --------------------------------------------------------------------------
