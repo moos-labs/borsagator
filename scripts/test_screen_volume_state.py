@@ -182,6 +182,22 @@ def test_screen_pairs_semantics():
           and any(p["ticker"] == "T00_CA" for p in pd))
 
 
+def test_render_small_delta():
+    cell = {"n": 10, "cutoffs": 5, "tickers": 3,
+            "ch": {"coverage": 0.8, "range_skill": 0.01},
+            "v2": {"coverage": 0.8, "range_skill": 0.01},
+            "ch_cov_ci_cutoff": [0.7, 0.9], "ch_ci_cutoff": [0.0, 0.02]}
+    results = {b: {h: cell for h in V.HORIZONS} for b in V.BETAS}
+    deltas = {(b, h): {"delta": 0.00063, "ci": [0.00021, 0.00094]}
+              for b in V.BETAS for h in V.HORIZONS}
+    txt = V.render(results, deltas)
+    check("render: small delta and interval keep 3 significant digits",
+          "delta vs v2 0.000630 (CI cutoff [0.000210, 0.000940])" in txt
+          and "delta vs v2 0.001" not in txt, txt[-250:])
+    check("render: no delta collapses to 0.000",
+          "delta vs v2 0.000 " not in txt)
+
+
 def test_main():
     by_t, vols, zero, dates = data()
     with tempfile.TemporaryDirectory() as d:
@@ -212,6 +228,19 @@ def test_main():
           and len(res["holm"]["readings"]) == 6
           and all("delta" in r and "p" in r and "delta_p" in r
                   for r in res["holm"]["readings"]))
+    bad = []
+    for r in res["holm"]["readings"]:
+        key = "beta %.2f %s %s: " % (r["beta"], r["regime"], r["horizon"])
+        line = [ln for ln in txt.splitlines() if key in ln]
+        if len(line) != 1:
+            bad.append((key, len(line)))
+            continue
+        shown = float(line[0].split("| delta ")[1].split(" ")[0])
+        if r["delta"] != 0 and (shown == 0 or abs(shown - r["delta"])
+                                > 0.0051 * abs(r["delta"])):
+            bad.append((key, shown, r["delta"]))
+    check("stdout deltas match the JSON to 3 significant digits",
+          not bad, bad[:3])
     check("zero-day rule recorded in the json",
           res["zero_days"]["count"] == len(zero)
           and res["zero_days"]["min_names"] == 10)
@@ -222,7 +251,8 @@ def test_main():
 
 def main():
     for fn in (test_constants, test_zero_days, test_volume_state_rules,
-               test_screen_pairs_semantics, test_main):
+               test_screen_pairs_semantics, test_render_small_delta,
+               test_main):
         fn()
     print("test_screen_volume_state: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
