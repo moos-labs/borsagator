@@ -1,0 +1,1372 @@
+{
+  "archive_commit": "14e1312f8f179aa3e66eac7268e1120d05903a64",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "599d30d6070b03c8c4940b9befeeb97471b6483ff0e27f071a621802be3dd8a4",
+      "family-agent.json": "2a69aa80aade91f29af7b2c69da187cc28f6fc0c27a06250593dc3ca0f6165a1",
+      "family-fundamentals.json": "254aefdb53453970c650aa7f32aa090cf9c40e733007a1d6f16fd13d50ebaea0",
+      "family-price-forecast.json": "ba04dd9bbf78fec1f501214062dfab9c6ce579a941369636c0bd6ceb5bbd8d7d",
+      "family-sentiment.json": "c0fc1cb37375324edf87cfead0715291569cd4d1c950a61d840df7ee826a3a2b",
+      "family-technicals.json": "7ca4645bb8ab35b7770d2a4cbce0971ac352e845071ec7453254e25d09779bb5",
+      "kronos-alone.json": "26f433b0238fd52ded89745c024f73e6d6a1537f1200b5453892f5fa414d7530",
+      "raw-llm-cohere.json": "d5724851254085f69b54a6785e67409faaf09cb4d63dea78b31ccc9d684df9d6"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ISPH-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 10.1,
+    "base_source": "egx-data/egxpy_isph.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": -0.023,
+      "sentiment": 0.273,
+      "technicals": 0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.273
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.7842,
+        "net_score": 0.273,
+        "range_high_pct": 2.97,
+        "range_low_pct": -2.97,
+        "tilt_centre_pct": 0.14,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.5794
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.15,
+          "sentiment": 0.273,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.5376,
+        "net_score": 0.222,
+        "range_high_pct": 14.18,
+        "range_low_pct": -14.18,
+        "tilt_centre_pct": 1.68,
+        "trading_sessions": 21,
+        "vol_h_pct": 11.8202
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.273,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.9248,
+        "net_score": 0.289,
+        "range_high_pct": 7.38,
+        "range_low_pct": -7.38,
+        "tilt_centre_pct": 0.75,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.7677
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_isph.csv",
+      "base_stale": false,
+      "base_used": 10.1,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 1.87,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_isph.csv": 9.98,
+        "openbb/isph_ca.csv": 10.170000076293945,
+        "pandas-ta/indicators.csv": 10.170000076293945,
+        "talib/indicators.csv": 10.170000076293945,
+        "yahooquery/isph.ca.csv": 10.170000076293945
+      }
+    },
+    "risk": {
+      "conf_cap": 0.6,
+      "events": [],
+      "flags": [],
+      "level": "none",
+      "move_z": {
+        "last": 0.27,
+        "max3": 0.73
+      },
+      "price_mult": 1.0
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0258,
+    "sigma_daily": 0.0258,
+    "sigma_source": "egx-data/egxpy_isph.csv (σ60=0.0258, σ10=0.0168)",
+    "ticker": "ISPH.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": -0.023,
+    "sentiment": 0.273,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-27T04:08:47.346376+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ISPH.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ISPH.CA.json",
+    "sharia-row-missing: AAOIFI ISPH.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ISPH.CA",
+    "sharia-row-missing: FTSE ISPH.CA",
+    "sharia-row-missing: ISLAMICLY ISPH.CA",
+    "sharia-row-missing: MSCI ISPH.CA",
+    "sharia-row-missing: MSCI_M ISPH.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.273
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.7842,
+      "net_score": 0.273,
+      "range_high_pct": 2.97,
+      "range_low_pct": -2.97,
+      "tilt_centre_pct": 0.14,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.5794
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.15,
+        "sentiment": 0.273,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.5376,
+      "net_score": 0.222,
+      "range_high_pct": 14.18,
+      "range_low_pct": -14.18,
+      "tilt_centre_pct": 1.68,
+      "trading_sessions": 21,
+      "vol_h_pct": 11.8202
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.273,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.9248,
+      "net_score": 0.289,
+      "range_high_pct": 7.38,
+      "range_low_pct": -7.38,
+      "tilt_centre_pct": 0.75,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.7677
+    }
+  },
+  "job": "sweep-lite ISPH.CA market=EGX",
+  "job_shape": "sweep-lite ISPH.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 10.8454,
+    "support": 9.3546
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-20T21:20:28Z",
+    "latest_news_date_raw": "Fri, 20 Nov 2026 21:20:28 GMT",
+    "news_count": 6,
+    "news_items": [
+      {
+        "date": "Fri, 20 Nov 2026 21:20:28 GMT",
+        "identity_key": "https://asharqbusiness.com/videos/shorts/18777/%D9%85%D9%85%D8%AF%D8%A7%D9%86%D9%8A-%D9%85%D8%A7-%D8%B2%D9%84%D8%AA-%D8%A3%D8%B5%D9%81-%D8%AA%D8%B1%D9%85%D8%A8-%D8%A8%D8%A7%D9%84%D9%81%D8%A7%D8%B4%D9%8A/",
+        "key_type": "resolved_url",
+        "source": "الشرق بلومبرغ",
+        "title": "ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 03:54:19 GMT",
+        "identity_key": "46c36cde2aa36c75",
+        "key_type": "title-date-hash",
+        "source": "Ronahi TV",
+        "title": "مع الحدث-د.آصف ملحم-عبد الرحمن ربوع-7-11-2026 - Ronahi TV"
+      },
+      {
+        "date": "Wed, 18 Nov 2026 05:43:57 GMT",
+        "identity_key": "https://zagrosnews.net/arabic/akhbar/1070581",
+        "key_type": "resolved_url",
+        "source": "زاكروس عربية",
+        "title": "الحكم على الباكستاني آصف ميرشانت بالسجن 27 عاماً بتهمة التآمر لاغتيال ترامب - زاكروس عربية"
+      },
+      {
+        "date": "Sat, 14 Nov 2026 14:26:00 GMT",
+        "identity_key": "https://www.ahdath24.com/article/299704",
+        "key_type": "resolved_url",
+        "source": "ahdath24.com",
+        "title": "مهرجان القاهرة السينمائي يقدّم لقاءات مع رامي إمام وآصف كاباديا - ahdath24.com"
+      },
+      {
+        "date": "Thu, 12 Nov 2026 08:00:00 GMT",
+        "identity_key": "https://shaam.org/local/%D8%AA%D9%88%D9%82%D9%8A%D9%81-%D8%A7%D9%84%D8%B9%D9%85%D9%8A%D8%AF-%D8%A2%D8%B5%D9%81-%D9%88%D9%87%D8%A8%D9%8A-%D9%82%D8%A7%D8%A6%D8%AF-%D8%B9%D9%85%D9%84%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D9%81%D8%B1%D9%82%D8%A9-25-%D9%84%D8%AF%D9%89-%D8%A7%D9%84%D9%86%D8%B8%D8%A7%D9%85-%D8%A7%D9%84%D8%A8%D8%A7%D8%A6%D8%AF-%D8%A8%D8%B9%D9%85%D9%84%D9%8A%D8%A9-%D8%A3%D9%85%D9%86%D9%8A%D8%A9-%D9%81%D9%8A-%D8%B1%D9%8A%D9%81-%D8%AD%D9%85%D8%A7%D8%A9",
+        "key_type": "resolved_url",
+        "source": "شبكة شام الإخبارية",
+        "title": "توقيف العميد آصف وهبي قائد عمليات الفرقة 25 لدى النظام البائد بعملية أمنية في ريف حماة - شبكة شام الإخبارية"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 19:07:00 GMT",
+        "identity_key": "3e9086762536b36a",
+        "key_type": "title-date-hash",
+        "source": "Lebanon Debate",
+        "title": "د. آصف ملحم لـ \"شرق وغرب\": لو افترضنا أن ما سينتج عن المفاوضات الروسية – الأوكرانية – الأميركية المرتقبة هو \"البدء\" بإنهاء الحرب - Lebanon Debate"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 10.1,
+    "base_source": "egx-data/egxpy_isph.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_isph.csv",
+      "base_stale": false,
+      "base_used": 10.1,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 1.87,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_isph.csv": 9.98,
+        "openbb/isph_ca.csv": 10.170000076293945,
+        "pandas-ta/indicators.csv": 10.170000076293945,
+        "talib/indicators.csv": 10.170000076293945,
+        "yahooquery/isph.ca.csv": 10.170000076293945
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0258,
+    "sigma_source": "egx-data/egxpy_isph.csv (σ60=0.0258, σ10=0.0168)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 10.1,
+      "last_date": "2026-11-26",
+      "last_high": 10.24,
+      "last_low": 9.85,
+      "last_open": 10.03,
+      "last_volume": 4778860.0,
+      "note": null,
+      "rows": 2174,
+      "source": "egx-data/egxpy_isph.csv",
+      "stale": false
+    },
+    {
+      "last_close": 10.029999732971191,
+      "last_date": "2026-11-25",
+      "last_high": 10.289999961853027,
+      "last_low": 9.930000305175781,
+      "last_open": 9.979999542236328,
+      "last_volume": 3711384.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/ISPH_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.029999732971191,
+      "last_date": "2026-11-25",
+      "last_high": 10.289999961853027,
+      "last_low": 9.930000305175781,
+      "last_open": 9.979999542236328,
+      "last_volume": 3711384.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.029999732971191,
+      "last_date": "2026-11-25",
+      "last_high": 10.289999961853027,
+      "last_low": 9.930000305175781,
+      "last_open": 9.979999542236328,
+      "last_volume": 3711384.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 10.170000076293945,
+      "last_date": "2026-11-24",
+      "last_high": 10.170000076293945,
+      "last_low": 10.170000076293945,
+      "last_open": 10.170000076293945,
+      "last_volume": 0.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ISPH.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-isph-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-isph-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ISPH.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.6,
+    "events": [],
+    "flags": [],
+    "level": "none",
+    "move_z": {
+      "last": 0.27,
+      "max3": 0.73
+    },
+    "price_mult": 1.0
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ISPH.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T04:06:07.269217+00:00",
+  "sweep_dir": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+  "ticker": "ISPH.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ISPH.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ISPH.CA.csv_last_close": 10.170000076293945,
+          "ISPH.CA.csv_last_date": "2026-11-24",
+          "rows_ISPH.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "8166f5d05a4c7dd3aa3b46a17ecbac155b7b7dc4aecee460b632580971ca4207",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ISPH_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ISPH_CA.csv_last_close": 10.029999732971191,
+          "ISPH_CA.csv_last_date": "2026-11-25",
+          "rows_ISPH_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "8721dfaa5c17f7e0a425bca7de660bfa2a8cbf289142a6dca1b9f2f4dc3f0d0a",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_isph.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_isph.csv_last_close": 10.1,
+          "egxpy_isph.csv_last_date": "2026-11-26",
+          "rows_egxpy_isph.csv": 2174,
+          "symbol": "ISPH",
+          "ticker": "ISPH.CA"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "6f22b460ffa4de6ec1db737a958cc37563510176549cc2b4e4dabac5c863e7c5",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 32.556,
+          "atr_14": 0.3865,
+          "bb_lower": 9.3665,
+          "bb_mid": 10.134,
+          "bb_pctb": 0.4322,
+          "bb_upper": 10.9015,
+          "close": 10.03,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 10.2887,
+          "ema_200": 11.2607,
+          "ema_50": 10.7942,
+          "first_date_used": "2019-01-01",
+          "high": 10.29,
+          "indicators.csv_last_close": 10.029999732971191,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 9.93,
+          "macd": -0.157,
+          "macd_hist": 0.0409,
+          "macd_signal": -0.1979,
+          "open": 9.98,
+          "rows_fetched": 2203,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 42.7325,
+          "stoch_d": 58.0828,
+          "stoch_k": 48.6928,
+          "ticker": "ISPH.CA"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "9d733cbceabccfc1fdc8d19edacfda0a9217f0d99b4a216b44d6d994307ec436",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 10.029999732971191,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 10.029999732971191,
+          "last_date": "2026-11-25",
+          "rows_fetched": 2203,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "ISPH.CA"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "3bb92e5c2907ae52255f4151505a93ced039605deb88d89a30f7b69aa4026591",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "7e514c5df0d37ed97a4ed6931b02f6b7e5773987d754ca20a50ce1e7bf0cbd43",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "7ce51617a13e6224226a12f7c3fe5ba849917a1dca802da5a320c1aa6c8962f3",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "bee5c8a544563511624d77a5e82b3752d25e1a34335424efb61a0903a3ce122a",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "857081ad26e748a37e092af52373b33a3b6480191a4caf74881a28314be07a79",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "23360a083eb696b7e9ff2deb835016ea77c185c3d835af4d318b9f9d37e7c113",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "92ac61366a00e40545adceabfca825d545906d118346ce1f357497892e44a2c0",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 10.0457,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "dd6653b3c696318261ce795d83fdac9be062182ca5c6cf2ddbb623f2f71b02dd",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "29f0b909771032a0c602b6100e7247a046786f5c781726c16c719000eb2aa3d2",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-isph-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 6,
+          "bodies_fetched": 4,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T04:08:46Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Fri, 20 Nov 2026 21:20:28 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.498,
+          "multilingual_neutral": 0.332,
+          "multilingual_positive": 0.17,
+          "multilingual_scored": 6,
+          "news_count": 6,
+          "ticker": "ISPH.CA",
+          "tool": "news-disclosure",
+          "top_headline": "ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ",
+          "translated_negative": 0.211,
+          "translated_neutral": 0.674,
+          "translated_positive": 0.115,
+          "translated_scored": 6,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "ISPH.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "bcd645af2b38e321c1e1dd8c97d9d31a8ef018c22283dc345b1b4f91b8d1af13",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

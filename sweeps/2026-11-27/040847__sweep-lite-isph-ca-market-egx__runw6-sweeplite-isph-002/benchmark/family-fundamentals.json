@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 10.1,
+ "base_source": "egx-data/egxpy_isph.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-27T04:08:47.666551+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": 0.2,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 3.5,
+   "range_low_pct": -3.1,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "up",
+   "expected_move_pct": 0.91,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 16.04,
+   "range_low_pct": -14.23,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.6,
+   "direction": "flat",
+   "expected_move_pct": 0.44,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 7.83,
+   "range_low_pct": -6.94,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "9aa95d94b1e38244275bd52b4ee4b4ed490e6a766cd65d0a0aa1f4dc0ca6acb9",
+  "ensemble.json": "f258735d8ab6e8af3e71a20968c7462a71d7d38d4df280b18ba8916304bb7d2f"
+ },
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "sessions_per_calendar_day": 0.664,
+ "sigma_daily": 0.0258,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+ "ticker": "ISPH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,101 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "neutral": 2,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.3332901234830435,
+    "negative": 1.3512525735374462e-05,
+    "neutral": 0.6666963110571184
+  },
+  "items": [
+    {
+      "text": "NUV Faculty Make Their Mark at ISPH 2026 in Taiwan as Vadodara Prepares to Host ISPH 2027 - Business Standard",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.28308630059837e-07,
+        "negative": 6.25851043878356e-06,
+        "neutral": 0.9999933242797852
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999933242797852
+        },
+        {
+          "label": "Negative",
+          "score": 6.25851043878356e-06
+        },
+        {
+          "label": "Positive",
+          "score": 3.28308630059837e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "NUV to host ISPH conference in 2027 - The Times of India",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.1868468991215195e-07,
+        "negative": 6.20268156126258e-06,
+        "neutral": 0.9999935626983643
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999935626983643
+        },
+        {
+          "label": "Negative",
+          "score": 6.20268156126258e-06
+        },
+        {
+          "label": "Positive",
+          "score": 2.1868468991215195e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Parker-Hannifin Stock: Is PH Outperforming the Industrial Sector? - Yahoo Finance",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9998698234558105,
+        "negative": 2.8076385206077248e-05,
+        "neutral": 0.00010204619320575148
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9998698234558105
+        },
+        {
+          "label": "Neutral",
+          "score": 0.00010204619320575148
+        },
+        {
+          "label": "Negative",
+          "score": 2.8076385206077248e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

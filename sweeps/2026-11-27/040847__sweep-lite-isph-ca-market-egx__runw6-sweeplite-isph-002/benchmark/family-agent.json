@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 10.1,
+ "base_source": "egx-data/egxpy_isph.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T04:08:47.666391+00:00",
+ "inputs_sha256": {
+  "digest.json": "9aa95d94b1e38244275bd52b4ee4b4ed490e6a766cd65d0a0aa1f4dc0ca6acb9",
+  "ensemble.json": "f258735d8ab6e8af3e71a20968c7462a71d7d38d4df280b18ba8916304bb7d2f"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+ "ticker": "ISPH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

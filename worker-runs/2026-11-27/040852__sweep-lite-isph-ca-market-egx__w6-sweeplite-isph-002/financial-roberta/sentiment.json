@@ -1,0 +1,67 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 3,
+    "negative": 0,
+    "neutral": 0
+  },
+  "mean_probabilities": {
+    "positive": 0.8863737185796102,
+    "negative": 0.0003427885385463014,
+    "neutral": 0.11328348346675436
+  },
+  "items": [
+    {
+      "text": "NUV Faculty Make Their Mark at ISPH 2026 in Taiwan as Vadodara Prepares to Host ISPH 2027 - Business Standard",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9950376152992249,
+        "negative": 0.0002175918925786391,
+        "neutral": 0.004744738806039095
+      },
+      "raw_probabilities": {
+        "positive": 0.9950376152992249,
+        "neutral": 0.004744738806039095,
+        "negative": 0.0002175918925786391
+      }
+    },
+    {
+      "text": "NUV to host ISPH conference in 2027 - The Times of India",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.66743004322052,
+        "negative": 0.00032683651079423726,
+        "neutral": 0.33224308490753174
+      },
+      "raw_probabilities": {
+        "positive": 0.66743004322052,
+        "neutral": 0.33224308490753174,
+        "negative": 0.00032683651079423726
+      }
+    },
+    {
+      "text": "Parker-Hannifin Stock: Is PH Outperforming the Industrial Sector? - Yahoo Finance",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9966534972190857,
+        "negative": 0.00048393721226602793,
+        "neutral": 0.002862626686692238
+      },
+      "raw_probabilities": {
+        "positive": 0.9966534972190857,
+        "neutral": 0.002862626686692238,
+        "negative": 0.00048393721226602793
+      }
+    }
+  ]
+}

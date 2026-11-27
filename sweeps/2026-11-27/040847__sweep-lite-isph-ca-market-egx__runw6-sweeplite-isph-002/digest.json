@@ -1,0 +1,452 @@
+{
+  "job": "sweep-lite ISPH.CA market=EGX",
+  "ticker": "ISPH.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T04:06:07.269217+00:00",
+  "finished": "2026-11-27T04:08:47.346376+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ISPH.CA.csv": 1208,
+          "ISPH.CA.csv_last_date": "2026-11-24",
+          "ISPH.CA.csv_last_close": "10.170000076293945"
+        },
+        "files": [
+          "ISPH.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ISPH_CA.csv": 483,
+          "ISPH_CA.csv_last_date": "2026-11-25",
+          "ISPH_CA.csv_last_close": "10.029999732971191"
+        },
+        "files": [
+          "ISPH_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ISPH.CA",
+          "symbol": "ISPH",
+          "rows_egxpy_isph.csv": 2174,
+          "egxpy_isph.csv_last_date": "2026-11-26",
+          "egxpy_isph.csv_last_close": "10.1"
+        },
+        "files": [
+          "egxpy_isph.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ISPH.CA",
+          "date": "2026-11-25",
+          "open": 9.98,
+          "high": 10.29,
+          "low": 9.93,
+          "close": 10.03,
+          "rsi_14": 42.7325,
+          "macd": -0.157,
+          "macd_signal": -0.1979,
+          "macd_hist": 0.0409,
+          "ema_20": 10.2887,
+          "ema_50": 10.7942,
+          "ema_200": 11.2607,
+          "adx_14": 32.556,
+          "bb_upper": 10.9015,
+          "bb_mid": 10.134,
+          "bb_lower": 9.3665,
+          "bb_pctb": 0.4322,
+          "atr_14": 0.3865,
+          "stoch_k": 48.6928,
+          "stoch_d": 58.0828,
+          "rows_fetched": 2203,
+          "rows_used": 1930,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "10.029999732971191"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ISPH.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 2203,
+          "rows_used": 1930,
+          "last_date": "2026-11-25",
+          "last_close": 10.029999732971191,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "10.029999732971191"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2437,
+          "poul_ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-23",
+          "forecast.csv_last_close": "10.0457"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "ISPH.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ISPH.CA",
+          "fetched_at": "2026-11-27T04:08:46Z",
+          "tool": "news-disclosure",
+          "news_count": 6,
+          "disclosure_count": 0,
+          "arabic_headlines": 6,
+          "latest_news_date": "Fri, 20 Nov 2026 21:20:28 GMT",
+          "latest_disclosure_date": "",
+          "top_headline": "ممداني ما زلت أصف ترمب بالفاشي - الشرق بلومبرغ",
+          "llm_provider": "cohere",
+          "multilingual_positive": 0.17,
+          "multilingual_negative": 0.498,
+          "multilingual_neutral": 0.332,
+          "multilingual_scored": 6,
+          "bodies_fetched": 4,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "translation_provider": "cohere",
+          "translated_positive": 0.115,
+          "translated_negative": 0.211,
+          "translated_neutral": 0.674,
+          "translated_scored": 6
+        },
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-isph-002",
+      "claim_id": "w6-sweeplite-isph-002"
+    }
+  ]
+}
