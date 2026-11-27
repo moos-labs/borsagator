@@ -353,6 +353,68 @@ def test_run_uses_window_dedup():
               "rebuild", calls[1][1] == B.A.find_captures([t], None))
 
 
+def test_run_excludes_trained_keys():
+    with tempfile.TemporaryDirectory() as t:
+        tr = make_capture(t, "run-cell47", "2025-01-01", "COMI.CA")
+        col = make_capture(t, "run-cell60", "2025-01-01", "COMI.CA")
+        sc = make_capture(t, "run-cell60", "2025-01-05", "TMGH.CA")
+        calls = []
+
+        def fake_build(cs, ref=None):
+            calls.append((list(cs), list(ref)))
+            return (training_rows() if cs and cs[0] == tr else
+                    cutoff("s1", 0.5, 0.5)), []
+        old = B.R.build_rows
+        B.R.build_rows = fake_build
+        try:
+            ns = fake_args()
+            ns.captures = [t]
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc, out = B._run(ns, 48, 90, True, "DESCRIPTIVE ONLY")
+        finally:
+            B.R.build_rows = old
+        check("training capture is fitted on", calls[0][0] == [tr], calls)
+        check("same (cutoff, ticker) under a scoring cell is excluded",
+              calls[1][0] == [sc] and col not in calls[1][0], calls[1])
+        check("reference set stays the full dedup'd set for the score "
+              "rebuild", col in calls[1][1])
+
+
+def test_diagnostic_training_window_kept():
+    with tempfile.TemporaryDirectory() as t:
+        tr = make_capture(t, "run-cell47", "2025-01-01", "COMI.CA")
+        col = make_capture(t, "run-cell60", "2025-01-01", "COMI.CA")
+        sc = make_capture(t, "run-cell60", "2025-01-05", "TMGH.CA")
+        calls = []
+
+        def fake_build(cs, ref=None):
+            calls.append((list(cs), list(ref)))
+            return (training_rows() if cs and cs[0] == tr else
+                    cutoff("s1", 0.5, 0.5)), []
+        old = B.R.build_rows
+        B.R.build_rows = fake_build
+        try:
+            ns = fake_args()
+            ns.captures = [t]
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc, out = B._run(ns, 1, 47, True, "DESCRIPTIVE ONLY")
+        finally:
+            B.R.build_rows = old
+        check("diagnostic scoring of the training window is not excluded",
+              rc == 0 and calls[1][0] == [tr], calls)
+
+
+def test_exclude_trained():
+    tr = ["/r/c-cell47/2025-01-01/COMI.CA", "/r/c-cell3/2025-01-02/etel.ca"]
+    sc = ["/r/c-cell60/2025-01-01/COMI.CA", "/r/c-cell61/2025-01-02/ETEL.CA",
+          "/r/c-cell62/2025-01-03/COMI.CA"]
+    out = B.exclude_trained(sc, tr)
+    check("exclusion matches on (cutoff, TICKER), case-insensitive",
+          out == ["/r/c-cell62/2025-01-03/COMI.CA"], out)
+    check("empty training set excludes nothing",
+          B.exclude_trained(sc, []) == sc)
+
+
 class Suite(unittest.TestCase):
     """Runs the checks under `unittest discover -s scripts`."""
 
@@ -367,7 +429,7 @@ def run_all():
     for fn in (test_constants, test_pools, test_shrunk_sigma, test_fit,
                test_score_rows, test_cell_selection, test_cli_guards,
                test_render, test_dedup_within_window,
-               test_run_uses_window_dedup, test_fit_window_guards,
+               test_run_uses_window_dedup, test_run_excludes_trained_keys, test_diagnostic_training_window_kept, test_exclude_trained, test_fit_window_guards,
                test_fit_reference_and_provenance):
         fn()
 
