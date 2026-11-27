@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Tests for scripts/gdelt_gkg_filter.py (INS-DATA-002 item 2, G3 pilot).
 Standalone, stdlib only, synthetic 27-column GKG rows, no network."""
+import contextlib
 import csv
+import io
 import importlib.util
 import json
 import os
@@ -321,8 +323,100 @@ def test_restart_and_finalize():
               or os.path.exists(os.path.join(out, "matches.csv")))
 
 
+def test_crash_recovery_tail():
+    items, blocks, reqs, pre = loaded()
+    blob = gkg_line(rec="R1", orgs="Telecom Egypt,10")
+    # a record whose text has a 2-byte char; the crash cuts it in half
+    good = {"gkg_record_id": "KEEP", "url": "u1", "date": "20240515000000",
+            "stream": "english", "source": "s", "tickers": ["T"],
+            "matched_org_entries": ["x"], "reason": "r", "tone": "0",
+            "positive": "0", "negative": "0", "word_count": "1",
+            "themes": "caf\u00e9"}
+    line = (json.dumps(good, ensure_ascii=False) + "\n").encode("utf-8")
+    partial = json.dumps(dict(good, gkg_record_id="CUT"),
+                         ensure_ascii=False).encode("utf-8")
+    cut_at = partial.index("\u00e9".encode("utf-8")) + 1  # mid-character
+    partial = partial[:cut_at]
+    with tempfile.TemporaryDirectory() as d:
+        # (a) truncate helper: byte-safe, keeps complete lines only
+        m = os.path.join(d, "m.jsonl")
+        with open(m, "wb") as f:
+            f.write(line + partial)
+        removed = G.truncate_incomplete_tail(m)
+        check("tail removed, bytes reported", removed == len(partial),
+              str(removed))
+        check("complete line kept", open(m, "rb").read() == line)
+        check("complete file untouched", G.truncate_incomplete_tail(m) == 0
+              and open(m, "rb").read() == line)
+        e = os.path.join(d, "e.jsonl")
+        open(e, "wb").write(partial)
+        check("only a partial line leaves an empty file",
+              G.truncate_incomplete_tail(e) == len(partial)
+              and os.path.getsize(e) == 0)
+        check("missing file is a no-op",
+              G.truncate_incomplete_tail(os.path.join(d, "none")) == 0)
+        # (b) finalize survives a split UTF-8 tail and exports
+        out = os.path.join(d, "out")
+        os.makedirs(out)
+        with open(os.path.join(out, "matches.jsonl"), "wb") as f:
+            f.write(line + partial)
+
+        class A:
+            pass
+        a = A()
+        a.out = out
+        G.run_finalize(a)
+        rows = list(csv.reader(open(os.path.join(out, "matches.csv"))))\
+            if os.path.exists(os.path.join(out, "matches.csv")) else None
+        summ = list(csv.reader(open(os.path.join(out, "alias_hit_summary.csv"))))
+        check("finalize exports despite split UTF-8 tail",
+              len(summ) == 2 and summ[1][2] == "1", str(summ))
+        # (c) run_fetch truncates before appending: the replayed record
+        # is not glued to the prefix and both survive finalize
+        st, out2 = os.path.join(d, "st"), os.path.join(d, "out2")
+        os.makedirs(out2)
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("20240515000000.gkg.csv", blob)
+        raw = buf.getvalue()
+        orig = (G.list_files, G.fetch)
+        G.list_files = lambda specs, s0, e0: [
+            ("http://x/20240515000000.gkg.csv.zip", "english")]
+        G.fetch = lambda url, timeout=90: raw
+
+        class R:
+            pass
+        r = R()
+        r.state, r.out, r.start, r.end = st, out2, "20240515", "20240515"
+        r.aliases, r.master, r.master_translation = ALIASES_CSV, "m", None
+        r.workers, r.budget_seconds = 1, 0
+        try:
+            # first run binds the config with nothing to do, then the
+            # crash leaves a complete line plus a split-char partial
+            G.list_files = lambda specs, s0, e0: []
+            with contextlib.redirect_stdout(io.StringIO()):
+                G.run_fetch(r)
+            open(os.path.join(out2, "matches.jsonl"), "wb").write(
+                line + partial)
+            G.list_files = lambda specs, s0, e0: [
+                ("http://x/20240515000000.gkg.csv.zip", "english")]
+            with contextlib.redirect_stdout(io.StringIO()):
+                G.run_fetch(r)
+        finally:
+            G.list_files, G.fetch = orig
+        data = open(os.path.join(out2, "matches.jsonl"), "rb").read()
+        lines = data.split(b"\n")
+        check("every line parses after resume, none glued",
+              data.endswith(b"\n") and all(
+                  json.loads(x.decode("utf-8")) for x in lines if x),
+              str(lines)[:200])
+        check("replayed record present, cut record gone",
+              b'"KEEP"' in data and b'"CUT"' not in data
+              and data.count(b"R1") >= 1)
+
+
 def main():
-    for fn in (test_alias_table_loads, test_match_orgs_real,
+    for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
                test_process_blob, test_list_files_and_range, test_fetch_guards,
                test_config_binding, test_config_atomic_and_restart,

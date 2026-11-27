@@ -249,6 +249,37 @@ def fetch(url, timeout=90):
         raise ValueError(f"file over {MAX_FILE_BYTES} bytes")
     return data
 
+def truncate_incomplete_tail(path):
+    """Drop a trailing partial line (no final newline) left by a crash
+    mid-append, so the next append does not glue onto it. Works on bytes:
+    0x0A never occurs inside a UTF-8 multi-byte sequence, so cutting
+    after the last newline is byte-safe. Returns the bytes removed. The
+    removed record belongs to a file not yet marked done (matches are
+    written before the done marker), so it is replayed on the next run."""
+    if not os.path.exists(path):
+        return 0
+    size = os.path.getsize(path)
+    if size == 0:
+        return 0
+    with open(path, "r+b") as f:
+        f.seek(size - 1)
+        if f.read(1) == b"\n":
+            return 0
+        pos, cut = size, 0
+        while pos > 0:
+            step = min(65536, pos)
+            pos -= step
+            f.seek(pos)
+            i = f.read(step).rfind(b"\n")
+            if i >= 0:
+                cut = pos + i + 1
+                break
+        f.truncate(cut)
+        f.flush()
+        os.fsync(f.fileno())
+    return size - cut
+
+
 def run_fetch(a):
     os.makedirs(a.state, exist_ok=True)
     os.makedirs(a.out, exist_ok=True)
@@ -281,9 +312,14 @@ def run_fetch(a):
             os.fsync(f.fileno())
         os.replace(tmp, config_path)
     done_path = os.path.join(a.state, "done.txt")
+    matches_path = os.path.join(a.out, "matches.jsonl")
+    for pth in (matches_path, done_path):
+        cut = truncate_incomplete_tail(pth)
+        if cut:
+            print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
     done = set()
     if os.path.exists(done_path):
-        done = set(open(done_path).read().split())
+        done = set(open(done_path, encoding="utf-8").read().split())
     alias_items, block_map, require_map, prefilter = load_aliases(a.aliases)
     specs = []
     if a.master:
@@ -292,7 +328,6 @@ def run_fetch(a):
         specs.append((a.master_translation, "translation"))
     files = [(u, s) for u, s in list_files(specs, a.start, a.end)
              if u.rsplit("/", 1)[-1] not in done]
-    matches_path = os.path.join(a.out, "matches.jsonl")
     t0, n_done, n_bytes, n_rows, n_malformed = time.time(), 0, 0, 0, 0
     print(f"todo={len(files)} done_prev={len(done)} prefilter={prefilter.engine}", flush=True)
 
@@ -343,11 +378,13 @@ def run_fetch(a):
 
 def run_finalize(a):
     rows, seen, n_corrupt = [], set(), 0
-    with open(os.path.join(a.out, "matches.jsonl"), encoding="utf-8") as f:
-        for line in f:
+    with open(os.path.join(a.out, "matches.jsonl"), "rb") as f:
+        for raw_line in f:
             try:
-                r = json.loads(line)
-            except json.JSONDecodeError:
+                # decode per line: a split multi-byte char in an
+                # interrupted append must not stop the whole export
+                r = json.loads(raw_line.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
                 n_corrupt += 1  # interrupted append; skip, do not block
                 continue
             k = (r["gkg_record_id"], r["url"])
