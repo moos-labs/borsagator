@@ -1,0 +1,109 @@
+{
+ "ticker": "ETEL.CA",
+ "cutoff": "2024-06-30",
+ "base_close": 31.15999984741211,
+ "base_date": "2024-06-27",
+ "sessions": [
+  {
+   "date": "2024-07-01",
+   "close": 30.99
+  },
+  {
+   "date": "2024-07-02",
+   "close": 30.700000762939453
+  },
+  {
+   "date": "2024-07-03",
+   "close": 30.549999237060547
+  },
+  {
+   "date": "2024-07-04",
+   "close": 30.510000228881836
+  },
+  {
+   "date": "2024-07-07",
+   "close": 30.40999984741211
+  },
+  {
+   "date": "2024-07-08",
+   "close": 30.290000915527344
+  },
+  {
+   "date": "2024-07-09",
+   "close": 30.969999313354492
+  },
+  {
+   "date": "2024-07-10",
+   "close": 30.459999084472656
+  },
+  {
+   "date": "2024-07-14",
+   "close": 31.020000457763672
+  },
+  {
+   "date": "2024-07-15",
+   "close": 31.25
+  },
+  {
+   "date": "2024-07-16",
+   "close": 31.700000762939453
+  },
+  {
+   "date": "2024-07-17",
+   "close": 32.79999923706055
+  },
+  {
+   "date": "2024-07-18",
+   "close": 33.0
+  },
+  {
+   "date": "2024-07-21",
+   "close": 32.5099983215332
+  },
+  {
+   "date": "2024-07-22",
+   "close": 32.45000076293945
+  },
+  {
+   "date": "2024-07-23",
+   "close": 32.77000045776367
+  },
+  {
+   "date": "2024-07-24",
+   "close": 32.77000045776367
+  },
+  {
+   "date": "2024-07-28",
+   "close": 32.79999923706055
+  },
+  {
+   "date": "2024-07-29",
+   "close": 33.5
+  },
+  {
+   "date": "2024-07-30",
+   "close": 33.810001373291016
+  },
+  {
+   "date": "2024-07-31",
+   "close": 34.04999923706055
+  }
+ ],
+ "maturity_date": "2024-07-31",
+ "index_ticker": "^EGX30",
+ "index_base_close": null,
+ "index_sessions": [],
+ "index_gap": "index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found",
+ "actions": [],
+ "splits": [],
+ "fetched_at": "2026-11-27",
+ "repaired_closes": [
+  {
+   "date": "2024-07-01",
+   "ticker": "ETEL.CA",
+   "close": 30.99,
+   "source": "Mubasher",
+   "basis": "Mubasher close; Yahoo neighbours match to the cent"
+  }
+ ]
+}
