@@ -145,17 +145,17 @@ def clean_report(res, counts, cells, v, why):
     return "\n".join(L), {"results": res, "counts": counts, "verdict": v, "reasons": why}
 
 
-NOTE_MARK = "realised window rebuilt"  # build_rows note: capture kept, not dropped
+NOTE_MARK = "realised window rebuilt"  # build_rows note: build_rows did not drop this capture; later scoring or the s60 check may still exclude it
 
 
 def exclusion_lines(gaps, dropped_rows, unnumbered):
     """Everything that did not enter the run, with reasons. gaps is the
     list R.build_rows returns; entries that only note a rebuilt realised
-    window (the capture is kept) are printed as notes, not exclusions."""
+    window (build_rows kept the capture; later steps may still drop it) are printed as notes, not exclusions."""
     drops = [g for g in gaps if NOTE_MARK not in g]
     notes = [g for g in gaps if NOTE_MARK in g]
     L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
-         "%d unnumbered capture(s) never scored; %d note(s) on kept captures" % (
+         "%d unnumbered capture(s) never scored; %d rebuild note(s) (not exclusions)" % (
              len(drops), dropped_rows, unnumbered, len(notes))]
     L.extend("excluded: %s" % g for g in drops)
     L.extend("note: %s" % g for g in notes)
