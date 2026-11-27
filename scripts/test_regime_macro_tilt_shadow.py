@@ -4,6 +4,7 @@ import json
 import importlib.util
 import os
 import sys
+import subprocess
 import tempfile
 import unittest
 
@@ -86,15 +87,24 @@ def test_unusable_decisions():
                       ("no date", dec("", 100))):
         check("unusable: " + name, not R.usable_decision(bad), bad)
         check("not a regime: " + name, R.regime_from_decisions([bad], "2026-06-01") is None, name)
+    for name, bd in (("feb 30", "2026-02-30"), ("month 13", "2026-13-01"), ("not zero padded", "2026-2-3"), ("slashes", "2026/02/03"),
+                     ("time suffix", "2026-02-03T00:00"), ("spaces", " 2026-02-03"), ("year 2 digits", "26-02-03"),
+                     ("non-leap feb 29", "2025-02-29"), ("text", "tomorrow"), ("compact", "20260203"), ("iso week", "2026-W05-3")):
+        check("invalid date unusable: " + name, not R.usable_decision(dec(bd, 100)), bd)
+    check("leap day usable", R.usable_decision(dec("2024-02-29", 100)))
+    check("non-string date unusable", not R.usable_decision(dec(20260203, 100)))
     check("good is usable", R.usable_decision(dec("2026-01-01", 0)) and R.usable_decision(dec("2026-01-01", 12.5)))
     # an unusable later decision does not mask the earlier usable one
     check("bad later decision ignored", R.regime_from_decisions([dec("2026-01-01", 100), dec("2026-02-01", float("nan"))], "2026-06-01") == "tightening")
     p = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
-    json.dump([dec("2026-01-01", 100), dec("2026-02-01", None), {"published_date": "2026-03-01", "change_bps": 0}], p)
+    json.dump([dec("2026-01-01", 100), dec("2026-02-01", None), {"published_date": "2026-03-01", "change_bps": 0},
+               dec("2026-02-30", 100)], p)
     p.close()
     ok, rej = R.load_decisions(p.name)
     os.remove(p.name)
-    check("load_decisions counts rejected", len(ok) == 1 and rej == 2, (ok, rej))
+    check("load_decisions counts rejected (incl. 2026-02-30)", len(ok) == 1 and rej == 3, (ok, rej))
+    h = subprocess.run([sys.executable, os.path.join(HERE, "..", "benchmarks", "regime_macro_tilt_shadow.py"), "--help"], capture_output=True, text=True).stdout
+    check("help documents all four fields", all(k in h for k in ("published_date", "change_bps", "source_url", "source_name")), h)
 
 
 def test_counts():

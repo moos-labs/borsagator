@@ -8,6 +8,8 @@ never touched.
 """
 import argparse
 import csv
+import datetime
+import re
 import json
 import math
 
@@ -43,12 +45,25 @@ def point_in_time(rows, as_of):
     return max(ok, key=lambda r: (r["observed_date"], r["published_date"]))
 
 
+def valid_date(x):
+    """True only for a canonical YYYY-MM-DD string that is a real calendar date."""
+    if not isinstance(x, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", x):
+        return False
+    try:
+        datetime.date.fromisoformat(x)
+    except ValueError:
+        return False
+    return True
+
+
 def usable_decision(d):
     """A decision is usable only with a finite numeric change_bps (not bool, not NaN/Inf) and a source."""
     c = d.get("change_bps")
     if isinstance(c, bool) or not isinstance(c, (int, float)) or not math.isfinite(c):
         return False
-    return all(isinstance(d.get(k), str) and d.get(k).strip() for k in ("published_date", "source_url", "source_name"))
+    if not valid_date(d.get("published_date")):
+        return False
+    return all(isinstance(d.get(k), str) and d.get(k).strip() for k in ("source_url", "source_name"))
 
 
 def load_decisions(path):
@@ -89,7 +104,7 @@ def counts(ledger_rows, decisions):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ledger", default="ledger/ledger.json")
-    ap.add_argument("--decisions", help="JSON list of {published_date, change_bps}; absent = no macro series")
+    ap.add_argument("--decisions", help="JSON list of {published_date (YYYY-MM-DD), change_bps, source_url, source_name}; records missing any field or with an invalid value are rejected and counted; absent = no macro series")
     ap.add_argument("--json")
     a = ap.parse_args(argv)
     rows = json.load(open(a.ledger))["forecasts_detail"]
