@@ -1,0 +1,1348 @@
+{
+  "archive_commit": "f2344788862c490292a632ba68e99e0089cf2b83",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "d887ba81f6a8145adc77608405752f547ee9ff89132142bcaefbce6861708616",
+      "family-agent.json": "7177070d662ecad2bc337307c1a54c036320d628c415bc2d553296403cbc485e",
+      "family-fundamentals.json": "83be3194d2c1ca09777f352b47c66b8ce18ed9fd3850d0d7988df948caade49f",
+      "family-price-forecast.json": "3509bc7bef968e8b89c826b28edd149d3e7787a26e3daf331c24425aea1b4f4f",
+      "family-sentiment.json": "6816bc0eef6bef492ce46f67d2a60e4c56346930319084e347caa174aea8169d",
+      "family-technicals.json": "e12e5120ced41158e8326b7978af07ea2238f9bcc9a3cdba21bd82d00a1bbbee",
+      "kronos-alone.json": "b495e2a4fc2b1151ddf37055ef7fe1a862f26f0a1cf355c8f971d8b927fdbdb2",
+      "raw-llm-cohere.json": "04fa9de06be1973e6249d163ce17112051c22f92c693217ffe3c1babd19dd4be"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": null,
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ORWE-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 24.0,
+    "base_source": "egx-data/egxpy_orwe.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.4,
+      "price-forecast": 0.141,
+      "sentiment": -0.002,
+      "technicals": -0.2
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.002
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 0.3375,
+        "net_score": -0.002,
+        "range_high_pct": 4.2,
+        "range_low_pct": -4.2,
+        "tilt_centre_pct": -0.0,
+        "trading_sessions": 1,
+        "vol_h_pct": 2.4323
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.4,
+          "sentiment": -0.002,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.145,
+        "net_score": 0.12,
+        "range_high_pct": 20.06,
+        "range_low_pct": -20.06,
+        "tilt_centre_pct": 0.85,
+        "trading_sessions": 21,
+        "vol_h_pct": 11.1461
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.002,
+          "technicals": -0.2
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 1.9342,
+        "net_score": -0.115,
+        "range_high_pct": 10.44,
+        "range_low_pct": -10.44,
+        "tilt_centre_pct": -0.28,
+        "trading_sessions": 5,
+        "vol_h_pct": 5.4388
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_orwe.csv",
+      "base_stale": false,
+      "base_used": 24.0,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_orwe.csv": 24.0,
+        "openbb/orwe_ca.csv": 24.0,
+        "pandas-ta/indicators.csv": 24.0,
+        "talib/indicators.csv": 24.0,
+        "yahooquery/orwe.ca.csv": 24.0
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.0,
+        "max3": 1.18
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma60_daily": 0.0243,
+    "sigma_daily": 0.0243,
+    "sigma_source": "egx-data/egxpy_orwe.csv (σ60=0.0243, σ10=0.0115)",
+    "ticker": "ORWE.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.4,
+    "price-forecast": 0.141,
+    "sentiment": -0.002,
+    "technicals": -0.2
+  },
+  "finished": "2026-11-27T10:10:06.412918+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "recommendation-unavailable: no profiles/ORWE.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ORWE.CA.json",
+    "sharia-row-missing: AAOIFI ORWE.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ORWE.CA",
+    "sharia-row-missing: FTSE ORWE.CA",
+    "sharia-row-missing: ISLAMICLY ORWE.CA",
+    "sharia-row-missing: MSCI ORWE.CA",
+    "sharia-row-missing: MSCI_M ORWE.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.002
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 0.3375,
+      "net_score": -0.002,
+      "range_high_pct": 4.2,
+      "range_low_pct": -4.2,
+      "tilt_centre_pct": -0.0,
+      "trading_sessions": 1,
+      "vol_h_pct": 2.4323
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.4,
+        "sentiment": -0.002,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.145,
+      "net_score": 0.12,
+      "range_high_pct": 20.06,
+      "range_low_pct": -20.06,
+      "tilt_centre_pct": 0.85,
+      "trading_sessions": 21,
+      "vol_h_pct": 11.1461
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.002,
+        "technicals": -0.2
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 1.9342,
+      "net_score": -0.115,
+      "range_high_pct": 10.44,
+      "range_low_pct": -10.44,
+      "tilt_centre_pct": -0.28,
+      "trading_sessions": 5,
+      "vol_h_pct": 5.4388
+    }
+  },
+  "job": "sweep-lite ORWE.CA market=EGX",
+  "job_shape": "sweep-lite ORWE.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 26.5056,
+    "support": 21.4944
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "none",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-26T04:58:20Z",
+    "latest_news_date_raw": "Thu, 26 Nov 2026 04:58:20 GMT",
+    "news_count": 1,
+    "news_items": [
+      {
+        "date": "Thu, 26 Nov 2026 04:58:20 GMT",
+        "identity_key": "https://ca.finance.yahoo.com/quote/ORE.TO/",
+        "key_type": "resolved_url",
+        "source": "Yahoo! Finance Canada",
+        "title": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 24.0,
+    "base_source": "egx-data/egxpy_orwe.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_orwe.csv",
+      "base_stale": false,
+      "base_used": 24.0,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_orwe.csv": 24.0,
+        "openbb/orwe_ca.csv": 24.0,
+        "pandas-ta/indicators.csv": 24.0,
+        "talib/indicators.csv": 24.0,
+        "yahooquery/orwe.ca.csv": 24.0
+      }
+    },
+    "sessions_per_calendar_day": 0.665,
+    "sigma_daily": 0.0243,
+    "sigma_source": "egx-data/egxpy_orwe.csv (σ60=0.0243, σ10=0.0115)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 24.0,
+      "last_date": "2026-11-26",
+      "last_high": 24.38,
+      "last_low": 23.74,
+      "last_open": 24.0,
+      "last_volume": 292846.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_orwe.csv",
+      "stale": false
+    },
+    {
+      "last_close": 24.0,
+      "last_date": "2026-11-26",
+      "last_high": 24.3799991607666,
+      "last_low": 23.739999771118164,
+      "last_open": 24.0,
+      "last_volume": 292846.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/ORWE_CA.csv",
+      "stale": false
+    },
+    {
+      "last_close": 24.0,
+      "last_date": "2026-11-26",
+      "last_high": 24.3799991607666,
+      "last_low": 23.739999771118164,
+      "last_open": 24.0,
+      "last_volume": 292846.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 24.0,
+      "last_date": "2026-11-26",
+      "last_high": 24.3799991607666,
+      "last_low": 23.739999771118164,
+      "last_open": 24.0,
+      "last_volume": 292846.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 24.0,
+      "last_date": "2026-11-25",
+      "last_high": 24.84000015258789,
+      "last_low": 23.700000762939453,
+      "last_open": 24.700000762939453,
+      "last_volume": 557908.0,
+      "note": null,
+      "rows": 1209,
+      "source": "yahooquery/ORWE.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-orwe-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-orwe-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ORWE.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Cana"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.0,
+      "max3": 1.18
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ORWE.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T10:06:47.654903+00:00",
+  "sweep_dir": "sweeps/2026-11-27/101006__sweep-lite-orwe-ca-market-egx__runw6-sweeplite-orwe-002",
+  "ticker": "ORWE.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ORWE.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ORWE.CA.csv_last_close": 24.0,
+          "ORWE.CA.csv_last_date": "2026-11-25",
+          "rows_ORWE.CA.csv": 1209
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "5726a9b5a077e27d5d6bc18c98121d1aa33c79d7adc7259043a93b793bb3b3f5",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ORWE_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ORWE_CA.csv_last_close": 24.0,
+          "ORWE_CA.csv_last_date": "2026-11-26",
+          "rows_ORWE_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "32c0bbd87c6304b2dbf9da5184cef030f21c668bf54fdc4fc8cb62daf1e8a23a",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_orwe.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_orwe.csv_last_close": 24.0,
+          "egxpy_orwe.csv_last_date": "2026-11-26",
+          "rows_egxpy_orwe.csv": 3000,
+          "symbol": "ORWE",
+          "ticker": "ORWE.CA"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "776e1744cbc0475fabfd7db326b712135871d9aefeff97c9eb19bffc1ac299cc",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 20.9724,
+          "atr_14": 0.9428,
+          "bb_lower": 23.4883,
+          "bb_mid": 25.0175,
+          "bb_pctb": 0.1673,
+          "bb_upper": 26.5467,
+          "close": 24.0,
+          "date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "ema_20": 25.011,
+          "ema_200": 24.6069,
+          "ema_50": 25.4251,
+          "first_date_used": "2019-01-01",
+          "high": 24.38,
+          "indicators.csv_last_close": 24.0,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_date": "2026-11-26",
+          "low": 23.74,
+          "macd": -0.331,
+          "macd_hist": -0.0994,
+          "macd_signal": -0.2316,
+          "open": 24.0,
+          "rows_fetched": 6535,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "rsi_14": 38.1122,
+          "stoch_d": 23.7519,
+          "stoch_k": 14.9515,
+          "ticker": "ORWE.CA"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "98144430cd0844c1bafcd102f7e6e17a35b797c68c385e55d3249d11f73dde6d",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 24.0,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_close": 24.0,
+          "last_date": "2026-11-26",
+          "rows_fetched": 6535,
+          "rows_indicators.csv": 250,
+          "rows_used": 1931,
+          "ticker": "ORWE.CA"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "288395ce9507e3286cdec96af119c3a873bd2e3f59c9420abe718fa93768680c",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.829999923706055,
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "44099af854bed5a0ecc902e740d03ac5815d99d660b1232c3911df7c07b6cfe2",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.829999923706055,
+          "rows_poul_ohlc.csv": 2438
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "6fdc092b26525695772ff99c5a7c72a453ee715c9e2566482e05f78dd60e6ba4",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "d5b3c9eef54e14c639d110aeac9b64d76840f7ab0e3a8ab6db54062756ccc335",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "e8cc42d85bb4377585462bdaecaf018f47ed7d38e9afee905a5e3fa95b5936b8",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "f0cf3ade0d2d0a9744c16570919855a45c3db850cc63ee65790bd371ed9990a6",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 1,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "0f9564bd8468c9807f1a1fa1c02748d12981509f6941012d0db81b5826f8f9e0",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 24.7548,
+          "forecast.csv_last_date": "2026-12-24",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "8c7e79a0af0bca1c58fff9cbac54c1a12357e88be2c2154ea0fb2271acc6aa95",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "13260bf8ddf15faa7c00d30d00f234866b4152b3083875897e6c5e83d1b4a73e",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-orwe-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 0,
+          "bodies_fetched": 1,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T10:10:05Z",
+          "finbert_negative": 0.028,
+          "finbert_neutral": 0.949,
+          "finbert_positive": 0.023,
+          "finbert_scored": 1,
+          "latest_disclosure_date": "",
+          "latest_news_date": "Thu, 26 Nov 2026 04:58:20 GMT",
+          "llm_provider": "cohere",
+          "news_count": 1,
+          "ticker": "ORWE.CA",
+          "tool": "news-disclosure",
+          "top_headline": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+          "translation_provider": "none"
+        },
+        "status": "ok",
+        "ticker": "ORWE.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "9024e71669d88734de6ebd52a11284886ea9dcdb9256060a41cbc584f31f6cf3",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-orwe-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

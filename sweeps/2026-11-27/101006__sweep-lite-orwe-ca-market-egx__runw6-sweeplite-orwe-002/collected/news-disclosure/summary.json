@@ -1,0 +1,34 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "ORWE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ORWE.CA",
+    "fetched_at": "2026-11-27T10:10:05Z",
+    "tool": "news-disclosure",
+    "news_count": 1,
+    "disclosure_count": 0,
+    "arabic_headlines": 0,
+    "latest_news_date": "Thu, 26 Nov 2026 04:58:20 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.023,
+    "finbert_negative": 0.028,
+    "finbert_neutral": 0.949,
+    "finbert_scored": 1,
+    "bodies_fetched": 1,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "none"
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

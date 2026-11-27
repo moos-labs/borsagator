@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 24.0,
+ "base_source": "egx-data/egxpy_orwe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T10:10:45.983557+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.67,
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 2.08,
+   "range_low_pct": -2.08,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.67,
+   "direction": "down",
+   "expected_move_pct": -2.08,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 2.08,
+   "range_low_pct": -6.25,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.67,
+   "direction": "down",
+   "expected_move_pct": -1.25,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.25,
+   "range_low_pct": -3.75,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_orwe.csv": "e24ee7c076c79e5d79921e83a65017303a12c0df7c00499237cf9c53862ebc85",
+  "digest.json": "faf1622f88535ee7e8e8b0976d60ccdfb354eb7348fff9ebd2e03e792a147b31",
+  "ensemble.json": "cc3a72dd3cc60af35042faf9d4221544bba6dc2f2cabca46fc28aeba25c4d5aa",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_orwe.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0243,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/101006__sweep-lite-orwe-ca-market-egx__runw6-sweeplite-orwe-002",
+ "ticker": "ORWE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

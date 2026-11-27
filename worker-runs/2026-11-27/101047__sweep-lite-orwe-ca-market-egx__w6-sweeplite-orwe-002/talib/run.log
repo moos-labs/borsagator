@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1931 rows
+{
+  "ticker": "ORWE.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6535,
+  "rows_used": 1931,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-26"
+  },
+  "last_date": "2026-11-26",
+  "last_close": 24.0,
+  "indicators": {
+    "RSI_14": 38.11215088081341,
+    "MACD": -0.3310324373507534,
+    "MACD_signal": -0.23164872777648868,
+    "MACD_hist": -0.0993837095742647,
+    "EMA_20": 25.010991529748456,
+    "EMA_50": 25.42511547066138,
+    "ADX_14": 20.972428647924534
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-26",
+    "CDLENGULFING": "2026-11-25",
+    "CDLHAMMER": "2026-11-22",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

@@ -1,0 +1,16 @@
+bodies: 1/1 fetched; failures by stage: {'decode': 0, 'http': 0, 'extract': 0}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/ORWE.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5142.27it/s]
+WARN cohere brief attempt 1 failed: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=60)
+{"tool": "news-disclosure", "ticker": "ORWE.CA", "news_count": 1, "disclosure_count": 0, "arabic_headlines": 0, "latest_news_date": "Thu, 26 Nov 2026 04:58:20 GMT", "latest_disclosure_date": "", "top_headline": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada", "llm_provider": "cohere", "finbert_positive": 0.023, "finbert_negative": 0.028, "finbert_neutral": 0.949, "finbert_scored": 1, "bodies_fetched": 1, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "none"}
+BRIEF:
+- Orezone Gold Corporation (ORE.TO) is in the news, with a focus on its stock price and performance.
+- The previous closing price was $2.20, and the stock opened at the same price.
+- The day's range shows a slight movement, with a low of $2.18 and a high of $2.2450.
+- Over the last 52 weeks, the stock has traded between $1.5150 and $3.4000, indicating some volatility.
+- With a market capitalization of $1.596 billion, Orezone Gold is a relatively large player in the market.
+- The company's beta (a measure of volatility) is 1.24, suggesting above-average risk.
+- Orezone's earnings per share (EPS) for the trailing twelve months (TTM) is $0.30, and its earnings date was November 16, 2026.
+- The 1-year target estimate is $5.07, which could be a potential indicator of future growth expectations.

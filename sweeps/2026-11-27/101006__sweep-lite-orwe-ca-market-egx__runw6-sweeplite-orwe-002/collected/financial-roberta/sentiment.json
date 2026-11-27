@@ -1,0 +1,37 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 1,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.0005669191596098244,
+    "negative": 0.0002164838369935751,
+    "neutral": 0.9992166757583618
+  },
+  "items": [
+    {
+      "text": "Orezone Gold Corporation (ORE.TO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005669191596098244,
+        "negative": 0.0002164838369935751,
+        "neutral": 0.9992166757583618
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992166757583618,
+        "positive": 0.0005669191596098244,
+        "negative": 0.0002164838369935751
+      }
+    }
+  ]
+}

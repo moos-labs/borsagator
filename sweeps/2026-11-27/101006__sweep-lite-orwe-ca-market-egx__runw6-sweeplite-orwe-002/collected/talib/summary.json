@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "ORWE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ORWE.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 6535,
+    "rows_used": 1931,
+    "last_date": "2026-11-26",
+    "last_close": 24.0,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-26",
+    "indicators.csv_last_close": "24.0"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}
