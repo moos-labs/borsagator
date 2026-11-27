@@ -4,26 +4,26 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "ae8d10d4c2a8f96ea2bd6de441fb10e437f15a9c",
-  "commit_sha": "ae8d10d4c2a8f96ea2bd6de441fb10e437f15a9c",
+  "tree_sha": "375a46c5b016f7b5d1430751afedaad2254422dc",
+  "commit_sha": "375a46c5b016f7b5d1430751afedaad2254422dc",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 99,
-  "sweeps_with_freeze": 55,
-  "entrant_rows": 960,
-  "matured": 119,
-  "pending": 787,
+  "sweeps": 107,
+  "sweeps_with_freeze": 63,
+  "entrant_rows": 1095,
+  "matured": 163,
+  "pending": 878,
   "invalid": 54,
   "excluded_flagged": 0
  },
  "by_entrant": {
   "ensemble": {
    "day": {
-    "n": 28,
-    "hit_rate": 0.107,
-    "mean_abs_error_pp": 9.0,
-    "range_coverage": 0.607
+    "n": 36,
+    "hit_rate": 0.139,
+    "mean_abs_error_pp": 7.38,
+    "range_coverage": 0.667
    },
    "week": {
     "n": 15,
@@ -40,10 +40,10 @@
   },
   "buy-and-hold": {
    "day": {
-    "n": 14,
-    "hit_rate": 0.286,
-    "mean_abs_error_pp": 2.43,
-    "range_coverage": 0.857
+    "n": 22,
+    "hit_rate": 0.318,
+    "mean_abs_error_pp": 2.05,
+    "range_coverage": 0.864
    },
    "week": {
     "n": 6,
@@ -80,9 +80,9 @@
   },
   "family-fundamentals": {
    "day": {
-    "n": 14,
+    "n": 21,
     "hit_rate": 0.286,
-    "mean_abs_error_pp": 3.17,
+    "mean_abs_error_pp": 2.6,
     "range_coverage": 1.0
    },
    "week": {
@@ -100,10 +100,10 @@
   },
   "family-price-forecast": {
    "day": {
-    "n": 14,
-    "hit_rate": 0.214,
-    "mean_abs_error_pp": 7.38,
-    "range_coverage": 0.643
+    "n": 21,
+    "hit_rate": 0.19,
+    "mean_abs_error_pp": 5.56,
+    "range_coverage": 0.714
    },
    "week": {
     "n": 6,
@@ -120,9 +120,9 @@
   },
   "family-sentiment": {
    "day": {
-    "n": 13,
-    "hit_rate": 0.308,
-    "mean_abs_error_pp": 2.37,
+    "n": 21,
+    "hit_rate": 0.333,
+    "mean_abs_error_pp": 2.05,
     "range_coverage": 1.0
    },
    "week": {
@@ -140,9 +140,9 @@
   },
   "family-technicals": {
    "day": {
-    "n": 14,
+    "n": 21,
     "hit_rate": 0.286,
-    "mean_abs_error_pp": 3.11,
+    "mean_abs_error_pp": 2.63,
     "range_coverage": 1.0
    },
    "week": {
@@ -160,10 +160,10 @@
   },
   "kronos-alone": {
    "day": {
-    "n": 14,
-    "hit_rate": 0.214,
-    "mean_abs_error_pp": 8.24,
-    "range_coverage": 0.286
+    "n": 21,
+    "hit_rate": 0.19,
+    "mean_abs_error_pp": 6.16,
+    "range_coverage": 0.333
    },
    "week": {
     "n": 6,
@@ -9938,8 +9938,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:10:54.918633+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.56,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -9959,7 +9970,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:10:54.918633+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -9979,7 +9990,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:10:54.918633+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10000,8 +10011,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:10:54.913476+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.05,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.35
+   },
+   "net_skill": 0.35,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10023,7 +10047,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:10:54.913476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10045,7 +10069,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:10:54.913476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10066,8 +10090,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:10:54.912240+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.22,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.069
+   },
+   "net_skill": 0.069,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10089,7 +10126,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:10:54.912240+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10111,7 +10148,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:10:54.912240+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10132,8 +10169,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:10:54.912907+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.38,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.562
+   },
+   "net_skill": -0.562,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10155,7 +10205,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:10:54.912907+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10177,7 +10227,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:10:54.912907+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10198,8 +10248,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:10:54.912672+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.0,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3
+   },
+   "net_skill": -0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10221,7 +10284,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:10:54.912672+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10243,7 +10306,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:10:54.912672+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10264,8 +10327,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:10:54.913741+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 24.61,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.56,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.17,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.069
+   },
+   "net_skill": 0.069,
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10287,7 +10363,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:10:54.913741+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EFIH.CA",
@@ -10309,7 +10385,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:10:54.913741+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10328,8 +10404,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:18:52.601476+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.27,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10349,7 +10436,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:18:52.601476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10369,7 +10456,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:18:52.601476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10390,8 +10477,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:18:52.589478+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.74,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.4
+   },
+   "net_skill": -0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10413,7 +10513,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:18:52.589478+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10435,7 +10535,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:18:52.589478+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10456,8 +10556,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:18:52.588200+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 2.35,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.53
+   },
+   "net_skill": -0.53,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10479,7 +10592,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:18:52.588200+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10501,7 +10614,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:18:52.588200+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10522,8 +10635,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:18:52.588891+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.3,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.029
+   },
+   "net_skill": -0.029,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10545,7 +10671,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:18:52.588891+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10567,7 +10693,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:18:52.588891+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10588,8 +10714,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:18:52.588649+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.04,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.2
+   },
+   "net_skill": 0.2,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10611,7 +10750,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:18:52.588649+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10633,7 +10772,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:18:52.588649+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10654,8 +10793,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:18:52.589758+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 292.5,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.27,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 2.69,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.529
+   },
+   "net_skill": -0.529,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10677,7 +10829,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:18:52.589758+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAL.CA",
@@ -10699,7 +10851,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:18:52.589758+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10718,8 +10870,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:27:21.656476+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.88,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10739,7 +10902,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:27:21.656476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10759,7 +10922,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:27:21.656476+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10780,8 +10943,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:27:21.644928+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.74,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.1
+   },
+   "net_skill": 0.1,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10803,7 +10979,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:27:21.644928+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10825,7 +11001,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:27:21.644928+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10846,8 +11022,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:27:21.643892+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.63,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.052
+   },
+   "net_skill": 0.052,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10869,7 +11058,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:27:21.643892+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10891,7 +11080,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:27:21.643892+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10912,8 +11101,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:27:21.644539+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.17,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.201
+   },
+   "net_skill": -0.201,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10935,7 +11137,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:27:21.644539+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10957,7 +11159,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:27:21.644539+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -10978,8 +11180,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:27:21.644266+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.1,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -11001,7 +11216,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:27:21.644266+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -11023,7 +11238,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:27:21.644266+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -11044,8 +11259,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:27:21.645356+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 48.08,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.88,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.59,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": 0.051
+   },
+   "net_skill": 0.051,
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -11067,7 +11295,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:27:21.645356+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "EGAS.CA",
@@ -11089,7 +11317,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:27:21.645356+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11108,8 +11336,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:40:34.733927+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 3.0,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11129,7 +11368,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:40:34.733927+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11149,7 +11388,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:40:34.733927+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11170,8 +11409,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:40:34.722845+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 3.22,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11193,7 +11445,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:40:34.722845+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11215,7 +11467,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:40:34.722845+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11236,8 +11488,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:40:34.721814+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.86,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.03
+   },
+   "net_skill": 0.03,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11259,7 +11524,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:40:34.721814+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11281,7 +11546,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:40:34.721814+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11302,8 +11567,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:40:34.722441+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 3.52,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": -0.361
+   },
+   "net_skill": -0.361,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11325,7 +11603,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:40:34.722441+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11347,7 +11625,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:40:34.722441+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11368,8 +11646,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:40:34.722187+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 3.43,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3
+   },
+   "net_skill": -0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11391,7 +11682,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:40:34.722187+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11413,7 +11704,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:40:34.722187+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11434,8 +11725,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:40:34.723219+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 135.9,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -3.0,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 2.83,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": 0.03
+   },
+   "net_skill": 0.03,
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11457,7 +11761,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:40:34.723219+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETEL.CA",
@@ -11479,7 +11783,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:40:34.723219+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11498,8 +11802,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:48:06.829068+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.08,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11519,7 +11834,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:48:06.829068+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11539,7 +11854,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:48:06.829068+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11560,8 +11875,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:48:06.818287+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 0.95,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.1
+   },
+   "net_skill": 0.1,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11583,7 +11911,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:48:06.818287+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11605,7 +11933,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:48:06.818287+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11626,8 +11954,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:48:06.817291+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 0.91,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.04
+   },
+   "net_skill": 0.04,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11649,7 +11990,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:48:06.817291+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11671,7 +12012,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:48:06.817291+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11692,8 +12033,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:48:06.817932+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 0.99,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.073
+   },
+   "net_skill": 0.073,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11715,7 +12069,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:48:06.817932+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11737,7 +12091,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:48:06.817932+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11758,8 +12112,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:48:06.817698+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 1.46,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3
+   },
+   "net_skill": -0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11781,7 +12148,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:48:06.817698+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11803,7 +12170,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:48:06.817698+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11824,8 +12191,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:48:06.818706+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 11.03,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -1.08,
+   "realized_direction": "down",
+   "direction_hit": false,
+   "move_error_pp": 0.88,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.04
+   },
+   "net_skill": 0.04,
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11847,7 +12227,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:48:06.818706+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ETRS.CA",
@@ -11869,7 +12249,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:48:06.818706+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11888,8 +12268,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:56:56.479058+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.88,
+   "in_range": false,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11909,7 +12300,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:56:56.479058+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11929,7 +12320,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T12:56:56.479058+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11950,8 +12341,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:56:56.467776+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.48,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.4
+   },
+   "net_skill": 0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11973,7 +12377,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:56:56.467776+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -11995,7 +12399,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T12:56:56.467776+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12016,8 +12420,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:56:56.466791+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.29,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.425
+   },
+   "net_skill": -0.425,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12039,7 +12456,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:56:56.466791+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12061,7 +12478,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T12:56:56.466791+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12082,8 +12499,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:56:56.467381+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.79,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.086
+   },
+   "net_skill": 0.086,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12105,7 +12535,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:56:56.467381+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12127,7 +12557,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T12:56:56.467381+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12148,8 +12578,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:56:56.467152+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 2.58,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.3
+   },
+   "net_skill": 0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12171,7 +12614,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:56:56.467152+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12193,7 +12636,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T12:56:56.467152+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12214,8 +12657,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:56:56.468152+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 47.48,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 2.88,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.53,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.425
+   },
+   "net_skill": -0.425,
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12237,7 +12693,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:56:56.468152+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAIT.CA",
@@ -12259,7 +12715,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T12:56:56.468152+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12278,8 +12734,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:04:40.598269+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.0,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.0,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.0,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12299,7 +12766,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:04:40.598269+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12319,7 +12786,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:04:40.598269+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12340,8 +12807,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:04:40.585801+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.0,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.0,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.21,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.0
+   },
+   "net_skill": 0.0,
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12363,7 +12843,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:04:40.585801+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12385,7 +12865,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T13:04:40.585801+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12406,8 +12886,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:04:40.586438+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.0,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.0,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.06,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.0
+   },
+   "net_skill": 0.0,
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12429,7 +12922,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:04:40.586438+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12451,7 +12944,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:04:40.586438+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12472,8 +12965,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:04:40.586180+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.0,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.0,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.06,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.0
+   },
+   "net_skill": -0.0,
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12495,7 +13001,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:04:40.586180+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12517,7 +13023,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T13:04:40.586180+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12538,8 +13044,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:04:40.587129+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 1.0,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.0,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.24,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.0
+   },
+   "net_skill": 0.0,
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12561,7 +13080,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:04:40.587129+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "FAITA.CA",
@@ -12583,7 +13102,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T13:04:40.587129+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12602,8 +13121,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:12:21.062819+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 13.42,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.37,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.37,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12623,7 +13153,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:12:21.062819+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12643,7 +13173,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T13:12:21.062819+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12664,8 +13194,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:12:21.061151+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 13.42,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.37,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.18,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.3
+   },
+   "net_skill": 0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12687,7 +13230,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:12:21.061151+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12709,7 +13252,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T13:12:21.061151+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12730,8 +13273,21 @@
    "corporate_actions": [],
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:12:21.060767+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 13.42,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.37,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.05,
+   "in_range": true,
+   "family_skill": {
+    "sentiment": 0.229
+   },
+   "net_skill": 0.229,
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12753,7 +13309,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:12:21.060767+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "GOUR.CA",
@@ -12775,7 +13331,7 @@
    "entrant": "family-sentiment",
    "frozen_at": "2026-11-25T13:12:21.060767+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ICFC.CA",
@@ -23987,6 +24543,2904 @@
    "prompt_version": "v1",
    "status": "invalid",
    "invalid_reason": "base_price 20.399999618530273 deviates 4.2% from the ticker-evidenced close 21.3 at 2026-11-26 — the sweep's data does not match EFID.CA (issue #87)"
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.65,
+   "range_high_pct": 3.65,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:04:47.666720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -8.16,
+   "range_high_pct": 8.16,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:04:47.666720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -16.72,
+   "range_high_pct": 16.72,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:04:47.666720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.51,
+   "range_low_pct": -4.16,
+   "range_high_pct": 3.14,
+   "confidence": 0.6,
+   "net_score": -0.35,
+   "base_price": 24.61,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:04:40.798925+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.14,
+   "range_low_pct": -9.3,
+   "range_high_pct": 7.02,
+   "confidence": 0.6,
+   "net_score": -0.35,
+   "base_price": 24.61,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:04:40.798925+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.34,
+   "range_low_pct": -19.06,
+   "range_high_pct": 14.38,
+   "confidence": 0.6,
+   "net_score": -0.35,
+   "base_price": 24.61,
+   "families": {
+    "fundamentals": -0.35
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:04:40.798925+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.01,
+   "range_low_pct": -2.64,
+   "range_high_pct": 4.66,
+   "confidence": 0.6,
+   "net_score": 0.691,
+   "base_price": 24.61,
+   "families": {
+    "sentiment": 0.691
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:04:40.798513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.25,
+   "range_low_pct": -5.9,
+   "range_high_pct": 10.41,
+   "confidence": 0.6,
+   "net_score": 0.691,
+   "base_price": 24.61,
+   "families": {
+    "sentiment": 0.691
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:04:40.798513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 4.62,
+   "range_low_pct": -12.1,
+   "range_high_pct": 21.34,
+   "confidence": 0.6,
+   "net_score": 0.691,
+   "base_price": 24.61,
+   "families": {
+    "sentiment": 0.691
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:04:40.798513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.44,
+   "range_low_pct": -3.21,
+   "range_high_pct": 4.09,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 24.61,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:04:40.798282+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.98,
+   "range_low_pct": -7.18,
+   "range_high_pct": 9.14,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 24.61,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:04:40.798282+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.01,
+   "range_low_pct": -14.71,
+   "range_high_pct": 18.72,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 24.61,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:04:40.798282+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 3.2,
+   "range_low_pct": 1.06,
+   "range_high_pct": 4.08,
+   "confidence": null,
+   "net_score": 0.561,
+   "base_price": 24.61,
+   "families": {
+    "price-forecast": 0.561
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:04:40.799314+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.84,
+   "range_low_pct": -0.36,
+   "range_high_pct": 2.9,
+   "confidence": null,
+   "net_score": 0.144,
+   "base_price": 24.61,
+   "families": {
+    "price-forecast": 0.144
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:04:40.799314+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.3,
+   "range_low_pct": -3.91,
+   "range_high_pct": 0.48,
+   "confidence": null,
+   "net_score": -0.05,
+   "base_price": 24.61,
+   "families": {
+    "price-forecast": -0.05
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:04:40.799314+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.53,
+   "range_low_pct": -1.53,
+   "range_high_pct": 0.47,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:04:47.666345+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -3.23,
+   "range_high_pct": 0.77,
+   "confidence": 0.72,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:04:47.666345+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EFIH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.11,
+   "range_low_pct": -4.11,
+   "range_high_pct": 0.0,
+   "confidence": 0.81,
+   "net_score": null,
+   "base_price": 24.61,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:04:47.666345+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -2.83,
+   "range_high_pct": 2.83,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:07:49.891975+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -6.33,
+   "range_high_pct": 6.33,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:07:49.891975+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -12.96,
+   "range_high_pct": 12.96,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:07:49.891975+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.45,
+   "range_low_pct": -3.79,
+   "range_high_pct": 4.7,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 292.5,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:07:46.358352+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.01,
+   "range_low_pct": -8.48,
+   "range_high_pct": 10.5,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 292.5,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:07:46.358352+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.07,
+   "range_low_pct": -17.37,
+   "range_high_pct": 21.52,
+   "confidence": 0.3,
+   "net_score": 0.4,
+   "base_price": 292.5,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:07:46.358352+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.16,
+   "range_low_pct": -4.08,
+   "range_high_pct": 4.4,
+   "confidence": 0.3,
+   "net_score": 0.141,
+   "base_price": 292.5,
+   "families": {
+    "sentiment": 0.141
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:07:46.357760+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.36,
+   "range_low_pct": -9.13,
+   "range_high_pct": 9.84,
+   "confidence": 0.3,
+   "net_score": 0.141,
+   "base_price": 292.5,
+   "families": {
+    "sentiment": 0.141
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:07:46.357760+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.73,
+   "range_low_pct": -18.71,
+   "range_high_pct": 20.18,
+   "confidence": 0.3,
+   "net_score": 0.141,
+   "base_price": 292.5,
+   "families": {
+    "sentiment": 0.141
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:07:46.357760+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.23,
+   "range_low_pct": -4.47,
+   "range_high_pct": 4.02,
+   "confidence": 0.3,
+   "net_score": -0.2,
+   "base_price": 292.5,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:07:46.357504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.51,
+   "range_low_pct": -9.99,
+   "range_high_pct": 8.98,
+   "confidence": 0.3,
+   "net_score": -0.2,
+   "base_price": 292.5,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:07:46.357504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.04,
+   "range_low_pct": -20.48,
+   "range_high_pct": 18.41,
+   "confidence": 0.3,
+   "net_score": -0.2,
+   "base_price": 292.5,
+   "families": {
+    "technicals": -0.2
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:07:46.357504+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 2.11,
+   "range_low_pct": 0.72,
+   "range_high_pct": 3.88,
+   "confidence": null,
+   "net_score": 0.477,
+   "base_price": 292.5,
+   "families": {
+    "price-forecast": 0.477
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:07:46.358591+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 2.02,
+   "range_low_pct": -0.15,
+   "range_high_pct": 3.33,
+   "confidence": null,
+   "net_score": 0.204,
+   "base_price": 292.5,
+   "families": {
+    "price-forecast": 0.204
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:07:46.358591+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.4,
+   "range_low_pct": 0.56,
+   "range_high_pct": 4.65,
+   "confidence": null,
+   "net_score": 0.119,
+   "base_price": 292.5,
+   "families": {
+    "price-forecast": 0.119
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:07:46.358591+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.51,
+   "range_low_pct": -1.51,
+   "range_high_pct": 0.49,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:07:49.891557+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.51,
+   "range_low_pct": -3.51,
+   "range_high_pct": -0.51,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:07:49.891557+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.51,
+   "range_low_pct": -5.51,
+   "range_high_pct": -1.51,
+   "confidence": 0.89,
+   "net_score": null,
+   "base_price": 292.5,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:07:49.891557+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.6,
+   "range_high_pct": 3.6,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:12:04.984123+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -8.04,
+   "range_high_pct": 8.04,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:12:04.984123+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -16.48,
+   "range_high_pct": 16.48,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:12:04.984123+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.14,
+   "range_low_pct": -5.54,
+   "range_high_pct": 5.25,
+   "confidence": 0.3,
+   "net_score": -0.1,
+   "base_price": 48.08,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:11:55.958040+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.32,
+   "range_low_pct": -12.39,
+   "range_high_pct": 11.74,
+   "confidence": 0.3,
+   "net_score": -0.1,
+   "base_price": 48.08,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:11:55.958040+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.66,
+   "range_low_pct": -25.38,
+   "range_high_pct": 24.06,
+   "confidence": 0.3,
+   "net_score": -0.1,
+   "base_price": 48.08,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:11:55.958040+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.44,
+   "range_low_pct": -4.96,
+   "range_high_pct": 5.83,
+   "confidence": 0.3,
+   "net_score": 0.303,
+   "base_price": 48.08,
+   "families": {
+    "sentiment": 0.303
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:11:55.957490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.97,
+   "range_low_pct": -11.09,
+   "range_high_pct": 13.04,
+   "confidence": 0.3,
+   "net_score": 0.303,
+   "base_price": 48.08,
+   "families": {
+    "sentiment": 0.303
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:11:55.957490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.0,
+   "range_low_pct": -22.73,
+   "range_high_pct": 26.72,
+   "confidence": 0.3,
+   "net_score": 0.303,
+   "base_price": 48.08,
+   "families": {
+    "sentiment": 0.303
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:11:55.957490+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.22,
+   "range_low_pct": -5.18,
+   "range_high_pct": 5.61,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 48.08,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:11:55.957209+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.48,
+   "range_low_pct": -11.58,
+   "range_high_pct": 12.55,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 48.08,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:11:55.957209+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 0.99,
+   "range_low_pct": -23.73,
+   "range_high_pct": 25.71,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 48.08,
+   "families": {
+    "technicals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:11:55.957209+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.56,
+   "range_low_pct": -0.06,
+   "range_high_pct": 4.05,
+   "confidence": null,
+   "net_score": 0.278,
+   "base_price": 48.08,
+   "families": {
+    "price-forecast": 0.278
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:11:55.958298+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -0.83,
+   "range_low_pct": -2.89,
+   "range_high_pct": 1.11,
+   "confidence": null,
+   "net_score": -0.066,
+   "base_price": 48.08,
+   "families": {
+    "price-forecast": -0.066
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:11:55.958298+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.6,
+   "range_low_pct": -5.12,
+   "range_high_pct": -0.1,
+   "confidence": null,
+   "net_score": -0.101,
+   "base_price": 48.08,
+   "families": {
+    "price-forecast": -0.101
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:11:55.958298+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.52,
+   "range_low_pct": -1.52,
+   "range_high_pct": 0.48,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:12:04.983714+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -3.21,
+   "range_high_pct": 0.75,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:12:04.983714+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "EGAS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.42,
+   "range_low_pct": -0.56,
+   "range_high_pct": 3.4,
+   "confidence": 0.54,
+   "net_score": null,
+   "base_price": 48.08,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:12:04.983714+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.62,
+   "range_high_pct": 3.62,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:22:31.085720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -8.1,
+   "range_high_pct": 8.1,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:22:31.085720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -16.6,
+   "range_high_pct": 16.6,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:22:31.085720+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.22,
+   "range_low_pct": -5.22,
+   "range_high_pct": 5.65,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 135.9,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:21:12.066290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.49,
+   "range_low_pct": -11.66,
+   "range_high_pct": 12.64,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 135.9,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:21:12.066290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.0,
+   "range_low_pct": -23.9,
+   "range_high_pct": 25.9,
+   "confidence": 0.3,
+   "net_score": 0.15,
+   "base_price": 135.9,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:21:12.066290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.51,
+   "range_low_pct": -4.92,
+   "range_high_pct": 5.95,
+   "confidence": 0.3,
+   "net_score": 0.354,
+   "base_price": 135.9,
+   "families": {
+    "sentiment": 0.354
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:21:12.065684+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.15,
+   "range_low_pct": -11.0,
+   "range_high_pct": 13.3,
+   "confidence": 0.3,
+   "net_score": 0.354,
+   "base_price": 135.9,
+   "families": {
+    "sentiment": 0.354
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:21:12.065684+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.35,
+   "range_low_pct": -22.55,
+   "range_high_pct": 27.25,
+   "confidence": 0.3,
+   "net_score": 0.354,
+   "base_price": 135.9,
+   "families": {
+    "sentiment": 0.354
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:21:12.065684+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.43,
+   "range_low_pct": -5.0,
+   "range_high_pct": 5.87,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 135.9,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:21:12.065438+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.97,
+   "range_low_pct": -11.18,
+   "range_high_pct": 13.12,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 135.9,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:21:12.065438+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.99,
+   "range_low_pct": -22.91,
+   "range_high_pct": 26.89,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 135.9,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:21:12.065438+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 3.48,
+   "range_low_pct": 1.31,
+   "range_high_pct": 5.84,
+   "confidence": null,
+   "net_score": 0.615,
+   "base_price": 135.9,
+   "families": {
+    "price-forecast": 0.615
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:21:12.066527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 4.96,
+   "range_low_pct": 2.66,
+   "range_high_pct": 6.93,
+   "confidence": null,
+   "net_score": 0.392,
+   "base_price": 135.9,
+   "families": {
+    "price-forecast": 0.392
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:21:12.066527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.06,
+   "range_low_pct": 0.13,
+   "range_high_pct": 4.54,
+   "confidence": null,
+   "net_score": 0.08,
+   "base_price": 135.9,
+   "families": {
+    "price-forecast": 0.08
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:21:12.066527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.74,
+   "range_low_pct": -1.48,
+   "range_high_pct": -0.01,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:22:31.085333+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.51,
+   "range_low_pct": 0.82,
+   "range_high_pct": 2.2,
+   "confidence": 0.79,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:22:31.085333+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETEL.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 3.02,
+   "range_low_pct": 1.51,
+   "range_high_pct": 4.53,
+   "confidence": 0.88,
+   "net_score": null,
+   "base_price": 135.9,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:22:31.085333+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.19,
+   "range_high_pct": 3.19,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:25:14.180513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -7.13,
+   "range_high_pct": 7.13,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:25:14.180513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -14.61,
+   "range_high_pct": 14.61,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:25:14.180513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.13,
+   "range_low_pct": -3.31,
+   "range_high_pct": 3.06,
+   "confidence": 0.6,
+   "net_score": -0.1,
+   "base_price": 11.03,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:25:07.258513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.29,
+   "range_low_pct": -7.41,
+   "range_high_pct": 6.84,
+   "confidence": 0.6,
+   "net_score": -0.1,
+   "base_price": 11.03,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:25:07.258513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.58,
+   "range_low_pct": -15.19,
+   "range_high_pct": 14.02,
+   "confidence": 0.6,
+   "net_score": -0.1,
+   "base_price": 11.03,
+   "families": {
+    "fundamentals": -0.1
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:25:07.258513+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.09,
+   "range_low_pct": -3.28,
+   "range_high_pct": 3.1,
+   "confidence": 0.6,
+   "net_score": -0.07,
+   "base_price": 11.03,
+   "families": {
+    "sentiment": -0.07
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:25:07.258137+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.2,
+   "range_low_pct": -7.33,
+   "range_high_pct": 6.93,
+   "confidence": 0.6,
+   "net_score": -0.07,
+   "base_price": 11.03,
+   "families": {
+    "sentiment": -0.07
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:25:07.258137+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.41,
+   "range_low_pct": -15.01,
+   "range_high_pct": 14.2,
+   "confidence": 0.6,
+   "net_score": -0.07,
+   "base_price": 11.03,
+   "families": {
+    "sentiment": -0.07
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:25:07.258137+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.38,
+   "range_low_pct": -2.8,
+   "range_high_pct": 3.57,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 11.03,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:25:07.257812+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.86,
+   "range_low_pct": -6.27,
+   "range_high_pct": 7.98,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 11.03,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:25:07.257812+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.75,
+   "range_low_pct": -12.85,
+   "range_high_pct": 16.36,
+   "confidence": 0.6,
+   "net_score": 0.3,
+   "base_price": 11.03,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:25:07.257812+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 1.3,
+   "range_low_pct": -0.13,
+   "range_high_pct": 2.35,
+   "confidence": null,
+   "net_score": 0.26,
+   "base_price": 11.03,
+   "families": {
+    "price-forecast": 0.26
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:25:07.258988+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.01,
+   "range_low_pct": -1.3,
+   "range_high_pct": 1.25,
+   "confidence": null,
+   "net_score": 0.001,
+   "base_price": 11.03,
+   "families": {
+    "price-forecast": 0.001
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:25:07.258988+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.77,
+   "range_low_pct": -5.14,
+   "range_high_pct": -2.33,
+   "confidence": null,
+   "net_score": -0.165,
+   "base_price": 11.03,
+   "families": {
+    "price-forecast": -0.165
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:25:07.258988+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.54,
+   "range_low_pct": -1.54,
+   "range_high_pct": 0.46,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:25:14.180149+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -3.21,
+   "range_high_pct": 0.75,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:25:14.180149+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ETRS.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.42,
+   "range_low_pct": -0.56,
+   "range_high_pct": 3.4,
+   "confidence": 0.55,
+   "net_score": null,
+   "base_price": 11.03,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:25:14.180149+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -2.51,
+   "range_high_pct": 2.51,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:41:49.555109+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -5.61,
+   "range_high_pct": 5.61,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:41:49.555109+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -11.5,
+   "range_high_pct": 11.5,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:41:49.555109+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.4,
+   "range_low_pct": -2.61,
+   "range_high_pct": 3.41,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 47.48,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:41:45.966073+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.9,
+   "range_low_pct": -5.83,
+   "range_high_pct": 7.63,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 47.48,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:41:45.966073+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.84,
+   "range_low_pct": -11.96,
+   "range_high_pct": 15.64,
+   "confidence": 0.45,
+   "net_score": 0.4,
+   "base_price": 47.48,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:41:45.966073+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.06,
+   "range_low_pct": -2.95,
+   "range_high_pct": 3.07,
+   "confidence": 0.45,
+   "net_score": 0.059,
+   "base_price": 47.48,
+   "families": {
+    "sentiment": 0.059
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:41:45.965656+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.13,
+   "range_low_pct": -6.6,
+   "range_high_pct": 6.86,
+   "confidence": 0.45,
+   "net_score": 0.059,
+   "base_price": 47.48,
+   "families": {
+    "sentiment": 0.059
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:41:45.965656+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.27,
+   "range_low_pct": -13.52,
+   "range_high_pct": 14.07,
+   "confidence": 0.45,
+   "net_score": 0.059,
+   "base_price": 47.48,
+   "families": {
+    "sentiment": 0.059
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:41:45.965656+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.3,
+   "range_low_pct": -2.71,
+   "range_high_pct": 3.31,
+   "confidence": 0.45,
+   "net_score": 0.3,
+   "base_price": 47.48,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:41:45.965419+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.67,
+   "range_low_pct": -6.06,
+   "range_high_pct": 7.4,
+   "confidence": 0.45,
+   "net_score": 0.3,
+   "base_price": 47.48,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:41:45.965419+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.38,
+   "range_low_pct": -12.42,
+   "range_high_pct": 15.18,
+   "confidence": 0.45,
+   "net_score": 0.3,
+   "base_price": 47.48,
+   "families": {
+    "technicals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:41:45.965419+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -3.57,
+   "range_low_pct": -4.8,
+   "range_high_pct": -2.52,
+   "confidence": null,
+   "net_score": -0.911,
+   "base_price": 47.48,
+   "families": {
+    "price-forecast": -0.911
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:41:45.966453+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -3.28,
+   "range_low_pct": -4.88,
+   "range_high_pct": -2.2,
+   "confidence": null,
+   "net_score": -0.374,
+   "base_price": 47.48,
+   "families": {
+    "price-forecast": -0.374
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:41:45.966453+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -6.66,
+   "range_low_pct": -8.27,
+   "range_high_pct": -5.21,
+   "confidence": null,
+   "net_score": -0.371,
+   "base_price": 47.48,
+   "families": {
+    "price-forecast": -0.371
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:41:45.966453+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 0.42,
+   "range_low_pct": -0.35,
+   "range_high_pct": 1.2,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:41:49.554705+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -0.56,
+   "range_low_pct": -1.32,
+   "range_high_pct": 0.2,
+   "confidence": 0.7,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:41:49.554705+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAIT.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -2.1,
+   "range_high_pct": -0.36,
+   "confidence": 0.85,
+   "net_score": null,
+   "base_price": 47.48,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:41:49.554705+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -1.04,
+   "range_high_pct": 1.04,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:44:30.686182+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -2.32,
+   "range_high_pct": 2.32,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:44:30.686182+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.75,
+   "range_high_pct": 4.75,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:44:30.686182+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.07,
+   "range_low_pct": -0.96,
+   "range_high_pct": 1.11,
+   "confidence": 0.6,
+   "net_score": 0.175,
+   "base_price": 1.0,
+   "families": {
+    "sentiment": 0.175
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:44:27.315767+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.16,
+   "range_low_pct": -2.16,
+   "range_high_pct": 2.48,
+   "confidence": 0.6,
+   "net_score": 0.175,
+   "base_price": 1.0,
+   "families": {
+    "sentiment": 0.175
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:44:27.315767+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.33,
+   "range_low_pct": -4.42,
+   "range_high_pct": 5.08,
+   "confidence": 0.6,
+   "net_score": 0.175,
+   "base_price": 1.0,
+   "families": {
+    "sentiment": 0.175
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:44:27.315767+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.06,
+   "range_low_pct": -1.1,
+   "range_high_pct": 0.97,
+   "confidence": 0.6,
+   "net_score": -0.15,
+   "base_price": 1.0,
+   "families": {
+    "technicals": -0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:44:27.315527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.14,
+   "range_low_pct": -2.46,
+   "range_high_pct": 2.18,
+   "confidence": 0.6,
+   "net_score": -0.15,
+   "base_price": 1.0,
+   "families": {
+    "technicals": -0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:44:27.315527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.29,
+   "range_low_pct": -5.04,
+   "range_high_pct": 4.47,
+   "confidence": 0.6,
+   "net_score": -0.15,
+   "base_price": 1.0,
+   "families": {
+    "technicals": -0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T03:44:27.315527+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.13,
+   "range_low_pct": -0.35,
+   "range_high_pct": 0.55,
+   "confidence": null,
+   "net_score": -0.08,
+   "base_price": 1.0,
+   "families": {
+    "price-forecast": -0.08
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:44:27.316543+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.57,
+   "range_low_pct": -0.95,
+   "range_high_pct": -0.05,
+   "confidence": null,
+   "net_score": -0.157,
+   "base_price": 1.0,
+   "families": {
+    "price-forecast": -0.157
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:44:27.316543+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -1.26,
+   "range_low_pct": -1.52,
+   "range_high_pct": -0.79,
+   "confidence": null,
+   "net_score": -0.17,
+   "base_price": 1.0,
+   "families": {
+    "price-forecast": -0.17
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T03:44:27.316543+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 0.5,
+   "range_low_pct": 0.25,
+   "range_high_pct": 0.75,
+   "confidence": 0.7,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:44:30.685731+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.2,
+   "range_low_pct": 0.8,
+   "range_high_pct": 1.6,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:44:30.685731+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "FAITA.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -0.9,
+   "range_low_pct": -1.2,
+   "range_high_pct": -0.6,
+   "confidence": 0.55,
+   "net_score": null,
+   "base_price": 1.0,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:44:30.685731+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.52,
+   "range_high_pct": 4.52,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:46:52.088230+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.1,
+   "range_high_pct": 10.1,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:46:52.088230+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -20.71,
+   "range_high_pct": 20.71,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T03:46:52.088230+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.54,
+   "range_low_pct": -6.24,
+   "range_high_pct": 7.32,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 13.42,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:46:48.435315+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.21,
+   "range_low_pct": -13.94,
+   "range_high_pct": 16.37,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 13.42,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:46:48.435315+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.48,
+   "range_low_pct": -28.57,
+   "range_high_pct": 33.54,
+   "confidence": 0.3,
+   "net_score": 0.3,
+   "base_price": 13.42,
+   "families": {
+    "fundamentals": 0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T03:46:48.435315+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.52,
+   "range_low_pct": -6.26,
+   "range_high_pct": 7.3,
+   "confidence": 0.3,
+   "net_score": 0.289,
+   "base_price": 13.42,
+   "families": {
+    "sentiment": 0.289
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:46:48.434903+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.17,
+   "range_low_pct": -13.99,
+   "range_high_pct": 16.32,
+   "confidence": 0.3,
+   "net_score": 0.289,
+   "base_price": 13.42,
+   "families": {
+    "sentiment": 0.289
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:46:48.434903+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.39,
+   "range_low_pct": -28.67,
+   "range_high_pct": 33.45,
+   "confidence": 0.3,
+   "net_score": 0.289,
+   "base_price": 13.42,
+   "families": {
+    "sentiment": 0.289
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T03:46:48.434903+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.56,
+   "range_low_pct": -3.12,
+   "range_high_pct": -0.01,
+   "confidence": 0.78,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:46:52.087814+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -2.31,
+   "range_low_pct": -4.62,
+   "range_high_pct": -0.02,
+   "confidence": 0.67,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:46:52.087814+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "GOUR.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.09,
+   "range_low_pct": -2.18,
+   "range_high_pct": 1.99,
+   "confidence": 0.45,
+   "net_score": null,
+   "base_price": 13.42,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T03:46:52.087814+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
@@ -24110,6 +27564,25 @@
   "sweeps/2026-11-26/234528__sweep-lite-clho-ca-market-egx__runw6-sweeplite-clho-002: family-price-forecast absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002: family-agent absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/030440__sweep-lite-efih-ca-market-egx__runw6-sweeplite-efih-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/030746__sweep-lite-egal-ca-market-egx__runw6-sweeplite-egal-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/031155__sweep-lite-egas-ca-market-egx__runw6-sweeplite-egas-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/032111__sweep-lite-etel-ca-market-egx__runw6-sweeplite-etel-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/032506__sweep-lite-etrs-ca-market-egx__runw6-sweeplite-etrs-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002: family-fundamentals absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002: family-price-forecast absent (no-kronos-csv) — no rows",
+  "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002: family-technicals absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002: kronos-alone absent (no-kronos-csv) — no rows",
   "54 benchmark row(s) invalidated (validation mismatch or the issue-#87 guard) — never scored: buy-and-hold POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002"
  ],
  "warnings": []
