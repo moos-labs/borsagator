@@ -135,18 +135,27 @@ def count_lines(title, counts):
         L.append("%s: %s" % (h, ", ".join("%s rows=%d cutoffs=%d" % (g, c["rows"], c["cutoffs"])
                                           for g, c in sorted(counts[h].items())) or "no rows"))
     if degenerate(counts):
-        L.append("TILT DEGENERATE: these cells hold a single regime, so no regime contrast "
-                 "exists and every w_r is 1.0 or unfitted")
+        L.append("TILT DEGENERATE: these cells hold a single regime, so no regime contrast exists")
     return L
 
 
+def row_id(r):
+    return "%s %s %s" % (r.get("ticker"), str(r.get("as_of"))[:10], r.get("horizon"))
+
+
 def exclusion_lines(gaps, dropped_rows, unnumbered):
+    """Everything that did not enter the run, with reasons. gaps: the list
+    R.build_rows returns; dropped_rows: identifiers of rows without a v2
+    sigma; unnumbered: paths of captures with no cell number. Each omitted
+    observation gets its own line."""
     drops = [g for g in gaps if NOTE_MARK not in g]
     notes = [g for g in gaps if NOTE_MARK in g]
     L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
          "%d unnumbered capture(s) never scored; %d note(s) (rebuild notes, not exclusions)" % (
-             len(drops), dropped_rows, unnumbered, len(notes))]
+             len(drops), len(dropped_rows), len(unnumbered), len(notes))]
     L.extend("excluded: %s" % g for g in drops)
+    L.extend("excluded: row %s: no v2 sigma" % x for x in dropped_rows)
+    L.extend("excluded: capture %s: no cell number, never scored" % x for x in unnumbered)
     L.extend("note: %s" % g for g in notes)
     return L
 
@@ -200,8 +209,9 @@ def main(argv=None):
     if a.mode == "score" and a.min_cell < CLEAN_MIN_CELL:
         print("refusing: score is for cells >= %d only" % CLEAN_MIN_CELL)
         return 2
-    if a.mode == "describe" and a.min_cell <= TRAIN_MAX_CELL:
-        print("refusing: describe starts after training cell %d" % TRAIN_MAX_CELL)
+    if a.mode == "describe" and not (TRAIN_MAX_CELL < a.min_cell <= a.max_cell <= DESC_MAX_CELL):
+        print("refusing: describe needs %d <= min-cell <= max-cell <= %d (cells %d+ go through score)" % (
+            TRAIN_MAX_CELL + 1, DESC_MAX_CELL, CLEAN_MIN_CELL))
         return 2
     allc = A.find_captures(a.captures, None)
     if not allc:
@@ -212,7 +222,7 @@ def main(argv=None):
         print("refusing: no usable decisions in %s (%d rejected)" % (a.decisions, n_rej))
         return 2
     num = A.cell_number
-    unnumbered = sum(1 for c in allc if num(c) is None)
+    unnumbered = [c for c in allc if num(c) is None]
     if a.mode == "fit":
         caps = [c for c in allc if num(c) is not None and num(c) <= TRAIN_MAX_CELL]
         rows, gaps = R.build_rows(caps, allc)
@@ -226,7 +236,7 @@ def main(argv=None):
         for h in HORIZONS:
             L.append("%s: " % h + ", ".join("%s n=%d fitted=%s w=%.2f" % (
                 g, p["n"], p["fitted"], p["w"]) for g, p in fz["horizons"][h].items()))
-        L.extend(exclusion_lines(gaps, sum(1 for r in rows if not r.get("v2_sigma")), unnumbered))
+        L.extend(exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered))
         print("\n".join(L))
         with open(a.out, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz, "training_regime_counts": counts}, fh, indent=1)
@@ -236,7 +246,7 @@ def main(argv=None):
     caps = [c for c in allc if num(c) is not None and a.min_cell <= num(c) <= hi]
     rows, gaps = R.build_rows(caps, allc)
     pairs = score_rows(rows, fz, decisions)
-    ex = exclusion_lines(gaps, len(rows) - len(pairs), unnumbered)
+    ex = exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")], unnumbered)
     res = R.evaluate(pairs, a.reps)
     counts = group_counts(pairs)
     rc = regime_counts(rows, decisions)

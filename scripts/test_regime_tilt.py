@@ -126,6 +126,7 @@ def test_regime_counts_and_degenerate():
     check("single regime is degenerate", S.degenerate(c))
     L = S.count_lines("TITLE", c)
     check("title first, degenerate said", L[0] == "TITLE" and any("TILT DEGENERATE" in x for x in L))
+    check("degenerate line makes no claim about weights", not any(w in " ".join(L) for w in ("w_r", "unfitted", "1.0")), str(L))
     c2 = S.regime_counts(rows + [_row(h, D_EASE) for h in S.HORIZONS], DECS)
     check("two regimes not degenerate", not S.degenerate(c2))
     check("no degenerate line then", not any("DEGENERATE" in x for x in S.count_lines("T", c2)))
@@ -149,13 +150,57 @@ def test_counts_only():
     check("counts kept", "'easing': 7" in text and payload["counts"]["day"]["by_regime"]["hold"] == 9)
 
 
+def _res(cutoffs=10, lo=0.05, cov=(0.74, 0.84), per=None):
+    base = {"n": 100, "cutoffs": cutoffs, "ch": {"coverage": 0.8, "range_skill": 0.1},
+            "v2": {"coverage": 0.8, "range_skill": 0.0},
+            "ch_ci_cutoff": (lo, 0.2 if lo is not None else None), "ch_cov_ci_cutoff": cov}
+    res = {h: dict(base) for h in S.HORIZONS}
+    for h, d in (per or {}).items():
+        res[h] = {**res[h], **d}
+    return res
+
+
+def test_loop_bar():
+    lb = S.loop_bar.loop_bar_verdict
+    check("ten clusters on all horizons reaches metrics and passes", lb(_res(10)) == ("KEEP", []), str(lb(_res(10))))
+    v, why = lb(_res(9))
+    check("nine clusters is counts only", v == "COUNTS ONLY" and len(why) == 3, str((v, why)))
+    v, why = lb(_res(10, per={"week": {"cutoffs": 9}}))
+    check("one short horizon is counts only even if others pass", v == "COUNTS ONLY" and len(why) == 1
+          and why[0].startswith("week has 9"), str((v, why)))
+    check("each horizon alone gates", all(lb(_res(10, per={h: {"cutoffs": 9}}))[0] == "COUNTS ONLY" for h in S.HORIZONS))
+    v, why = lb(_res(10, lo=None))
+    check("CI lower bound None fails", v == "REJECT" and len(why) == 3 and all("RangeSkill CI lower bound" in x for x in why), str((v, why)))
+    check("CI lower bound zero fails", lb(_res(10, lo=0.0))[0] == "REJECT")
+    check("CI lower bound negative fails", lb(_res(10, lo=-0.01))[0] == "REJECT")
+    check("CI lower bound just positive passes", lb(_res(10, lo=1e-9))[0] == "KEEP")
+    v, why = lb(_res(10, cov=(0.60, 0.70)))
+    check("coverage CI below the band fails", v == "REJECT" and len(why) == 3, str((v, why)))
+    check("coverage CI above the band fails", lb(_res(10, cov=(0.90, 0.99)))[0] == "REJECT")
+    check("coverage CI touching 0.75 edge passes", lb(_res(10, cov=(0.65, 0.75)))[0] == "KEEP")
+    check("coverage CI touching 0.85 edge passes", lb(_res(10, cov=(0.85, 0.95)))[0] == "KEEP")
+    check("coverage CI width just under 0.15 passes", lb(_res(10, cov=(0.70, 0.849)))[0] == "KEEP")
+    check("coverage CI width exactly 0.15 passes", lb(_res(10, cov=(0.70, 0.85)))[0] == "KEEP")
+    check("coverage CI width 0.16 fails", lb(_res(10, cov=(0.70, 0.86)))[0] == "REJECT")
+    check("coverage CI width 0.20 fails", lb(_res(10, cov=(0.70, 0.90)))[0] == "REJECT")
+    check("undefined coverage CI fails", lb(_res(10, cov=(None, None)))[0] == "REJECT")
+    v, why = lb(_res(10, per={"month": {"ch_ci_cutoff": (-0.1, 0.1)}}))
+    check("one failing horizon rejects, others pass", v == "REJECT" and len(why) == 1 and why[0].startswith("month"), str((v, why)))
+
+
 def test_exclusions_listed():
     L = S.exclusion_lines(["cap1: no usable pre-cutoff OHLC history",
-                           "cap3: realised window rebuilt to 21 sessions from price.csv"], 3, 2)
+                           "cap3: realised window rebuilt to 21 sessions from price.csv"],
+                          ["T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month"], ["/x/a", "/x/b"])
     check("header counts", "1 capture(s) dropped" in L[0] and "3 row(s) without a v2 sigma" in L[0]
           and "2 unnumbered" in L[0] and "1 note(s)" in L[0], L[0])
-    check("drop and note lines", L[1] == "excluded: cap1: no usable pre-cutoff OHLC history"
-          and L[2].startswith("note: cap3"))
+    check("drop line", L[1] == "excluded: cap1: no usable pre-cutoff OHLC history")
+    check("each row without sigma listed", L[2:5] == ["excluded: row %s: no v2 sigma" % x for x in (
+        "T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month")], str(L))
+    check("each unnumbered capture listed", L[5:7] == [
+        "excluded: capture /x/a: no cell number, never scored", "excluded: capture /x/b: no cell number, never scored"])
+    check("note line last", L[7].startswith("note: cap3") and len(L) == 8)
+    check("row id", S.row_id({"ticker": "T", "as_of": "2025-01-02T00:00:00", "horizon": "week"}) == "T 2025-01-02 week")
 
 
 def _run(args):
@@ -169,7 +214,14 @@ def test_refusals():
     rc, o = _run(["score", "--captures", "/nonexistent", "--frozen", "x", "--min-cell", "90"])
     check("score refuses min-cell 90", rc == 2 and "score is for cells" in o)
     rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x", "--min-cell", "47"])
-    check("describe refuses training cell", rc == 2 and "after training cell" in o)
+    for lo, hi in ((47, 90), (48, 91), (60, 50), (0, 90), (48, 500), (91, 102)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe refuses %d-%d" % (lo, hi), rc == 2 and "describe needs 48 <= min-cell" in o, o[:120])
+    for lo, hi in ((48, 90), (48, 48), (90, 90)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe passes validation %d-%d" % (lo, hi), "describe needs" not in o and "no captures" in o, o[:120])
     with tempfile.TemporaryDirectory() as d:
         out = os.path.join(d, "f.json")
         open(out, "w").write("SENTINEL")
@@ -200,15 +252,18 @@ def test_modes_with_mocked_discovery():
             first = o.splitlines()[0]
             check("training regime counts printed first", first.startswith("TRAINING CELLS 1-47 regime counts"), first)
             check("fit says degenerate", "TILT DEGENERATE" in o)
-            check("fit lists gap and dropped row", "excluded: /x/c5: no usable" in o and "1 row(s) without a v2 sigma" in o
-                  and "1 unnumbered" in o, o[-300:])
+            check("fit lists gap, dropped row and unnumbered capture", "excluded: /x/c5: no usable" in o
+                  and "1 row(s) without a v2 sigma" in o and "excluded: row T 2024-02-01 week: no v2 sigma" in o
+                  and "1 unnumbered" in o and "excluded: capture /x/u: no cell number" in o, o[-400:])
             fz = json.load(open(out))
             check("fitted w stored", fz["frozen"]["degenerate"] is True and fz["frozen"]["horizons"]["week"]["tightening"]["w"] == 0.9)
             for mode in ("describe", "score"):
                 rc, o = _run([mode, "--captures", "x", "--frozen", out, "--reps", "5", "--decisions", dec,
                               "--min-cell", "48" if mode == "describe" else "91"])
                 check("%s ok" % mode, rc == 0, o[:300])
-                check("%s lists dropped row" % mode, "1 row(s) without a v2 sigma" in o, o[-200:])
+                check("%s lists dropped row" % mode, "1 row(s) without a v2 sigma" in o
+                      and "excluded: row T 2024-02-01 week: no v2 sigma" in o
+                      and "excluded: capture /x/u: no cell number" in o, o[-300:])
                 check("%s prints regime in counts" % mode, "easing" in o)
             check("score prints degenerate note", "TILT DEGENERATE: cells >= 91" in o, o[-300:])
             check("score output has no metric words", "RangeSkill" not in o and "coverage" not in o, o[:400])
@@ -228,7 +283,7 @@ def test_decisions_file():
 def run_all():
     for fn in (test_constants, test_regime_boundaries, test_fit_picks_per_regime, test_fit_min_group_and_tie,
                test_fit_uses_only_given_rows_and_skips_no_sigma, test_score_rows_uses_frozen,
-               test_regime_counts_and_degenerate, test_counts_only, test_exclusions_listed, test_refusals,
+               test_regime_counts_and_degenerate, test_counts_only, test_loop_bar, test_exclusions_listed, test_refusals,
                test_modes_with_mocked_discovery, test_decisions_file):
         fn()
 
