@@ -2524,6 +2524,88 @@ def test_realised_close_repair():
           "err=%r" % (err8,))
 
 
+def test_realised_close_repair_20240701():
+    """REPAIR-002 (#436): the 2024-07-01 Yahoo gap — same class
+    as 2024-05-01. The table carries all five v1-grid tickers;
+    a dropped 2024-07-01 close is re-inserted at its true
+    session (session 1 of the 2024-06-30 cutoff window) with
+    the verified Mubasher value. ORWE has no entry (not a
+    v1-grid ticker) and still blocks."""
+    print("== realised close repair 2024-07-01 (REPAIR-002) ==")
+    bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
+    expected = {
+        "COMI.CA": 78.02, "ETEL.CA": 30.99, "TMGH.CA": 57.12,
+        "SWDY.CA": 47.63, "HRHO.CA": 19.38,
+    }
+    table = bt.EGX_CLOSE_REPAIRS.get("2024-07-01") or {}
+    check("repair table carries all five 2024-07-01 tickers",
+          {t: (table.get(t) or {}).get("close") for t in expected}
+          == expected,
+          "got %r" % ({t: (table.get(t) or {}).get("close")
+                       for t in expected},))
+    check("repair table sources are Mubasher for 2024-07-01",
+          all((table.get(t) or {}).get("source") == "Mubasher"
+              for t in expected),
+          "got %r" % ({t: (table.get(t) or {}).get("source")
+                       for t in expected},))
+    cutoff = "2024-06-30"
+    days = []
+    d = date(2024, 6, 20)
+    while d <= date(2024, 7, 31):
+        if d.weekday() < 5:
+            days.append(d)
+        d += timedelta(days=1)
+
+    def _rows(null_dates=()):
+        rows, dropped = [], []
+        for i, dd in enumerate(days):
+            iso = dd.isoformat()
+            if iso in null_dates:
+                dropped.append(iso)
+            else:
+                rows.append({"date": iso, "close": 100.0 + i})
+        return rows, dropped
+
+    events = []
+
+    def make_fetcher(per_symbol):
+        def fetcher(symbol):
+            spec = per_symbol.get(symbol, per_symbol["*"])
+            rows, dropped = spec
+            return rows, events, True, None, dropped
+        return fetcher
+
+    repair_date = "2024-07-01"
+    for ticker, value in expected.items():
+        f = make_fetcher({"*": _rows(null_dates=(repair_date,))})
+        real, err = bt.fetch_realised(ticker, cutoff, fetcher=f)
+        check("%s dropped 2024-07-01 publishes with repair"
+              % ticker, real is not None, err)
+        if real is not None:
+            dates = [x["date"] for x in real["sessions"]]
+            check("%s repaired close sits at session 1" % ticker,
+                  len(dates) == 21 and dates[0] == repair_date
+                  and real["maturity_date"] == "2024-07-29",
+                  "got %d sessions, [0]=%s, maturity %s"
+                  % (len(dates), dates[:1], real["maturity_date"]))
+            check("%s repaired close carries the verified value"
+                  % ticker,
+                  [x["close"] for x in real["sessions"]
+                   if x["date"] == repair_date] == [value],
+                  "got %r" % ([x for x in real["sessions"]
+                               if x["date"] == repair_date],))
+    # ORWE has no 2024-07-01 entry — still blocks.
+    f = make_fetcher({"*": _rows(null_dates=(repair_date,))})
+    real_o, err_o = bt.fetch_realised("ORWE.CA", cutoff, fetcher=f)
+    check("ORWE dropped 2024-07-01 still blocks (no entry)",
+          real_o is None and repair_date in err_o, "err=%r" % (err_o,))
+    # The US market is never repaired.
+    f = make_fetcher({"*": _rows(null_dates=(repair_date,))})
+    real_n, err_n = bt.fetch_realised("NVDA", cutoff, fetcher=f)
+    check("US ticker dropped 2024-07-01 still blocks",
+          real_n is None and repair_date in err_n, "err=%r" % (err_n,))
+
+
 def test_realised_index_window():
     print("== realised index window (flat index = gap) ==")
     bt = load_module(os.path.join(HERE, "backtest.py"), "backtest")
@@ -2729,6 +2811,7 @@ def run_backtest_checks(verbose=True):
     test_realised_index_window()
     test_realised_dropped_close()
     test_realised_close_repair()
+    test_realised_close_repair_20240701()
     test_yahoo_symbol_override_gour()
     test_smoke_and_determinism()
     test_runner_skip_classification_in_cell()
