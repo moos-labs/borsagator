@@ -1,0 +1,112 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 6,
+  "label_counts": {
+    "positive": 0,
+    "negative": 1,
+    "neutral": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.001265980822305816,
+    "negative": 0.1674365584985935,
+    "neutral": 0.8312974558599914
+  },
+  "items": [
+    {
+      "text": "McQueen Shaver dump truck driver charged with stunt driving - CambridgeToday.ca",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0003919214359484613,
+        "negative": 0.9964860677719116,
+        "neutral": 0.0031220235396176577
+      },
+      "raw_probabilities": {
+        "negative": 0.9964860677719116,
+        "neutral": 0.0031220235396176577,
+        "positive": 0.0003919214359484613
+      }
+    },
+    {
+      "text": "McQueen Girls JV Basketball @ Lassen - MaxPreps",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.004471411928534508,
+        "negative": 0.0002635438577271998,
+        "neutral": 0.9952651262283325
+      },
+      "raw_probabilities": {
+        "neutral": 0.9952651262283325,
+        "positive": 0.004471411928534508,
+        "negative": 0.0002635438577271998
+      }
+    },
+    {
+      "text": "Caputo named Fort Erie CAO days after McQueen firing - Fort Erie Radio",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0003313043562229723,
+        "negative": 0.0002491943596396595,
+        "neutral": 0.9994194507598877
+      },
+      "raw_probabilities": {
+        "neutral": 0.9994194507598877,
+        "positive": 0.0003313043562229723,
+        "negative": 0.0002491943596396595
+      }
+    },
+    {
+      "text": "CA Final November 2026 MCQ pattern changed, more calculation based questions asked - Speaks Media",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0016004103235900402,
+        "negative": 0.007178970612585545,
+        "neutral": 0.9912206530570984
+      },
+      "raw_probabilities": {
+        "neutral": 0.9912206530570984,
+        "negative": 0.007178970612585545,
+        "positive": 0.0016004103235900402
+      }
+    },
+    {
+      "text": "Steve McQueen | Biography, Films, & Facts - Britannica",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.00027175573632121086,
+        "negative": 0.00021383877901826054,
+        "neutral": 0.9995143413543701
+      },
+      "raw_probabilities": {
+        "neutral": 0.9995143413543701,
+        "positive": 0.00027175573632121086,
+        "negative": 0.00021383877901826054
+      }
+    },
+    {
+      "text": "Roger McQueen - DobberProspects",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005290811532177031,
+        "negative": 0.000227735610678792,
+        "neutral": 0.9992431402206421
+      },
+      "raw_probabilities": {
+        "neutral": 0.9992431402206421,
+        "positive": 0.0005290811532177031,
+        "negative": 0.000227735610678792
+      }
+    }
+  ]
+}

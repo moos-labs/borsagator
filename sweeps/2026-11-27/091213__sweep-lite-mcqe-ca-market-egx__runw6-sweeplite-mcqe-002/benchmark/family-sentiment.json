@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 173.49,
+ "base_source": "egx-data/egxpy_mcqe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for sentiment, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-sentiment",
+ "frozen_at": "2026-11-27T09:12:14.263150+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.07,
+   "families": {
+    "sentiment": 0.032
+   },
+   "horizon_short": false,
+   "net_score": 0.032,
+   "range_high_pct": 6.46,
+   "range_low_pct": -6.32,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.31,
+   "families": {
+    "sentiment": 0.032
+   },
+   "horizon_short": false,
+   "net_score": 0.032,
+   "range_high_pct": 29.59,
+   "range_low_pct": -28.97,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.45,
+   "direction": "flat",
+   "expected_move_pct": 0.15,
+   "families": {
+    "sentiment": 0.032
+   },
+   "horizon_short": false,
+   "net_score": 0.032,
+   "range_high_pct": 14.44,
+   "range_low_pct": -14.14,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "3d22f57c8036ec9ae17c6116354179063b8dd6bc5a473acd1e6a9507a89f89f0",
+  "ensemble.json": "1cc0880fe8fbf6ec36c76aea6caf72634a8da0858cc9e9ebb4762e1553418bca"
+ },
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.663,
+ "sigma_daily": 0.0416,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+ "ticker": "MCQE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

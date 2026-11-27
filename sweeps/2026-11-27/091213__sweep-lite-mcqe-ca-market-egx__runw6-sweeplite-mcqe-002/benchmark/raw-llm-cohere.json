@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 173.49,
+ "base_source": "egx-data/egxpy_mcqe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T09:12:18.060708+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.7,
+   "direction": "down",
+   "expected_move_pct": -1.15,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.01,
+   "range_low_pct": -2.3,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.6,
+   "direction": "down",
+   "expected_move_pct": -3.3,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.03,
+   "range_low_pct": -6.6,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.65,
+   "direction": "down",
+   "expected_move_pct": -2.2,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.02,
+   "range_low_pct": -4.4,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_mcqe.csv": "8df31d23cc1118c21c57fe9aa419e499764ffa34aa88f50eac9268ce7bc5a112",
+  "digest.json": "3d22f57c8036ec9ae17c6116354179063b8dd6bc5a473acd1e6a9507a89f89f0",
+  "ensemble.json": "1cc0880fe8fbf6ec36c76aea6caf72634a8da0858cc9e9ebb4762e1553418bca",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_mcqe.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.663,
+ "sigma_daily": 0.0416,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+ "ticker": "MCQE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

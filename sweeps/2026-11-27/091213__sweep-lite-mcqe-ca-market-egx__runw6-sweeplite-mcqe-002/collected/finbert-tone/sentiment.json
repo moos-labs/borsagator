@@ -1,0 +1,175 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 6,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 6
+  },
+  "label_counts_raw": {
+    "neutral": 6
+  },
+  "mean_probabilities": {
+    "positive": 0.00011454967508139902,
+    "negative": 0.0009712695450332376,
+    "neutral": 0.9989141921202341
+  },
+  "items": [
+    {
+      "text": "McQueen Shaver dump truck driver charged with stunt driving - CambridgeToday.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.167323615751229e-05,
+        "negative": 0.0011124772718176246,
+        "neutral": 0.9988358616828918
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9988358616828918
+        },
+        {
+          "label": "Negative",
+          "score": 0.0011124772718176246
+        },
+        {
+          "label": "Positive",
+          "score": 5.167323615751229e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "McQueen Girls JV Basketball @ Lassen - MaxPreps",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.286380888312124e-05,
+        "negative": 0.0008130749338306487,
+        "neutral": 0.9991540908813477
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9991540908813477
+        },
+        {
+          "label": "Negative",
+          "score": 0.0008130749338306487
+        },
+        {
+          "label": "Positive",
+          "score": 3.286380888312124e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Caputo named Fort Erie CAO days after McQueen firing - Fort Erie Radio",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.6225394361413237e-08,
+        "negative": 7.692695476180234e-07,
+        "neutral": 0.9999992847442627
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999992847442627
+        },
+        {
+          "label": "Negative",
+          "score": 7.692695476180234e-07
+        },
+        {
+          "label": "Positive",
+          "score": 1.6225394361413237e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CA Final November 2026 MCQ pattern changed, more calculation based questions asked - Speaks Media",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.440517730268766e-06,
+        "negative": 1.9672015696414746e-05,
+        "neutral": 0.9999768733978271
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999768733978271
+        },
+        {
+          "label": "Negative",
+          "score": 1.9672015696414746e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.440517730268766e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Steve McQueen | Biography, Films, & Facts - Britannica",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.22834135760786e-06,
+        "negative": 0.00010357801511418074,
+        "neutral": 0.9998881816864014
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998881816864014
+        },
+        {
+          "label": "Negative",
+          "score": 0.00010357801511418074
+        },
+        {
+          "label": "Positive",
+          "score": 8.22834135760786e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Roger McQueen - DobberProspects",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0005910759209655225,
+        "negative": 0.003778045764192939,
+        "neutral": 0.9956308603286743
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9956308603286743
+        },
+        {
+          "label": "Negative",
+          "score": 0.003778045764192939
+        },
+        {
+          "label": "Positive",
+          "score": 0.0005910759209655225
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

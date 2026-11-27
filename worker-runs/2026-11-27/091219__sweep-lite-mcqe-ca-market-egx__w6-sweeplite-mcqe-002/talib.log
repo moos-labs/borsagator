@@ -1,0 +1,30 @@
+[data] after drop-before 2019-01-01: 1931 rows
+{
+  "ticker": "MCQE.CA",
+  "as_of": null,
+  "drop_before": "2019-01-01",
+  "rows_fetched": 6137,
+  "rows_used": 1931,
+  "date_range": {
+    "first": "2019-01-01",
+    "last": "2026-11-26"
+  },
+  "last_date": "2026-11-26",
+  "last_close": 173.49000549316406,
+  "indicators": {
+    "RSI_14": 47.15414613634809,
+    "MACD": -1.1315186302958864,
+    "MACD_signal": -1.60988211432824,
+    "MACD_hist": 0.4783634840323536,
+    "EMA_20": 175.60937445728547,
+    "EMA_50": 182.32654084224026,
+    "ADX_14": 11.475399458570934
+  },
+  "patterns_last_60_sessions": {
+    "CDLDOJI": "2026-11-24",
+    "CDLENGULFING": "2026-11-22",
+    "CDLHAMMER": "2026-11-26",
+    "CDLSHOOTINGSTAR": "none in last 60 sessions",
+    "CDLMORNINGSTAR": "none in last 60 sessions"
+  }
+}

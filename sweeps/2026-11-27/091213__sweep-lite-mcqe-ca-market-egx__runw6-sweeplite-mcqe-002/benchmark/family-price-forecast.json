@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 173.49,
+ "base_source": "egx-data/egxpy_mcqe.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T09:12:14.262525+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "13131895d0083290762f0777b75d33f459d5298dab47e88aa31c71b47d353704",
+  "digest.json": "3d22f57c8036ec9ae17c6116354179063b8dd6bc5a473acd1e6a9507a89f89f0",
+  "ensemble.json": "1cc0880fe8fbf6ec36c76aea6caf72634a8da0858cc9e9ebb4762e1553418bca"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/091213__sweep-lite-mcqe-ca-market-egx__runw6-sweeplite-mcqe-002",
+ "ticker": "MCQE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
