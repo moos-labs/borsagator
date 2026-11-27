@@ -668,6 +668,25 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     base_rows = [r for r in rows if parse_iso(r["date"]) <= c]
     base_close = base_rows[-1]["close"] if base_rows else None
     base_date = base_rows[-1]["date"] if base_rows else None
+    # REPAIR-001 (#436): apply verified repairs BEFORE the
+    # minimum-session check, so a repaired session counts
+    # toward the 21 — a feed ending on 20 usable sessions plus
+    # the repairable date is mature, not short (CodeRabbit on
+    # PR #889). Only dates after the cutoff are eligible; a
+    # repair landing beyond the final window is inserted but
+    # not recorded (it was not used).
+    repaired = []
+    for d in dropped or []:
+        entry = (EGX_CLOSE_REPAIRS.get(d) or {}).get(ticker.upper())
+        if entry is not None and parse_iso(d) is not None \
+                and c < parse_iso(d):
+            after.append({"date": d, "close": float(entry["close"])})
+            repaired.append({"date": d, "ticker": ticker.upper(),
+                             "close": float(entry["close"]),
+                             "source": entry["source"],
+                             "basis": entry["basis"]})
+    if repaired:
+        after.sort(key=lambda r: r["date"])
     if len(after) < SESSIONS_NEEDED:
         return None, (
             "realised: only %d sessions after %s, need %d — "
@@ -675,6 +694,8 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                                          SESSIONS_NEEDED))
     sessions = after[:SESSIONS_NEEDED]
     maturity = sessions[-1]["date"]
+    session_dates = {s["date"] for s in sessions}
+    repaired = [r for r in repaired if r["date"] in session_dates]
     # A bar dropped for a missing/unusable close inside the
     # realised window must not shift the scored horizons: the
     # surviving rows alone would count the NEXT session's close
@@ -683,38 +704,13 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     # capture as complete. Block the cell instead — the same
     # fail-closed treatment as an unverifiable events feed.
     # Drops after the window touch no scored horizon and do
-    # not block.
+    # not block. A dropped date with a repair entry for this
+    # ticker is re-inserted above, so it never blocks; any
+    # other dropped date left inside the window still does.
     dropped_in_window = [d for d in dropped or []
                          if parse_iso(d) is not None
-                         and c < parse_iso(d) <= parse_iso(maturity)]
-    # REPAIR-001 (#436): a dropped date inside the window that
-    # carries a verified repair entry for THIS ticker is
-    # re-inserted as a session with its repaired close, so the
-    # 21 sessions are the true ones and the maturity is the
-    # true 21st session (a repair before the old maturity
-    # pulls the maturity one session earlier). A dropped date
-    # with no repair entry for this ticker still blocks, as
-    # does any dropped date left inside the repaired window.
-    repaired = []
-    repairable = [d for d in dropped_in_window
-                  if (EGX_CLOSE_REPAIRS.get(d) or {}).get(
-                      ticker.upper()) is not None]
-    if repairable:
-        for d in repairable:
-            entry = EGX_CLOSE_REPAIRS[d][ticker.upper()]
-            after.append({"date": d, "close": float(entry["close"])})
-            repaired.append({"date": d, "ticker": ticker.upper(),
-                             "close": float(entry["close"]),
-                             "source": entry["source"],
-                             "basis": entry["basis"]})
-        after.sort(key=lambda r: r["date"])
-        sessions = after[:SESSIONS_NEEDED]
-        maturity = sessions[-1]["date"]
-        repaired_dates = {r["date"] for r in repaired}
-        dropped_in_window = [
-            d for d in dropped_in_window
-            if d not in repaired_dates
-            and parse_iso(d) <= parse_iso(maturity)]
+                         and c < parse_iso(d) <= parse_iso(maturity)
+                         and d not in {r["date"] for r in repaired}]
     if dropped_in_window:
         return None, (
             "realised: %d session(s) inside the realised window "

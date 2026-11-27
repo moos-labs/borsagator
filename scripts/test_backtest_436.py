@@ -2484,6 +2484,44 @@ def test_realised_close_repair():
     real6, err6 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
     check("repair plus another dropped close still blocks",
           real6 is None and other in err6, "err=%r" % (err6,))
+    # 7. CodeRabbit on PR #889: repairs apply BEFORE the
+    # minimum-session check — a feed ending on 20 usable
+    # sessions plus the repairable date is mature, not short.
+    def _rows_until(end, null_dates=()):
+        rows, dropped = [], []
+        for i, dd in enumerate(days):
+            if dd > end:
+                break
+            iso = dd.isoformat()
+            if iso in null_dates:
+                dropped.append(iso)
+            else:
+                rows.append({"date": iso, "close": 100.0 + i})
+        return rows, dropped
+
+    f = make_fetcher(
+        {"*": _rows_until(date(2024, 5, 9),
+                          null_dates=(repair_date,))})
+    real7, err7 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("truncated feed with a repairable date publishes",
+          real7 is not None, err7)
+    if real7 is not None:
+        check("truncated feed matures on the repaired 21st session",
+              len(real7["sessions"]) == 21
+              and real7["maturity_date"] == "2024-05-09"
+              and real7.get("repaired_closes")
+              and real7["repaired_closes"][0]["date"] == repair_date,
+              "sessions=%d maturity=%s repaired=%r"
+              % (len(real7["sessions"]), real7["maturity_date"],
+                 real7.get("repaired_closes")))
+    # 8. Control: the same truncated feed with an unrepairable
+    # drop stays short — the repair fixes its own date only.
+    f = make_fetcher(
+        {"*": _rows_until(date(2024, 5, 9), null_dates=(other,))})
+    real8, err8 = bt.fetch_realised("COMI.CA", cutoff, fetcher=f)
+    check("truncated feed with an unrepairable drop stays short",
+          real8 is None and "only 20 sessions" in err8,
+          "err=%r" % (err8,))
 
 
 def test_realised_index_window():
