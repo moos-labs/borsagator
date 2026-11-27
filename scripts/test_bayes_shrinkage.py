@@ -9,6 +9,7 @@ import math
 import os
 import sys
 import tempfile
+import unittest
 
 sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -181,11 +182,125 @@ def test_render():
               rc == 2 and not os.path.exists(out))
 
 
-def main():
+def test_fit_window_guards():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        c1 = B.main(["score", "--captures", "/nonexistent",
+                     "--fit-max-cell", "90", "--min-cell", "91"])
+        t1 = buf.getvalue()
+        c2 = B.main(["score", "--captures", "/nonexistent",
+                     "--fit-max-cell", "100", "--min-cell", "101",
+                     "--descriptive"])
+        buf.truncate(0)
+        buf.seek(0)
+        c3 = B.main(["score", "--captures", "/nonexistent",
+                     "--fit-max-cell", "40", "--min-cell", "91"])
+        t3 = buf.getvalue()
+        c4 = B.main(["diag", "--captures", "/nonexistent",
+                     "--fit-max-cell", "60"])
+        buf.truncate(0)
+        buf.seek(0)
+        c5 = B.main(["score", "--captures", "/nonexistent",
+                     "--fit-max-cell", "40", "--min-cell", "48",
+                     "--descriptive"])
+        t5 = buf.getvalue()
+    check("clean fit window above 47 refused",
+          c1 == 2 and "above the registered 47" in t1, t1)
+    check("fit window above 47 refused, descriptive too", c2 == 2)
+    check("clean scoring needs exactly the registered fit window",
+          c3 == 2 and "needs --fit-max-cell 47" in t3, t3)
+    check("diag above 47 refused", c4 == 2)
+    check("descriptive may use a lower window (reaches the fit)",
+          c5 == 2 and "no training rows" in t5, t5)
+
+
+def fake_args(fit_max=47):
+    ns = type("NS", (), {})()
+    ns.captures = ["/x"]
+    ns.fit_max_cell = fit_max
+    ns.reps = 20
+    ns.seed = 1
+    return ns
+
+
+def fake_res():
+    return {h: {"n": 1, "cutoffs": 1, "tickers": 1,
+                "v2": {"coverage": 0.8, "range_skill": 0.0},
+                "ch": {"coverage": 0.8, "range_skill": 0.0},
+                "ch_ci_cutoff": [0.1, 0.2],
+                "ch_cov_ci_cutoff": [0.7, 0.8],
+                "ch_ci_ticker": [0.1, 0.2]} for h in B.HORIZONS}
+
+
+def test_fit_reference_and_provenance():
+    caps = ["/x/c-cell%d/2025-01-0%d/T%d" % (n, 1 + n % 8, n % 7)
+            for n in (3, 30, 47, 48, 90, 91)]
+    calls = []
+
+    def fake_build(cs, ref=None):
+        calls.append((list(cs), list(ref)))
+        if B.A.cell_number(cs[0]) == 3:
+            return training_rows(), [
+                "x: realised window rebuilt to 21 sessions from price.csv",
+                "y: no usable pre-cutoff OHLC history"]
+        return cutoff("s1", 0.5, 0.5), []
+    old = (B.R.build_rows, B.A.find_captures)
+    B.R.build_rows, B.A.find_captures = fake_build, lambda *a: caps
+    try:
+        with contextlib.redirect_stdout(io.StringIO()):
+            rc, out = B._run(fake_args(), 48, 90, True, "DESCRIPTIVE ONLY")
+    finally:
+        B.R.build_rows, B.A.find_captures = old
+    train_caps, train_ref = calls[0]
+    check("fit reference is the training captures only",
+          train_ref == train_caps and not any(
+              B.A.cell_number(c) > 47 for c in train_ref), calls[0])
+    check("training captures are cells <= 47",
+          sorted(B.A.cell_number(c) for c in train_caps) == [3, 30, 47])
+    check("scored reference is the full capture set",
+          calls[1][1] == caps)
+    check("report records the effective fit window",
+          out["fit_window"] == {"first_cell": 1, "last_cell": 47,
+                                "registered_last_cell": 47}, out)
+    fit_p = out["provenance"]["fit"]
+    check("fit provenance counts rebuilds and dropped captures",
+          fit_p["realised_rebuilt"] == 1
+          and fit_p["dropped_no_ohlc_captures"] == 1
+          and fit_p["captures"] == 3
+          and "training captures only" in fit_p["price_reference"], fit_p)
+    check("scored provenance names the wider reference",
+          "all --captures" in out["provenance"]["scored"][
+              "price_reference"])
+    check("descriptive report has no verdict key", "verdict" not in out)
+    lam, n, _p = B.fit(training_rows())
+    clean = B.make_report(fake_res(), lam, n, 0, False, 47, {})
+    check("clean report carries verdict and the fit window",
+          "verdict" in clean and clean["fit_window"]["last_cell"] == 47)
+    check("fit cutoff is labelled in the text",
+          "cells <= 40 only" in B.render(fake_res(), lam, n, 0, True,
+                                         "t", 40))
+
+
+class Suite(unittest.TestCase):
+    """Runs the checks under `unittest discover -s scripts`."""
+
+    def test_checks(self):
+        CHECKS["pass"] = CHECKS["fail"] = 0
+        run_all()
+        self.assertEqual(CHECKS["fail"], 0)
+        self.assertGreater(CHECKS["pass"], 0)
+
+
+def run_all():
     for fn in (test_constants, test_pools, test_shrunk_sigma, test_fit,
                test_score_rows, test_cell_selection, test_cli_guards,
-               test_render):
+               test_render, test_fit_window_guards,
+               test_fit_reference_and_provenance):
         fn()
+
+
+def main():
+    run_all()
     print("test_bayes_shrinkage: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
     sys.exit(1 if CHECKS["fail"] else 0)

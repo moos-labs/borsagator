@@ -17,8 +17,11 @@ ensemble.py and not refitted. Centre 0, RISK_MULT as in v2.
 lam_h in [0, 1] is the grid value (step 0.05) that minimises mean
 Winkler IS on the TRAINING rows of horizon h (ties to the smaller
 lam); fewer than MIN_FIT_ROWS training rows keeps lam = 0 (= v2).
-Training = cells 1-47 of the --captures dirs only (--fit-max-cell),
-refitted from those cells on every run and printed; scoring refuses
+Training = cells 1-47 of the --captures dirs only (--fit-max-cell,
+never above 47 and exactly 47 for a clean run), refitted from those
+cells on every run and printed; the fit's price reference comes from
+the training captures only and the JSON records the effective fit
+window and price-reference provenance; scoring refuses
 a range that overlaps them. A cutoff with fewer than MIN_POOL
 distinct tickers has no usable pool: its rows keep the v2 sigma
 (lam 0) and are counted. No external source, nothing edits
@@ -141,11 +144,36 @@ def _f(v, nd=3):
     return PK._f(v, nd)
 
 
-def render(res, lam, counts, unpooled, descriptive, title):
+def count_gaps(gaps, text):
+    return sum(1 for g in gaps if text in g)
+
+
+def provenance(caps, gaps, source):
+    return {"price_reference": source, "captures": len(caps),
+            "realised_rebuilt": count_gaps(gaps, "realised window "
+                                           "rebuilt"),
+            "dropped_no_ohlc_captures": count_gaps(
+                gaps, "no usable pre-cutoff OHLC")}
+
+
+def make_report(res, lam, counts, unpooled, descriptive, fit_max, prov):
+    out = {"k": ens_mod.V2_BAND_K, "lam": lam, "training_rows": counts,
+           "unpooled_rows": unpooled, "results": res,
+           "descriptive": descriptive,
+           "fit_window": {"first_cell": 1, "last_cell": fit_max,
+                          "registered_last_cell": FIT_MAX_CELL},
+           "provenance": prov}
+    if not descriptive:
+        out["verdict"] = keep_verdict(res)[0]
+    return out
+
+
+def render(res, lam, counts, unpooled, descriptive, title,
+           fit_max=FIT_MAX_CELL):
     L = [title, "pooled-sigma shrinkage on the v2 band, v2 k = %s"
          % json.dumps(ens_mod.V2_BAND_K),
          "fit (training cells <= %d only): lam %s (training rows %s)"
-         % (FIT_MAX_CELL,
+         % (fit_max,
             " ".join("%s %.2f" % (h, lam[h]) for h in HORIZONS),
             "/".join(str(counts[h]) for h in HORIZONS)),
          "rows at cutoffs with < %d tickers (v2 sigma kept): %d"
@@ -170,22 +198,30 @@ def render(res, lam, counts, unpooled, descriptive, title):
 
 def _run(a, lo, hi, descriptive, title):
     allc = A.find_captures(a.captures, None)
-    train, _g = R.build_rows(select_caps(allc, 1, a.fit_max_cell), allc)
+    train_caps = select_caps(allc, 1, a.fit_max_cell)
+    # The fit sees outcomes only through training captures: its price
+    # reference is selected from the training captures, never from the
+    # held-out ones.
+    train, train_gaps = R.build_rows(train_caps, train_caps)
     if not [r for r in train if r["v2_sigma"]]:
         print("refusing: no training rows (cells 1-%d)" % a.fit_max_cell)
         return 2, None
     lam, counts, _p = fit(train)
-    rows, _g = R.build_rows(select_caps(allc, lo, hi), allc)
+    score_caps = select_caps(allc, lo, hi)
+    rows, gaps = R.build_rows(score_caps, allc)
     pairs = score_rows(rows, lam)
     up = unpooled_rows(rows)
     res = R.evaluate(pairs, a.reps, getattr(a, "seed", A.DEFAULT_SEED))
-    print(render(res, lam, counts, up, descriptive, title))
-    out = {"k": ens_mod.V2_BAND_K, "lam": lam, "training_rows": counts,
-           "unpooled_rows": up, "results": res,
-           "descriptive": descriptive}
-    if not descriptive:
-        out["verdict"] = keep_verdict(res)[0]
-    return 0, out
+    prov = {"fit": provenance(
+                train_caps, train_gaps,
+                "training captures only (cells 1-%d)" % a.fit_max_cell),
+            "scored": provenance(
+                score_caps, gaps,
+                "all --captures dirs, latest last date per ticker")}
+    print(render(res, lam, counts, up, descriptive, title,
+                 a.fit_max_cell))
+    return 0, make_report(res, lam, counts, up, descriptive,
+                          a.fit_max_cell, prov)
 
 
 def main(argv=None):
@@ -207,6 +243,10 @@ def main(argv=None):
     s.add_argument("--seed", type=int, default=A.DEFAULT_SEED)
     s.add_argument("--json", default=None)
     a = ap.parse_args(argv)
+    if a.fit_max_cell > FIT_MAX_CELL:
+        print("refusing: --fit-max-cell above the registered %d"
+              % FIT_MAX_CELL)
+        return 2
     if a.mode == "diag":
         rc, _o = _run(a, 1, a.fit_max_cell, True,
                       "FIT CELLS 1-%d, descriptive only" % a.fit_max_cell)
@@ -214,6 +254,10 @@ def main(argv=None):
     if a.min_cell < CLEAN_MIN_CELL and not a.descriptive:
         print("refusing: cells below %d need --descriptive"
               % CLEAN_MIN_CELL)
+        return 2
+    if not a.descriptive and a.fit_max_cell != FIT_MAX_CELL:
+        print("refusing: clean scoring needs --fit-max-cell %d"
+              % FIT_MAX_CELL)
         return 2
     if a.min_cell <= a.fit_max_cell:
         print("refusing: scored cells overlap the training cells (<= %d)"
