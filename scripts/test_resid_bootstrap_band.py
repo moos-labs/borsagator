@@ -404,7 +404,9 @@ def run_all():
     for fn in (test_constants, test_clusters_quantile, test_fit_q,
                test_score_rows, test_verdict, test_cell_selection,
                test_cli_guards, test_fit_reference_and_report,
-               test_dedup_within_window, test_run_uses_window_dedup):
+               test_dedup_within_window, test_run_uses_window_dedup,
+               test_run_excludes_trained_keys,
+               test_diagnostic_training_window_kept, test_exclude_trained):
         fn()
 
 
