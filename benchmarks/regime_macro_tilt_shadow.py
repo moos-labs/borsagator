@@ -43,9 +43,26 @@ def point_in_time(rows, as_of):
     return max(ok, key=lambda r: (r["observed_date"], r["published_date"]))
 
 
+def usable_decision(d):
+    """A decision is usable only with a finite numeric change_bps (not bool, not NaN/Inf) and a source."""
+    c = d.get("change_bps")
+    if isinstance(c, bool) or not isinstance(c, (int, float)) or not math.isfinite(c):
+        return False
+    return all(isinstance(d.get(k), str) and d.get(k).strip() for k in ("published_date", "source_url", "source_name"))
+
+
+def load_decisions(path):
+    """Return (usable decisions, n_rejected) from a JSON list."""
+    raw = json.load(open(path))
+    ok = [d for d in raw if usable_decision(d)]
+    return ok, len(raw) - len(ok)
+
+
 def regime_from_decisions(decisions, as_of):
-    """decisions: list of dicts {published_date, change_bps}. Regime from the last decision published <= as_of."""
-    ok = [d for d in decisions if d["published_date"] <= as_of]
+    """decisions: list of dicts {published_date, change_bps, source_url, source_name}.
+    Decisions are date-only (release time unknown), so one counts only from the NEXT session:
+    eligible when published_date is strictly before as_of. Unusable decisions are ignored."""
+    ok = [d for d in decisions if usable_decision(d) and d["published_date"] < as_of]
     if not ok:
         return None
     last = max(ok, key=lambda d: d["published_date"])
@@ -76,8 +93,8 @@ def main(argv=None):
     ap.add_argument("--json")
     a = ap.parse_args(argv)
     rows = json.load(open(a.ledger))["forecasts_detail"]
-    decisions = json.load(open(a.decisions)) if a.decisions else []
-    res = {"design": "docs/round78_regime_macro_tilt_design.md", "macro_series": "present" if decisions else "none",
+    decisions, n_rej = load_decisions(a.decisions) if a.decisions else ([], 0)
+    res = {"n_decisions_rejected": n_rej, "design": "docs/round78_regime_macro_tilt_design.md", "macro_series": "present" if decisions else "none",
            "counts": counts(rows, decisions)}
     txt = json.dumps(res, indent=1)
     if a.json:

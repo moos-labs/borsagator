@@ -25,3 +25,6 @@ Cutoffs at offsets -2, -1, 0, +1 (c = +2 leaves no session ahead in the window, 
 
 ## Held back
 Nothing else is proposed. A second event (next 2027 meeting, budget presentation in spring) only after this batch scores clean.
+
+## Round 79 fix: NVDA (CodeRabbit Minor d, verified)
+NVDA is a US ticker, not an EGX ticker, and #749 includes it (cell 76) as a cross-market name. The event windows here are EGX sessions (Sunday to Thursday). 2026-12-20 is an EGX session but Sunday is not a US session, so NVDA's base close for the +1 cutoff is 2026-12-18 (Friday), and the EGX move on Sunday is not in NVDA's data. Treatment proposed: EXCLUDE NVDA from this event-window batch (5 EGX tickers x 4 cutoffs = 20 cells, not 24). Reason: the round-75 bias uses the EGX30 index AAR per EGX session offset, which does not apply to a US series. If the cycle wants the #749 six-name shape, NVDA can run as a non-event control only: it is not counted in any event-window bias count, and its c=-2, -1, 0 cutoffs (2026-12-15, 12-16, 12-17) are US sessions, while the +1 cutoff uses base close 2026-12-18. The cycle decides; nothing is enqueued here. The cell count in the section above is superseded: 20 EGX cells (or 24 with the NVDA control).
