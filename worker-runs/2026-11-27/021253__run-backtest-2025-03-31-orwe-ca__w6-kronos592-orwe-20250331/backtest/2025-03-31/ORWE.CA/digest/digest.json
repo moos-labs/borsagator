@@ -1,0 +1,61 @@
+{
+ "ticker": "ORWE.CA",
+ "date": "2025-03-31",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 26.6589
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "ORWE.CA",
+     "as_of": "2025-03-31",
+     "date": "2025-03-27",
+     "open": 23.2,
+     "high": 23.3,
+     "low": 22.89,
+     "close": 23.3,
+     "rsi_14": 39.8999,
+     "macd": -0.45,
+     "macd_signal": -0.3972,
+     "macd_hist": -0.0527,
+     "ema_20": 23.6976,
+     "ema_50": 24.3698,
+     "ema_200": 24.1765,
+     "adx_14": 24.0178,
+     "bb_upper": 25.0254,
+     "bb_mid": 23.8085,
+     "bb_lower": 22.5916,
+     "bb_pctb": 0.2911,
+     "atr_14": 0.5288,
+     "stoch_k": 24.2048,
+     "stoch_d": 15.0987,
+     "rows_fetched": 6534,
+     "rows_used": 1532,
+     "first_date_used": "2019-01-01",
+     "last_date": "2025-03-27",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 23.299999237060547
+    }
+   }
+  }
+ ]
+}
