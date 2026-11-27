@@ -79,6 +79,40 @@ INDEX_TICKER = {"EGX": "^EGX30", "US": "^GSPC"}
 # 2026-11-26: EGS540S1C014.CA returns 1 bar, close 13.42). The manifest
 # records the same override on the GOUR listing (yahoo_ticker).
 YAHOO_SYMBOL_OVERRIDES = {"GOUR.CA": "EGS540S1C014.CA"}
+# REPAIR-001 (#436, settled 2026-11-27): verified closes for EGX
+# sessions the Yahoo feed carries as null-close bars. 2024-05-01
+# WAS a trading session (EGX30 official record: open 24,448.73,
+# close 25,270.55, +3.36%) — Yahoo returns a null close for it on
+# every EGX ticker, which fail-closes any 21-session realised
+# window containing it (cells 6/7/8/20/21, cutoff 2024-03-28).
+# A repair entry supplies the missing close so the window is
+# scored on its true 21 sessions; it is NOT an excuse (the
+# #884 holiday-excuse premise was wrong and that PR was closed
+# unmerged — the mechanism on ins/improve-044-holiday-excuse
+# must not be revived). Values are RAW closes, matching the
+# Yahoo quote closes the series is built from (fetch_chart uses
+# quote close, never adjclose): COMI's TradingView adjusted
+# 66.37266272 is NOT used. Basis per ticker (REPAIR-001 record):
+# COMI + TMGH press-verified to the cent; HRHO press-verified;
+# SWDY TradingView raw (Mubasher within 0.06%); ETEL tv_only —
+# no independent verification (its Mubasher bar corroborates on
+# the shared EGX feed only). ORWE 17.73 (Mubasher matches TV) is
+# verified but not a v1-grid ticker, so it is recorded on #436,
+# not here. Extending the table is a reviewed change.
+EGX_CLOSE_REPAIRS = {
+    "2024-05-01": {
+        "COMI.CA": {"close": 73.01, "source": "TradingView",
+                    "basis": "raw close; press-verified to the cent"},
+        "ETEL.CA": {"close": 33.00, "source": "TradingView",
+                    "basis": "tv_only — no independent verification"},
+        "TMGH.CA": {"close": 55.060001, "source": "TradingView",
+                    "basis": "raw close; press-verified to the cent"},
+        "SWDY.CA": {"close": 32.50, "source": "TradingView",
+                    "basis": "raw close; Mubasher within 0.06%"},
+        "HRHO.CA": {"close": 15.14, "source": "TradingView",
+                    "basis": "raw close; press-verified"},
+    },
+}
 SESSIONS_NEEDED = ledger.DEFAULT_SESSIONS["month"]  # 21
 # A runner failing on its own minimum-rows floor is a skip, not
 # an error (step-1 observation: pandas-ta/talib enforce 60 inside
@@ -653,6 +687,34 @@ def fetch_realised(ticker, cutoff, fetcher=None):
     dropped_in_window = [d for d in dropped or []
                          if parse_iso(d) is not None
                          and c < parse_iso(d) <= parse_iso(maturity)]
+    # REPAIR-001 (#436): a dropped date inside the window that
+    # carries a verified repair entry for THIS ticker is
+    # re-inserted as a session with its repaired close, so the
+    # 21 sessions are the true ones and the maturity is the
+    # true 21st session (a repair before the old maturity
+    # pulls the maturity one session earlier). A dropped date
+    # with no repair entry for this ticker still blocks, as
+    # does any dropped date left inside the repaired window.
+    repaired = []
+    repairable = [d for d in dropped_in_window
+                  if (EGX_CLOSE_REPAIRS.get(d) or {}).get(
+                      ticker.upper()) is not None]
+    if repairable:
+        for d in repairable:
+            entry = EGX_CLOSE_REPAIRS[d][ticker.upper()]
+            after.append({"date": d, "close": float(entry["close"])})
+            repaired.append({"date": d, "ticker": ticker.upper(),
+                             "close": float(entry["close"]),
+                             "source": entry["source"],
+                             "basis": entry["basis"]})
+        after.sort(key=lambda r: r["date"])
+        sessions = after[:SESSIONS_NEEDED]
+        maturity = sessions[-1]["date"]
+        repaired_dates = {r["date"] for r in repaired}
+        dropped_in_window = [
+            d for d in dropped_in_window
+            if d not in repaired_dates
+            and parse_iso(d) <= parse_iso(maturity)]
     if dropped_in_window:
         return None, (
             "realised: %d session(s) inside the realised window "
@@ -758,7 +820,7 @@ def fetch_realised(ticker, cutoff, fetcher=None):
                 window_actions.append(ev)
             elif ev.get("type") == "split":
                 window_splits.append(ev)
-    return {"ticker": ticker.upper(), "cutoff": cutoff,
+    out = {"ticker": ticker.upper(), "cutoff": cutoff,
             "base_close": base_close, "base_date": base_date,
             "sessions": [{"date": s["date"], "close": s["close"]}
                          for s in sessions],
@@ -769,7 +831,12 @@ def fetch_realised(ticker, cutoff, fetcher=None):
             "index_gap": index_gap,
             "actions": window_actions,
             "splits": window_splits,
-            "fetched_at": date.today().isoformat()}, ""
+            "fetched_at": date.today().isoformat()}
+    if repaired:
+        # Recorded only when used, so every capture without a
+        # repaired close is byte-identical to before.
+        out["repaired_closes"] = repaired
+    return out, ""
 
 
 # --------------------------------------------------------------------------

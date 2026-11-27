@@ -12,15 +12,20 @@ cells 91–97 (2025-11-14 × COMI/ETEL/TMGH/NVDA/SWDY/HRHO and
 2025-08-15 × COMI, the D/E batch) and batch-18 cells 98–102
 (2025-08-15 × ETEL/TMGH/NVDA/SWDY/HRHO, the D/E batch remainder).
 Cell 1 re-scored (r3, COMI.CA 2023-12-29, fixed Kronos pin 6964de99,
-archive a62379f8).
+archive a62379f8). Cells 6, 7, 8, 20, 21 re-scored (REPAIR-001,
+2024-03-31 × COMI/ETEL/TMGH/SWDY/HRHO: the 2024-05-01 close
+repaired from verified TradingView closes in `scripts/backtest.py`
+EGX_CLOSE_REPAIRS, sweep `repair001/`).
 Scorer v2 (`scripts/backtest_score.py`, PR #665 plus the `agg()`
 empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
 `ledger.DEFAULT_SESSIONS`.
 
 ## Coverage
 
-- **91 cells re-scored** (1584 forecasts, all matured):
-  cells 1–47 except the 11 below, plus batch-7 cells 48 (SWDY.CA
+- **96 cells re-scored** (1659 forecasts, all matured):
+  cells 1–47 except the 6 below, plus repair-001 cells 6 (COMI.CA
+  2024-03-31), 7 (ETEL.CA 2024-03-31), 8 (TMGH.CA 2024-03-31),
+  20 (SWDY.CA 2024-03-31) and 21 (HRHO.CA 2024-03-31), plus batch-7 cells 48 (SWDY.CA
   2025-09-30), 49 (HRHO.CA 2025-09-30) and 50 (COMI.CA 2025-12-31),
   batch-8 cells 51 (ETEL.CA 2025-12-31), 52 (TMGH.CA 2025-12-31)
   and 53 (NVDA 2025-12-31), batch-9 cells 54 (SWDY.CA
@@ -48,28 +53,36 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
   2025-08-15), 101 (SWDY.CA 2025-08-15) and 102 (HRHO.CA
   2025-08-15).
   Per-cell files: `cells/cellNN_score_v2.json`.
-- **5 cells still v1-scored, NOT in this grid** — the 21-session realised
-  window is unbuildable from the feed: cells 6, 7, 8, 20, 21 fail closed
-  because 2024-05-01 has no usable close inside the window (the v1
-  14-session windows ended before it). They stay on their v1 scores
-  (month at 14 sessions) until the feed yields that session or the
-  harness rule changes — no workaround was applied.
+- **Cells 6, 7, 8, 20, 21 RESOLVED by REPAIR-001** — they were
+  v1-scored only (month at 14 sessions) because the 21-session
+  realised window fail-closed on 2024-05-01, which has no usable
+  Yahoo close. 2024-05-01 was a trading session, so the harness
+  now repairs the close from verified TradingView closes
+  (`EGX_CLOSE_REPAIRS` in `scripts/backtest.py`: COMI 73.01,
+  ETEL 33.00, TMGH 55.060001, SWDY 32.50, HRHO 15.14; raw closes,
+  basis per ticker). The five cells are now in the grid at month
+  = 21 sessions (maturity 2024-05-08); their day/week rows are
+  identical to the v1 scoring except `sessions_available` 14 → 21.
+  The repair cells alone: ensemble month MAE 0.23 / 8.40 / 59.13 /
+  16.17 / 19.71 pp (cells 6/7/8/20/21) — cell 8 (TMGH.CA) is a
+  genuine forecast miss, not a scoring artifact: the ensemble
+  expected −57.75% (Kronos −79.25%) against a realised +1.38%.
 - **6 cells have no captures at all** (gate-skipped worker runs, never
   scored): cells 3 (ORAS.CA 2023-12-29, stale-flat), 10, 11, 12, 22, 23
   (whole 2024-06-30 cutoff — the 2024-07-01 gap).
 
-## Headline (91 cells, month = 21)
+## Headline (96 cells, month = 21)
 
 | Entrant | Day MAE / RangeSkill | Week MAE / RangeSkill | Month MAE / RangeSkill |
 |---|---|---|---|
-| 2-family-ensemble | 2.46 / −0.115 | 5.67 / −0.707 | 12.52 / −0.688 |
-| kronos-alone | 2.87 / −0.368 | 8.22 / −2.323 | 20.85 / −3.815 |
-| family-technicals | 2.12 / −0.028 | 4.03 / −0.020 | 8.49 / −0.025 |
-| naive-range (gate) | 2.04 / 0.000 | 3.98 / 0.000 | 8.43 / 0.000 |
+| 2-family-ensemble | 2.55 / −0.101 | 5.58 / −0.655 | 12.95 / −0.704 |
+| kronos-alone | 2.93 / −0.336 | 8.06 / −2.169 | 21.12 / −3.815 |
+| family-technicals | 2.23 / −0.029 | 4.02 / −0.004 | 8.45 / −0.011 |
+| naive-range (gate) | 2.13 / 0.000 | 3.94 / 0.000 | 8.37 / 0.000 |
 
-Flat zero-move (buy-and-hold) MAE: 2.04 / 3.98 / 8.43. The ensemble
-fails the RangeSkill gate at every horizon; Kronos month MAE 20.85 pp
-vs zero-move 8.43 pp, direction hit 37.4%. The batch-7 cells alone:
+Flat zero-move (buy-and-hold) MAE: 2.13 / 3.94 / 8.37. The ensemble
+fails the RangeSkill gate at every horizon; Kronos month MAE 21.12 pp
+vs zero-move 8.37 pp, direction hit 36.5%. The batch-7 cells alone:
 ensemble month MAE 2.65 / 5.08 / 29.13 pp (cells 48/49/50), RangeSkill
 +0.064 / +0.061 / −0.026 — the first two cells beat the naive range
 on intervals; cell 50 (COMI +29.13% realised month) covers 0.000.
