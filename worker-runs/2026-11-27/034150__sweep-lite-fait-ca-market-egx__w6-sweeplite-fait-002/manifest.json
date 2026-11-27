@@ -1,0 +1,93 @@
+{
+ "job": {
+  "id": "w6-sweeplite-fait-002",
+  "job": "sweep-lite FAIT.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:37:32.036373+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-fait-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:37:32.036373+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "FAIT"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['FAIT']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:41:45.610704+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+  "model": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002/report-model.json",
+  "model_sha256": "87322e3a73a4dedfcad6a26d7be0f6dd2809b57124158045dfc8441351515bc7",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/FAIT.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/FAIT.CA.json",
+   "sharia-row-missing: AAOIFI FAIT.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 FAIT.CA",
+   "sharia-row-missing: FTSE FAIT.CA",
+   "sharia-row-missing: ISLAMICLY FAIT.CA",
+   "sharia-row-missing: MSCI FAIT.CA",
+   "sharia-row-missing: MSCI_M FAIT.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "a62379f808d07cd46f9bcc880ee4178389da3e40",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 130301,
+    "sha256": "4d9c4127f8647c08a765212528289145e2e51f62455ebb9dbd4fad82b74c56ca"
+   },
+   {
+    "path": "report.md",
+    "bytes": 27847,
+    "sha256": "87f63444c5861e44aa1dc52d4b0ff427c1527ed76958adb3e14a4f57f2423189"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "FAIT.CA"
+ }
+}

@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 47.48,
+ "base_source": "egx-data/egxpy_fait.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T03:41:45.966453+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -3.57,
+   "families": {
+    "price-forecast": -0.911
+   },
+   "horizon_short": false,
+   "net_score": -0.911,
+   "range_high_pct": -2.52,
+   "range_low_pct": -4.8,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -6.66,
+   "families": {
+    "price-forecast": -0.371
+   },
+   "horizon_short": false,
+   "net_score": -0.371,
+   "range_high_pct": -5.21,
+   "range_low_pct": -8.27,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "down",
+   "expected_move_pct": -3.28,
+   "families": {
+    "price-forecast": -0.374
+   },
+   "horizon_short": false,
+   "net_score": -0.374,
+   "range_high_pct": -2.2,
+   "range_low_pct": -4.88,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "e3cac763fad1bc1b54c3f3c07d7d3c72be608eef819ffddc89afea46e0562cb3",
+  "digest.json": "ef9568d856f1d7b864766e121692716490cb00970546d0414d2119d7452b881c",
+  "ensemble.json": "ef7312df1bd2990584e9e7f2e7bac969b106c287b7586f6590888d2f676d6a67"
+ },
+ "kronos_first_row_date": "2026-11-25",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.45,
+  "level": "elevated",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.662,
+ "sigma_daily": 0.0196,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002",
+ "ticker": "FAIT.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

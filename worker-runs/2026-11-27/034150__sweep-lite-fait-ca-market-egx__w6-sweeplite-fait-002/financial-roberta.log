@@ -1,0 +1,8 @@
+headlines: 10 English scored-input, 0 Arabic skipped, window 30d, ticker FAIT.CA
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model: soleimanian/financial-roberta-large-sentiment
+id2label: {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 393/393 [00:00<00:00, 9230.64it/s]
+Scored 10 texts | counts={'neutral': 2, 'positive': 6, 'negative': 2} | means=positive=0.5591, negative=0.1911, neutral=0.2498

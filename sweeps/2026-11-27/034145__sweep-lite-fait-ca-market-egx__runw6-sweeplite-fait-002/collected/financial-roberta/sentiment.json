@@ -1,0 +1,172 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 10,
+  "label_counts": {
+    "positive": 6,
+    "negative": 2,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.5591396730276756,
+    "negative": 0.19109121165965917,
+    "neutral": 0.24976913415594026
+  },
+  "items": [
+    {
+      "text": "Kedjevara - Ça Fait Mal (Mp3 Download) - TrendyHipHop",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006378759862855077,
+        "negative": 0.00038122295518405735,
+        "neutral": 0.9989809393882751
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989809393882751,
+        "positive": 0.0006378759862855077,
+        "negative": 0.00038122295518405735
+      }
+    },
+    {
+      "text": "Dylan Larkin's agent breaks down trade between Canadiens, Red Wings - Sportsnet.ca",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0005292701534926891,
+        "negative": 0.0002740046475082636,
+        "neutral": 0.9991968274116516
+      },
+      "raw_probabilities": {
+        "neutral": 0.9991968274116516,
+        "positive": 0.0005292701534926891,
+        "negative": 0.0002740046475082636
+      }
+    },
+    {
+      "text": "La conjointe de PSPP publie une rare photo de famille et ça fait grandement réagir - Monde de Stars",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.7734031081199646,
+        "negative": 0.00038715373375453055,
+        "neutral": 0.22620968520641327
+      },
+      "raw_probabilities": {
+        "positive": 0.7734031081199646,
+        "neutral": 0.22620968520641327,
+        "negative": 0.00038715373375453055
+      }
+    },
+    {
+      "text": "California sues OpenAI over safety concerns after rogue agent hacking - The Guardian",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0008882368565537035,
+        "negative": 0.9951867461204529,
+        "neutral": 0.0039250729605555534
+      },
+      "raw_probabilities": {
+        "negative": 0.9951867461204529,
+        "neutral": 0.0039250729605555534,
+        "positive": 0.0008882368565537035
+      }
+    },
+    {
+      "text": "Team Canada wins silver at IIHF Women’s World Championship - Canadian Olympic Committee",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9975511431694031,
+        "negative": 0.0007605439750477672,
+        "neutral": 0.0016883386997506022
+      },
+      "raw_probabilities": {
+        "positive": 0.9975511431694031,
+        "neutral": 0.0016883386997506022,
+        "negative": 0.0007605439750477672
+      }
+    },
+    {
+      "text": "Gilonne Guigonnat : « je suis vraiment contente, ça a payé donc c'est cool ! » - ski-nordique.net",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9749828577041626,
+        "negative": 0.0001878337498055771,
+        "neutral": 0.024829378351569176
+      },
+      "raw_probabilities": {
+        "positive": 0.9749828577041626,
+        "neutral": 0.024829378351569176,
+        "negative": 0.0001878337498055771
+      }
+    },
+    {
+      "text": "What the Jensen Huang scandal means for Trump and his administration - CBC",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.0005675602587871253,
+        "negative": 0.9129884243011475,
+        "neutral": 0.08644402027130127
+      },
+      "raw_probabilities": {
+        "negative": 0.9129884243011475,
+        "neutral": 0.08644402027130127,
+        "positive": 0.0005675602587871253
+      }
+    },
+    {
+      "text": "Culture minister insists Canada will eventually force streaming giants to pay fair share for CanCon - CTV News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9813273549079895,
+        "negative": 0.0002358310593990609,
+        "neutral": 0.018436813727021217
+      },
+      "raw_probabilities": {
+        "positive": 0.9813273549079895,
+        "neutral": 0.018436813727021217,
+        "negative": 0.0002358310593990609
+      }
+    },
+    {
+      "text": "Kamik relaunches back to its roots: Canada's original Bad Weather Boot company - PR Newswire Canada",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9911148548126221,
+        "negative": 0.000278366613201797,
+        "neutral": 0.008606759831309319
+      },
+      "raw_probabilities": {
+        "positive": 0.9911148548126221,
+        "neutral": 0.008606759831309319,
+        "negative": 0.000278366613201797
+      }
+    },
+    {
+      "text": "Ottawa wants us all to have emergency supplies for 3 days. The good news is, that number hasn't changed - CBC",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.8703944683074951,
+        "negative": 0.00023198944109026343,
+        "neutral": 0.12937350571155548
+      },
+      "raw_probabilities": {
+        "positive": 0.8703944683074951,
+        "neutral": 0.12937350571155548,
+        "negative": 0.00023198944109026343
+      }
+    }
+  ]
+}

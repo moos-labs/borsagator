@@ -1,0 +1,42 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "FAIT.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "FAIT.CA",
+    "fetched_at": "2026-11-27T03:41:44Z",
+    "tool": "news-disclosure",
+    "news_count": 14,
+    "disclosure_count": 0,
+    "arabic_headlines": 8,
+    "latest_news_date": "Thu, 26 Nov 2026 20:17:03 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "بالفيديو.. غويري يسجل مجددا ويمنح مارسيليا انتصارا ثمينا - Awras",
+    "llm_provider": "cohere",
+    "finbert_positive": 0.137,
+    "finbert_negative": 0.121,
+    "finbert_neutral": 0.742,
+    "finbert_scored": 6,
+    "multilingual_positive": 0.271,
+    "multilingual_negative": 0.445,
+    "multilingual_neutral": 0.284,
+    "multilingual_scored": 8,
+    "bodies_fetched": 10,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere",
+    "translated_positive": 0.204,
+    "translated_negative": 0.25,
+    "translated_neutral": 0.545,
+    "translated_scored": 8
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

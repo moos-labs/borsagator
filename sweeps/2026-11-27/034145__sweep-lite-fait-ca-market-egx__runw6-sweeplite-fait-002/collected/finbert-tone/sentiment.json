@@ -1,0 +1,277 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 10,
+  "label_counts": {
+    "positive": 1,
+    "negative": 1,
+    "neutral": 8
+  },
+  "label_counts_raw": {
+    "neutral": 8,
+    "negative": 1,
+    "positive": 1
+  },
+  "mean_probabilities": {
+    "positive": 0.1000883728510928,
+    "negative": 0.10677316444968028,
+    "neutral": 0.7931384588071524
+  },
+  "items": [
+    {
+      "text": "Kedjevara - Ça Fait Mal (Mp3 Download) - TrendyHipHop",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.368114554788917e-06,
+        "negative": 0.0001304953038925305,
+        "neutral": 0.9998631477355957
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998631477355957
+        },
+        {
+          "label": "Negative",
+          "score": 0.0001304953038925305
+        },
+        {
+          "label": "Positive",
+          "score": 6.368114554788917e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Dylan Larkin's agent breaks down trade between Canadiens, Red Wings - Sportsnet.ca",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 5.681184802597272e-07,
+        "negative": 2.2566382540389895e-05,
+        "neutral": 0.9999768733978271
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999768733978271
+        },
+        {
+          "label": "Negative",
+          "score": 2.2566382540389895e-05
+        },
+        {
+          "label": "Positive",
+          "score": 5.681184802597272e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "La conjointe de PSPP publie une rare photo de famille et ça fait grandement réagir - Monde de Stars",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.538315228179272e-07,
+        "negative": 8.963524123828392e-06,
+        "neutral": 0.9999902248382568
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999902248382568
+        },
+        {
+          "label": "Negative",
+          "score": 8.963524123828392e-06
+        },
+        {
+          "label": "Positive",
+          "score": 8.538315228179272e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "California sues OpenAI over safety concerns after rogue agent hacking - The Guardian",
+      "predicted": "negative",
+      "predicted_raw_label": "Negative",
+      "probabilities": {
+        "positive": 1.781070022843778e-05,
+        "negative": 0.997998058795929,
+        "neutral": 0.0019841447938233614
+      },
+      "raw_scores": [
+        {
+          "label": "Negative",
+          "score": 0.997998058795929
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0019841447938233614
+        },
+        {
+          "label": "Positive",
+          "score": 1.781070022843778e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Team Canada wins silver at IIHF Women’s World Championship - Canadian Olympic Committee",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999525547027588,
+        "negative": 2.0395748379087308e-07,
+        "neutral": 4.720612560049631e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999525547027588
+        },
+        {
+          "label": "Neutral",
+          "score": 4.720612560049631e-05
+        },
+        {
+          "label": "Negative",
+          "score": 2.0395748379087308e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Gilonne Guigonnat : « je suis vraiment contente, ça a payé donc c'est cool ! » - ski-nordique.net",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.4486828351655276e-06,
+        "negative": 9.78416865109466e-05,
+        "neutral": 0.9998996257781982
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998996257781982
+        },
+        {
+          "label": "Negative",
+          "score": 9.78416865109466e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.4486828351655276e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What the Jensen Huang scandal means for Trump and his administration - CBC",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.4282390111475252e-05,
+        "negative": 0.06606243550777435,
+        "neutral": 0.9339233636856079
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9339233636856079
+        },
+        {
+          "label": "Negative",
+          "score": 0.06606243550777435
+        },
+        {
+          "label": "Positive",
+          "score": 1.4282390111475252e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Culture minister insists Canada will eventually force streaming giants to pay fair share for CanCon - CTV News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.45007151736354e-06,
+        "negative": 3.431461300351657e-05,
+        "neutral": 0.9999622106552124
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999622106552124
+        },
+        {
+          "label": "Negative",
+          "score": 3.431461300351657e-05
+        },
+        {
+          "label": "Positive",
+          "score": 3.45007151736354e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Kamik relaunches back to its roots: Canada's original Bad Weather Boot company - PR Newswire Canada",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.00011506007285788655,
+        "negative": 2.537739055696875e-05,
+        "neutral": 0.9998595714569092
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998595714569092
+        },
+        {
+          "label": "Positive",
+          "score": 0.00011506007285788655
+        },
+        {
+          "label": "Negative",
+          "score": 2.537739055696875e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Ottawa wants us all to have emergency supplies for 3 days. The good news is, that number hasn't changed - CBC",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0007703318260610104,
+        "negative": 0.003351387334987521,
+        "neutral": 0.9958782196044922
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9958782196044922
+        },
+        {
+          "label": "Negative",
+          "score": 0.003351387334987521
+        },
+        {
+          "label": "Positive",
+          "score": 0.0007703318260610104
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
