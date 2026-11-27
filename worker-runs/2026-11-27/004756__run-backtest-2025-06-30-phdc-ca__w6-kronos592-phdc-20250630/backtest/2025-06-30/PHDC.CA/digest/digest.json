@@ -1,0 +1,61 @@
+{
+ "ticker": "PHDC.CA",
+ "date": "2025-06-30",
+ "job": "walkforward-backtest",
+ "corporate_actions": [],
+ "results": [
+  {
+   "tool": "kronos",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "forecast.csv_last_close": 6.0037
+    }
+   }
+  },
+  {
+   "tool": "pandas-ta",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "ticker": "PHDC.CA",
+     "as_of": "2025-06-30",
+     "date": "2025-06-30",
+     "open": 9.03,
+     "high": 9.25,
+     "low": 8.92,
+     "close": 9.0,
+     "rsi_14": 72.4249,
+     "macd": 0.4014,
+     "macd_signal": 0.3217,
+     "macd_hist": 0.0797,
+     "ema_20": 8.1818,
+     "ema_50": 7.6269,
+     "ema_200": 6.5022,
+     "adx_14": 26.9244,
+     "bb_upper": 9.0785,
+     "bb_mid": 8.206,
+     "bb_lower": 7.3335,
+     "bb_pctb": 0.955,
+     "atr_14": 0.3588,
+     "stoch_k": 84.5068,
+     "stoch_d": 82.2627,
+     "rows_fetched": 4590,
+     "rows_used": 1587,
+     "first_date_used": "2019-01-01",
+     "last_date": "2025-06-30",
+     "drop_before": "2019-01-01"
+    }
+   }
+  },
+  {
+   "tool": "talib",
+   "status": "ok",
+   "summary": {
+    "metrics": {
+     "close": 9.0
+    }
+   }
+  }
+ ]
+}
