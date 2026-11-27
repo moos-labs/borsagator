@@ -65,7 +65,9 @@ def is_after_close(e, rule):
     return False
 
 
-def study(series, events, split=SPLIT, rule="before"):
+def event_abnormals(series, events, rule="before"):
+    """Per event: dict(event, s0, ab) with ab = {offset: abnormal log return} or None when skipped.
+    s0 indexes the return-date list (dates of series[1:])."""
     rets = log_returns(series)          # index i of rets = return on session dates_r[i]
     dates = [d for d, _ in rets]
     r = [x for _, x in rets]
@@ -75,19 +77,27 @@ def study(series, events, split=SPLIT, rule="before"):
     for i in idx:
         if i is not None:
             blocked.update(range(i - 2, i + 3))
+    out = []
+    for e, i in zip(events, idx):
+        ab = None
+        if not (i is None or i + 2 >= len(r) or i + EST_LO < 0):
+            est = [r[j] for j in range(i + EST_LO, i + EST_HI + 1) if j not in blocked]
+            if len(est) >= MIN_EST:
+                mu = sum(est) / len(est)
+                ab = {o: r[i + o] - mu for o in OFFSETS}
+        out.append({"event": e, "s0": i, "ab": ab})
+    return out
+
+
+def study(series, events, split=SPLIT, rule="before"):
     cars = {}
     skipped = {}
-    for e, i in zip(events, idx):
+    for x in event_abnormals(series, events, rule):
+        e, ab = x["event"], x["ab"]
         key = (e["type"], "post" if e["date"] >= split else "pre")
-        if i is None or i + 2 >= len(r) or i + EST_LO < 0:
+        if ab is None:
             skipped[key] = skipped.get(key, 0) + 1
             continue
-        est = [r[j] for j in range(i + EST_LO, i + EST_HI + 1) if j not in blocked]
-        if len(est) < MIN_EST:
-            skipped[key] = skipped.get(key, 0) + 1
-            continue
-        mu = sum(est) / len(est)
-        ab = {o: r[i + o] - mu for o in OFFSETS}
         cars.setdefault(key, []).append((e["date"], ab, sum(ab.values())))
     out = {}
     for key in sorted(set(cars) | set(skipped)):
