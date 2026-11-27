@@ -160,11 +160,16 @@ def render(res, n_caps):
                     _f(a["wild"]["ci"][0]), _f(a["wild"]["ci"][1]),
                     _f(a["signflip"]["p_one_sided"]),
                     a["signflip"]["mode"], _yn(a["signflip"]["pass"])))
-        L.append("  note: with %d clusters the smallest attainable "
-                 "sign-flip p is %s, so the sign-flip < 0.025 leg is "
-                 "%s" % (c["cutoffs"], _f(c["ci_audit"]["signflip"][
-                     "min_p"], 4), "unattainable" if c["ci_audit"][
-                         "signflip"]["min_p"] >= 0.025 else "attainable"))
+        mp = c["ci_audit"]["signflip"]["min_p"]
+        if mp is None:
+            L.append("  note: no matured rows at this horizon, so the "
+                     "sign-flip minimum p is unavailable")
+        else:
+            L.append("  note: with %d clusters the smallest attainable "
+                     "sign-flip p is %s, so the sign-flip < 0.025 leg is "
+                     "%s" % (c["cutoffs"], _f(mp, 4),
+                             "unattainable" if mp >= 0.025
+                             else "attainable"))
         L.append("  per-cutoff skill: " + ", ".join(
             "%s %s" % (o["as_of"], _f(o["range_skill"]))
             for o in c["per_cutoff_skill"]))
