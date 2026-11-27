@@ -2,7 +2,7 @@
 
 Status: PRE-REGISTERED on merge. Nothing is run on the test events before this document lands. The test runs only after the merge. Changing anything below afterwards is a new pre-registration, not a silent edit.
 
-Provenance: the draft text in section 3 is carried exactly as posted in Slack C0C8EBZEF9U thread 1795747836.364159 (message 1795750716.748409, 2026-11-27 05:38 Cairo, from the research agent). The decisions in section 2 are from Moos's message 1795751043.400629 and the rulings 1795751376.652329 and 1795751382.221509 in the same thread, all of which I read in the channel. The instruction to write this PR was relayed by the main agent, not read.
+Provenance: the draft text in section 3 is carried exactly as posted in Slack C0C8EBZEF9U thread 1795747836.364159 (message 1795750716.748409, 2026-11-27 05:38 Cairo, from the research agent). The decisions in section 2 are from Moos's message 1795751043.400629 and the rulings 1795751376.652329 and 1795751862.953629 in the same thread, all of which I read in the channel. Moos reviewed and decided round 27 as the loop's reviewer. The instruction to write this PR was relayed by the main agent, not read.
 
 ## 1. Scope
 
@@ -10,11 +10,11 @@ One hypothesis, one horizon (21 sessions), one test. Descriptive screen results 
 
 ## 2. Decisions on the draft (Moos, 1795751043.400629)
 
-1. 2024+ events are clear of verdict cells and the ledger: CONFIRMED. The backtest grid ends 2023-12-26 and the forward ledger starts 2026-11-27 (the #864 registration date), so the test events (2024-01 to 2026-10) fall in the gap.
+1. Clearance of the test events against verdict cells and the ledger. The forward ledger starts 2026-11-27 (the #864 registration date), so ledger-period announcements do not enter. The backtest grid is not a blanket gap: the backtest realised windows hold 2024 cutoffs (for example 31 March 2024, COMI and ETEL, in round H), so 2024+ events are NOT automatically clear of verdict cells. Clearance is checked per event, see item 5 (Moos, 1795751862.953629).
 2. The 1% round-trip cost assumption is accepted. The gap is reported before and after the cost.
 3. Run now at about 82 events. Power is low (a true 4% gap detected roughly 1 time in 5 or 6) and INCONCLUSIVE is a valid outcome, not a failure.
 4. The draft is accepted with the period-instability caveat carried as written.
-5. Amendment rulings (1795751376.652329, corrected by 1795751382.221509, which says Muhammad decided round 27 himself at about 05:43 and supersedes Moos's own decision-1 flag): the four clarifications in section 4 (verdict rule, cost application, event rule, section 5 fix) are added before merge. The verbatim text in section 3 is untouched.
+5. Amendment rulings (1795751376.652329 and 1795751862.953629): the clarifications in section 4 are added before merge, and the verbatim text in section 3 is untouched. A per-event clearance check against the backtest realised windows and the ledger rows is required before the test runs. Events overlapping a verdict-cell window are excluded and reported under C5. The check uses event dates and cell windows only, no returns, and it fixes the final event list without changing the design.
 
 ## 3. Registered text (verbatim from the draft as posted)
 
@@ -48,7 +48,9 @@ C3. How the 1% cost is applied (Moos, same message). The 1% round-trip cost is s
 
 C4. Event rule extended to interim and annual results (Moos, same message, approved). Test events are interim AND annual results, found with the extended parser: the interim "Reports 3/6/9 Months" format, the annual "Reports Year Ended" format, and the newer 2025-26 "Reports its Financial Results" format. A bare release without figures is not an event, and a bare release counts only once its PDF figures are parsed. The primary test is on the POOLED set (interim plus annual). Interim-only and annual-only splits are reported as secondary rows. Everything else in section 3 (dates from 2024-01-01, sign-only surprise, entry, exclusions, statistic, cost) applies unchanged to the pooled set. The "about 82 events" and the power note in section 3 describe the interim-only set. The pooled event count and power come from the extended count, which uses no returns or outcome data, and are not tuned. Count (research agent round 28b, 1795751253.202149, announcements 2024-01-01 to 2026-10-15): 195 events, 40 tickers, 99 annual and 96 interim, 143 profit-up and 52 profit-down. Power (round 28c, 1795751423.418979, normal-approximation arithmetic with assumptions from the screen, not a simulation; it corrects the rougher round 28b figure): se about 1.9% to 2.2% on the pooled set, so a one-sided 5% test needs a gap above about 3.2% to 3.7%. Pooled power by true gap: 0.7% about 9-10%, 2% about 23-27%, 3.5% about 47-56%, 4% about 56-66%. Interim-only or annual-only (about 97 events each, se about 2.75%): 0.7% about 8%, 2% about 18%, 3.5% about 35%, 4% about 42%. Both sources must pass, so joint power is lower; it was not simulated. Events whose 21-session window is incomplete on the day of the run are exclusions under C1. The run-now decision in section 2 stands.
 
-C5. Final count. The final event count and every exclusion are reported with the result.
+C5. Final count. The final event count and every exclusion are reported with the result. Events excluded by the clearance check of section 2 item 5 are listed there.
+
+C6. Final eligible announcement date (Moos, 1795751862.953629, answering the CodeRabbit finding on the upper bound). Only announcements dated 2024-01-01 to 2026-10-15 inclusive enter the test. Announcements after 2026-10-15 do not enter, which matches the 195-event count and keeps the event set fixed. Ledger-period announcements (after 2026-11-27) do not enter.
 
 ## 5. Cycle item (queued, not part of this registration)
 
