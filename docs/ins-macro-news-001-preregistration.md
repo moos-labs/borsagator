@@ -2,7 +2,7 @@
 
 Status: PRE-REGISTERED on merge. Nothing in this document is built. Every parameter in section 6 is frozen once this PR merges; changing any of them afterwards is a new pre-registration, not a silent edit (Amendment-2 Ruling 3). No parameter below was tuned on outcomes; the sources are design reasoning and measured envelope throughput, not backtest results.
 
-Provenance: Muhammad's directive (Slack C0C8EBZEF9U 1795737479.937289); design-note rulings (1795738518.965959); Amendment 1 (1795739343.851709); Amendment-1 rulings (1795739893.604769); Amendment 2 (1795739820.979279); Amendment-2 rulings (1795740749.670199). Design note and amendments delivered by email (Gmail 1a21a526305a615f, 1a21a6bb885d2ce0, 1a21a725229997dd). Panel consultation per INS-PANEL-001 at each step; theme names verified against the official GDELT GKG theme lookup (data.gdeltproject.org, 59,315 themes); ticker universe verified against evaluation/gdelt_alias_table.csv (38 tickers, 97 alias rows).
+Provenance: Muhammad's directive (Slack C0C8EBZEF9U 1795737479.937289); design-note rulings (1795738518.965959); Amendment 1 (1795739343.851709); Amendment-1 rulings (1795739893.604769); Amendment 2 (1795739820.979279); Amendment-2 rulings (1795740749.670199). Design note and amendments delivered by email (Gmail 1a21a5283641f8c9, 1a21a6bc92911ea1, 1a21a72626d3ce7d). Panel consultation per INS-PANEL-001 at each step; theme names verified against the official GDELT GKG theme lookup (data.gdeltproject.org, 59,315 themes); ticker universe verified against evaluation/gdelt_alias_table.csv (38 tickers, 97 alias rows).
 
 ## 1. Scope
 
