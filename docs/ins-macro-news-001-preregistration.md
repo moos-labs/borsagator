@@ -38,7 +38,7 @@ The dictionary learner (Amendment-1 ruling: Lightning's bitmask dictionary, 4096
 3. theme_spike: the dominant theme family's daily volume z-score vs its trailing 30-day mean/std exceeds 2. Source: composition line; design note stage 2.
 4. tone_negative: the instance's mean tone falls in bucket T1 or T2 (mean tone <= -1). Source: this document (completes the bitmask).
 5. tone_positive: the instance's mean tone falls in bucket T4 or T5 (mean tone >= +1). Source: this document.
-6. count_spike: the instance's (theme-family, tone-bucket) group count z-score vs its trailing 30-day mean/std exceeds 2. Aggregation, specified by this document: an instance built from several (theme-family, tone-bucket) groups takes the MAXIMUM of its member groups' z-scores, so count_spike is set when any member group spikes; a singleton has one group. Source: composition line ("z-spike flag") + this document's aggregation rule.
+6. count_spike: the instance's (theme-family, tone-bucket) group count z-score vs its trailing 30-day mean/std exceeds 2. Aggregation, specified by this document: an instance built from several (theme-family, tone-bucket) groups takes the MAXIMUM of its member groups' z-scores, so count_spike is set when any member group spikes; a singleton has one group. Undefined member z-scores (for example too little trailing history) are skipped in the MAXIMUM; if a defined member exceeds 2 the signal is set even when another member is undefined; if ALL member scores are undefined, count_spike is not set (no evidence of a spike). These undefined-score rules are specified by this document. Source: composition line ("z-spike flag") + this document's aggregation rule.
 7. llm_anomaly: the stage-3 LLM flagged at least one of the instance's source rows as anomalous (|z| > 2 tail routing). Source: composition line; design note stage 3.
 8. llm_severity_high: the LLM severity score on flagged rows in the instance is >= 4 (of 1-5). Source: this document; design note stage 3 output schema.
 9. geo_core: the instance's source rows carry a V2Locations hit in the core geo set (Egypt, Suez, Red Sea). Source: this document; design note stage 1.
@@ -68,7 +68,7 @@ Stage 4, clustering:
 
 Stage 5, bag instance:
 - Fields: centroid (384-d: the mean of the cluster's unit-length group vectors, re-normalized to unit L2 norm; the re-normalization is specified by this document, as in Stage 3) + count (articles in the instance) + mean tone (mean of the GDELT tone field over the instance's rows) + 38-dim alias one-hot (one bit per ticker in evaluation/gdelt_alias_table.csv). ~424 dims total. Source: Amendment-2 ruling 2, verbatim field list.
-- Daily bag size: ~120 instances expected (~108 KB/day; 30-day walk-forward bag ~3,600 instances, ~3.2 MB at 108 KB/day; whole backtest under 50 MB). Expected size, not a cap.
+- Daily bag size: ~120 instances/day x ~424 dims expected (30-day walk-forward bag ~3,600 instances). The storage dtype is set at implementation, and the real size is measured and reported; no byte figure and no dtype is frozen here (specified by this document). Expected size, not a cap.
 
 ## 5. Theme-family list (verified against the official GDELT lookup)
 
