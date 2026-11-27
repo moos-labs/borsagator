@@ -4,26 +4,26 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "dc41ae4600b6f0af3dbae5c1447d7c7c0190aa48",
-  "commit_sha": "dc41ae4600b6f0af3dbae5c1447d7c7c0190aa48",
+  "tree_sha": "f2344788862c490292a632ba68e99e0089cf2b83",
+  "commit_sha": "f2344788862c490292a632ba68e99e0089cf2b83",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 116,
-  "sweeps_with_freeze": 72,
-  "entrant_rows": 1254,
-  "matured": 216,
-  "pending": 984,
+  "sweeps": 119,
+  "sweeps_with_freeze": 75,
+  "entrant_rows": 1302,
+  "matured": 231,
+  "pending": 1017,
   "invalid": 54,
   "excluded_flagged": 0
  },
  "by_entrant": {
   "ensemble": {
    "day": {
-    "n": 45,
-    "hit_rate": 0.156,
-    "mean_abs_error_pp": 6.4,
-    "range_coverage": 0.711
+    "n": 48,
+    "hit_rate": 0.167,
+    "mean_abs_error_pp": 6.08,
+    "range_coverage": 0.729
    },
    "week": {
     "n": 15,
@@ -40,10 +40,10 @@
   },
   "buy-and-hold": {
    "day": {
-    "n": 31,
-    "hit_rate": 0.387,
-    "mean_abs_error_pp": 1.92,
-    "range_coverage": 0.871
+    "n": 34,
+    "hit_rate": 0.412,
+    "mean_abs_error_pp": 1.81,
+    "range_coverage": 0.882
    },
    "week": {
     "n": 6,
@@ -80,9 +80,9 @@
   },
   "family-fundamentals": {
    "day": {
-    "n": 30,
-    "hit_rate": 0.333,
-    "mean_abs_error_pp": 2.28,
+    "n": 33,
+    "hit_rate": 0.364,
+    "mean_abs_error_pp": 2.09,
     "range_coverage": 1.0
    },
    "week": {
@@ -100,10 +100,10 @@
   },
   "family-price-forecast": {
    "day": {
-    "n": 30,
-    "hit_rate": 0.2,
-    "mean_abs_error_pp": 4.72,
-    "range_coverage": 0.767
+    "n": 33,
+    "hit_rate": 0.212,
+    "mean_abs_error_pp": 4.42,
+    "range_coverage": 0.788
    },
    "week": {
     "n": 6,
@@ -140,9 +140,9 @@
   },
   "family-technicals": {
    "day": {
-    "n": 30,
-    "hit_rate": 0.367,
-    "mean_abs_error_pp": 2.36,
+    "n": 33,
+    "hit_rate": 0.394,
+    "mean_abs_error_pp": 2.21,
     "range_coverage": 1.0
    },
    "week": {
@@ -160,10 +160,10 @@
   },
   "kronos-alone": {
    "day": {
-    "n": 30,
-    "hit_rate": 0.2,
-    "mean_abs_error_pp": 5.26,
-    "range_coverage": 0.367
+    "n": 33,
+    "hit_rate": 0.212,
+    "mean_abs_error_pp": 4.91,
+    "range_coverage": 0.394
    },
    "week": {
     "n": 6,
@@ -17465,8 +17465,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:33:12.070498+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 23.6,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.85,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 0.85,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17486,7 +17497,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:33:12.070498+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17506,7 +17517,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:33:12.070498+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17527,8 +17538,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:33:12.058643+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 23.6,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.85,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 0.13,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.4
+   },
+   "net_skill": 0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17550,7 +17574,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:33:12.058643+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17572,7 +17596,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:33:12.058643+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17593,8 +17617,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:33:12.057692+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 23.6,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.85,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 0.75,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.016
+   },
+   "net_skill": 0.016,
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17616,7 +17653,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:33:12.057692+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17638,7 +17675,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:33:12.057692+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17659,8 +17696,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:33:12.058067+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 23.6,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.85,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 1.39,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3
+   },
+   "net_skill": -0.3,
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17682,7 +17732,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:33:12.058067+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17704,7 +17754,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:33:12.058067+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17725,8 +17775,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:33:12.059048+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 23.6,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.85,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 0.74,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.016
+   },
+   "net_skill": 0.016,
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17748,7 +17811,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:33:12.059048+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OCDI.CA",
@@ -17770,7 +17833,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:33:12.059048+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17789,8 +17852,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:40:23.659648+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 20.29,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.44,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.44,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17810,7 +17884,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:40:23.659648+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17830,7 +17904,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:40:23.659648+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17851,8 +17925,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:40:23.649848+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 20.29,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.44,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.57,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": -0.15
+   },
+   "net_skill": -0.15,
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17874,7 +17961,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:40:23.649848+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17896,7 +17983,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:40:23.649848+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17917,8 +18004,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:40:23.648818+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 20.29,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.44,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.13,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.105
+   },
+   "net_skill": 0.105,
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17940,7 +18040,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:40:23.648818+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17962,7 +18062,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:40:23.648818+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -17983,8 +18083,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:40:23.649243+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 20.29,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.44,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.83,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.45
+   },
+   "net_skill": -0.45,
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -18006,7 +18119,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:40:23.649243+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -18028,7 +18141,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:40:23.649243+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -18049,8 +18162,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:40:23.650266+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 20.29,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": -0.44,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.08,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": 0.104
+   },
+   "net_skill": 0.104,
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -18072,7 +18198,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:40:23.650266+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "OLFI.CA",
@@ -18094,7 +18220,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:40:23.650266+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18113,8 +18239,19 @@
    "corporate_actions": [],
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:47:35.930572+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.45,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.67,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.67,
+   "in_range": true,
+   "family_skill": {},
+   "net_skill": null,
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18134,7 +18271,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:47:35.930572+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18154,7 +18291,7 @@
    "entrant": "buy-and-hold",
    "frozen_at": "2026-11-25T14:47:35.930572+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18175,8 +18312,21 @@
    "corporate_actions": [],
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:47:35.919001+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.45,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.67,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.13,
+   "in_range": true,
+   "family_skill": {
+    "fundamentals": 0.4
+   },
+   "net_skill": 0.4,
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18198,7 +18348,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:47:35.919001+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18220,7 +18370,7 @@
    "entrant": "family-fundamentals",
    "frozen_at": "2026-11-25T14:47:35.919001+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18241,8 +18391,21 @@
    "corporate_actions": [],
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:47:35.917989+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.45,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.67,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 3.17,
+   "in_range": true,
+   "family_skill": {
+    "price-forecast": -0.552
+   },
+   "net_skill": -0.552,
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18264,7 +18427,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:47:35.917989+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18286,7 +18449,7 @@
    "entrant": "family-price-forecast",
    "frozen_at": "2026-11-25T14:47:35.917989+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18307,8 +18470,21 @@
    "corporate_actions": [],
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:47:35.918375+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.45,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.67,
+   "realized_direction": "flat",
+   "direction_hit": true,
+   "move_error_pp": 0.13,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.397
+   },
+   "net_skill": 0.397,
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18330,7 +18506,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:47:35.918375+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18352,7 +18528,7 @@
    "entrant": "family-technicals",
    "frozen_at": "2026-11-25T14:47:35.918375+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18373,8 +18549,21 @@
    "corporate_actions": [],
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:47:35.919427+00:00",
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.45,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.67,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 3.59,
+   "in_range": false,
+   "family_skill": {
+    "price-forecast": -0.552
+   },
+   "net_skill": -0.552,
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18396,7 +18585,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:47:35.919427+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORHD.CA",
@@ -18418,7 +18607,7 @@
    "entrant": "kronos-alone",
    "frozen_at": "2026-11-25T14:47:35.919427+00:00",
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ORWE.CA",
@@ -31529,6 +31718,1035 @@
    "prompt_version": "v1",
    "status": "pending",
    "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.6,
+   "range_high_pct": 4.6,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:43:23.894996+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.28,
+   "range_high_pct": 10.28,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:43:23.894996+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -21.06,
+   "range_high_pct": 21.06,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:43:23.894996+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.74,
+   "range_low_pct": -5.24,
+   "range_high_pct": 6.71,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 23.6,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:38:03.711871+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.64,
+   "range_low_pct": -11.71,
+   "range_high_pct": 15.0,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 23.6,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:38:03.711871+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 3.37,
+   "range_low_pct": -24.01,
+   "range_high_pct": 30.74,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 23.6,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:38:03.711871+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.55,
+   "range_low_pct": -6.53,
+   "range_high_pct": 5.42,
+   "confidence": 0.35,
+   "net_score": -0.3,
+   "base_price": 23.6,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:38:03.711325+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.23,
+   "range_low_pct": -14.59,
+   "range_high_pct": 12.12,
+   "confidence": 0.35,
+   "net_score": -0.3,
+   "base_price": 23.6,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:38:03.711325+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.53,
+   "range_low_pct": -29.9,
+   "range_high_pct": 24.85,
+   "confidence": 0.35,
+   "net_score": -0.3,
+   "base_price": 23.6,
+   "families": {
+    "technicals": -0.3
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:38:03.711325+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.54,
+   "range_low_pct": -4.1,
+   "range_high_pct": 1.3,
+   "confidence": null,
+   "net_score": -0.215,
+   "base_price": 23.6,
+   "families": {
+    "price-forecast": -0.215
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:38:03.712249+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.58,
+   "range_low_pct": -3.5,
+   "range_high_pct": 2.45,
+   "confidence": null,
+   "net_score": 0.036,
+   "base_price": 23.6,
+   "families": {
+    "price-forecast": 0.036
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:38:03.712249+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 3.21,
+   "range_low_pct": 0.35,
+   "range_high_pct": 6.93,
+   "confidence": null,
+   "net_score": 0.098,
+   "base_price": 23.6,
+   "families": {
+    "price-forecast": 0.098
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:38:03.712249+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.31,
+   "range_low_pct": -2.62,
+   "range_high_pct": -0.01,
+   "confidence": 0.76,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:43:23.894533+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -2.14,
+   "range_low_pct": -4.28,
+   "range_high_pct": -0.02,
+   "confidence": 0.63,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:43:23.894533+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OCDI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -3.01,
+   "range_low_pct": -6.02,
+   "range_high_pct": -0.03,
+   "confidence": 0.58,
+   "net_score": null,
+   "base_price": 23.6,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:43:23.894533+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -2.19,
+   "range_high_pct": 2.19,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:46:13.370911+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.89,
+   "range_high_pct": 4.89,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:46:13.370911+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.03,
+   "range_high_pct": 10.03,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:46:13.370911+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.13,
+   "range_low_pct": -2.71,
+   "range_high_pct": 2.98,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 20.29,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:45:37.102602+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.29,
+   "range_low_pct": -6.07,
+   "range_high_pct": 6.66,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 20.29,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:45:37.102602+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.6,
+   "range_low_pct": -12.44,
+   "range_high_pct": 13.64,
+   "confidence": 0.35,
+   "net_score": 0.15,
+   "base_price": 20.29,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:45:37.102602+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.39,
+   "range_low_pct": -2.45,
+   "range_high_pct": 3.24,
+   "confidence": 0.35,
+   "net_score": 0.45,
+   "base_price": 20.29,
+   "families": {
+    "technicals": 0.45
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:45:37.102074+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.88,
+   "range_low_pct": -5.48,
+   "range_high_pct": 7.24,
+   "confidence": 0.35,
+   "net_score": 0.45,
+   "base_price": 20.29,
+   "families": {
+    "technicals": 0.45
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:45:37.102074+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.81,
+   "range_low_pct": -11.23,
+   "range_high_pct": 14.84,
+   "confidence": 0.35,
+   "net_score": 0.45,
+   "base_price": 20.29,
+   "families": {
+    "technicals": 0.45
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:45:37.102074+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.1,
+   "range_low_pct": -0.73,
+   "range_high_pct": 1.87,
+   "confidence": null,
+   "net_score": 0.03,
+   "base_price": 20.29,
+   "families": {
+    "price-forecast": 0.03
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:45:37.103019+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.79,
+   "range_low_pct": -0.91,
+   "range_high_pct": 2.8,
+   "confidence": null,
+   "net_score": 0.104,
+   "base_price": 20.29,
+   "families": {
+    "price-forecast": 0.104
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:45:37.103019+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.47,
+   "range_low_pct": -3.76,
+   "range_high_pct": -1.22,
+   "confidence": null,
+   "net_score": -0.158,
+   "base_price": 20.29,
+   "families": {
+    "price-forecast": -0.158
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:45:37.103019+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -0.54,
+   "range_low_pct": -1.08,
+   "range_high_pct": 0.0,
+   "confidence": 0.7,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:46:13.370510+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.43,
+   "range_low_pct": -2.86,
+   "range_high_pct": -0.0,
+   "confidence": 0.65,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:46:13.370510+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "OLFI.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.86,
+   "range_low_pct": -5.71,
+   "range_high_pct": -0.0,
+   "confidence": 0.55,
+   "net_score": null,
+   "base_price": 20.29,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:46:13.370510+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -3.39,
+   "range_high_pct": 3.39,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:49:52.202076+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -7.58,
+   "range_high_pct": 7.58,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:49:52.202076+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -15.54,
+   "range_high_pct": 15.54,
+   "confidence": null,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "buy-and-hold",
+   "frozen_at": "2026-11-27T09:49:52.202076+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.54,
+   "range_low_pct": -3.87,
+   "range_high_pct": 4.95,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 10.45,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:48:37.852804+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 1.21,
+   "range_low_pct": -8.65,
+   "range_high_pct": 11.07,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 10.45,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:48:37.852804+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 2.49,
+   "range_low_pct": -17.72,
+   "range_high_pct": 22.69,
+   "confidence": 0.35,
+   "net_score": 0.4,
+   "base_price": 10.45,
+   "families": {
+    "fundamentals": 0.4
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-fundamentals",
+   "frozen_at": "2026-11-27T09:48:37.852804+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": -0.01,
+   "range_low_pct": -4.42,
+   "range_high_pct": 4.4,
+   "confidence": 0.35,
+   "net_score": -0.008,
+   "base_price": 10.45,
+   "families": {
+    "sentiment": -0.008
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:48:37.852290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": -0.02,
+   "range_low_pct": -9.88,
+   "range_high_pct": 9.84,
+   "confidence": 0.35,
+   "net_score": -0.008,
+   "base_price": 10.45,
+   "families": {
+    "sentiment": -0.008
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:48:37.852290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.05,
+   "range_low_pct": -20.26,
+   "range_high_pct": 20.16,
+   "confidence": 0.35,
+   "net_score": -0.008,
+   "base_price": 10.45,
+   "families": {
+    "sentiment": -0.008
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-sentiment",
+   "frozen_at": "2026-11-27T09:48:37.852290+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.32,
+   "range_low_pct": -4.09,
+   "range_high_pct": 4.73,
+   "confidence": 0.35,
+   "net_score": 0.233,
+   "base_price": 10.45,
+   "families": {
+    "technicals": 0.233
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:48:37.852021+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.71,
+   "range_low_pct": -9.15,
+   "range_high_pct": 10.57,
+   "confidence": 0.35,
+   "net_score": 0.233,
+   "base_price": 10.45,
+   "families": {
+    "technicals": 0.233
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:48:37.852021+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "up",
+   "expected_move_pct": 1.45,
+   "range_low_pct": -18.76,
+   "range_high_pct": 21.66,
+   "confidence": 0.35,
+   "net_score": 0.233,
+   "base_price": 10.45,
+   "families": {
+    "technicals": 0.233
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "family-technicals",
+   "frozen_at": "2026-11-27T09:48:37.852021+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "down",
+   "expected_move_pct": -1.72,
+   "range_low_pct": -3.73,
+   "range_high_pct": 1.02,
+   "confidence": null,
+   "net_score": -0.324,
+   "base_price": 10.45,
+   "families": {
+    "price-forecast": -0.324
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:48:37.853098+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "up",
+   "expected_move_pct": 0.81,
+   "range_low_pct": -2.38,
+   "range_high_pct": 1.98,
+   "confidence": null,
+   "net_score": 0.069,
+   "base_price": 10.45,
+   "families": {
+    "price-forecast": 0.069
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:48:37.853098+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "down",
+   "expected_move_pct": -2.38,
+   "range_low_pct": -4.91,
+   "range_high_pct": 0.06,
+   "confidence": null,
+   "net_score": -0.098,
+   "base_price": 10.45,
+   "families": {
+    "price-forecast": -0.098
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "kronos-alone",
+   "frozen_at": "2026-11-27T09:48:37.853098+00:00",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "day",
+   "direction": "up",
+   "expected_move_pct": 0.5,
+   "range_low_pct": -0.5,
+   "range_high_pct": 1.5,
+   "confidence": 0.6,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 1,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:49:52.201658+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "week",
+   "direction": "down",
+   "expected_move_pct": -1.5,
+   "range_low_pct": -3.5,
+   "range_high_pct": 0.5,
+   "confidence": 0.7,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 5,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:49:52.201658+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ORHD.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": -0.2,
+   "range_low_pct": -2.2,
+   "range_high_pct": 1.8,
+   "confidence": 0.4,
+   "net_score": null,
+   "base_price": 10.45,
+   "families": {},
+   "sessions": 21,
+   "corporate_actions": [],
+   "entrant": "raw-llm-cohere",
+   "frozen_at": "2026-11-27T09:49:52.201658+00:00",
+   "prompt_version": "v1",
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
@@ -31690,6 +32908,14 @@
   "sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002: family-sentiment absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-agent absent (family-did-not-vote) — no rows",
   "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-sentiment absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-price-forecast absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-sentiment absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002: family-agent absent (family-did-not-vote) — no rows",
+  "sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002: family-price-forecast absent (family-did-not-vote) — no rows",
   "54 benchmark row(s) invalidated (validation mismatch or the issue-#87 guard) — never scored: buy-and-hold POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002"
  ],
  "warnings": []

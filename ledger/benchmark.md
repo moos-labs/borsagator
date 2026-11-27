@@ -1,8 +1,8 @@
 # 🐊 Borsagator — forward quality benchmark (issue #79)
 
-Source: `moos-labs/borsagator` branch `archive` (tree dc41ae46, commit dc41ae46). Sweeps archived: 116 (72 with a benchmark freeze).
+Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788). Sweeps archived: 119 (75 with a benchmark freeze).
 
-**Benchmark rows: 1254 · matured: 216 · pending: 984 · invalid: 54 · excluded gap-flagged: 0**
+**Benchmark rows: 1302 · matured: 231 · pending: 1017 · invalid: 54 · excluded gap-flagged: 0**
 
 Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 10 matured forecasts — such cells show their count and the gate wording only. Public accuracy claims need n ≥ 30 matured forecasts (D4).
 
@@ -10,14 +10,14 @@ Quality gate: no quality claim for any (entrant, horizon) cell with fewer than 1
 
 | Entrant | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| ensemble | 45 | 0.156 | 6.4 | 0.711 |
-| buy-and-hold | 31 | 0.387 | 1.92 | 0.871 |
+| ensemble | 48 | 0.167 | 6.08 | 0.729 |
+| buy-and-hold | 34 | 0.412 | 1.81 | 0.882 |
 | family-agent | n=0 — below the n≥10 gate, no claim | — | — | — |
-| family-fundamentals | 30 | 0.333 | 2.28 | 1.0 |
-| family-price-forecast | 30 | 0.2 | 4.72 | 0.767 |
+| family-fundamentals | 33 | 0.364 | 2.09 | 1.0 |
+| family-price-forecast | 33 | 0.212 | 4.42 | 0.788 |
 | family-sentiment | 29 | 0.379 | 1.94 | 1.0 |
-| family-technicals | 30 | 0.367 | 2.36 | 1.0 |
-| kronos-alone | 30 | 0.2 | 5.26 | 0.367 |
+| family-technicals | 33 | 0.394 | 2.21 | 1.0 |
+| kronos-alone | 33 | 0.212 | 4.91 | 0.394 |
 | raw-llm-cohere | n=0 — below the n≥10 gate, no claim | — | — | — |
 
 ## week (matured only)
@@ -54,32 +54,35 @@ Per-cell fit of the calibration layer (trailing 30 clean matured rows per cell; 
 
 | Ticker | Horizon | n | n_eff | Coverage (as published) | Coverage (calibrated, in-window) | k | b (pp) | Basis |
 |---|---|---|---|---|---|---|---|---|
-| ACGC.CA | day | 1 | 1 | 1.000 | 0.000 | 0.934 | -1.69 | pool |
-| ADIB.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| AMOC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ARCC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ATQA.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| CIRA.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| CLHO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| EFIH.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| EGAL.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| EGAS.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ETEL.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ETRS.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| FAIT.CA | day | 1 | 1 | 0.000 | 0.000 | 0.934 | -1.69 | pool |
-| FAITA.CA | day | 1 | 1 | 1.000 | 0.000 | 0.934 | -1.69 | pool |
-| GOUR.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ICFC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| IFAP.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| ISPH.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| JUFO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| LCSW.CA | day | 1 | 1 | 0.000 | 0.000 | 0.934 | -1.69 | pool |
-| MASR.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| MCQE.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| MPCO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| MTIE.CA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| NVDA | day | 1 | 1 | 1.000 | 1.000 | 0.934 | -1.69 | pool |
-| POUL.CA | day | 20 | 20 | 0.450 | 0.700 | 1.040 | -6.25 | cell |
+| ACGC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ADIB.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| AMOC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ARCC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ATQA.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| CIRA.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| CLHO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| EFIH.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| EGAL.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| EGAS.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ETEL.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ETRS.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| FAIT.CA | day | 1 | 1 | 0.000 | 0.000 | 0.983 | -0.79 | pool |
+| FAITA.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| GOUR.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ICFC.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| IFAP.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ISPH.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| JUFO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| LCSW.CA | day | 1 | 1 | 0.000 | 0.000 | 0.983 | -0.79 | pool |
+| MASR.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| MCQE.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| MPCO.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| MTIE.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| NVDA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| OCDI.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| OLFI.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| ORHD.CA | day | 1 | 1 | 1.000 | 1.000 | 0.983 | -0.79 | pool |
+| POUL.CA | day | 20 | 20 | 0.450 | 0.700 | 1.056 | -5.95 | cell |
 | POUL.CA | week | 15 | 3 | 1.000 | 0.800 | 2.000 | -22.03 | cell |
 
 ## Benchmark gaps & notes
@@ -242,6 +245,14 @@ Per-cell fit of the calibration layer (trailing 30 clean matured rows per cell; 
 - sweeps/2026-11-27/091437__sweep-lite-mpco-ca-market-egx__runw6-sweeplite-mpco-002: family-sentiment absent (family-did-not-vote) — no rows
 - sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-agent absent (family-did-not-vote) — no rows
 - sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002: family-price-forecast absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-agent absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-price-forecast absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002: family-sentiment absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-agent absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-price-forecast absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002: family-sentiment absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002: family-agent absent (family-did-not-vote) — no rows
+- sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002: family-price-forecast absent (family-did-not-vote) — no rows
 - 54 benchmark row(s) invalidated (validation mismatch or the issue-#87 guard) — never scored: buy-and-hold POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-fundamentals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-price-forecast POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-sentiment POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; family-technicals POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; kronos-alone POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; buy-and-hold POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-fundamentals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-price-forecast POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-sentiment POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; family-technicals POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; kronos-alone POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; buy-and-hold EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; buy-and-hold EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-fundamentals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-sentiment EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; family-technicals EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; kronos-alone EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; raw-llm-cohere EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002
 
 _The ensemble is the reference row: the table is symmetric and fixed-order, and every cell is published as scored._
