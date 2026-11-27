@@ -9,19 +9,19 @@
  ],
  "factors": {
   "price-forecast": {
-   "factor": 0.627,
-   "skill": -0.373,
-   "n": 60
+   "factor": 0.65,
+   "skill": -0.35,
+   "n": 64
   },
   "technicals": {
-   "factor": 0.806,
-   "skill": -0.194,
-   "n": 62
+   "factor": 0.821,
+   "skill": -0.179,
+   "n": 66
   },
   "sentiment": {
-   "factor": 1.027,
-   "skill": 0.027,
-   "n": 58
+   "factor": 1.024,
+   "skill": 0.024,
+   "n": 64
   },
   "agent": {
    "factor": 1.0,
@@ -30,8 +30,8 @@
   },
   "fundamentals": {
    "factor": 1.0,
-   "skill": null,
-   "n": 0
+   "skill": 0.1,
+   "n": 1
   }
  }
 }

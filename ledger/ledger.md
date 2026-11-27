@@ -1,8 +1,8 @@
 # 🐊 Borsagator — calibration ledger (v1)
 
-Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788). Sweeps archived: 119 (98 with an ensemble).
+Source: `moos-labs/borsagator` branch `archive` (tree f8d2b666, commit f8d2b666). Sweeps archived: 126 (105 with an ensemble).
 
-**Forecasts found: 288 · matured: 75 · pending: 198 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
+**Forecasts found: 309 · matured: 82 · pending: 212 · invalid: 15 · dividend-adjusted: 8 · excluded from skill: 12 gap-flagged row(s) (issue #79)**
 
 ## By ticker
 
@@ -38,20 +38,20 @@ Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788)
 | OCDI.CA | 6 | 1 | 5 | 0 | 2014-07-20 → 2026-11-26 |
 | OLFI.CA | 6 | 1 | 5 | 0 | 2016-10-03 → 2026-11-26 |
 | ORHD.CA | 6 | 1 | 5 | 0 | 2014-06-29 → 2026-11-26 |
-| ORWE.CA | 3 | 0 | 3 | 0 | 2014-07-20 → 2026-11-25 |
-| PHDC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| ORWE.CA | 6 | 1 | 5 | 0 | 2014-07-20 → 2026-11-26 |
+| PHDC.CA | 6 | 1 | 5 | 0 | 2014-07-21 → 2026-11-26 |
 | POUL.CA | 90 | 47 | 34 | 9 | 2014-06-04 → 2026-11-25 |
-| RACC.CA | 3 | 0 | 3 | 0 | 2015-02-12 → 2026-11-25 |
-| RMDA.CA | 3 | 0 | 3 | 0 | 2019-11-27 → 2026-11-25 |
-| SAUD.CA | 3 | 0 | 3 | 0 | 2014-06-25 → 2026-11-25 |
-| SKPC.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
-| TMGH.CA | 3 | 0 | 3 | 0 | 2014-07-21 → 2026-11-25 |
+| RACC.CA | 6 | 1 | 5 | 0 | 2015-02-12 → 2026-11-26 |
+| RMDA.CA | 6 | 1 | 5 | 0 | 2019-11-27 → 2026-11-26 |
+| SAUD.CA | 6 | 1 | 5 | 0 | 2014-06-25 → 2026-11-26 |
+| SKPC.CA | 6 | 1 | 5 | 0 | 2014-07-21 → 2026-11-26 |
+| TMGH.CA | 6 | 1 | 5 | 0 | 2014-07-21 → 2026-11-26 |
 
 ## By horizon (matured only, gap-flagged rows excluded from skill — issue #79)
 
 | Horizon | n | Direction hit rate | Mean |error| (pp) | Range coverage |
 |---|---|---|---|---|
-| day | 48 | 0.167 | 6.08 | 0.729 |
+| day | 55 | 0.2 | 5.45 | 0.764 |
 | week | 15 | 0.0 | 18.28 | 1.0 |
 | month | 0 | — | — | — |
 
@@ -60,10 +60,11 @@ Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788)
 | Family | Mean skill | n |
 |---|---|---|
 | agent | +0.750 | 1 |
-| ensemble (net_score) | -0.181 | 63 |
-| price-forecast | -0.373 | 60 |
-| sentiment | +0.027 | 58 |
-| technicals | -0.194 | 62 |
+| ensemble (net_score) | -0.167 | 69 |
+| fundamentals | +0.100 | 1 |
+| price-forecast | -0.350 | 64 |
+| sentiment | +0.024 | 64 |
+| technicals | -0.179 | 66 |
 
 ## Forecasts
 
@@ -246,27 +247,27 @@ Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788)
 | ORHD.CA | 2026-11-25 | day | down | -1.82 | +0.67 | ❌ | 2.49 | ✅ |  | matured 2026-11-26 |
 | ORHD.CA | 2026-11-25 | week | down | -1.62 | — | — | — | — | | pending (1/3 sessions) |
 | ORHD.CA | 2026-11-25 | month | down | -1.34 | — | — | — | — | | pending (1/14 sessions) |
-| ORWE.CA | 2026-11-25 | day | up | +2.13 | — | — | — | — | | pending (0/1 sessions) |
-| ORWE.CA | 2026-11-25 | week | up | +2.60 | — | — | — | — | | pending (0/3 sessions) |
-| ORWE.CA | 2026-11-25 | month | up | +2.82 | — | — | — | — | | pending (0/14 sessions) |
-| PHDC.CA | 2026-11-25 | day | up | +1.68 | — | — | — | — | | pending (0/1 sessions) |
-| PHDC.CA | 2026-11-25 | week | up | +2.09 | — | — | — | — | | pending (0/3 sessions) |
-| PHDC.CA | 2026-11-25 | month | up | +3.77 | — | — | — | — | | pending (0/14 sessions) |
-| RACC.CA | 2026-11-25 | day | up | +2.19 | — | — | — | — | | pending (0/1 sessions) |
-| RACC.CA | 2026-11-25 | week | up | +2.05 | — | — | — | — | | pending (0/3 sessions) |
-| RACC.CA | 2026-11-25 | month | up | +2.54 | — | — | — | — | | pending (0/11 sessions) |
-| RMDA.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
-| RMDA.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
-| RMDA.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
-| SAUD.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
-| SAUD.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
-| SAUD.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
-| SKPC.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
-| SKPC.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
-| SKPC.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
-| TMGH.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
-| TMGH.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
-| TMGH.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| ORWE.CA | 2026-11-25 | day | up | +2.13 | +0.00 | ❌ | 2.13 | ✅ |  | matured 2026-11-26 |
+| ORWE.CA | 2026-11-25 | week | up | +2.60 | — | — | — | — | | pending (1/3 sessions) |
+| ORWE.CA | 2026-11-25 | month | up | +2.82 | — | — | — | — | | pending (1/14 sessions) |
+| PHDC.CA | 2026-11-25 | day | up | +1.68 | -0.09 | ❌ | 1.77 | ✅ |  | matured 2026-11-26 |
+| PHDC.CA | 2026-11-25 | week | up | +2.09 | — | — | — | — | | pending (1/3 sessions) |
+| PHDC.CA | 2026-11-25 | month | up | +3.77 | — | — | — | — | | pending (1/14 sessions) |
+| RACC.CA | 2026-11-25 | day | up | +2.19 | +3.86 | ✅ | 1.67 | ✅ |  | matured 2026-11-26 |
+| RACC.CA | 2026-11-25 | week | up | +2.05 | — | — | — | — | | pending (1/3 sessions) |
+| RACC.CA | 2026-11-25 | month | up | +2.54 | — | — | — | — | | pending (1/11 sessions) |
+| RMDA.CA | 2026-11-25 | day | flat | +0.00 | -0.79 | ❌ | 0.79 | ✅ |  | matured 2026-11-26 |
+| RMDA.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (1/5 sessions) |
+| RMDA.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (1/21 sessions) |
+| SAUD.CA | 2026-11-25 | day | flat | +0.00 | -0.82 | ❌ | 0.82 | ✅ |  | matured 2026-11-26 |
+| SAUD.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (1/5 sessions) |
+| SAUD.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (1/21 sessions) |
+| SKPC.CA | 2026-11-25 | day | flat | +0.00 | -0.41 | ✅ | 0.41 | ✅ |  | matured 2026-11-26 |
+| SKPC.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (1/5 sessions) |
+| SKPC.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (1/21 sessions) |
+| TMGH.CA | 2026-11-25 | day | flat | +0.00 | +0.37 | ✅ | 0.37 | ✅ |  | matured 2026-11-26 |
+| TMGH.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (1/5 sessions) |
+| TMGH.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (1/21 sessions) |
 | POUL.CA | 2026-11-25 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | POUL.CA | 2026-11-25 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | POUL.CA | 2026-11-25 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
@@ -357,6 +358,27 @@ Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788)
 | ORHD.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
 | ORHD.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
 | ORHD.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| ORWE.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| ORWE.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| ORWE.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| PHDC.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| PHDC.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| PHDC.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| RACC.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| RACC.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| RACC.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| RMDA.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| RMDA.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| RMDA.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| SAUD.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| SAUD.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| SAUD.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| SKPC.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| SKPC.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| SKPC.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
+| TMGH.CA | 2026-11-27 | day | flat | +0.00 | — | — | — | — | | pending (0/1 sessions) |
+| TMGH.CA | 2026-11-27 | week | flat | +0.00 | — | — | — | — | | pending (0/5 sessions) |
+| TMGH.CA | 2026-11-27 | month | flat | +0.00 | — | — | — | — | | pending (0/21 sessions) |
 
 ## Data gaps & notes
 
@@ -391,14 +413,14 @@ Source: `moos-labs/borsagator` branch `archive` (tree f2344788, commit f2344788)
 - OCDI.CA: actuals series has 3001 sessions, 2014-07-20 → 2026-11-26 (last source: sweeps/2026-11-27/093803__sweep-lite-ocdi-ca-market-egx__runw6-sweeplite-ocdi-002/collected/egx-data/egxpy_ocdi.csv)
 - OLFI.CA: actuals series has 2465 sessions, 2016-10-03 → 2026-11-26 (last source: sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002/collected/egx-data/egxpy_olfi.csv)
 - ORHD.CA: actuals series has 3001 sessions, 2014-06-29 → 2026-11-26 (last source: sweeps/2026-11-27/094837__sweep-lite-orhd-ca-market-egx__runw6-sweeplite-orhd-002/collected/egx-data/egxpy_orhd.csv)
-- ORWE.CA: actuals series has 3000 sessions, 2014-07-20 → 2026-11-25 (last source: sweeps/2026-11-25/145515__sweep-lite-orwe-ca-market-egx__runw5-sweeplite-orwe-001/collected/egx-data/egxpy_orwe.csv)
-- PHDC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/150344__sweep-lite-phdc-ca-market-egx__runw5-sweeplite-phdc-001/collected/egx-data/egxpy_phdc.csv)
+- ORWE.CA: actuals series has 3001 sessions, 2014-07-20 → 2026-11-26 (last source: sweeps/2026-11-27/101006__sweep-lite-orwe-ca-market-egx__runw6-sweeplite-orwe-002/collected/egx-data/egxpy_orwe.csv)
+- PHDC.CA: actuals series has 3001 sessions, 2014-07-21 → 2026-11-26 (last source: sweeps/2026-11-27/101353__sweep-lite-phdc-ca-market-egx__runw6-sweeplite-phdc-002/collected/egx-data/egxpy_phdc.csv)
 - POUL.CA: actuals series has 3053 sessions, 2014-06-04 → 2026-11-25 (last source: sweeps/2026-11-26/074217__sweep-lite-poul-ca-market-egx__runsched-2026-11-26/collected/egx-data/egxpy_poul.csv)
-- RACC.CA: actuals series has 2325 sessions, 2015-02-12 → 2026-11-25 (last source: sweeps/2026-11-25/151150__sweep-lite-racc-ca-market-egx__runw5-sweeplite-racc-001/collected/egx-data/egxpy_racc.csv)
-- RMDA.CA: actuals series has 1699 sessions, 2019-11-27 → 2026-11-25 (last source: sweeps/2026-11-25/195201__sweep-lite-rmda-ca-market-egx__runw5-sweeplite-rmda-001/collected/egx-data/egxpy_rmda.csv)
-- SAUD.CA: actuals series has 3000 sessions, 2014-06-25 → 2026-11-25 (last source: sweeps/2026-11-25/201240__sweep-lite-saud-ca-market-egx__runw5-sweeplite-saud-001/collected/egx-data/egxpy_saud.csv)
-- SKPC.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/201513__sweep-lite-skpc-ca-market-egx__runw5-sweeplite-skpc-001/collected/egx-data/egxpy_skpc.csv)
-- TMGH.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/202510__sweep-lite-tmgh-ca-market-egx__runw5-sweeplite-tmgh-001/collected/egx-data/egxpy_tmgh.csv)
+- RACC.CA: actuals series has 2326 sessions, 2015-02-12 → 2026-11-26 (last source: sweeps/2026-11-27/101646__sweep-lite-racc-ca-market-egx__runw6-sweeplite-racc-002/collected/egx-data/egxpy_racc.csv)
+- RMDA.CA: actuals series has 1700 sessions, 2019-11-27 → 2026-11-26 (last source: sweeps/2026-11-27/101919__sweep-lite-rmda-ca-market-egx__runw6-sweeplite-rmda-002/collected/egx-data/egxpy_rmda.csv)
+- SAUD.CA: actuals series has 3001 sessions, 2014-06-25 → 2026-11-26 (last source: sweeps/2026-11-27/102356__sweep-lite-saud-ca-market-egx__runw6-sweeplite-saud-002/collected/egx-data/egxpy_saud.csv)
+- SKPC.CA: actuals series has 3001 sessions, 2014-07-21 → 2026-11-26 (last source: sweeps/2026-11-27/102621__sweep-lite-skpc-ca-market-egx__runw6-sweeplite-skpc-002/collected/egx-data/egxpy_skpc.csv)
+- TMGH.CA: actuals series has 3001 sessions, 2014-07-21 → 2026-11-26 (last source: sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002/collected/egx-data/egxpy_tmgh.csv)
 - price-CSV parsing skipped 8 malformed/non-positive row(s) across all candidate files
 - 15 forecast(s) invalidated by the issue-#87 guard (base_price inconsistent with the ticker-evidenced price level; never scored): COMI.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; COMI.CA as of 2026-11-15 (month) from sweeps/2026-11-15/132518__sweep-lite-comi-ca-market-egx__run43717410248; POUL.CA as of 2026-11-17 (day) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-17 (week) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-17 (month) from sweeps/2026-11-16/225700__sweep-lite-poul-ca__run43967492548; POUL.CA as of 2026-11-22 (day) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-22 (week) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-22 (month) from sweeps/2026-11-22/062207__sweep-lite-poul-ca-market-egx__runsched-2026-11-22; POUL.CA as of 2026-11-24 (day) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; POUL.CA as of 2026-11-24 (week) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; POUL.CA as of 2026-11-24 (month) from sweeps/2026-11-24/062345__sweep-lite-poul-ca-market-egx__runsched-2026-11-24; EFID.CA as of 2026-11-26 (day) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; EFID.CA as of 2026-11-26 (week) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002; EFID.CA as of 2026-11-26 (month) from sweeps/2026-11-26/234905__sweep-lite-efid-ca-market-egx__runw6-sweeplite-efid-002
 - 12 matured forecast(s) span a known dividend ex-date (or carry an undated dividend action) but were NOT dividend-adjusted — their realized move includes the mechanical ex-div drop (issue #129): POUL.CA as of 2026-11-12 (week) from sweeps/2026-11-12/163459__backfill-issue-14__sweep-lite-poul-ca-market-egx: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/060515__backfill-issue-17__sweep-lite-poul-ca-market-egx: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/092727__sweep-poul-ca__run43386334186: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-13 (week) from sweeps/2026-11-13/095050__sweep-lite-poul-ca-market-egx__run43402572619: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/074752__sweep-lite-poul-ca__run43688673389: 1 undated dividend action(s) (DPS 1.9) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/132459__sweep-lite-poul-ca-market-egx__run43717383224: horizon spans known ex-date 2026-11-16 (DPS 1.8999999998, recorded by sweeps/2026-11-16/050559__sweep-lite-poul-ca-market-egx__run43805931446) but this forecast carries no dividend action — realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/140509__sweep-lite-poul-ca-market-egx__run43720903619: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (day) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129); POUL.CA as of 2026-11-15 (week) from sweeps/2026-11-15/141558__sweep-lite-poul-ca-market-egx__run43721738392: 1 undated dividend action(s) (DPS 1.89) with no ex-date and no entitlement_end — the horizon may span the ex-date but the drop cannot be placed, so the realized move is unadjusted (issue #129)
