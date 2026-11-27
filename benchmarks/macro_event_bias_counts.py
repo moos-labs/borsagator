@@ -45,7 +45,9 @@ def cutoff_index(dates, as_of):
 def prior_aar(evs, k, offsets=M.OFFSETS):
     """Mean AAR by offset over same-type events whose window (s0+2) ends before evs[k]'s window (s0-2)."""
     me = evs[k]
-    pool = [x for j, x in enumerate(evs) if j != k and x["ab"] is not None and x["event"]["type"] == me["event"]["type"]
+    if me["s0"] is None:
+        return None
+    pool = [x for j, x in enumerate(evs) if j != k and x["ab"] is not None and x["s0"] is not None and x["event"]["type"] == me["event"]["type"]
             and x["s0"] + 2 < me["s0"] - 2]
     if not pool:
         return None
