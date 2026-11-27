@@ -1,0 +1,38 @@
+{
+  "tool": "news-disclosure",
+  "ticker": "MTIE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "MTIE.CA",
+    "fetched_at": "2026-11-27T09:19:46Z",
+    "tool": "news-disclosure",
+    "news_count": 34,
+    "disclosure_count": 0,
+    "arabic_headlines": 34,
+    "latest_news_date": "Thu, 26 Nov 2026 21:38:26 GMT",
+    "latest_disclosure_date": "",
+    "top_headline": "المعاودة: الأصول المشفرة تدخل ضمن تركة المتوفى متى ثبتت ملكيته لها - جريدة البلاد",
+    "llm_provider": "cohere",
+    "multilingual_positive": 0.108,
+    "multilingual_negative": 0.097,
+    "multilingual_neutral": 0.794,
+    "multilingual_scored": 34,
+    "bodies_fetched": 7,
+    "egx_bodies_attached": 0,
+    "egx_disclosures_added": 0,
+    "translation_provider": "cohere+nllb",
+    "translated_positive": 0.071,
+    "translated_negative": 0.14,
+    "translated_neutral": 0.789,
+    "translated_scored": 34
+  },
+  "files": [
+    "disclosures.json",
+    "feed_summary.json",
+    "headlines.txt",
+    "news.json",
+    "run.log"
+  ]
+}

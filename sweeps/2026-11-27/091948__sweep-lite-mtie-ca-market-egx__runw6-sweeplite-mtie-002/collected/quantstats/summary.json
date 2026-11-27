@@ -1,0 +1,22 @@
+{
+  "tool": "quantstats",
+  "ticker": "MTIE.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "POUL.CA",
+    "source": "Yahoo chart API (direct, via requests)",
+    "exchange_tz": "Africa/Cairo",
+    "rows": 2189,
+    "rows_ohlc.csv": 2189,
+    "ohlc.csv_last_close": "6.829999923706055"
+  },
+  "files": [
+    "ohlc.csv",
+    "report.md",
+    "run.log",
+    "stats.json",
+    "tearsheet.html"
+  ]
+}

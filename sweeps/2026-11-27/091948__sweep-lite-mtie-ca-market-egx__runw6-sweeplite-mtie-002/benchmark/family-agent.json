@@ -1,0 +1,27 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 6.62,
+ "base_source": "egx-data/egxpy_mtie.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: agent score null in every horizon",
+ "entrant": "family-agent",
+ "frozen_at": "2026-11-27T09:19:48.470683+00:00",
+ "inputs_sha256": {
+  "digest.json": "fb9171b05fa6192f3a3815aadacb7e0ff241573c5cb338641237add34287d612",
+  "ensemble.json": "7389254d7ea72ff85dcd73badafe67f8c014d616aea83d94c7a35a568fbcef59"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+ "ticker": "MTIE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

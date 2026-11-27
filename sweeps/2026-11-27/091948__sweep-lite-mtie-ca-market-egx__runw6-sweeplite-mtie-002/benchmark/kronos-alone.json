@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 6.62,
+ "base_source": "egx-data/egxpy_mtie.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T09:19:48.471310+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.26,
+   "families": {
+    "price-forecast": 0.484
+   },
+   "horizon_short": false,
+   "net_score": 0.484,
+   "range_high_pct": 6.65,
+   "range_low_pct": -1.28,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 5.67,
+   "families": {
+    "price-forecast": 0.183
+   },
+   "horizon_short": false,
+   "net_score": 0.183,
+   "range_high_pct": 6.89,
+   "range_low_pct": 1.99,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 2.13,
+   "families": {
+    "price-forecast": 0.141
+   },
+   "horizon_short": false,
+   "net_score": 0.141,
+   "range_high_pct": 6.98,
+   "range_low_pct": -0.96,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "6a8d73fe0c9ae682bea244964eff840b22a4b9cd7ddc32608e2d1abba061fdff",
+  "digest.json": "fb9171b05fa6192f3a3815aadacb7e0ff241573c5cb338641237add34287d612",
+  "ensemble.json": "7389254d7ea72ff85dcd73badafe67f8c014d616aea83d94c7a35a568fbcef59"
+ },
+ "kronos_first_row_date": "2026-11-26",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.4,
+ "sigma_daily": 0.0337,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+ "ticker": "MTIE.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

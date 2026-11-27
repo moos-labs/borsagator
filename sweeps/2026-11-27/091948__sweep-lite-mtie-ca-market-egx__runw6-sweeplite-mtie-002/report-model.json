@@ -1,0 +1,1554 @@
+{
+  "archive_commit": "753c2dc721374061df871c83bead43bb959ee404",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "8d9181ae563f1e02008d1fc9e5473d2e1d48eb714ad8f7b22175888af858bfc3",
+      "family-agent.json": "8c4bd9e112cea3ccc1439e276d37ba5c059865c465100549846b3b601abdcfe5",
+      "family-fundamentals.json": "7501abc1a00496fdaab8f493de982580cf0b02f0b548445169a55fc402f1443b",
+      "family-price-forecast.json": "511844ffbf3e92145c9b70f44e055046339fd00007f6b12b0c59178ac7a9a6ab",
+      "family-sentiment.json": "19e02569d03b5e86c0dfea1bf7d06b7ae41e4a8aa32646782ffb472bf43a834a",
+      "family-technicals.json": "3dc3264409d09d2ef84ecabd7d4587cd9dd2d79f6dac0164eba21054ed02e4ff",
+      "kronos-alone.json": "945f65fb38b00071648c7b2a6828474766e48ebd76e58829093ffde905b5e2c1",
+      "raw-llm-cohere.json": "df828571a01d40679cb2eb422620cf931c7cab8f6c51221b967cbf459f109f37"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/MTIE-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 6.62,
+    "base_source": "egx-data/egxpy_mtie.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": 0.15,
+      "price-forecast": 0.184,
+      "sentiment": -0.029,
+      "technicals": 0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.029
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 3.2613,
+        "net_score": -0.029,
+        "range_high_pct": 5.81,
+        "range_low_pct": -5.81,
+        "tilt_centre_pct": -0.02,
+        "trading_sessions": 1,
+        "vol_h_pct": 3.3685
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": 0.15,
+          "sentiment": -0.029,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 5.6662,
+        "net_score": 0.192,
+        "range_high_pct": 27.79,
+        "range_low_pct": -27.79,
+        "tilt_centre_pct": 1.9,
+        "trading_sessions": 21,
+        "vol_h_pct": 15.4362
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.3,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": -0.029,
+          "technicals": 0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": 2.1284,
+        "net_score": 0.159,
+        "range_high_pct": 14.46,
+        "range_low_pct": -14.46,
+        "tilt_centre_pct": 0.54,
+        "trading_sessions": 5,
+        "vol_h_pct": 7.5321
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_mtie.csv",
+      "base_stale": false,
+      "base_used": 6.62,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_mtie.csv": 6.75,
+        "openbb/mtie_ca.csv": 6.75,
+        "pandas-ta/indicators.csv": 6.75,
+        "talib/indicators.csv": 6.75,
+        "yahooquery/mtie.ca.csv": 6.75
+      }
+    },
+    "risk": {
+      "conf_cap": 0.3,
+      "events": [
+        {
+          "severity": "high",
+          "title": "متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية",
+          "type": "earnings"
+        }
+      ],
+      "flags": [
+        "earnings event: متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية"
+      ],
+      "level": "shock",
+      "move_z": {
+        "last": 0.58,
+        "max3": 1.48
+      },
+      "price_mult": 0.5
+    },
+    "sessions_per_calendar_day": 0.4,
+    "sigma60_daily": 0.0337,
+    "sigma_daily": 0.0337,
+    "sigma_source": "egx-data/egxpy_mtie.csv (σ60=0.0337, σ10=0.0293)",
+    "ticker": "MTIE.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": 0.15,
+    "price-forecast": 0.184,
+    "sentiment": -0.029,
+    "technicals": 0.3
+  },
+  "finished": "2026-11-27T09:19:48.135852+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: sentiment)",
+    "recommendation-unavailable: no profiles/MTIE.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/MTIE.CA.json",
+    "sharia-row-missing: AAOIFI MTIE.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 MTIE.CA",
+    "sharia-row-missing: FTSE MTIE.CA",
+    "sharia-row-missing: ISLAMICLY MTIE.CA",
+    "sharia-row-missing: MSCI MTIE.CA",
+    "sharia-row-missing: MSCI_M MTIE.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.029
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 3.2613,
+      "net_score": -0.029,
+      "range_high_pct": 5.81,
+      "range_low_pct": -5.81,
+      "tilt_centre_pct": -0.02,
+      "trading_sessions": 1,
+      "vol_h_pct": 3.3685
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": 0.15,
+        "sentiment": -0.029,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 5.6662,
+      "net_score": 0.192,
+      "range_high_pct": 27.79,
+      "range_low_pct": -27.79,
+      "tilt_centre_pct": 1.9,
+      "trading_sessions": 21,
+      "vol_h_pct": 15.4362
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.3,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": -0.029,
+        "technicals": 0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": 2.1284,
+      "net_score": 0.159,
+      "range_high_pct": 14.46,
+      "range_low_pct": -14.46,
+      "tilt_centre_pct": 0.54,
+      "trading_sessions": 5,
+      "vol_h_pct": 7.5321
+    }
+  },
+  "job": "sweep-lite MTIE.CA market=EGX",
+  "job_shape": "sweep-lite MTIE.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 7.5773,
+    "support": 5.6627
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere+nllb",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-26T21:38:26Z",
+    "latest_news_date_raw": "Thu, 26 Nov 2026 21:38:26 GMT",
+    "news_count": 34,
+    "news_items": [
+      {
+        "date": "Thu, 26 Nov 2026 21:38:26 GMT",
+        "identity_key": "ee07ebabe625d7e7",
+        "key_type": "title-date-hash",
+        "source": "جريدة البلاد",
+        "title": "المعاودة: الأصول المشفرة تدخل ضمن تركة المتوفى متى ثبتت ملكيته لها - جريدة البلاد"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 16:41:00 GMT",
+        "identity_key": "https://sport.al-marsd.com/public/article/271978/%D8%A7%D9%84%D8%B4%D9%85%D8%B1%D8%A7%D9%86%D9%8A----%D9%85%D8%AA%D9%89-%D8%AA%D8%B1%D8%AD%D9%84-%D9%88-%D9%84%D9%85%D8%A7%D8%B0%D8%A7-%D9%84%D8%A7-%D8%AA%D8%B1%D8%AD%D9%84",
+        "key_type": "resolved_url",
+        "source": "المرصد الرياضية - الرئيسية",
+        "title": "الشمراني : متى ترحل و لماذا لا ترحل؟ - المرصد الرياضية - الرئيسية"
+      },
+      {
+        "date": "Thu, 26 Nov 2026 08:12:29 GMT",
+        "identity_key": "https://almarkazia.com/ar/%D9%85%D8%AA%D9%89-%D8%A7%D9%84%D8%AC%D9%86%D9%88%D8%A8-%D8%A8%D8%AD%D8%A7%D8%AC%D8%A9-%D8%A5%D9%84%D9%89-%D9%88%D8%AC%D9%88%D8%AF-%D8%A3%D9%85%D9%85%D9%8A-%D9%85%D8%AF%D8%B9%D9%88%D9%85-1",
+        "key_type": "resolved_url",
+        "source": "المركزية",
+        "title": "متى: الحوار مع \"الحزب\" لا يبدو مجدياً - المركزية"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 16:26:02 GMT",
+        "identity_key": "8f67bb9ce3a9ec9e",
+        "key_type": "title-date-hash",
+        "source": "الكونسلتو",
+        "title": "متى يحتاج الإنسان إلى نقل دم؟- طبيب يجيب \"فيديو\" - الكونسلتو"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 14:12:41 GMT",
+        "identity_key": "https://twaslnews1.twaslnews.com/8290422/",
+        "key_type": "resolved_url",
+        "source": "شبكة تواصل الإخبارية",
+        "title": "متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 07:03:58 GMT",
+        "identity_key": "bb5cb66ff2b26349",
+        "key_type": "title-date-hash",
+        "source": "التلفزيون العربي",
+        "title": "انفجار ناقلتي نفط بمضيق هرمز.. ترمب: نستطيع إنهاء الحرب متى ما شئنا | التلفزيون العربي - التلفزيون العربي"
+      },
+      {
+        "date": "Wed, 25 Nov 2026 03:00:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/25/%D9%85%D8%AA%D9%89-%D9%8A%D8%B2%D8%B1%D8%B9-%D8%A7%D9%84%D9%82%D9%85%D8%AD-%D8%B1%D8%A6%D9%8A%D8%B3-%D9%85%D8%B1%D9%83%D8%B2-%D8%AA%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D9%85%D9%86%D8%A7%D8%AE-%D9%8A%D8%AD%D8%AF%D8%AF-%D8%A7%D9%84%D9%85%D9%88%D8%B9%D8%AF-%D8%A7%D9%84%D8%A3%D9%86%D8%B3%D8%A8/7630578",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "متى يزرع القمح ؟ رئيس مركز تغير المناخ يحدد الموعد الأنسب ويحذر من التبكير - اليوم السابع"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 19:48:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/23/%D8%A8%D8%B9%D8%AF-%D8%A7%D9%84%D8%AA%D8%A3%D9%84%D9%82-%D9%85%D8%B9-%D9%85%D9%86%D8%AA%D8%AE%D8%A8-%D8%A7%D9%84%D9%86%D8%A7%D8%B4%D8%A6%D9%8A%D9%86-%D9%85%D8%AA%D9%89-%D9%8A%D9%86%D8%AA%D9%87%D9%89-%D8%B9%D9%82%D8%AF-%D8%A3%D8%AD%D9%85%D8%AF-%D8%B5%D9%81%D9%88%D8%AA/7620480",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "بعد التألق مع منتخب الناشئين.. متى ينتهى عقد أحمد صفوت مع الزمالك؟ - اليوم السابع"
+      },
+      {
+        "date": "Mon, 23 Nov 2026 12:58:00 GMT",
+        "identity_key": "c70d2fe3ffe42232",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "متى يحين وقت شراء الذهب مجدداً؟ BCA تجيب - Investing.com"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 17:22:00 GMT",
+        "identity_key": "https://www.youm7.com/story/2026/11/21/%D9%85%D8%AA%D9%89-%D8%AA%D9%86%D8%AA%D9%87%D9%8A-%D8%B1%D8%AD%D9%84%D8%A9-%D9%87%D8%A8%D9%88%D8%B7-%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1-%D8%A7%D9%84%D8%B0%D9%87%D8%A8-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1/7627407",
+        "key_type": "resolved_url",
+        "source": "اليوم السابع",
+        "title": "متى تنتهي رحلة هبوط أسعار الذهب في مصر؟ - اليوم السابع"
+      },
+      {
+        "date": "Sat, 21 Nov 2026 06:33:07 GMT",
+        "identity_key": "59bc79cd809f1f47",
+        "key_type": "title-date-hash",
+        "source": "المركز الفلسطيني للإعلام",
+        "title": "أنيس متّى: فلسطين قضية إنسانية تتجاوز الانتماءات.. وتحالف إعلامي مع غزة - المركز الفلسطيني للإعلام"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 10:41:55 GMT",
+        "identity_key": "https://www.elconsolto.com/chronic/chronic-news/details/2026/11/20/3081591/%D8%A7%D8%B9%D9%88%D8%AC%D8%A7%D8%AC-%D8%A7%D9%84%D8%B9%D9%85%D9%88%D8%AF-%D8%A7%D9%84%D9%81%D9%82%D8%B1%D9%8A-%D9%84%D8%AF%D9%89-%D9%83%D8%A8%D8%A7%D8%B1-%D8%A7%D9%84%D8%B3%D9%86-%D9%85%D8%AA%D9%89-%D9%8A%D8%AD%D8%AA%D8%A7%D8%AC-%D8%A5%D9%84%D9%89-%D8%AA%D8%AF%D8%AE%D9%84-%D8%AC%D8%B1%D8%A7%D8%AD%D9%8A-",
+        "key_type": "resolved_url",
+        "source": "الكونسلتو",
+        "title": "اعوجاج العمود الفقري لدى كبار السن- متى يحتاج إلى تدخل جراحي؟ - الكونسلتو"
+      },
+      {
+        "date": "Fri, 20 Nov 2026 02:00:00 GMT",
+        "identity_key": "d1399f3edee5fcbb",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "متى يبدأ الميركاتو الشتوي في مصر 2027؟ موعد القيد ومفاجأة بشأن الزمالك - اليوم السابع"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "b26f49672aa0f4cd",
+        "key_type": "title-date-hash",
+        "source": "CNBC عربية",
+        "title": "متي يستعيد الذهب بريقه؟ - CNBC عربية"
+      },
+      {
+        "date": "Mon, 16 Nov 2026 08:00:00 GMT",
+        "identity_key": "0720c6c2ab686e8c",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "الذهب اليوم: متى تبدأ الحركة القوية ومتى يهدأ السوق؟ - Investing.com"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "ce8a8e7d1f2a0dbd",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "عام دراسى.. متى ينتهى الترم الأول ومواعيد الامتحانات وإجازة نصف العام؟ - اليوم السابع"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "32b24ec73be0ccf1",
+        "key_type": "title-date-hash",
+        "source": "أريبيان بزنس",
+        "title": "متى تكون تذاكر الطيران أرخص في السعودية؟ - أريبيان بزنس"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "b224c468f8ba6bf8",
+        "key_type": "title-date-hash",
+        "source": "أريبيان بزنس",
+        "title": "خدمة \"أبشر سفر للزوار\".. متى تصبح إلزامية بالسعودية؟ - أريبيان بزنس"
+      },
+      {
+        "date": "Sun, 15 Nov 2026 08:00:00 GMT",
+        "identity_key": "0f9109a468d0524e",
+        "key_type": "title-date-hash",
+        "source": "جريدة الصباح نيوز",
+        "title": "بطاقة \"لاباس\".. متى ينطلق العمل بها؟ - جريدة الصباح نيوز"
+      },
+      {
+        "date": "Fri, 13 Nov 2026 08:00:00 GMT",
+        "identity_key": "fc5515606fab9053",
+        "key_type": "title-date-hash",
+        "source": "L'Orient-Le Jour",
+        "title": "لكنْ متى ينتهي التحرّر الوطنيّ؟ - L'Orient-Le Jour"
+      },
+      {
+        "date": "Mon, 09 Nov 2026 08:00:00 GMT",
+        "identity_key": "7542f248b19b23a1",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "متى ينضم محمد صلاح لمعسكر المنتخب الوطنى استعدادا لمالاوى - اليوم السابع"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "11f3ea79ee098f97",
+        "key_type": "title-date-hash",
+        "source": "جريدة البورصة",
+        "title": "الموسم المُر للبطاطا الحلوة.. متى تنتهى أزمة الفائض؟ - جريدة البورصة"
+      },
+      {
+        "date": "Thu, 05 Nov 2026 08:00:00 GMT",
+        "identity_key": "6da2896ae42ce87c",
+        "key_type": "title-date-hash",
+        "source": "أريبيان بزنس",
+        "title": "متى أخر موعد لاسترداد ضريبة العقارات بالسعودية؟ - أريبيان بزنس"
+      },
+      {
+        "date": "Wed, 04 Nov 2026 08:00:00 GMT",
+        "identity_key": "e196902d954e39af",
+        "key_type": "title-date-hash",
+        "source": "Investing.com",
+        "title": "عقود الذهب: تصحيح السوق وأهم مناطق الانعكاس.. متى يصعد الذهب؟ - Investing.com"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "bc380e5a96e01b73",
+        "key_type": "title-date-hash",
+        "source": "Nippon.com",
+        "title": "متى يقرر اليابانيون زيارة الطبيب؟.. استطلاع يكشف العامل الأبرز - Nippon.com"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "96689c439e70f90d",
+        "key_type": "title-date-hash",
+        "source": "الجزيرة نت",
+        "title": "معركة السيطرة على الكونغرس.. متى نعرف الفائز؟ - الجزيرة نت"
+      },
+      {
+        "date": "Tue, 03 Nov 2026 08:00:00 GMT",
+        "identity_key": "0f6298cd7ffc7d40",
+        "key_type": "title-date-hash",
+        "source": "مونت كارلو الدولية",
+        "title": "النصفية الأمريكية: متى تصدر النتائج ويُحسم مصير الأغلبية في الكونغرس؟ - مونت كارلو الدولية"
+      },
+      {
+        "date": "Mon, 02 Nov 2026 08:00:00 GMT",
+        "identity_key": "cf1384c936e9e9db",
+        "key_type": "title-date-hash",
+        "source": "الشرق الأوسط",
+        "title": "متى يُحسم سباق السيطرة على الكونغرس الأميركي؟ - الشرق الأوسط"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "2f82d168f7f0e575",
+        "key_type": "title-date-hash",
+        "source": "الجزيرة نت",
+        "title": "ديون الدول.. متى تهدد المواطنين وهل تخفي الحكومات بعض الأرقام؟ - الجزيرة نت"
+      },
+      {
+        "date": "Sun, 01 Nov 2026 07:00:00 GMT",
+        "identity_key": "14e55776d92f1db0",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "متى نبدأ ارتداء الملابس الشتوية؟.. الأرصاد تكشف الموعد المناسب - اليوم السابع"
+      },
+      {
+        "date": "Fri, 30 Oct 2026 22:19:24 GMT",
+        "identity_key": "f4e03bd03aa33292",
+        "key_type": "title-date-hash",
+        "source": "المدن",
+        "title": "متى ندفن موتانا؟ - المدن"
+      },
+      {
+        "date": "Fri, 30 Oct 2026 07:00:00 GMT",
+        "identity_key": "ef95b94b4e503a28",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "متى تدق ساعة الاعتزال؟.. رونالدو وميسي بين حلم الألف وتحديات نيمار ونوير - اليوم السابع"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "89d289fc4fe5b377",
+        "key_type": "title-date-hash",
+        "source": "الكونسلتو",
+        "title": "مفعول تطعيم الإنفلونزا ليس فوريًا- متى يبدأ في الجسم؟ - الكونسلتو"
+      },
+      {
+        "date": "Thu, 29 Oct 2026 07:00:00 GMT",
+        "identity_key": "0a51a4febf5d5327",
+        "key_type": "title-date-hash",
+        "source": "اليوم السابع",
+        "title": "بعد التألق أمام المقاولون العرب.. متى ينتهي عقد محمد حمد مع الزمالك؟ - اليوم السابع"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 6.62,
+    "base_source": "egx-data/egxpy_mtie.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_mtie.csv",
+      "base_stale": false,
+      "base_used": 6.62,
+      "common_date": "2026-11-25",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_mtie.csv": 6.75,
+        "openbb/mtie_ca.csv": 6.75,
+        "pandas-ta/indicators.csv": 6.75,
+        "talib/indicators.csv": 6.75,
+        "yahooquery/mtie.ca.csv": 6.75
+      }
+    },
+    "sessions_per_calendar_day": 0.4,
+    "sigma_daily": 0.0337,
+    "sigma_source": "egx-data/egxpy_mtie.csv (σ60=0.0337, σ10=0.0293)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 6.62,
+      "last_date": "2026-11-26",
+      "last_high": 6.9,
+      "last_low": 6.6,
+      "last_open": 6.75,
+      "last_volume": 4717144.0,
+      "note": null,
+      "rows": 2335,
+      "source": "egx-data/egxpy_mtie.csv",
+      "stale": false
+    },
+    {
+      "last_close": 6.619999885559082,
+      "last_date": "2026-11-26",
+      "last_high": 6.900000095367432,
+      "last_low": 6.599999904632568,
+      "last_open": 6.75,
+      "last_volume": 4717144.0,
+      "note": null,
+      "rows": 484,
+      "source": "openbb/MTIE_CA.csv",
+      "stale": false
+    },
+    {
+      "last_close": 6.619999885559082,
+      "last_date": "2026-11-26",
+      "last_high": 6.900000095367432,
+      "last_low": 6.599999904632568,
+      "last_open": 6.75,
+      "last_volume": 4717144.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 6.619999885559082,
+      "last_date": "2026-11-26",
+      "last_high": 6.900000095367432,
+      "last_low": 6.599999904632568,
+      "last_open": 6.75,
+      "last_volume": 4717144.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": false
+    },
+    {
+      "last_close": 6.75,
+      "last_date": "2026-11-25",
+      "last_high": 7.099999904632568,
+      "last_low": 6.559999942779541,
+      "last_open": 6.599999904632568,
+      "last_volume": 25196651.0,
+      "note": null,
+      "rows": 1211,
+      "source": "yahooquery/MTIE.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-mtie-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-mtie-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "MTIE.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.3,
+    "events": [
+      {
+        "severity": "high",
+        "title": "متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية",
+        "type": "earnings"
+      }
+    ],
+    "flags": [
+      "earnings event: متى يستعيد الذهب صعوده؟ خبراء يحددون مستويات التراجع - شبكة تواصل الإخبارية"
+    ],
+    "level": "shock",
+    "move_z": {
+      "last": 0.58,
+      "max3": 1.48
+    },
+    "price_mult": 0.5
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for MTIE.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T09:15:16.878353+00:00",
+  "sweep_dir": "sweeps/2026-11-27/091948__sweep-lite-mtie-ca-market-egx__runw6-sweeplite-mtie-002",
+  "ticker": "MTIE.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MTIE.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MTIE.CA.csv_last_close": 6.75,
+          "MTIE.CA.csv_last_date": "2026-11-25",
+          "rows_MTIE.CA.csv": 1211
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "3b717927f8e634338a86c2421423c910eb0649e52b2db37e295ca62d5a8bdd9a",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "MTIE_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "MTIE_CA.csv_last_close": 6.619999885559082,
+          "MTIE_CA.csv_last_date": "2026-11-26",
+          "rows_MTIE_CA.csv": 484
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "92312feb4ac68041720cbd3ccfb76d180508bcebae43d1ebdfc70a40ec4fa6bb",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_mtie.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_mtie.csv_last_close": 6.62,
+          "egxpy_mtie.csv_last_date": "2026-11-26",
+          "rows_egxpy_mtie.csv": 2335,
+          "symbol": "MTIE",
+          "ticker": "MTIE.CA"
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "5c7f61d0cf6a0e730cfefa56a6e939f6468d97af1e665bb6a350e47514651b70",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 23.099,
+          "atr_14": 0.3738,
+          "bb_lower": 6.1636,
+          "bb_mid": 6.818,
+          "bb_pctb": 0.3487,
+          "bb_upper": 7.4724,
+          "close": 6.62,
+          "date": "2026-11-26",
+          "drop_before": "2019-01-01",
+          "ema_20": 6.8252,
+          "ema_200": 7.9995,
+          "ema_50": 7.3221,
+          "first_date_used": "2019-01-01",
+          "high": 6.9,
+          "indicators.csv_last_close": 6.619999885559082,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_date": "2026-11-26",
+          "low": 6.6,
+          "macd": -0.2352,
+          "macd_hist": 0.0088,
+          "macd_signal": -0.244,
+          "open": 6.75,
+          "rows_fetched": 2372,
+          "rows_indicators.csv": 250,
+          "rows_used": 1933,
+          "rsi_14": 43.3744,
+          "stoch_d": 23.9915,
+          "stoch_k": 32.2718,
+          "ticker": "MTIE.CA"
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "e0560d7d5f3d0c2eb34caa04376b9786e15688a97ce5f41699839c902e1d324a",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 6.619999885559082,
+          "indicators.csv_last_date": "2026-11-26",
+          "last_close": 6.619999885559082,
+          "last_date": "2026-11-26",
+          "rows_fetched": 2372,
+          "rows_indicators.csv": 250,
+          "rows_used": 1933,
+          "ticker": "MTIE.CA"
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "8405c207e28fd7c8f26dba4b9417d827251f5247e7a5ee8055992e22958edb51",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.829999923706055,
+          "rows": 2189,
+          "rows_ohlc.csv": 2189,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "583620034aee8da608bdea80d019097e0e5879fedf2d6c92b7784d104d4c4d4b",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.829999923706055,
+          "rows_poul_ohlc.csv": 2438
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "7fcbba1e2cd2df7ce6039b98255be0a7be2b1bf44d2c3d38d60ff453848935f2",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 17
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "e1f225109a5f813d38f25f1f8c753bb4afb37222aab08630b84ba5e70e60fe00",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "MTIE.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "a702941f5fc5ea631af23ce069195c89a7f503551eba09f9f336d0786382240a",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-tone-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "MTIE.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "9837f214966214a5b07da687a6d14e302ac6a1a03ef2c414d41794060614c3b7",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "MTIE.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "b792d2a3fc2f5329647acb57e248be18f6773cf1e0eb59dfc8178f6cb0ec5faa",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 6.9951,
+          "forecast.csv_last_date": "2026-12-24",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "79031ae346c375ff2f20334d72f6e55d075a65354681aad3164b3921689e6529",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "7bb93e724e75d9736986ea863d6ba4db6a4ca41ec4bf82f43347b34532412424",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-mtie-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 34,
+          "bodies_fetched": 7,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T09:19:46Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Thu, 26 Nov 2026 21:38:26 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.097,
+          "multilingual_neutral": 0.794,
+          "multilingual_positive": 0.108,
+          "multilingual_scored": 34,
+          "news_count": 34,
+          "ticker": "MTIE.CA",
+          "tool": "news-disclosure",
+          "top_headline": "المعاودة: الأصول المشفرة تدخل ضمن تركة المتوفى متى ثبتت ملكيته لها - جريدة البلاد",
+          "translated_negative": 0.14,
+          "translated_neutral": 0.789,
+          "translated_positive": 0.071,
+          "translated_scored": 34,
+          "translation_provider": "cohere+nllb"
+        },
+        "status": "ok",
+        "ticker": "MTIE.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "7de8c048527d89a9d2a3f60df4a163b2abbdbf5bb8dc4250ea24509f4d69a707",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-mtie-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert-tone"
+    },
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "financial-roberta"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

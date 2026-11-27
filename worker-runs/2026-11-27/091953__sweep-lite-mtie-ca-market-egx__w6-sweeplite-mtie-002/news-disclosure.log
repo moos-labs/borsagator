@@ -1,0 +1,31 @@
+WARN body http 403: https://www.albiladpress.com/news/2026/6618/bahrain/1033426.html
+WARN body extract short (184 chars): https://www.elconsolto.com/multimedia/videos-galleries/details/2026/11/25/3084453/%D9%85%D
+WARN body http 403: https://www.alaraby.com/news/%D8%A7%D9%86%D9%81%D8%AC%D8%A7%D8%B1-%D9%86%D8%A7%D9%82%D9%84
+WARN body http 403: https://sa.investing.com/news/commodities-news/article-3451073
+WARN body http 403: https://palinfo.com/news/2026/11/21/1124341/
+bodies: 7/12 fetched; failures by stage: {'decode': 0, 'http': 4, 'extract': 1}
+WARN egx published harvest unavailable: 404 Client Error: Not Found for url: https://raw.githubusercontent.com/moos-labs/borsagator/archive/harvest/MTIE.json
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5737.45it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 16358.25it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 16288.19it/s]
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5936.46it/s]
+{"tool": "news-disclosure", "ticker": "MTIE.CA", "news_count": 34, "disclosure_count": 0, "arabic_headlines": 34, "latest_news_date": "Thu, 26 Nov 2026 21:38:26 GMT", "latest_disclosure_date": "", "top_headline": "المعاودة: الأصول المشفرة تدخل ضمن تركة المتوفى متى ثبتت ملكيته لها - جريدة البلاد", "llm_provider": "cohere", "multilingual_positive": 0.108, "multilingual_negative": 0.097, "multilingual_neutral": 0.794, "multilingual_scored": 34, "bodies_fetched": 7, "egx_bodies_attached": 0, "egx_disclosures_added": 0, "translation_provider": "cohere+nllb", "translated_positive": 0.071, "translated_negative": 0.14, "translated_neutral": 0.789, "translated_scored": 34}
+BRIEF:
+- The article from *Jarida Al-Balad* discusses the inclusion of cryptocurrencies in a deceased person's estate, highlighting the legal recognition of digital assets.
+- *Al-Marsad Sports* features a sports journalist, Ahmad Al-Shamrani, questioning the coach of Al-Ahli club about his future and the team's performance.
+- *Al-Markazia* covers a political statement by Nazih Matti, who suggests that dialogue with the political party is not productive due to their stance on state sovereignty and influence.
+- *Al-Konselto* presents an expert's opinion on when blood transfusions are necessary, providing medical insights.
+- *Shabakat Tawasol Al-Ikhbariyah* shares economists' views on gold prices, predicting further declines due to the US Federal Reserve's monetary policy and market pressures.
+- *Al-Arabi TV* reports on an oil tanker explosion in the Strait of Hormuz, with President Trump stating that the US can end the war whenever it chooses.
+- *Al-Youm Al-Sabea* provides agricultural advice, highlighting the optimal time for wheat planting, which is from November 10th to December 5th, to avoid plant damage.
+- Another article in *Al-Youm Al-Sabea* discusses the future of Ahmed Safwat, a promising young player for Zamalek and the Egyptian national team, with his contract status and potential interest from European agents.
