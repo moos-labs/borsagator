@@ -390,11 +390,21 @@ def main():
                         str(e)[:150])
                     anchors = None
 
-                def _fetch(url, _page=dpage):
+                def _fetch(url, _page=dpage, _referer=lk["href"]):
                     # Same browser session as the detail page, so the
                     # TSPD-trusted profile's cookies ride along.
-                    resp = _page.request.get(url, timeout=60000)
-                    return resp.status, resp.body()
+                    # Add Referer header to mimic browser navigation from the detail page.
+                    # Follow redirects (max_redirects defaults to 20 in Playwright).
+                    resp = _page.request.get(
+                        url,
+                        timeout=60000,
+                        headers={"Referer": _referer},
+                        max_redirects=20,
+                    )
+                    # Record detailed diagnostics for non-PDF responses
+                    ct = resp.headers.get("content-type", "")
+                    body_preview = resp.body()[:200] if resp.body() else b""
+                    return resp.status, resp.body(), ct, body_preview
 
                 try:
                     attachments = capture_item_attachments(

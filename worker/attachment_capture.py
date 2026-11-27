@@ -153,7 +153,14 @@ def capture_one(fetch, url, dest_dir, news_id, index=0):
     pointer record; a fetch failure is a record, never an exception.
     """
     try:
-        status, data = fetch(url)
+        # fetch now returns (status, data, content_type, body_preview)
+        fetch_result = fetch(url)
+        if len(fetch_result) == 4:
+            status, data, content_type, body_preview = fetch_result
+        else:
+            # Backward compatibility with old fetch signature
+            status, data = fetch_result
+            content_type, body_preview = "", b""
     except Exception as exc:  # transport failure, timeout, TSPD wall
         return _record("fetch_failed", source_url=url,
                        reason="fetch raised: %s" % str(exc)[:200])
@@ -162,6 +169,16 @@ def capture_one(fetch, url, dest_dir, news_id, index=0):
                        reason="HTTP %s" % status)
     rec = store_pdf(data, dest_dir, news_id, index)
     rec["source_url"] = url
+    # Enrich not_pdf records with diagnostic details
+    if rec["status"] == "not_pdf":
+        details = []
+        if content_type:
+            details.append("content-type: %s" % content_type)
+        if body_preview:
+            # Show first 200 bytes as repr for debugging
+            details.append("body preview: %r" % body_preview)
+        if details:
+            rec["reason"] = (rec["reason"] or "") + "; " + "; ".join(details)
     return rec
 
 
