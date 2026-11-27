@@ -1,0 +1,251 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 2,
+    "negative": 0,
+    "neutral": 7
+  },
+  "label_counts_raw": {
+    "positive": 2,
+    "neutral": 7
+  },
+  "mean_probabilities": {
+    "positive": 0.2448316662460886,
+    "negative": 0.007165585442902985,
+    "neutral": 0.7480027394695854
+  },
+  "items": [
+    {
+      "text": "Connecting with elderly family members helps them feel less alone - Ceres Courier",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999603033065796,
+        "negative": 9.099189668404506e-08,
+        "neutral": 3.953326086048037e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999603033065796
+        },
+        {
+          "label": "Neutral",
+          "score": 3.953326086048037e-05
+        },
+        {
+          "label": "Negative",
+          "score": 9.099189668404506e-08
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Are “Girl Dads” Better Partners? - Psychology Today",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.6122727394104004,
+        "negative": 0.0034710278268903494,
+        "neutral": 0.3842562139034271
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.6122727394104004
+        },
+        {
+          "label": "Neutral",
+          "score": 0.3842562139034271
+        },
+        {
+          "label": "Negative",
+          "score": 0.0034710278268903494
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "CHCF Health Care Leadership Program Welcomes 26th Cohort of Fellows - California Health Care Foundation",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.012293560430407524,
+        "negative": 1.7308506357949227e-05,
+        "neutral": 0.9876891374588013
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9876891374588013
+        },
+        {
+          "label": "Positive",
+          "score": 0.012293560430407524
+        },
+        {
+          "label": "Negative",
+          "score": 1.7308506357949227e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Would You Read Your Partner’s ChatGPT? - Psychology Today",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.3025420457779546e-06,
+        "negative": 0.00010028453834820539,
+        "neutral": 0.9998984336853027
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998984336853027
+        },
+        {
+          "label": "Negative",
+          "score": 0.00010028453834820539
+        },
+        {
+          "label": "Positive",
+          "score": 1.3025420457779546e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "What Is Scromiting and Why Are Cases Increasing So Dramatically? - Psychology Today",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0005375287728384137,
+        "negative": 0.024100610986351967,
+        "neutral": 0.9753618240356445
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9753618240356445
+        },
+        {
+          "label": "Negative",
+          "score": 0.024100610986351967
+        },
+        {
+          "label": "Positive",
+          "score": 0.0005375287728384137
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Stop Trying to Get to the 'Next' Thing - Psychology Today",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.530464917072095e-05,
+        "negative": 0.031393058598041534,
+        "neutral": 0.9685816764831543
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9685816764831543
+        },
+        {
+          "label": "Negative",
+          "score": 0.031393058598041534
+        },
+        {
+          "label": "Positive",
+          "score": 2.530464917072095e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "I Love You Because You’re Different From Me - Psychology Today",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.4861445128917694,
+        "negative": 0.005317054223269224,
+        "neutral": 0.5085384249687195
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.5085384249687195
+        },
+        {
+          "label": "Positive",
+          "score": 0.4861445128917694
+        },
+        {
+          "label": "Negative",
+          "score": 0.005317054223269224
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "LatinX Council Updates! - NASWCANEWS.ORG",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.220943108317442e-05,
+        "negative": 2.784783828246873e-05,
+        "neutral": 0.9999399185180664
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999399185180664
+        },
+        {
+          "label": "Positive",
+          "score": 3.220943108317442e-05
+        },
+        {
+          "label": "Negative",
+          "score": 2.784783828246873e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ASU's online social work master’s degree marks 10 years of expanding access - ASU News",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.09221753478050232,
+        "negative": 6.298547668848187e-05,
+        "neutral": 0.9077194929122925
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9077194929122925
+        },
+        {
+          "label": "Positive",
+          "score": 0.09221753478050232
+        },
+        {
+          "label": "Negative",
+          "score": 6.298547668848187e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

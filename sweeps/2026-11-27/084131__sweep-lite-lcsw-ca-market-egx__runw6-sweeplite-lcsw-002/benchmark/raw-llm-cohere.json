@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 43.34,
+ "base_source": "egx-data/egxpy_lcsw.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T08:41:35.750416+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.78,
+   "direction": "up",
+   "expected_move_pct": 1.16,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.76,
+   "range_low_pct": 0.56,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.43,
+   "direction": "down",
+   "expected_move_pct": -1.22,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 0.0,
+   "range_low_pct": -2.44,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.65,
+   "direction": "up",
+   "expected_move_pct": 2.32,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.72,
+   "range_low_pct": 0.92,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_lcsw.csv": "fe642f27810ca60dd8fb407bc978fcf5aefffe0434f9ca54cbc6754a58529515",
+  "digest.json": "e600b1ff171d3f48e797851dce60a7bb3657c9ec64d8f136a76fcbbc3f154cf3",
+  "ensemble.json": "c234ed12503775e368aaa7144e1a93de21808c540f99d5f20461a024e45b13cb",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_lcsw.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.656,
+ "sigma_daily": 0.0309,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+ "ticker": "LCSW.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

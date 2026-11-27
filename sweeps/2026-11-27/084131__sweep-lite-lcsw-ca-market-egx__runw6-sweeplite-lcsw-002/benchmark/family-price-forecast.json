@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 43.34,
+ "base_source": "egx-data/egxpy_lcsw.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T08:41:32.195577+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "cff84a373dd7a4de4c781620b1f038d0674274f3a4c14dad4d1d1696e3402f71",
+  "digest.json": "e600b1ff171d3f48e797851dce60a7bb3657c9ec64d8f136a76fcbbc3f154cf3",
+  "ensemble.json": "c234ed12503775e368aaa7144e1a93de21808c540f99d5f20461a024e45b13cb"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+ "ticker": "LCSW.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

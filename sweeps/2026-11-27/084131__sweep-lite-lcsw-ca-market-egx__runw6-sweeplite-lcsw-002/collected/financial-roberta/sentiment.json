@@ -1,0 +1,157 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 9,
+  "label_counts": {
+    "positive": 3,
+    "negative": 1,
+    "neutral": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.3354727795683882,
+    "negative": 0.11030445910324084,
+    "neutral": 0.5542227612006374
+  },
+  "items": [
+    {
+      "text": "Connecting with elderly family members helps them feel less alone - Ceres Courier",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9911012649536133,
+        "negative": 0.00023476069327443838,
+        "neutral": 0.008663938380777836
+      },
+      "raw_probabilities": {
+        "positive": 0.9911012649536133,
+        "neutral": 0.008663938380777836,
+        "negative": 0.00023476069327443838
+      }
+    },
+    {
+      "text": "Are “Girl Dads” Better Partners? - Psychology Today",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0014025106793269515,
+        "negative": 0.00047439878107979894,
+        "neutral": 0.9981231093406677
+      },
+      "raw_probabilities": {
+        "neutral": 0.9981231093406677,
+        "positive": 0.0014025106793269515,
+        "negative": 0.00047439878107979894
+      }
+    },
+    {
+      "text": "CHCF Health Care Leadership Program Welcomes 26th Cohort of Fellows - California Health Care Foundation",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9949837923049927,
+        "negative": 0.00019616181089077145,
+        "neutral": 0.004820012953132391
+      },
+      "raw_probabilities": {
+        "positive": 0.9949837923049927,
+        "neutral": 0.004820012953132391,
+        "negative": 0.00019616181089077145
+      }
+    },
+    {
+      "text": "Would You Read Your Partner’s ChatGPT? - Psychology Today",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0008765121456235647,
+        "negative": 0.00027746064006350935,
+        "neutral": 0.9988460540771484
+      },
+      "raw_probabilities": {
+        "neutral": 0.9988460540771484,
+        "positive": 0.0008765121456235647,
+        "negative": 0.00027746064006350935
+      }
+    },
+    {
+      "text": "What Is Scromiting and Why Are Cases Increasing So Dramatically? - Psychology Today",
+      "predicted": "negative",
+      "raw_predicted_label": "negative",
+      "probabilities": {
+        "positive": 0.00019416597206145525,
+        "negative": 0.9900963306427002,
+        "neutral": 0.009709469974040985
+      },
+      "raw_probabilities": {
+        "negative": 0.9900963306427002,
+        "neutral": 0.009709469974040985,
+        "positive": 0.00019416597206145525
+      }
+    },
+    {
+      "text": "Stop Trying to Get to the 'Next' Thing - Psychology Today",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0007417903980240226,
+        "negative": 0.00030775563209317625,
+        "neutral": 0.9989504814147949
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989504814147949,
+        "positive": 0.0007417903980240226,
+        "negative": 0.00030775563209317625
+      }
+    },
+    {
+      "text": "I Love You Because You’re Different From Me - Psychology Today",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.004241543356329203,
+        "negative": 0.000249148637522012,
+        "neutral": 0.9955093860626221
+      },
+      "raw_probabilities": {
+        "neutral": 0.9955093860626221,
+        "positive": 0.004241543356329203,
+        "negative": 0.000249148637522012
+      }
+    },
+    {
+      "text": "LatinX Council Updates! - NASWCANEWS.ORG",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.027903489768505096,
+        "negative": 0.0003865240723825991,
+        "neutral": 0.9717099666595459
+      },
+      "raw_probabilities": {
+        "neutral": 0.9717099666595459,
+        "positive": 0.027903489768505096,
+        "negative": 0.0003865240723825991
+      }
+    },
+    {
+      "text": "ASU's online social work master’s degree marks 10 years of expanding access - ASU News",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9978099465370178,
+        "negative": 0.0005175910191610456,
+        "neutral": 0.0016724319430068135
+      },
+      "raw_probabilities": {
+        "positive": 0.9978099465370178,
+        "neutral": 0.0016724319430068135,
+        "negative": 0.0005175910191610456
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w6-sweeplite-lcsw-002",
+  "job": "sweep-lite LCSW.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T08:39:23.386034+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-lcsw-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T08:39:23.386034+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "LCSW"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['LCSW']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T08:41:31.896953+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+  "model": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002/report-model.json",
+  "model_sha256": "29cc8786806aa9b1fb4407aa0e46546c424f409636ceadd457924a05737aace4",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/LCSW.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/LCSW.CA.json",
+   "sharia-row-missing: AAOIFI LCSW.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 LCSW.CA",
+   "sharia-row-missing: FTSE LCSW.CA",
+   "sharia-row-missing: ISLAMICLY LCSW.CA",
+   "sharia-row-missing: MSCI LCSW.CA",
+   "sharia-row-missing: MSCI_M LCSW.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "5996d3c133e79e1ef8cfa278c322340d0fc1725f",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/084131__sweep-lite-lcsw-ca-market-egx__runw6-sweeplite-lcsw-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 117189,
+    "sha256": "946e03c63bd7fbaaffa4c51596156bd8ae03428d0655d13be653789692a9cadd"
+   },
+   {
+    "path": "report.md",
+    "bytes": 25060,
+    "sha256": "bdadeb735834fd5c881f6208a3d7489288b0ce4c858424a0121089640f0995ed"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "LCSW.CA"
+ }
+}
