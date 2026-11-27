@@ -30,7 +30,14 @@ Frozen at registration:
   this text was written, and the registration must name the new blob before
   it counts.
 - Rules 1 to 5, Holm over the 3 horizons, the all-horizons requirement, seed
-  `A.DEFAULT_SEED`, B = 5000, one scoring at the pre-declared n.
+  `A.DEFAULT_SEED`, B = 5000, and the scoring trigger below.
+- Scoring trigger (Moos's fix for the CodeRabbit finding on #864, relayed,
+  not read): one joint scoring, once, at the first point at which all three
+  horizons satisfy rule 1 (which includes >= 30 matured forward rows per
+  horizon, so the 30-row minimum is preserved). The three horizons are scored
+  together on the rows matured by that point, the Holm family and the
+  all-horizons requirement apply to that one scoring, and no horizon is scored
+  earlier or alone. There is no other target n.
 - The scorer constant MIN_CUTOFFS (listed in earlier drafts of the
   prerequisites) is a scorer item and is not part of this registration.
 
@@ -85,7 +92,7 @@ band), alpha 0.2, same rows. The published band is the frozen v2 band,
 so this is the "relative to frozen v2 on the same rows" comparison the
 loop already requires, and since widths are equal it isolates the centre.
 
-On one scoring at the pre-declared n, per horizon:
+On the one joint scoring (trigger in Registration), per horizon:
 1. n >= 30 matured forward rows, >= 10 distinct tickers counted across
    all forward rows of that horizon (not per sweep), >= 10 cutoff
    clusters (distinct `as_of`). The cluster count is the binding limit,
@@ -114,7 +121,7 @@ claim.
   commit hash named in the registration message. Any change to the tilt
   restarts the clock; rows from before the change are dropped.
 - The scorer prints counts only (rows, tickers, clusters per horizon)
-  until step 1 holds, as the sentiment ledger scorers do. One scoring,
+  until step 1 holds for all three horizons, as the sentiment ledger scorers do. One scoring,
   no re-fit, no re-scoring on a later, larger sample under the same
   registration.
 - Seed fixed (`A.DEFAULT_SEED`), reps 5000.
