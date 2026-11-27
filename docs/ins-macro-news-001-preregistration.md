@@ -38,7 +38,7 @@ The dictionary learner (Amendment-1 ruling: Lightning's bitmask dictionary, 4096
 3. theme_spike: the dominant theme family's daily volume z-score vs its trailing 30-day mean/std exceeds 2. Source: composition line; design note stage 2.
 4. tone_negative: the instance's mean tone falls in bucket T1 or T2 (mean tone <= -1). Source: this document (completes the bitmask).
 5. tone_positive: the instance's mean tone falls in bucket T4 or T5 (mean tone >= +1). Source: this document.
-6. count_spike: the instance's (theme-family, tone-bucket) group count z-score vs its trailing 30-day mean/std exceeds 2. Source: composition line ("z-spike flag").
+6. count_spike: the instance's (theme-family, tone-bucket) group count z-score vs its trailing 30-day mean/std exceeds 2. Aggregation, specified by this document: an instance built from several (theme-family, tone-bucket) groups takes the MAXIMUM of its member groups' z-scores, so count_spike is set when any member group spikes; a singleton has one group. Source: composition line ("z-spike flag") + this document's aggregation rule.
 7. llm_anomaly: the stage-3 LLM flagged at least one of the instance's source rows as anomalous (|z| > 2 tail routing). Source: composition line; design note stage 3.
 8. llm_severity_high: the LLM severity score on flagged rows in the instance is >= 4 (of 1-5). Source: this document; design note stage 3 output schema.
 9. geo_core: the instance's source rows carry a V2Locations hit in the core geo set (Egypt, Suez, Red Sea). Source: this document; design note stage 1.
@@ -60,15 +60,15 @@ Stage 2, embeddings:
 - Model: bge-small-en-v1.5, 384 dimensions, via fastembed/onnx, CPU (design note stage 2, confirmed by Amendment-2 ruling 2). Vectors are L2-normalized, so Euclidean distance on them is monotone in cosine distance.
 
 Stage 3, grouping:
-- Average the normalized embeddings within (theme-family, tone-bucket) pairs. Expected ~200 groups/day (Groq's estimate, descriptive). Theme families are the verified list in section 5; tone buckets are the boundaries in section 6.
+- Average the normalized embeddings within (theme-family, tone-bucket) pairs, then re-normalize each group average to unit L2 norm (specified by this document: a mean of unit vectors is not unit length, and Stage 4 needs unit vectors for Euclidean to be cosine-equivalent). Expected ~200 groups/day (Groq's estimate, descriptive). Theme families are the verified list in section 5; tone buckets are the boundaries in section 6.
 
 Stage 4, clustering:
 - HDBSCAN over the group-average vectors. Frozen parameters: min_cluster_size = 5; min_samples = 1; metric = euclidean on the L2-normalized vectors (equivalent to cosine); cluster_selection_method = 'eom'; cluster_selection_epsilon = 0.0. Noise points are kept as singleton bags (ruled singleton preservation). Expected ~120 clusters/day (Groq's estimate, descriptive, not a target to tune toward).
 - min_cluster_size, min_samples, the metric, cluster_selection_method and cluster_selection_epsilon are specified by this document (the rulings fixed the pipeline shape, not the numeric HDBSCAN settings); they are frozen on merge.
 
 Stage 5, bag instance:
-- Fields: centroid (384-d, the cluster mean of the normalized embeddings) + count (articles in the instance) + mean tone (mean of the GDELT tone field over the instance's rows) + 38-dim alias one-hot (one bit per ticker in evaluation/gdelt_alias_table.csv). ~424 dims total. Source: Amendment-2 ruling 2, verbatim field list.
-- Daily bag size: ~120 instances expected (~108 KB/day; 30-day walk-forward bag ~3,600 instances, ~1.5 MB; whole backtest under 50 MB). Expected size, not a cap.
+- Fields: centroid (384-d: the mean of the cluster's unit-length group vectors, re-normalized to unit L2 norm; the re-normalization is specified by this document, as in Stage 3) + count (articles in the instance) + mean tone (mean of the GDELT tone field over the instance's rows) + 38-dim alias one-hot (one bit per ticker in evaluation/gdelt_alias_table.csv). ~424 dims total. Source: Amendment-2 ruling 2, verbatim field list.
+- Daily bag size: ~120 instances expected (~108 KB/day; 30-day walk-forward bag ~3,600 instances, ~3.2 MB at 108 KB/day; whole backtest under 50 MB). Expected size, not a cap.
 
 ## 5. Theme-family list (verified against the official GDELT lookup)
 
@@ -95,14 +95,14 @@ The sector exposure map (38 tickers to sectors and driving families) is the veri
 | Embedding model | bge-small-en-v1.5, 384-d, fastembed/onnx, CPU, L2-normalized | ruled (Amendment-2 ruling 2; design note stage 2) |
 | URL dedup | canonical URL hash + first-seen UTC, both streams | design note section e (accepted design) |
 | Embedding dedup | cosine > 0.85 within 24h | design note stage 2 (accepted design) |
-| Grouping | average within (theme-family, tone-bucket) pairs | ruled (Amendment-2 ruling 2) |
+| Grouping | average within (theme-family, tone-bucket) pairs, each average re-normalized to unit L2 norm | averaging ruled (Amendment-2 ruling 2); re-normalization specified by this document, frozen on merge |
 | HDBSCAN | min_cluster_size=5, min_samples=1, euclidean on L2-normalized vectors, cluster_selection_method='eom', cluster_selection_epsilon=0.0 | specified by this document, frozen on merge |
 | Singleton preservation | HDBSCAN noise points kept as singleton bags | ruled (Amendment-2 ruling 2) |
-| Bag-instance fields | centroid (384-d) + count + mean tone + 38-dim alias one-hot | ruled (Amendment-2 ruling 2, verbatim) |
+| Bag-instance fields | centroid (384-d, unit L2 norm) + count + mean tone + 38-dim alias one-hot | ruled (Amendment-2 ruling 2, verbatim); centroid re-normalization specified by this document |
 | Daily bag size | ~120 instances expected | ruled estimate (descriptive, not a cap) |
-| Signal catalog | 12 binary columns per bag instance (section 3) | ruled composition line + this document's completion |
+| Signal catalog | 12 binary columns per bag instance (section 3); count_spike takes the max z over an instance's member groups | ruled composition line + this document's completion and count_spike aggregation |
 | Event window | [t-5, t-1] | ruled (Amendment 1) |
-| Detection | 3-day CAR z >= 2.0 plus |CAR| >= 1.5% of 30-day realised vol | ruled (Amendment 1) |
+| Detection | 3-day CAR z >= 2.0 plus \|CAR\| >= 1.5% of 30-day realised vol | ruled (Amendment 1) |
 | Availability cutoff | 15:00 EET on T for day T+1 features; lag sensitivity 0/1/2 days checked before fixing the lag | design note section d (accepted design) |
 | Multiple testing | Holm (FWER) across the 30 readings, on the bag-level statistic | ruled (Amendment-2 ruling 1) |
 | Keep-rule harness | RangeSkill cutoff-clustered CI lower bound > 0; coverage CI overlaps [0.75, 0.85] with the absolute 0.15 width cap; whole-cutoff-cluster bootstrap; MIN_ROWS=30, MIN_TICKERS=5, MIN_CUTOFFS=2 (raise-to-10 future-only) | settled rulings 2026-11-26 + Amendment-2 ruling 1 |
@@ -117,4 +117,4 @@ These parameters are frozen before any pattern mining. If any parameter needs to
 
 ## 8. Verification statement
 
-Prepared by Ins under INS-PANEL-001. Every load-bearing claim above traces to a ruling message (Slack timestamps in the provenance header), the repo (scripts/gdelt_gkg_filter.py; evaluation/gdelt_alias_table.csv; PR #836 clip shape), the official GDELT GKG theme lookup, or a measured shard-agent throughput figure. Items not fixed by any ruling (tone-bucket boundaries, HDBSCAN numeric parameters, dictionary columns 4, 5, 8-12) are marked as specified by this document and enter review as new frozen values. Panel-fabricated theme names and tickers from the design round were excluded; the lists in section 5 are the verified ones. LLM free-tier rate limits remain UNRESOLVED pending verification at build time.
+Prepared by Ins under INS-PANEL-001. Every load-bearing claim above traces to a ruling message (Slack timestamps in the provenance header), the repo (scripts/gdelt_gkg_filter.py; evaluation/gdelt_alias_table.csv; PR #836 clip shape), the official GDELT GKG theme lookup, or a measured shard-agent throughput figure. Items not fixed by any ruling (tone-bucket boundaries, HDBSCAN numeric parameters, dictionary columns 4, 5, 8-12, the count_spike aggregation rule, and the unit-norm re-normalization in Stages 3 and 5) are marked as specified by this document and enter review as new frozen values. Panel-fabricated theme names and tickers from the design round were excluded; the lists in section 5 are the verified ones. LLM free-tier rate limits remain UNRESOLVED pending verification at build time.
