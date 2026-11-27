@@ -68,7 +68,7 @@ Stage 4, clustering:
 
 Stage 5, bag instance:
 - Fields: centroid (384-d: the mean of the cluster's unit-length group vectors, re-normalized to unit L2 norm; the re-normalization is specified by this document, as in Stage 3) + count (articles in the instance) + mean tone (mean of the GDELT tone field over the instance's rows) + 38-dim alias one-hot (one bit per ticker in evaluation/gdelt_alias_table.csv). ~424 dims total. Source: Amendment-2 ruling 2, verbatim field list.
-- Daily bag size: ~120 instances/day x ~424 dims expected (30-day walk-forward bag ~3,600 instances). The storage dtype is set at implementation, and the real size is measured and reported; no byte figure and no dtype is frozen here (specified by this document). Expected size, not a cap.
+- Daily bag size: ~120 instances/day x ~424 dims expected (a 30-day walk-forward collection is ~3,600 instances; one bag is the [t-5, t-1] look-back window, ~600 instances). The storage dtype is set at implementation, and the real size is measured and reported; no byte figure and no dtype is frozen here (specified by this document). Expected size, not a cap.
 
 ## 5. Theme-family list (verified against the official GDELT lookup)
 
