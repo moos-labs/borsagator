@@ -4,16 +4,16 @@
  "source": {
   "repo": "moos-labs/borsagator",
   "branch": "archive",
-  "tree_sha": "375a46c5b016f7b5d1430751afedaad2254422dc",
-  "commit_sha": "375a46c5b016f7b5d1430751afedaad2254422dc",
+  "tree_sha": "8bc35c89c64a61313179924b66e80ddf8995b36b",
+  "commit_sha": "8bc35c89c64a61313179924b66e80ddf8995b36b",
   "tree_via": "api-token"
  },
  "counts": {
-  "sweeps": 107,
-  "sweeps_with_ensemble": 86,
-  "forecasts": 252,
-  "matured": 63,
-  "pending": 174,
+  "sweeps": 110,
+  "sweeps_with_ensemble": 89,
+  "forecasts": 261,
+  "matured": 66,
+  "pending": 180,
   "invalid": 15,
   "dividend_adjusted": 8,
   "excluded_flagged": 12
@@ -122,21 +122,21 @@
    "invalid": 0
   },
   "ICFC.CA": {
-   "found": 3,
-   "matured": 0,
-   "pending": 3,
+   "found": 6,
+   "matured": 1,
+   "pending": 5,
    "invalid": 0
   },
   "IFAP.CA": {
-   "found": 3,
-   "matured": 0,
-   "pending": 3,
+   "found": 6,
+   "matured": 1,
+   "pending": 5,
    "invalid": 0
   },
   "ISPH.CA": {
-   "found": 3,
-   "matured": 0,
-   "pending": 3,
+   "found": 6,
+   "matured": 1,
+   "pending": 5,
    "invalid": 0
   },
   "JUFO.CA": {
@@ -250,10 +250,10 @@
  },
  "by_horizon": {
   "day": {
-   "n": 36,
-   "hit_rate": 0.139,
-   "mean_abs_error_pp": 7.38,
-   "range_coverage": 0.667
+   "n": 39,
+   "hit_rate": 0.128,
+   "mean_abs_error_pp": 6.99,
+   "range_coverage": 0.692
   },
   "week": {
    "n": 15,
@@ -274,20 +274,20 @@
    "n": 1
   },
   "ensemble (net_score)": {
-   "mean_skill": -0.219,
-   "n": 51
+   "mean_skill": -0.201,
+   "n": 54
   },
   "price-forecast": {
-   "mean_skill": -0.473,
-   "n": 48
+   "mean_skill": -0.433,
+   "n": 51
   },
   "sentiment": {
-   "mean_skill": 0.021,
-   "n": 50
+   "mean_skill": 0.033,
+   "n": 53
   },
   "technicals": {
-   "mean_skill": -0.228,
-   "n": 50
+   "mean_skill": -0.222,
+   "n": 53
   }
  },
  "series": {
@@ -609,41 +609,59 @@
    ]
   },
   "ICFC.CA": {
-   "points": 3000,
+   "points": 3001,
    "first_date": "2014-06-11",
-   "last_date": "2026-11-25",
+   "last_date": "2026-11-26",
    "sources": [
     {
      "sweep": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001",
      "file": "sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001/collected/egx-data/egxpy_icfc.csv",
      "points": 3000,
      "last_date": "2026-11-25"
+    },
+    {
+     "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+     "file": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002/collected/egx-data/egxpy_icfc.csv",
+     "points": 3000,
+     "last_date": "2026-11-26"
     }
    ]
   },
   "IFAP.CA": {
-   "points": 3000,
+   "points": 3001,
    "first_date": "2014-07-16",
-   "last_date": "2026-11-25",
+   "last_date": "2026-11-26",
    "sources": [
     {
      "sweep": "sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001",
      "file": "sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001/collected/egx-data/egxpy_ifap.csv",
      "points": 3000,
      "last_date": "2026-11-25"
+    },
+    {
+     "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+     "file": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002/collected/egx-data/egxpy_ifap.csv",
+     "points": 3000,
+     "last_date": "2026-11-26"
     }
    ]
   },
   "ISPH.CA": {
-   "points": 2173,
+   "points": 2174,
    "first_date": "2017-12-11",
-   "last_date": "2026-11-25",
+   "last_date": "2026-11-26",
    "sources": [
     {
      "sweep": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001",
      "file": "sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001/collected/egx-data/egxpy_isph.csv",
      "points": 2173,
      "last_date": "2026-11-25"
+    },
+    {
+     "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+     "file": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002/collected/egx-data/egxpy_isph.csv",
+     "points": 2174,
+     "last_date": "2026-11-26"
     }
    ]
   },
@@ -5802,8 +5820,23 @@
    },
    "sessions": 1,
    "corporate_actions": [],
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 27.65,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 3.17,
+   "realized_direction": "up",
+   "direction_hit": false,
+   "move_error_pp": 4.7,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.3,
+    "sentiment": 0.155,
+    "price-forecast": -0.227
+   },
+   "net_skill": -0.142,
+   "sessions_available": 1
   },
   {
    "ticker": "ICFC.CA",
@@ -5826,7 +5859,7 @@
    "sessions": 3,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ICFC.CA",
@@ -5850,7 +5883,7 @@
    "sessions": 14,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "IFAP.CA",
@@ -5872,8 +5905,23 @@
    },
    "sessions": 1,
    "corporate_actions": [],
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 15.89,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.44,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 1.72,
+   "in_range": true,
+   "family_skill": {
+    "technicals": -0.2,
+    "sentiment": 0.309,
+    "price-forecast": 0.555
+   },
+   "net_skill": 0.2,
+   "sessions_available": 1
   },
   {
    "ticker": "IFAP.CA",
@@ -5896,7 +5944,7 @@
    "sessions": 3,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "IFAP.CA",
@@ -5920,7 +5968,7 @@
    "sessions": 14,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ISPH.CA",
@@ -5942,8 +5990,23 @@
    },
    "sessions": 1,
    "corporate_actions": [],
-   "status": "pending",
-   "sessions_available": 0
+   "status": "matured",
+   "maturity_date": "2026-11-26",
+   "close_at_maturity": 10.1,
+   "dividend_adjusted": false,
+   "dividend_gap": null,
+   "realized_move_pct": 0.7,
+   "realized_direction": "flat",
+   "direction_hit": false,
+   "move_error_pp": 0.53,
+   "in_range": true,
+   "family_skill": {
+    "technicals": 0.15,
+    "sentiment": 0.242,
+    "price-forecast": 0.3
+   },
+   "net_skill": 0.232,
+   "sessions_available": 1
   },
   {
    "ticker": "ISPH.CA",
@@ -5966,7 +6029,7 @@
    "sessions": 3,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "ISPH.CA",
@@ -5990,7 +6053,7 @@
    "sessions": 14,
    "corporate_actions": [],
    "status": "pending",
-   "sessions_available": 0
+   "sessions_available": 1
   },
   {
    "ticker": "JUFO.CA",
@@ -8313,6 +8376,204 @@
    "corporate_actions": [],
    "status": "pending",
    "sessions_available": 0
+  },
+  {
+   "ticker": "ICFC.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+   "formula": "v2-594",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -6.64,
+   "range_high_pct": 6.64,
+   "confidence": 0.35,
+   "net_score": 0.155,
+   "base_price": 27.65,
+   "families": {
+    "sentiment": 0.155
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ICFC.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+   "formula": "v2-594",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -16.53,
+   "range_high_pct": 16.53,
+   "confidence": 0.35,
+   "net_score": -0.105,
+   "base_price": 27.65,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": 0.155
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ICFC.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+   "formula": "v2-594",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -31.75,
+   "range_high_pct": 31.75,
+   "confidence": 0.35,
+   "net_score": -0.154,
+   "base_price": 27.65,
+   "families": {
+    "technicals": -0.3,
+    "sentiment": 0.155,
+    "fundamentals": -0.1
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "IFAP.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+   "formula": "v2-594",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -4.2,
+   "range_high_pct": 4.2,
+   "confidence": 0.35,
+   "net_score": 0.282,
+   "base_price": 15.89,
+   "families": {
+    "sentiment": 0.282
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "IFAP.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+   "formula": "v2-594",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -10.45,
+   "range_high_pct": 10.45,
+   "confidence": 0.35,
+   "net_score": 0.006,
+   "base_price": 15.89,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": 0.282
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "IFAP.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002",
+   "formula": "v2-594",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -20.08,
+   "range_high_pct": 20.08,
+   "confidence": 0.35,
+   "net_score": 0.023,
+   "base_price": 15.89,
+   "families": {
+    "technicals": -0.2,
+    "sentiment": 0.282,
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ISPH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+   "formula": "v2-594",
+   "horizon": "day",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -2.97,
+   "range_high_pct": 2.97,
+   "confidence": 0.6,
+   "net_score": 0.273,
+   "base_price": 10.1,
+   "families": {
+    "sentiment": 0.273
+   },
+   "sessions": 1,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ISPH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+   "formula": "v2-594",
+   "horizon": "week",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -7.38,
+   "range_high_pct": 7.38,
+   "confidence": 0.6,
+   "net_score": 0.289,
+   "base_price": 10.1,
+   "families": {
+    "technicals": 0.3,
+    "sentiment": 0.273
+   },
+   "sessions": 5,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
+  },
+  {
+   "ticker": "ISPH.CA",
+   "as_of": "2026-11-27",
+   "sweep": "sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002",
+   "formula": "v2-594",
+   "horizon": "month",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "range_low_pct": -14.18,
+   "range_high_pct": 14.18,
+   "confidence": 0.6,
+   "net_score": 0.222,
+   "base_price": 10.1,
+   "families": {
+    "technicals": 0.3,
+    "sentiment": 0.273,
+    "fundamentals": 0.15
+   },
+   "sessions": 21,
+   "corporate_actions": [],
+   "status": "pending",
+   "sessions_available": 0
   }
  ],
  "gaps": [
@@ -8334,9 +8595,9 @@
   "FAIT.CA: actuals series has 3001 sessions, 2014-06-26 → 2026-11-26 (last source: sweeps/2026-11-27/034145__sweep-lite-fait-ca-market-egx__runw6-sweeplite-fait-002/collected/egx-data/egxpy_fait.csv)",
   "FAITA.CA: actuals series has 3001 sessions, 2014-07-13 → 2026-11-26 (last source: sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002/collected/egx-data/egxpy_faita.csv)",
   "GOUR.CA: actuals series has 193 sessions, 2026-02-10 → 2026-11-26 (last source: sweeps/2026-11-27/034648__sweep-lite-gour-ca-market-egx__runw6-sweeplite-gour-002/collected/egx-data/egxpy_gour.csv)",
-  "ICFC.CA: actuals series has 3000 sessions, 2014-06-11 → 2026-11-25 (last source: sweeps/2026-11-25/131935__sweep-lite-icfc-ca-market-egx__runw5-sweeplite-icfc-001/collected/egx-data/egxpy_icfc.csv)",
-  "IFAP.CA: actuals series has 3000 sessions, 2014-07-16 → 2026-11-25 (last source: sweeps/2026-11-25/132652__sweep-lite-ifap-ca-market-egx__runw5-sweeplite-ifap-001/collected/egx-data/egxpy_ifap.csv)",
-  "ISPH.CA: actuals series has 2173 sessions, 2017-12-11 → 2026-11-25 (last source: sweeps/2026-11-25/133518__sweep-lite-isph-ca-market-egx__runw5-sweeplite-isph-001/collected/egx-data/egxpy_isph.csv)",
+  "ICFC.CA: actuals series has 3001 sessions, 2014-06-11 → 2026-11-26 (last source: sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002/collected/egx-data/egxpy_icfc.csv)",
+  "IFAP.CA: actuals series has 3001 sessions, 2014-07-16 → 2026-11-26 (last source: sweeps/2026-11-27/040547__sweep-lite-ifap-ca-market-egx__runw6-sweeplite-ifap-002/collected/egx-data/egxpy_ifap.csv)",
+  "ISPH.CA: actuals series has 2174 sessions, 2017-12-11 → 2026-11-26 (last source: sweeps/2026-11-27/040847__sweep-lite-isph-ca-market-egx__runw6-sweeplite-isph-002/collected/egx-data/egxpy_isph.csv)",
   "JUFO.CA: actuals series has 3000 sessions, 2014-07-17 → 2026-11-25 (last source: sweeps/2026-11-25/134241__sweep-lite-jufo-ca-market-egx__runw5-sweeplite-jufo-001/collected/egx-data/egxpy_jufo.csv)",
   "LCSW.CA: actuals series has 3000 sessions, 2014-05-21 → 2026-11-25 (last source: sweeps/2026-11-25/135002__sweep-lite-lcsw-ca-market-egx__runw5-sweeplite-lcsw-001/collected/egx-data/egxpy_lcsw.csv)",
   "MASR.CA: actuals series has 3000 sessions, 2014-07-21 → 2026-11-25 (last source: sweeps/2026-11-25/135953__sweep-lite-masr-ca-market-egx__runw5-sweeplite-masr-001/collected/egx-data/egxpy_masr.csv)",
