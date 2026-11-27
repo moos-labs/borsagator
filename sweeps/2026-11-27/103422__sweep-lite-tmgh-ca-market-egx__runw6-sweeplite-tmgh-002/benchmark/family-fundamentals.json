@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 79.24,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": null,
+   "dps": 10.0,
+   "entitlement_end": null,
+   "ex_date": null,
+   "mechanical_pct": -12.62,
+   "title": "30 مليون جنيه من هشام طلعت مصطفى وأحمد عز وياسين منصور لدعم ضحايا حريق الوراق - https://ww",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "family-alone-v1: combine re-run, weight 1 for fundamentals, 0 else; kmove zeroed (non-price family — the Kronos anchor belongs to price-forecast alone); risk mult + conf formula as ensemble.py; single voter, no disagreement widening",
+ "entrant": "family-fundamentals",
+ "frozen_at": "2026-11-27T10:34:23.321508+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.15,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 3.81,
+   "range_low_pct": -3.52,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.67,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 17.48,
+   "range_low_pct": -16.13,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.3,
+   "direction": "flat",
+   "expected_move_pct": 0.33,
+   "families": {
+    "fundamentals": 0.15
+   },
+   "horizon_short": false,
+   "net_score": 0.15,
+   "range_high_pct": 8.53,
+   "range_low_pct": -7.87,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "bdc29b2470e3686081b481c25767bd83e915d04c0031617743e234b40dc3e101",
+  "ensemble.json": "a5d31ab549886a69eddc60324299184520db44951b0d9193797e49e35e299b32"
+ },
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0191,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

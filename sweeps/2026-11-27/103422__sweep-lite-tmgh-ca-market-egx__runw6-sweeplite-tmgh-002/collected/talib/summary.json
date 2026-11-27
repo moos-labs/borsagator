@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "TMGH.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "TMGH.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 4708,
+    "rows_used": 1931,
+    "last_date": "2026-11-26",
+    "last_close": 79.23999786376953,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-26",
+    "indicators.csv_last_close": "79.23999786376953"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 79.24,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": null,
+   "dps": 10.0,
+   "entitlement_end": null,
+   "ex_date": null,
+   "mechanical_pct": -12.62,
+   "title": "30 مليون جنيه من هشام طلعت مصطفى وأحمد عز وياسين منصور لدعم ضحايا حريق الوراق - https://ww",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "kronos-alone-v1: kronos_at() row-index mirror (bar rows, clamped); expected from the row close vs the sweep base; range from the row's own high/low; confidence not defined for kronos-alone v1",
+ "entrant": "kronos-alone",
+ "frozen_at": "2026-11-27T10:34:23.321762+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "flat",
+   "expected_move_pct": -0.11,
+   "families": {
+    "price-forecast": -0.029
+   },
+   "horizon_short": false,
+   "net_score": -0.029,
+   "range_high_pct": 1.24,
+   "range_low_pct": -1.86,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 3.74,
+   "families": {
+    "price-forecast": 0.214
+   },
+   "horizon_short": false,
+   "net_score": 0.214,
+   "range_high_pct": 5.13,
+   "range_low_pct": 2.32,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for kronos-alone v1",
+   "direction": "up",
+   "expected_move_pct": 1.76,
+   "families": {
+    "price-forecast": 0.206
+   },
+   "horizon_short": false,
+   "net_score": 0.206,
+   "range_high_pct": 3.5,
+   "range_low_pct": -0.14,
+   "range_source": "kronos-row-high-low",
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "4bdb90003112ec924c698a1902e3d1cef1f7f93470dab0c395e63f2f6e06e781",
+  "digest.json": "bdc29b2470e3686081b481c25767bd83e915d04c0031617743e234b40dc3e101",
+  "ensemble.json": "a5d31ab549886a69eddc60324299184520db44951b0d9193797e49e35e299b32"
+ },
+ "kronos_first_row_date": "2026-11-26",
+ "kronos_rescale": "unknown",
+ "kronos_row0_predates_asof": true,
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0191,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

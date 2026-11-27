@@ -1,0 +1,94 @@
+{
+ "job": {
+  "id": "w6-sweeplite-tmgh-002",
+  "job": "sweep-lite TMGH.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T10:26:43.610019+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-tmgh-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T10:26:43.610019+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "TMGH"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['TMGH']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T10:34:22.966044+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002",
+  "model": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002/report-model.json",
+  "model_sha256": "2515b4ba8dfdd4c8c9a4cb7c038de980abdd00a5518946081697dc790344d5ac",
+  "degraded": null,
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-25 vs base_date 2026-11-26",
+   "undated-actions: 1",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "recommendation-unavailable: no profiles/TMGH.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/TMGH.CA.json",
+   "sharia-row-missing: AAOIFI TMGH.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 TMGH.CA",
+   "sharia-row-missing: FTSE TMGH.CA",
+   "sharia-row-missing: ISLAMICLY TMGH.CA",
+   "sharia-row-missing: MSCI TMGH.CA",
+   "sharia-row-missing: MSCI_M TMGH.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "e5b9a7bafe0ce3eb1c5f982329113521cf280f49",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 154120,
+    "sha256": "3de75a888f5303032863062b05462ee02b65ae64cb5aa52e64b35b364635af05"
+   },
+   {
+    "path": "report.md",
+    "bytes": 34944,
+    "sha256": "a8e08b54fa8297e42b57b0ea088ff588972a67649cd1c4c2c155cb36e073c5df"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "TMGH.CA"
+ }
+}

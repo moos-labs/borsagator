@@ -1,0 +1,451 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 17,
+  "label_counts": {
+    "positive": 5,
+    "negative": 0,
+    "neutral": 12
+  },
+  "label_counts_raw": {
+    "neutral": 12,
+    "positive": 5
+  },
+  "mean_probabilities": {
+    "positive": 0.3021282597609493,
+    "negative": 3.723387767207807e-05,
+    "neutral": 0.6978345064083404
+  },
+  "items": [
+    {
+      "text": "Egyptian billionaire Mohamed Mansour joins tycoons giving $1 million to fire victims - Billionaires.Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.672444447351154e-06,
+        "negative": 6.4896830735960975e-06,
+        "neutral": 0.9999889135360718
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999889135360718
+        },
+        {
+          "label": "Negative",
+          "score": 6.4896830735960975e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.672444447351154e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Hisham Talaat Moustafa, Ahmed Ezz, Yassin Mansour donate EGP 30m to families of Ring Road accident victims - Dailynewsegypt",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 6.965779562051466e-07,
+        "negative": 2.8091977583244443e-05,
+        "neutral": 0.9999711513519287
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999711513519287
+        },
+        {
+          "label": "Negative",
+          "score": 2.8091977583244443e-05
+        },
+        {
+          "label": "Positive",
+          "score": 6.965779562051466e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TMG, Tamer Hosny postpone Madinaty concert to 4 December following Ring Road tragedy - Dailynewsegypt",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 4.0445607396577543e-07,
+        "negative": 4.859204636886716e-06,
+        "neutral": 0.9999947547912598
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999947547912598
+        },
+        {
+          "label": "Negative",
+          "score": 4.859204636886716e-06
+        },
+        {
+          "label": "Positive",
+          "score": 4.0445607396577543e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Talaat Moustafa Group stock: 9M revenue rises 24% to EGP 47.6bn - ad-hoc-news.de",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999810457229614,
+        "negative": 1.712259063424426e-07,
+        "neutral": 1.8888833437813446e-05
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999810457229614
+        },
+        {
+          "label": "Neutral",
+          "score": 1.8888833437813446e-05
+        },
+        {
+          "label": "Negative",
+          "score": 1.712259063424426e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Billionaire Hisham Talaat Moustafa's TMG earns $271m in 9M - Billionaires.Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 3.690128664857184e-07,
+        "negative": 7.642443051736336e-07,
+        "neutral": 0.999998927116394
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.999998927116394
+        },
+        {
+          "label": "Negative",
+          "score": 7.642443051736336e-07
+        },
+        {
+          "label": "Positive",
+          "score": 3.690128664857184e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Edita, Valu, TMG, and Bonyan report 9M earnings - EnterpriseAM",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.435351120766427e-07,
+        "negative": 2.481265619280748e-05,
+        "neutral": 0.9999749660491943
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999749660491943
+        },
+        {
+          "label": "Negative",
+          "score": 2.481265619280748e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.435351120766427e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TMG Q3 profit up 12.5% to EGP 5.06bn - Dailynewsegypt",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999998807907104,
+        "negative": 3.161105599502889e-09,
+        "neutral": 6.996188517405244e-08
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999998807907104
+        },
+        {
+          "label": "Neutral",
+          "score": 6.996188517405244e-08
+        },
+        {
+          "label": "Negative",
+          "score": 3.161105599502889e-09
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt’s TMG Profit Rises 19% To $280.5M In 9M 2026 As Real Estate Revenue Jumps 33% - Forbes Middle East",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9999992847442627,
+        "negative": 2.1273814354572096e-07,
+        "neutral": 4.7528749291814165e-07
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9999992847442627
+        },
+        {
+          "label": "Neutral",
+          "score": 4.7528749291814165e-07
+        },
+        {
+          "label": "Negative",
+          "score": 2.1273814354572096e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TMG bets on recurring income for next growth phase - Dailynewsegypt",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.643685239600018e-05,
+        "negative": 3.587775063351728e-05,
+        "neutral": 0.9998877048492432
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9998877048492432
+        },
+        {
+          "label": "Positive",
+          "score": 7.643685239600018e-05
+        },
+        {
+          "label": "Negative",
+          "score": 3.587775063351728e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Investor Memo: The $200 Billion Question — Hisham Talaat Moustafa's TMG, Egypt's Four New Megaprojects, and Who Will Share the Proceeds - Billionaires.Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 1.2538731652966817e-07,
+        "negative": 2.7814652639790438e-05,
+        "neutral": 0.9999721050262451
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999721050262451
+        },
+        {
+          "label": "Negative",
+          "score": 2.7814652639790438e-05
+        },
+        {
+          "label": "Positive",
+          "score": 1.2538731652966817e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egyptian billionaire Hisham Talaat Moustafa's $200 billion TMG deal draws military interest - Billionaires.Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 7.936139809316956e-06,
+        "negative": 4.629532668332104e-06,
+        "neutral": 0.9999873638153076
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999873638153076
+        },
+        {
+          "label": "Positive",
+          "score": 7.936139809316956e-06
+        },
+        {
+          "label": "Negative",
+          "score": 4.629532668332104e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TMG invests in new-generation golf destinations to boost high-spending tourism - Identity Magazine",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.08982161432504654,
+        "negative": 3.3457650715718046e-05,
+        "neutral": 0.9101449847221375
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9101449847221375
+        },
+        {
+          "label": "Positive",
+          "score": 0.08982161432504654
+        },
+        {
+          "label": "Negative",
+          "score": 3.3457650715718046e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egyptian billionaire Hisham Talaat Moustafa's TMG named world's best golf hospitality developer - Billionaires.Africa",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.1874379813671112,
+        "negative": 0.00035063360701315105,
+        "neutral": 0.8122113943099976
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.8122113943099976
+        },
+        {
+          "label": "Positive",
+          "score": 0.1874379813671112
+        },
+        {
+          "label": "Negative",
+          "score": 0.00035063360701315105
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt, UAE sweep prestigious WGA among 80 competing nations - EIN News",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.8363306522369385,
+        "negative": 9.562815102981403e-05,
+        "neutral": 0.16357369720935822
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.8363306522369385
+        },
+        {
+          "label": "Neutral",
+          "score": 0.16357369720935822
+        },
+        {
+          "label": "Negative",
+          "score": 9.562815102981403e-05
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "TMG named world’s best golf developer, Madinaty tops Africa - Dailynewsegypt",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.9963326454162598,
+        "negative": 5.181695541978115e-06,
+        "neutral": 0.0036620430182665586
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.9963326454162598
+        },
+        {
+          "label": "Neutral",
+          "score": 0.0036620430182665586
+        },
+        {
+          "label": "Negative",
+          "score": 5.181695541978115e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Egypt at heart of global golf: Madinaty selected for 2026 World Golf Awards - Egypt Today",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.0006202960503287613,
+        "negative": 2.904733264585957e-06,
+        "neutral": 0.9993768334388733
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9993768334388733
+        },
+        {
+          "label": "Positive",
+          "score": 0.0006202960503287613
+        },
+        {
+          "label": "Negative",
+          "score": 2.904733264585957e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "Thermal Energy International Inc. (TMG:CA) Presents at Planet MicroCap Showcase: Toronto 2026 - Slideshow - Seeking Alpha",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 0.025566130876541138,
+        "negative": 1.144325597124407e-05,
+        "neutral": 0.9744223356246948
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9744223356246948
+        },
+        {
+          "label": "Positive",
+          "score": 0.025566130876541138
+        },
+        {
+          "label": "Negative",
+          "score": 1.144325597124407e-05
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}

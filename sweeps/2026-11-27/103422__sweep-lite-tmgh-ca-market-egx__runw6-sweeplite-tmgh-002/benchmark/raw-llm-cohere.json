@@ -1,0 +1,79 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 79.24,
+ "base_source": "egx-data/egxpy_tmgh.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [
+  {
+   "date_basis": null,
+   "dps": 10.0,
+   "entitlement_end": null,
+   "ex_date": null,
+   "mechanical_pct": -12.62,
+   "title": "30 مليون جنيه من هشام طلعت مصطفى وأحمد عز وياسين منصور لدعم ضحايا حريق الوراق - https://ww",
+   "type": "dividend"
+  }
+ ],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T10:35:00.096455+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.7,
+   "direction": "down",
+   "expected_move_pct": -1.25,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": -0.5,
+   "range_low_pct": -2.5,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.65,
+   "direction": "up",
+   "expected_move_pct": 2.2,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 4.0,
+   "range_low_pct": 0.5,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.55,
+   "direction": "flat",
+   "expected_move_pct": -0.1,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.3,
+   "range_low_pct": -1.5,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_tmgh.csv": "03fcc7b147862d3e8e93cf0d8fbaa3b8c23e491bb153d64c2371577164fc63c9",
+  "digest.json": "bdc29b2470e3686081b481c25767bd83e915d04c0031617743e234b40dc3e101",
+  "ensemble.json": "a5d31ab549886a69eddc60324299184520db44951b0d9193797e49e35e299b32",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_tmgh.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.3,
+  "level": "shock",
+  "price_mult": 0.5
+ },
+ "sessions_per_calendar_day": 0.665,
+ "sigma_daily": 0.0191,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/103422__sweep-lite-tmgh-ca-market-egx__runw6-sweeplite-tmgh-002",
+ "ticker": "TMGH.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

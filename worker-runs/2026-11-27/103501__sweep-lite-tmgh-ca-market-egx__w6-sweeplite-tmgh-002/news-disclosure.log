@@ -1,0 +1,29 @@
+WARN body http failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+bodies: 11/12 fetched; failures by stage: {'decode': 0, 'http': 1, 'extract': 0}
+egx-harvest: attached 0 official bodies, added 3 harvested disclosures
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5647.06it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 14631.55it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/512 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 512/512 [00:00<00:00, 13806.28it/s]
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+WARN cohere translate attempt 1: HTTPSConnectionPool(host='api.cohere.ai', port=443): Read timed out. (read timeout=30)
+
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 201/201 [00:00<00:00, 5389.52it/s]
+{"tool": "news-disclosure", "ticker": "TMGH.CA", "news_count": 40, "disclosure_count": 3, "arabic_headlines": 39, "latest_news_date": "Thu, 26 Nov 2026 23:06:12 GMT", "latest_disclosure_date": "2026-11-15", "top_headline": "مجموعة طلعت مصطفى القابضة (TMGH.CA) تعلن نتائج أعمالها المجمعة عن 9 أشهر", "llm_provider": "cohere", "finbert_positive": 0.322, "finbert_negative": 0.059, "finbert_neutral": 0.619, "finbert_scored": 4, "multilingual_positive": 0.559, "multilingual_negative": 0.016, "multilingual_neutral": 0.426, "multilingual_scored": 39, "bodies_fetched": 11, "egx_bodies_attached": 0, "egx_disclosures_added": 3, "egx_harvest_source": "local-file", "translation_provider": "nllb+cohere", "translated_positive": 0.318, "translated_negative": 0.145, "translated_neutral": 0.537, "translated_scored": 39}
+BRIEF:
+- Egyptian billionaires and prominent businessmen, including Mohamed Mansour, have donated a total of EGP 30 million ($186,000) to support the victims of the fire near the Ring Road in Giza.
+- The donations are a collective effort from leading businessmen, with each individual contributing EGP 10 million.
+- The fire incident has led to a show of solidarity, with the Talaat Moustafa Group (TMG) and singer Tamer Hosny postponing their concert in Madinaty to December 4th, in support of the victims' families.
+- The concert's tickets will remain valid for the rescheduled date, demonstrating the group's commitment to the community.
+- This incident highlights the social responsibility and generosity of Egyptian tycoons, with businessmen like Mohamed Mansour, Yasseen Mansour, Ahmed Ezz, and Hisham Talaat Mo stepping up to help.
+- The Egyptian government has received these donations and initiatives from the business community, aiming to support those affected by the Ring Road tragedy.
+- The Prime Minister has directed the Ministry of Social Solidarity to ensure the donations reach the intended beneficiaries.
+- The news also showcases the collaboration between real estate developers and other industries, as "Talal Mustafa" and "Azarab" partner to offer electric luxury cars to residents of their projects, promoting a vision of modern, sustainable living.
