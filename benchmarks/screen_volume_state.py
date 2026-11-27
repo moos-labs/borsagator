@@ -56,6 +56,14 @@ Holm over 12. Numbers only, no pass flag, no verdict. Cells 48-90 and
 step. Volume is the names' own series, not an outside source; thinly
 traded names are removed by the eligibility rule, not by hand.
 
+Context for the holiday rule (Moos's own measurement, relayed by the
+parent agent, Slack 1795743949.567929 per the relay, not read by the
+author and not re-run here): across 134 market-wide zero-volume days and
+95,716 points, the median relative change of s60 when the zero-return
+days are dropped is 0.27%, the mean 2.6%, the 90th percentile 6.4%
+(result file hidden_files/s60_zero_return_effect_result.json). This
+paragraph was added after the screen was run; no rule or number of the
+screen changed with it.
 The EGX holiday calendar is NOT used and no holiday list is assumed;
 only the zero-volume rule above is.
 
