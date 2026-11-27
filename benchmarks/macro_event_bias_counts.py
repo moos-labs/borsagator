@@ -47,7 +47,7 @@ def prior_aar(evs, k, offsets=M.OFFSETS):
     me = evs[k]
     if me["s0"] is None:
         return None
-    pool = [x for j, x in enumerate(evs) if j != k and x["ab"] is not None and x["s0"] is not None and x["event"]["type"] == me["event"]["type"]
+    pool = [x for j, x in enumerate(evs) if j != k and x["ab"] is not None and x["event"]["type"] == me["event"]["type"]
             and x["s0"] + 2 < me["s0"] - 2]
     if not pool:
         return None

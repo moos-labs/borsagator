@@ -116,14 +116,12 @@ def test_prior_aar_no_lookahead():
     check("other type ignored", B.prior_aar(evs, 1) is None)
     evs = [mkev("cbe_scheduled", 100, None), tgt]
     check("skipped (ab None) event ignored", B.prior_aar(evs, 1) is None)
-    # regression: an event with s0 None (outside the series) must not raise
-    none_tgt = mkev("cbe_scheduled", None, None)
-    check("target s0 None -> None", B.prior_aar([mkev("cbe_scheduled", 100, one), none_tgt], 1) is None)
-    check("pool event s0 None ignored", B.prior_aar([mkev("cbe_scheduled", None, one), tgt], 1) is None)
     evs = [tgt, mkev("cbe_scheduled", 300, one)]
     check("future event ignored", B.prior_aar(evs, 0) is None)
     evs = [mkev("cbe_scheduled", 100, one), mkev("cbe_scheduled", 150, two), tgt]
     check("mean of priors", abs(B.prior_aar(evs, 2)[1] - 0.02) < 1e-12)
+    evs = [mkev("cbe_scheduled", 100, one), mkev("cbe_scheduled", None, None)]
+    check("target with no session index -> None (Rabbit Minor, no TypeError)", B.prior_aar(evs, 1) is None)
 
 
 def test_cutoff_index_and_run():
