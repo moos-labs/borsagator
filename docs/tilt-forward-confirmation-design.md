@@ -1,9 +1,45 @@
-# Forward confirmation for a technicals-tilt adoption (design)
+# Forward confirmation for a technicals-tilt adoption (REGISTERED)
 
-INS-IMPROVE-001 round 23 item 2 (brief: Moos Slack 1795736150.489689).
-Design only: no scorer, ledger or frozen value changes in this PR. The
-rule below is a proposal for Muhammad's and the cycle's ruling, not a
-registered rule.
+INS-IMPROVE-001 round 23 item 2 (brief: Moos Slack 1795736150.489689),
+registered by the follow-up of the rulings in Slack 1795747929.439509 (read
+by the author), see "Registration" below. This document defines the rule; it
+changes no scorer, ledger or frozen value.
+
+## Registration
+
+Status: REGISTERED on merge of this follow-up. The rule below is complete and
+frozen from that point; changing any part of it is a new registration, not a
+silent edit.
+
+Rulings (Slack C0C8EBZEF9U 1795747929.439509, 2026-11-27 about 04:52 Cairo):
+1. Forward-confirmation rule set: ADOPTED as proposed (Muhammad's ruling,
+   relayed by Moos): published-band comparison, Holm correction across the 3
+   horizons, all-horizons requirement. Rules 1 to 5 and the freeze below are
+   the rule set as proposed in this document.
+2. Bootstrap p-value definition: SETTLED (Moos's ruling): one-sided, with the
+   Phipson-Smyth +1 correction, the #805 loop convention. Rule 5 states it.
+
+Frozen at registration:
+- Registration date: the UTC date on which this follow-up merges into main
+  (the merge commit's date). A row enters only if its `as_of` is on or after
+  that date, as in "Proposed forward rows".
+- Tilt definition: `scripts/ensemble.py` as of main f2a7f1ec (blob
+  98165c780fb3d45a76730415b0b4b1408d446273; last commit touching it
+  960339642c4336a8337efdd7afbbd8b4bc527c47, 2026-11-26). If the merge commit's
+  `scripts/ensemble.py` blob differs from this one, the tilt changed after
+  this text was written, and the registration must name the new blob before
+  it counts.
+- Rules 1 to 5, Holm over the 3 horizons, the all-horizons requirement, seed
+  `A.DEFAULT_SEED`, B = 5000, and the scoring trigger below.
+- Scoring trigger (Moos's fix for the CodeRabbit finding on #864, relayed,
+  not read): one joint scoring, once, at the first point at which all three
+  horizons satisfy rule 1 (which includes >= 30 matured forward rows per
+  horizon, so the 30-row minimum is preserved). The three horizons are scored
+  together on the rows matured by that point, the Holm family and the
+  all-horizons requirement apply to that one scoring, and no horizon is scored
+  earlier or alone. There is no other target n.
+- The scorer constant MIN_CUTOFFS (listed in earlier drafts of the
+  prerequisites) is a scorer item and is not part of this registration.
 
 ## What the backtest reading is, and is not
 
@@ -56,7 +92,7 @@ band), alpha 0.2, same rows. The published band is the frozen v2 band,
 so this is the "relative to frozen v2 on the same rows" comparison the
 loop already requires, and since widths are equal it isolates the centre.
 
-On one scoring at the pre-declared n, per horizon:
+On the one joint scoring (trigger in Registration), per horizon:
 1. n >= 30 matured forward rows, >= 10 distinct tickers counted across
    all forward rows of that horizon (not per sweep), >= 10 cutoff
    clusters (distinct `as_of`). The cluster count is the binding limit,
@@ -67,16 +103,13 @@ On one scoring at the pre-declared n, per horizon:
 4. Reported beside, not gated: ticker-block CI, effective n, the
    `ci_audit` jackknife / sign-flip / wild CIs (sign-flip is attainable
    at 10 clusters, smallest p 1/1024).
-5. Multiple testing: Holm across the 3 horizons (family 3). The p-value,
-   defined here before registration, follows the loop convention
-   (#805): one-sided bootstrap p from the same cutoff-clustered draws as
-   the CI. Null: RangeSkill_fwd = 0. Alternative: RangeSkill_fwd > 0.
-   p = (1 + #{draws with resampled RangeSkill <= 0}) / (1 + B), B =
-   5000 (Phipson-Smyth +1, so p is never 0). Ties (draw exactly 0) count
-   against the tilt, i.e. as <= 0. The Holm step-down compares the sorted
-   p to 0.05/3, 0.05/2, 0.05/1. If Muhammad prefers a two-sided p or a
-   different tie rule, that is an open ruling (below); this default is
-   proposed, not ruled.
+5. Multiple testing: Holm across the 3 horizons (family 3). The p-value
+   follows the loop convention (#805, settled by Moos's ruling above): the
+   one-sided bootstrap p from the same cutoff-clustered draws as the CI.
+   Null: RangeSkill_fwd = 0. Alternative: RangeSkill_fwd > 0. p = (1 + #{draws
+   with resampled RangeSkill <= 0}) / (1 + B), B = 5000 (Phipson-Smyth +1, so
+   p is never 0). A draw exactly 0 counts as <= 0, against the tilt. The Holm
+   step-down compares the sorted p to 0.05/3, 0.05/2, 0.05/1.
 Adoption needs all three horizons to pass 1-3 and the Holm-adjusted p
 < 0.05 on each. A day-horizon failure blocks adoption of the tilt as one
 object; a horizon-specific tilt is a different, separately pre-registered
@@ -88,7 +121,7 @@ claim.
   commit hash named in the registration message. Any change to the tilt
   restarts the clock; rows from before the change are dropped.
 - The scorer prints counts only (rows, tickers, clusters per horizon)
-  until step 1 holds, as the sentiment ledger scorers do. One scoring,
+  until step 1 holds for all three horizons, as the sentiment ledger scorers do. One scoring,
   no re-fit, no re-scoring on a later, larger sample under the same
   registration.
 - Seed fixed (`A.DEFAULT_SEED`), reps 5000.
@@ -100,10 +133,17 @@ at least 10 tickers across the forward rows of each horizon (the
 tickers can rotate between sweeps), starting the next session after
 registration. That cadence is the cycle's, and the tilt-bearing sweeps
 so far are 5 to 9 tickers per date. Cutoff clusters needed = 10, so the 10th
-cutoff is session 10. Verdict sessions after registration: day about 11,
-week about 15, month about 31 (10th cutoff plus 1, 5 and 21 sessions).
-With one sweep date per week these become 10 weeks for day, plus the
-horizon. Fewer than 10 distinct tickers across the forward rows of a horizon
+cutoff is session 10. Eligibility times after registration, when each
+horizon first meets rule 1: day about 11, week about 15, month about 31
+(10th cutoff plus 1, 5 and 21 sessions). These are not verdict times. Under
+the joint scoring trigger there is one verdict, at the first point all three
+horizons are eligible, so about session 31, set by the month horizon (when the
+ticker and row minimums also hold). With one sweep date per week the horizons still count sessions (1, 5, 21)
+and only the cutoff cadence changes: the 10th cutoff falls in about week 10,
+the day horizon matures about 1 session later, the week horizon about 1 week
+later and the month horizon about 21 sessions (about 4 weeks and 1 session)
+later. Eligibility is about 10, 11 and 14 to 15 weeks, and the joint verdict,
+set by the month horizon, is about 14 to 15 weeks. Fewer than 10 distinct tickers across the forward rows of a horizon
 blocks rule 1 whatever the dates. Tickers per sweep do not need to reach
 10 if the sweeps rotate through at least 10 between them.
 
@@ -112,8 +152,5 @@ blocks rule 1 whatever the dates. Tickers per sweep do not need to reach
 1. A wide, daily-or-near-daily sweep cadence that keeps `tilt_centre_pct`
    in `ensemble.json` (it is present now).
 2. A read-only forward tilt scorer implementing the join and rule above
-   (a separate PR once the rule is ruled on).
-3. A ruling on the open points: published-band comparison (vs naive-band
-   in the backtest), Holm family of 3, all-horizons requirement, and
-   MIN_CUTOFFS raise to 10 for future verdicts, and the p-value
-   definition in rule 5 (one-sided, +1, ties against the tilt).
+   (a separate PR; the rule and the p-value are now ruled, so nothing in the
+   rule is left open for it).
