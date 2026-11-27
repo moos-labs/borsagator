@@ -1,0 +1,29 @@
+{
+  "merged_by": "worker",
+  "merge_version": 2,
+  "job": "sweep-lite OLFI.CA market=EGX",
+  "job_shape": "sweep-lite OLFI.CA market=EGX",
+  "claim_id": "w6-sweeplite-olfi-002",
+  "source_runs": [
+    "worker-runs/2026-11-27/w6-sweeplite-olfi-002"
+  ],
+  "sweep_dir": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+  "finished": "2026-11-27T09:45:36.810132+00:00",
+  "merge": "complete",
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [
+      "sentiment"
+    ],
+    "absent_tools": [
+      "finbert",
+      "finbert-tone",
+      "financial-roberta",
+      "news-disclosure"
+    ]
+  },
+  "job_scheduled": {
+    "value": null,
+    "checked": false
+  }
+}

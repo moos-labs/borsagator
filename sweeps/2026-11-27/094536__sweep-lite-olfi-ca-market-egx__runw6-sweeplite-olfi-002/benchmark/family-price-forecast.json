@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 20.29,
+ "base_source": "egx-data/egxpy_olfi.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T09:45:37.101691+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "e64fd790c427c349991463c56d3338005bbb8da3ef94702b687aa02df0bbb744",
+  "digest.json": "416406769d41dc287ad11e3bcdb11f00ae85aace3143b95dda131257d9f70a16",
+  "ensemble.json": "2cdc90c2d3633d108ae897c352cb016cbff6f63f1cb93c4621ca4b8d3f0a7d7a"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/094536__sweep-lite-olfi-ca-market-egx__runw6-sweeplite-olfi-002",
+ "ticker": "OLFI.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}
