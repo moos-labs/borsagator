@@ -1,0 +1,96 @@
+{
+ "descriptive": true,
+ "source": "yahoo close and volume",
+ "zero_days": {
+  "count": 120,
+  "min_names": 10,
+  "share": 0.9
+ },
+ "min_kept": 30,
+ "readings": [
+  {
+   "horizon": "day",
+   "regime": "post",
+   "cutoffs": 838,
+   "undefined_without": 0,
+   "affected_share": 0.8723150357995226,
+   "mean_all": 0.020012204898766615,
+   "median_all": 0.008437443391233423,
+   "affected_n": 731,
+   "mean_affected": 0.022941487968763916,
+   "median_affected": 0.01649579178920857,
+   "min": 0.0,
+   "max": 0.07417098662775934
+  },
+  {
+   "horizon": "day",
+   "regime": "pre",
+   "cutoffs": 2570,
+   "undefined_without": 0,
+   "affected_share": 0.7521400778210117,
+   "mean_all": 0.027515175908421893,
+   "median_all": 0.0169323799784018,
+   "affected_n": 1933,
+   "mean_affected": 0.036582515305041,
+   "median_affected": 0.033011564676554306,
+   "min": -0.07863528584337509,
+   "max": 0.1298653657320643
+  },
+  {
+   "horizon": "month",
+   "regime": "post",
+   "cutoffs": 803,
+   "undefined_without": 0,
+   "affected_share": 0.8667496886674969,
+   "mean_all": 0.01887753401278643,
+   "median_all": 0.00843530147669913,
+   "affected_n": 696,
+   "mean_affected": 0.021779683638315377,
+   "median_affected": 0.015030973455709029,
+   "min": 0.0,
+   "max": 0.07417098662775934
+  },
+  {
+   "horizon": "month",
+   "regime": "pre",
+   "cutoffs": 2536,
+   "undefined_without": 0,
+   "affected_share": 0.7488170347003155,
+   "mean_all": 0.027666895940041503,
+   "median_all": 0.016934537019610896,
+   "affected_n": 1899,
+   "mean_affected": 0.0369474713554214,
+   "median_affected": 0.033515562307932845,
+   "min": -0.07863528584337509,
+   "max": 0.1298653657320643
+  },
+  {
+   "horizon": "week",
+   "regime": "post",
+   "cutoffs": 836,
+   "undefined_without": 0,
+   "affected_share": 0.8720095693779905,
+   "mean_all": 0.02000948652983891,
+   "median_all": 0.008437424061837562,
+   "affected_n": 729,
+   "mean_affected": 0.02294640704930772,
+   "median_affected": 0.016492575499945872,
+   "min": 0.0,
+   "max": 0.07417098662775934
+  },
+  {
+   "horizon": "week",
+   "regime": "pre",
+   "cutoffs": 2567,
+   "undefined_without": 0,
+   "affected_share": 0.7518504090377873,
+   "mean_all": 0.027527566490676444,
+   "median_all": 0.016930849129244363,
+   "affected_n": 1930,
+   "mean_affected": 0.036613089731381575,
+   "median_affected": 0.03303545575216693,
+   "min": -0.07863528584337509,
+   "max": 0.1298653657320643
+  }
+ ]
+}
