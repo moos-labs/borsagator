@@ -122,8 +122,9 @@ a screen result". It exits 0 whatever it finds, since it describes.
 Tests planned (fixed synthetic inputs, assertions through the script's
 functions and CLI output): per-day coverage with a missing file making a day
 PARTIAL; a day covered with zero rows reported as an anomaly; C1 passes at a
-boundary and fails when D-5 is partial; C1 passes while C2 fails at a day with
-29 prior covered days and passes at 30; rows stamped on D do not change
+boundary and fails when D-5 is partial; C1 passes while C2 fails when D-31 is missing (only 30 days before D
+covered), and C2 passes when D-31 through D-1 are all covered; rows stamped
+on D do not change
 coverage; duplicate names across two shards counted once; the same grid as
 `screen_pairs` (cutoff count equals the grid's on a fixed series). Mutants to
 check: coverage replaced by row-count, window off by one on either side, D's
