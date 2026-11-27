@@ -1,0 +1,1279 @@
+{
+  "archive_commit": "375a46c5b016f7b5d1430751afedaad2254422dc",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "9349e8e90ba40f63bef8b2356af3ef678fc547d4765e971795858676de776a8f",
+      "family-agent.json": "d6b86a3b7276e7d081ae0e15829ce0dab38709ac1201b91909a66b13405b9b71",
+      "family-fundamentals.json": "a2233237504bb843cb4744ae61b49790fc0dd665f5ce348d7dc3e91ffc56e2f0",
+      "family-price-forecast.json": "967742f470edc9a5cdb1c239dc697d65a542a748ce12a23e205cfacf726028e6",
+      "family-sentiment.json": "e3685b554726304b3ba164e2c24e97851fa96225d0cd7c6d6f9bb370de414aaf",
+      "family-technicals.json": "9e07cedd7601c94b86a4ad3580ed7ac4277170daab36af25550494955ccaf426",
+      "kronos-alone.json": "398cc6865c496d35707062f2a4c815be2fa6b69d0615ca9230b4334a15939c20",
+      "raw-llm-cohere.json": "f538986875e91d682aada2b062993c2169f8114e5a8cd9331e90a113f8e16111"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "present",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/ICFC-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 27.65,
+    "base_source": "egx-data/egxpy_icfc.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": -0.1,
+      "price-forecast": -0.429,
+      "sentiment": 0.155,
+      "technicals": -0.3
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.155
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -3.2423,
+        "net_score": 0.155,
+        "range_high_pct": 6.64,
+        "range_low_pct": -6.64,
+        "tilt_centre_pct": 0.13,
+        "trading_sessions": 1,
+        "vol_h_pct": 4.4417
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "fundamentals": -0.1,
+          "sentiment": 0.155,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -17.4539,
+        "net_score": -0.154,
+        "range_high_pct": 31.75,
+        "range_low_pct": -31.75,
+        "tilt_centre_pct": -2.01,
+        "trading_sessions": 21,
+        "vol_h_pct": 20.3542
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.35,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.155,
+          "technicals": -0.3
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -4.6734,
+        "net_score": -0.105,
+        "range_high_pct": 16.53,
+        "range_low_pct": -16.53,
+        "tilt_centre_pct": -0.47,
+        "trading_sessions": 5,
+        "vol_h_pct": 9.9318
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_icfc.csv",
+      "base_stale": false,
+      "base_used": 27.65,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_icfc.csv": 26.54,
+        "openbb/icfc_ca.csv": 26.540000915527344,
+        "pandas-ta/indicators.csv": 26.540000915527344,
+        "talib/indicators.csv": 26.540000915527344,
+        "yahooquery/icfc.ca.csv": 26.540000915527344
+      }
+    },
+    "risk": {
+      "conf_cap": 0.35,
+      "flags": [
+        "news overlay unavailable — risk unassessed, confidence capped"
+      ],
+      "level": "unknown",
+      "price_mult": 0.8
+    },
+    "sessions_per_calendar_day": 0.659,
+    "sigma60_daily": 0.0444,
+    "sigma_daily": 0.0444,
+    "sigma_source": "egx-data/egxpy_icfc.csv (σ60=0.0444, σ10=0.0432)",
+    "ticker": "ICFC.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": -0.1,
+    "price-forecast": -0.429,
+    "sentiment": 0.155,
+    "technicals": -0.3
+  },
+  "finished": "2026-11-27T04:03:24.016513+00:00",
+  "flags": [
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "news-file-missing: collected/news-disclosure/news.json",
+    "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+    "recommendation-unavailable: no profiles/ICFC.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/ICFC.CA.json",
+    "sharia-row-missing: AAOIFI ICFC.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 ICFC.CA",
+    "sharia-row-missing: FTSE ICFC.CA",
+    "sharia-row-missing: ISLAMICLY ICFC.CA",
+    "sharia-row-missing: MSCI ICFC.CA",
+    "sharia-row-missing: MSCI_M ICFC.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.155
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -3.2423,
+      "net_score": 0.155,
+      "range_high_pct": 6.64,
+      "range_low_pct": -6.64,
+      "tilt_centre_pct": 0.13,
+      "trading_sessions": 1,
+      "vol_h_pct": 4.4417
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "fundamentals": -0.1,
+        "sentiment": 0.155,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -17.4539,
+      "net_score": -0.154,
+      "range_high_pct": 31.75,
+      "range_low_pct": -31.75,
+      "tilt_centre_pct": -2.01,
+      "trading_sessions": 21,
+      "vol_h_pct": 20.3542
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.35,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.155,
+        "technicals": -0.3
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -4.6734,
+      "net_score": -0.105,
+      "range_high_pct": 16.53,
+      "range_low_pct": -16.53,
+      "tilt_centre_pct": -0.47,
+      "trading_sessions": 5,
+      "vol_h_pct": 9.9318
+    }
+  },
+  "job": "sweep-lite ICFC.CA market=EGX",
+  "job_shape": "sweep-lite ICFC.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 32.2205,
+    "support": 23.0795
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "yiyanghkust/finbert-tone",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert-tone",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": null,
+    "latest_news_date_raw": null,
+    "news_count": 0,
+    "news_items": []
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 27.65,
+    "base_source": "egx-data/egxpy_icfc.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_icfc.csv",
+      "base_stale": false,
+      "base_used": 27.65,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_icfc.csv": 26.54,
+        "openbb/icfc_ca.csv": 26.540000915527344,
+        "pandas-ta/indicators.csv": 26.540000915527344,
+        "talib/indicators.csv": 26.540000915527344,
+        "yahooquery/icfc.ca.csv": 26.540000915527344
+      }
+    },
+    "sessions_per_calendar_day": 0.659,
+    "sigma_daily": 0.0444,
+    "sigma_source": "egx-data/egxpy_icfc.csv (σ60=0.0444, σ10=0.0432)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 27.65,
+      "last_date": "2026-11-26",
+      "last_high": 27.79,
+      "last_low": 26.63,
+      "last_open": 26.8,
+      "last_volume": 508386.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_icfc.csv",
+      "stale": false
+    },
+    {
+      "last_close": 26.799999237060547,
+      "last_date": "2026-11-25",
+      "last_high": 27.239999771118164,
+      "last_low": 25.799999237060547,
+      "last_open": 26.540000915527344,
+      "last_volume": 620565.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/ICFC_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 26.799999237060547,
+      "last_date": "2026-11-25",
+      "last_high": 27.239999771118164,
+      "last_low": 25.799999237060547,
+      "last_open": 26.540000915527344,
+      "last_volume": 620565.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 26.799999237060547,
+      "last_date": "2026-11-25",
+      "last_high": 27.239999771118164,
+      "last_low": 25.799999237060547,
+      "last_open": 26.540000915527344,
+      "last_volume": 620565.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 26.540000915527344,
+      "last_date": "2026-11-24",
+      "last_high": 27.270000457763672,
+      "last_low": 26.149999618530273,
+      "last_open": 26.100000381469727,
+      "last_volume": 531214.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/ICFC.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-icfc-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-icfc-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "ICFC.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.35,
+    "flags": [
+      "news overlay unavailable — risk unassessed, confidence capped"
+    ],
+    "level": "unknown",
+    "price_mult": 0.8
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for ICFC.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T04:01:17.600483+00:00",
+  "sweep_dir": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+  "ticker": "ICFC.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ICFC.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ICFC.CA.csv_last_close": 26.540000915527344,
+          "ICFC.CA.csv_last_date": "2026-11-24",
+          "rows_ICFC.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "ae6a6591c594453640bc5204c520428c0c0ad8924e8dc62258b8322f0e027ede",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ICFC_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "ICFC_CA.csv_last_close": 26.799999237060547,
+          "ICFC_CA.csv_last_date": "2026-11-25",
+          "rows_ICFC_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "182f09d93d8be2a6f9e0f7064bd3a52f9e7364a5e4a8e7726687ed0cf1031558",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_icfc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_icfc.csv_last_close": 27.65,
+          "egxpy_icfc.csv_last_date": "2026-11-26",
+          "rows_egxpy_icfc.csv": 3000,
+          "symbol": "ICFC",
+          "ticker": "ICFC.CA"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "8256868c44d496de2486b4d5578872b455a4b8af386ef61e3d259e793a508fbd",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 20.8093,
+          "atr_14": 1.5694,
+          "bb_lower": 21.7249,
+          "bb_mid": 25.3795,
+          "bb_pctb": 0.6943,
+          "bb_upper": 29.0341,
+          "close": 26.8,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 25.2837,
+          "ema_200": 19.7043,
+          "ema_50": 23.5533,
+          "first_date_used": "2019-01-01",
+          "high": 27.24,
+          "indicators.csv_last_close": 26.799999237060547,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 25.8,
+          "macd": 1.0039,
+          "macd_hist": -0.0675,
+          "macd_signal": 1.0714,
+          "open": 26.54,
+          "rows_fetched": 2014,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 58.8631,
+          "stoch_d": 46.7852,
+          "stoch_k": 58.9559,
+          "ticker": "ICFC.CA"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "b1765f32381a95968f8174a686f5c8601938d0e6d2c6a01da2ac857d24309f78",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 26.799999237060547,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 26.799999237060547,
+          "last_date": "2026-11-25",
+          "rows_fetched": 2014,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "ICFC.CA"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "addc4062a2160ae0a512684c3cd7ce06257eeea92ef077a508e2a89a0f358727",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "77fc8cfc55924ff6cc977edcd0d891fc1cb0590052c9dee6ad7f72c6d0daaead",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "deac7bcfcd1425bfa1bbdd32a09a85e1de8d8b3ab9e92988e48f0076bb4721f9",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ],
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "11d114aa3dad20d0d2484e16e6f51e8930fd7596593913852ef1bff2024c4d06",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "0fa3eac386c61df490ba47a70959897172f37866b4a555e1fdc587419ed13a21",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-tone-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "26bcdba71864b49ee912731c7a32a07d5c9b852e9b72976a3c7631adf3a1496b",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 3,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "b473aac589a02ba792cecf07f09d8c4066919cb096650bb8f6fae31726e0780c",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 22.824,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "e2c42bdbe6408b0d52099d6a0471348ce8b168328a91a2d881562dbb88366422",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "ICFC.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "f8b277daf8922052a103a64bdf77a65cd98d3dd4bbaa1065a1a11ebf3b9fbea7",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "ICFC.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "f019c67b6de368ff0f27be4571c492f9b1d41a55ba3063de0a3283a3af06cd24",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no items fetched from any source",
+      "status": "failed",
+      "tool": "news-disclosure"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 27.65,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T04:03:24.315357+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "bbd02735dd0aa87d0bda83ce5cf023569552ae23da647d548f2dc69ded1f8b76",
+  "digest.json": "9518292d92f78da677944e26f063cf2c8896fac026172b3b70368b83557b13a9",
+  "ensemble.json": "0c254f44c46fcf115f4603102bc55381aa6331bf2ce8f54b19757e139580abbc"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

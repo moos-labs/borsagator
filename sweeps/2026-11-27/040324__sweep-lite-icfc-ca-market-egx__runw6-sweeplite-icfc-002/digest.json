@@ -1,0 +1,431 @@
+{
+  "job": "sweep-lite ICFC.CA market=EGX",
+  "ticker": "ICFC.CA",
+  "date": "2026-11-27",
+  "started": "2026-11-27T04:01:17.600483+00:00",
+  "finished": "2026-11-27T04:03:24.016513+00:00",
+  "results": [
+    {
+      "tool": "yahooquery",
+      "repo": "yahooquery-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "yahooquery",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ICFC.CA.csv": 1208,
+          "ICFC.CA.csv_last_date": "2026-11-24",
+          "ICFC.CA.csv_last_close": "26.540000915527344"
+        },
+        "files": [
+          "ICFC.CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "openbb",
+      "repo": "openbb-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "openbb",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_ICFC_CA.csv": 483,
+          "ICFC_CA.csv_last_date": "2026-11-25",
+          "ICFC_CA.csv_last_close": "26.799999237060547"
+        },
+        "files": [
+          "ICFC_CA.csv",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "egx-data",
+      "repo": "egx-data-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "egx-data",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ICFC.CA",
+          "symbol": "ICFC",
+          "rows_egxpy_icfc.csv": 3000,
+          "egxpy_icfc.csv_last_date": "2026-11-26",
+          "egxpy_icfc.csv_last_close": "27.65"
+        },
+        "files": [
+          "egxpy_icfc.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "pandas-ta",
+      "repo": "pandas-ta-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "pandas-ta",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ICFC.CA",
+          "date": "2026-11-25",
+          "open": 26.54,
+          "high": 27.24,
+          "low": 25.8,
+          "close": 26.8,
+          "rsi_14": 58.8631,
+          "macd": 1.0039,
+          "macd_signal": 1.0714,
+          "macd_hist": -0.0675,
+          "ema_20": 25.2837,
+          "ema_50": 23.5533,
+          "ema_200": 19.7043,
+          "adx_14": 20.8093,
+          "bb_upper": 29.0341,
+          "bb_mid": 25.3795,
+          "bb_lower": 21.7249,
+          "bb_pctb": 0.6943,
+          "atr_14": 1.5694,
+          "stoch_k": 58.9559,
+          "stoch_d": 46.7852,
+          "rows_fetched": 2014,
+          "rows_used": 1930,
+          "first_date_used": "2019-01-01",
+          "last_date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "26.799999237060547"
+        },
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "talib",
+      "repo": "talib-runner",
+      "category": "technicals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "talib",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "ICFC.CA",
+          "drop_before": "2019-01-01",
+          "rows_fetched": 2014,
+          "rows_used": 1930,
+          "last_date": "2026-11-25",
+          "last_close": 26.799999237060547,
+          "rows_indicators.csv": 250,
+          "indicators.csv_last_date": "2026-11-25",
+          "indicators.csv_last_close": "26.799999237060547"
+        },
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "quantstats",
+      "repo": "quantstats-runner",
+      "category": "stats",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "quantstats",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "ticker": "POUL.CA",
+          "source": "Yahoo chart API (direct, via requests)",
+          "exchange_tz": "Africa/Cairo",
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "vectorbt",
+      "repo": "vectorbt-runner",
+      "category": "backtest",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "vectorbt",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_poul_ohlc.csv": 2437,
+          "poul_ohlc.csv_last_close": "6.730000019073486"
+        },
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "financetoolkit",
+      "repo": "financetoolkit-runner",
+      "category": "fundamentals",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financetoolkit",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_statements.csv": 16
+        },
+        "files": [
+          "ratios.json",
+          "report.md",
+          "run.log",
+          "statements.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "finbert",
+      "repo": "finbert-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "ProsusAI/finbert",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "finbert-tone",
+      "repo": "finbert-tone-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "finbert-tone",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "yiyanghkust/finbert-tone",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "financial-roberta",
+      "repo": "roberta-sentiment-runner",
+      "category": "sentiment",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financial-roberta",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment",
+          "count": 3
+        },
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "kronos",
+      "repo": "kronos-runner",
+      "category": "forecast",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "kronos",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "rows_forecast.csv": 21,
+          "forecast.csv_last_date": "2026-12-23",
+          "forecast.csv_last_close": "22.824"
+        },
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "financedatabase",
+      "repo": "financedatabase-runner",
+      "category": "data",
+      "status": "ok",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "financedatabase",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 0,
+        "status": "ok",
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ]
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002"
+    },
+    {
+      "tool": "news-disclosure",
+      "repo": "news-disclosure-runner",
+      "category": "news",
+      "status": "failed",
+      "run_url": null,
+      "conclusion": null,
+      "summary": {
+        "tool": "news-disclosure",
+        "ticker": "ICFC.CA",
+        "borsagator": true,
+        "exit_code": 1,
+        "status": "failed",
+        "metrics": {},
+        "files": []
+      },
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-icfc-002",
+      "claim_id": "w6-sweeplite-icfc-002",
+      "detail": "ERROR: no items fetched from any source"
+    }
+  ],
+  "degraded": {
+    "reason": "partial-fleet",
+    "absent_families": [],
+    "absent_tools": [
+      "news-disclosure"
+    ]
+  }
+}

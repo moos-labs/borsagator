@@ -1,0 +1,66 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 27.65,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "buy-and-hold-v1: expected 0.0, direction flat, range ±1.28σ√h_eff (pure 1σ volatility band — no risk multiplier, no disagreement widening)",
+ "entrant": "buy-and-hold",
+ "frozen_at": "2026-11-27T04:03:31.647869+00:00",
+ "horizons": {
+  "day": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 5.68,
+   "range_low_pct": -5.68,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 26.04,
+   "range_low_pct": -26.04,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": null,
+   "confidence_basis": "not defined for buy-and-hold v1",
+   "direction": "flat",
+   "expected_move_pct": 0.0,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 12.71,
+   "range_low_pct": -12.71,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "digest.json": "9518292d92f78da677944e26f063cf2c8896fac026172b3b70368b83557b13a9",
+  "ensemble.json": "0c254f44c46fcf115f4603102bc55381aa6331bf2ce8f54b19757e139580abbc"
+ },
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0444,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

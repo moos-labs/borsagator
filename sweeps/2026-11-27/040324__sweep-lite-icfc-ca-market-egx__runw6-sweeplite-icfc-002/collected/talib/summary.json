@@ -1,0 +1,23 @@
+{
+  "tool": "talib",
+  "ticker": "ICFC.CA",
+  "borsagator": true,
+  "exit_code": 0,
+  "status": "ok",
+  "metrics": {
+    "ticker": "ICFC.CA",
+    "drop_before": "2019-01-01",
+    "rows_fetched": 2014,
+    "rows_used": 1930,
+    "last_date": "2026-11-25",
+    "last_close": 26.799999237060547,
+    "rows_indicators.csv": 250,
+    "indicators.csv_last_date": "2026-11-25",
+    "indicators.csv_last_close": "26.799999237060547"
+  },
+  "files": [
+    "indicators.csv",
+    "run.log",
+    "ta_latest.json"
+  ]
+}

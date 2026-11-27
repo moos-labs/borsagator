@@ -1,0 +1,67 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 0,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.030899667491515476,
+    "negative": 0.00018927416143318018,
+    "neutral": 0.9689110914866129
+  },
+  "items": [
+    {
+      "text": "India’s 207-million CTV audience sparks push for a common industry body - Storyboard18",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.037950724363327026,
+        "negative": 0.0002591385564301163,
+        "neutral": 0.9617902040481567
+      },
+      "raw_probabilities": {
+        "neutral": 0.9617902040481567,
+        "positive": 0.037950724363327026,
+        "negative": 0.0002591385564301163
+      }
+    },
+    {
+      "text": "India’s CTV & FAST players discuss forming industry council - afaqs!",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.019672468304634094,
+        "negative": 0.00014690402895212173,
+        "neutral": 0.9801806807518005
+      },
+      "raw_probabilities": {
+        "neutral": 0.9801806807518005,
+        "positive": 0.019672468304634094,
+        "negative": 0.00014690402895212173
+      }
+    },
+    {
+      "text": "ICFC Finance Limited Board Proposes 10.5263 Percent Cash Dividend for Fiscal Year 2082/83 - Hamro Patro",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.03507580980658531,
+        "negative": 0.0001617798989173025,
+        "neutral": 0.9647623896598816
+      },
+      "raw_probabilities": {
+        "neutral": 0.9647623896598816,
+        "positive": 0.03507580980658531,
+        "negative": 0.0001617798989173025
+      }
+    }
+  ]
+}

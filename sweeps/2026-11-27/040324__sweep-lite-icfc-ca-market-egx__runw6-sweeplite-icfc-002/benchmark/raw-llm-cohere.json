@@ -1,0 +1,69 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 27.65,
+ "base_source": "egx-data/egxpy_icfc.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "raw-llm-cohere-v1: frozen prompt v1, model command-r-08-2024, temperature 0, bounded retry (3 attempts, backoff) on transient failures; inputs ticker/as_of/base/sigma/corporate actions/last 10 closes only — no family scores, no news, no Kronos path",
+ "entrant": "raw-llm-cohere",
+ "frozen_at": "2026-11-27T04:03:31.647476+00:00",
+ "horizons": {
+  "day": {
+   "confidence": 0.75,
+   "direction": "up",
+   "expected_move_pct": 1.08,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 1.64,
+   "range_low_pct": 0.52,
+   "trading_sessions": 1
+  },
+  "month": {
+   "confidence": 0.52,
+   "direction": "up",
+   "expected_move_pct": 4.17,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 5.86,
+   "range_low_pct": 2.48,
+   "trading_sessions": 21
+  },
+  "week": {
+   "confidence": 0.68,
+   "direction": "up",
+   "expected_move_pct": 2.12,
+   "families": {},
+   "horizon_short": false,
+   "net_score": null,
+   "range_high_pct": 3.35,
+   "range_low_pct": 0.89,
+   "trading_sessions": 5
+  }
+ },
+ "inputs_sha256": {
+  "collected/egx-data/egxpy_icfc.csv": "4ea386669c2430f8ee7b040bfba4f1be28426eb31da8dea719f7d2aec7e4fb24",
+  "digest.json": "9518292d92f78da677944e26f063cf2c8896fac026172b3b70368b83557b13a9",
+  "ensemble.json": "0c254f44c46fcf115f4603102bc55381aa6331bf2ce8f54b19757e139580abbc",
+  "scripts/benchmark_prompt_v1.txt": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d"
+ },
+ "llm_model": "command-r-08-2024",
+ "price_series_file": "collected/egx-data/egxpy_icfc.csv",
+ "prompt_sha256": "d56232749fc947295e653f0d65582d3e9cf06f242876472afe83f3db48b5b10d",
+ "prompt_version": "v1",
+ "risk": {
+  "conf_cap": 0.35,
+  "level": "unknown",
+  "price_mult": 0.8
+ },
+ "sessions_per_calendar_day": 0.659,
+ "sigma_daily": 0.0444,
+ "status": "present",
+ "sweep": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+ "ticker": "ICFC.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

@@ -1,0 +1,101 @@
+{
+ "job": {
+  "id": "w6-sweeplite-icfc-002",
+  "job": "sweep-lite ICFC.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T04:01:17.600483+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "ok",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "exit-1"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-icfc-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T04:01:17.600483+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "ICFC"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['ICFC']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T04:03:24.016513+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+  "model": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002/report-model.json",
+  "model_sha256": "3815e11bf50edb37eab166e84e6f8e868ff8afe14cb4e03c0e3b77b10356d18d",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "news-disclosure"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "news-file-missing: collected/news-disclosure/news.json",
+   "disclosures-file-missing: collected/news-disclosure/disclosures.json",
+   "recommendation-unavailable: no profiles/ICFC.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/ICFC.CA.json",
+   "sharia-row-missing: AAOIFI ICFC.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 ICFC.CA",
+   "sharia-row-missing: FTSE ICFC.CA",
+   "sharia-row-missing: ISLAMICLY ICFC.CA",
+   "sharia-row-missing: MSCI ICFC.CA",
+   "sharia-row-missing: MSCI_M ICFC.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "375a46c5b016f7b5d1430751afedaad2254422dc",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/040324__sweep-lite-icfc-ca-market-egx__runw6-sweeplite-icfc-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 114409,
+    "sha256": "de11795617cc076f1d351e54e98d1681a4f095828d9e3d6008666d5297e4c48b"
+   },
+   {
+    "path": "report.md",
+    "bytes": 23015,
+    "sha256": "f1d786b8fa705546e315f4424bc94b2271118846d01ba309748091362d9a0166"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "ICFC.CA"
+ }
+}

@@ -1,0 +1,101 @@
+{
+  "label": "live",
+  "model": "yiyanghkust/finbert-tone",
+  "id2label": {
+    "0": "Neutral",
+    "1": "Positive",
+    "2": "Negative"
+  },
+  "count": 3,
+  "label_counts": {
+    "positive": 1,
+    "negative": 0,
+    "neutral": 2
+  },
+  "label_counts_raw": {
+    "positive": 1,
+    "neutral": 2
+  },
+  "mean_probabilities": {
+    "positive": 0.33333210831650223,
+    "negative": 1.207852475696806e-05,
+    "neutral": 0.6666558239130609
+  },
+  "items": [
+    {
+      "text": "India’s 207-million CTV audience sparks push for a common industry body - Storyboard18",
+      "predicted": "positive",
+      "predicted_raw_label": "Positive",
+      "probabilities": {
+        "positive": 0.999995231628418,
+        "negative": 1.0629157713992754e-06,
+        "neutral": 3.7113632060936652e-06
+      },
+      "raw_scores": [
+        {
+          "label": "Positive",
+          "score": 0.999995231628418
+        },
+        {
+          "label": "Neutral",
+          "score": 3.7113632060936652e-06
+        },
+        {
+          "label": "Negative",
+          "score": 1.0629157713992754e-06
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "India’s CTV & FAST players discuss forming industry council - afaqs!",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 8.759954539527826e-07,
+        "negative": 7.1862077675177716e-06,
+        "neutral": 0.9999920129776001
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999920129776001
+        },
+        {
+          "label": "Negative",
+          "score": 7.1862077675177716e-06
+        },
+        {
+          "label": "Positive",
+          "score": 8.759954539527826e-07
+        }
+      ],
+      "unmapped_labels": []
+    },
+    {
+      "text": "ICFC Finance Limited Board Proposes 10.5263 Percent Cash Dividend for Fiscal Year 2082/83 - Hamro Patro",
+      "predicted": "neutral",
+      "predicted_raw_label": "Neutral",
+      "probabilities": {
+        "positive": 2.173256348214636e-07,
+        "negative": 2.7986450731987134e-05,
+        "neutral": 0.9999717473983765
+      },
+      "raw_scores": [
+        {
+          "label": "Neutral",
+          "score": 0.9999717473983765
+        },
+        {
+          "label": "Negative",
+          "score": 2.7986450731987134e-05
+        },
+        {
+          "label": "Positive",
+          "score": 2.173256348214636e-07
+        }
+      ],
+      "unmapped_labels": []
+    }
+  ]
+}
