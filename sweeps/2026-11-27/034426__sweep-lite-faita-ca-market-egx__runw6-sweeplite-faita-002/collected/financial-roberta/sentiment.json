@@ -1,0 +1,97 @@
+{
+  "label": "live",
+  "model": "soleimanian/financial-roberta-large-sentiment",
+  "id2label": {
+    "0": "negative",
+    "1": "neutral",
+    "2": "positive"
+  },
+  "count": 5,
+  "label_counts": {
+    "positive": 2,
+    "negative": 0,
+    "neutral": 3
+  },
+  "mean_probabilities": {
+    "positive": 0.4136365622631274,
+    "negative": 0.00038278032443486156,
+    "neutral": 0.5859806569293141
+  },
+  "items": [
+    {
+      "text": "The Animated Film “Our Faita” to Be Screened at a Film Festival in Tallinn - EMPR.media",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.07154957950115204,
+        "negative": 0.0003658395726233721,
+        "neutral": 0.9280845522880554
+      },
+      "raw_probabilities": {
+        "neutral": 0.9280845522880554,
+        "positive": 0.07154957950115204,
+        "negative": 0.0003658395726233721
+      }
+    },
+    {
+      "text": "Celebrity Chef Stefano Faita Opens Toronto’s First Bring-Your-Own-Pasta Restaurant — LBB - LBB - Little Black Book",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9976165294647217,
+        "negative": 0.0005247784429229796,
+        "neutral": 0.001858721487224102
+      },
+      "raw_probabilities": {
+        "positive": 0.9976165294647217,
+        "neutral": 0.001858721487224102,
+        "negative": 0.0005247784429229796
+      }
+    },
+    {
+      "text": "Celebrity Chef Stefano Faita opening Toronto’s first Bring-Your-Own-Pasta restaurant - Retail Insider",
+      "predicted": "positive",
+      "raw_predicted_label": "positive",
+      "probabilities": {
+        "positive": 0.9975506663322449,
+        "negative": 0.0004747696511913091,
+        "neutral": 0.001974528655409813
+      },
+      "raw_probabilities": {
+        "positive": 0.9975506663322449,
+        "neutral": 0.001974528655409813,
+        "negative": 0.0004747696511913091
+      }
+    },
+    {
+      "text": "Restaurant that only serves pasta sauce opening in Toronto - insauga.com",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0006335835205391049,
+        "negative": 0.0003569421241991222,
+        "neutral": 0.9990094900131226
+      },
+      "raw_probabilities": {
+        "neutral": 0.9990094900131226,
+        "positive": 0.0006335835205391049,
+        "negative": 0.0003569421241991222
+      }
+    },
+    {
+      "text": "This family business in Little Italy is celebrating 70 years - CTV News",
+      "predicted": "neutral",
+      "raw_predicted_label": "neutral",
+      "probabilities": {
+        "positive": 0.0008324524969793856,
+        "negative": 0.00019157183123752475,
+        "neutral": 0.9989759922027588
+      },
+      "raw_probabilities": {
+        "neutral": 0.9989759922027588,
+        "positive": 0.0008324524969793856,
+        "negative": 0.00019157183123752475
+      }
+    }
+  ]
+}

@@ -1,0 +1,1324 @@
+{
+  "archive_commit": "c2011be0804628e8d1896ee3d5d3c531edb6dddf",
+  "benchmark": {
+    "entrants": [
+      "buy-and-hold",
+      "family-agent",
+      "family-fundamentals",
+      "family-price-forecast",
+      "family-sentiment",
+      "family-technicals",
+      "kronos-alone",
+      "raw-llm-cohere"
+    ],
+    "files": {
+      "buy-and-hold.json": "d02dff4e8df6f99f7ba512f09fd33389d690e20ce90705646d9f471c63da8732",
+      "family-agent.json": "6a03e58ad8bbe969df656725e90afec38356edc2997a003dd244e9c1bd560107",
+      "family-fundamentals.json": "77b27ba14d87e736154309f2c51cd77f5aa1e0c4c4586e215d3e5353adfc79bd",
+      "family-price-forecast.json": "1317aacad80a9f1e2cd336cfea7452ebf26778221ed0bd9a562469f428da65cc",
+      "family-sentiment.json": "e7fa8a8ec7a34a4bf413482552f4e09e29f813d10d6d201a6cdef0a8aab1f066",
+      "family-technicals.json": "638afde4256c9880f782bf3b348325d0abbb100ef8613245bf8d8b9383a1e94b",
+      "kronos-alone.json": "850d0c64dc888880a8e0060d8d4d22cd9723a14e66e2dae038d6b153037d4c7a",
+      "raw-llm-cohere.json": "90e4847e58282ccb9af8e4ae52669e72a7db1e8b5aafb4b6feb4c4589f9444a3"
+    },
+    "present": true,
+    "statuses": {
+      "buy-and-hold.json": "present",
+      "family-agent.json": "absent",
+      "family-fundamentals.json": "absent",
+      "family-price-forecast.json": "absent",
+      "family-sentiment.json": "present",
+      "family-technicals.json": "present",
+      "kronos-alone.json": "present",
+      "raw-llm-cohere.json": "present"
+    }
+  },
+  "coercion_failed": [
+    {
+      "field": "latest_disclosure_date",
+      "raw_value": "",
+      "reason": "unparseable date",
+      "tool": "news-disclosure"
+    }
+  ],
+  "corporate_actions": [],
+  "date": "2026-11-27",
+  "degraded": {
+    "absent_families": [],
+    "absent_tools": [
+      "finbert-tone"
+    ],
+    "reason": "partial-fleet"
+  },
+  "degraded_derived": false,
+  "disclosure_events": {
+    "config_hash": null,
+    "counts": {
+      "by_type": {},
+      "by_verification": {},
+      "candidates": 0,
+      "events": 0,
+      "stale": 0,
+      "verified": 0
+    },
+    "events": [],
+    "extractor_version": null,
+    "feed_report": null,
+    "feed_schema_version": null,
+    "quarter": null,
+    "reason": "no disclosure-events/FAITA-events.json in sweep dir",
+    "source": null,
+    "status": "missing"
+  },
+  "ensemble": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "base_date": "2026-11-26",
+    "base_price": 1.0,
+    "base_source": "egx-data/egxpy_faita.csv",
+    "calibration": "v2-594 (frozen 2026-11-25: centre 0, band k=1.15/1.28/1.20 x sigma60 x sqrt(ledger sessions))",
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "corporate_actions": [],
+    "date": "2026-11-27",
+    "family_scores": {
+      "agent": null,
+      "fundamentals": null,
+      "price-forecast": -0.169,
+      "sentiment": 0.175,
+      "technicals": -0.15
+    },
+    "formula": "v2-594",
+    "horizons": {
+      "day": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.175
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.13,
+        "net_score": 0.175,
+        "range_high_pct": 0.93,
+        "range_low_pct": -0.93,
+        "tilt_centre_pct": 0.03,
+        "trading_sessions": 1,
+        "vol_h_pct": 0.8115
+      },
+      "month": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.175,
+          "technicals": -0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -1.26,
+        "net_score": -0.085,
+        "range_high_pct": 4.46,
+        "range_low_pct": -4.46,
+        "tilt_centre_pct": -0.1,
+        "trading_sessions": 21,
+        "vol_h_pct": 3.7188
+      },
+      "week": {
+        "band_calibration": {
+          "applied": false
+        },
+        "confidence": 0.6,
+        "direction": "flat",
+        "expected_move_pct": 0.0,
+        "families": {
+          "sentiment": 0.175,
+          "technicals": -0.15
+        },
+        "horizon_short": false,
+        "kronos_move_pct": -0.57,
+        "net_score": -0.011,
+        "range_high_pct": 2.32,
+        "range_low_pct": -2.32,
+        "tilt_centre_pct": -0.01,
+        "trading_sessions": 5,
+        "vol_h_pct": 1.8146
+      }
+    },
+    "kronos_ex_rescale": null,
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_faita.csv",
+      "base_stale": false,
+      "base_used": 1.0,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_faita.csv": 1.0,
+        "openbb/faita_ca.csv": 1.0,
+        "pandas-ta/indicators.csv": 1.0,
+        "talib/indicators.csv": 1.0,
+        "yahooquery/faita.ca.csv": 1.0
+      }
+    },
+    "risk": {
+      "conf_cap": 0.6,
+      "events": [],
+      "flags": [],
+      "level": "none",
+      "move_z": {
+        "last": 0.0,
+        "max3": 0.0
+      },
+      "price_mult": 1.0
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma60_daily": 0.0081,
+    "sigma_daily": 0.0081,
+    "sigma_source": "egx-data/egxpy_faita.csv (σ60=0.0081, σ10=0.0034)",
+    "ticker": "FAITA.CA",
+    "tool": "forecast-ensemble",
+    "version": 2,
+    "weights_source": "frozen-v2"
+  },
+  "ensemble_absent": false,
+  "ensemble_empty": false,
+  "ensemble_shape": {
+    "has_applied_weights": true,
+    "has_base_date": true,
+    "has_corporate_actions": true,
+    "has_kronos_ex_rescale": true,
+    "has_price_crosscheck": true,
+    "has_sessions_per_calendar_day": true,
+    "version": 2
+  },
+  "family_scores": {
+    "agent": null,
+    "fundamentals": null,
+    "price-forecast": -0.169,
+    "sentiment": 0.175,
+    "technicals": -0.15
+  },
+  "finished": "2026-11-27T03:44:26.960700+00:00",
+  "flags": [
+    "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+    "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+    "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+    "degraded: partial-fleet (absent families: —)",
+    "recommendation-unavailable: no profiles/FAITA.CA.recommendation.json",
+    "reaction-profile-missing: no profiles/FAITA.CA.json",
+    "sharia-row-missing: AAOIFI FAITA.CA",
+    "sharia-table-missing: DJIM",
+    "sharia-row-missing: EGX33 FAITA.CA",
+    "sharia-row-missing: FTSE FAITA.CA",
+    "sharia-row-missing: ISLAMICLY FAITA.CA",
+    "sharia-row-missing: MSCI FAITA.CA",
+    "sharia-row-missing: MSCI_M FAITA.CA",
+    "sharia-table-missing: SP_SHARIAH"
+  ],
+  "horizons": {
+    "day": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.175
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.13,
+      "net_score": 0.175,
+      "range_high_pct": 0.93,
+      "range_low_pct": -0.93,
+      "tilt_centre_pct": 0.03,
+      "trading_sessions": 1,
+      "vol_h_pct": 0.8115
+    },
+    "month": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.175,
+        "technicals": -0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -1.26,
+      "net_score": -0.085,
+      "range_high_pct": 4.46,
+      "range_low_pct": -4.46,
+      "tilt_centre_pct": -0.1,
+      "trading_sessions": 21,
+      "vol_h_pct": 3.7188
+    },
+    "week": {
+      "band_calibration": {
+        "applied": false
+      },
+      "confidence": 0.6,
+      "direction": "flat",
+      "expected_move_pct": 0.0,
+      "families": {
+        "sentiment": 0.175,
+        "technicals": -0.15
+      },
+      "horizon_short": false,
+      "kronos_move_pct": -0.57,
+      "net_score": -0.011,
+      "range_high_pct": 2.32,
+      "range_low_pct": -2.32,
+      "tilt_centre_pct": -0.01,
+      "trading_sessions": 5,
+      "vol_h_pct": 1.8146
+    }
+  },
+  "job": "sweep-lite FAITA.CA market=EGX",
+  "job_shape": "sweep-lite FAITA.CA market=EGX",
+  "kronos_ex_rescale": null,
+  "ledger_pin": {
+    "counts": {
+      "dividend_adjusted": 8,
+      "excluded_flagged": 12,
+      "forecasts": 204,
+      "invalid": 12,
+      "matured": 48,
+      "pending": 144,
+      "sweeps": 91,
+      "sweeps_with_ensemble": 70
+    },
+    "tree_sha": null,
+    "version": 1,
+    "weights_file_sha256": null,
+    "weights_file_sha256_at_compile": "5ef17c5a8826d7479e3749a99917c14950b8e26db0b3be95443fec4d76cf1d9d",
+    "weights_sha_matches_ensemble": null
+  },
+  "levels": {
+    "basis": "week horizon range_low_pct / range_high_pct (expected_move_pct +/- half-range, % of base)",
+    "note": "model range: arithmetic on the forecast's own week range; not support/resistance levels and not a buy/sell instruction",
+    "resistance": 1.0232,
+    "support": 0.9768
+  },
+  "llm": {
+    "budget": {
+      "cap_usd": null,
+      "spent_usd": null,
+      "status": null
+    },
+    "calls": [
+      {
+        "fallback_from": null,
+        "model": "ProsusAI/finbert",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "finbert",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": "soleimanian/financial-roberta-large-sentiment",
+        "provider": null,
+        "role": "model",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "financial-roberta",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "llm",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      },
+      {
+        "fallback_from": null,
+        "model": null,
+        "provider": "cohere",
+        "role": "translation",
+        "source": null,
+        "tokens_in": null,
+        "tokens_out": null,
+        "tool": "news-disclosure",
+        "usd": null
+      }
+    ],
+    "list_version": null,
+    "llm_status": "not-recorded"
+  },
+  "market": "EGX",
+  "metrics_schema": "untyped-flat",
+  "model_version": 2,
+  "news": {
+    "disclosure_count": 0,
+    "disclosure_items": [],
+    "identity_scheme": "resolved_url|title-date-hash",
+    "latest_disclosure_date": null,
+    "latest_disclosure_date_raw": null,
+    "latest_news_date": "2026-11-23T00:16:52Z",
+    "latest_news_date_raw": "Mon, 23 Nov 2026 00:16:52 GMT",
+    "news_count": 1,
+    "news_items": [
+      {
+        "date": "Mon, 23 Nov 2026 00:16:52 GMT",
+        "identity_key": "fcf8f37e1cc4611c",
+        "key_type": "title-date-hash",
+        "source": "Sofascore",
+        "title": "فيتا كلوب موكاندا ضد أسب النتيجة المباشرة, المواجهات المباشرة والتشكيلات - Sofascore"
+      }
+    ]
+  },
+  "partial": false,
+  "price": {
+    "base_date": "2026-11-26",
+    "base_price": 1.0,
+    "base_source": "egx-data/egxpy_faita.csv",
+    "price_crosscheck": {
+      "base_date": "2026-11-26",
+      "base_source_used": "egx-data/egxpy_faita.csv",
+      "base_stale": false,
+      "base_used": 1.0,
+      "common_date": "2026-11-24",
+      "latest_collected_date": "2026-11-26",
+      "outliers": {},
+      "spread_pct": 0.0,
+      "status": "agree",
+      "witnesses": {
+        "egx-data/egxpy_faita.csv": 1.0,
+        "openbb/faita_ca.csv": 1.0,
+        "pandas-ta/indicators.csv": 1.0,
+        "talib/indicators.csv": 1.0,
+        "yahooquery/faita.ca.csv": 1.0
+      }
+    },
+    "sessions_per_calendar_day": 0.664,
+    "sigma_daily": 0.0081,
+    "sigma_source": "egx-data/egxpy_faita.csv (σ60=0.0081, σ10=0.0034)"
+  },
+  "price_series_excluded": [
+    "kronos/forecast.csv: forecast rows, not actuals"
+  ],
+  "price_series_last": [
+    {
+      "last_close": 1.0,
+      "last_date": "2026-11-26",
+      "last_high": 1.01,
+      "last_low": 1.0,
+      "last_open": 1.0,
+      "last_volume": 39349.0,
+      "note": null,
+      "rows": 3000,
+      "source": "egx-data/egxpy_faita.csv",
+      "stale": false
+    },
+    {
+      "last_close": 1.0,
+      "last_date": "2026-11-25",
+      "last_high": 1.0,
+      "last_low": 1.0,
+      "last_open": 1.0,
+      "last_volume": 3000.0,
+      "note": null,
+      "rows": 483,
+      "source": "openbb/FAITA_CA.csv",
+      "stale": true
+    },
+    {
+      "last_close": 1.0,
+      "last_date": "2026-11-25",
+      "last_high": 1.0,
+      "last_low": 1.0,
+      "last_open": 1.0,
+      "last_volume": 3000.0,
+      "note": null,
+      "rows": 250,
+      "source": "pandas-ta/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 1.0,
+      "last_date": "2026-11-25",
+      "last_high": 1.0,
+      "last_low": 1.0,
+      "last_open": 1.0,
+      "last_volume": 3000.0,
+      "note": null,
+      "rows": 250,
+      "source": "talib/indicators.csv",
+      "stale": true
+    },
+    {
+      "last_close": 1.0,
+      "last_date": "2026-11-24",
+      "last_high": 1.0,
+      "last_low": 1.0,
+      "last_open": 1.0,
+      "last_volume": 12932.0,
+      "note": null,
+      "rows": 1208,
+      "source": "yahooquery/FAITA.CA.csv",
+      "stale": true
+    }
+  ],
+  "provenance": {
+    "claim_id": "w6-sweeplite-faita-002",
+    "compiler": "scripts/compile_model.py",
+    "compiler_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "merged_by": "worker",
+    "run_id": "w6-sweeplite-faita-002",
+    "source_runs": [
+      "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    ],
+    "worker_code_sha": "96665452708ab788a068001073d3443e02386e3b",
+    "worker_release_sha": "96665452708ab788a068001073d3443e02386e3b"
+  },
+  "reaction_profile": {
+    "archive_commit": null,
+    "built_at": null,
+    "fit": null,
+    "present": false,
+    "ticker": "FAITA.CA",
+    "walk_forward": null
+  },
+  "recommendation": null,
+  "risk": {
+    "conf_cap": 0.6,
+    "events": [],
+    "flags": [],
+    "level": "none",
+    "move_z": {
+      "last": 0.0,
+      "max3": 0.0
+    },
+    "price_mult": 1.0
+  },
+  "risk_events_truncated": true,
+  "schema": "borsagator-report-model/2",
+  "secret_fields_dropped": [],
+  "sharia": {
+    "average_purification": {
+      "excluded": [
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "AAOIFI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "DJIM"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "EGX33"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "FTSE"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "ISLAMICLY"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "MSCI_M"
+        },
+        {
+          "reason": "no verdict row (insufficient-data)",
+          "standard": "SP_SHARIAH"
+        }
+      ],
+      "included": [],
+      "label_ar": "متوسط نسبة التطهير عبر المعايير المختارة التي تعرّف قاعدة تطهير (متوسط لنسب كل معيار على حدة، وليس رقمًا خاصًا بمعيار واحد)",
+      "label_en": "Average purification ratio across the selected standards that define a purification rule (an average of per-standard ratios; not a figure of any single standard)",
+      "value": null
+    },
+    "banner_ar": "ليست فتوى — نتائج فحص وفق المعيار المختار؛ لا توجد شهادة من هيئة رقابة شرعية.",
+    "banner_en": "NOT A FATWA — screening results per the selected standard; no Sharia Board certification.",
+    "disagreement": false,
+    "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+    "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+    "requested": null,
+    "selection": "default-all-implemented",
+    "standards": [
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-aaoifi.json"
+        ],
+        "name_ar": "المعيار الشرعي رقم 21 لهيئة أيوفي — الأوراق المالية (الأسهم والسندات)، كما يطبقه مصفّى وفيصل لتداول الأوراق المالية",
+        "name_en": "AAOIFI Sharia Standard No. 21 — Financial Papers (Shares and Bonds), as operationalised by Musaffa and Faisal Securities",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-aaoifi.json",
+        "standard": "AAOIFI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-djim.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-djim.json",
+        "standard": "DJIM",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-egx33.json"
+        ],
+        "name_ar": "منهجية مؤشر الشريعة EGX33 — لجنة الرقابة الشرعية بالبورصة المصرية (مؤسسة على المعيار الشرعي رقم 21 لأيوفي)",
+        "name_en": "EGX 33 Shariah Index methodology — EGX Sharia Supervisory Committee (grounded in AAOIFI Sharia Standard No. 21)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-egx33.json",
+        "standard": "EGX33",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T21:43:39Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-ftse.json"
+        ],
+        "name_ar": "منهجية مؤشرات FTSE الشرعية — فحص ياسار (FTSE Russell)",
+        "name_en": "FTSE Shariah Index Series — Yasaar screening (FTSE Russell)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-ftse.json",
+        "standard": "FTSE",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-islamicly.json"
+        ],
+        "name_ar": "معايير الفحص الشرعي لمنصة إسلاميكلي (Islamicly) — المجلس الاستشاري الشرعي الداخلي",
+        "name_en": "Islamicly Shariah screening criteria — in-house Shariah Advisory Board (Ratings Intelligence)",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-islamicly.json",
+        "standard": "ISLAMICLY",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-msci.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية — مايو 2025",
+        "name_en": "MSCI Islamic Index Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci.json",
+        "standard": "MSCI",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": "1.0.0",
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "verdict row for FAITA.CA in sharia/verdicts-msci_m.json"
+        ],
+        "name_ar": "منهجية سلسلة مؤشرات MSCI الإسلامية M — مايو 2025",
+        "name_en": "MSCI Islamic Index M-Series Methodology (May 2025) — MSCI Inc.",
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": "1.0.0",
+        "screening_date": null,
+        "source_table": "sharia/verdicts-msci_m.json",
+        "standard": "MSCI_M",
+        "statement_period": null,
+        "table_generated_at": "2026-11-17T22:30:28Z",
+        "verdict": "insufficient-data"
+      },
+      {
+        "activity": {
+          "classification": null,
+          "evidence_source": null
+        },
+        "denominator_variant": null,
+        "engine_version": null,
+        "framing_ar": "نتيجة فحص وفق المعيار المذكور فقط، محسوبة من القوائم المالية المنشورة للشركة. ليست فتوى، وليست نصيحة دينية أو استثمارية.",
+        "framing_en": "Screening result under the named standard only, computed from the company's published financials. This is not a fatwa, and not religious or investment advice.",
+        "missing_inputs": [
+          "stored verdict table sharia/verdicts-sp_shariah.json"
+        ],
+        "name_ar": null,
+        "name_en": null,
+        "parameters": {},
+        "purification": {
+          "defined": false,
+          "per_share": null,
+          "ratio": null
+        },
+        "ratios": [],
+        "ruleset_version": null,
+        "screening_date": null,
+        "source_table": "sharia/verdicts-sp_shariah.json",
+        "standard": "SP_SHARIAH",
+        "statement_period": null,
+        "table_generated_at": null,
+        "verdict": "insufficient-data"
+      }
+    ],
+    "verdicts": {
+      "AAOIFI": "insufficient-data",
+      "DJIM": "insufficient-data",
+      "EGX33": "insufficient-data",
+      "FTSE": "insufficient-data",
+      "ISLAMICLY": "insufficient-data",
+      "MSCI": "insufficient-data",
+      "MSCI_M": "insufficient-data",
+      "SP_SHARIAH": "insufficient-data"
+    }
+  },
+  "started": "2026-11-27T03:42:05.079846+00:00",
+  "sweep_dir": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+  "ticker": "FAITA.CA",
+  "ticker_mismatch": [],
+  "tools": [
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "yahooquery-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "FAITA.CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "FAITA.CA.csv_last_close": 1.0,
+          "FAITA.CA.csv_last_date": "2026-11-24",
+          "rows_FAITA.CA.csv": 1208
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "yahooquery"
+      },
+      "summary_sha256": "dc364d059cbc1050abd74ffc16d089553d7bfe0328cd2995f214afc6e935b248",
+      "tool": "yahooquery",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "openbb-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "FAITA_CA.csv",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "FAITA_CA.csv_last_close": 1.0,
+          "FAITA_CA.csv_last_date": "2026-11-25",
+          "rows_FAITA_CA.csv": 483
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "openbb"
+      },
+      "summary_sha256": "c8677938daa6ad456662e222b5d87524722e45450e5e61dceb7c241f53682589",
+      "tool": "openbb",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "egx-data-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "egxpy_faita.csv",
+          "report.md",
+          "run.log",
+          "verdict.json"
+        ],
+        "metrics": {
+          "egxpy_faita.csv_last_close": 1.0,
+          "egxpy_faita.csv_last_date": "2026-11-26",
+          "rows_egxpy_faita.csv": 3000,
+          "symbol": "FAITA",
+          "ticker": "FAITA.CA"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "egx-data"
+      },
+      "summary_sha256": "71bfb4289fb590bc24514e819151bcd5a42c2b79110d5a645a035d786573f9a5",
+      "tool": "egx-data",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "pandas-ta-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "report.md",
+          "run.log",
+          "ta_snapshot.json"
+        ],
+        "metrics": {
+          "adx_14": 29.8267,
+          "atr_14": 0.0098,
+          "bb_lower": 0.9897,
+          "bb_mid": 0.9989,
+          "bb_pctb": 0.563,
+          "bb_upper": 1.008,
+          "close": 1.0,
+          "date": "2026-11-25",
+          "drop_before": "2019-01-01",
+          "ema_20": 0.9982,
+          "ema_200": 0.9912,
+          "ema_50": 0.9939,
+          "first_date_used": "2019-01-01",
+          "high": 1.0,
+          "indicators.csv_last_close": 1.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_date": "2026-11-25",
+          "low": 1.0,
+          "macd": 0.0028,
+          "macd_hist": -0.0002,
+          "macd_signal": 0.0029,
+          "open": 1.0,
+          "rows_fetched": 5633,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "rsi_14": 52.8822,
+          "stoch_d": 38.2979,
+          "stoch_k": 36.1703,
+          "ticker": "FAITA.CA"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "pandas-ta"
+      },
+      "summary_sha256": "ffe9ece0ef640a8c47db65241bb9f6c6cff213e08c6b10d106caac9de74a8f5c",
+      "tool": "pandas-ta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "technicals",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "talib-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "indicators.csv",
+          "run.log",
+          "ta_latest.json"
+        ],
+        "metrics": {
+          "drop_before": "2019-01-01",
+          "indicators.csv_last_close": 1.0,
+          "indicators.csv_last_date": "2026-11-25",
+          "last_close": 1.0,
+          "last_date": "2026-11-25",
+          "rows_fetched": 5633,
+          "rows_indicators.csv": 250,
+          "rows_used": 1930,
+          "ticker": "FAITA.CA"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "talib"
+      },
+      "summary_sha256": "728ffbc4b0583aa5f717ec7c0b2d57c466453f293346720cf7839d7ee0f117fb",
+      "tool": "talib",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "stats",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "quantstats-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "ohlc.csv",
+          "report.md",
+          "run.log",
+          "stats.json",
+          "tearsheet.html"
+        ],
+        "metrics": {
+          "exchange_tz": "Africa/Cairo",
+          "ohlc.csv_last_close": 6.730000019073486,
+          "rows": 2188,
+          "rows_ohlc.csv": 2188,
+          "source": "Yahoo chart API (direct, via requests)",
+          "ticker": "POUL.CA"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "quantstats"
+      },
+      "summary_sha256": "d633474da004a120dc954b2be2636a5e83a286d883b2117c2446228ffbb7bb03",
+      "tool": "quantstats",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "backtest",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "vectorbt-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "poul_ohlc.csv",
+          "report.md",
+          "run.log",
+          "summary.json"
+        ],
+        "metrics": {
+          "poul_ohlc.csv_last_close": 6.730000019073486,
+          "rows_poul_ohlc.csv": 2437
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "vectorbt"
+      },
+      "summary_sha256": "6e675fb0033faa136bf346b5cf24494775426204fbc3c76ce54f873a51720f0c",
+      "tool": "vectorbt",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "fundamentals",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financetoolkit-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "run.log"
+        ],
+        "metrics": {},
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "financetoolkit"
+      },
+      "summary_sha256": "43606d2807c4ca3a63128b9532544e22c2f5f6b1c3d923ad33a5f4d5b1ff0473",
+      "tool": "financetoolkit",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "finbert-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 5,
+          "label": "live",
+          "model": "ProsusAI/finbert"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "finbert"
+      },
+      "summary_sha256": "0cb9d59aa8bb50ccbafca9776ed6a9bdea8c61b4149c5db3a8e65ad01a6d6ace",
+      "tool": "finbert",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 1,
+      "repo": "finbert-tone-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "failed",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 1,
+        "files": [],
+        "metrics": {},
+        "status": "failed",
+        "ticker": "FAITA.CA",
+        "tool": "finbert-tone"
+      },
+      "summary_sha256": "3a3a5a046fbab4e66959b9d553590f522b284fafcf218129106e2dc165122bb9",
+      "tool": "finbert-tone",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "sentiment",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "roberta-sentiment-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "report.md",
+          "run.log",
+          "sentiment.json"
+        ],
+        "metrics": {
+          "count": 5,
+          "label": "live",
+          "model": "soleimanian/financial-roberta-large-sentiment"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "financial-roberta"
+      },
+      "summary_sha256": "7f424bca0118533e426ecfc8fc6edd0ea9669190eb6e75fdb445f2d37a6690d2",
+      "tool": "financial-roberta",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "forecast",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "kronos-runner",
+      "report_md_present": true,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "forecast.csv",
+          "report.md",
+          "run.log"
+        ],
+        "metrics": {
+          "forecast.csv_last_close": 0.9874,
+          "forecast.csv_last_date": "2026-12-23",
+          "rows_forecast.csv": 21
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "kronos"
+      },
+      "summary_sha256": "84483f487161fafa07c976905b96804101051f44c2ebcd32f91b1d9825acb100",
+      "tool": "kronos",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "data",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "financedatabase-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "country_options.json",
+          "egypt_equities.csv",
+          "run.log",
+          "sector_options.json",
+          "summary.json",
+          "us_sector_equities.csv"
+        ],
+        "metrics": {
+          "count": 11,
+          "method": "show_options(selection=...)",
+          "rows_egypt_equities.csv": 50,
+          "rows_us_sector_equities.csv": 50
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "financedatabase"
+      },
+      "summary_sha256": "08be80621e0bb0ce157fa06acc0acfe446252751342f05cad5a129094e89363a",
+      "tool": "financedatabase",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    },
+    {
+      "category": "news",
+      "claim_id": "w6-sweeplite-faita-002",
+      "conclusion": null,
+      "exit_code": 0,
+      "repo": "news-disclosure-runner",
+      "report_md_present": false,
+      "run_url": null,
+      "status": "ok",
+      "summary": {
+        "borsagator": true,
+        "exit_code": 0,
+        "files": [
+          "disclosures.json",
+          "feed_summary.json",
+          "headlines.txt",
+          "news.json",
+          "run.log"
+        ],
+        "metrics": {
+          "arabic_headlines": 1,
+          "bodies_fetched": 0,
+          "disclosure_count": 0,
+          "egx_bodies_attached": 0,
+          "egx_disclosures_added": 0,
+          "fetched_at": "2026-11-27T03:44:25Z",
+          "latest_disclosure_date": "",
+          "latest_news_date": "Mon, 23 Nov 2026 00:16:52 GMT",
+          "llm_provider": "cohere",
+          "multilingual_negative": 0.003,
+          "multilingual_neutral": 0.922,
+          "multilingual_positive": 0.074,
+          "multilingual_scored": 1,
+          "news_count": 1,
+          "ticker": "FAITA.CA",
+          "tool": "news-disclosure",
+          "top_headline": "فيتا كلوب موكاندا ضد أسب النتيجة المباشرة, المواجهات المباشرة والتشكيلات - Sofascore",
+          "translated_negative": 0.02,
+          "translated_neutral": 0.937,
+          "translated_positive": 0.042,
+          "translated_scored": 1,
+          "translation_provider": "cohere"
+        },
+        "status": "ok",
+        "ticker": "FAITA.CA",
+        "tool": "news-disclosure"
+      },
+      "summary_sha256": "23a9e566c121f84e3a3e7f91fb2e76f22c8b3be2e9d9858d58f925a727acbabd",
+      "tool": "news-disclosure",
+      "worker_run": "worker-runs/2026-11-27/w6-sweeplite-faita-002"
+    }
+  ],
+  "tools_absent": [],
+  "tools_failed": [
+    {
+      "detail": "ERROR: no English headlines found for this ticker",
+      "status": "failed",
+      "tool": "finbert-tone"
+    }
+  ],
+  "weights": {
+    "applied_weights": {
+      "eligible": {},
+      "factors": {
+        "agent": 1.0,
+        "fundamentals": 1.0,
+        "price-forecast": 1.0,
+        "sentiment": 1.0,
+        "technicals": 1.0
+      },
+      "file": null,
+      "file_sha256": null,
+      "source": "frozen-v2"
+    },
+    "confidence_basis": "frozen v2 (factors 1.0 until n>=30 per family, #594)",
+    "weights_source": "frozen-v2"
+  }
+}

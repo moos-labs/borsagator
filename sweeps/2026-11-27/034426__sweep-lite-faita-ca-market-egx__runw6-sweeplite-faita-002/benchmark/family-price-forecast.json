@@ -1,0 +1,28 @@
+{
+ "as_of": "2026-11-27",
+ "base_date": "2026-11-26",
+ "base_price": 1.0,
+ "base_source": "egx-data/egxpy_faita.csv",
+ "base_stale": false,
+ "constants_source": "ensemble.py",
+ "corporate_actions": [],
+ "derivation": "family-alone-v1: price-forecast score null in every horizon",
+ "entrant": "family-price-forecast",
+ "frozen_at": "2026-11-27T03:44:27.315190+00:00",
+ "inputs_sha256": {
+  "collected/kronos/forecast.csv": "6a8c21b9966d5a679d6aec35d41c737273d2afef264b2b96cd759e3244bf635e",
+  "digest.json": "b832fef2306bd27d5a9a217f2a31e75bc84b0064bcbee3e217c8c3d329f08c8a",
+  "ensemble.json": "61287a1b5fd367cdddda2cdb610e85bb665a6a199be28cfc728ea755a0dab504"
+ },
+ "reason": "family-did-not-vote",
+ "risk": {
+  "conf_cap": 0.6,
+  "level": "none",
+  "price_mult": 1.0
+ },
+ "status": "absent",
+ "sweep": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+ "ticker": "FAITA.CA",
+ "tool": "benchmark-freeze",
+ "version": 1
+}

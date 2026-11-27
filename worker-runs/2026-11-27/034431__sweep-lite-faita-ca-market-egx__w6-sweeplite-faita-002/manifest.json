@@ -1,0 +1,100 @@
+{
+ "job": {
+  "id": "w6-sweeplite-faita-002",
+  "job": "sweep-lite FAITA.CA market=EGX",
+  "added": "2026-11-26T20:19:01.292970+00:00"
+ },
+ "worker": "borsagator-worker-6",
+ "started": "2026-11-27T03:42:05.079846+00:00",
+ "tools": {
+  "yahooquery": "ok",
+  "openbb": "ok",
+  "egx-data": "ok",
+  "pandas-ta": "ok",
+  "talib": "ok",
+  "quantstats": "ok",
+  "vectorbt": "ok",
+  "financetoolkit": "ok",
+  "finbert": "ok",
+  "finbert-tone": "exit-1",
+  "financial-roberta": "ok",
+  "kronos": "ok",
+  "financedatabase": "ok",
+  "news-disclosure": "ok"
+ },
+ "code_sha": "2041238d5587f0b4fd10f53aedb8e0fbc2e24786bd6427259205e16fea5863b9",
+ "code_sha_kind": "sha256-running-bytes",
+ "checkout_sha": "96665452708ab788a068001073d3443e02386e3b",
+ "update_branch": "worker-release",
+ "disclosure_feed": {
+  "sweep_id": "w6-sweeplite-faita-002",
+  "origin": "on-demand",
+  "mode": "sweep-live",
+  "intraday_alerting": false,
+  "started": "2026-11-27T03:42:05.079846+00:00",
+  "tickers": {},
+  "status": "skipped",
+  "out_of_scope": [
+   "FAITA"
+  ],
+  "detail": "no in-scope EGX tickers in plan (POUL/COMI); out of scope: ['FAITA']",
+  "extraction": {}
+ },
+ "finished": "2026-11-27T03:44:26.960700+00:00",
+ "merge": {
+  "status": "complete",
+  "sweep_dir": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002"
+ },
+ "compile": {
+  "status": "compiled",
+  "sweep_dir": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+  "model": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002/report-model.json",
+  "model_sha256": "18add3413484ee6c132858b7d3464bfca6225ed3fc87c55528bc7b5e2f513506",
+  "degraded": {
+   "absent_families": [],
+   "absent_tools": [
+    "finbert-tone"
+   ],
+   "reason": "partial-fleet"
+  },
+  "flags": [
+   "summary-format-diff: news-disclosure (parsed-identical, bytes differ from the canonical indent=2 form)",
+   "witnesses-stale: common_date 2026-11-24 vs base_date 2026-11-26",
+   "tree-sha-unavailable: archive SHA given by flag, no git checkout to derive the tree SHA",
+   "degraded: partial-fleet (absent families: \u2014)",
+   "recommendation-unavailable: no profiles/FAITA.CA.recommendation.json",
+   "reaction-profile-missing: no profiles/FAITA.CA.json",
+   "sharia-row-missing: AAOIFI FAITA.CA",
+   "sharia-table-missing: DJIM",
+   "sharia-row-missing: EGX33 FAITA.CA",
+   "sharia-row-missing: FTSE FAITA.CA",
+   "sharia-row-missing: ISLAMICLY FAITA.CA",
+   "sharia-row-missing: MSCI FAITA.CA",
+   "sharia-row-missing: MSCI_M FAITA.CA",
+   "sharia-table-missing: SP_SHARIAH"
+  ],
+  "tools": 14,
+  "archive_commit": "c2011be0804628e8d1896ee3d5d3c531edb6dddf",
+  "archive_lookup": "ok"
+ },
+ "render": {
+  "status": "rendered",
+  "sweep_dir": "sweeps/2026-11-27/034426__sweep-lite-faita-ca-market-egx__runw6-sweeplite-faita-002",
+  "files": [
+   {
+    "path": "report.html",
+    "bytes": 115869,
+    "sha256": "1549a353d4d251587b0fea4a34a7e840f3f5372fea3ecd2517ad0fd5ac4c3594"
+   },
+   {
+    "path": "report.md",
+    "bytes": 22426,
+    "sha256": "d4bd8f7bcf2c00083fd6488e6940374fd2be4e68c88337014b20cdfc0f53feff"
+   }
+  ],
+  "files_appended": true,
+  "chart": "svg",
+  "sweep_dir_fallback": true,
+  "ticker": "FAITA.CA"
+ }
+}
