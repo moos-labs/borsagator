@@ -1,0 +1,109 @@
+{
+ "ticker": "TMGH.CA",
+ "cutoff": "2024-06-30",
+ "base_close": 56.88999938964844,
+ "base_date": "2024-06-27",
+ "sessions": [
+  {
+   "date": "2024-07-01",
+   "close": 57.12
+  },
+  {
+   "date": "2024-07-02",
+   "close": 59.0
+  },
+  {
+   "date": "2024-07-03",
+   "close": 60.209999084472656
+  },
+  {
+   "date": "2024-07-04",
+   "close": 60.20000076293945
+  },
+  {
+   "date": "2024-07-07",
+   "close": 61.209999084472656
+  },
+  {
+   "date": "2024-07-08",
+   "close": 60.61000061035156
+  },
+  {
+   "date": "2024-07-09",
+   "close": 61.9900016784668
+  },
+  {
+   "date": "2024-07-10",
+   "close": 61.0
+  },
+  {
+   "date": "2024-07-14",
+   "close": 58.599998474121094
+  },
+  {
+   "date": "2024-07-15",
+   "close": 58.79999923706055
+  },
+  {
+   "date": "2024-07-16",
+   "close": 58.029998779296875
+  },
+  {
+   "date": "2024-07-17",
+   "close": 59.04999923706055
+  },
+  {
+   "date": "2024-07-18",
+   "close": 59.650001525878906
+  },
+  {
+   "date": "2024-07-21",
+   "close": 58.68000030517578
+  },
+  {
+   "date": "2024-07-22",
+   "close": 58.68000030517578
+  },
+  {
+   "date": "2024-07-23",
+   "close": 58.0
+  },
+  {
+   "date": "2024-07-24",
+   "close": 58.13999938964844
+  },
+  {
+   "date": "2024-07-28",
+   "close": 56.599998474121094
+  },
+  {
+   "date": "2024-07-29",
+   "close": 55.11000061035156
+  },
+  {
+   "date": "2024-07-30",
+   "close": 56.029998779296875
+  },
+  {
+   "date": "2024-07-31",
+   "close": 56.25
+  }
+ ],
+ "maturity_date": "2024-07-31",
+ "index_ticker": "^EGX30",
+ "index_base_close": null,
+ "index_sessions": [],
+ "index_gap": "index fetch failed: Yahoo chart fetch failed for ^EGX30 after 3 attempts: HTTP Error 404: Not Found",
+ "actions": [],
+ "splits": [],
+ "fetched_at": "2026-11-27",
+ "repaired_closes": [
+  {
+   "date": "2024-07-01",
+   "ticker": "TMGH.CA",
+   "close": 57.12,
+   "source": "Mubasher",
+   "basis": "Mubasher close; Yahoo neighbours match to the cent"
+  }
+ ]
+}
