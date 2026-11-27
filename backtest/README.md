@@ -11,13 +11,15 @@ cells 79–88 (2026-05-15 × COMI/ETEL/TMGH/NVDA/SWDY/HRHO and
 cells 91–97 (2025-11-14 × COMI/ETEL/TMGH/NVDA/SWDY/HRHO and
 2025-08-15 × COMI, the D/E batch) and batch-18 cells 98–102
 (2025-08-15 × ETEL/TMGH/NVDA/SWDY/HRHO, the D/E batch remainder).
+Cell 1 re-scored (r3, COMI.CA 2023-12-29, fixed Kronos pin 6964de99,
+archive a62379f8).
 Scorer v2 (`scripts/backtest_score.py`, PR #665 plus the `agg()`
 empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
 `ledger.DEFAULT_SESSIONS`.
 
 ## Coverage
 
-- **91 cells re-scored** (1581 forecasts, all matured):
+- **91 cells re-scored** (1584 forecasts, all matured):
   cells 1–47 except the 11 below, plus batch-7 cells 48 (SWDY.CA
   2025-09-30), 49 (HRHO.CA 2025-09-30) and 50 (COMI.CA 2025-12-31),
   batch-8 cells 51 (ETEL.CA 2025-12-31), 52 (TMGH.CA 2025-12-31)
@@ -60,13 +62,13 @@ empty-subset fix in PR #677). Sessions day/week/month 1/5/21 per
 
 | Entrant | Day MAE / RangeSkill | Week MAE / RangeSkill | Month MAE / RangeSkill |
 |---|---|---|---|
-| 2-family-ensemble | 2.81 / −0.357 | 6.03 / −0.880 | 12.92 / −0.791 |
-| kronos-alone | 3.44 / −0.829 | 8.75 / −2.628 | 21.21 / −3.914 |
-| family-technicals | 2.12 / −0.028 | 4.02 / −0.019 | 8.49 / −0.029 |
+| 2-family-ensemble | 2.46 / −0.115 | 5.67 / −0.707 | 12.52 / −0.688 |
+| kronos-alone | 2.87 / −0.368 | 8.22 / −2.323 | 20.85 / −3.815 |
+| family-technicals | 2.12 / −0.028 | 4.03 / −0.020 | 8.49 / −0.025 |
 | naive-range (gate) | 2.04 / 0.000 | 3.98 / 0.000 | 8.43 / 0.000 |
 
 Flat zero-move (buy-and-hold) MAE: 2.04 / 3.98 / 8.43. The ensemble
-fails the RangeSkill gate at every horizon; Kronos month MAE 21.21 pp
+fails the RangeSkill gate at every horizon; Kronos month MAE 20.85 pp
 vs zero-move 8.43 pp, direction hit 37.4%. The batch-7 cells alone:
 ensemble month MAE 2.65 / 5.08 / 29.13 pp (cells 48/49/50), RangeSkill
 +0.064 / +0.061 / −0.026 — the first two cells beat the naive range
@@ -159,19 +161,26 @@ cell 102). Cell 101 (SWDY.CA −7.81% realised month) covers 0.000 at
 the month horizon on the ensemble; the other four cells cover
 1.000. Ensemble month direction hit is 0.00 on all five cells.
 Cell 100 (NVDA) carries 21 forecasts — an index-baseline leg, so
-it has seven entrants instead of six.
+it has seven entrants instead of six. Cell 1 re-scored (r3, COMI.CA
+2023-12-29, realised month +20.78%): ensemble MAE 0.40 / 2.48 /
+20.78 pp, RangeSkill +0.099 / −0.002 / −0.067; Kronos month 42.65 pp
+(was 75.41 pp on the pre-cap pin 54de65a2) — still far worse than
+zero-move; Kronos month coverage 0.000. The r2 cell-1 rows are
+replaced: 15 rows out, 18 rows in (tilt-technicals now present);
+grid stays 91 cells, 1581 → 1584 forecasts. Tilt sample 55 → 56.
 
-## Tilt-technicals (n = 55 — adoption test decisive at n = 31, DO NOT ADOPT)
+## Tilt-technicals (n = 56 — adoption test decisive at n = 31, DO NOT ADOPT)
 
-The fifty-five batch-7/8/9/10/11/12/13/14/15/16/17/18 captures are the first v2
+The fifty-six batch-7/8/9/10/11/12/13/14/15/16/17/18 captures are the first v2
 captures, so they are the first cells with `tilt_centre_pct`:
-tilt-technicals month MAE 8.74 pp, RangeSkill −0.029 (n = 55);
-day −0.016, week −0.003. Coverage 0.691 / 0.782 / 0.673. The #594 adoption test at n = 31
+tilt-technicals month MAE 8.97 pp, RangeSkill −0.036 (n = 56);
+day −0.015, week −0.003. Coverage 0.696 / 0.786 / 0.661. The #594 adoption test at n = 31
 (2026-11-26) is decisive: DO NOT ADOPT on all three horizons —
 frozen v2 RangeSkill −0.023 / −0.001 / −0.022 with 95% CIs
 [−0.055, 0.024] / [−0.002, 0.001] / [−0.033, −0.009]; no CI
 lower bound clears 0. The seven batch-17 cells extended the tilt
-sample to 50 and the five batch-18 cells extend it to 55; an
+sample to 50, the five batch-18 cells extend it to 55 and the cell-1
+r3 re-score extends it to 56; an
 adoption re-run on the larger n is the improvement loop's, not this
 publish's. See #594.
 
@@ -183,7 +192,7 @@ almost nothing: the ~3 pp of the old month error that was the
 scoring mismatch is gone, and the decay is still there — this
 confirms the decay is real, not a scoring artifact.
 
-## Gaps recorded by the scorer (218)
+## Gaps recorded by the scorer (214)
 
 Every v1 capture lacks `sigma60_daily` (naive-range falls back to
 `sigma_daily` as proxy) and `tilt_centre_pct` (`tilt-technicals` has
@@ -192,4 +201,6 @@ captures have no index leg (`^EGX30` 404s on Yahoo; the EW-proxy
 index leg per #436 T6 is still open). The tilt gap wording changed
 with the #689 scorer hardening ("no usable tilt_centre_pct —
 horizon skipped") — the scores are unchanged (all 1359 old rows
-reproduce exactly). See `backtest.json` `gaps`.
+reproduce exactly). Cell 1's r3 re-score removes its 5 old gaps
+(sigma60 proxy, 3 tilt skips, index leg) and adds 1 (index leg only).
+See `backtest.json` `gaps`.
