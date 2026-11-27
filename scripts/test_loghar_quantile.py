@@ -100,6 +100,30 @@ def test_points_and_half():
     check("quantile half with a", abs(Q.quantile_half(r, {"a": math.log(2.0), "b": 1.0}) - 2 * u) < 1e-9)
 
 
+def test_constant_unit_and_overflow():
+    pts = [(1.5, 1.0 + 0.1 * i) for i in range(10)]
+    f = Q.fit_quantile(pts)
+    check("constant unit still fits", f is not None and f["b"] == 1.0 and f["n"] == 10)
+    # tau 0.8 optimum of y - x over ten evenly spaced values is the 8th value
+    check("constant unit intercept is the 0.8 quantile of y-x", abs(f["a"] - (1.0 + 0.7 - 1.5)) < 1e-9, str(f))
+    check("constant unit below min rows", Q.fit_quantile(pts[:7]) is None)
+    flat = [(1.5, 0.5)] * 8
+    f = Q.fit_quantile(flat)
+    check("identical points fit", f is not None and abs(f["a"] + 1.0) < 1e-9)
+    frozen = {"quantile": {"day": Q.fit_quantile(pts), "week": None, "month": None}}
+    out = Q.score_rows([_row("day", 0.02, 1.0)], frozen)
+    check("constant-unit horizon is scored", len(out) == 1)
+    r2 = _row("day", 0.02, 1.0)
+    u2 = Q.unit_pct(r2)
+    h2 = Q.quantile_half(r2, {"a": 800.0, "b": -(800.0 / math.log(u2))})
+    check("combined log-width is exponentiated once", abs(h2 - 1.0) < 1e-6, str(h2))
+
+
+def test_usage_shows_frozen_for_describe():
+    check("describe usage lists --frozen",
+          "describe --frozen FILE" in (Q.__doc__ or ""))
+
+
 def test_score_skips_unfit_horizon():
     frozen = {"quantile": {"day": {"a": 0.0, "b": 1.0}, "week": None, "month": None}}
     out = Q.score_rows([_row("day", 0.02, 1.0), _row("week", 0.02, 1.0)], frozen)
@@ -118,7 +142,8 @@ def test_score_refuses_training_cells():
 
 def run_all():
     for fn in (test_constants, test_pinball, test_fit_exact_line, test_fit_quantile_level,
-               test_tie_break, test_tie_break_smaller_a, test_points_and_half, test_score_skips_unfit_horizon,
+               test_tie_break, test_tie_break_smaller_a, test_constant_unit_and_overflow,
+               test_usage_shows_frozen_for_describe, test_points_and_half, test_score_skips_unfit_horizon,
                test_score_refuses_training_cells):
         fn()
 

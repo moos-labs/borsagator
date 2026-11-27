@@ -10,7 +10,7 @@ scripts/ensemble.py or frozen values.
 
 Usage:
   replay_loghar_quantile.py fit --captures DIR ... --out FILE
-  replay_loghar_quantile.py describe --captures DIR ... [--min-cell 48 --max-cell 102]
+  replay_loghar_quantile.py describe --frozen FILE --captures DIR ... [--min-cell 48 --max-cell 102]
       (numbers only, no verdict; plain log-HAR control alongside)
   replay_loghar_quantile.py score --frozen FILE --captures DIR ... [--min-cell 91]
 """
@@ -65,7 +65,13 @@ def fit_quantile(points, tau=TAU):
             if best is None or key < best[0]:
                 best = (key, a, b)
     if best is None:
-        return None
+        # No two distinct x (constant unit): the slope is not identified.
+        # Fix b = 1 (width proportional to unit) and fit the intercept
+        # alone: the tau pinball optimum of y - x, ties to the smaller a.
+        res = sorted({y - x for x, y in points})
+        cand = [(round(pinball(points, a, 1.0, tau), 9), a) for a in res]
+        loss, a = min(cand)
+        return {"a": a, "b": 1.0, "loss": loss, "n": len(points)}
     return {"a": best[1], "b": best[2], "loss": best[0][0], "n": len(points)}
 
 
@@ -86,7 +92,7 @@ def train_points(rows, h):
 
 
 def quantile_half(row, ab):
-    return math.exp(ab["a"]) * unit_pct(row) ** ab["b"]
+    return math.exp(ab["a"] + ab["b"] * math.log(unit_pct(row)))
 
 
 def fit(rows):

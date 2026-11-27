@@ -24,3 +24,7 @@ Numbers only: coverage, RangeSkill, cutoff CIs, rows and clusters per horizon, n
 
 ## Reading
 No KEEP is an adoption by itself; adoption is measured relative to frozen v2 on the same rows. A quantile layer that does not beat plain log-HAR in training is reported as that.
+
+## Addendum (robustness handling, after review, no scored number changed)
+- The width is computed as exp(a + b ln unit), one exponential, so a near-constant training unit cannot overflow exp(a) before the multiplication.
+- If the training unit is constant on a horizon (no two distinct x), the slope is not identified. Then b is fixed at 1 and a is the tau = 0.80 pinball optimum of ln|move| - ln unit (ties to the smaller a). The horizon is fitted, not dropped. Re-fitting the frozen file with this change reproduces the same (a, b) on every horizon.
