@@ -1,6 +1,6 @@
 # Round 70 (b-design): cross-sectional excess-return / IC-first shadow, design skeleton
 
-DESIGN ONLY. No implementation, no scoring, no statistic computed. Descriptive; no verdict word. Source: Moos Slack 1795783578.144969 (item 2a), relayed to the author. The numeric thresholds below are PROPOSED for Moos to set; none is fixed until he does.
+DESIGN ONLY. No implementation, no scoring, no statistic computed. Descriptive; no verdict word. Source: Moos Slack 1795783578.144969 (item 2a), relayed to the author. Thresholds were accepted by Moos (Slack 1795783947.799179, thread 1795783578.144969): wide date >= 20 tickers; date bootstrap B=2000, seed 70; gate 20 wide dates with matured day AND week; pass = mean-IC CI lower bound > 0 at both horizons with n_dates >= 20. He added the 2-family ensemble net_score as a third signal (descriptive only) and skipped the grid IC (ledger only).
 
 ## Question
 Do the existing per-ticker signals (technicals net_score, sentiment family value) rank tickers by next-window excess return within a date? An IC-first check asks this before any forecast change. It needs no new data and no index series.
@@ -24,7 +24,8 @@ Do the existing per-ticker signals (technicals net_score, sentiment family value
 ## What a pass would and would not mean
 A pass supports a centre/tilt shadow experiment only. It is not a RangeSkill gain and not a keep. Any candidate built on it goes through the loop-bar keep rule on untouched data: RangeSkill cutoff-clustered CI lower bound > 0 AND coverage CI overlaps 0.75-0.85, at least 10 cutoffs for a KEEP. No width or volatility change, Kronos stays at weight 0, no ensemble or frozen edits.
 
-## Open questions for Moos
-1. Wide-date threshold (20 tickers) and date gate (20 dates): accept or change.
-2. Should the IC be scored per signal only, or also for the 2-family ensemble net_score.
-3. Cell grid: report grid IC descriptively (6 names per cutoff) or skip it.
+## Decisions (Moos, 1795783947.799179)
+1. Thresholds as proposed above.
+2. Ensemble net_score is a third signal, descriptive only: a diagnostic of the current centre, not a new route.
+3. Grid IC skipped; the design is ledger-only.
+Scorer: benchmarks/ic_shadow.py (branch ins/round70-ic-shadow-scorer). Signals: families.technicals, families.sentiment, net_score. Ties and zero signal values stay in the ranks (rank IC). Below the gate it prints counts only.
