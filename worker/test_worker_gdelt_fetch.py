@@ -142,12 +142,54 @@ def _tok(cmd, flag):
     t = shlex.split(cmd)
     return t[t.index(flag) + 1]
 
-def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True):
+_REMOTE = {}
+def _git(*a, cwd=None):
+    r = _sp.run(["git", "-c", "user.name=t", "-c", "user.email=t@example.invalid", *a],
+                cwd=cwd, capture_output=True, text=True)
+    assert r.returncode == 0, (a, r.stderr)
+    return r.stdout
+
+def _ensure_remote():
+    """ROOT/archive-push is a clone of a bare remote whose branch is 'archive'."""
+    if _REMOTE:
+        return
+    base = Path(tempfile.mkdtemp(prefix="gdelt-remote-"))
+    bare, seed = base / "bare.git", base / "seed"
+    _git("init", "--bare", "-b", "archive", str(bare))
+    _git("init", "-b", "archive", str(seed))
+    (seed / "README").write_text("archive\n")
+    _git("add", "-A", cwd=seed); _git("commit", "-m", "seed", cwd=seed)
+    _git("push", str(bare), "archive:archive", cwd=seed)
+    arch = worker.ROOT / "archive-push"
+    if arch.exists():
+        _sh.rmtree(arch)
+    _git("clone", "--branch", "archive", str(bare), str(arch))
+    _REMOTE.update(bare=bare, arch=arch)
+
+def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
+                      published=True, matches=None, macro=None, config=None):
+    """Create worker-runs/DATE/HMS__slug__jobid in the local checkout.
+    published=True commits and pushes it to the remote archive branch;
+    published=False leaves it as local residue (a failed publish)."""
+    _ensure_remote()
     d = worker.ROOT / "archive-push" / "worker-runs" / date / ("%s__%s__%s" % (hms, slug_tail, jobid))
     (d / "gdelt").mkdir(parents=True, exist_ok=True)
     if with_state:
         (d / "gdelt-state").mkdir(parents=True, exist_ok=True)
         (d / "gdelt-state" / "done.txt").write_text(done_lines)
+        if config is not None:
+            for k, v in config.items():
+                (d / "gdelt-state" / k).write_text(json.dumps(v))
+    if matches is not None:
+        (d / "gdelt" / "matches.jsonl").write_text(matches)
+    if macro is not None:
+        (d / "gdelt" / "macro_matches.jsonl").write_text(macro)
+    (d / "gdelt" / "keep").write_text("x")
+    if published:
+        arch = worker.ROOT / "archive-push"
+        _git("add", "-A", str(d), cwd=arch)
+        _git("commit", "-m", "run " + d.name, cwd=arch)
+        _git("push", "origin", "HEAD:archive", cwd=arch)
     return d
 
 def _run_capture(job, wd, runner):
@@ -310,6 +352,58 @@ def test_nonzero_exit_log_tail_bounded():
     res, _ = _run_capture(job, ok_wd, lambda c: _Res(0, big, ""))
     check("successful run has no output tail in the log", "filter output tail" not in (ok_wd / "gdelt" / "gdelt-fetch.log").read_text())
 
+def test_restore_ignores_unpublished_local_residue():
+    _fixtures_env()
+    jid = "resid-1"
+    _make_archive_run("2026-11-26", "100000", "x", jid, "PUBLISHED\n")
+    _make_archive_run("2026-11-27", "100000", "x", jid, "RESIDUE\n", published=False)
+    job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
+    res, seen = _run_capture(job, worker.OUT / "t959-resid", lambda c: _Res())
+    check("restore ignores unpublished local residue (newer, local only)", seen["state_text"] == "PUBLISHED\n")
+    # a locally committed but never pushed run is residue too
+    arch = worker.ROOT / "archive-push"
+    d = _make_archive_run("2026-11-28", "100000", "x", jid, "COMMITTED-NOT-PUSHED\n", published=False)
+    _git("add", "-A", str(d), cwd=arch); _git("commit", "-m", "local only", cwd=arch)
+    res, seen = _run_capture(job, worker.OUT / "t959-resid2", lambda c: _Res())
+    check("restore ignores a local commit that was never pushed", seen["state_text"] == "PUBLISHED\n")
+    # a job whose only run is residue starts fresh
+    _make_archive_run("2026-11-28", "110000", "x", "resid-only", "R\n", published=False)
+    res, seen = _run_capture({"id": "resid-only", "job": job["job"]}, worker.OUT / "t959-resid3", lambda c: _Res())
+    check("only-residue job starts fresh", seen["state_text"] is None)
+
+def test_restore_brings_back_predecessor_matches():
+    _fixtures_env()
+    jid = "matches-1"
+    cfg = {"config.json": {"aliases_sha256": "abc", "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"},
+           "macro_config.json": {"themes_sha256": "def", "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"}}
+    co_old = '{"file": "f1", "company": "OLD"}\n'
+    ma_old = '{"file": "f1", "theme": "OLDMACRO"}\n'
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches=co_old, macro=ma_old, config=cfg)
+    job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"}
+    def runner(cmd):
+        out = Path(_tok(cmd, "--out"))
+        with open(out / "matches.jsonl", "a") as f:
+            f.write('{"file": "f2", "company": "NEW"}\n')
+        with open(out / "macro_matches.jsonl", "a") as f:
+            f.write('{"file": "f2", "theme": "NEWMACRO"}\n')
+        return _Res()
+    wd = worker.OUT / "t959-matches"
+    res, seen = _run_capture(job, wd, runner)
+    pub = (wd / "gdelt" / "matches.jsonl").read_text()
+    pubm = (wd / "gdelt" / "macro_matches.jsonl").read_text()
+    check("published company matches include the predecessor's for done files", pub == co_old + '{"file": "f2", "company": "NEW"}\n')
+    check("published macro matches include the predecessor's for done files", pubm == ma_old + '{"file": "f2", "theme": "NEWMACRO"}\n')
+    out_abs = os.path.abspath(str(wd / "gdelt-out"))
+    c1 = json.loads((wd / "gdelt-state" / "config.json").read_text())
+    c2 = json.loads((wd / "gdelt-state" / "macro_config.json").read_text())
+    check("restored config re-pointed at this out dir", c1["out"] == out_abs and c2["out"] == out_abs)
+    check("restored config keeps its hash and window", c1["aliases_sha256"] == "abc" and c1["end"] == "20240501999999" and c2["themes_sha256"] == "def")
+    check("matches restored with the state, summary counts them", json.loads((wd / "gdelt" / "gdelt-state-summary.json").read_text())["matches"] == 2)
+    # no predecessor: no matches appear from nowhere
+    wd2 = worker.OUT / "t959-matches-fresh"
+    res, seen = _run_capture({"id": "matches-none", "job": job["job"]}, wd2, lambda c: _Res())
+    check("fresh run restores no matches", not (wd2 / "gdelt-out" / "matches.jsonl").exists())
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -325,6 +419,8 @@ def main():
     test_master_lists_excluded_from_publish_copy()
     test_timeout_archives_partial_output()
     test_nonzero_exit_log_tail_bounded()
+    test_restore_ignores_unpublished_local_residue()
+    test_restore_brings_back_predecessor_matches()
     print("\n%d passed" % PASSED)
     return 0
 

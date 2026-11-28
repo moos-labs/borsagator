@@ -4117,6 +4117,83 @@ def run_top30_enumerate(job, workdir):
     return {"top30-enumerate": "ok"}
 
 
+GDELT_RESTORE_REF = "origin/archive"
+
+
+def _git_out(arch, *args):
+    r = subprocess.run(["git", "-C", str(arch), *args],
+                       capture_output=True, timeout=300)
+    if r.returncode != 0:
+        raise RuntimeError("git %s failed" % args[0])
+    return r.stdout
+
+
+def _gdelt_restore_remote(arch, src_id, state_dir, out_dir):
+    """Pick the latest PUBLISHED run for src_id (origin/archive tree,
+    worker-runs/DATE/RUN__<job-id>, one level below the date dirs, with
+    a gdelt-state dir) and restore its gdelt-state/ plus its match
+    output (gdelt/matches.jsonl, gdelt/macro_matches.jsonl) into
+    state_dir / out_dir. State records files as done, so the matches
+    for those files must come back with it or the published output
+    would omit them. The restored config.json / macro_config.json bind
+    the state to the predecessor's absolute --out path; the filter
+    refuses a state whose bound path differs, so only that "out" field
+    is re-pointed at this run's out_dir (aliases/themes hash and the
+    start/end window stay as restored, a different window still
+    refuses)."""
+    import io
+    import tarfile
+
+    def ls(path):
+        raw = _git_out(arch, "ls-tree", "--name-only", GDELT_RESTORE_REF,
+                       path.rstrip("/") + "/")
+        return [x for x in raw.decode("utf-8", "replace").splitlines() if x]
+
+    runs = []
+    for date_path in ls("worker-runs"):
+        for run_path in ls(date_path):
+            name = run_path.rsplit("/", 1)[-1]
+            if name.rsplit("__", 1)[-1] == src_id:
+                runs.append(run_path)
+    runs.sort(key=lambda p: (p.split("/")[-2], p.split("/")[-1]))
+    for run_path in reversed(runs):
+        files = _git_out(arch, "ls-tree", "-r", "--name-only",
+                         GDELT_RESTORE_REF, run_path + "/gdelt-state",
+                         *[run_path + "/gdelt/" + n for n in
+                           ("matches.jsonl", "macro_matches.jsonl")])
+        names = [x for x in files.decode("utf-8", "replace").splitlines() if x]
+        if not any(n.startswith(run_path + "/gdelt-state/") for n in names):
+            continue
+        blob = _git_out(arch, "archive", "--format=tar", GDELT_RESTORE_REF,
+                        *names)
+        with tarfile.open(fileobj=io.BytesIO(blob)) as tf:
+            for m in tf.getmembers():
+                if not m.isfile() or m.name not in names:
+                    continue
+                rel = m.name[len(run_path) + 1:]
+                if rel.startswith("gdelt-state/"):
+                    dst = state_dir / rel[len("gdelt-state/"):]
+                else:
+                    dst = out_dir / rel[len("gdelt/"):]
+                if ".." in Path(rel).parts:
+                    continue
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                dst.write_bytes(tf.extractfile(m).read())
+        out_abs = os.path.abspath(str(out_dir))
+        for cfg_name in ("config.json", "macro_config.json"):
+            cp = state_dir / cfg_name
+            if cp.exists():
+                try:
+                    c = json.loads(cp.read_text())
+                    if isinstance(c, dict) and "out" in c:
+                        c["out"] = out_abs
+                        cp.write_text(json.dumps(c, indent=1))
+                except Exception:
+                    pass
+        return str(run_path)
+    return None
+
+
 def run_gdelt_fetch(job, workdir):
     """Run a `gdelt-fetch` job: download the two real GDELT master
     lists and invoke scripts/gdelt_gkg_filter.py with the configured
@@ -4157,43 +4234,33 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     state_dir.mkdir(parents=True, exist_ok=True)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # (c) Restore previous run's state from archive branch if present.
-    # Use the same git helpers publish() uses (ROOT/'archive-push' and
-    # GATOR_BUS_URL). If no prior state exists, start fresh.
+    # (c) Restore the previous run's state AND match output from the
+    # REMOTE archive branch only. The local archive-push checkout can
+    # carry residue from a failed publish() (commit or push failed, run
+    # dir left behind), so it is never enumerated: candidates come from
+    # the fetched origin/archive tree, and a successor on another
+    # checkout sees exactly what a published run left.
     if not (state_dir / "done.txt").exists():
         arch = ROOT / "archive-push"
         url = os.environ.get("GATOR_BUS_URL")
+        fetched = False
         try:
             if not arch.exists() and url:
                 sh(f"git clone --branch archive --single-branch {url} {arch}",
                    timeout=900)
-            elif arch.exists():
-                sh(f"git -C {arch} pull --ff-only", timeout=180)
+            if arch.exists():
+                fr = sh(f"git -C {shlex.quote(str(arch))} fetch origin "
+                        "+refs/heads/archive:refs/remotes/origin/archive",
+                        timeout=180)
+                fetched = (fr.returncode == 0)
         except Exception:
-            pass
-        # publish() stores worker-runs/YYYY-MM-DD/HHMMSS__<slug>__<jobid>,
-        # so runs sit one level below the date dirs and the job id is the
-        # last "__" field. Resume from the predecessor named by
-        # --resume-from, else from this job's own id; take the latest
-        # published run that carries a gdelt-state dir.
-        if arch.exists():
-            runs_dir = arch / "worker-runs"
-            if runs_dir.is_dir():
-                src_id = plan["resume_from"] or job["id"]
-                candidates = []
-                for d in runs_dir.glob("*/*"):
-                    if d.is_dir() and d.name.rsplit("__", 1)[-1] == src_id \
-                            and (d / "gdelt-state").is_dir():
-                        candidates.append(d)
-                if candidates:
-                    candidates.sort(key=lambda p: (p.parent.name, p.name))
-                    prev_state = candidates[-1] / "gdelt-state"
-                    for src in prev_state.iterdir():
-                        dst = state_dir / src.name
-                        if src.is_dir():
-                            shutil.copytree(src, dst, dirs_exist_ok=True)
-                        else:
-                            shutil.copy2(src, dst)
+            fetched = False
+        if fetched:
+            try:
+                _gdelt_restore_remote(arch, plan["resume_from"] or job["id"],
+                                      state_dir, out_dir)
+            except Exception:
+                pass
 
     # (a) Download master lists (live mode only)
     master_path = None
