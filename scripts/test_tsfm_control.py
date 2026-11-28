@@ -181,6 +181,35 @@ def test_count_lines():
     check("month empty", L[2] == "month: rows=0 cutoff clusters=0 tickers=0")
 
 
+def test_counts_match_scored_rows():
+    import tempfile
+
+    def rows_fn(caps):
+        out = []
+        for c in caps:
+            n = int(c[-2:])
+            for h in ("day", "week", "month"):
+                r = _row("T%d" % n, "2026-01-%02d" % (n % 28 + 1), h)
+                if n == 49:
+                    r["tsfm_half"] = None
+                if n == 50:
+                    r["v2_sigma"] = 0
+                out.append(r)
+        return out
+    cells = {"/c/c48": 48, "/c/c49": 49, "/c/c50": 50}
+    with _Mock(cells, rows_fn):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "o.json")
+            rc, o = _run(["describe", "--captures", "x", "--reps", "20", "--json", out])
+            data = json.load(open(out))
+    check("describe ok", rc == 0)
+    check("missing half/sigma rows not counted (printed)",
+          "day: rows=1 cutoff clusters=1 tickers=1" in o, o[:300])
+    check("json counts match", data["counts"][0] == "day: rows=1 cutoff clusters=1 tickers=1"
+          and data["counts"][2] == "month: rows=1 cutoff clusters=1 tickers=1")
+    check("evaluate sees the same n", data["results"]["day"]["n"] == 1)
+
+
 def test_refusals():
     for lo, hi in ((47, 90), (48, 91), (60, 50), (0, 90), (48, 500), (91, 102)):
         rc, o = _run(["describe", "--captures", "/nonexistent",
@@ -281,7 +310,7 @@ def test_score_reads_with_ten_clusters():
 def run_all():
     for fn in (test_constants, test_load, test_band, test_score_rows,
                test_constants_new, test_centre_arm, test_build_rows_centre,
-               test_origin_filter, test_exclusion_lines, test_count_lines, test_refusals,
+               test_origin_filter, test_exclusion_lines, test_count_lines, test_counts_match_scored_rows, test_refusals,
                test_describe_cell_window_and_counts_first,
                test_score_counts_only_below_ten_clusters,
                test_score_reads_with_ten_clusters):

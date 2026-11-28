@@ -244,8 +244,9 @@ def main(argv=None):
     rows, gaps = build_rows(caps, allc, a.model, a.centre)
     rows, olines = origin_filter(rows, a.min_origin)
     ex = exclusion_lines(gaps, olines, unnumbered)
-    counts = count_lines(rows)
-    res = R.evaluate(score_rows(rows), a.reps, a.seed)
+    scored = score_rows(rows)
+    counts = count_lines(scored)
+    res = R.evaluate(scored, a.reps, a.seed)
     if a.mode == "describe":
         print("COUNTS (printed before the descriptive read), cells %d-%d, "
               "origin after %s, centre %s" % (a.min_cell, a.max_cell,
