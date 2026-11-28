@@ -30,11 +30,22 @@ def fold_stats(rows, a, b):
     return {"n": len(pairs), "diff": x - y, "cov": sum(p["in_ch"] for p in pairs) / len(pairs)}
 
 
-def build_folds(rows, a, b, key):
-    """Full-sample row plus one fold per value of `key` left out."""
+def build_folds(rows, a, b, key, caps=None):
+    """Full-sample row plus one fold per value of `key` left out. With `caps`
+    (the in-range captures), each leave-one-cutoff fold recomputes its fully
+    mature cluster count from the retained captures and returns
+    {"counts_only": N} instead of statistics when N < T.MIN_CLUSTERS.
+    Leave-one-ticker folds are unchanged."""
     out = [("all", fold_stats(rows, a, b))]
     for v in sorted({r[key] for r in rows}):
-        out.append((v, fold_stats([r for r in rows if r[key] != v], a, b)))
+        fr = [r for r in rows if r[key] != v]
+        if key == "base" and caps is not None:
+            kept = [c for c in caps if os.path.basename(os.path.dirname(c)) != v]
+            n_mature = len(T.mature_clusters(kept, fr)[0])
+            if n_mature < T.MIN_CLUSTERS:
+                out.append((v, {"counts_only": n_mature}))
+                continue
+        out.append((v, fold_stats(fr, a, b)))
     return out
 
 
@@ -84,9 +95,12 @@ def main(argv=None):
             continue
         for key, label in (("base", "cutoff"), ("ticker", "ticker")):
             print("%s, leave one %s out (diff = challenger minus v2 RangeSkill):" % (h, label))
-            for v, st in build_folds(hp, w[0], w[1], key):
+            for v, st in build_folds(hp, w[0], w[1], key, caps):
                 if st is None:
                     print("  %s: n/a" % v)
+                elif "counts_only" in st:
+                    print("  %-12s COUNTS ONLY, %d fully mature clusters retained (registered minimum %d); "
+                          "no difference or coverage" % (v, st["counts_only"], T.MIN_CLUSTERS))
                 else:
                     print("  %-12s n=%2d diff %+.3f coverage %.3f" % (v, st["n"], st["diff"], st["cov"]))
     return 0

@@ -14,6 +14,7 @@ import bisect
 import csv
 import datetime
 import json
+import math
 import os
 import random
 import sys
@@ -72,6 +73,8 @@ def baseline(closes, base_date, horizon):
     moves = []
     for e in range(end, S - 1, -1):
         c0 = closes[e - S][1]
+        if not (math.isfinite(c0) and math.isfinite(closes[e][1])):
+            return None, None, len(moves)  # non-finite close in the window
         if c0 > 0:
             moves.append(100.0 * (closes[e][1] / c0 - 1.0))
         if len(moves) == WINDOW:
@@ -79,6 +82,25 @@ def baseline(closes, base_date, horizon):
     if len(moves) < MIN_MOVES:
         return None, None, len(moves)
     return quantile(moves, Q_LO), quantile(moves, Q_HI), len(moves)
+
+
+def window_nonfinite(closes, base_date, horizon):
+    """True when a close that the baseline window reads (the end close or the
+    start close of any move it consumes) is NaN or infinite. Non-finite
+    closes stay in the price history, so session offsets never shift."""
+    S = SESSIONS[horizon]
+    dates = [d for d, _ in closes]
+    end = bisect.bisect_right(dates, base_date) - 1
+    n = 0
+    for e in range(end, S - 1, -1):
+        c0 = closes[e - S][1]
+        if not (math.isfinite(c0) and math.isfinite(closes[e][1])):
+            return True
+        if c0 > 0:
+            n += 1
+        if n == WINDOW:
+            break
+    return False
 
 
 def realised_date(closes, base_date, horizon):
@@ -122,6 +144,9 @@ def prepare(rows, closes_by_ticker):
         # date the OHLCV file has. Rows without a recorded endpoint fall
         # back to the OHLCV date.
         rdate = r.get("real_end") or rdate_ohlcv
+        if window_nonfinite(cl, base, h):
+            ex.append("excluded row %s: non-finite close in the baseline window" % key)
+            continue
         q_lo, q_hi, n = baseline(cl, base, h)
         if q_lo is None:
             ex.append("excluded row %s: short history (%d moves)" % (key, n))

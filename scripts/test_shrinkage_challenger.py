@@ -526,6 +526,61 @@ def test_966c_captured_outcome_and_pending_records_and_gate():
     check("10 clusters: json has day results", "day" in j10["results"] and "day" not in j10["counts_only_horizons"])
 
 
+def test_966d_nonfinite_window_and_fold_gate():
+    import math
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "benchmarks"))
+    import score_shrinkage_leave_out as L
+    cl = series(400)
+    mk_row = lambda i, h="day": {"ticker": "A.CA", "as_of": cl[i][0], "horizon": h, "real": 0.2 + 0.01 * (i % 5),
+                                 "naive_half": 3.0, "mult": 1.0, "v2_sigma": 0.02}
+    for bad in (float("nan"), float("inf"), float("-inf")):
+        c2 = list(cl)
+        c2[100] = (c2[100][0], bad)
+        old_idx, new_idx = list(range(300, 306)), list(range(360, 370))
+        out, ex = T.prepare([mk_row(i) for i in old_idx + new_idx], {"A.CA": c2})
+        check("rows whose window holds a %s close are excluded, each with a reason" % bad,
+              len(ex) == 6 and all("non-finite close in the baseline window" in e for e in ex), str(ex))
+        check("rows whose window starts after the bad close are kept", len(out) == 10 and all(math.isfinite(r["q_lo"]) and math.isfinite(r["q_hi"]) for r in out))
+        res = T.evaluate_pairs(out, (0.1, 1.0), 20, 1)
+        check("evaluate outputs stay finite", all(math.isfinite(res["day"][k]) for k in ("rs_ch", "rs_v2", "cov_ch")) and
+              all(math.isfinite(x) for x in res["day"]["delta_ci_cutoff"] + res["day"]["cov_ci_cutoff"]), str(res["day"]))
+        check("baseline itself returns no edges, never NaN edges", T.baseline(c2, cl[300][0], "day")[0] is None and T.window_nonfinite(c2, cl[300][0], "day"))
+    c3 = list(cl); c3[380] = (c3[380][0], float("nan"))
+    check("a bad close AFTER the base date changes nothing (no look-ahead)", T.baseline(c3, cl[300][0], "day") == T.baseline(cl, cl[300][0], "day")
+          and not T.window_nonfinite(c3, cl[300][0], "day"))
+    check("a bad close is not dropped from the history (offsets stay)", True and
+          T.realised_date(c3, cl[300][0], "week") == cl[305][0])
+    # the leave-one-cutoff fold gate
+    def mkset(n_cut):
+        cutoffs = ["2025-01-%02d" % (i + 1) for i in range(n_cut)]
+        caps, rows = [], []
+        for tk in ("A.CA", "B.CA"):
+            for c in cutoffs:
+                caps.append("/r/%s/%s" % (c, tk))
+                r = mkrow(base=c, real=0.3)
+                r["ticker"] = tk
+                rows.append(r)
+        return caps, rows
+    caps, rows = mkset(10)
+    f = dict(L.build_folds(rows, 0.1, 1.0, "base", caps))
+    check("10-cluster horizon: the full sample keeps statistics", "counts_only" not in f["all"] and f["all"]["n"] == 20)
+    check("10-cluster horizon: every leave-one-cutoff fold is counts only with 9 retained",
+          all(f[c] == {"counts_only": 9} for c in f if c != "all") and len(f) == 11, str(f))
+    caps, rows = mkset(11)
+    f = dict(L.build_folds(rows, 0.1, 1.0, "base", caps))
+    check("11-cluster horizon: folds with 10 retained mature clusters keep statistics",
+          all("counts_only" not in f[c] and f[c]["n"] == 20 for c in f if c != "all") and len(f) == 12, str(f))
+    caps, rows = mkset(10)
+    t = dict(L.build_folds(rows, 0.1, 1.0, "ticker", caps))
+    check("leave-one-ticker folds are unchanged: statistics, no gate", all("counts_only" not in t[k] for k in t) and t["A.CA"]["n"] == 10)
+    # a fold whose left-out cutoff was already immature does not lose a mature cluster
+    caps, rows = mkset(11)
+    rows = [r for r in rows if not (r["base"] == "2025-01-11" and r["ticker"] == "B.CA")]   # cutoff 11 immature
+    f = dict(L.build_folds(rows, 0.1, 1.0, "base", caps))
+    check("leaving out the immature cutoff keeps 10 mature, statistics; leaving a mature one gives counts only",
+          "counts_only" not in f["2025-01-11"] and f["2025-01-01"] == {"counts_only": 9}, str((f["2025-01-11"], f["2025-01-01"])))
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
@@ -533,7 +588,7 @@ def run_all():
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
                test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
                test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting,
-               test_966c_captured_outcome_and_pending_records_and_gate):
+               test_966c_captured_outcome_and_pending_records_and_gate, test_966d_nonfinite_window_and_fold_gate):
         fn()
 
 
