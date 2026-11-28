@@ -89,14 +89,18 @@ moment means COUNTS ONLY and the read waits for the next month cluster.
    session counting. With no session closures in the 4 weeks, consecutive
    month-scored cutoffs are 20 sessions apart and their 21-session windows
    share at most 1 session. That holds only without closures. Each closure
-   (holiday, or a holiday Thursday moved to an earlier session) inside the
-   gap lowers the session distance between the two cutoffs by one, so the
-   windows share one more session per closure (a Thursday moved earlier
-   shortens the gap before it by one session and lengthens the gap after it
-   by one, giving that next pair 0 shared sessions). No cutoff is added, moved
-   or dropped to repair the overlap, and the month-scored set stays fixed by
-   cutoff number. The shared-session count of each consecutive month-scored
-   pair is reported with the read, never gating.
+   (holiday, or a holiday Thursday moved to an earlier session) between two
+   consecutive month-scored cutoffs lowers the session distance between them
+   by one, so their windows share one more session per closure. A cutoff moved
+   from a closed Thursday to the Wednesday before shortens the gap before it
+   by one session (that pair shares 2). The gap after it is one session longer
+   because it starts a day earlier, and shorter by one because the closed
+   Thursday lies inside it, so it stays 20 apart (that pair shares 1, not 0).
+   The overlap is calculated from the actual session dates, not from the
+   nominal spacing. No cutoff is added, moved or dropped to repair the
+   overlap, and the month-scored set stays fixed by cutoff number. The
+   shared-session count of each consecutive month-scored pair is reported with
+   the read, never gating.
 2. Holm: as written in "Test family and Holm": one-sided cluster bootstrap p,
    Holm step-down at 0.05 over the family of 6, plus the loop CI conditions.
 3. The paired delta (challenger minus frozen v2) on the same rows is reported
