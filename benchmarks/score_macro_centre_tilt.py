@@ -69,6 +69,10 @@ def signal(rows, cutoff, theta, kind, window=WINDOW_DAYS):
     if not refs:
         return 0, "no usable value %d days before %s" % (window, last[0])
     ref = max(refs, key=lambda r: r[0])
+    if kind == "rel" and ref[2] == 0:
+        # A relative change divides by the reference; a finite zero
+        # reference has no defined change. Absolute changes keep zero valid.
+        return 0, "zero reference value on %s for a relative change" % ref[0]
     ch = (last[2] / ref[2] - 1.0) if kind == "rel" else (last[2] - ref[2])
     ch = round(ch, 12)  # 105/100 - 1 must equal 0.05 exactly
     if ch > theta:

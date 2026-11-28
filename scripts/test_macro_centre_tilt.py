@@ -240,6 +240,28 @@ def test_non_finite_values_rejected():
         check("inf latest is dropped, never a false +1", x == 0 and why is not None and "no usable value" in why, str((x, why)))
 
 
+def test_zero_reference_relative_vs_absolute():
+    """Fixed synthetic series: reference value 0 (finite), latest 5."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "z.csv")
+        with open(p, "w") as fh:
+            fh.write("observed_date,published_date,value\n2025-01-01,2025-01-02,0\n2025-03-01,2025-03-02,5\n")
+        rows = T.load_series(p)
+        check("a finite zero reference is kept by load_series", [r[2] for r in rows] == [0.0, 5.0], str(rows))
+        try:
+            x, why = T.signal(rows, "2025-03-31", 0.01, "rel", window=20)
+            err = None
+        except ZeroDivisionError as e:
+            x, why, err = None, None, e
+        check("relative change with a zero reference: no exception, (0, reason)",
+              err is None and x == 0 and isinstance(why, str) and "zero reference" in why, str((x, why, err)))
+        x, why = T.signal(rows, "2025-03-31", 0.01, "abs", window=20)
+        check("absolute change with a zero reference stays valid (+5 > theta gives +1, no reason)", x == 1 and why is None, str((x, why)))
+        x, why = T.signal(rows, "2025-03-31", 10.0, "abs", window=20)
+        check("absolute change below theta is 0 with no reason", x == 0 and why is None, str((x, why)))
+
+
 def test_seed_refused():
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
@@ -309,7 +331,7 @@ def test_958l_short_row_coverage_and_gaps():
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps, test_zero_reference_relative_vs_absolute):
         fn()
 
 
