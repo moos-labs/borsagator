@@ -36,3 +36,6 @@ Weights are frozen after the fit, one pair per horizon, shared by all names and 
 - The baseline uses the name's own recent unconditional moves, so it is a width-and-centre object. Adjacency to the closed width family is accepted by Moos; the argument for it is only that six weights replace re-estimation of volatility.
 - The panel is about 6 to 8 large-cap names; descriptive read has 8 cutoff dates.
 - Weights are shared across names. The fit cannot use any cell whose realised close post-dates 2025-08-15.
+
+## Listing-step result (a calendar and count read, no outcome scored; added after the build)
+Running `fit` on the archive (cells 1-47, panel including NVDA) gave 138 usable rows, 46 per horizon, of which 42 per horizon are covered after the freeze-date rule (4 per horizon have a realised close on or after 2025-08-15). Each horizon is below the registered 100 covered rows, so under the rule above NO weights are fit and the challenger is COUNTS ONLY on every horizon. The 100 threshold was copied from #961; it cannot be met per horizon with this panel. This is reported, not changed: lowering the threshold, pooling horizons, or sharing one weight pair across horizons are each a change to this registration and need a decision.
