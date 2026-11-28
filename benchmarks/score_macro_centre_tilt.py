@@ -56,11 +56,14 @@ def load_series(path):
     return out
 
 
-def signal(rows, cutoff, theta, kind, window=WINDOW_DAYS):
+def signal(rows, cutoff, theta, kind, window=WINDOW_DAYS, obs_lag_days=0):
     """(x, reason). x in {-1, 0, 1}; 0 with a reason when a value is
-    missing. A row is usable at `cutoff` only if published <= cutoff."""
+    missing. A row is usable at `cutoff` only if published <= cutoff and,
+    when obs_lag_days > 0 (Brent: registered lag 3 days), its observed
+    date is on or before cutoff minus obs_lag_days."""
     cutoff = d_(cutoff)
-    usable = [r for r in rows if r[1] <= cutoff]
+    obs_cut = cutoff - datetime.timedelta(days=obs_lag_days)
+    usable = [r for r in rows if r[1] <= cutoff and r[0] <= obs_cut]
     if not usable:
         return 0, "no usable value"
     last = max(usable, key=lambda r: r[0])
@@ -102,7 +105,8 @@ def tilt_rows(rows, series):
         v2h = R.half_pct(r["v2_sigma"], h, ens_mod.V2_BAND_K[h], r["mult"])
         xs, miss = [], []
         for name, (_, th, kind, _d) in SERIES.items():
-            x, why = signal(series[name], r["as_of"], th, kind)
+            x, why = signal(series[name], r["as_of"], th, kind,
+                            obs_lag_days=BRENT_LAG_DAYS if name == "oil" else 0)
             xs.append(x)
             if why:
                 miss.append("%s: %s" % (name, why))
@@ -213,7 +217,9 @@ def main(argv=None):
     # Cell bounds are applied BEFORE the per-(cutoff, ticker) dedup so a
     # capture outside the cells cannot displace an eligible one; the
     # unbounded list stays the price-reference set.
-    caps = [c for c in A.find_captures(a.captures, a.min_cell, a.max_cell)
+    disc_rejects = []
+    caps = [c for c in A.find_captures(a.captures, a.min_cell, a.max_cell,
+                                       rejects=disc_rejects)
             if A.cell_number(c) is not None]
     repairs, info = [], []
     rows, gaps = R.build_rows(caps, allc, repairs, info)
@@ -221,10 +227,13 @@ def main(argv=None):
     counts = count_lines(pairs)
     # Scored rows with a zero-valued signal are NOT exclusions: they are
     # reported under their own heading and JSON key.
-    ex = (["excluded: %s" % g for g in gaps] + dropped)
+    ex = (["excluded: %s" % g for g in gaps] + dropped
+          + ["excluded: %s" % g for g in sorted(disc_rejects)])
     print("COUNTS (printed before the descriptive read), cells %d-%d, "
-          "%d missing-signal rows, %d v2_sigma exclusions"
-          % (a.min_cell, a.max_cell, len(listed), len(dropped)))
+          "%d missing-signal rows, %d v2_sigma exclusions, "
+          "%d incomplete captures"
+          % (a.min_cell, a.max_cell, len(listed), len(dropped),
+             len(disc_rejects)))
     print("\n".join(counts))
     print("REPAIRED (scored, not excluded)")
     print("\n".join(repairs))

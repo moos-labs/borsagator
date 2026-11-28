@@ -33,6 +33,12 @@ def rowset(last, ref, pub_last="2026-01-01", pub_ref="2025-10-01"):
     return [(D("2025-10-30"), D(pub_ref), ref), (D("2026-01-01"), D(pub_last), last)]
 
 
+def oil_rowset(last, ref):
+    # Brent as stored: published = observed + 3 days, so at cutoff 2026-01-01
+    # the usable last observation is 2025-12-29 (published 2026-01-01).
+    return [(D("2025-10-26"), D("2025-10-29"), ref), (D("2025-12-29"), D("2026-01-01"), last)]
+
+
 def test_constants():
     check("S", T.S == 0.10)
     check("window", T.WINDOW_DAYS == 63)
@@ -74,7 +80,7 @@ def test_composite_and_centre():
     check("oil down, fx up, tbill down = 1", abs(T.composite([-1, 1, -1], dirs) - 1.0) < 1e-12)
     check("all zero is 0", T.composite([0, 0, 0], dirs) == 0)
     # tilt_rows: centre = S x m x v2 half, width equals v2
-    series = {"oil": rowset(94.0, 100.0), "fx": rowset(120.0, 100.0), "tbill": rowset(18.0, 20.0)}
+    series = {"oil": oil_rowset(94.0, 100.0), "fx": rowset(120.0, 100.0), "tbill": rowset(18.0, 20.0)}
     row = {"ticker": "A", "as_of": "2026-01-01", "horizon": "week", "real": 0.0,
            "naive_half": 5.0, "mult": 1.0, "v2_sigma": 0.02}
     pairs, listed, _x = T.tilt_rows([row], series)
@@ -127,7 +133,7 @@ def test_reps_and_order():
     saved = (T.load_series, T.A.find_captures, T.R.build_rows, T.evaluate)
     T.load_series = lambda path: []
     calls = []
-    def fake_find(a, b=None, c=None):
+    def fake_find(a, b=None, c=None, rejects=None):
         calls.append((b, c))
         return []
     T.A.find_captures = fake_find
@@ -329,9 +335,81 @@ def test_958l_short_row_coverage_and_gaps():
     check("other entrants and kept rows add no gap", len(gaps) == 2, str(gaps))
 
 
+def test_958n_brent_lag_and_incomplete_captures():
+    import tempfile
+    # F2: the observed date of a Brent row must be <= cutoff - 3 days, even if published <= cutoff
+    base = (D("2025-02-01"), D("2025-02-01"), 100.0)
+    ok = (D("2025-03-28"), D("2025-03-28"), 110.0)
+    late = (D("2025-03-29"), D("2025-03-29"), 100.0)
+    x, why = T.signal([base, ok, late], "2025-03-31", 0.05, "rel", window=20, obs_lag_days=3)
+    check("lag 3: row observed cutoff-3 is usable, cutoff-2 is not (last = 110, +10%)", x == 1 and why is None, str((x, why)))
+    x, why = T.signal([base, ok, late], "2025-03-31", 0.05, "rel", window=20)
+    check("lag 0 default keeps the old published-only rule (last = 100, 0%)", x == 0 and why is None, str((x, why)))
+    x, why = T.signal([base, (D("2025-03-28"), D("2025-04-01"), 110.0)], "2025-03-31", 0.05, "rel", window=20, obs_lag_days=3)
+    check("publication check is retained next to the lag", x == 0 and why is not None, str((x, why)))
+    # tilt_rows applies the lag to oil only: an oil row observed 1 day before the cutoff but published early is ignored
+    early_oil = [(D("2025-10-26"), D("2025-10-26"), 100.0), (D("2025-12-31"), D("2025-12-31"), 94.0)]
+    series = {"oil": early_oil, "fx": rowset(120.0, 100.0), "tbill": rowset(18.0, 20.0)}
+    row = {"ticker": "A", "as_of": "2026-01-01", "horizon": "week", "real": 0.0,
+           "naive_half": 5.0, "mult": 1.0, "v2_sigma": 0.02}
+    pairs, listed, _x = T.tilt_rows([row], series)
+    check("tilt_rows enforces the Brent lag: oil observed 12-31 is unusable at 01-01", len(listed) == 1 and "oil" in listed[0], str(listed))
+    series["fx"] = [(D("2025-10-29"), D("2025-10-29"), 100.0), (D("2025-12-31"), D("2025-12-31"), 120.0)]
+    pairs, listed, _x = T.tilt_rows([row], series)
+    check("the other series are not lagged: fx observed 12-31 is usable", not any("fx" in l for l in listed), str(listed))
+    # F1: incomplete captures reach the exclusion report, selection and dedup unchanged
+    with tempfile.TemporaryDirectory() as d:
+        def mk(cell, cutoff, tk, files):
+            dp = os.path.join(d, "cell%d" % cell, cutoff, tk)
+            os.makedirs(os.path.join(dp, "digest"), exist_ok=True)
+            for f in files:
+                path = os.path.join(dp, f)
+                open(path, "w").write("{}")
+            return dp
+        full = ["manifest.json", "realised.json", "digest/ensemble.json"]
+        good = mk(50, "2026-01-01", "AAA.CA", full)
+        mk(50, "2026-01-01", "BBB.CA", ["manifest.json", "digest/ensemble.json"])
+        mk(51, "2026-01-01", "CCC.CA", ["manifest.json", "realised.json"])
+        mk(60, "2026-01-01", "DDD.CA", ["manifest.json", "digest/ensemble.json"])
+        mk(56, "2026-01-01", "MANI.CA", ["manifest.json"])  # manifest only: not a capture attempt
+        mk(10, "2026-01-01", "EEE.CA", ["manifest.json", "realised.json"])
+        runlvl = os.path.join(d, "cell55-run")  # run-level manifest, not capture-shaped
+        os.makedirs(runlvl)
+        open(os.path.join(runlvl, "manifest.json"), "w").write("{}")
+        for cell, tk in ((47, "H1.CA"), (48, "H2.CA"), (90, "H3.CA"), (91, "H4.CA")):
+            mk(cell, "2026-01-01", tk, ["manifest.json", "realised.json"])
+        rej = []
+        caps = T.A.find_captures([d], 48, 90, rejects=rej)
+        check("eligible selection unchanged", caps == [good], str(caps))
+        check("incomplete in-window captures listed with the missing file",
+              sorted(r.split("cell")[1][:2] + (" realised" if "missing realised.json" in r and "ensemble" not in r else " ensemble" if "missing digest/ensemble.json" in r and "realised" not in r else " both") for r in rej) == ["48 ensemble", "50 realised", "51 ensemble", "60 realised", "90 ensemble"], str(rej))
+        check("out-of-window cell 10 is not listed", not any("cell55" in r or "cell56" in r for r in rej) and not any("cell10" in r or "cell47" in r or "cell91" in r for r in rej))
+        check("no rejects list gives the same selection", T.A.find_captures([d], 48, 90) == [good])
+        for nm, v in T.SERIES.items():
+            with open(os.path.join(d, v[0]), "w") as fh:
+                fh.write("observed_date,published_date,value\n")
+        saved = (T.A.find_captures, T.R.build_rows)
+        def fake_find(a, b=None, c=None, rejects=None):
+            if rejects is not None:
+                rejects.append("incomplete capture /x/cell50/2026-01-01/BBB.CA: missing realised.json")
+            return []
+        T.A.find_captures = fake_find
+        T.R.build_rows = lambda caps, allc, repairs, info: ([], [])
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                T.main(["describe", "--captures", d, "--series-dir", d])
+        finally:
+            T.A.find_captures, T.R.build_rows = saved
+        out = buf.getvalue()
+        check("describe lists the incomplete capture under EXCLUSIONS and counts it",
+              "excluded: incomplete capture /x/cell50/2026-01-01/BBB.CA: missing realised.json" in out.split("EXCLUSIONS")[1]
+              and "1 incomplete captures" in out, out[:600])
+
+
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps, test_zero_reference_relative_vs_absolute):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps, test_zero_reference_relative_vs_absolute, test_958n_brent_lag_and_incomplete_captures):
         fn()
 
 
