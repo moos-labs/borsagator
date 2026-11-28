@@ -159,7 +159,8 @@ def test_reps_and_order():
     check("scored missing-signal rows have their own heading, not the exclusions",
           "MISSING-SIGNAL ROWS (scored with the signal set to 0, not exclusions)" in out
           and "missing signal row M 2026-01-01 week" in out
-          and "excluded: missing signal row" not in out and "excluded: gap one" in out
+          and "missing signal row" not in out.split("EXCLUSIONS (every one listed")[1].split("DESCRIPTIVE ONLY")[0]
+          and "excluded: gap one" in out
           and out.index("MISSING-SIGNAL ROWS") < out.index("EXCLUSIONS (every one listed"), out[-900:])
     check("real sigma rejection stays in the exclusions", "Z 2026-01-01 week" in out.split("EXCLUSIONS (every one listed")[1])
     check("informational lines are printed under INFO, never as excluded:",
