@@ -1,0 +1,187 @@
+{
+ "results": [
+  {
+   "horizon": "day",
+   "sessions": 1,
+   "asset": "BTC-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.005646723179398627,
+   "rangeskill_ci95": [
+    -0.04763396318617197,
+    0.07380818244191534
+   ],
+   "coverage_v2": 0.8,
+   "coverage_ci95": [
+    0.64,
+    0.96
+   ],
+   "coverage_naive": 0.84,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "day",
+   "sessions": 1,
+   "asset": "ETH-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.011298111007855605,
+   "rangeskill_ci95": [
+    -0.03316524532218934,
+    0.07685579311753643
+   ],
+   "coverage_v2": 0.8,
+   "coverage_ci95": [
+    0.64,
+    0.96
+   ],
+   "coverage_naive": 0.88,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "day",
+   "sessions": 1,
+   "asset": "BTC+ETH pooled",
+   "n": 50,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.009076803723941151,
+   "rangeskill_ci95": [
+    -0.03663368114123289,
+    0.06979987038315005
+   ],
+   "coverage_v2": 0.8,
+   "coverage_ci95": [
+    0.64,
+    0.94
+   ],
+   "coverage_naive": 0.86,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "week",
+   "sessions": 7,
+   "asset": "BTC-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.00048358697208417123,
+   "rangeskill_ci95": [
+    -0.00013681729780778973,
+    0.0012484394506865337
+   ],
+   "coverage_v2": 0.88,
+   "coverage_ci95": [
+    0.76,
+    1.0
+   ],
+   "coverage_naive": 0.88,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "week",
+   "sessions": 7,
+   "asset": "ETH-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.0005143659408852752,
+   "rangeskill_ci95": [
+    -3.644845379602302e-05,
+    0.0012484394506866447
+   ],
+   "coverage_v2": 0.88,
+   "coverage_ci95": [
+    0.76,
+    1.0
+   ],
+   "coverage_naive": 0.88,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "week",
+   "sessions": 7,
+   "asset": "BTC+ETH pooled",
+   "n": 50,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.000502079457652127,
+   "rangeskill_ci95": [
+    -3.264853642570564e-05,
+    0.0011608993485522356
+   ],
+   "coverage_v2": 0.88,
+   "coverage_ci95": [
+    0.76,
+    0.98
+   ],
+   "coverage_naive": 0.88,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "month",
+   "sessions": 30,
+   "asset": "BTC-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": 0.012376374061627171,
+   "rangeskill_ci95": [
+    -0.010676024456590438,
+    0.05443870818019925
+   ],
+   "coverage_v2": 0.84,
+   "coverage_ci95": [
+    0.68,
+    0.96
+   ],
+   "coverage_naive": 0.84,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "month",
+   "sessions": 30,
+   "asset": "ETH-USD",
+   "n": 25,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": -0.01880955704203391,
+   "rangeskill_ci95": [
+    -0.04499703597117244,
+    0.016794099028441423
+   ],
+   "coverage_v2": 0.68,
+   "coverage_ci95": [
+    0.48,
+    0.84
+   ],
+   "coverage_naive": 0.68,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  },
+  {
+   "horizon": "month",
+   "sessions": 30,
+   "asset": "BTC+ETH pooled",
+   "n": 50,
+   "clusters": 25,
+   "rangeskill_v2_vs_naive": -0.006592553949196889,
+   "rangeskill_ci95": [
+    -0.028351598816896972,
+    0.025858633183862945
+   ],
+   "coverage_v2": 0.76,
+   "coverage_ci95": [
+    0.6,
+    0.9
+   ],
+   "coverage_naive": 0.76,
+   "launch_gate_target": 0.1,
+   "boot_draws_defined": 5000
+  }
+ ],
+ "excluded": [],
+ "reps": 5000,
+ "seed": 20261125
+}
