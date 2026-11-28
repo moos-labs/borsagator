@@ -16,10 +16,14 @@ accrue on windows no earlier work has touched.
 
 - One cutoff per week. The cutoff is the last EGX session of the week
   (Thursday; EGX trades Sunday to Thursday), taken at that session's close.
-- First cutoff: the first such Thursday strictly after the merge date of
-  this document. The date is written into the schedule file by the cycle at
-  the first dispatch and never edited afterwards. A holiday Thursday moves
-  to the previous session, and the move is logged.
+- First cutoff: the first such Thursday whose cutoff session closes strictly
+  after the merge date of this document. The date is written into the
+  schedule file by the cycle at the first dispatch and never edited
+  afterwards. A holiday Thursday moves to the previous session, and the move
+  is logged. The moved session must itself close after the merge date: if the
+  move would land on or before the merge date, that Thursday is not the first
+  cutoff and the first cutoff is the following Thursday (or its moved session,
+  under the same test). Later cutoffs are unchanged by this rule.
 - Universe: the 36 EGX names of the Yahoo store (ohlcv/yahoo, the 37 files
   minus NVDA). NVDA is not in this schedule. A name with fewer than 120 bars
   before a cutoff, or with no close on the cutoff session, is excluded for
@@ -80,10 +84,19 @@ moment means COUNTS ONLY and the read waits for the next month cluster.
 
 ## Decided points
 
-1. Month overlap: decided as above, month scored on every 4th cutoff, which
-   removes the 16 of 21 session overlap between consecutive month windows
-   (consecutive month-scored windows start 20 sessions apart and share at most
-   1 session).
+1. Month overlap: decided, month scored on every 4th cutoff, by nominal
+   spacing (4 weeks between month-scored cutoffs). This is not changed to
+   session counting. With no session closures in the 4 weeks, consecutive
+   month-scored cutoffs are 20 sessions apart and their 21-session windows
+   share at most 1 session. That holds only without closures. Each closure
+   (holiday, or a holiday Thursday moved to an earlier session) inside the
+   gap lowers the session distance between the two cutoffs by one, so the
+   windows share one more session per closure (a Thursday moved earlier
+   shortens the gap before it by one session and lengthens the gap after it
+   by one, giving that next pair 0 shared sessions). No cutoff is added, moved
+   or dropped to repair the overlap, and the month-scored set stays fixed by
+   cutoff number. The shared-session count of each consecutive month-scored
+   pair is reported with the read, never gating.
 2. Holm: as written in "Test family and Holm": one-sided cluster bootstrap p,
    Holm step-down at 0.05 over the family of 6, plus the loop CI conditions.
 3. The paired delta (challenger minus frozen v2) on the same rows is reported
