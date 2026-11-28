@@ -129,7 +129,8 @@ def test_reps_and_order():
         calls.append((b, c))
         return []
     T.A.find_captures = fake_find
-    def fake_build(caps, allc, repairs=None):
+    def fake_build(caps, allc, repairs=None, info=None):
+        info.append("y: tilt-technicals day: skipped note")
         repairs.append("x: realised window rebuilt to 21 sessions from price.csv")
         return rows, ["gap one"]
     T.R.build_rows = fake_build
@@ -153,6 +154,9 @@ def test_reps_and_order():
     check("repair notice is listed as repaired, not as an exclusion",
           "REPAIRED (scored, not excluded)" in out and "x: realised window rebuilt" in out
           and "excluded: x: realised window rebuilt" not in out and "excluded: gap one" in out)
+    check("informational lines are printed under INFO, never as excluded:",
+          "INFO (per-capture notes" in out and "y: tilt-technicals day: skipped note" in out
+          and "excluded: y: tilt-technicals" not in out)
     check("counts split usable vs missing", "rows all signals usable=0 rows with missing signals=0" in out and "1 v2_sigma exclusions" in out)
 
 
@@ -171,6 +175,14 @@ def test_build_rows_gaps_and_repairs():
         check("score_capture rejection reasons reach the gap list", gaps.count("cap-rejected: manifest ticker/cutoff differs from cell path") == 2, str(gaps))
         check("repair goes to the repairs list, once", len(reps) == 1 and "rebuilt to 21 sessions" in reps[0] and "BBB.CA.fixed" in reps[0], str(reps))
         check("repair is not among the exclusions", not any("rebuilt to 21" in g for g in gaps))
+        # scored capture (rows returned): its lines are info, not exclusions
+        R.bs.score_capture = lambda staged: ([{"entrant": "other"}], ["note: per-entrant skip"])
+        inf, reps3 = [], []
+        rows3, gaps3 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None, reps3, inf)
+        check("scored capture's lines go to info, not to gaps", gaps3 == [x for x in gaps3 if "per-entrant" not in x] and inf == ["note: per-entrant skip"], str((gaps3, inf)))
+        rows4, gaps4 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None)
+        check("without an info list the scored capture's lines are dropped, as before", not any("per-entrant" in x for x in gaps4))
+        R.bs.score_capture = lambda staged: ([], ["cap-rejected: manifest ticker/cutoff differs from cell path"])
         rows, gaps2 = R.build_rows(["/x/cell61/2026-01-01/BBB.CA.fixed"], None)
         check("callers that pass no repairs list still see the notice in gaps (unchanged)", any("rebuilt to 21" in g for g in gaps2))
     finally:

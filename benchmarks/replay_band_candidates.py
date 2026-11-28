@@ -259,14 +259,19 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
-def build_rows(capture_dirs, ref_dirs=None, repairs=None):
+def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
     """One row per matured, non-gap (capture, horizon) with realised
     move, naive band, v2 sigma, and each candidate's daily sigma.
     gaps carries every real exclusion, including the rejection reasons
     score_capture returns. A successful repair (realised window rebuilt
     from price.csv) is not an exclusion: when `repairs` is a list the
     notice goes there; when it is None the notice stays in gaps, as
-    before, for callers that do not separate them."""
+    before, for callers that do not separate them. score_capture's lines
+    are split by outcome: when it returns NO rows the capture was
+    rejected and its reasons are real exclusions (gaps); when it returns
+    rows the capture is scored and its lines are informational
+    (per-entrant skips and the like), which go to `info` when a list is
+    passed and are otherwise dropped, as before."""
     rows, gaps = [], []
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
@@ -284,7 +289,11 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None):
                     "%s: realised window rebuilt to 21 sessions "
                     "from price.csv" % cap)
             scored, scored_gaps = bs.score_capture(staged)
-            gaps.extend(scored_gaps)
+            if scored:
+                if info is not None:
+                    info.extend(scored_gaps)
+            else:
+                gaps.extend(scored_gaps)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
