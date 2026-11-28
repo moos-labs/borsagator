@@ -279,6 +279,10 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
     for cap in capture_dirs:
+        # Notices are held per capture and emitted only once the capture
+        # is finally retained (past score_capture and the OHLC check), so
+        # a rejected capture is never listed as scored (958p).
+        held_repair, held_info = None, []
         # Stage with the ledger session counts (1/5/21): older
         # captures carry the Kronos-bar month session estimate, so
         # their month rows would stay "pending". This is the same
@@ -288,15 +292,14 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
             staged = A._stage(cap, "v2", tmp)
             if _extend_realised(staged, prices.get(
                     os.path.basename(cap).upper())):
-                (gaps if repairs is None else repairs).append(
-                    "%s: realised window rebuilt to 21 sessions "
-                    "from price.csv" % cap)
+                held_repair = ("%s: realised window rebuilt to 21 sessions "
+                               "from price.csv" % cap)
+                if repairs is None:
+                    gaps.append(held_repair)
+                    held_repair = None
             scored, scored_gaps = bs.score_capture(staged)
             if scored:
-                if info is not None:
-                    info.extend(scored_gaps)
-                else:
-                    n_info_dropped += len(scored_gaps)
+                held_info = list(scored_gaps)
             else:
                 gaps.extend(scored_gaps)
         except Exception as e:
@@ -311,6 +314,16 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
         if sig.get("s60") is None:
             gaps.append("%s: no usable pre-cutoff OHLC history" % cap)
             continue
+        # Retained = rows returned AND the OHLC check passed: release the
+        # held notices. A no-rows capture is already in gaps; its notices
+        # are not released.
+        if scored:
+            if held_repair is not None:
+                repairs.append(held_repair)
+            if info is not None:
+                info.extend(held_info)
+            else:
+                n_info_dropped += len(held_info)
         for r in scored:
             if r.get("entrant") == "naive-range" and (
                     r.get("status") != "matured" or r.get("dividend_gap")):

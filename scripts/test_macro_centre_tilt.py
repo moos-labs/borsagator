@@ -188,9 +188,10 @@ def test_build_rows_gaps_and_repairs():
         reps = []
         rows, gaps = R.build_rows(["/x/cell60/2026-01-01/AAA.CA", "/x/cell61/2026-01-01/BBB.CA.fixed"], None, reps)
         check("score_capture rejection reasons reach the gap list", gaps.count("cap-rejected: manifest ticker/cutoff differs from cell path") == 2, str(gaps))
-        check("repair goes to the repairs list, once", len(reps) == 1 and "rebuilt to 21 sessions" in reps[0] and "BBB.CA.fixed" in reps[0], str(reps))
+        check("a repaired capture that is then rejected leaves no repair notice (958p)", reps == [], str(reps))
         check("repair is not among the exclusions", not any("rebuilt to 21" in g for g in gaps))
         # scored capture (rows returned): its lines are info, not exclusions
+        R.sigmas = lambda ohlc: {"s60": 0.01}   # retained: OHLC passes (958p: notices follow retention)
         R.bs.score_capture = lambda staged: ([{"entrant": "other"}], ["note: per-entrant skip"])
         inf, reps3 = [], []
         rows3, gaps3 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None, reps3, inf)
@@ -283,6 +284,59 @@ def test_counts():
     check("week empty", L[1] == "week: rows=0 cutoff clusters=0 tickers=0 rows all signals usable=0 rows with missing signals=0")
     mp = [dict(p, missing=(i == 0)) for i, p in enumerate(pairs)]
     check("missing split", T.count_lines(mp)[0].endswith("usable=2 rows with missing signals=1"), T.count_lines(mp)[0])
+
+
+def test_958p_notices_follow_retention():
+    R = T.R
+    names = ("score_capture", "_stage", "_extend_realised", "price_reference", "read_ohlc", "sigmas", "_sigma60", "load_json")
+    saved = (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas, R.A._sigma60, R.bs.load_json)
+    scored = [{"entrant": "naive-range", "ticker": "AAA.CA", "as_of": "2026-01-01", "horizon": "day", "status": "matured",
+               "realized_move_pct": 0.5, "range_high_pct": 1.0, "range_low_pct": -1.0}]
+    R.A._stage = lambda cap, variant, tmp: cap
+    R.price_reference = lambda dirs: {}
+    R._extend_realised = lambda staged, px: True
+    R.read_ohlc = lambda cap, d: []
+    R.A._sigma60 = lambda ens: 0.02
+    R.bs.load_json = lambda path: {}
+    cap = ["/x/cell60/2026-01-01/AAA.CA"]
+    try:
+        # retained: repair and info both emitted, once, no gap
+        R.bs.score_capture = lambda staged: (scored, ["note: per-entrant skip"])
+        R.sigmas = lambda ohlc: {"s60": 0.01}
+        reps, inf = [], []
+        rows, gaps = R.build_rows(cap, None, reps, inf)
+        check("retained capture keeps its repair notice once", len(reps) == 1 and "rebuilt to 21" in reps[0], str(reps))
+        check("retained capture keeps its info lines", inf == ["note: per-entrant skip"], str(inf))
+        check("retained capture is scored and has no gap", len(rows) == 1 and gaps == [], str((rows, gaps)))
+        # rows returned, then OHLC rejection: neither notice, one gap
+        R.sigmas = lambda ohlc: {"s60": None}
+        reps, inf = [], []
+        rows, gaps = R.build_rows(cap, None, reps, inf)
+        check("OHLC-rejected capture: no repair notice and no info line", reps == [] and inf == [], str((reps, inf)))
+        check("OHLC-rejected capture appears once, as an exclusion", rows == [] and gaps == ["%s: no usable pre-cutoff OHLC history" % cap[0]], str((rows, gaps)))
+        # score_capture exception after a repair: no repair notice, one gap
+        def boom(staged):
+            raise RuntimeError("boom")
+        R.bs.score_capture = boom
+        reps, inf = [], []
+        rows, gaps = R.build_rows(cap, None, reps, inf)
+        check("score_capture exception after repair: no repair notice", reps == [] and inf == [], str((reps, inf)))
+        check("score_capture exception is one exclusion", len(gaps) == 1 and "scoring failed: boom" in gaps[0], str(gaps))
+        # no rows (OHLC would pass): neither notice, one gap
+        R.sigmas = lambda ohlc: {"s60": 0.01}
+        R.bs.score_capture = lambda staged: ([], ["cap-rejected: x"])
+        reps, inf = [], []
+        rows, gaps = R.build_rows(cap, None, reps, inf)
+        check("no-rows rejection after repair: no repair notice", reps == [] and gaps == ["cap-rejected: x"], str((reps, gaps)))
+        # dropped-info count only for retained captures
+        R.bs.score_capture = lambda staged: (scored, ["a", "b"])
+        R.sigmas = lambda ohlc: {"s60": None}
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            R.build_rows(cap, None, [])
+        check("no drop-count line for a rejected capture", buf.getvalue() == "", buf.getvalue())
+    finally:
+        (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas, R.A._sigma60, R.bs.load_json) = saved
 
 
 def test_958l_short_row_coverage_and_gaps():
@@ -439,7 +493,7 @@ def test_958n_brent_lag_and_incomplete_captures():
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps, test_zero_reference_relative_vs_absolute, test_958n_brent_lag_and_incomplete_captures):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps, test_zero_reference_relative_vs_absolute, test_958n_brent_lag_and_incomplete_captures, test_958p_notices_follow_retention):
         fn()
 
 
