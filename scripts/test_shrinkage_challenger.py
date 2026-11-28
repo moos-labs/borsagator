@@ -301,12 +301,103 @@ def test_leave_out_prints_exclusions_first():
     check("leave-out also uses in-range captures only", calls["args"][0] == ["IN1"] and calls["args"][1] is None, str(calls))
 
 
+def test_freeze_gate_uses_capture_endpoint():
+    cl = series(400)
+    base = cl[300][0]
+    row = {"ticker": "A.CA", "as_of": base, "horizon": "day", "real": 0.1, "naive_half": 3.0, "mult": 1.0, "v2_sigma": 0.02}
+    out, ex = T.prepare([dict(row, real_end=cl[302][0])], {"A.CA": cl})
+    check("rdate is the capture endpoint, OHLCV date kept beside it",
+          out[0]["rdate"] == cl[302][0] and out[0]["rdate_ohlcv"] == cl[301][0], str(out))
+    check("a differing endpoint is noted, not excluded", len(T.endpoint_notes(out)) == 1 and not ex)
+    out, ex = T.prepare([row], {"A.CA": cl})
+    check("no recorded endpoint falls back to the OHLCV date and is not noted", out[0]["rdate"] == cl[301][0] and not T.endpoint_notes(out))
+    # the leak path: OHLCV endpoint before FREEZE, capture endpoint on/after it
+    ok = [mkrow(rdate="2025-08-14") for _ in range(100)]
+    leak = dict(mkrow(rdate="2025-08-15"), rdate_ohlcv="2025-08-14")
+    n, fx, w = T.fit_pooled(ok + [leak])
+    check("a row whose capture endpoint is on the freeze date stays out of the fit and is listed",
+          n == 100 and len(fx) == 1 and "after freeze date" in fx[0], str((n, fx)))
+    n, fx, w = T.fit_pooled(ok + [dict(mkrow(rdate="2025-08-14"), rdate_ohlcv="2025-08-14")])
+    check("agreeing endpoints before the freeze date are covered", n == 101 and not fx)
+    # the realised endpoint rule: Nth session after the cutoff of the capture's own list
+    sd = ["2025-01-02", "2025-01-03", "2025-01-05", "2025-01-06", "2025-01-07", "2025-01-08"]
+    check("day endpoint is the 1st session after the cutoff", T.R.endpoint_date(sd, "2025-01-02", "day") == "2025-01-03")
+    check("week endpoint is the 5th session after the cutoff", T.R.endpoint_date(sd, "2025-01-02", "week") == "2025-01-08")
+    check("too short a list gives None", T.R.endpoint_date(sd, "2025-01-02", "month") is None)
+    check("a cutoff after the session list gives None", T.R.endpoint_date(sd, "2025-01-08", "day") is None)
+
+
+def test_rebuild_notices_are_not_exclusions():
+    gaps = ["cap1: realised window rebuilt to 21 sessions from price.csv", "cap2: scoring failed: boom"]
+    exg, rb = T.split_gaps(gaps)
+    check("split_gaps separates the rebuild notice", exg == [gaps[1]] and rb == [gaps[0]])
+    calls, restore = _stub_pipeline([], gaps=gaps)
+    buf = io.StringIO()
+    saved = T.fit_pooled
+    T.fit_pooled = lambda rows: (0, [], None)
+    try:
+        with contextlib.redirect_stdout(buf):
+            T.main(["fit", "--captures", "x", "--ohlcv-dir", "x"])
+    finally:
+        T.fit_pooled = saved
+        restore()
+    out = buf.getvalue()
+    check("challenger fit: rebuild notice under its own heading, not in EXCLUSIONS",
+          "REBUILT WINDOWS (scored, not exclusions)" in out and "excluded: cap1" not in out
+          and "excluded: cap2: scoring failed: boom" in out
+          and out.index("cap1: realised window rebuilt") < out.index("EXCLUSIONS (every one listed)"), out)
+    import score_shrinkage_leave_out as L
+    import json, tempfile
+    calls, restore = _stub_pipeline([], gaps=gaps, mod=L.T)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.1, 1.0]}, fh)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                L.main(["--captures", "x", "--ohlcv-dir", d, "--weights", wp])
+        finally:
+            restore()
+    out = buf.getvalue()
+    check("leave-out: rebuild notice under its own heading, not in EXCLUSIONS",
+          "REBUILT WINDOWS (scored, not exclusions)" in out and "excluded: cap1" not in out
+          and "excluded: cap2: scoring failed: boom" in out, out)
+
+
+def test_leave_out_lists_crossed_rows():
+    import score_shrinkage_leave_out as L
+    import json, tempfile
+    bad = mkrow(h="week", q=(5.0, 6.0), half=2.0, base="2025-05-02")
+    bad["key"] = "X.CA 2025-05-02 week"
+    good = mkrow(h="week", base="2025-05-09")
+    good["key"] = "Y.CA 2025-05-09 week"
+    calls, restore = _stub_pipeline([bad, good], mod=L.T)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.0, 1.0]}, fh)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                L.main(["--captures", "x", "--ohlcv-dir", d, "--weights", wp])
+        finally:
+            restore()
+    out = buf.getvalue()
+    line = "crossed edges: %s (reason: crossed edges, v2 interval used)" % bad["key"]
+    check("leave-out lists the crossed row once with the reason", out.count(line) == 1 and good["key"] not in out.split("CROSSED-EDGE")[1].split("week, leave")[0], out[:900])
+    check("count line present and listing precedes the folds",
+          "CROSSED-EDGE FALLBACKS (every one listed, before any fold; rows stay in scoring): 1" in out
+          and out.index(line) < out.index("leave one cutoff out"), out[:900])
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
                test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
-               test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first):
+               test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
+               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows):
         fn()
 
 
