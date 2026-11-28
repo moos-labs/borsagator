@@ -781,6 +781,8 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
         return real(fd)
 
     def fake(url):
+        if names[0] in url:   # 959o N1: a transient failure so transient.txt exists at the sync
+            raise ValueError("transient")
         raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
     with tempfile.TemporaryDirectory() as d:
         st, out = os.path.join(d, "st"), os.path.join(d, "out")
@@ -802,11 +804,18 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
     check("state dir fsynced exactly once", len(st_ev) == 1, str(events))
     check("state dir fsynced after done.txt and absent.txt exist",
           len(st_ev) == 1 and "done.txt" in st_ev[0][2] and "absent.txt" in st_ev[0][2])
+    check("959o N1: transient.txt is present in the state dir at that sync",
+          len(st_ev) == 1 and "transient.txt" in st_ev[0][2], str(st_ev))
+    first_any = next((i for i, e in enumerate(events) if e[0] == "file"), None)
+    check("959o N1: the state-dir sync precedes the FIRST record fsync of any checkpoint file",
+          first_any is not None and len(st_ev) == 1 and events.index(st_ev[0]) < first_any, str(events))
     check("output dir fsynced once, after matches.jsonl exists",
           len(out_ev) == 1 and "matches.jsonl" in out_ev[0][2])
     check("directory syncs come before the first absent.txt record fsync",
           first_file is not None and all(events.index(e) < first_file for e in dirs))
-    check("per-record fsyncs are kept", sum(1 for e in events if e[0] == "file" and e[1] == "absent.txt") == 2)
+    check("per-record fsyncs are kept (one absent record, one transient record)",
+          sum(1 for e in events if e[0] == "file" and e[1] == "absent.txt") == 1
+          and sum(1 for e in events if e[0] == "file" and e[1] == "transient.txt") == 1, str(events))
 
 
 def test_budget_marker_only_when_files_remain():
@@ -1079,6 +1088,24 @@ def test_959n_filter_f1_f2_f3():
             msg = str(e)
         check("959n F2: macro unreadable-config message names macro_matches.jsonl",
               "macro state config unreadable" in msg and msg.rstrip().endswith("macro_matches.jsonl"), msg)
+    # 959o F1: invalid UTF-8 in a saved config is a refusal message, not a traceback.
+    for _name, _macro in (("config.json", False), ("macro_config.json", True)):
+        with tempfile.TemporaryDirectory() as d:
+            st, out = os.path.join(d, "state"), os.path.join(d, "out")
+            os.makedirs(st)
+            with open(os.path.join(st, _name), "wb") as f:
+                f.write(b'{"k": "\xff\xfe bad"}')
+            ma = _args(st, out)
+            if _macro:
+                ma.themes = os.path.join(ROOT, "evaluation", "gdelt_macro_themes.csv")
+            try:
+                G.run_fetch(ma); res = ("returned", "")
+            except SystemExit as e:
+                res = ("exit", e.code)
+            except Exception as e:  # a traceback is the defect
+                res = ("traceback", type(e).__name__)
+            check("959o F1: invalid UTF-8 %s is a refusal message (not a traceback, not 75)" % _name,
+                  res[0] == "exit" and isinstance(res[1], str) and "unreadable" in res[1], str(res))
     # F3: an exactly duplicated listing line is scheduled once; the same
     # archive name with two different URLs refuses.
     with tempfile.TemporaryDirectory() as d:

@@ -514,10 +514,10 @@ def run_fetch(a):
     config_path = os.path.join(a.state, "config.json")
     if os.path.exists(config_path):
         with ck_setup():          # a read OSError is retryable (75), not a refusal
-            with open(config_path, encoding="utf-8") as _f:
-                _txt = _f.read()
+            with open(config_path, "rb") as _f:
+                _raw = _f.read()
         try:
-            old = json.loads(_txt)
+            old = json.loads(_raw.decode("utf-8"))   # UnicodeDecodeError is a ValueError: refusal, not a traceback
         except ValueError as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
                      f"directory AND a fresh --state (the other channel's config still names the old out dir), "
@@ -586,10 +586,10 @@ def run_fetch(a):
         mcfg_path = os.path.join(a.state, "macro_config.json")
         if os.path.exists(mcfg_path):
             with ck_setup():
-                with open(mcfg_path, encoding="utf-8") as _f:
-                    _txt = _f.read()
+                with open(mcfg_path, "rb") as _f:
+                    _raw = _f.read()
             try:
-                oldm = json.loads(_txt)
+                oldm = json.loads(_raw.decode("utf-8"))   # UnicodeDecodeError is a ValueError: refusal, not a traceback
             except ValueError as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
                          f"directory AND a fresh --state (the other channel's config still names the old out dir), "
