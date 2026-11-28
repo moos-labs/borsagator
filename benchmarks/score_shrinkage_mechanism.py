@@ -89,7 +89,7 @@ def main(argv=None):
     closes = {fn[:-4].replace("_", "."): T.load_closes(os.path.join(a.ohlcv_dir, fn))
               for fn in sorted(os.listdir(a.ohlcv_dir)) if fn.endswith(".csv")}
     allc, caps = T.cell_caps(a.captures, lo_c, hi_c)
-    rows, gaps = R.build_rows(caps, allc)
+    rows, gaps = R.build_rows(caps)  # in-range reference set only
     usable, ex = T.prepare(rows, closes)
     hp = [r for r in usable if r["horizon"] == a.horizon]
     pa, pb = w
