@@ -1,6 +1,6 @@
 # Round 95: macro-proxy centre tilt (oil, USD/EGP, 91-day T-bill), pre-registration
 
-Status: REGISTRATION DRAFT, written before any macro-tilt value is computed or scored. Nothing here is scored, no capture is dispatched, no existing cell, frozen value or script is changed. Origin: INS-IMPROVE-095 rank 2 (Moos Slack 1795836669.620899, relayed to the author, not read by the author). Items marked OPEN are choices that the sources do not settle; they are proposals, not decisions, and the document is not frozen until Moos fixes them. No tilt value is looked at before then.
+Status: FROZEN REGISTRATION, written before any macro-tilt value is computed or scored. Origin: INS-IMPROVE-095 rank 2 (Moos Slack 1795836669.620899, relayed to the author, not read by the author). The three previously open decisions were filled by Moos (Slack 1795837518.314579, relayed to the author, not read by the author) and are recorded below as decided. Nothing in this commit is scored; no existing cell, frozen value or script is changed.
 
 ## Question
 
@@ -14,17 +14,17 @@ Does a fixed-rule shift of the band CENTRE from 0 to a small macro-proxy-based v
 | USD/EGP, CBE interbank weighted average, weekly | weekly | evaluation/macro_series/usd_egp_interbank_weekly.csv (#939), CBE Monthly Statistical Bulletin Table 17 | row `published_date <= D` (first of the bulletin issue month) |
 | 91-day T-bill accepted yield, weekly | weekly | evaluation/macro_series/tbill_91d_weekly.csv (#939), Table 15 | row `published_date <= D` |
 
-Rules: a row is usable at cutoff D only if its key above is <= D. Rows read in the files show both short and long publication lags (a 2021-08-11 observation published 2021-12-01, a 2026-08-26 observation published 2026-09-01), so the rule reads the latest USABLE row at D, never the latest observation. No value is filled or interpolated. A cutoff with a missing signal gets signal 0 for that series and is listed. The CBE bulletin basis is not the Mubasher price basis and is never mixed with it.
+Rules: a row is usable at cutoff D only if its key above is <= D. Rows read in the files show both short and long publication lags (a 2021-08-11 observation published 2021-12-01, a 2026-08-26 observation published 2026-09-01), so the rule reads the latest USABLE row at D, never the latest observation. No value is filled or interpolated. A missing signal is 0 (DECIDED, Moos) and every row with a missing signal is listed with the series and reason. The CBE bulletin basis is not the Mubasher price basis and is never mixed with it.
 
 Not used: sovereign spread (no free daily point-in-time source found) and PMI (monthly, seasonally adjusted, revisable, history behind aggregators). Brent is the only oil series. Regional PMI was not checked.
 
 ## Rule (nothing fitted, no training cells used)
 
 For each capture with cutoff D and each horizon:
-1. For each series, signal x in {-1, 0, +1}: x = +1 if the latest usable value is more than THETA above the usable value 63 calendar days earlier (the latest usable row at D minus 63 days), x = -1 if more than THETA below, else 0. 63 days is about 9 weeks, fixed. THETA: Brent 5 percent, USD/EGP 2 percent, T-bill 100 basis points (absolute). OPEN: THETA values and the 63-day window are proposals.
-2. Direction map d in {-1, +1} per series from economic sign, fixed before any read. OPEN: sign of each series. The sources I opened do not settle the sign (Egypt is an oil and gas importer and exporter, EGP depreciation has both inflation-hedge and valuation effects, higher T-bill yields can lower valuations or signal tightening already priced). The author does not choose. Proposed for Moos to fill: d_oil, d_fx, d_tbill.
+1. For each series, signal x in {-1, 0, +1}: x = +1 if the latest usable value is more than THETA above the usable value 63 calendar days earlier (the latest usable row at D minus 63 days), x = -1 if more than THETA below, else 0. 63 days is about 9 weeks, fixed. THETA: Brent 5 percent, USD/EGP 2 percent, T-bill 100 basis points (absolute). DECIDED (Moos): THETA values and the 63-day window as stated. The reference value is the latest row usable at D with observed_date <= (observed_date of the latest usable row) minus 63 days.
+2. Direction map, DECIDED (Moos): d_oil = -1, d_fx = +1, d_tbill = -1. The author did not choose these; the sources opened do not settle the sign.
 3. Composite m = (d_oil x_oil + d_fx x_fx + d_tbill x_tbill) / 3, in [-1, 1].
-4. Tilted centre c = S x m x v2_half(h) where v2_half(h) is the frozen v2 half-width for that row and horizon in percent (as computed by the existing scorer path). S = 0.10, so the centre never moves more than 10 percent of the half-width, the same size as the round 78 clip. OPEN: S is a proposal. Band half-width is exactly frozen v2's.
+4. Tilted centre c = S x m x v2_half(h) where v2_half(h) is the frozen v2 half-width for that row and horizon in percent (as computed by the existing scorer path). S = 0.10 (DECIDED, Moos), so the centre never moves more than 10 percent of the half-width, the same size as the round 78 clip. Band half-width is exactly frozen v2's.
 
 Arms: reference frozen v2 (centre 0), challenger tilt (centre c). One challenger, one S, one window. No grid, no second variant. Adding any needs a new registration and gets no cutoff already read.
 
@@ -49,10 +49,10 @@ Fewer than 10 clusters: COUNTS ONLY, no coverage, skill or CI printed or written
 - Signal count: the composite takes at most 4 values per row after rounding to thirds, and many cutoffs share a signal state. The descriptive read has about 7 distinct tilts. Treat any 48-90 number as descriptive of those dates only.
 - The USD/EGP and T-bill rows are weekly with a variable publication lag; the latest usable row at D can be months old. The rule reads what was knowable at D, which may be stale.
 - Oil is global (Brent is not Egyptian). It is a proxy by assumption.
-- Direction signs and S, THETA are OPEN, and the descriptive read must wait for Moos to fill them.
+- Brent rows are stored with published_date = observed_date + 3 days by this rule (FRED CSV, not a vintage); the ALFRED vintage check was not done.
 
-## Open decisions for Moos (author proposes none)
+## Decisions (all filled by Moos, Slack 1795837518.314579, relayed, not read)
 
-1. d_oil, d_fx, d_tbill in {-1, +1}.
-2. S (proposed 0.10), the 63-day window, THETA (5 percent, 2 percent, 100 bp).
-3. Whether a missing signal means 0 (proposed) or excludes the row.
+1. d_oil = -1, d_fx = +1, d_tbill = -1.
+2. S = 0.10, window 63 days, THETA Brent 5 percent, USD/EGP 2 percent, T-bill 100 bp.
+3. Missing signal = 0, each such row listed.
