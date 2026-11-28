@@ -772,6 +772,20 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
     check("per-record fsyncs are kept", sum(1 for e in events if e[0] == "file" and e[1] == "absent.txt") == 2)
 
 
+def test_budget_marker_only_when_files_remain():
+    names = ["202405150%02d000" % i for i in range(8)]
+    import io, zipfile
+    zbuf = io.BytesIO()
+    with zipfile.ZipFile(zbuf, "w") as z:
+        z.writestr("x.gkg.csv", "")
+    good = zbuf.getvalue()
+    for nm, nms, want in (("last batch finishes all files", names, False), ("files remain", names + ["20240515099000"], True)):
+        with tempfile.TemporaryDirectory() as d:
+            st, out = os.path.join(d, "st"), os.path.join(d, "out")
+            os.makedirs(out)
+            o, f = _run_fetch_with(st, out, nms, lambda u: good, budget=1e-9)
+            check("budget marker %s" % nm, ("budget exhausted" in o) == want)
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
@@ -780,7 +794,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

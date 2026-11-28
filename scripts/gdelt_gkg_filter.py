@@ -621,7 +621,7 @@ def run_fetch(a):
                 rate = n_bytes / 1e6 / el if el else 0
                 print(f"progress {n_done}/{len(files)} rows={n_rows} macro_rows={n_mrows} malformed={n_malformed} "
                       f"mb={n_bytes/1e6:.0f} rate={rate:.1f}MB/s elapsed={el:.0f}s", flush=True)
-                if a.budget_seconds and el > a.budget_seconds:
+                if a.budget_seconds and el > a.budget_seconds and i < len(files):
                     print("budget exhausted; rerun to resume", flush=True)
                     break
     finally:
