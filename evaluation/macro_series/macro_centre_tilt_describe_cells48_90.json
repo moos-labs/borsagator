@@ -1,0 +1,80 @@
+{
+ "descriptive": true,
+ "counts": [
+  "day: rows=43 cutoff clusters=8 tickers=6 rows all signals usable=43 rows with missing signals=0",
+  "week: rows=43 cutoff clusters=8 tickers=6 rows all signals usable=43 rows with missing signals=0",
+  "month: rows=43 cutoff clusters=8 tickers=6 rows all signals usable=43 rows with missing signals=0"
+ ],
+ "results": {
+  "day": {
+   "n": 43,
+   "cutoffs": 8,
+   "tickers": 6,
+   "nonzero_tilt_rows": 19,
+   "cov_tilt": 0.6744186046511628,
+   "cov_v2": 0.6744186046511628,
+   "rs_tilt": -0.02285582381506046,
+   "rs_v2": -0.02018158812666715,
+   "rs_tilt_ci_cutoff": [
+    -0.044494262985139255,
+    0.02140520664140033
+   ],
+   "cov_tilt_ci_cutoff": [
+    0.5,
+    0.85
+   ],
+   "delta": -0.0026742356883933116,
+   "delta_ci_cutoff": [
+    -0.009275852814886187,
+    0.003731762065095512
+   ]
+  },
+  "week": {
+   "n": 43,
+   "cutoffs": 8,
+   "tickers": 6,
+   "nonzero_tilt_rows": 19,
+   "cov_tilt": 0.813953488372093,
+   "cov_v2": 0.813953488372093,
+   "rs_tilt": -0.0112211857886928,
+   "rs_v2": -0.00034896108686899296,
+   "rs_tilt_ci_cutoff": [
+    -0.02641774902872629,
+    0.0001814318611932375
+   ],
+   "cov_tilt_ci_cutoff": [
+    0.6888888888888889,
+    0.9318181818181818
+   ],
+   "delta": -0.010872224701823807,
+   "delta_ci_cutoff": [
+    -0.02575494410144552,
+    0.0
+   ]
+  },
+  "month": {
+   "n": 43,
+   "cutoffs": 8,
+   "tickers": 6,
+   "nonzero_tilt_rows": 19,
+   "cov_tilt": 0.6511627906976745,
+   "cov_v2": 0.627906976744186,
+   "rs_tilt": -0.012512986915810265,
+   "rs_v2": -0.018219629335262333,
+   "rs_tilt_ci_cutoff": [
+    -0.029796729930674948,
+    0.01585161232825394
+   ],
+   "cov_tilt_ci_cutoff": [
+    0.5227272727272727,
+    0.8095238095238095
+   ],
+   "delta": 0.005706642419452068,
+   "delta_ci_cutoff": [
+    -0.00443952435463979,
+    0.019534135222710636
+   ]
+  }
+ },
+ "excluded": []
+}

@@ -166,18 +166,46 @@ def cell_number(path):
     return int(m[-1]) if m else None
 
 
-def find_captures(roots, min_cell=None):
+def find_captures(roots, min_cell=None, max_cell=None, rejects=None):
     """Capture dirs under roots: <cutoff>/<TICKER>/ holding the three
     scoring inputs. One (cutoff, ticker) is one observation: when a
     cell was rerun, the lexically latest path wins, but a numbered path
     always beats an unnumbered one (an unnumbered capture is dropped by
     every scorer, so letting it win the dedup would lose the numbered
-    observation)."""
+    observation). min_cell and max_cell (both optional, inclusive) are
+    applied BEFORE the per-(cutoff, ticker) winner is chosen, so a
+    capture outside the requested cells can never displace an eligible
+    one (a cell-91 rerun must not hide the cell-48 observation of the
+    same cutoff and ticker)."""
     found = {}
     for root in roots:
         for dp, dn, fn in os.walk(root):
             if ".tmp-" in dp or ".old-" in dp:
                 continue
+            has_man = "manifest.json" in fn
+            has_real = "realised.json" in fn
+            has_ens = os.path.exists(os.path.join(dp, "digest", "ensemble.json"))
+            if not (has_man and has_real and has_ens):
+                # Incomplete capture: never selected. When the caller passes
+                # a rejects list, record why so an exclusion report can list it.
+                inum = cell_number(dp)
+                # Only capture-shaped dirs (<cutoff>/<TICKER>): a run-level
+                # manifest.json above them is not a capture. A dir is listed
+                # when it carries at least one scoring input other than the
+                # manifest (958o: a manifest-less dir with realised.json or
+                # digest/ensemble.json is an incomplete capture too); a
+                # manifest-only dir (a run-level manifest) stays unlisted.
+                has_other = has_real or has_ens
+                if (rejects is not None and inum is not None and has_other
+                        and re.match(r"^\d{4}-\d{2}-\d{2}$", os.path.basename(os.path.dirname(dp)))
+                        and (min_cell is None or inum >= min_cell)
+                        and (max_cell is None or inum <= max_cell)):
+                    miss = [n for n, ok in (
+                        ("manifest.json", has_man),
+                        ("realised.json", has_real),
+                        ("digest/ensemble.json", has_ens)) if not ok]
+                    rejects.append("incomplete capture %s: missing %s"
+                                   % (dp, ", ".join(miss)))
             if ("manifest.json" in fn and "realised.json" in fn
                     and os.path.exists(os.path.join(
                         dp, "digest", "ensemble.json"))):
@@ -187,6 +215,9 @@ def find_captures(roots, min_cell=None):
                 num = cell_number(dp)
                 if min_cell is not None and num is not None \
                         and num < min_cell:
+                    continue
+                if max_cell is not None and num is not None \
+                        and num > max_cell:
                     continue
                 key = (cutoff, os.path.basename(dp).upper())
                 rank = (num is not None, dp)

@@ -163,6 +163,25 @@ def test_verdict_rules():
     check("negative", A.verdict(60, 6, -0.2) == "DO NOT ADOPT")
 
 
+def test_max_cell_applied_before_dedup():
+    with tempfile.TemporaryDirectory() as tmp:
+        closes = [100 + 0.3 * i for i in range(21)]
+        make_capture(tmp, "r1__w5-backtest-436-cell48", "2025-09-30", "AAA.CA", closes)
+        make_capture(tmp, "r2__w5-backtest-436-cell91", "2025-09-30", "AAA.CA", closes)
+        both = A.find_captures([tmp], None)
+        check("unbounded dedup keeps only the latest path (cell91)",
+              len(both) == 1 and "cell91" in both[0], repr(both))
+        low = A.find_captures([tmp], 48, 90)
+        check("max_cell applied before dedup: eligible cell48 survives",
+              len(low) == 1 and "cell48" in low[0], repr(low))
+        high = A.find_captures([tmp], 91, None)
+        check("min-only call unchanged", len(high) == 1 and "cell91" in high[0], repr(high))
+        check("max_cell is inclusive", len(A.find_captures([tmp], 48, 48)) == 1
+              and "cell48" in A.find_captures([tmp], 48, 48)[0])
+        check("below max_cell excludes cell91 and cell48 when max is 47",
+              A.find_captures([tmp], None, 47) == [])
+
+
 def test_discovery_and_end_to_end():
     with tempfile.TemporaryDirectory() as tmp:
         closes = [100 + 0.3 * i for i in range(21)]
@@ -290,6 +309,7 @@ if __name__ == "__main__":
     test_block_bootstrap_by_ticker()
     test_verdict_rules()
     test_cutoff_cluster_bootstrap()
+    test_max_cell_applied_before_dedup()
     test_discovery_and_end_to_end()
     test_dedup_prefers_numbered_and_cell_anchor()
     test_no_pycache_written()

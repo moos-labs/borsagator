@@ -259,13 +259,30 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
-def build_rows(capture_dirs, ref_dirs=None):
+def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
     """One row per matured, non-gap (capture, horizon) with realised
-    move, naive band, v2 sigma, and each candidate's daily sigma."""
+    move, naive band, v2 sigma, and each candidate's daily sigma.
+    gaps carries every real exclusion, including the rejection reasons
+    score_capture returns. A successful repair (realised window rebuilt
+    from price.csv) is not an exclusion: when `repairs` is a list the
+    notice goes there; when it is None the notice stays in gaps, as
+    before, for callers that do not separate them. score_capture's lines
+    are split by outcome: when it returns NO rows the capture was
+    rejected and its reasons are real exclusions (gaps); when it returns
+    rows the capture is scored and its lines are informational
+    (per-entrant skips and the like), which go to `info` when a list is
+    passed; when it is None they are dropped, and ONE count line
+    ("note: N informational score_capture lines dropped ...") is printed
+    to stdout so the drop is visible, never listed as an exclusion."""
     rows, gaps = [], []
+    n_info_dropped = 0
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
     for cap in capture_dirs:
+        # Notices are held per capture and emitted only once the capture
+        # is finally retained (past score_capture and the OHLC check), so
+        # a rejected capture is never listed as scored (958p).
+        held_repair, held_info = None, []
         # Stage with the ledger session counts (1/5/21): older
         # captures carry the Kronos-bar month session estimate, so
         # their month rows would stay "pending". This is the same
@@ -275,9 +292,16 @@ def build_rows(capture_dirs, ref_dirs=None):
             staged = A._stage(cap, "v2", tmp)
             if _extend_realised(staged, prices.get(
                     os.path.basename(cap).upper())):
-                gaps.append("%s: realised window rebuilt to 21 sessions "
-                            "from price.csv" % cap)
-            scored, _g = bs.score_capture(staged)
+                held_repair = ("%s: realised window rebuilt to 21 sessions "
+                               "from price.csv" % cap)
+                if repairs is None:
+                    gaps.append(held_repair)
+                    held_repair = None
+            scored, scored_gaps = bs.score_capture(staged)
+            if scored:
+                held_info = list(scored_gaps)
+            else:
+                gaps.extend(scored_gaps)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
@@ -290,7 +314,28 @@ def build_rows(capture_dirs, ref_dirs=None):
         if sig.get("s60") is None:
             gaps.append("%s: no usable pre-cutoff OHLC history" % cap)
             continue
+        # Retained = rows returned AND the OHLC check passed: release the
+        # held notices. A no-rows capture is already in gaps; its notices
+        # are not released.
+        if scored:
+            if held_repair is not None:
+                repairs.append(held_repair)
+            if info is not None:
+                info.extend(held_info)
+            else:
+                n_info_dropped += len(held_info)
         for r in scored:
+            if r.get("entrant") == "naive-range" and (
+                    r.get("status") != "matured" or r.get("dividend_gap")):
+                # every dropped naive-range horizon gets its own reason
+                if r.get("status") != "matured":
+                    why = "pending, %s sessions available" % r.get(
+                        "sessions_available", 0) if r.get(
+                        "status") == "pending" else "status %s" % r.get("status")
+                else:
+                    why = "dividend_gap %s" % r.get("dividend_gap")
+                gaps.append("%s %s %s: no matured row (%s)" % (
+                    r["ticker"], str(r["as_of"])[:10], r["horizon"], why))
             if (r.get("entrant") != "naive-range"
                     or r.get("status") != "matured"
                     or r.get("dividend_gap")):
@@ -304,6 +349,10 @@ def build_rows(capture_dirs, ref_dirs=None):
                 "mult": ens_mod.RISK_MULT.get(
                     ((ens or {}).get("risk") or {}).get("level"), 1.0),
                 "v2_sigma": v2sig, "sig": sig})
+    if n_info_dropped:
+        print("note: %d informational score_capture lines dropped "
+              "(scored captures, no info list passed; not exclusions)"
+              % n_info_dropped, flush=True)
     return rows, gaps
 
 
