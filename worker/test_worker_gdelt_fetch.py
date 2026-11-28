@@ -91,6 +91,79 @@ def test_deferred_unparseable_deadline():
     _wprog(jid, time.time() + 1000)
     check("a valid future deadline still defers", worker._gdelt_deferred(jid) is True)
 
+def _rel(d):
+    return "worker-runs/%s/%s" % (d.parent.name, d.name)
+
+def _local_state(wd, text, binding=None):
+    st = wd / "gdelt-state"
+    st.mkdir(parents=True, exist_ok=True)
+    (st / "done.txt").write_text(text)
+    if binding is not None:
+        (st / worker.GDELT_BINDING).write_text(json.dumps({"run": binding}))
+
+def test_restore_checks_recorded_mode():
+    _fixtures_env()
+    live = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode live"
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    _make_archive_run("2026-11-27", "100000", "x", "mode-pred", "FIXTURE-STATE\n", mode="fixtures")
+    called = []
+    res, seen = _run_capture({"id": "mode-succ", "job": live + " --resume-from mode-pred"}, worker.OUT / "t959-mode1",
+                             lambda c: called.append(c) or _Res())
+    check("live job with a fixtures predecessor: named outcome, nothing restored, no filter run",
+          res == {"gdelt-fetch": "resume-mode-mismatch"} and not called and not (worker.OUT / "t959-mode1" / "gdelt-state" / "done.txt").exists())
+    check("mismatch is written to the run log", "resume-mode-mismatch" in (worker.OUT / "t959-mode1" / "gdelt" / "gdelt-fetch.log").read_text())
+    res, seen = _run_capture({"id": "mode-succ2", "job": fix + " --resume-from mode-pred"}, worker.OUT / "t959-mode2", lambda c: _Res())
+    check("same-mode predecessor still restores", seen["state_text"] == "FIXTURE-STATE\n")
+    _make_archive_run("2026-11-27", "100000", "x", "legacy-pred", "LEGACY\n", mode=None)
+    res, seen = _run_capture({"id": "legacy-succ", "job": fix + " --resume-from legacy-pred"}, worker.OUT / "t959-mode3", lambda c: _Res())
+    check("a predecessor with no recorded mode is rejected for --resume-from", res == {"gdelt-fetch": "resume-mode-mismatch"})
+    _make_archive_run("2026-11-27", "100000", "x", "legacy-own", "LEGACY-OWN\n", mode=None)
+    res, seen = _run_capture({"id": "legacy-own", "job": fix}, worker.OUT / "t959-mode4", lambda c: _Res())
+    check("the job's own legacy run (same plan) still resumes", seen["state_text"] == "LEGACY-OWN\n")
+    _make_archive_run("2026-11-27", "100000", "x", "own-cross", "X\n", mode="live")
+    res, seen = _run_capture({"id": "own-cross", "job": fix}, worker.OUT / "t959-mode5", lambda c: _Res())
+    check("a same-id run recorded in another mode is rejected too", res == {"gdelt-fetch": "resume-mode-mismatch"})
+
+def test_restore_is_staged_and_atomic():
+    _fixtures_env()
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    d = _make_archive_run("2026-11-27", "100000", "x", "stage-1", "PUB\n", matches='{"ok": 1}\nnot json\n')
+    wd = worker.OUT / "t959-stage"
+    _local_state(wd, "LOCAL\n", binding="worker-runs/older/run")
+    (wd / "gdelt-out").mkdir(parents=True, exist_ok=True)
+    (wd / "gdelt-out" / "matches.jsonl").write_text('{"local": 1}\n')
+    res, seen = _run_capture({"id": "stage-1", "job": fix}, wd, lambda c: _Res())
+    check("a restore that fails validation leaves the previous done.txt", seen["state_text"] == "LOCAL\n")
+    check("and the previous matches", (wd / "gdelt-out" / "matches.jsonl").read_text() == '{"local": 1}\n')
+    check("and no partial restore files or scratch directories", not [p for p in wd.iterdir() if p.name.startswith(".gdelt-restore")]
+          and not (wd / "gdelt-state" / "config.json").exists())
+    d2 = _make_archive_run("2026-11-28", "100000", "x", "stage-2", "PUB2\n", matches='{"ok": 1}\n', macro='{"m": 1}\n')
+    wd2 = worker.OUT / "t959-stage2"
+    res, seen = _run_capture({"id": "stage-2", "job": fix}, wd2, lambda c: _Res())
+    check("a valid restore commits state, matches and the binding together",
+          seen["state_text"] == "PUB2\n" and (wd2 / "gdelt-out" / "matches.jsonl").read_text() == '{"ok": 1}\n'
+          and (wd2 / "gdelt-out" / "macro_matches.jsonl").exists()
+          and json.loads((wd2 / "gdelt-state" / worker.GDELT_BINDING).read_text())["run"] == _rel(d2))
+
+def test_new_claim_checks_the_published_snapshot():
+    _fixtures_env()
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    a = _make_archive_run("2026-11-26", "100000", "x", "snap-1", "SNAP-A\n")
+    b = _make_archive_run("2026-11-27", "100000", "x", "snap-1", "SNAP-B\n")
+    job = {"id": "snap-1", "job": fix}
+    wd = worker.OUT / "t959-snap1"; _local_state(wd, "LOCAL\n", binding=_rel(b))
+    res, seen = _run_capture(job, wd, lambda c: _Res())
+    check("local checkpoint bound to the latest published run keeps the fast path", seen["state_text"] == "LOCAL\n")
+    wd = worker.OUT / "t959-snap2"; _local_state(wd, "LOCAL\n", binding=_rel(a))
+    res, seen = _run_capture(job, wd, lambda c: _Res())
+    check("another worker advanced the job: the latest snapshot is restored over the stale local one", seen["state_text"] == "SNAP-B\n")
+    wd = worker.OUT / "t959-snap3"; _local_state(wd, "LOCAL\n")
+    res, seen = _run_capture(job, wd, lambda c: _Res())
+    check("an unbound local checkpoint is replaced by the latest published snapshot", seen["state_text"] == "SNAP-B\n")
+    wd = worker.OUT / "t959-snap4"; _local_state(wd, "LOCAL\n")
+    res, seen = _run_capture({"id": "never-published", "job": fix}, wd, lambda c: _Res())
+    check("nothing published: the local checkpoint stays", seen["state_text"] == "LOCAL\n")
+
 def test_parse_rejects():
     for bad in ["", "gdelt-fetch", "gdelt-fetch --start 20240501000000",
                 "gdelt-fetch --end 20240531235959",
@@ -210,7 +283,7 @@ def _ensure_remote():
 
 def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
                       published=True, matches=None, macro=None, config=None,
-                      extra_state=None):
+                      extra_state=None, mode="fixtures"):
     """Create worker-runs/DATE/HMS__slug__jobid in the local checkout.
     published=True commits and pushes it to the remote archive branch;
     published=False leaves it as local residue (a failed publish)."""
@@ -230,6 +303,8 @@ def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
     if macro is not None:
         (d / "gdelt" / "macro_matches.jsonl").write_text(macro)
     (d / "gdelt" / "keep").write_text("x")
+    if mode is not None:   # the sidecar every real run writes; None = a legacy run without it
+        (d / "gdelt" / "gdelt_fetch.json").write_text(json.dumps({"mode": mode}))
     if published:
         arch = worker.ROOT / "archive-push"
         _git("add", "-A", str(d), cwd=arch)
@@ -479,7 +554,7 @@ def test_master_download_failed_publishes_restored_matches():
     jid = "mdf-1"
     cfg = {"config.json": {"aliases_sha256": "abc", "start": "20240501000000", "end": "20240501999999", "out": "/old/out"}}
     _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches='{"file": "f1", "company": "OLD"}\n',
-                      macro='{"file": "f1", "theme": "OLDMACRO"}\n', config=cfg)
+                      macro='{"file": "f1", "theme": "OLDMACRO"}\n', config=cfg, mode="live")
     def boom(req, timeout=300):
         raise OSError("network down")
     o_url = worker.urlopen
@@ -662,7 +737,7 @@ def test_download_failure_reports_restored_progress():
     mdone = "".join("m%d\n" % i for i in range(7))
     d = _make_archive_run("2026-11-27", "100000", "x", jid, done,
                           matches='{"c": 1}\n{"c": 2}\n', macro='{"m": 1}\n',
-                          config={"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501999999", "out": "/o"}})
+                          config={"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501999999", "out": "/o"}}, mode="live")
     (d / "gdelt-state" / "macro_done.txt").write_text(mdone)
     _git("add", "-A", str(d), cwd=worker.ROOT / "archive-push"); _git("commit", "-m", "macro done", cwd=worker.ROOT / "archive-push")
     _git("push", "origin", "HEAD:archive", cwd=worker.ROOT / "archive-push")
@@ -724,7 +799,7 @@ def test_sidecar_reports_absent_both_paths():
     d = _make_archive_run("2026-11-27", "110000", "x", jid, done,
                           matches='{"c": 1}\n', macro='{"m": 1}\n',
                           config={"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501999999", "out": "/o"}},
-                          extra_state={"absent.txt": "a1\na2\n\na3\n"})
+                          extra_state={"absent.txt": "a1\na2\n\na3\n"}, mode="live")
     def boom(req, timeout=300):
         raise OSError("down")
     o_url = worker.urlopen; worker.urlopen = boom
@@ -753,6 +828,9 @@ def test_sidecar_reports_absent_both_paths():
 def main():
     test_parse_ok()
     test_parse_rejects()
+    test_restore_checks_recorded_mode()
+    test_restore_is_staged_and_atomic()
+    test_new_claim_checks_the_published_snapshot()
     test_parse_rejects_non_ascii_digits()
     test_filter_launch_env_is_denylist_filtered()
     test_deferred_unparseable_deadline()

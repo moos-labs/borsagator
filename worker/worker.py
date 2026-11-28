@@ -4128,22 +4128,22 @@ def _git_out(arch, *args):
     return r.stdout
 
 
-def _gdelt_restore_remote(arch, src_id, state_dir, out_dir):
-    """Pick the latest PUBLISHED run for src_id (origin/archive tree,
-    worker-runs/DATE/RUN__<job-id>, one level below the date dirs, with
-    a gdelt-state dir) and restore its gdelt-state/ plus its match
-    output (gdelt/matches.jsonl, gdelt/macro_matches.jsonl) into
-    state_dir / out_dir. State records files as done, so the matches
-    for those files must come back with it or the published output
-    would omit them. The restored config.json / macro_config.json bind
-    the state to the predecessor's absolute --out path; the filter
-    refuses a state whose bound path differs, so only that "out" field
-    is re-pointed at this run's out_dir (aliases/themes hash and the
-    start/end window stay as restored, a different window still
-    refuses)."""
-    import io
-    import tarfile
+class GdeltRestoreMismatch(Exception):
+    """The predecessor run recorded a different mode than this job."""
 
+
+GDELT_BINDING = "restored-from.json"
+
+
+def _gdelt_pick_published(arch, src_id, mode, strict=False):
+    """The latest PUBLISHED run for src_id on the fetched origin/archive tree
+    (worker-runs/DATE/RUN__<job-id>, with a gdelt-state dir), as
+    (run_path, names), or None when there is none. The run's recorded mode
+    (gdelt/gdelt_fetch.json) must equal `mode`: a different recorded mode
+    raises GdeltRestoreMismatch, so a live job never restores fixture
+    state (or the reverse). A run with no recorded mode is accepted for
+    the job's own id (same plan) and rejected when strict (a
+    --resume-from predecessor)."""
     def ls(path):
         raw = _git_out(arch, "ls-tree", "--name-only", GDELT_RESTORE_REF,
                        path.rstrip("/") + "/")
@@ -4164,34 +4164,129 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir):
         names = [x for x in files.decode("utf-8", "replace").splitlines() if x]
         if not any(n.startswith(run_path + "/gdelt-state/") for n in names):
             continue
+        recorded = None
+        try:
+            raw = _git_out(arch, "show", "%s:%s/gdelt/gdelt_fetch.json"
+                           % (GDELT_RESTORE_REF, run_path))
+            rec = json.loads(raw.decode("utf-8", "replace"))
+            if isinstance(rec, dict) and isinstance(rec.get("mode"), str):
+                recorded = rec["mode"]
+        except Exception:
+            recorded = None
+        if (recorded is not None and recorded != mode) or \
+                (recorded is None and strict):
+            raise GdeltRestoreMismatch(
+                "predecessor %s recorded mode %r, job mode %r"
+                % (run_path, recorded, mode))
+        return run_path, names
+    return None
+
+
+def _gdelt_binding(state_dir):
+    """The published run the local checkpoint was restored from, or None."""
+    try:
+        d = json.loads((Path(state_dir) / GDELT_BINDING).read_text())
+        return d.get("run") if isinstance(d, dict) else None
+    except Exception:
+        return None
+
+
+def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
+                          strict=False, picked=None):
+    """Restore the latest published run for src_id (its gdelt-state/ plus
+    gdelt/matches.jsonl and gdelt/macro_matches.jsonl) into state_dir /
+    out_dir as ONE snapshot. State records files as done, so the matches
+    for those files must come back with it or the published output would
+    omit them. The restore is STAGED: everything is extracted into a
+    scratch directory, validated (every listed file extracted, every
+    state config and every matches line parses), and only then swapped
+    in by directory rename. Any failure discards the scratch directory
+    and leaves the previous state_dir / out_dir untouched. The restored
+    config.json / macro_config.json bind the state to the predecessor's
+    absolute --out path; only that "out" field is re-pointed at this
+    run's out_dir (aliases/themes hash and the start/end window stay as
+    restored, a different window still refuses). A restored-from.json
+    in the state records which published run this checkpoint represents.
+    Returns the run path, or None when nothing was published."""
+    import io
+    import tarfile
+    import tempfile
+    if picked is None:
+        picked = _gdelt_pick_published(arch, src_id, mode, strict)
+    if picked is None:
+        return None
+    run_path, names = picked
+    state_dir, out_dir = Path(state_dir), Path(out_dir)
+    out_abs = os.path.abspath(str(out_dir))
+    stage = Path(tempfile.mkdtemp(prefix=".gdelt-restore-",
+                                  dir=str(state_dir.parent)))
+    try:
+        st_stage, out_stage = stage / "state", stage / "out"
+        st_stage.mkdir()
+        out_stage.mkdir()
         blob = _git_out(arch, "archive", "--format=tar", GDELT_RESTORE_REF,
                         *names)
+        want, got = set(), set()
         with tarfile.open(fileobj=io.BytesIO(blob)) as tf:
             for m in tf.getmembers():
                 if not m.isfile() or m.name not in names:
                     continue
                 rel = m.name[len(run_path) + 1:]
-                if rel.startswith("gdelt-state/"):
-                    dst = state_dir / rel[len("gdelt-state/"):]
-                else:
-                    dst = out_dir / rel[len("gdelt/"):]
                 if ".." in Path(rel).parts:
                     continue
+                if rel.startswith("gdelt-state/"):
+                    dst = st_stage / rel[len("gdelt-state/"):]
+                else:
+                    dst = out_stage / rel[len("gdelt/"):]
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 dst.write_bytes(tf.extractfile(m).read())
-        out_abs = os.path.abspath(str(out_dir))
+                got.add(m.name)
+        want = {n for n in names if ".." not in Path(n).parts}
+        if got != want:
+            raise RuntimeError("restore incomplete: %d of %d files"
+                               % (len(got), len(want)))
         for cfg_name in ("config.json", "macro_config.json"):
-            cp = state_dir / cfg_name
+            cp = st_stage / cfg_name
             if cp.exists():
-                try:
-                    c = json.loads(cp.read_text())
-                    if isinstance(c, dict) and "out" in c:
-                        c["out"] = out_abs
-                        cp.write_text(json.dumps(c, indent=1))
-                except Exception:
-                    pass
+                c = json.loads(cp.read_text())
+                if not isinstance(c, dict):
+                    raise RuntimeError("restored %s is not an object" % cfg_name)
+                if "out" in c:
+                    c["out"] = out_abs
+                    cp.write_text(json.dumps(c, indent=1))
+        for fn in ("matches.jsonl", "macro_matches.jsonl"):
+            mp = out_stage / fn
+            if mp.exists():
+                for line in mp.read_text(encoding="utf-8").splitlines():
+                    if line.strip():
+                        json.loads(line)
+        (st_stage / GDELT_BINDING).write_text(
+            json.dumps({"run": run_path, "mode": mode}))
+        # Commit: swap both directories; undo the first if the second fails.
+        prev_st = stage / "prev-state"
+        prev_out = stage / "prev-out"
+        had_st, had_out = state_dir.exists(), out_dir.exists()
+        if had_st:
+            os.rename(state_dir, prev_st)
+        try:
+            if had_out:
+                os.rename(out_dir, prev_out)
+            try:
+                os.rename(st_stage, state_dir)
+                os.rename(out_stage, out_dir)
+            except Exception:
+                if state_dir.exists() and not st_stage.exists():
+                    os.rename(state_dir, st_stage)
+                if had_out and prev_out.exists() and not out_dir.exists():
+                    os.rename(prev_out, out_dir)
+                raise
+        except Exception:
+            if had_st and prev_st.exists() and not state_dir.exists():
+                os.rename(prev_st, state_dir)
+            raise
         return str(run_path)
-    return None
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
 
 
 def _gkg_unfinished(out_text):
@@ -4252,33 +4347,52 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # dir left behind), so it is never enumerated: candidates come from
     # the fetched origin/archive tree, and a successor on another
     # checkout sees exactly what a published run left.
-    if not (state_dir / "done.txt").exists():
-        arch = ROOT / "archive-push"
-        url = os.environ.get("GATOR_BUS_URL")
+    # A local done.txt no longer skips the remote check: another worker may
+    # have advanced the same job. The local checkpoint is bound
+    # (restored-from.json) to the published run it represents; the fast
+    # path is kept only when that is still the latest compatible run.
+    mismatch = None
+    arch = ROOT / "archive-push"
+    url = os.environ.get("GATOR_BUS_URL")
+    fetched = False
+    try:
+        if not arch.exists() and url:
+            sh(f"git clone --branch archive --single-branch {url} {arch}",
+               timeout=900)
+        if arch.exists():
+            fr = sh(f"git -C {shlex.quote(str(arch))} fetch origin "
+                    "+refs/heads/archive:refs/remotes/origin/archive",
+                    timeout=180)
+            fetched = (fr.returncode == 0)
+    except Exception:
         fetched = False
+    if fetched:
         try:
-            if not arch.exists() and url:
-                sh(f"git clone --branch archive --single-branch {url} {arch}",
-                   timeout=900)
-            if arch.exists():
-                fr = sh(f"git -C {shlex.quote(str(arch))} fetch origin "
-                        "+refs/heads/archive:refs/remotes/origin/archive",
-                        timeout=180)
-                fetched = (fr.returncode == 0)
-        except Exception:
-            fetched = False
-        if fetched:
+            # The job's OWN published run wins (a same-id retry resumes
+            # itself); the --resume-from predecessor is only the fallback
+            # when the job has no published run yet, and its recorded
+            # mode must be present and equal to this job's.
             try:
-                # The job's OWN published run wins (a same-id retry
-                # resumes itself); the --resume-from predecessor is only
-                # the fallback when the job has no published run yet.
-                got = _gdelt_restore_remote(arch, job["id"], state_dir,
-                                            out_dir)
-                if got is None and plan["resume_from"]:
-                    _gdelt_restore_remote(arch, plan["resume_from"],
-                                          state_dir, out_dir)
-            except Exception:
-                pass
+                src, picked = job["id"], _gdelt_pick_published(
+                    arch, job["id"], mode)
+                if picked is None and plan["resume_from"]:
+                    src = plan["resume_from"]
+                    picked = _gdelt_pick_published(arch, src, mode,
+                                                   strict=True)
+            except GdeltRestoreMismatch as e:
+                mismatch = str(e)
+                picked = None
+            if picked is not None:
+                local = (state_dir / "done.txt").exists()
+                if not (local and _gdelt_binding(state_dir) == picked[0]):
+                    _gdelt_restore_remote(arch, src, state_dir, out_dir,
+                                          mode=mode, picked=picked)
+        except Exception:
+            pass  # staged restore: a failure leaves the prior snapshot as it was
+    if mismatch:
+        (run_dir / "gdelt-fetch.log").write_text(
+            "resume-mode-mismatch: %s\n" % mismatch)
+        return {"gdelt-fetch": "resume-mode-mismatch"}
 
     # (a) Download master lists (live mode only)
     master_path = None
