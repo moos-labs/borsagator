@@ -1,0 +1,72 @@
+"""Leave-one-cutoff-out and leave-one-ticker-out descriptives for the
+shrinkage challenger on cells 48-90 with the FROZEN shared pair (no refit).
+Point estimates only per fold: challenger-minus-v2 RangeSkill and challenger
+coverage, per horizon. No bootstrap, no verdict wording.
+
+  python3 benchmarks/score_shrinkage_leave_out.py --captures ARCH \
+      --ohlcv-dir OHLCV --weights w.json
+"""
+import argparse
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import score_shrinkage_challenger as T  # noqa: E402
+
+A, R = T.A, T.R
+
+
+def fold_stats(rows, a, b):
+    pairs = []
+    for r in rows:
+        is_ch, inside, _ = T.row_scores(r, a, b)
+        pairs.append({"as_of": r["base"], "is_naive": R.row_is(r, r["naive_half"]),
+                      "is_v2": R.row_is(r, r["half"]), "is_ch": is_ch,
+                      "in_ch": inside})
+    x, y = A.range_skill(pairs, "ch"), A.range_skill(pairs, "v2")
+    if x is None or y is None:
+        return None
+    return {"n": len(pairs), "diff": x - y, "cov": sum(p["in_ch"] for p in pairs) / len(pairs)}
+
+
+def build_folds(rows, a, b, key):
+    """Full-sample row plus one fold per value of `key` left out."""
+    out = [("all", fold_stats(rows, a, b))]
+    for v in sorted({r[key] for r in rows}):
+        out.append((v, fold_stats([r for r in rows if r[key] != v], a, b)))
+    return out
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--captures", nargs="+", required=True)
+    ap.add_argument("--ohlcv-dir", required=True)
+    ap.add_argument("--weights", required=True)
+    a = ap.parse_args(argv)
+    with open(a.weights, encoding="utf-8") as fh:
+        w = json.load(fh)["weights"]
+    if not w:
+        print("refusing: weights file has no frozen pair")
+        return 2
+    lo, hi = T.DESC_CELLS
+    closes = {fn[:-4].replace("_", "."): T.load_closes(os.path.join(a.ohlcv_dir, fn))
+              for fn in sorted(os.listdir(a.ohlcv_dir)) if fn.endswith(".csv")}
+    allc, caps = T.cell_caps(a.captures, lo, hi)
+    rows, gaps = R.build_rows(caps, allc)
+    usable, ex = T.prepare(rows, closes)
+    print("COUNTS cells %d-%d: %d usable rows, frozen pair a=%s b=%s, no refit" % (lo, hi, len(usable), w[0], w[1]))
+    for h in T.HORIZONS:
+        hp = [r for r in usable if r["horizon"] == h]
+        for key, label in (("base", "cutoff"), ("ticker", "ticker")):
+            print("%s, leave one %s out (diff = challenger minus v2 RangeSkill):" % (h, label))
+            for v, st in build_folds(hp, w[0], w[1], key):
+                if st is None:
+                    print("  %s: n/a" % v)
+                else:
+                    print("  %-12s n=%2d diff %+.3f coverage %.3f" % (v, st["n"], st["diff"], st["cov"]))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

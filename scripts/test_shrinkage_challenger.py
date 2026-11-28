@@ -152,6 +152,27 @@ def test_crossed_edges():
     check("crossed edges fall back to v2", crossed and is_ch == T.bs.winkler_is(0.0, -2.0, 2.0))
 
 
+def test_leave_out_folds():
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "benchmarks"))
+    import score_shrinkage_leave_out as L
+    rows = []
+    for base, tk, real in (("2025-10-01", "A", 0.5), ("2025-10-01", "B", 5.0),
+                           ("2025-11-01", "A", 0.2), ("2025-11-01", "B", 0.1)):
+        r = mkrow(base=base, real=real)
+        r["ticker"] = tk
+        rows.append(r)
+    f = dict(L.build_folds(rows, 1.0, 1.0, "base"))
+    check("cutoff folds: all plus one per cutoff", sorted(f) == ["2025-10-01", "2025-11-01", "all"])
+    check("leaving a cutoff out drops exactly its rows", f["all"]["n"] == 4 and f["2025-10-01"]["n"] == 2 and f["2025-11-01"]["n"] == 2)
+    check("weights 1: challenger equals v2, diff 0", abs(f["all"]["diff"]) < 1e-12)
+    t = dict(L.build_folds(rows, 1.0, 1.0, "ticker"))
+    check("ticker folds drop that ticker only", t["A"]["n"] == 2 and t["B"]["n"] == 2)
+    # real=5 sits outside v2 half 2: leaving B out leaves 2 covered rows, coverage 1.0
+    check("coverage excludes the left-out ticker", abs(t["B"]["cov"] - 1.0) < 1e-12 and abs(t["A"]["cov"] - 0.5) < 1e-12, str(t))
+    w0 = dict(L.build_folds(rows, 0.0, 0.0, "base"))["all"]
+    check("weights 0 use the baseline edges, so diff is not 0 for these rows", abs(w0["diff"]) > 1e-9)
+
+
 def test_refusals():
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
@@ -169,7 +190,7 @@ def test_refusals():
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
-               test_fit_picks_best_and_ties, test_crossed_edges, test_refusals):
+               test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals):
         fn()
 
 
