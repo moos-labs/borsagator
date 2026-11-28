@@ -367,6 +367,36 @@ def fetch(url, timeout=90):
         raise ValueError(f"file over {MAX_FILE_BYTES} bytes")
     return data
 
+def reconcile_orphan_rows(path, done_names):
+    """Rows are fsynced BEFORE the file's done marker, so a stop between the
+    two leaves rows for a file that is not done; resume re-selects that file
+    and would append them again. Drop every row whose `file` is not in
+    done_names (atomic rewrite) so the replay writes them exactly once.
+    Unparseable lines are kept. Returns the number of rows dropped."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return 0
+    keep, dropped = [], 0
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                nm = json.loads(line).get("file")
+            except (ValueError, AttributeError):
+                nm = None
+            if nm is not None and nm not in done_names:
+                dropped += 1
+            else:
+                keep.append(line)
+    if dropped:
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.writelines(keep)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, path)
+        fsync_dir(os.path.dirname(os.path.abspath(path)))
+    return dropped
+
+
 def truncate_incomplete_tail(path):
     """Drop a trailing partial line (no final newline) left by a crash
     mid-append, so the next append does not glue onto it. Works on bytes:
@@ -463,9 +493,12 @@ def run_fetch(a):
               "out": os.path.abspath(a.out)}
     config_path = os.path.join(a.state, "config.json")
     if os.path.exists(config_path):
+        with ck_setup():          # a read OSError is retryable (75), not a refusal
+            with open(config_path, encoding="utf-8") as _f:
+                _txt = _f.read()
         try:
-            old = json.load(open(config_path))
-        except (json.JSONDecodeError, OSError) as e:
+            old = json.loads(_txt)
+        except ValueError as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
                      f"directory: delete {config_path}, done.txt, absent.txt and transient.txt")
         if old != config:
@@ -501,16 +534,24 @@ def run_fetch(a):
             cut = truncate_incomplete_tail(pth)
         if cut:
             print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
-    done = set()
-    if os.path.exists(done_path):
-        done = set(open(done_path, encoding="utf-8").read().split())
-    absent = set()
-    if os.path.exists(absent_path):
-        absent = set(open(absent_path, encoding="utf-8").read().split())
-    transient = {}
-    if os.path.exists(transient_path):
-        for nm in open(transient_path, encoding="utf-8").read().split():
-            transient[nm] = transient.get(nm, 0) + 1
+    # Checkpoint READS are retryable I/O too: an OSError here is exit 75
+    # (safe=0, nothing published), never an exit-1 the worker could archive.
+    done, absent, transient = set(), set(), {}
+    with ck_setup():
+        if os.path.exists(done_path):
+            with open(done_path, encoding="utf-8") as _f:
+                done = set(_f.read().split())
+        if os.path.exists(absent_path):
+            with open(absent_path, encoding="utf-8") as _f:
+                absent = set(_f.read().split())
+        if os.path.exists(transient_path):
+            with open(transient_path, encoding="utf-8") as _f:
+                for nm in _f.read().split():
+                    transient[nm] = transient.get(nm, 0) + 1
+    with ck_setup():
+        n_orphan = reconcile_orphan_rows(matches_path, done)
+    if n_orphan:
+        print(f"reconciled {n_orphan} rows of files not marked done in {matches_path}", flush=True)
     macro = None
     macro_done = set()
     macro_matches_path = os.path.join(a.out, "macro_matches.jsonl")
@@ -522,9 +563,12 @@ def run_fetch(a):
                 "out": os.path.abspath(a.out)}
         mcfg_path = os.path.join(a.state, "macro_config.json")
         if os.path.exists(mcfg_path):
+            with ck_setup():
+                with open(mcfg_path, encoding="utf-8") as _f:
+                    _txt = _f.read()
             try:
-                oldm = json.load(open(mcfg_path))
-            except (json.JSONDecodeError, OSError) as e:
+                oldm = json.loads(_txt)
+            except ValueError as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
                          f"directory: delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt")
             if oldm != mcfg:
@@ -547,8 +591,13 @@ def run_fetch(a):
                 cut = truncate_incomplete_tail(pth)
             if cut:
                 print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
-        if os.path.exists(md_path):
-            macro_done = set(open(md_path, encoding="utf-8").read().split())
+        with ck_setup():
+            if os.path.exists(md_path):
+                with open(md_path, encoding="utf-8") as _f:
+                    macro_done = set(_f.read().split())
+            n_orphan = reconcile_orphan_rows(macro_matches_path, macro_done)
+        if n_orphan:
+            print(f"reconciled {n_orphan} rows of files not marked done in {macro_matches_path}", flush=True)
     extra_needles = ([norm(t) for t in macro[0]] + [norm(n) for n in macro[2]]) if macro else ()
     alias_items, block_map, require_map, prefilter = load_aliases(a.aliases, extra_needles=extra_needles)
     specs = []

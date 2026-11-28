@@ -648,6 +648,16 @@ def test_absent_persisted_and_skipped():
         check("incomplete absent tail truncated", "truncated" in o and all(x.endswith(".gkg.csv.zip") for x in ab), str(ab))
 
 
+def _ident(path):
+    """(st_dev, st_ino) of a path, or None: descriptors are matched by
+    identity, never through procfs."""
+    try:
+        st = os.stat(path)
+    except OSError:
+        return None
+    return (st.st_dev, st.st_ino)
+
+
 def test_absent_flushed_before_fsync():
     """Each absent identity is flushed (visible to the file system) before the
     fsync that follows it: a hard kill after the fsync cannot lose the line."""
@@ -656,13 +666,12 @@ def test_absent_flushed_before_fsync():
     sizes = []
     real = os.fsync
 
+    box = {}
+
     def spy(fd):
-        try:
-            path = os.readlink("/proc/self/fd/%d" % fd)
-        except OSError:
-            path = ""
-        if path.endswith("absent.txt"):
-            sizes.append(os.fstat(fd).st_size)
+        st = os.fstat(fd)
+        if (st.st_dev, st.st_ino) == _ident(box.get("absent")):
+            sizes.append(st.st_size)
         return real(fd)
 
     def fake(url):
@@ -670,6 +679,7 @@ def test_absent_flushed_before_fsync():
     with tempfile.TemporaryDirectory() as d:
         st, out = os.path.join(d, "st"), os.path.join(d, "out")
         os.makedirs(out)
+        box["absent"] = os.path.join(st, "absent.txt")
         os.fsync = spy
         try:
             _run_fetch_with(st, out, names, fake)
@@ -705,14 +715,12 @@ def test_new_directories_and_their_parents_fsynced():
     """Every directory run_fetch creates (including missing ancestors) is
     fsynced, and so is each one's parent."""
     import urllib.error
-    synced = []
+    synced = set()
     real = os.fsync
 
     def spy(fd):
-        try:
-            synced.append(os.readlink("/proc/self/fd/%d" % fd))
-        except OSError:
-            pass
+        st = os.fstat(fd)
+        synced.add((st.st_dev, st.st_ino))
         return real(fd)
 
     def fake(url):
@@ -726,32 +734,31 @@ def test_new_directories_and_their_parents_fsynced():
         finally:
             os.fsync = real
         for p in (st, os.path.dirname(st), os.path.join(d, "a"), out, os.path.join(d, "c"), d):
-            check("directory %s fsynced" % os.path.relpath(p, d), p in synced, str(sorted(synced)))
+            check("directory %s fsynced" % os.path.relpath(p, d), _ident(p) in synced, str(sorted(synced)))
 
 def test_state_dir_fsynced_after_checkpoint_files_open():
     """The state and output directories are fsynced once, after done.txt,
     absent.txt and matches.jsonl exist (their directory entries are durable
     before any record), and before the first per-record fsync."""
     import urllib.error
-    if not os.path.isdir("/proc/self/fd"):
-        # The spy identifies synced files through procfs; without it the
-        # absent.txt event cannot be recorded, so skip with a reason.
-        print("SKIP: fsync-ordering test needs /proc/self/fd (procfs unavailable)")
-        return
     names = ["202405150%02d000" % i for i in range(2)]
     events = []
     real = os.fsync
     box = {}
 
     def spy(fd):
-        try:
-            path = os.readlink("/proc/self/fd/%d" % fd)
-        except OSError:
-            path = ""
-        if os.path.isdir(path):
-            events.append(("dir", path, sorted(os.listdir(path))))
-        else:
-            events.append(("file", os.path.basename(path), None))
+        # Match the descriptor to a known directory or checkpoint file by
+        # (st_dev, st_ino); no procfs.
+        st = os.fstat(fd)
+        key = (st.st_dev, st.st_ino)
+        for dpath in box.get("dirs", ()):
+            if _ident(dpath) == key:
+                events.append(("dir", dpath, sorted(os.listdir(dpath))))
+                return real(fd)
+        for fpath in box.get("files", ()):
+            if _ident(fpath) == key:
+                events.append(("file", os.path.basename(fpath), None))
+                return real(fd)
         return real(fd)
 
     def fake(url):
@@ -760,6 +767,8 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
         st, out = os.path.join(d, "st"), os.path.join(d, "out")
         os.makedirs(out)
         os.makedirs(st)  # pre-existing: new-directory syncs are tested separately
+        box["dirs"] = [st, out]
+        box["files"] = [os.path.join(st, n) for n in ("absent.txt", "done.txt", "transient.txt")] + [os.path.join(out, "matches.jsonl")]
         os.fsync = spy
         try:
             _run_fetch_with(st, out, names, fake)
@@ -908,6 +917,68 @@ def test_959k_setup_and_close_failures():
                   code == 75 and ("gkg-filter-checkpoint-error " + want) in text, "%s %s" % (code, text))
 
 
+def test_959l_reads_retryable_and_replay_reconciled():
+    """Checkpoint READ errors are retryable (75); malformed config stays a
+    message. Rows of a file with no done mark are dropped before the replay."""
+    import urllib.error
+    names = ["20240515000000", "20240515001500"]
+    nm = ["%s.gkg.csv.zip" % n for n in names]
+
+    def nf(url):
+        raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        _run_fetch_with(st, out, names[:1], nf)          # creates config.json etc.
+        # --- M1: a read OSError on each checkpoint file takes exit 75, safe=0
+        for target in ("done.txt", "absent.txt", "transient.txt", "config.json"):
+            open(os.path.join(st, target), "a").close()
+            orig_open = open
+
+            def bad_open(path, *a, _t=target, **k):
+                mode = a[0] if a else k.get("mode", "r")
+                if os.path.basename(str(path)) == _t and "r" == mode[:1] and "+" not in mode:
+                    raise OSError("read failed")
+                return orig_open(path, *a, **k)
+            G.open = bad_open
+            code = text = None
+            try:
+                try:
+                    _run_fetch_with(st, out, names, nf)
+                except SystemExit as e:
+                    code, text = e.code, getattr(e, "stdout", "")
+            finally:
+                del G.open
+            check("read OSError on %s exits 75 safe=0" % target,
+                  code == 75 and "gkg-filter-checkpoint-error safe=0" in text, "%s %s" % (code, text))
+        # malformed config is a message exit, not 75
+        with open(os.path.join(st, "config.json"), "w") as f:
+            f.write("{not json")
+        try:
+            _run_fetch_with(st, out, names, nf); code = None
+        except SystemExit as e:
+            code = e.code
+        check("malformed config stays a message refusal", code not in (None, 75) and "unreadable" in str(code), str(code))
+        os.remove(os.path.join(st, "config.json"))
+        os.remove(os.path.join(st, "absent.txt"))
+        # --- m4: rows without a done mark are dropped, rows with one are kept
+        _run_fetch_with(st, out, names[:1], nf)          # rewrites config.json
+        os.remove(os.path.join(st, "absent.txt"))
+        mp = os.path.join(out, "matches.jsonl")
+        with open(mp, "w") as f:
+            f.write(json.dumps({"file": nm[0], "r": 1}) + "\n")
+            f.write(json.dumps({"file": nm[1], "r": 2}) + "\n")
+            f.write(json.dumps({"file": nm[1], "r": 3}) + "\n")
+        with open(os.path.join(st, "done.txt"), "w") as f:
+            f.write(nm[0] + "\n")
+        o, _ = _run_fetch_with(st, out, names, nf)
+        left = [json.loads(l)["r"] for l in open(mp)]
+        check("rows of the not-done file are dropped before replay, done file rows kept",
+              left == [1] and "reconciled 2 rows" in o, "%s %s" % (left, o))
+        check("reconcile is a no-op when every row's file is done",
+              G.reconcile_orphan_rows(mp, {nm[0]}) == 0 and [json.loads(l)["r"] for l in open(mp)] == [1])
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
@@ -916,7 +987,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures, test_959l_reads_retryable_and_replay_reconciled):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

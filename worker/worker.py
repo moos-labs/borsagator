@@ -4429,7 +4429,7 @@ def run_gdelt_fetch(job, workdir):
 # lose the job. "unfinished" = the filter left files neither done nor absent.
 # Unknown resume state: nothing is published and the claim is released.
 GDELT_NO_PUBLISH = ("archive-check-failed", "restore-rollback-failed",
-                    "checkpoint-io-failed")
+                    "checkpoint-io-failed", "setup-io-failed")
 GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
                     "master-download-failed", "checkpoint-io-incomplete")
 GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
@@ -4438,7 +4438,7 @@ GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
 def _validate_master_file(path, label=""):
     """Validate a downloaded master list line by line (no full read into
     memory): non-empty, UTF-8, every non-blank line `size md5 url`."""
-    n = 0
+    n = gkg = 0
     with open(path, "rb") as f:
         for raw in f:
             line = raw.decode("utf-8")
@@ -4448,8 +4448,17 @@ def _validate_master_file(path, label=""):
             if len(fld) != 3 or not fld[0].isdigit() or "/" not in fld[2]:
                 raise ValueError("invalid master listing line in %s" % label)
             n += 1
+            # A recognisable GKG archive entry (any date, so a valid master
+            # whose entries all fall outside the window still passes):
+            # <14-digit timestamp>.<...>.gkg.csv.zip, as list_files selects.
+            base = fld[2].rsplit("/", 1)[-1]
+            ts = base.split(".")[0]
+            if base.endswith(".gkg.csv.zip") and ts.isdigit() and len(ts) == 14:
+                gkg += 1
     if n == 0:
         raise ValueError("empty master listing: %s" % label)
+    if gkg == 0:
+        raise ValueError("master listing has no GKG archive entries: %s" % label)
     return n
 
 
@@ -4457,7 +4466,10 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # Issue #381: job_text() — never feed raw untrusted job text.
     plan = parse_gdelt_fetch_job(job_text(job))
     run_dir = Path(workdir) / "gdelt"
-    run_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return {"gdelt-fetch": "setup-io-failed"}
     if plan is None:
         return {"gdelt-fetch": "bad-job"}
 
@@ -4470,8 +4482,13 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # State/out dirs are fixed so re-queued jobs resume.
     state_dir = Path(workdir) / "gdelt-state"
     out_dir = Path(workdir) / "gdelt-out"
-    _makedirs_durable(state_dir)
-    _makedirs_durable(out_dir)
+    try:
+        _makedirs_durable(state_dir)
+        _makedirs_durable(out_dir)
+    except OSError:
+        # Setup failed before any checkpoint was touched: a no-publish,
+        # retryable outcome through execute()'s retry path.
+        return {"gdelt-fetch": "setup-io-failed"}
 
     # (c) Restore the previous run's state AND match output from the
     # REMOTE archive branch only. The local archive-push checkout can
@@ -4585,6 +4602,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
             for fn in ("matches.jsonl", "macro_matches.jsonl"):
                 if (out_dir / fn).exists():
                     shutil.copy2(out_dir / fn, run_dir / fn)
+                else:
+                    (run_dir / fn).unlink(missing_ok=True)   # no stale copy
             (run_dir / "gdelt-fetch.log").write_text(
                 "master-download-failed\n")
             # Report the RESTORED progress, not 0: the progress record
@@ -4676,6 +4695,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         src = out_dir / fn
         if src.exists():
             shutil.copy2(src, run_dir / fn)
+        else:
+            (run_dir / fn).unlink(missing_ok=True)   # no stale copy
 
     # state summary
     files_done = 0
@@ -5722,16 +5743,37 @@ def execute(job):
                 _release_claim(job["id"])
 
 
-def _release_claim(job_id):
+def _release_claim(job_id, only_own=False):
     """Remove queue/claims/<id>.json from the bus and CONFIRM it is gone
     from origin/queue. Returns True only on confirmation; on failure the
     claim stays (the 6 h stale reclaim is the fallback) and it says so."""
     claim = BUS / "queue" / "claims" / f"{job_id}.json"
     rel = f"queue/claims/{job_id}.json"
     try:
+        if only_own:
+            # A deferred cleanup may only remove the claim THIS host placed.
+            f0 = git_bus("fetch origin queue", timeout=120)
+            if f0.returncode != 0:
+                raise RuntimeError("fetch failed")
+            r0 = git_bus("ls-tree --name-only origin/queue " + shlex.quote(rel),
+                         timeout=60)
+            if r0.returncode != 0:
+                raise RuntimeError("ls-tree failed")
+            if not (r0.stdout or "").strip():
+                return True                       # already gone
+            r1 = git_bus("show origin/queue:" + shlex.quote(rel), timeout=60)
+            if r1.returncode != 0:
+                raise RuntimeError("show failed")
+            owner = json.loads(r1.stdout or "{}").get("worker")
+            if owner != os.uname().nodename:
+                return True                       # another worker's claim: leave it
         claim.unlink(missing_ok=True)
         push_bus(f"release claim {job_id} (incomplete run)")
-        git_bus("fetch origin queue", timeout=120)
+        # A fresh remote observation is required: a failed fetch would leave
+        # a stale ref (and an empty ls-tree could fake a confirmation).
+        f1 = git_bus("fetch origin queue", timeout=120)
+        if f1.returncode != 0:
+            raise RuntimeError("fetch failed")
         r = git_bus("ls-tree --name-only origin/queue " + shlex.quote(rel),
                     timeout=60)
         gone = (r.returncode == 0 and not (r.stdout or "").strip())
@@ -6607,20 +6649,33 @@ def _gdelt_release_intent(job_id, archive_sha=None, expect=None):
 
 
 def _gdelt_retry_cleanup(job_id):
-    """Retry a recorded intent cleanup (see _gdelt_release_intent)."""
+    """Retry a recorded intent cleanup (see _gdelt_release_intent). Once the
+    replayed intent is gone, release the bus claim THIS host placed; the
+    marker stays (as claim_pending) until that release is confirmed."""
     try:
         mp = _gdelt_cleanup_marker(job_id)
         if mp.exists():
             try:
-                expect = json.loads(mp.read_text()).get("intent")
+                data = json.loads(mp.read_text())
+                expect = data.get("intent")
             except (ValueError, AttributeError):
-                expect = None
+                data, expect = {}, None
+            if data.get("claim_pending") is True:
+                if _release_claim(job_id, only_own=True):
+                    mp.unlink(missing_ok=True)
+                return
             if not isinstance(expect, str):
                 # No recorded identity: it cannot be bound to an intent, so
                 # never unlink one. Drop the unusable marker.
                 mp.unlink(missing_ok=True)
                 return
-            _gdelt_release_intent(job_id, expect=expect)
+            if _gdelt_release_intent(job_id, expect=expect) \
+                    and not _intent_path(job_id).exists():
+                # Our intent is gone (not a mismatch that left a later
+                # attempt's intent in place): release the claim.
+                if not _release_claim(job_id, only_own=True):
+                    mp.parent.mkdir(parents=True, exist_ok=True)
+                    mp.write_text(json.dumps({"claim_pending": True}))
     except OSError:
         pass
 
@@ -6972,7 +7027,30 @@ def _execute_body(job):
         _mark_done(job, archive_sha)
 
 
+GDELT_QUARANTINE_KEEP_DAYS = 7     # retention: age limit ...
+GDELT_QUARANTINE_KEEP_MAX = 10     # ... and count limit (newest kept)
+
+
+def prune_gdelt_quarantine():
+    """Bound JOB_STATE/gdelt-quarantine: drop entries older than the age
+    limit, then everything beyond the newest KEEP_MAX."""
+    qroot = JOB_STATE / "gdelt-quarantine"
+    try:
+        items = sorted((d for d in qroot.iterdir() if d.is_dir()),
+                       key=lambda d: d.stat().st_mtime, reverse=True)
+    except OSError:
+        return
+    cutoff = time.time() - GDELT_QUARANTINE_KEEP_DAYS * 86400
+    for k, d in enumerate(items):
+        try:
+            if k >= GDELT_QUARANTINE_KEEP_MAX or d.stat().st_mtime < cutoff:
+                shutil.rmtree(d, ignore_errors=True)
+        except OSError:
+            pass
+
+
 def prune_out():
+    prune_gdelt_quarantine()
     cutoff = time.time() - OUT_RETENTION_DAYS * 86400
     for d in OUT.iterdir() if OUT.exists() else []:
         if d.is_dir() and d.stat().st_mtime < cutoff:
