@@ -100,6 +100,7 @@ slower per file); without pyarrow --finalize writes CSV.
 import argparse, csv, hashlib, io, json, os, re, sys, time, zipfile
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlsplit
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 # 27-column GKG 2.x layout, both streams (see module docstring).
@@ -485,6 +486,7 @@ def run_fetch(a):
         if need_c or need_m:
             files.append((u, s, need_c, need_m))
     t0, n_done, n_bytes, n_rows, n_mrows, n_malformed = time.time(), 0, 0, 0, 0, 0
+    n_unfinished, n_absent = 0, 0
     print(f"todo={len(files)} done_prev={len(done)} macro_done_prev={len(macro_done)} "
           f"prefilter={prefilter.engine}", flush=True)
 
@@ -496,7 +498,11 @@ def run_fetch(a):
             z = zipfile.ZipFile(io.BytesIO(raw))
             blob = z.read(z.namelist()[0])
         except Exception as e:
-            return name, stream, 0, None, None, 0, need_c, need_m, f"{type(e).__name__}: {e}"
+            # A listed file that GDELT answers with HTTP 404 is ABSENT
+            # (permanent, e.g. a translation file it never served); any
+            # other failure is transient or corrupt and stays unfinished.
+            tag = "absent: " if isinstance(e, HTTPError) and e.code == 404 else ""
+            return name, stream, 0, None, None, 0, need_c, need_m, f"{tag}{type(e).__name__}: {e}"
         rows, mrows, bad = process_blob(name, stream, blob, alias_items, block_map,
                                         require_map, prefilter, macro=macro,
                                         do_company=need_c, do_macro=need_m)
@@ -514,8 +520,14 @@ def run_fetch(a):
                 chunk = files[i:i + batch]
                 for name, stream, nbytes, rows, mrows, bad, need_c, need_m, err in ex.map(work, chunk):
                     if err:
-                        print(f"skip {name}: {err}", flush=True)
-                        continue  # NOT marked done: retried on the next run
+                        # NOT marked done either way: retried on the next run.
+                        if err.startswith("absent: "):
+                            n_absent += 1
+                            print(f"absent {name}: {err[len('absent: '):]}", flush=True)
+                        else:
+                            n_unfinished += 1
+                            print(f"skip {name}: {err}", flush=True)
+                        continue
                     if need_c:
                         for r in rows:
                             out_f.write(json.dumps(r, ensure_ascii=False) + "\n")
@@ -553,6 +565,9 @@ def run_fetch(a):
         if mdone_f:
             mdone_f.close()
     print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows} macro_rows={n_mrows}", flush=True)
+    # Machine-readable: files that failed for a reason other than a
+    # permanent HTTP 404 (unfinished) and files GDELT does not serve (absent).
+    print(f"gkg-filter-status unfinished={n_unfinished} absent={n_absent}", flush=True)
 
 def run_finalize(a):
     rows, seen, n_corrupt = [], set(), 0

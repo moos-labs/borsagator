@@ -494,12 +494,65 @@ def test_crash_recovery_tail():
               and data.count(b"R1") >= 1)
 
 
+def test_unfinished_vs_absent():
+    """A listed file answered with HTTP 404 is ABSENT (never makes the run
+    unfinished); a transient failure is unfinished. Both stay out of
+    done.txt. Fixed synthetic inputs."""
+    import urllib.error
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        names = ["20240515000000", "20240515001500", "20240515003000", "20240515004500"]
+        G.list_files = lambda specs, s0, e0: [
+            ("http://x/%s.gkg.csv.zip" % n, "english") for n in names]
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("a.gkg.csv", b"")
+        good = buf.getvalue()
+
+        def fake(url, timeout=90):
+            if names[1] in url:
+                raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+            if names[2] in url:
+                raise urllib.error.URLError("timed out")
+            if names[3] in url:
+                raise urllib.error.HTTPError(url, 403, "Forbidden", None, None)
+            return good
+        orig = (G.list_files, G.fetch)
+        G.fetch = fake
+
+        class R:
+            pass
+        r = R()
+        r.state, r.out, r.start, r.end = st, out, "20240515", "20240515"
+        r.aliases, r.master, r.master_translation = ALIASES_CSV, "m", None
+        r.workers, r.budget_seconds = 1, 0
+        buf2 = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf2):
+                G.run_fetch(r)
+        finally:
+            G.list_files, G.fetch = orig
+        o = buf2.getvalue()
+        check("status line counts 2 unfinished and 1 absent",
+              "gkg-filter-status unfinished=2 absent=1\n" in o, o[-200:])
+        check("404 is reported as absent, not skip",
+              "absent %s.gkg.csv.zip" % names[1] in o and "skip %s.gkg.csv.zip" % names[1] not in o)
+        check("transient failure is reported as skip with diagnostics",
+              "skip %s.gkg.csv.zip: URLError" % names[2] in o)
+        done = open(os.path.join(st, "done.txt")).read().split()
+        check("a non-404 HTTP error (403) is unfinished, not absent",
+              "skip %s.gkg.csv.zip: HTTPError" % names[3] in o)
+        check("only the served file is done", done == ["%s.gkg.csv.zip" % names[0]], str(done))
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
                test_process_blob, test_macro_filter, test_list_files_and_range,
                test_fetch_guards, test_config_binding,
-               test_config_atomic_and_restart, test_restart_and_finalize):
+               test_config_atomic_and_restart, test_restart_and_finalize,
+               test_unfinished_vs_absent):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

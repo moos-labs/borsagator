@@ -4194,6 +4194,14 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir):
     return None
 
 
+def _gkg_unfinished(out_text):
+    """Count from the filter's last `gkg-filter-status unfinished=N
+    absent=M` line; 0 when the line is absent (older filter)."""
+    hits = re.findall(r"^gkg-filter-status unfinished=(\d+) absent=\d+\s*$",
+                      out_text or "", re.M)
+    return int(hits[-1]) if hits else 0
+
+
 def run_gdelt_fetch(job, workdir):
     """Run a `gdelt-fetch` job: download the two real GDELT master
     lists and invoke scripts/gdelt_gkg_filter.py with the configured
@@ -4211,7 +4219,11 @@ def run_gdelt_fetch(job, workdir):
         shutil.rmtree(master_dir, ignore_errors=True)
 
 
-GDELT_INCOMPLETE = ("budget-exhausted", "timeout")
+# Incomplete = archived for resume but NOT queue-done. master-download-failed
+# is transient (network) and is incomplete on purpose: marking it done would
+# lose the job. "unfinished" = the filter left files neither done nor absent.
+GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
+                    "master-download-failed")
 
 
 def _run_gdelt_fetch(job, workdir, master_dir):
@@ -4257,8 +4269,14 @@ def _run_gdelt_fetch(job, workdir, master_dir):
             fetched = False
         if fetched:
             try:
-                _gdelt_restore_remote(arch, plan["resume_from"] or job["id"],
-                                      state_dir, out_dir)
+                # The job's OWN published run wins (a same-id retry
+                # resumes itself); the --resume-from predecessor is only
+                # the fallback when the job has no published run yet.
+                got = _gdelt_restore_remote(arch, job["id"], state_dir,
+                                            out_dir)
+                if got is None and plan["resume_from"]:
+                    _gdelt_restore_remote(arch, plan["resume_from"],
+                                          state_dir, out_dir)
             except Exception:
                 pass
 
@@ -4279,7 +4297,13 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                 with urlopen(req, timeout=300) as r:
                     dest.write_bytes(r.read())
         except Exception:
-            # named failure status
+            # named failure status. Restored matches belong to the
+            # restored done state, so they are copied into the run dir
+            # on this path too, or the published run would count files
+            # done without their matches.
+            for fn in ("matches.jsonl", "macro_matches.jsonl"):
+                if (out_dir / fn).exists():
+                    shutil.copy2(out_dir / fn, run_dir / fn)
             (run_dir / "gdelt-fetch.log").write_text(
                 "master-download-failed\n")
             (run_dir / "gdelt_fetch.json").write_text(json.dumps({
@@ -4390,6 +4414,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         status = "exit-%d" % rc
     elif "budget exhausted" in out_text:
         status = "budget-exhausted"
+    elif _gkg_unfinished(out_text) > 0:
+        status = "unfinished"
     else:
         status = "ok"
     if status != "ok":
@@ -5340,10 +5366,46 @@ def execute(job):
 
     t = threading.Thread(target=refresh, daemon=True)
     t.start()
+    outcome = None
     try:
-        _execute(job)
+        outcome = _execute(job)
     finally:
         stop.set()
+        if outcome == "incomplete":
+            # An incomplete (resumable) run is archived but not done.
+            # Stop the refresh thread FIRST (it rewrites the claim every
+            # CLAIM_REFRESH_SECONDS and shares the BUS checkout), then
+            # remove the queue claim so a same-id retry is not blocked
+            # for the 6 h stale-claim age. Finished runs keep the
+            # existing completion path and never reach this.
+            t.join(timeout=300)
+            if t.is_alive():
+                print("execute: claim refresh thread still running; claim "
+                      "of %s NOT released" % job["id"], file=sys.stderr,
+                      flush=True)
+            else:
+                _release_claim(job["id"])
+
+
+def _release_claim(job_id):
+    """Remove queue/claims/<id>.json from the bus and CONFIRM it is gone
+    from origin/queue. Returns True only on confirmation; on failure the
+    claim stays (the 6 h stale reclaim is the fallback) and it says so."""
+    claim = BUS / "queue" / "claims" / f"{job_id}.json"
+    rel = f"queue/claims/{job_id}.json"
+    try:
+        claim.unlink(missing_ok=True)
+        push_bus(f"release claim {job_id} (incomplete run)")
+        git_bus("fetch origin queue", timeout=120)
+        r = git_bus("ls-tree --name-only origin/queue " + shlex.quote(rel),
+                    timeout=60)
+        gone = (r.returncode == 0 and not (r.stdout or "").strip())
+    except Exception:
+        gone = False
+    if not gone:
+        print("execute: bus claim of %s NOT confirmed removed" % job_id,
+              file=sys.stderr, flush=True)
+    return gone
 
 
 def _write_manifest_atomic(workdir, manifest):
@@ -6048,7 +6110,7 @@ def _execute(job):
     # Never clear it just because the body returned/raised: failures
     # can follow partial effects. Only verified completion clears it.
     if _begin_execution(job):
-        _execute_body(job)
+        return _execute_body(job)
 
 
 def _record_publish_failure(job):
@@ -6227,6 +6289,9 @@ def _execute_body(job):
                     _fsync_dir(JOB_STATE)
             except OSError:
                 pass
+            # Tell execute() to release the bus claim once its refresh
+            # thread is stopped (see execute()).
+            return "incomplete"
         else:
             # Issue #149: only a successful publish marks the job done.
             _mark_done(job, archive_sha)

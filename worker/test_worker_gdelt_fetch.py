@@ -249,7 +249,10 @@ def test_resume_key_predecessor_and_requeue():
     _make_archive_run("2026-11-28", "100000", "x", "succ-B", "OWN\n")
     job = {"id": "succ-B", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures --resume-from pred-A"}
     res, seen = _run_capture(job, worker.OUT / "t959-pred", lambda c: _Res())
-    check("resume key: restores the predecessor's latest run, not its own", seen["state_text"] == "PRED-NEW\n")
+    check("same-id retry restores its OWN published run over the predecessor", seen["state_text"] == "OWN\n")
+    jobc = {"id": "succ-C", "job": job["job"]}
+    res, seen = _run_capture(jobc, worker.OUT / "t959-predc", lambda c: _Res())
+    check("no own published run: falls back to the predecessor's latest run", seen["state_text"] == "PRED-NEW\n")
     job2 = {"id": "succ-B", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
     res, seen = _run_capture(job2, worker.OUT / "t959-requeue", lambda c: _Res())
     check("same-id re-queue resumes from its own published partial run", seen["state_text"] == "OWN\n")
@@ -259,18 +262,24 @@ def test_resume_key_predecessor_and_requeue():
     check("no predecessor: fresh state", seen["state_text"] is None)
 
 def test_budget_run_not_queue_done_and_complete_is_done():
-    done_calls, pub_calls = [], []
+    done_calls, pub_calls, rets = [], [], {}
     o_pub, o_md, o_run = worker.publish, worker._mark_done, worker.run_gdelt_fetch
     worker.publish = lambda job, wd, m: pub_calls.append(job["id"]) or "sha123"
     worker._mark_done = lambda job, sha, extra=None: done_calls.append(job["id"])
     try:
-        for status, jid in (("budget-exhausted", "q-budget"), ("timeout", "q-timeout"), ("ok", "q-ok"), ("exit-1", "q-exit")):
+        for status, jid in (("budget-exhausted", "q-budget"), ("timeout", "q-timeout"), ("ok", "q-ok"), ("exit-1", "q-exit"),
+                            ("unfinished", "q-unf"), ("master-download-failed", "q-mdf")):
             worker.run_gdelt_fetch = lambda job, wd, st=status: {"gdelt-fetch": st}
             job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
-            worker._execute(job)
+            rets[jid] = worker._execute(job)
         check("budget-limited run archived", "q-budget" in pub_calls and "q-timeout" in pub_calls)
         check("budget-limited run NOT marked queue-done", "q-budget" not in done_calls)
         check("timed-out run NOT marked queue-done", "q-timeout" not in done_calls)
+        check("incomplete statuses signal execute() to release the claim",
+              all(rets[j] == "incomplete" for j in ("q-budget", "q-timeout", "q-unf", "q-mdf")))
+        check("finished and failed-exit runs do not signal a release", rets["q-ok"] is None and rets["q-exit"] is None)
+        check("unfinished run NOT marked queue-done", "q-unf" not in done_calls)
+        check("master-download-failed (transient) NOT marked queue-done", "q-mdf" not in done_calls)
         check("completed fetch is marked done", "q-ok" in done_calls)
         check("failed-exit run keeps the old done-after-publish behaviour", "q-exit" in done_calls)
         check("incomplete run releases its intent so a same-id re-queue is admitted",
@@ -404,6 +413,81 @@ def test_restore_brings_back_predecessor_matches():
     res, seen = _run_capture({"id": "matches-none", "job": job["job"]}, wd2, lambda c: _Res())
     check("fresh run restores no matches", not (wd2 / "gdelt-out" / "matches.jsonl").exists())
 
+def test_master_download_failed_publishes_restored_matches():
+    _fixtures_env()
+    jid = "mdf-1"
+    cfg = {"config.json": {"aliases_sha256": "abc", "start": "20240501000000", "end": "20240501999999", "out": "/old/out"}}
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches='{"file": "f1", "company": "OLD"}\n',
+                      macro='{"file": "f1", "theme": "OLDMACRO"}\n', config=cfg)
+    def boom(req, timeout=300):
+        raise OSError("network down")
+    o_url = worker.urlopen
+    worker.urlopen = boom
+    try:
+        job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999"}
+        wd = worker.OUT / "t959-mdf"
+        wd.mkdir(parents=True, exist_ok=True)
+        res = worker.run_gdelt_fetch(job, wd)
+    finally:
+        worker.urlopen = o_url
+    check("master download failure keeps its failure status", res == {"gdelt-fetch": "master-download-failed"})
+    check("master-download-failed is incomplete (not queue-done)", "master-download-failed" in worker.GDELT_INCOMPLETE)
+    check("restored company matches published on the failure path",
+          (wd / "gdelt" / "matches.jsonl").read_text() == '{"file": "f1", "company": "OLD"}\n')
+    check("restored macro matches published on the failure path",
+          (wd / "gdelt" / "macro_matches.jsonl").read_text() == '{"file": "f1", "theme": "OLDMACRO"}\n')
+
+def test_unfinished_status_from_filter_output():
+    _fixtures_env()
+    job = {"id": "unf-1", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
+    res, _ = _run_capture(job, worker.OUT / "t959-unf", lambda c: _Res(0, "skip a.zip: URLError: x\ngkg-filter-status unfinished=2 absent=0\n"))
+    check("unfinished files give status unfinished", res == {"gdelt-fetch": "unfinished"})
+    job2 = {"id": "unf-2", "job": job["job"]}
+    res, _ = _run_capture(job2, worker.OUT / "t959-abs", lambda c: _Res(0, "absent b.zip: HTTP Error 404\ngkg-filter-status unfinished=0 absent=3\n"))
+    check("absent (404) files alone stay ok", res == {"gdelt-fetch": "ok"})
+    res, _ = _run_capture({"id": "unf-4", "job": job["job"]}, worker.OUT / "t959-two", lambda c: _Res(0, "gkg-filter-status unfinished=0 absent=0\nx\ngkg-filter-status unfinished=4 absent=1\n"))
+    check("the LAST status line is the one used", res == {"gdelt-fetch": "unfinished"})
+    res, _ = _run_capture({"id": "unf-3", "job": job["job"]}, worker.OUT / "t959-old", lambda c: _Res(0, "chunk done\n"))
+    check("older filter without a status line stays ok", res == {"gdelt-fetch": "ok"})
+    log = (worker.OUT / "t959-unf" / "gdelt" / "gdelt-fetch.log").read_text()
+    check("unfinished run keeps the skip diagnostics in the log", "skip a.zip: URLError" in log)
+
+def test_execute_releases_bus_claim_for_incomplete_run():
+    """execute() level: an incomplete run stops the refresh thread and the
+    bus claim is gone from origin/queue; a finished run keeps its claim."""
+    base = Path(tempfile.mkdtemp(prefix="gdelt-bus-"))
+    bare, seed = base / "bare.git", base / "seed"
+    _git("init", "--bare", "-b", "queue", str(bare))
+    _git("init", "-b", "queue", str(seed))
+    (seed / "queue" / "claims").mkdir(parents=True)
+    for jid in ("inc-1", "fin-1"):
+        (seed / "queue" / "claims" / (jid + ".json")).write_text('{"worker": "w"}')
+    _git("add", "-A", cwd=seed); _git("commit", "-m", "seed", cwd=seed)
+    _git("push", str(bare), "queue:queue", cwd=seed)
+    bus = base / "bus"
+    _git("clone", "--branch", "queue", str(bare), str(bus))
+    _git("config", "user.name", "t", cwd=bus); _git("config", "user.email", "t@example.invalid", cwd=bus)
+    o_bus, o_exec, o_sec = worker.BUS, worker._execute, worker.CLAIM_REFRESH_SECONDS
+    import threading
+    worker.BUS = bus
+    worker.CLAIM_REFRESH_SECONDS = 3600
+    seen = {}
+    def fake_exec(job):
+        seen["refresh_threads_running"] = sum(1 for t in threading.enumerate() if t.daemon and t.is_alive())
+        return "incomplete" if job["id"] == "inc-1" else None
+    worker._execute = fake_exec
+    try:
+        worker.execute({"id": "inc-1", "job": "gdelt-fetch"})
+        worker.execute({"id": "fin-1", "job": "gdelt-fetch"})
+    finally:
+        worker.BUS, worker._execute, worker.CLAIM_REFRESH_SECONDS = o_bus, o_exec, o_sec
+    ls = _git("ls-tree", "-r", "--name-only", "queue", cwd=bare)
+    check("incomplete run's bus claim removed from origin/queue", "queue/claims/inc-1.json" not in ls)
+    check("finished run keeps the existing completion path (claim untouched here)", "queue/claims/fin-1.json" in ls)
+    alive = [t for t in threading.enumerate() if getattr(t, "_target", None) is not None and t._target.__name__ == "refresh" and t.is_alive()]
+    check("claim-refresh thread stopped by execute()", not alive)
+    check("the refresh thread was running while the job executed", seen["refresh_threads_running"] >= 1)
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -421,6 +505,9 @@ def main():
     test_nonzero_exit_log_tail_bounded()
     test_restore_ignores_unpublished_local_residue()
     test_restore_brings_back_predecessor_matches()
+    test_master_download_failed_publishes_restored_matches()
+    test_unfinished_status_from_filter_output()
+    test_execute_releases_bus_claim_for_incomplete_run()
     print("\n%d passed" % PASSED)
     return 0
 
