@@ -98,7 +98,24 @@ class T(unittest.TestCase):
         self.assertEqual(k["1 ($0+)"], [0.40, 0.80])
         tk = [v[1] for v in k.values()]
         self.assertEqual(tk, sorted(tk, reverse=True))    # taker falls with tier
-        self.assertIn("NOT_OBTAINED", d["coinbase"])
+        self.assertNotIn("NOT_OBTAINED", d["coinbase"])
+        c = d["coinbase"]["full_tier_table"]["spot_maker_taker_pct"]
+        self.assertEqual(len(c), 12)
+        self.assertEqual(c["Intro (>= $0)"], [0.50, 0.90])
+        self.assertEqual(c["Advanced 1 ($10K)"], [0.35, 0.75])
+        ct = [v[1] for v in c.values()]
+        self.assertEqual(ct, sorted(ct))   # listed VIP 8 first, so taker rises down the page
+        self.assertEqual(d["coinbase"]["full_tier_table"]["sub_10K_rate"]["taker_pct"], 0.9)
+
+    def test_workflow_file_shape(self):
+        w = open(os.path.join(os.path.dirname(__file__), "..", ".github", "workflows", "crypto-spread-sampler.yml")).read()
+        self.assertIn('cron: "17 * * * *"', w)
+        self.assertIn("workflow_dispatch:", w)
+        self.assertIn("scripts/sample_crypto_spreads.py --out evaluation/crypto_spread_samples.jsonl", w)
+        self.assertIn("contents: write", w)
+        self.assertNotIn("secrets.", w)
+        self.assertNotIn("openai", w.lower())
+        self.assertNotIn("anthropic", w.lower())
 
 
 if __name__ == "__main__":

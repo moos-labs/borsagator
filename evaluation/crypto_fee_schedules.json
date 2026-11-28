@@ -100,6 +100,66 @@
    ]
   },
   "published_top_tier": "spot 0bps maker / 2bps taker for VIP8 (blog text)",
-  "NOT_OBTAINED": "The full tier table and the rate for volume below $10,000 (the tier a small account would sit in) are NOT published on the pages I could read: the help page says to sign in to see rates, and https://www.coinbase.com/advanced-fees returned no content to the fetcher. The user's jurisdiction/tier is also unverified. Stablecoin-pair schedules and the non-Advanced (retail buy) fee are not obtained."
+  "full_tier_table": {
+   "venue": "Coinbase Advanced spot",
+   "source_url": "https://www.coinbase.com/advanced-vip",
+   "fetched_utc": "2026-11-28T13:47Z",
+   "scope": "30-day spot volume tier (a tier also qualifies via futures volume or USDC balance; thresholds on the page, fees stated as subject to change). Page does not state a jurisdiction; the blog states US entry 0.50/0.90, which matches the Intro row.",
+   "spot_maker_taker_pct": {
+    "VIP 8 ($1B)": [
+     0.0,
+     0.02
+    ],
+    "VIP 7 ($500M)": [
+     0.0,
+     0.0225
+    ],
+    "VIP 6 ($200M)": [
+     0.0,
+     0.025
+    ],
+    "VIP 5 ($100M)": [
+     0.0,
+     0.03
+    ],
+    "VIP 4 ($50M)": [
+     0.0,
+     0.04
+    ],
+    "VIP 3 ($20M)": [
+     0.01,
+     0.05
+    ],
+    "VIP 2 ($5M)": [
+     0.04,
+     0.06
+    ],
+    "VIP 1 ($1M)": [
+     0.06,
+     0.1
+    ],
+    "Advanced 3 ($250K)": [
+     0.1,
+     0.15
+    ],
+    "Advanced 2 ($50K)": [
+     0.15,
+     0.3
+    ],
+    "Advanced 1 ($10K)": [
+     0.35,
+     0.75
+    ],
+    "Intro (>= $0)": [
+     0.5,
+     0.9
+    ]
+   },
+   "sub_10K_rate": {
+    "tier": "Intro (>= $0 30-day spot volume)",
+    "maker_pct": 0.5,
+    "taker_pct": 0.9
+   }
+  }
  }
 }
