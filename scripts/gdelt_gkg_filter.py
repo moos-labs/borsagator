@@ -26,7 +26,10 @@ append can leave, counting them. STATE/config.json binds the state dir to
 the alias table hash, date range and out dir; it is written atomically
 (temp file, fsync, os.replace) before any archive is recorded done. A
 mismatch or unreadable config refuses to run: rebind with a FRESH --out
-directory (delete config.json + done.txt), or also delete matches.jsonl to
+directory (delete config.json + done.txt + absent.txt + transient.txt:
+the absence and transient checkpoints are NOT bound to the configuration,
+so a stale absent.txt would exclude a basename a fresh master serves from
+a new location before it is ever fetched), or also delete matches.jsonl to
 reuse the out dir -- a fresh bind never inherits prior matches, and an
 unchanged config keeps them so normal restarts keep working.
 
@@ -424,6 +427,11 @@ def makedirs_durable(path):
         fsync_dir(os.path.dirname(d))
 
 
+# Exit status for a retryable checkpoint I/O failure (EX_TEMPFAIL); every
+# other sys.exit(<message>) is a deterministic configuration refusal (1).
+CHECKPOINT_IO_EXIT = 75
+
+
 def run_fetch(a):
     makedirs_durable(a.state)
     makedirs_durable(a.out)
@@ -438,10 +446,10 @@ def run_fetch(a):
             old = json.load(open(config_path))
         except (json.JSONDecodeError, OSError) as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
-                     f"directory: delete {config_path} and done.txt")
+                     f"directory: delete {config_path}, done.txt, absent.txt and transient.txt")
         if old != config:
             sys.exit(f"state config mismatch: {old} vs {config}; rebind with a "
-                     f"fresh --out directory (delete {config_path} and done.txt), "
+                     f"fresh --out directory (delete {config_path}, done.txt, absent.txt and transient.txt), "
                      f"or delete matches.jsonl as well to reuse the out dir")
     else:
         probe = os.path.join(a.out, "matches.jsonl")
@@ -495,10 +503,10 @@ def run_fetch(a):
                 oldm = json.load(open(mcfg_path))
             except (json.JSONDecodeError, OSError) as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
-                         f"directory: delete {mcfg_path} and macro_done.txt")
+                         f"directory: delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt")
             if oldm != mcfg:
                 sys.exit(f"macro state config mismatch: {oldm} vs {mcfg}; rebind with a "
-                         f"fresh --out directory (delete {mcfg_path} and macro_done.txt), "
+                         f"fresh --out directory (delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt), "
                          f"or delete macro_matches.jsonl as well to reuse the out dir")
         else:
             if os.path.exists(macro_matches_path) and os.path.getsize(macro_matches_path) > 0:
@@ -572,7 +580,10 @@ def run_fetch(a):
     fsync_dir(state_dir)
     if os.path.abspath(a.out) != state_dir:
         fsync_dir(os.path.abspath(a.out))
+    ck_err = None
+    phase = "data"
     try:
+      try:
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             i = 0
             while i < len(files):
@@ -580,6 +591,7 @@ def run_fetch(a):
                 for name, stream, nbytes, rows, mrows, bad, need_c, need_m, err in ex.map(work, chunk):
                     if err:
                         # NOT marked done either way: retried on the next run.
+                        phase = "record"   # absent/transient records only
                         if err.startswith("absent: "):
                             n_absent += 1
                             if name not in absent:
@@ -594,6 +606,7 @@ def run_fetch(a):
                             transient_f.flush()
                             os.fsync(transient_f.fileno())
                             print(f"skip {name}: {err}", flush=True)
+                        phase = "data"
                         continue
                     if need_c:
                         for r in rows:
@@ -624,6 +637,14 @@ def run_fetch(a):
                 if a.budget_seconds and el > a.budget_seconds and i < len(files):
                     print("budget exhausted; rerun to resume", flush=True)
                     break
+      except OSError as e:
+        # A checkpoint write/fsync failed. Never fall through to the
+        # unfinished summary: that reads as a clean pass. A failed
+        # absent/transient record loses only a skip hint (the file is
+        # neither done nor absent, so it is retried): the checkpoint is
+        # safe to reuse. A failed match/done write leaves its tail to the
+        # next run's repair and is reported as NOT safe.
+        ck_err = (phase == "record", e)
     finally:
         done_f.close()
         absent_f.close()
@@ -633,6 +654,9 @@ def run_fetch(a):
             macro_f.close()
         if mdone_f:
             mdone_f.close()
+    if ck_err is not None:
+        print(f"gkg-filter-checkpoint-error safe={int(ck_err[0])} {type(ck_err[1]).__name__}", flush=True)
+        sys.exit(CHECKPOINT_IO_EXIT)
     print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows} macro_rows={n_mrows}", flush=True)
     # Machine-readable: files that failed for a reason other than a
     # permanent HTTP 404 (unfinished) and files GDELT does not serve (absent).

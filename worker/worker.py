@@ -4243,6 +4243,23 @@ def _gdelt_binding(state_dir):
         return None
 
 
+def _fsync_tree(root):
+    """fsync every regular file under root, then every directory under it
+    (children first) and root itself."""
+    root = str(root)
+    for dp, dns, fns in os.walk(root, topdown=False):
+        for fn in fns:
+            fp = os.path.join(dp, fn)
+            if os.path.islink(fp):
+                continue
+            fd = os.open(fp, os.O_RDONLY)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
+        _fsync_dir(dp)
+
+
 def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
                           strict=False, picked=None):
     """Restore the latest published run for src_id (its gdelt-state/ plus
@@ -4320,6 +4337,12 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
                         json.loads(rec.decode("utf-8"))
         (st_stage / GDELT_BINDING).write_text(
             json.dumps({"run": run_path, "mode": mode}))
+        # Durability BEFORE the swap: fsync every restored match file, the
+        # config/binding files, and each staged directory. Otherwise a host
+        # crash can persist the binding and done.txt while the match bytes
+        # are lost; the next run would skip the restore and the filter would
+        # skip every file in done, silently omitting those matches.
+        _fsync_tree(stage)
         # Commit: swap both directories; undo the first if the second fails.
         # The old state moves aside FIRST (a missing state forces a fresh
         # restore), the new OUTPUT is installed BEFORE the new state, so the
@@ -4337,6 +4360,9 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
             os.rename(out_stage, out_dir)
             installed_out = True
             os.rename(st_stage, state_dir)
+            # Every parent directory that gained or lost an entry.
+            for d in {str(state_dir.parent), str(out_dir.parent), str(stage)}:
+                _fsync_dir(d)
         except Exception:
             try:
                 if installed_out and out_dir.exists():
@@ -4384,9 +4410,27 @@ def run_gdelt_fetch(job, workdir):
 # is transient (network) and is incomplete on purpose: marking it done would
 # lose the job. "unfinished" = the filter left files neither done nor absent.
 # Unknown resume state: nothing is published and the claim is released.
-GDELT_NO_PUBLISH = ("archive-check-failed", "restore-rollback-failed")
+GDELT_NO_PUBLISH = ("archive-check-failed", "restore-rollback-failed",
+                    "checkpoint-io-failed")
 GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
-                    "master-download-failed")
+                    "master-download-failed", "checkpoint-io-incomplete")
+GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
+
+
+def _validate_master_listing(body, label=""):
+    """A downloaded master list must be non-empty and parse as a GDELT
+    listing (every non-blank line: `size md5 url`). An empty HTTP-200 body
+    would otherwise select no files and look like a finished run. A valid
+    listing with no files in the requested window is NOT an error."""
+    text = body.decode("utf-8")   # raises on undecodable bytes
+    lines = [l for l in text.splitlines() if l.strip()]
+    if not lines:
+        raise ValueError("empty master listing: %s" % label)
+    for l in lines:
+        f = l.split()
+        if len(f) != 3 or not f[0].isdigit() or "/" not in f[2]:
+            raise ValueError("invalid master listing line in %s" % label)
+    return len(lines)
 
 
 def _run_gdelt_fetch(job, workdir, master_dir):
@@ -4473,10 +4517,12 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         except GdeltRestoreRollbackFailed:
             rollback_failed = True
         except Exception:
-            # A failed pick (git error) is an unknown resume state; a
-            # failed staged restore leaves the prior snapshot as it was.
-            if "picked" not in locals():
-                lookup_failed = True
+            # ANY other failure in this block (the pick, an explicit
+            # --resume-from lookup after the own-ID lookup bound picked, or
+            # the staged restore) is an unknown resume state: continuing
+            # with unchanged local state could publish it as the newest
+            # checkpoint.
+            lookup_failed = True
     if rollback_failed or lookup_failed:
         status = ("restore-rollback-failed" if rollback_failed
                   else "archive-check-failed")
@@ -4505,7 +4551,9 @@ def _run_gdelt_fetch(job, workdir, master_dir):
             ]:
                 req = Request(url, headers={"User-Agent": "gdelt-fetch/1.0"})
                 with urlopen(req, timeout=300) as r:
-                    dest.write_bytes(r.read())
+                    body = r.read()
+                _validate_master_listing(body, url)
+                dest.write_bytes(body)
         except Exception:
             # named failure status. Restored matches belong to the
             # restored done state, so they are copied into the run dir
@@ -4664,6 +4712,14 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # the caller archives them but must not mark the queue job done.
     if timed_out:
         status = "timeout"
+    elif rc == GDELT_CHECKPOINT_IO_RC:
+        # Retryable checkpoint I/O failure (distinct from deterministic
+        # refusals, which stay "exit-1"). Incomplete only when the filter
+        # reports the checkpoint safe to reuse; otherwise nothing is
+        # published and the job is retried.
+        status = ("checkpoint-io-incomplete"
+                  if "gkg-filter-checkpoint-error safe=1" in out_text
+                  else "checkpoint-io-failed")
     elif rc != 0:
         status = "exit-%d" % rc
     elif "budget exhausted" in out_text:
@@ -6454,11 +6510,30 @@ def _gdelt_cleanup_marker(job_id):
     return JOB_STATE / "gdelt-intent-cleanup" / f"{job_id}.json"
 
 
-def _gdelt_release_intent(job_id, archive_sha=None):
+def _gdelt_intent_identity(job_id):
+    """Identity of the write-ahead intent currently on disk (sha256 of its
+    bytes: it carries the job text and the attempt's start time), or None
+    when there is no intent."""
+    try:
+        return hashlib.sha256(_intent_path(job_id).read_bytes()).hexdigest()
+    except OSError:
+        return None
+
+
+def _gdelt_release_intent(job_id, archive_sha=None, expect=None):
     """Remove the write-ahead intent of an incomplete (already published)
     gdelt-fetch run and CONFIRM it is gone. On failure after retries a
     cleanup marker records the verified publication so the cleanup can be
     retried without rerunning the fetch; returns False then."""
+    ident = _gdelt_intent_identity(job_id)
+    if expect is not None and ident is not None and ident != expect:
+        # A later attempt's intent: the marker is stale. Leave the intent
+        # alone and drop only the marker.
+        try:
+            _gdelt_cleanup_marker(job_id).unlink(missing_ok=True)
+        except OSError:
+            pass
+        return True
     for attempt in range(3):
         try:
             _intent_path(job_id).unlink(missing_ok=True)
@@ -6476,7 +6551,8 @@ def _gdelt_release_intent(job_id, archive_sha=None):
     try:
         mp = _gdelt_cleanup_marker(job_id)
         mp.parent.mkdir(parents=True, exist_ok=True)
-        mp.write_text(json.dumps({"archive_sha": archive_sha}))
+        mp.write_text(json.dumps({"archive_sha": archive_sha,
+                                 "intent": ident}))
     except OSError:
         pass
     return False
@@ -6485,8 +6561,18 @@ def _gdelt_release_intent(job_id, archive_sha=None):
 def _gdelt_retry_cleanup(job_id):
     """Retry a recorded intent cleanup (see _gdelt_release_intent)."""
     try:
-        if _gdelt_cleanup_marker(job_id).exists():
-            _gdelt_release_intent(job_id)
+        mp = _gdelt_cleanup_marker(job_id)
+        if mp.exists():
+            try:
+                expect = json.loads(mp.read_text()).get("intent")
+            except (ValueError, AttributeError):
+                expect = None
+            if not isinstance(expect, str):
+                # No recorded identity: it cannot be bound to an intent, so
+                # never unlink one. Drop the unusable marker.
+                mp.unlink(missing_ok=True)
+                return
+            _gdelt_release_intent(job_id, expect=expect)
     except OSError:
         pass
 
@@ -6643,6 +6729,10 @@ def _execute_body(job):
             # could not be rolled back): publish NOTHING (a stale or
             # inconsistent checkpoint must not become the newest run),
             # release the intent, and let execute() release the claim.
+            # Record a stall (total 0: the stored progress never goes down,
+            # the first retry stays eligible) so a PERSISTENT failure is
+            # deferred instead of re-selected at the head of the bulk lane.
+            _gdelt_note_incomplete(job["id"], 0)
             if _gdelt_release_intent(job["id"]):
                 return "incomplete"
             return None
@@ -6693,24 +6783,6 @@ def _execute_body(job):
     # harvest-egx); only a failed publish leaves the job unmarked.
     if text.split()[:1] == ["diag-egx-ab"]:
         manifest["tools"] = run_diag_egx_ab(job, workdir)
-        manifest["finished"] = now()
-        archive_sha = publish(job, workdir, manifest)
-        if not archive_sha:
-            _record_publish_failure(job)
-        else:
-            # Issue #149: only a successful publish marks the job done.
-            _mark_done(job, archive_sha)
-        return
-    # Issue #446: walk-forward backtest cells (design #436 §6.4) —
-    # same dispatch shape as diag-egx-ab above (before parse_job;
-    # the registry has no backtest tool). The two-token prefix
-    # keeps the registry grammar's `run <tool> <ticker>` jobs
-    # untouched. A bad job string still publishes its named
-    # failure and marks done (done means executed + archived, as
-    # for diag-egx-ab); only a failed publish leaves the job
-    # unmarked.
-    if text.split()[:2] == ["run", "backtest"]:
-        manifest["tools"] = run_backtest(job, workdir)
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:

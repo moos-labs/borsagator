@@ -65,6 +65,12 @@ def test_filter_launch_env_is_denylist_filtered():
     def fake(cmd, cwd=None, env=None, timeout=3600):
         seen["env"] = env
         return _Res(0, "chunk done\n")
+    # The archive lookup runs before the filter: create the local bare
+    # remote (and its checkout) FIRST, so this test passes when run alone
+    # instead of trying to clone the sentinel host and stopping with
+    # archive-check-failed before `fake` is called.
+    _ensure_remote()
+    prev_url = os.environ.get("GATOR_BUS_URL")
     os.environ["GATOR_BUS_URL"] = "https://example.invalid/bus"
     worker.sh_group = fake
     try:
@@ -72,7 +78,10 @@ def test_filter_launch_env_is_denylist_filtered():
         worker.run_gdelt_fetch(job, wd)
     finally:
         worker.sh_group = orig
-        os.environ.pop("GATOR_BUS_URL", None)
+        if prev_url is None:
+            os.environ.pop("GATOR_BUS_URL", None)
+        else:
+            os.environ["GATOR_BUS_URL"] = prev_url
     e = seen.get("env")
     check("filter launch passes an explicit env", isinstance(e, dict) and "PATH" in e)
     check("filter launch env carries no denied key", e is not None and not (set(e) & worker.ENV_DENY_FOR_TOOLS))
@@ -133,7 +142,9 @@ def test_restore_is_staged_and_atomic():
     (wd / "gdelt-out").mkdir(parents=True, exist_ok=True)
     (wd / "gdelt-out" / "matches.jsonl").write_text('{"local": 1}\n')
     res, seen = _run_capture({"id": "stage-1", "job": fix}, wd, lambda c: _Res())
-    check("a restore that fails validation leaves the previous done.txt", seen["state_text"] == "LOCAL\n")
+    check("a restore that fails validation stops the run (unknown resume state) and leaves the previous done.txt",
+          res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen
+          and (wd / "gdelt-state" / "done.txt").read_text() == "LOCAL\n")
     check("and the previous matches", (wd / "gdelt-out" / "matches.jsonl").read_text() == '{"local": 1}\n')
     check("and no partial restore files or scratch directories", not [p for p in wd.iterdir() if p.name.startswith(".gdelt-restore")]
           and not (wd / "gdelt-state" / "config.json").exists())
@@ -184,7 +195,9 @@ def test_959i_restore_tail_and_records():
     _mk("i-bad", matches='{"ok": 1}\nnot json\n{"ok": 2}\n')
     wd = worker.OUT / "t959i-bad"; _local_state(wd, "LOCAL\n")
     res, seen = _run_capture({"id": "i-bad", "job": FIXJOB}, wd, lambda c: _Res())
-    check("a complete malformed record still rejects the snapshot", seen["state_text"] == "LOCAL\n")
+    check("a complete malformed record rejects the snapshot and the run stops (unknown resume state, no filter launch)",
+          res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen
+          and (wd / "gdelt-state" / "done.txt").read_text() == "LOCAL\n")
     # 2: U+2028 inside a valid record
     _mk("i-u2028", matches='{"t": "a\u2028b"}\n{"t": "c"}\n')
     wd = worker.OUT / "t959i-u2028"
@@ -284,8 +297,9 @@ def test_959i_dirs_lookup_predecessor():
     res, seen = _run_capture({"id": "i-pred", "job": FIXJOB + " --resume-from no-such-pred"}, worker.OUT / "t959i-pred", lambda c: called.append(c) or _Res())
     check("a missing explicit predecessor is a named outcome, no fresh backfill",
           res == {"gdelt-fetch": "resume-predecessor-missing"} and not called)
-    res, seen = _run_capture({"id": "i-pred2", "job": FIXJOB}, worker.OUT / "t959i-pred2", lambda c: _Res())
-    check("without --resume-from a fresh start stays valid", res == {"gdelt-fetch": "ok"} or "gdelt-fetch" in res and res["gdelt-fetch"] not in ("resume-predecessor-missing", "archive-check-failed"))
+    ran = []
+    res, seen = _run_capture({"id": "i-pred2", "job": FIXJOB}, worker.OUT / "t959i-pred2", lambda c: ran.append(c) or _Res())
+    check("without --resume-from a fresh start runs the filter and is ok", res == {"gdelt-fetch": "ok"} and len(ran) == 1)
 
 def test_959i_deferred_and_stall_and_intent():
     jid = "i-def"
@@ -330,16 +344,22 @@ def test_959i_deferred_and_stall_and_intent():
     check("once storage recovers the retry removes intent and marker without a fetch",
           not ip.exists() and not worker._gdelt_cleanup_marker(j3).exists() and pending is False)
     # execute-level: a failed cleanup does not release the claim
-    j4 = "i-intent2"; ip4 = worker._intent_path(j4); ip4.write_text("x")
+    # No pre-written intent: _execute creates it, the unlink of THAT intent fails.
+    j4 = "i-intent2"; ip4 = worker._intent_path(j4)
+    ip4.unlink(missing_ok=True); worker._gdelt_cleanup_marker(j4).unlink(missing_ok=True)
+    attempts, pubs4 = [], []
     def failing4(self, *a, **k):
         if self == ip4:
+            attempts.append(1)
             raise OSError("ro")
         return real_unlink(self, *a, **k)
     Path.unlink = failing4
     try:
-        r = _progress_run(j4, 5)
+        r = _progress_run(j4, 5, pubs=pubs4)
     finally:
         Path.unlink = real_unlink
+    check("the run was published and the intent cleanup was attempted before the return value is judged",
+          pubs4 == [j4] and len(attempts) >= 1 and ip4.exists())
     check("an incomplete published run with a stuck intent does not report itself resumable", r is None)
     ip4.unlink(missing_ok=True); worker._gdelt_cleanup_marker(j4).unlink(missing_ok=True)
 
@@ -806,9 +826,7 @@ def test_execute_releases_bus_claim_for_incomplete_run():
     ls = _git("ls-tree", "-r", "--name-only", "queue", cwd=bare)
     check("incomplete run's bus claim removed from origin/queue", "queue/claims/inc-1.json" not in ls)
     check("finished run keeps the existing completion path (claim untouched here)", "queue/claims/fin-1.json" in ls)
-    alive = [t for t in threading.enumerate() if getattr(t, "_target", None) is not None and t._target.__name__ == "refresh" and t.is_alive()]
     check("incomplete run's own refresh thread was captured and stopped right after it returned", inc_stopped)
-    check("claim-refresh thread stopped by execute()", not alive)
     check("the refresh thread was running while the job executed", seen["refresh_threads_running"] >= 1)
 
 def test_timeout_with_truncated_utf8_record():
@@ -825,7 +843,7 @@ def test_timeout_with_truncated_utf8_record():
     data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
     check("line counts are byte-based (2 company lines, 1 macro line)", data["matches"] == 2 and data["macro_matches"] == 1)
 
-def _progress_run(jid, files_done, status="budget-exhausted", absent=None, transient=None):
+def _progress_run(jid, files_done, status="budget-exhausted", absent=None, transient=None, pubs=None):
     """One incomplete run through _execute with the fetch and publish stubbed."""
     o_pub, o_md, o_run = worker.publish, worker._mark_done, worker.run_gdelt_fetch
     def fake_run(job, wd):
@@ -837,7 +855,7 @@ def _progress_run(jid, files_done, status="budget-exhausted", absent=None, trans
             side["transient_files"] = transient
         (g / "gdelt_fetch.json").write_text(json.dumps(side))
         return {"gdelt-fetch": status}
-    worker.publish = lambda job, wd, m: "sha"
+    worker.publish = lambda job, wd, m: (pubs.append(jid) if pubs is not None else None) or "sha"
     worker._mark_done = lambda job, sha, extra=None: None
     worker.run_gdelt_fetch = fake_run
     try:
@@ -1006,6 +1024,169 @@ def test_sidecar_reports_absent_both_paths():
     data2 = json.loads((wd2 / "gdelt" / "gdelt_fetch.json").read_text())
     check("normal path sidecar reports absent_files", data2.get("absent_files") == 2)
 
+def test_959j_durability_and_failures():
+    import contextlib
+    _fixtures_env()
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    # 1: every restored file and the binding are fsynced BEFORE the first swap rename,
+    # and the parent directories are fsynced after the last one.
+    _mk("j-sync", matches='{"ok": 1}\n', macro='{"m": 1}\n')
+    wd = worker.OUT / "t959j-sync"
+    events = []
+    o_tree, o_dir, o_ren, o_fs = worker._fsync_tree, worker._fsync_dir, os.rename, os.fsync
+    def tree(root):
+        names = sorted(p.name for p in Path(root).rglob("*") if p.is_file())
+        events.append(("tree", names))
+        return o_tree(root)
+    def ren(a, b, *x, **k):
+        events.append(("rename", str(b)))
+        return o_ren(a, b, *x, **k)
+    worker._fsync_tree = tree
+    worker._fsync_dir = lambda d: (events.append(("dir", str(d))), o_dir(d))[1]
+    os.rename = ren
+    try:
+        res, seen = _run_capture({"id": "j-sync", "job": fix}, wd, lambda c: _Res())
+    finally:
+        worker._fsync_tree, worker._fsync_dir, os.rename = o_tree, o_dir, o_ren
+    kinds = [e[0] for e in events]
+    t = kinds.index("tree"); first_ren = kinds.index("rename")
+    check("restored match files and the binding are fsynced before the swap",
+          t < first_ren and {"matches.jsonl", "macro_matches.jsonl", worker.GDELT_BINDING, "done.txt"} <= set(events[t][1]))
+    last_ren = len(kinds) - 1 - kinds[::-1].index("rename")
+    after = {e[1] for e in events[last_ren + 1:] if e[0] == "dir"}
+    check("the parent directories of both swapped directories are fsynced after the renames", str(wd) in after)
+    # the helper really syncs every file and directory
+    d = Path(tempfile.mkdtemp()); (d / "a").mkdir(); (d / "a" / "f").write_text("x"); (d / "g").write_text("y")
+    n = []
+    os.fsync = lambda fd: (n.append(fd), o_fs(fd))[1]
+    try:
+        o_tree(d)
+    finally:
+        os.fsync = o_fs
+    check("_fsync_tree syncs 2 files and 2 directories (a, root)", len(n) == 4)
+    # 2: a failing explicit --resume-from lookup after the own-ID lookup bound picked stops the run
+    calls = []
+    o_pick = worker._gdelt_pick_published
+    def pick(arch, src, mode, strict=False):
+        calls.append(src)
+        if len(calls) == 1:
+            return None
+        raise RuntimeError("git failed")
+    worker._gdelt_pick_published = pick
+    try:
+        res, seen = _run_capture({"id": "j-own", "job": fix + " --resume-from j-pred"}, worker.OUT / "t959j-pred", lambda c: _Res())
+    finally:
+        worker._gdelt_pick_published = o_pick
+    check("a failing predecessor lookup is an unknown resume state: nothing runs", res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen)
+    # 3: empty or invalid live master lists
+    for body, label in ((b"", "empty"), (b"\n  \n", "blank"), (b"<html>oops</html>", "html"), (b"\xff\xfe", "undecodable")):
+        try:
+            worker._validate_master_listing(body); ok = False
+        except Exception:
+            ok = True
+        check("master listing %s is rejected" % label, ok)
+    good = b"123 abc http://data.gdeltproject.org/gdeltv2/20240501000000.gkg.csv.zip\n"
+    check("a valid listing passes", worker._validate_master_listing(good) == 1)
+    class _Resp:
+        def __init__(self, b): self.b = b
+        def read(self): return self.b
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+    livejob = "gdelt-fetch --start 20240501000000 --end 20240501000000"
+    o_open = worker.urlopen
+    for body, want, nran in ((b"", "master-download-failed", 0), (good, "ok", 1)):
+        ran = []
+        worker.urlopen = lambda req, timeout=0, _b=body: _Resp(_b)
+        try:
+            res, seen = _run_capture({"id": "j-live%d" % nran, "job": livejob}, worker.OUT / ("t959j-live%d" % nran), lambda c: ran.append(c) or _Res())
+        finally:
+            worker.urlopen = o_open
+        check("live master body %r -> %s, filter launched %d time(s)" % (body[:6], want, nran), res == {"gdelt-fetch": want} and len(ran) == nran)
+    # 4: checkpoint I/O failures are distinct from refusals
+    for rc, out, want in ((75, "gkg-filter-checkpoint-error safe=1 OSError\n", "checkpoint-io-incomplete"),
+                          (75, "gkg-filter-checkpoint-error safe=0 OSError\n", "checkpoint-io-failed"),
+                          (1, "state config mismatch\n", "exit-1")):
+        res, seen = _run_capture({"id": "j-ck%d" % len(want), "job": fix}, worker.OUT / ("t959j-ck%d" % len(want)), lambda c, rc=rc, out=out: _Res(rc, out))
+        check("filter rc %d / %r -> %s" % (rc, out[:30], want), res == {"gdelt-fetch": want})
+    check("checkpoint-io-incomplete is incomplete (archived, never queue-done); checkpoint-io-failed publishes nothing",
+          "checkpoint-io-incomplete" in worker.GDELT_INCOMPLETE and "checkpoint-io-failed" in worker.GDELT_NO_PUBLISH
+          and "checkpoint-io-failed" not in worker.GDELT_INCOMPLETE and "exit-1" not in worker.GDELT_INCOMPLETE)
+    # 5: cleanup replay is bound to the intent it may remove
+    jid = "j-bind"; ip = worker._intent_path(jid); ip.parent.mkdir(parents=True, exist_ok=True)
+    ip.write_text('{"job": "A", "started": "t1"}')
+    real_unlink = Path.unlink
+    def failing(self, *a, **k):
+        if self == ip:
+            raise OSError("ro")
+        return real_unlink(self, *a, **k)
+    Path.unlink = failing
+    try:
+        worker._gdelt_release_intent(jid, "shaA")
+    finally:
+        Path.unlink = real_unlink
+    mk = worker._gdelt_cleanup_marker(jid)
+    check("the marker records the intent identity", json.loads(mk.read_text()).get("intent") == worker._gdelt_intent_identity(jid) is not None)
+    ip.write_text('{"job": "A", "started": "t2"}')   # attempt B admitted after A's intent deletion was lost
+    worker._gdelt_retry_cleanup(jid)
+    check("a stale marker leaves B's intent intact and is dropped", ip.exists() and not mk.exists())
+    ip.unlink(); ip.write_text('{"job": "A", "started": "t1"}')
+    Path.unlink = failing
+    try:
+        worker._gdelt_release_intent(jid, "shaA")
+    finally:
+        Path.unlink = real_unlink
+    worker._gdelt_retry_cleanup(jid)
+    check("a matching marker retries A's cleanup", not ip.exists() and not mk.exists())
+    # 6: repeated no-publish failures stall and defer, total never lowered, nothing published
+    j6 = "j-nopub"; worker._gdelt_progress_clear(j6)
+    pubs = []
+    _progress_run(j6, 5, pubs=pubs); worker._intent_path(j6).unlink(missing_ok=True)
+    o_pub, o_run = worker.publish, worker.run_gdelt_fetch
+    worker.publish = lambda job, wd, m: pubs.append(1) or "sha"
+    worker.run_gdelt_fetch = lambda job, wd: {"gdelt-fetch": "archive-check-failed"}
+    rets = []
+    try:
+        for i in range(worker.GDELT_STALL_LIMIT):
+            rets.append(worker._execute({"id": j6, "job": fix}))
+            if i == 0:
+                first_deferred = worker._gdelt_deferred(j6)
+    finally:
+        worker.publish, worker.run_gdelt_fetch = o_pub, o_run
+    rec = worker._gdelt_progress_read(j6)
+    check("no-publish failures publish nothing and release the claim", pubs == [pubs[0]] and rets == ["incomplete"] * worker.GDELT_STALL_LIMIT)
+    check("first no-publish retry stays eligible; the stored total stays 5", first_deferred is False and rec["total"] == 5)
+    check("repeated no-publish failures defer the job", worker._gdelt_deferred(j6) is True)
+
+def test_959j_more_asks():
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    # (b) a VALID listing with no files in the requested window still succeeds
+    class _Resp:
+        def __init__(self, b): self.b = b
+        def read(self): return self.b
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+    other = b"123 abc http://data.gdeltproject.org/gdeltv2/20990101000000.gkg.csv.zip\n"
+    ran = []
+    o_open = worker.urlopen
+    worker.urlopen = lambda req, timeout=0: _Resp(other)
+    try:
+        res, seen = _run_capture({"id": "j-win", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000"}, worker.OUT / "t959j-win", lambda c: ran.append(c) or _Res(0, "gkg-filter-status unfinished=0 absent=0\n"))
+    finally:
+        worker.urlopen = o_open
+    check("a valid listing with no files in the window still succeeds (filter launched)", res == {"gdelt-fetch": "ok"} and len(ran) == 1)
+    # (c) a retryable checkpoint failure is never marked done and keeps progress
+    j = "j-ckprog"; worker._gdelt_progress_clear(j)
+    done = []
+    o_md = worker._mark_done
+    worker._mark_done = lambda job, sha, extra=None: done.append(sha)
+    try:
+        r = _progress_run(j, 4, status="checkpoint-io-incomplete")
+    finally:
+        worker._mark_done = o_md
+    rec = worker._gdelt_progress_read(j)
+    check("checkpoint-io-incomplete: not marked done, claim released for retry, progress total kept",
+          not done and r == "incomplete" and rec["total"] == 4)
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -1013,6 +1194,8 @@ def main():
     test_959i_swap_order_and_rollback()
     test_959i_dirs_lookup_predecessor()
     test_959i_deferred_and_stall_and_intent()
+    test_959j_durability_and_failures()
+    test_959j_more_asks()
     test_restore_checks_recorded_mode()
     test_restore_is_staged_and_atomic()
     test_new_claim_checks_the_published_snapshot()

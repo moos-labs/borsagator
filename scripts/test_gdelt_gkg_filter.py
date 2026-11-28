@@ -730,6 +730,11 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
     absent.txt and matches.jsonl exist (their directory entries are durable
     before any record), and before the first per-record fsync."""
     import urllib.error
+    if not os.path.isdir("/proc/self/fd"):
+        # The spy identifies synced files through procfs; without it the
+        # absent.txt event cannot be recorded, so skip with a reason.
+        print("SKIP: fsync-ordering test needs /proc/self/fd (procfs unavailable)")
+        return
     names = ["202405150%02d000" % i for i in range(2)]
     events = []
     real = os.fsync
@@ -786,6 +791,66 @@ def test_budget_marker_only_when_files_remain():
             o, f = _run_fetch_with(st, out, nms, lambda u: good, budget=1e-9)
             check("budget marker %s" % nm, ("budget exhausted" in o) == want)
 
+def test_checkpoint_io_failure_and_rebind_text():
+    """A failed checkpoint write exits with the distinct retryable status
+    (never a clean unfinished summary); config refusals name absent.txt and
+    transient.txt in the rebind procedure."""
+    import urllib.error
+    names = ["202405150%02d000" % i for i in range(2)]
+    real = os.fsync
+    box = {"fail": False}
+    def spy(fd):
+        if box["fail"]:
+            raise OSError("disk")
+        return real(fd)
+    def fake(url):
+        box["fail"] = True
+        raise urllib.error.URLError("transient")
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out); os.makedirs(st)
+        os.fsync = spy
+        code = text = None
+        try:
+            try:
+                text, _ = _run_fetch_with(st, out, names, fake)
+            except SystemExit as e:
+                code = e.code
+        finally:
+            os.fsync = real
+            box["fail"] = False
+        check("a failed transient-record fsync exits with the retryable checkpoint status", code == G.CHECKPOINT_IO_EXIT == 75)
+        # config mismatch (different out) names the extra checkpoints
+        cfg = os.path.join(st, "config.json")
+        c = json.load(open(cfg)); c["start"] = "19990101000000"; json.dump(c, open(cfg, "w"))
+        try:
+            _run_fetch_with(st, out, names, lambda u: b"")
+            msg = ""
+        except SystemExit as e:
+            msg = str(e.code)
+            check("a configuration refusal is a message exit, not the checkpoint status", e.code != 75)
+        check("rebind procedure names absent.txt and transient.txt", "absent.txt" in msg and "transient.txt" in msg)
+    check("module docstring rebind procedure names absent.txt and transient.txt", "absent.txt + transient.txt" in G.__doc__)
+
+def test_rebind_retries_previously_absent_basename():
+    """Documented rebind (delete config, done, absent, transient) makes a
+    fresh master's previously-404 basename be attempted; an ordinary
+    same-configuration restart keeps absent.txt and does not refetch it."""
+    import urllib.error
+    names = ["20240515000000"]
+    def nf(url):
+        raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out); os.makedirs(st)
+        _, f1 = _run_fetch_with(st, out, names, nf)
+        _, f2 = _run_fetch_with(st, out, names, nf)
+        check("same-configuration restart keeps absent.txt (not refetched)", len(f1) == 1 and f2 == [])
+        for fn in ("config.json", "done.txt", "absent.txt", "transient.txt"):
+            os.remove(os.path.join(st, fn))
+        _, f3 = _run_fetch_with(st, out, names, nf)
+        check("after the documented rebind the previously absent basename is attempted again", len(f3) == 1)
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
@@ -794,7 +859,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))
