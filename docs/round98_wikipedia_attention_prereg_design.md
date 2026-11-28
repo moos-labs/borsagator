@@ -18,7 +18,7 @@ For cutoff date C and name i: A(i,C) = log((S7 + 1) / (S28/4 + 1)), where S7 is 
 - Eligible names at cutoff C: panel names that pass the minimum-history rule below and have a v2 centre and a positive v2 half-width for that name's cell at cutoff C. Let n = their count. If n < 6 the cutoff gets no tilt (k-shift 0) and is listed with the reason "n<6".
 - z is computed ONLY for cutoffs with n >= 6. For n = 1 to 5 (and n = 0) z is never computed, so the division by (n-1)/2 cannot occur; those cutoffs get the v2 interval unchanged.
 - r(i) = average rank of A(i,C) among the n eligible names, ascending, 1..n. Ties get the average of the ranks they span (exact float equality of A after rounding to 12 decimals).
-- z(i) = (r(i) - (n+1)/2) / ((n-1)/2). Range [-1, +1], mean 0, so a cutoff with n names has the lowest-attention name at -1 and the highest at +1.
+- z(i) = (r(i) - (n+1)/2) / ((n-1)/2). Range [-1, +1], mean 0. The endpoints -1 and +1 apply ONLY when the extreme attention values are untied (the lowest-attention name then sits at -1 and the highest at +1). With tied ranks, which use the average rank, values fall inside the endpoints, and z = 0 for every name when all attention values are tied (for example six names at average rank 3.5).
 - Tilt: the v2 interval centre moves by d(i) = k * z(i) * w(i), where w(i) is the v2 half-width for that cell. The interval is moved, not widened: both edges shift by d(i), the width is unchanged. Non-eligible names keep the v2 interval unchanged.
 
 ## Slope fitting (exact, before any scoring)
