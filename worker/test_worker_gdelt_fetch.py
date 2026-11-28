@@ -522,12 +522,15 @@ def test_timeout_with_truncated_utf8_record():
     data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
     check("line counts are byte-based (2 company lines, 1 macro line)", data["matches"] == 2 and data["macro_matches"] == 1)
 
-def _progress_run(jid, files_done, status="budget-exhausted"):
+def _progress_run(jid, files_done, status="budget-exhausted", absent=None):
     """One incomplete run through _execute with the fetch and publish stubbed."""
     o_pub, o_md, o_run = worker.publish, worker._mark_done, worker.run_gdelt_fetch
     def fake_run(job, wd):
         g = Path(wd) / "gdelt"; g.mkdir(parents=True, exist_ok=True)
-        (g / "gdelt_fetch.json").write_text(json.dumps({"files_done": files_done, "macro_files_done": 0}))
+        side = {"files_done": files_done, "macro_files_done": 0}
+        if absent is not None:
+            side["absent_files"] = absent
+        (g / "gdelt_fetch.json").write_text(json.dumps(side))
         return {"gdelt-fetch": status}
     worker.publish = lambda job, wd, m: "sha"
     worker._mark_done = lambda job, sha, extra=None: None
@@ -638,6 +641,66 @@ def test_download_failure_reports_restored_progress():
     check("after a failure run reporting restored progress, the unchanged run is stall 2", worker._gdelt_progress_read(j2)["stalls"] == 2)
     worker._gdelt_progress_clear(j2)
 
+def test_absent_counts_as_progress():
+    jid = "abs-prog"
+    worker._gdelt_progress_clear(jid)
+    _progress_run(jid, 10, absent=0)
+    # budget-limited all-404 runs: done and macro_done unchanged, absent grows
+    for n in range(worker.GDELT_STALL_LIMIT + 1):
+        worker._intent_path(jid).unlink(missing_ok=True)
+        _progress_run(jid, 10, absent=40 * (n + 1))
+        check("all-404 run %d (absent grows) is progress, not a stall" % (n + 1),
+              worker._gdelt_progress_read(jid)["stalls"] == 0 and not worker._gdelt_deferred(jid))
+    top = worker._gdelt_progress_read(jid)["total"]
+    check("stored total counts done + macro_done + absent", top == 10 + 40 * (worker.GDELT_STALL_LIMIT + 1))
+    # a run with no new done, macro_done or absent is still a stall
+    worker._intent_path(jid).unlink(missing_ok=True)
+    _progress_run(jid, 10, absent=40 * (worker.GDELT_STALL_LIMIT + 1))
+    check("a run with nothing new is a stall", worker._gdelt_progress_read(jid)["stalls"] == 1)
+    # older sidecar without absent_files still works (counts as 0)
+    worker._intent_path(jid).unlink(missing_ok=True)
+    _progress_run(jid, 10)
+    check("sidecar without absent_files reads as 0 and never lowers the stored total",
+          worker._gdelt_progress_read(jid)["total"] == top and worker._gdelt_progress_read(jid)["stalls"] == 2)
+    for _ in range(worker.GDELT_STALL_LIMIT):
+        worker._intent_path(jid).unlink(missing_ok=True)
+        _progress_run(jid, 10, absent=top - 10)
+    check("repeated no-new runs defer after the stall limit", worker._gdelt_deferred(jid))
+    worker._gdelt_progress_clear(jid)
+
+def test_sidecar_reports_absent_both_paths():
+    _fixtures_env()
+    jid = "abs-side"
+    done = "".join("f%d\n" % i for i in range(5))
+    d = _make_archive_run("2026-11-27", "110000", "x", jid, done,
+                          matches='{"c": 1}\n', macro='{"m": 1}\n',
+                          config={"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501999999", "out": "/o"}},
+                          extra_state={"absent.txt": "a1\na2\n\na3\n"})
+    def boom(req, timeout=300):
+        raise OSError("down")
+    o_url = worker.urlopen; worker.urlopen = boom
+    try:
+        wd = worker.OUT / "t959-abs-mdf"; wd.mkdir(parents=True, exist_ok=True)
+        res = worker.run_gdelt_fetch({"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999"}, wd)
+    finally:
+        worker.urlopen = o_url
+    data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
+    check("master-download-failed path reports the restored absent count (blank lines ignored)",
+          res == {"gdelt-fetch": "master-download-failed"} and data["absent_files"] == 3)
+    # normal path: filter stub persists absent identities in the state dir
+    job = {"id": "abs-norm", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
+    def runner(cmd):
+        st = Path(_tok(cmd, "--state"))
+        st.mkdir(parents=True, exist_ok=True)
+        (st / "absent.txt").write_text("n1\nn2\n")
+        class P:
+            returncode = 0; stdout = "gkg-filter-status unfinished=0 absent=2\n"; stderr = ""
+        return P()
+    wd2 = worker.OUT / "t959-abs-norm"
+    res2, _ = _run_capture(job, wd2, runner)
+    data2 = json.loads((wd2 / "gdelt" / "gdelt_fetch.json").read_text())
+    check("normal path sidecar reports absent_files", data2.get("absent_files") == 2)
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -664,6 +727,8 @@ def main():
     test_progressing_incomplete_job_resumes_and_is_not_demoted()
     test_progress_total_never_decreases()
     test_download_failure_reports_restored_progress()
+    test_absent_counts_as_progress()
+    test_sidecar_reports_absent_both_paths()
     print("\n%d passed" % PASSED)
     return 0
 

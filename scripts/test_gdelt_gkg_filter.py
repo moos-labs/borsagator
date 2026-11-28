@@ -676,13 +676,60 @@ def test_absent_flushed_before_fsync():
     check("one fsync per absent file with the line already flushed", sizes == [line, 2 * line, 3 * line], str(sizes))
 
 
+def test_state_dir_fsynced_after_checkpoint_files_open():
+    """The state and output directories are fsynced once, after done.txt,
+    absent.txt and matches.jsonl exist (their directory entries are durable
+    before any record), and before the first per-record fsync."""
+    import urllib.error
+    names = ["202405150%02d000" % i for i in range(2)]
+    events = []
+    real = os.fsync
+    box = {}
+
+    def spy(fd):
+        try:
+            path = os.readlink("/proc/self/fd/%d" % fd)
+        except OSError:
+            path = ""
+        if os.path.isdir(path):
+            events.append(("dir", path, sorted(os.listdir(path))))
+        else:
+            events.append(("file", os.path.basename(path), None))
+        return real(fd)
+
+    def fake(url):
+        raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        os.fsync = spy
+        try:
+            _run_fetch_with(st, out, names, fake)
+        finally:
+            os.fsync = real
+        dirs = [e for e in events if e[0] == "dir"]
+        first_file = next(i for i, e in enumerate(events) if e == ("file", "absent.txt", None))
+        st_real, out_real = os.path.realpath(st), os.path.realpath(out)
+        st_ev = [e for e in dirs if os.path.realpath(e[1]) == st_real]
+        out_ev = [e for e in dirs if os.path.realpath(e[1]) == out_real]
+    check("state dir fsynced exactly once", len(st_ev) == 1, str(events))
+    check("state dir fsynced after done.txt and absent.txt exist",
+          len(st_ev) == 1 and "done.txt" in st_ev[0][2] and "absent.txt" in st_ev[0][2])
+    check("output dir fsynced once, after matches.jsonl exists",
+          len(out_ev) == 1 and "matches.jsonl" in out_ev[0][2])
+    check("directory syncs come before the first absent.txt record fsync",
+          all(events.index(e) < first_file for e in dirs))
+    check("per-record fsyncs are kept", sum(1 for e in events if e[0] == "file" and e[1] == "absent.txt") == 2)
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
                test_process_blob, test_macro_filter, test_list_files_and_range,
                test_fetch_guards, test_config_binding,
                test_config_atomic_and_restart, test_restart_and_finalize,
-               test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync):
+               test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
+               test_state_dir_fsynced_after_checkpoint_files_open):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

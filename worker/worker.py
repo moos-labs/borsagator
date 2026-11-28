@@ -4326,6 +4326,7 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                 "start": start, "end": end, "mode": mode,
                 "files_done": _nonblank(state_dir / "done.txt"),
                 "macro_files_done": _nonblank(state_dir / "macro_done.txt"),
+                "absent_files": _nonblank(state_dir / "absent.txt"),
                 "matches": _rawlines(out_dir / "matches.jsonl"),
                 "macro_matches": _rawlines(out_dir / "macro_matches.jsonl"),
                 "error": "master-download-failed",
@@ -4387,12 +4388,16 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # state summary
     files_done = 0
     macro_files_done = 0
+    absent_files = 0
     done_txt = state_dir / "done.txt"
     macro_done_txt = state_dir / "macro_done.txt"
     if done_txt.exists():
         files_done = len([l for l in done_txt.read_text().splitlines() if l.strip()])
     if macro_done_txt.exists():
         macro_files_done = len([l for l in macro_done_txt.read_text().splitlines() if l.strip()])
+    absent_txt = state_dir / "absent.txt"
+    if absent_txt.exists():
+        absent_files = len([l for l in absent_txt.read_text().splitlines() if l.strip()])
 
     def _lines(p):
         p = Path(p)
@@ -4419,6 +4424,7 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     (run_dir / "gdelt-state-summary.json").write_text(
         json.dumps({"files_done": files_done,
                     "macro_files_done": macro_files_done,
+                    "absent_files": absent_files,
                     "matches": matches,
                     "macro_matches": macro_matches,
                     "config": state_summary}, indent=1))
@@ -4450,6 +4456,7 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     (run_dir / "gdelt_fetch.json").write_text(json.dumps({
         "start": start, "end": end, "mode": mode,
         "files_done": files_done, "macro_files_done": macro_files_done,
+        "absent_files": absent_files,
         "matches": matches, "macro_matches": macro_matches,
         "status": status,
     }, indent=1))
@@ -6378,7 +6385,9 @@ def _execute_body(job):
                 pass
             gf = manifest.get("gdelt_fetch") or {}
             try:
-                total = int(gf.get("files_done", 0)) + int(gf.get("macro_files_done", 0))
+                total = (int(gf.get("files_done", 0))
+                         + int(gf.get("macro_files_done", 0))
+                         + int(gf.get("absent_files", 0)))
             except (TypeError, ValueError):
                 total = 0
             _gdelt_note_incomplete(job["id"], total)

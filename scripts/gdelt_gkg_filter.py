@@ -395,6 +395,15 @@ def truncate_incomplete_tail(path):
     return size - cut
 
 
+def fsync_dir(path):
+    """fsync a directory so newly created entries survive an OS crash."""
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 def run_fetch(a):
     os.makedirs(a.state, exist_ok=True)
     os.makedirs(a.out, exist_ok=True)
@@ -519,11 +528,17 @@ def run_fetch(a):
         return name, stream, len(raw), rows, mrows, bad, need_c, need_m, None
 
     batch = max(a.workers * 4, 8)
+    state_dir = os.path.dirname(os.path.abspath(done_path))
     done_f = open(done_path, "a", encoding="utf-8")
     absent_f = open(absent_path, "a", encoding="utf-8")
     out_f = open(matches_path, "a", encoding="utf-8")
     macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
     mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
+    # New checkpoint files exist only once their directory entry is durable;
+    # per-record fsync below persists contents only.
+    fsync_dir(state_dir)
+    if os.path.abspath(a.out) != state_dir:
+        fsync_dir(os.path.abspath(a.out))
     try:
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             i = 0
