@@ -1,6 +1,6 @@
 # Round 93: forward cutoff schedule, registration (draft for Moos)
 
-Status: DRAFT registration. Nothing here is scored, no capture is dispatched
+Status: REGISTRATION (the three open points of the first draft are decided below, per Moos in Slack 1795829375.713939, relayed to the author, not read by the author). Nothing here is scored, no capture is dispatched
 by this document, and no existing cell, frozen value or script is changed.
 Origin: INS-IMPROVE-093 rank 2 (Slack 1795828567.090869, relayed to the
 author, not read by the author). Written before any forward cutoff exists.
@@ -25,9 +25,10 @@ accrue on windows no earlier work has touched.
   before a cutoff, or with no close on the cutoff session, is excluded for
   that cutoff and listed one by one with the reason. Nothing is imputed.
 - Horizons: day (1 session), week (5), month (21), as in every earlier scorer.
+- Month horizon is scored on every 4th cutoff only: cutoffs number 1, 5, 9, 13 and so on (cutoff 1 is the first one). Day and week are scored on every weekly cutoff. All cutoffs are still captured, so the 4th-cutoff subset is fixed by number, never chosen after seeing results.
 - Cell numbering: from 103, one cell per (ticker, cutoff) capture, ordered by
   cutoff date then ticker ascending. Cells 91-102 are not reused or renumbered.
-- Clustering unit: the cutoff date.
+- Clustering unit: the cutoff date (for month, the month-scored cutoff dates).
 - Captures: the capture dispatch is the cycle's. This document asks for
   none and writes none.
 
@@ -68,27 +69,33 @@ A KEEP is not an adoption. It justifies a forward-ledger test only.
 
 ## First read
 
-One scoring, at the time the month horizon has 10 matured clusters (the 10th
-cutoff plus 21 sessions, about 14 weeks after the first cutoff). All three
-horizons are read at that moment. Before then only counts are printed: rows,
-clusters, exclusions listed one by one. No RangeSkill, coverage or CI is
-printed or written, and no interim result is looked at. Fewer than 10 clusters
-at that moment means COUNTS ONLY and the read waits for the next cluster.
+One scoring, at the time the month horizon has 10 matured clusters. Month
+clusters are cutoffs 1, 5, ..., 37; the 10th (cutoff 37) matures 21 sessions
+after its cutoff, so the read is about 41 weeks after the first cutoff. All
+three horizons are read at that moment (day and week then have far more than 10
+clusters). Before then only counts are printed: rows, clusters, exclusions
+listed one by one. No RangeSkill, coverage or CI is printed or written, and no
+interim result is looked at. Fewer than 10 matured month clusters at that
+moment means COUNTS ONLY and the read waits for the next month cluster.
 
-## Known limits and open decisions for Moos
+## Decided points
 
-1. Overlap. Weekly cutoffs make consecutive month windows share 16 of 21
-   sessions, so month-horizon clusters are serially dependent and the
-   cutoff-clustered CI will be too narrow. Week and day windows do not
-   overlap. Option (not chosen here): score the month horizon on every 4th
-   cutoff only, which needs 10 such cutoffs, about 40 weeks.
-2. Holm over p-values from a one-sided bootstrap is my drafting choice. The
-   loop rule itself is CI based. If the family should be corrected another
-   way (for example wider CIs), say so before the first cutoff.
-3. The paired delta against v2 is reported, not gating. Moos's earlier rule
-   that a keep is relative to frozen v2 on the same rows could make it
-   gating. This draft does not decide that.
-4. Pretraining overlap. Chronos-2 has no documented cutoff or EGX
-   exclusion. Forward cutoffs (December 2026 onward) are over a year after the model release, hence after
-   any plausible training window. The release date is 2025-10-20 per the
-   amazon-science/chronos-forecasting README.
+1. Month overlap: decided as above, month scored on every 4th cutoff, which
+   removes the 16 of 21 session overlap between consecutive month windows
+   (consecutive month-scored windows start 20 sessions apart and share at most
+   1 session).
+2. Holm: as written in "Test family and Holm": one-sided cluster bootstrap p,
+   Holm step-down at 0.05 over the family of 6, plus the loop CI conditions.
+3. The paired delta (challenger minus frozen v2) on the same rows is reported
+   with its cutoff-clustered CI and never gates. The loop bar is the gate.
+
+## Known limits
+
+- Pretraining. Chronos-2 has no documented cutoff or EGX exclusion, and the
+  dataset list (appendix Table 6 of arXiv 2510.15821) was not read, so
+  whether EGX or Yahoo series are in the training data is UNVERIFIED. Forward
+  cutoffs (December 2026 onward) are over a year after the model release
+  (2025-10-20 per the amazon-science/chronos-forecasting README), hence after
+  any plausible training window.
+- The 4th-cutoff rule makes the month read slow (about 41 weeks). Day and week
+  could be read earlier but are held to the same single scoring.
