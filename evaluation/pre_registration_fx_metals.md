@@ -60,3 +60,6 @@ EURUSD, USDJPY, EGP=X (post-float only for EGP). Output when later run: v2 vs ra
 - Retail USD/EGP buy/sell card: unsourced.
 - Spot metals source: none free and verified (FRED serves no LBMA; IBA/MyLBMA licence is a Muhammad decision, not pursued).
 - Harvest of the five missing FX symbols.
+
+## 11. First cell set as run (INS-IMPROVE-155)
+Output: evaluation/fx_first_cells_descriptive.md/.json, produced by scripts/score_fx_descriptive.py from the 2026-11-28 harvest (not committed). Design choices made at run time (author's, for review): training block 2019-01-01 to 2025-12-31 only, hold-out rows dropped at load and never read; interval is on the h-session log close-to-close move (not on the window high-low range, which is not scored in this cut); v2 = frozen EGX k (1.15/1.28/1.20) times sigma60 times sqrt(h), not refit, naive k 1.2816; non-overlapping cutoffs every h sessions after 60 sessions of history; cluster = calendar month of the cutoff; EGP from 2024-03-07, 03-06 excluded, jump-day variant drops a row when a flagged jump falls in its sigma or realised window. No FX-fit challenger, #966 shrinkage or hold-out run here.

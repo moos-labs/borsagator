@@ -1,0 +1,356 @@
+{
+  "cells": {
+    "EURUSD": {
+      "horizons": {
+        "day/all_rows": {
+          "clusters": 82,
+          "coverage_naive": 0.8211749515816655,
+          "coverage_naive_ci95": [
+            0.7987220447284346,
+            0.8444592790387183
+          ],
+          "coverage_v2": 0.7727566171723693,
+          "coverage_v2_ci95": [
+            0.7479206653870761,
+            0.7984445884640311
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-12-30",
+          "mean_is_naive": 1.6953887135272634,
+          "mean_is_v2": 1.6942012014341121,
+          "n": 1549,
+          "range_skill_ci95": [
+            -0.008401179693959149,
+            0.010552642828941083
+          ],
+          "range_skill_v2_vs_naive": 0.0007004364743473657,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.36199522621857283,
+          "share_up": 0.49128469980632666
+        },
+        "month/all_rows": {
+          "clusters": 70,
+          "coverage_naive": 0.7945205479452054,
+          "coverage_naive_ci95": [
+            0.6986301369863014,
+            0.88
+          ],
+          "coverage_v2": 0.7808219178082192,
+          "coverage_v2_ci95": [
+            0.6805555555555556,
+            0.8732394366197183
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-11-07",
+          "mean_is_naive": 7.106181219547863,
+          "mean_is_v2": 7.128580584962416,
+          "n": 73,
+          "range_skill_ci95": [
+            -0.025044901931930763,
+            0.02142839041796396
+          ],
+          "range_skill_v2_vs_naive": -0.0031520960024120637,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 1.6877352323615082,
+          "share_up": 0.5342465753424658
+        },
+        "week/all_rows": {
+          "clusters": 82,
+          "coverage_naive": 0.8252427184466019,
+          "coverage_naive_ci95": [
+            0.7755775577557755,
+            0.8694267515923567
+          ],
+          "coverage_v2": 0.8252427184466019,
+          "coverage_v2_ci95": [
+            0.7755775577557755,
+            0.8694267515923567
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-12-17",
+          "mean_is_naive": 3.679219733303908,
+          "mean_is_v2": 3.6786286656513645,
+          "n": 309,
+          "range_skill_ci95": [
+            -3.525930845471592e-05,
+            0.00036477647662114254
+          ],
+          "range_skill_v2_vs_naive": 0.0001606502724459391,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.7879870096272634,
+          "share_up": 0.4854368932038835
+        }
+      },
+      "load_counts": {
+        "holdout_rows_dropped_at_load": 236,
+        "weekend_bars_dropped_no_monday": 0,
+        "weekend_bars_merged": 212
+      },
+      "sessions": 1610
+    },
+    "USDEGP": {
+      "horizons": {
+        "day/all_rows": {
+          "clusters": 19,
+          "coverage_naive": 0.8518518518518519,
+          "coverage_naive_ci95": [
+            0.7977839335180056,
+            0.905982905982906
+          ],
+          "coverage_v2": 0.8347578347578347,
+          "coverage_v2_ci95": [
+            0.784741144414169,
+            0.8827160493827161
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2025-12-30",
+          "mean_is_naive": 1.162267180155561,
+          "mean_is_v2": 1.1395651033226077,
+          "n": 351,
+          "range_skill_ci95": [
+            0.000963145546731714,
+            0.042567612502752206
+          ],
+          "range_skill_v2_vs_naive": 0.01953258013352388,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.1954537958082797,
+          "share_up": 0.46438746438746437
+        },
+        "day/jump_days_excluded": {
+          "clusters": 7,
+          "coverage_naive": 0.8958333333333334,
+          "coverage_naive_ci95": [
+            0.8,
+            0.9619047619047619
+          ],
+          "coverage_v2": 0.875,
+          "coverage_v2_ci95": [
+            0.7818181818181819,
+            0.9389312977099237
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2025-12-30",
+          "mean_is_naive": 1.1608234010668017,
+          "mean_is_v2": 1.1138179870110547,
+          "n": 96,
+          "range_skill_ci95": [
+            0.004065226022367696,
+            0.0743511686413677
+          ],
+          "range_skill_v2_vs_naive": 0.04049316546560722,
+          "rows_dropped_for_jump_days": 255,
+          "rw_mean_abs_move_pp": 0.18714097348484304,
+          "share_up": 0.53125
+        },
+        "month/all_rows": {
+          "clusters": 16,
+          "coverage_naive": 0.8125,
+          "coverage_naive_ci95": [
+            0.625,
+            1.0
+          ],
+          "coverage_v2": 0.8125,
+          "coverage_v2_ci95": [
+            0.625,
+            1.0
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2025-11-10",
+          "mean_is_naive": 4.577204202414591,
+          "mean_is_v2": 4.5597116699398486,
+          "n": 16,
+          "range_skill_ci95": [
+            -0.04614890369458169,
+            0.06367041198501877
+          ],
+          "range_skill_v2_vs_naive": 0.0038216631159944114,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 1.0798438573191704,
+          "share_up": 0.5
+        },
+        "month/jump_days_excluded": {
+          "clusters": 3,
+          "coverage_naive": 1.0,
+          "coverage_naive_ci95": [
+            1.0,
+            1.0
+          ],
+          "coverage_v2": 1.0,
+          "coverage_v2_ci95": [
+            1.0,
+            1.0
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2024-08-27",
+          "mean_is_naive": 5.379866168462844,
+          "mean_is_v2": 5.03732787309255,
+          "n": 3,
+          "range_skill_ci95": [
+            0.06367041198501877,
+            0.063670411985019
+          ],
+          "range_skill_v2_vs_naive": 0.063670411985019,
+          "rows_dropped_for_jump_days": 13,
+          "rw_mean_abs_move_pp": 0.9011161607840115,
+          "share_up": 0.6666666666666666
+        },
+        "week/all_rows": {
+          "clusters": 19,
+          "coverage_naive": 0.9,
+          "coverage_naive_ci95": [
+            0.8428571428571429,
+            0.9565217391304348
+          ],
+          "coverage_v2": 0.9,
+          "coverage_v2_ci95": [
+            0.8428571428571429,
+            0.9565217391304348
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2025-12-22",
+          "mean_is_naive": 2.3286761661058164,
+          "mean_is_v2": 2.3272991689335334,
+          "n": 70,
+          "range_skill_ci95": [
+            0.00029346132325425156,
+            0.0009514676049201531
+          ],
+          "range_skill_v2_vs_naive": 0.0005913218816447907,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.4448137995338831,
+          "share_up": 0.4142857142857143
+        },
+        "week/jump_days_excluded": {
+          "clusters": 6,
+          "coverage_naive": 0.8888888888888888,
+          "coverage_naive_ci95": [
+            0.75,
+            1.0
+          ],
+          "coverage_v2": 0.8888888888888888,
+          "coverage_v2_ci95": [
+            0.75,
+            1.0
+          ],
+          "first_cutoff": "2024-06-13",
+          "last_cutoff": "2025-12-22",
+          "mean_is_naive": 2.6139099039771394,
+          "mean_is_v2": 2.6124354802776484,
+          "n": 18,
+          "range_skill_ci95": [
+            4.870746681762128e-06,
+            0.0012484394506866447
+          ],
+          "range_skill_v2_vs_naive": 0.0005640682937264607,
+          "rows_dropped_for_jump_days": 52,
+          "rw_mean_abs_move_pp": 0.4722744241665356,
+          "share_up": 0.5555555555555556
+        }
+      },
+      "load_counts": {
+        "holdout_rows_dropped_at_load": 236,
+        "weekend_bars_dropped_no_monday": 0,
+        "weekend_bars_merged": 212
+      },
+      "sessions": 1610
+    },
+    "USDJPY": {
+      "horizons": {
+        "day/all_rows": {
+          "clusters": 82,
+          "coverage_naive": 0.8192382182052937,
+          "coverage_naive_ci95": [
+            0.7907732293697206,
+            0.8458149779735683
+          ],
+          "coverage_v2": 0.7779212395093609,
+          "coverage_v2_ci95": [
+            0.746606334841629,
+            0.8079385403329066
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-12-30",
+          "mean_is_naive": 2.1396395722049046,
+          "mean_is_v2": 2.1308103712402438,
+          "n": 1549,
+          "range_skill_ci95": [
+            -0.005824974338836109,
+            0.014496261596136817
+          ],
+          "range_skill_v2_vs_naive": 0.004126489844063941,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.4309005359869846,
+          "share_up": 0.5313105229180116
+        },
+        "month/all_rows": {
+          "clusters": 70,
+          "coverage_naive": 0.7945205479452054,
+          "coverage_naive_ci95": [
+            0.6944444444444444,
+            0.881578947368421
+          ],
+          "coverage_v2": 0.7808219178082192,
+          "coverage_v2_ci95": [
+            0.676056338028169,
+            0.8732394366197183
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-11-07",
+          "mean_is_naive": 9.856903902661264,
+          "mean_is_v2": 9.85448238655131,
+          "n": 73,
+          "range_skill_ci95": [
+            -0.01956133882912936,
+            0.02322319458102129
+          ],
+          "range_skill_v2_vs_naive": 0.00024566701003359004,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 1.9671150059516476,
+          "share_up": 0.5616438356164384
+        },
+        "week/all_rows": {
+          "clusters": 82,
+          "coverage_naive": 0.7993527508090615,
+          "coverage_naive_ci95": [
+            0.7484276729559748,
+            0.847682119205298
+          ],
+          "coverage_v2": 0.7993527508090615,
+          "coverage_v2_ci95": [
+            0.7484276729559748,
+            0.847682119205298
+          ],
+          "first_cutoff": "2019-03-26",
+          "last_cutoff": "2025-12-17",
+          "mean_is_naive": 4.738398588208939,
+          "mean_is_v2": 4.738064664812473,
+          "n": 309,
+          "range_skill_ci95": [
+            -0.00014310613294221675,
+            0.00029546260910040534
+          ],
+          "range_skill_v2_vs_naive": 7.04717828713397e-05,
+          "rows_dropped_for_jump_days": 0,
+          "rw_mean_abs_move_pp": 0.9810827382898939,
+          "share_up": 0.5566343042071198
+        }
+      },
+      "load_counts": {
+        "holdout_rows_dropped_at_load": 237,
+        "weekend_bars_dropped_no_monday": 0,
+        "weekend_bars_merged": 212
+      },
+      "sessions": 1610
+    }
+  },
+  "holdout_start": "2026-01-01",
+  "naive_k": 1.2816,
+  "reps": 5000,
+  "seed": 20261125,
+  "train_start": "2019-01-01",
+  "v2_k": {
+    "day": 1.15,
+    "month": 1.2,
+    "week": 1.28
+  }
+}
