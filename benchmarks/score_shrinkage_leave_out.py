@@ -53,9 +53,12 @@ def main(argv=None):
     closes = {fn[:-4].replace("_", "."): T.load_closes(os.path.join(a.ohlcv_dir, fn))
               for fn in sorted(os.listdir(a.ohlcv_dir)) if fn.endswith(".csv")}
     allc, caps = T.cell_caps(a.captures, lo, hi)
-    rows, gaps = R.build_rows(caps, allc)
+    # In-range captures only as the reference set (see the challenger).
+    rows, gaps = R.build_rows(caps)
     usable, ex = T.prepare(rows, closes)
     print("COUNTS cells %d-%d: %d usable rows, frozen pair a=%s b=%s, no refit" % (lo, hi, len(usable), w[0], w[1]))
+    print("EXCLUSIONS (every one listed, before any fold; excluded rows stay out of the folds)")
+    print("\n".join(["excluded: %s" % g for g in gaps] + ex))
     for h in T.HORIZONS:
         hp = [r for r in usable if r["horizon"] == h]
         for key, label in (("base", "cutoff"), ("ticker", "ticker")):

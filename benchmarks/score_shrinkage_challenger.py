@@ -164,7 +164,7 @@ def evaluate_pairs(rows, w, reps, seed):
         pairs = []
         for r in hp:
             is_ch, inside, crossed = row_scores(r, a, b)
-            pairs.append({"as_of": r["base"], "is_naive": R.row_is(r, r["naive_half"]),
+            pairs.append({"as_of": r["base"], "key": r["key"], "is_naive": R.row_is(r, r["naive_half"]),
                           "is_v2": R.row_is(r, r["half"]), "is_ch": is_ch,
                           "in_ch": inside, "in_v2": abs(r["real"]) <= r["half"],
                           "crossed": crossed})
@@ -185,6 +185,7 @@ def evaluate_pairs(rows, w, reps, seed):
             cv.append(sum(p["in_ch"] for p in draw) / len(draw))
         res[h] = {"n": len(pairs), "cutoffs": len(keys), "weights": [a, b],
                   "crossed": sum(p["crossed"] for p in pairs),
+                  "crossed_keys": [p["key"] for p in pairs if p["crossed"]],
                   "rs_ch": A.range_skill(pairs, "ch"),
                   "rs_v2": A.range_skill(pairs, "v2"),
                   "cov_ch": sum(p["in_ch"] for p in pairs) / len(pairs),
@@ -222,6 +223,10 @@ def main(argv=None):
         print("refusing: --reps must be the registered %d, got %d"
               % (A.DEFAULT_REPS, a.reps))
         return 2
+    if a.seed != A.DEFAULT_SEED:
+        print("refusing: --seed must be the registered %d, got %d"
+              % (A.DEFAULT_SEED, a.seed))
+        return 2
     lo, hi = FIT_CELLS if a.mode == "fit" else DESC_CELLS
     mn = a.min_cell if a.min_cell is not None else lo
     mx = a.max_cell if a.max_cell is not None else hi
@@ -234,7 +239,10 @@ def main(argv=None):
             closes[fn[:-4].replace("_", ".")] = load_closes(
                 os.path.join(a.ohlcv_dir, fn))
     allc, caps = cell_caps(a.captures, mn, mx)
-    rows, gaps = R.build_rows(caps, allc)
+    # Reference set = the in-range captures only: an out-of-range capture
+    # (for example a 91+ cell in fit mode) must never supply the price
+    # series for an in-range row's realised-window rebuild.
+    rows, gaps = R.build_rows(caps)
     usable, ex = prepare(rows, closes)
     ex = ["excluded: %s" % g for g in gaps] + ex
     if a.mode == "fit":
@@ -273,6 +281,10 @@ def main(argv=None):
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
     res = evaluate_pairs(usable, w, a.reps, a.seed)
+    print("CROSSED-EDGE FALLBACKS (every one listed, before any statistic; rows stay in scoring)")
+    for h in HORIZONS:
+        for k in res[h].get("crossed_keys", []):
+            print("crossed edges: %s (reason: crossed edges, v2 interval used)" % k)
     print("DESCRIPTIVE ONLY cells %d-%d, %d reps seed %d" % (mn, mx, a.reps, a.seed))
     for h in HORIZONS:
         c = res[h]
