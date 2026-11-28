@@ -63,8 +63,25 @@ def run():
     check("frozen: proxy label, roll not adjusted, New York session date, week 5 / month 21",
           "futures-proxy" in d["metals_proxy_label"] and "NOT back-adjusted" in d["metals_proxy_roll"]
           and "America/New_York" in d["metals_proxy_close"] and d["week_sessions"] == 5 and d["month_sessions"] == 21)
-    check("roll dates are recorded as NOT SOURCED, never asserted",
-          d["metals_proxy_roll_dates"].startswith("NOT SOURCED") and "No roll date is asserted" in d["metals_proxy_roll_dates"])
+    check("manifest: splice dates not asserted, window rule and holiday limitation recorded",
+          "No roll date is asserted" in d["metals_proxy_roll_dates"] and "roll_window=1" in d["metals_proxy_roll_dates"]
+          and "NOT sourced" in d["metals_roll_window_rule"] and "ALL 12" in d["metals_roll_window_rule"])
+    D = F.datetime.date
+    check("last trade = third last weekday (CME rule); matches published GCZ6/GCG7/GCQ6 dates",
+          F.last_trade_date(2026, 12) == D(2026, 12, 29) and F.last_trade_date(2027, 2) == D(2027, 2, 24)
+          and F.last_trade_date(2026, 8) == D(2026, 8, 27))
+    check("first notice = last weekday of the previous month; Dec-2025 = 2025-11-28 (observed splice), GCZ6 = 2026-11-30, January wraps the year",
+          F.first_notice_date(2025, 12) == D(2025, 11, 28) and F.first_notice_date(2026, 12) == D(2026, 11, 30)
+          and F.first_notice_date(2026, 8) == D(2026, 7, 31) and F.first_notice_date(2026, 1) == D(2025, 12, 31))
+    ev0 = F.roll_window_dates(2026, 2026, days=0)
+    check("days=0 flags exactly event dates (2026-04-28 last trade, 2026-04-30 first notice) and not the day between",
+          "2026-04-28" in ev0 and "2026-04-30" in ev0 and "2026-04-29" not in ev0 and "2026-05-01" not in ev0)
+    win = F.roll_window_dates(2026, 2026)
+    check("default window is +-5 days inclusive: 2026-04-30 +5 = 2026-05-05 flagged, 2026-05-06 not (next event 2026-05-27 -5 = 05-22)",
+          "2026-05-05" in win and "2026-05-06" not in win and "2026-04-23" in win)
+    check("all 12 delivery months contribute events (January first-notice 2026-01-30, January last-trade 2026-01-28)",
+          "2026-01-30" in ev0 and "2026-01-28" in ev0)
+    check("the observed Nov-2025 splice day is inside the window", "2025-11-28" in F.roll_window_dates(2025, 2025))
     # end-to-end with stubbed network
     o = F.Y.fetch
     t = 1675339200
@@ -79,8 +96,8 @@ def run():
         check("end-to-end: 8 FX + 2 proxy + derived csv, manifest, exit 0",
               code == 0 and len([n for n in names if n.endswith(".csv")]) == 11
               and "XAUEGP_FUTURES_PROXY.csv" in names and "FROZEN_DEFINITIONS.json" in names, str(names))
-        check("every proxy csv row carries the proxy label; header has proxy column",
-              gold_rows[0][-1] == "proxy" and all(r[-1] == F.PROXY_LABEL for r in gold_rows[1:]) and len(gold_rows) == 4)
+        check("every proxy csv row carries the proxy label; header has roll_window and proxy columns",
+              gold_rows[0][-2:] == ["roll_window", "proxy"] and all(r[-2] in ("0", "1") for r in gold_rows[1:]) and all(r[-1] == F.PROXY_LABEL for r in gold_rows[1:]) and len(gold_rows) == 4)
         check("no unlabelled metal file is written",
               not any(n.startswith(("XAU", "XAG")) and "FUTURES_PROXY" not in n for n in names)
               and man["metal_proxy_symbols"] == F.METAL_PROXY)

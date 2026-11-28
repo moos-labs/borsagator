@@ -47,6 +47,7 @@ FX_SYMBOLS = {
     "AUDUSD": "AUDUSD=X", "USDCAD": "CAD=X",
 }
 PROXY_LABEL = "futures-proxy-NOT-spot-NOT-LBMA-AM"
+ROLL_WINDOW_DAYS = 5   # calendar days either side of a CME FND / last-trade date
 # name -> Yahoo symbol; verified live: FUTURE / COMEX / America/New_York.
 METAL_PROXY = {"XAUUSD_FUTURES_PROXY": "GC=F", "XAGUSD_FUTURES_PROXY": "SI=F"}
 REJECTED_YAHOO = {
@@ -74,19 +75,33 @@ FROZEN_DEFINITIONS = {
                          "dates, so a return on a roll day includes the "
                          "calendar spread. Treat roll-day returns as "
                          "contaminated until roll dates are sourced.",
-    "metals_proxy_roll_dates": "NOT SOURCED (2026-11-28). CME publishes "
-                               "contract rules (COMEX rulebook ch.113 gold, "
-                               "ch.112 silver: last trade = third last "
-                               "business day of the delivery month) and an "
-                               "expiration calendar, but no free source "
-                               "publishes the dates Yahoo splices GC=F / "
-                               "SI=F. Yahoo keeps individual contracts only "
-                               "while live, so historical splices cannot be "
-                               "reconstructed from it. One splice observed: "
-                               "GC=F equalled GCZ25 through 2025-11-26 and "
-                               "was a different contract from 2025-11-28. "
-                               "No roll date is asserted; roll-day returns "
-                               "stay unexcluded and flagged.",
+    "metals_proxy_roll_dates": "Yahoo's GC=F / SI=F splice dates are NOT "
+                               "published and cannot be reconstructed (Yahoo "
+                               "keeps only live contracts). No roll date is "
+                               "asserted. Instead every bar within "
+                               + str(ROLL_WINDOW_DAYS) + " calendar days of "
+                               "a CME first-notice or last-trade date is "
+                               "flagged roll_window=1 and scorers must drop "
+                               "the return ending on a flagged date.",
+    "metals_roll_window_rule": "Events for ALL 12 delivery months of both "
+                               "metals (more drops, not fewer): last trade "
+                               "= third last business day of the delivery "
+                               "month (CME COMEX rulebook ch.113 gold, "
+                               "ch.112 silver); first notice = last business "
+                               "day of the preceding month (third-party "
+                               "sources; consistent with GC=F switching "
+                               "contract on 2025-11-28, the Nov-2025 first "
+                               "notice date). Business day = weekday: the "
+                               "CME holiday list is NOT sourced (CME's "
+                               "calendar endpoints block scripted access), "
+                               "so the +-" + str(ROLL_WINDOW_DAYS) + "-day "
+                               "margin absorbs the at most 1-2 day holiday "
+                               "shift. Consistency check against published "
+                               "dates: GCZ6 last trade 2026-12-29 / first "
+                               "notice 2026-11-30; GCG7 last trade "
+                               "2027-02-24; GCQ6 last trade 2026-08-27 / "
+                               "first notice 2026-07-31 (futuresclock.com, "
+                               "rule-calculated, third party).",
     "metals_close_frozen_for_product": "LBMA AM fixing (morning London "
                                        "time), spot; NOT available in this "
                                        "store.",
@@ -142,13 +157,68 @@ def drop_final_partial(rows, today):
     return rows, 0
 
 
+# Roll-window exclusion (option a, accepted by Moos 2026-11-28).
+# Yahoo's splice dates for GC=F / SI=F are not published, so every bar within
+# ROLL_WINDOW_DAYS calendar days of a CME first-notice or last-trade date is
+# flagged roll_window=1 and its return must be excluded by scorers. All 12
+# delivery months are used for both metals (both list every month), which
+# drops MORE, not less.
+
+
+def _weekdays_of(year, month):
+    d = datetime.date(year, month, 1)
+    out = []
+    while d.month == month:
+        if d.weekday() < 5:
+            out.append(d)
+        d += datetime.timedelta(days=1)
+    return out
+
+
+def last_trade_date(year, month):
+    """CME rule (COMEX rulebook ch.113 gold / ch.112 silver, Termination of
+    Trading): third last business day of the delivery month. Business day =
+    weekday here (the CME holiday list is not sourced; see ROLL_WINDOW_DAYS)."""
+    return _weekdays_of(year, month)[-3]
+
+
+def first_notice_date(year, month):
+    """Last business day of the month preceding the delivery month (rule
+    stated by third-party sources only; consistent with the observed
+    GC=F splice on 2025-11-28). Weekday approximation as above."""
+    y, m = (year - 1, 12) if month == 1 else (year, month - 1)
+    return _weekdays_of(y, m)[-1]
+
+
+def roll_event_dates(first_year, last_year):
+    ev = set()
+    for y in range(first_year, last_year + 2):
+        for m in range(1, 13):
+            ev.add(last_trade_date(y, m))
+            ev.add(first_notice_date(y, m))
+    return ev
+
+
+def roll_window_dates(first_year, last_year, days=ROLL_WINDOW_DAYS):
+    out = set()
+    for e in roll_event_dates(first_year, last_year):
+        for k in range(-days, days + 1):
+            out.add((e + datetime.timedelta(days=k)).isoformat())
+    return out
+
+
 def write_proxy_csv(path, rows):
     tmp = path + ".tmp"
+    if rows:
+        win = roll_window_dates(int(rows[0][0][:4]) - 1, int(rows[-1][0][:4]) + 1)
+    else:
+        win = set()
     with open(tmp, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["date", "high", "low", "close", "volume", "adjclose", "proxy"])
+        w.writerow(["date", "high", "low", "close", "volume", "adjclose",
+                    "roll_window", "proxy"])
         for r in rows:
-            w.writerow(list(r) + [PROXY_LABEL])
+            w.writerow(list(r) + [1 if r[0] in win else 0, PROXY_LABEL])
     os.replace(tmp, path)
 
 
