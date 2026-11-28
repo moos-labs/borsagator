@@ -565,6 +565,60 @@ def test_progressing_incomplete_job_resumes_and_is_not_demoted():
     _progress_run(jid, total + 142, status="ok")
     check("a completed run clears the progress record", worker._gdelt_progress_read(jid) is None)
 
+def test_progress_total_never_decreases():
+    jid = "mono-1"
+    worker._gdelt_progress_clear(jid)
+    worker._gdelt_note_incomplete(jid, 100)
+    check("first 100-file run recorded as progress", worker._gdelt_progress_read(jid) == {"total": 100, "stalls": 0, "deferred_until": 0})
+    r = worker._gdelt_note_incomplete(jid, 0)          # e.g. a failure path reporting 0
+    check("a lower total does not lower the stored total", r["total"] == 100)
+    check("a lower total counts as a stall", r["stalls"] == 1)
+    r = worker._gdelt_note_incomplete(jid, 100)        # repeat of the same 100
+    check("a repeated 100-file total after the 0 run is a stall, not progress", r["stalls"] == 2 and r["total"] == 100)
+    r = worker._gdelt_note_incomplete(jid, 100)
+    check("repeated stalls reach the limit and defer", r["stalls"] == 3 and r["deferred_until"] > time.time())
+    worker._gdelt_progress_clear(jid)
+    worker._gdelt_note_incomplete(jid, 100)
+    worker._gdelt_note_incomplete(jid, 100)
+    r = worker._gdelt_note_incomplete(jid, 120)
+    check("a genuinely higher total (120) resets stalls to 0 and raises the total", r["stalls"] == 0 and r["total"] == 120)
+    worker._gdelt_progress_clear(jid)
+
+def test_download_failure_reports_restored_progress():
+    _fixtures_env()
+    jid = "mdf-prog"
+    done = "".join("f%d\n" % i for i in range(100))
+    mdone = "".join("m%d\n" % i for i in range(7))
+    d = _make_archive_run("2026-11-27", "100000", "x", jid, done,
+                          matches='{"c": 1}\n{"c": 2}\n', macro='{"m": 1}\n',
+                          config={"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501999999", "out": "/o"}})
+    (d / "gdelt-state" / "macro_done.txt").write_text(mdone)
+    _git("add", "-A", str(d), cwd=worker.ROOT / "archive-push"); _git("commit", "-m", "macro done", cwd=worker.ROOT / "archive-push")
+    _git("push", "origin", "HEAD:archive", cwd=worker.ROOT / "archive-push")
+    def boom(req, timeout=300):
+        raise OSError("down")
+    o_url = worker.urlopen; worker.urlopen = boom
+    try:
+        wd = worker.OUT / "t959-mdfprog"; wd.mkdir(parents=True, exist_ok=True)
+        res = worker.run_gdelt_fetch({"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999"}, wd)
+    finally:
+        worker.urlopen = o_url
+    data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
+    check("download failure keeps its status", res == {"gdelt-fetch": "master-download-failed"})
+    check("download failure reports the restored files_done and macro_files_done, not 0",
+          data["files_done"] == 100 and data["macro_files_done"] == 7)
+    check("download failure reports the restored match counts", data["matches"] == 2 and data["macro_matches"] == 1)
+    # end to end: a 100-file run, then this failure, then the same 100-file run is a stall, not progress
+    j2 = "mono-e2e"
+    worker._gdelt_progress_clear(j2)
+    _progress_run(j2, 107)
+    worker._intent_path(j2).unlink(missing_ok=True)
+    _progress_run(j2, data["files_done"] + data["macro_files_done"], status="master-download-failed")
+    worker._intent_path(j2).unlink(missing_ok=True)
+    _progress_run(j2, 107)
+    check("after a failure run reporting restored progress, the unchanged run is stall 2", worker._gdelt_progress_read(j2)["stalls"] == 2)
+    worker._gdelt_progress_clear(j2)
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -588,6 +642,8 @@ def main():
     test_timeout_with_truncated_utf8_record()
     test_stuck_incomplete_job_yields_the_lane()
     test_progressing_incomplete_job_resumes_and_is_not_demoted()
+    test_progress_total_never_decreases()
+    test_download_failure_reports_restored_progress()
     print("\n%d passed" % PASSED)
     return 0
 

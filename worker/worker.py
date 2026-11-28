@@ -4306,10 +4306,28 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                     shutil.copy2(out_dir / fn, run_dir / fn)
             (run_dir / "gdelt-fetch.log").write_text(
                 "master-download-failed\n")
+            # Report the RESTORED progress, not 0: the progress record
+            # (_gdelt_note_incomplete) must not see this failure as a
+            # drop to zero files done.
+            def _nonblank(p):
+                p = Path(p)
+                if not p.exists():
+                    return 0
+                return len([l for l in p.read_text(errors="replace").splitlines()
+                            if l.strip()])
+
+            def _rawlines(p):
+                p = Path(p)
+                if not p.exists():
+                    return 0
+                with open(p, "rb") as f:
+                    return sum(1 for _ in f)
             (run_dir / "gdelt_fetch.json").write_text(json.dumps({
                 "start": start, "end": end, "mode": mode,
-                "files_done": 0, "macro_files_done": 0,
-                "matches": 0, "macro_matches": 0,
+                "files_done": _nonblank(state_dir / "done.txt"),
+                "macro_files_done": _nonblank(state_dir / "macro_done.txt"),
+                "matches": _rawlines(out_dir / "matches.jsonl"),
+                "macro_matches": _rawlines(out_dir / "macro_matches.jsonl"),
                 "error": "master-download-failed",
             }, indent=1))
             return {"gdelt-fetch": "master-download-failed"}
@@ -6165,7 +6183,11 @@ def _gdelt_note_incomplete(job_id, total, now_ts=None):
         prev_total = prev.get("total")
         progressed = (total > 0) if prev_total is None else (total > prev_total)
         stalls = 0 if progressed else int(prev.get("stalls", 0)) + 1
-        rec = {"total": int(total), "stalls": stalls, "deferred_until": 0}
+        # The stored total never goes DOWN: a run that reports fewer
+        # files (for example a failure path) must not lower the bar and
+        # make the next unchanged run look like progress.
+        rec = {"total": max(int(prev_total or 0), int(total)),
+               "stalls": stalls, "deferred_until": 0}
         if stalls >= GDELT_STALL_LIMIT:
             rec["deferred_until"] = now_ts + GDELT_DEFER_SECONDS
         path = _gdelt_progress_path(job_id)
