@@ -1,0 +1,121 @@
+{
+ "model": "chronos-2",
+ "centre": "zero",
+ "descriptive": true,
+ "counts": [
+  "day: rows=41 cutoff clusters=7 tickers=6",
+  "week: rows=41 cutoff clusters=7 tickers=6",
+  "month: rows=41 cutoff clusters=7 tickers=6"
+ ],
+ "results": {
+  "day": {
+   "n": 41,
+   "cutoffs": 7,
+   "tickers": 6,
+   "v2": {
+    "coverage": 0.6585365853658537,
+    "range_skill": -0.021546149323927066
+   },
+   "ch": {
+    "coverage": 0.6829268292682927,
+    "range_skill": 0.03030583220942773
+   },
+   "ch_ci_cutoff": [
+    -0.14932997652582136,
+    0.1652048244815112
+   ],
+   "ch_cov_ci_cutoff": [
+    0.5238095238095238,
+    0.8333333333333334
+   ],
+   "ch_ci_ticker": [
+    -0.07700362676847039,
+    0.08379089925892502
+   ]
+  },
+  "week": {
+   "n": 41,
+   "cutoffs": 7,
+   "tickers": 6,
+   "v2": {
+    "coverage": 0.8048780487804879,
+    "range_skill": -0.00038785854505118955
+   },
+   "ch": {
+    "coverage": 0.7804878048780488,
+    "range_skill": -0.06676198670196354
+   },
+   "ch_ci_cutoff": [
+    -0.2138600867162188,
+    0.09488013844335597
+   ],
+   "ch_cov_ci_cutoff": [
+    0.6585365853658537,
+    0.8809523809523809
+   ],
+   "ch_ci_ticker": [
+    -0.2969600360654887,
+    0.1527990907060588
+   ]
+  },
+  "month": {
+   "n": 41,
+   "cutoffs": 7,
+   "tickers": 6,
+   "v2": {
+    "coverage": 0.6097560975609756,
+    "range_skill": -0.019506199890036546
+   },
+   "ch": {
+    "coverage": 0.5853658536585366,
+    "range_skill": -0.11506057878252851
+   },
+   "ch_ci_cutoff": [
+    -0.19839956253774593,
+    -0.0129739391117063
+   ],
+   "ch_cov_ci_cutoff": [
+    0.40476190476190477,
+    0.7631578947368421
+   ],
+   "ch_ci_ticker": [
+    -0.21399840238515888,
+    -0.009124239005829482
+   ]
+  }
+ },
+ "excluded": [
+  "EXCLUDED: 0 capture(s) without usable quantiles or dropped by build_rows, 6 row(s) before the origin rule, 25 unnumbered capture(s) never scored; 0 note(s)",
+  "excluded: row HRHO.CA 2025-09-30 day: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: row HRHO.CA 2025-09-30 week: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: row HRHO.CA 2025-09-30 month: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: row SWDY.CA 2025-09-30 day: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: row SWDY.CA 2025-09-30 week: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: row SWDY.CA 2025-09-30 month: origin not after 2025-10-20 (possible pretraining overlap)",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/042032__run-backtest-2024-01-31-comi-ca__adopt-a-2024-01-31-comi/backtest/2024-01-31/COMI.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/043205__run-backtest-2024-01-31-etel-ca__adopt-a-2024-01-31-etel/backtest/2024-01-31/ETEL.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/053323__run-backtest-2024-01-31-hrho-ca__adopt-a-2024-01-31-hrho/backtest/2024-01-31/HRHO.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/045526__run-backtest-2024-01-31-nvda__adopt-a-2024-01-31-nvda/backtest/2024-01-31/NVDA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/052131__run-backtest-2024-01-31-swdy-ca__adopt-a-2024-01-31-swdy/backtest/2024-01-31/SWDY.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/044351__run-backtest-2024-01-31-tmgh-ca__adopt-a-2024-01-31-tmgh/backtest/2024-01-31/TMGH.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/063508__run-backtest-2024-05-30-nvda__adopt-a-2024-05-30-nvda/backtest/2024-05-30/NVDA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/013639__run-backtest-2024-09-30-orwe-ca__w6-kronos592-orwe-20240930/backtest/2024-09-30/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/001319__run-backtest-2024-09-30-phdc-ca__w6-kronos592-phdc-20240930/backtest/2024-09-30/PHDC.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/072226__run-backtest-2024-10-31-comi-ca__adopt-a-2024-10-31-comi/backtest/2024-10-31/COMI.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/073411__run-backtest-2024-10-31-etel-ca__adopt-a-2024-10-31-etel/backtest/2024-10-31/ETEL.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/083627__run-backtest-2024-10-31-hrho-ca__adopt-a-2024-10-31-hrho/backtest/2024-10-31/HRHO.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/075746__run-backtest-2024-10-31-nvda__adopt-a-2024-10-31-nvda/backtest/2024-10-31/NVDA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/082436__run-backtest-2024-10-31-swdy-ca__adopt-a-2024-10-31-swdy/backtest/2024-10-31/SWDY.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/074614__run-backtest-2024-10-31-tmgh-ca__adopt-a-2024-10-31-tmgh/backtest/2024-10-31/TMGH.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/014812__run-backtest-2024-12-31-orwe-ca__w6-kronos592-orwe-20241231/backtest/2024-12-31/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/002453__run-backtest-2024-12-31-phdc-ca__w6-kronos592-phdc-20241231/backtest/2024-12-31/PHDC.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/021253__run-backtest-2025-03-31-orwe-ca__w6-kronos592-orwe-20250331/backtest/2025-03-31/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/003608__run-backtest-2025-03-31-phdc-ca__w6-kronos592-phdc-20250331/backtest/2025-03-31/PHDC.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/022408__run-backtest-2025-06-30-orwe-ca__w6-kronos592-orwe-20250630/backtest/2025-06-30/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/004756__run-backtest-2025-06-30-phdc-ca__w6-kronos592-phdc-20250630/backtest/2025-06-30/PHDC.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/023544__run-backtest-2025-09-30-orwe-ca__w6-kronos592-orwe-20250930/backtest/2025-09-30/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/011255__run-backtest-2025-09-30-phdc-ca__w6-kronos592-phdc-20250930/backtest/2025-09-30/PHDC.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/024713__run-backtest-2026-02-13-orwe-ca__w6-kronos592-orwe-20260213/backtest/2026-02-13/ORWE.CA: no cell number, never scored",
+  "excluded: capture /tmp/arch7/worker-runs/2026-11-27/012447__run-backtest-2026-02-13-phdc-ca__w6-kronos592-phdc-20260213/backtest/2026-02-13/PHDC.CA: no cell number, never scored"
+ ]
+}
