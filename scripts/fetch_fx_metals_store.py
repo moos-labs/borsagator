@@ -45,6 +45,10 @@ FX_SYMBOLS = {
     "USDEGP": "EGP=X", "EUREGP": "EUREGP=X", "EURUSD": "EURUSD=X",
     "GBPUSD": "GBPUSD=X", "USDJPY": "JPY=X", "USDCHF": "CHF=X",
     "AUDUSD": "AUDUSD=X", "USDCAD": "CAD=X",
+    # added INS-IMPROVE-154 follow-up: the other five of the 13 FX series.
+    # SAR=X/AED=X are the pegged controls (Yahoo also serves USDSAR=X, USDAED=X).
+    "EURGBP": "EURGBP=X", "EURJPY": "EURJPY=X", "GBPEGP": "GBPEGP=X",
+    "USDSAR": "USDSAR=X", "USDAED": "USDAED=X",
 }
 PROXY_LABEL = "futures-proxy-NOT-spot-NOT-LBMA-AM"
 ROLL_WINDOW_DAYS = 5   # calendar days either side of a CME FND / last-trade date

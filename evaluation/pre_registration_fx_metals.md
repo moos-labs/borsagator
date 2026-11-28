@@ -28,6 +28,8 @@ Harvest gap (caveat): scripts/fetch_fx_metals_store.py at 4322a624 harvests 8 FX
 - EGP regime split at the March 2024 float. DESIGN CHOICE: boundary 2024-03-07 (first session after the float, as in the addendum); sessions before it are "pre-float". EGP pairs are reported with and without jump days.
 - DESIGN CHOICE, jump day: a session whose absolute log close-to-close return exceeds 5 x the trailing 60-session median absolute return (needs 60 prior sessions), plus 2024-03-06 and 2024-03-07 by date. Fixed here, not tuned later.
 
+EGP float check (added after the harvest extension; data from the 2026-11-28 live harvest, 10y pull): the close series first prints the new level on 2024-03-07 for all three EGP pairs (USDEGP close 30.8722 on 03-06, 49.5302 on 03-07, log return +0.4727; EUREGP 33.5270 to 53.9800, +0.4763; GBPEGP 39.2351 to 63.0666, +0.4746). The 2024-03-06 bar itself carries post-float high and low (USDEGP high 50.7791, low 49.4149) with a stale pre-float close (30.8722). So close-to-close jump = 2024-03-07, consistent with a one-day stale close on the float day (CBE float 2024-03-06). Consequence: the 2024-03-06 high-low range is a post-float range sitting beside a pre-float close, so 03-06 is excluded from all scoring (it is already a fixed jump day above). The rule above holds unchanged.
+
 ## 4. Forecast
 - Frozen v2 (scripts/ensemble.py, untouched) plus challengers on log-range (high-low) bands, same RangeSkill and coverage definitions as scripts/backtest_score.py (RangeSkill = 1 - mean Winkler 80% interval score / naive-range score).
 - FX and metals each get their own pooled fit. No EGX parameter is carried over.

@@ -39,7 +39,7 @@ def run():
     syms = list(F.FX_SYMBOLS.values()) + list(F.METAL_PROXY.values())
     check("FX stays spot; metals are exactly GC=F/SI=F and every metal name says FUTURES_PROXY",
           set(F.METAL_PROXY.values()) == {"GC=F", "SI=F"} and all(n.endswith("_FUTURES_PROXY") for n in F.METAL_PROXY)
-          and not any(s in ("GC=F", "SI=F") for s in F.FX_SYMBOLS.values()) and len(set(syms)) == 10)
+          and not any(s in ("GC=F", "SI=F") for s in F.FX_SYMBOLS.values()) and len(set(syms)) == 15)
     rows, sk = F.parse_futures(fut_payload())
     check("session date is the New York date, not the fixed -5h meta offset",
           [r[0] for r in rows] == ["2023-01-09", "2023-01-10", "2023-06-12"], str(rows))
@@ -100,9 +100,13 @@ def run():
         names = sorted(os.listdir(d))
         man = json.load(open(os.path.join(d, "FROZEN_DEFINITIONS.json")))
         gold_rows = list(csv.reader(open(os.path.join(d, "XAUUSD_FUTURES_PROXY.csv"))))
-        check("end-to-end: 8 FX + 2 proxy + derived csv, manifest, exit 0",
-              code == 0 and len([n for n in names if n.endswith(".csv")]) == 11
+        check("end-to-end: 13 FX + 2 proxy + derived csv, manifest, exit 0",
+              code == 0 and len([n for n in names if n.endswith(".csv")]) == 16
               and "XAUEGP_FUTURES_PROXY.csv" in names and "FROZEN_DEFINITIONS.json" in names, str(names))
+        check("all 13 named FX series harvested, each from its own Yahoo symbol, and recorded in the manifest",
+              len(F.FX_SYMBOLS) == 13 and set(F.FX_SYMBOLS) == {"USDEGP", "EUREGP", "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPEGP", "USDSAR", "USDAED"}
+              and F.FX_SYMBOLS["USDSAR"] == "USDSAR=X" and F.FX_SYMBOLS["GBPEGP"] == "GBPEGP=X"
+              and all(n + ".csv" in names for n in F.FX_SYMBOLS) and man["fx_symbols"] == F.FX_SYMBOLS)
         check("every proxy csv row carries the proxy label; header has roll_window and proxy columns",
               gold_rows[0][-2:] == ["roll_window", "proxy"] and all(r[-2] in ("0", "1") for r in gold_rows[1:]) and all(r[-1] == F.PROXY_LABEL for r in gold_rows[1:]) and len(gold_rows) == 4)
         check("no unlabelled metal file is written",
