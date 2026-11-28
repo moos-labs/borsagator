@@ -4,12 +4,16 @@ Design only. No scorer, no data read, no implementation. Written before any atte
 
 ## Panel (the accepted coverage list)
 17 names with an ar.wikipedia page and a pageview series, from the coverage check of 28 Nov 2026 (ar.wikipedia API, per-article daily pageviews, 2024-01-01 to 2026-11-22; created dates all before 2024 except MASR 2026-05-01):
+
 COMI, ETEL, ORAS, TMGH, SWDY, JUFO, FAIT, HRHO, ORWE, EGAL, EFIH, ORHD, EGAS, AMOC, SKPC, EFID, MCQE.
 - EFID has no returned series before 2024-10-17: its earlier days are MISSING, never zero.
 - MCQE has 611 non-zero days of 964; zero-view days are real zeros, missing days are missing.
 - MASR is dropped (page created 2026-05-01, no history for training cells). FAITA shares FAIT's page and is not a separate panel name.
 - Names with no page, no name, or search-only absence are dropped and listed, never imputed: ACGC ATQA MPCO MTIE OCDI PHDC ARCC ETRS IFAP ISPH SAUD ADIB RMDA, and CLHO FAITA ICFC LCSW RACC (no Arabic name in EGX_COMPANIES). The page titles are listed in the table under "Panel page titles" below (live-verified 28 Nov 2026); they are pinned in the scorer's panel file before scoring.
 - Known weakness: median daily views are 1 to 65, five names at 4 or fewer. Counts are small and noisy at a weekly horizon.
+
+### Pageview API request (fixed, FIX-961k F1)
+Endpoint: Wikimedia REST `metrics/pageviews/per-article/ar.wikipedia/{access}/{agent}/{title}/daily/{start}/{end}`, with access = `all-access` and agent = `user`, for BOTH the coverage check and scoring. Titles are the pinned titles in the table below, granularity `daily`, dates UTC. The agent filter `user` is a design choice of the author (not read from a Moos decision): it is the one that reproduces the stored coverage figure (MCQE 611 non-zero of 964 days, checked live 28 Nov 2026 on all-access/user; all-access/all-agents returns 964 of 964 non-zero for the same title and range, so that coverage note used `user`). No other access or agent filter is used, and a scorer that cannot fetch with exactly these two filters reports counts only.
 
 ### Panel page titles (added for FIX-961j, live check 28 Nov 2026)
 Exact ar.wikipedia article titles for the panel, so the mapping is reproducible before the registration freeze. Method (mine): for each ticker, the Arabic EGX name from `EGX_COMPANIES` in `worker/egx_harvest.py` was searched live on ar.wikipedia (MediaWiki API `list=search`, namespace 0, top 4), the candidate title was then fetched with `prop=info|extracts|pageprops` (page exists, is not a redirect, is not a disambiguation page, and its introduction names the company). All 18 rows below passed that check on 28 Nov 2026; the page text was read, not guessed. Where the EGX name is not itself the article title, the article was chosen from the search results and the intro (COMI: the bare EGX name redirects to a disambiguation page, so the article is the "(مصر)" page; TMGH: `طلعت مصطفى` is the person's page, the company page is `مجموعة طلعت مصطفى`; EGAS: `غاز مصر (شركة)`).
@@ -59,7 +63,15 @@ For cutoff date C and name i: A(i,C) = log((S7 + 1) / (S28/4 + 1)), where S7 is 
 - The frozen k is the only fitted value; cells 48-90 and 91+ are never used to change it.
 
 ## Lookback and minimum-history rule (up front)
-A cell is scorable for a name only if all 28 days C-28..C-1 exist in that name's series (no missing days). Series start 2024-01-01, so any cutoff before 2024-01-29 fails. Rule applies per (cell, name), not per cell.
+A cell is scorable for a name only if all 28 days C-28..C-1 are AVAILABLE for that name (below). Series start 2024-01-01, so any cutoff before 2024-01-29 fails. Rule applies per (cell, name), not per cell.
+
+### Zero versus missing (fixed, FIX-961k F2)
+The API may omit zero-view days, and an omitted day can also be data that was never loaded, so an omitted day is classified by an independently checkable rule, applied by the scorer BEFORE covered pairs are counted. Let the fetched series of name i (all-access/user, one fetch for the whole range) have first returned day F(i) and last returned day Z(i). Let the LOADED set be the days on which the API returns a row for at least one OTHER panel name (the panel itself is the check that the day was loaded; a row with 0 views counts as a returned row).
+- A returned day is available with its returned value (a returned 0 is a real zero).
+- An omitted day D is a CONFIRMED ZERO (value 0, available) only if F(i) <= D <= Z(i) AND D is in the LOADED set.
+- Every other omitted day is UNAVAILABLE: a day before F(i) (the EFID gap before 2024-10-17 is unavailable by this rule, never zero), a day after Z(i), or a day that is not in the LOADED set (nothing loaded for any other name).
+- A (cell, name) pair is covered only if all 28 days C-28..C-1 are available. The scorer lists each excluded pair with cutoff, name, and the first unavailable day, reason "28-day history unavailable".
+- Verifiable by anyone re-fetching the same 17 series with the same two filters; the rule adds no parameter and changes no panel, no 28-day length, no slope fit and no number in Amendment 1. The 2025-08-15 freeze and the n >= 6 and 100-pair rules are untouched.
 
 ## Drop rule for the 2023-12-29 training cells
 The 7 training cells with cutoff 2023-12-29 (no pageview history at all, per Moos) are DROPPED from the fit. Any other training cell whose cutoff is before 2024-01-29 is dropped by the same rule. Every dropped cell and every dropped (cell, name) pair is listed individually with its cutoff and reason, in the doc that the scorer emits; none is imputed or back-filled. I have not read the cell calendar for this draft, so the exact count of additional dropped training cells is UNKNOWN until the scorer runs the listing step (a calendar read, not an outcome read).
