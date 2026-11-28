@@ -301,12 +301,155 @@ def test_leave_out_prints_exclusions_first():
     check("leave-out also uses in-range captures only", calls["args"][0] == ["IN1"] and calls["args"][1] is None, str(calls))
 
 
+def test_freeze_gate_uses_capture_endpoint():
+    cl = series(400)
+    base = cl[300][0]
+    row = {"ticker": "A.CA", "as_of": base, "horizon": "day", "real": 0.1, "naive_half": 3.0, "mult": 1.0, "v2_sigma": 0.02}
+    out, ex = T.prepare([dict(row, real_end=cl[302][0])], {"A.CA": cl})
+    check("rdate is the capture endpoint, OHLCV date kept beside it",
+          out[0]["rdate"] == cl[302][0] and out[0]["rdate_ohlcv"] == cl[301][0], str(out))
+    check("a differing endpoint is noted, not excluded", len(T.endpoint_notes(out)) == 1 and not ex)
+    out, ex = T.prepare([row], {"A.CA": cl})
+    check("no recorded endpoint falls back to the OHLCV date and is not noted", out[0]["rdate"] == cl[301][0] and not T.endpoint_notes(out))
+    # the leak path: OHLCV endpoint before FREEZE, capture endpoint on/after it
+    ok = [mkrow(rdate="2025-08-14") for _ in range(100)]
+    leak = dict(mkrow(rdate="2025-08-15"), rdate_ohlcv="2025-08-14")
+    n, fx, w = T.fit_pooled(ok + [leak])
+    check("a row whose capture endpoint is on the freeze date stays out of the fit and is listed",
+          n == 100 and len(fx) == 1 and "after freeze date" in fx[0], str((n, fx)))
+    n, fx, w = T.fit_pooled(ok + [dict(mkrow(rdate="2025-08-14"), rdate_ohlcv="2025-08-14")])
+    check("agreeing endpoints before the freeze date are covered", n == 101 and not fx)
+    # the realised endpoint rule: Nth session after the cutoff of the capture's own list
+    sd = ["2025-01-02", "2025-01-03", "2025-01-05", "2025-01-06", "2025-01-07", "2025-01-08"]
+    check("day endpoint is the 1st session after the cutoff", T.R.endpoint_date(sd, "2025-01-02", "day") == "2025-01-03")
+    check("week endpoint is the 5th session after the cutoff", T.R.endpoint_date(sd, "2025-01-02", "week") == "2025-01-08")
+    check("too short a list gives None", T.R.endpoint_date(sd, "2025-01-02", "month") is None)
+    check("a cutoff after the session list gives None", T.R.endpoint_date(sd, "2025-01-08", "day") is None)
+
+
+def test_rebuild_notices_are_not_exclusions():
+    gaps = ["cap1: realised window rebuilt to 21 sessions from price.csv", "cap2: scoring failed: boom"]
+    exg, rb = T.split_gaps(gaps)
+    check("split_gaps separates the rebuild notice", exg == [gaps[1]] and rb == [gaps[0]])
+    calls, restore = _stub_pipeline([], gaps=gaps)
+    buf = io.StringIO()
+    saved = T.fit_pooled
+    T.fit_pooled = lambda rows: (0, [], None)
+    try:
+        with contextlib.redirect_stdout(buf):
+            T.main(["fit", "--captures", "x", "--ohlcv-dir", "x"])
+    finally:
+        T.fit_pooled = saved
+        restore()
+    out = buf.getvalue()
+    check("challenger fit: rebuild notice under its own heading, not in EXCLUSIONS",
+          "REBUILT WINDOWS (scored, not exclusions)" in out and "excluded: cap1" not in out
+          and "excluded: cap2: scoring failed: boom" in out
+          and out.index("cap1: realised window rebuilt") < out.index("EXCLUSIONS (every one listed)"), out)
+    import score_shrinkage_leave_out as L
+    import json, tempfile
+    calls, restore = _stub_pipeline([], gaps=gaps, mod=L.T)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.1, 1.0]}, fh)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                L.main(["--captures", "x", "--ohlcv-dir", d, "--weights", wp])
+        finally:
+            restore()
+    out = buf.getvalue()
+    check("leave-out: rebuild notice under its own heading, not in EXCLUSIONS",
+          "REBUILT WINDOWS (scored, not exclusions)" in out and "excluded: cap1" not in out
+          and "excluded: cap2: scoring failed: boom" in out, out)
+
+
+def test_leave_out_lists_crossed_rows():
+    import score_shrinkage_leave_out as L
+    import json, tempfile
+    bad = mkrow(h="week", q=(5.0, 6.0), half=2.0, base="2025-05-02")
+    bad["key"] = "X.CA 2025-05-02 week"
+    good = mkrow(h="week", base="2025-05-09")
+    good["key"] = "Y.CA 2025-05-09 week"
+    calls, restore = _stub_pipeline([bad, good], mod=L.T)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.0, 1.0]}, fh)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                L.main(["--captures", "x", "--ohlcv-dir", d, "--weights", wp])
+        finally:
+            restore()
+    out = buf.getvalue()
+    line = "crossed edges: %s (reason: crossed edges, v2 interval used)" % bad["key"]
+    check("leave-out lists the crossed row once with the reason", out.count(line) == 1 and good["key"] not in out.split("CROSSED-EDGE")[1].split("week, leave")[0], out[:900])
+    check("count line present and listing precedes the folds",
+          "CROSSED-EDGE FALLBACKS (every one listed, before any fold; rows stay in scoring): 1" in out
+          and out.index(line) < out.index("leave one cutoff out"), out[:900])
+
+
+def test_mature_cluster_counting():
+    caps = ["/r/2025-01-02/A.CA", "/r/2025-01-02/B.CA", "/r/2025-01-09/A.CA", "/r/2025-01-09/B.CA",
+            "/r/2025-01-09/B.CA", "/r/2025-01-16/A.CA"]
+    def row(t, b, h="week"):
+        r = mkrow(h=h, base=b)
+        r["ticker"] = t
+        return r
+    rows = [row("A.CA", "2025-01-02"), row("B.CA", "2025-01-02"),
+            row("A.CA", "2025-01-09"),                      # B.CA dropped at 01-09
+            row("A.CA", "2025-01-16"), row("Z.CA", "2025-01-16"),   # extra row of another ticker
+            row("A.CA", "2025-01-23"), row("B.CA", "2025-01-23")]   # cutoff with no capture
+    mt, al = T.mature_clusters(caps, rows)
+    check("only fully covered cutoffs are mature", mt == {"2025-01-02", "2025-01-16"}, str(mt))
+    check("every captured cutoff is counted, an uncaptured one is not", al == {"2025-01-02", "2025-01-09", "2025-01-16"}, str(al))
+    check("a dropped captured ticker keeps its cluster immature (no eligibility filter)", "2025-01-09" not in mt)
+    check("duplicate captures collapse to one intended ticker",
+          T.mature_clusters(caps, [row("A.CA", "2025-01-09"), row("B.CA", "2025-01-09")])[0] == {"2025-01-09"})
+    mt2, _ = T.mature_clusters(caps, [r for r in rows if r["base"] != "2025-01-02"])
+    check("removing one cutoff's rows removes only that cluster", mt2 == {"2025-01-16"})
+    check("empty rows give no mature clusters", T.mature_clusters(caps, [])[0] == set())
+    # through the describe CLI: per horizon, week has one dropped ticker
+    import json, tempfile
+    wk = [row("A.CA", "2025-01-02"), row("B.CA", "2025-01-02"), row("A.CA", "2025-01-09")]
+    dy = [row("A.CA", "2025-01-02", "day"), row("B.CA", "2025-01-02", "day"),
+          row("A.CA", "2025-01-09", "day"), row("B.CA", "2025-01-09", "day")]
+    calls, restore = _stub_pipeline(wk + dy)
+    T.cell_caps = lambda roots, lo, hi: (caps, caps)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.1, 1.0]}, fh)
+        jp = os.path.join(d, "o.json")
+        saved_eval = T.evaluate_pairs
+        T.evaluate_pairs = lambda rows_, w_, reps, seed: saved_eval(rows_, w_, 20, seed)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                T.main(["describe", "--captures", "x", "--ohlcv-dir", "x", "--weights", wp, "--json", jp])
+        finally:
+            T.evaluate_pairs = saved_eval
+            restore()
+        js = json.load(open(jp))
+    out = buf.getvalue()
+    check("describe prints mature clusters per horizon before the statistics",
+          "day: fully mature cutoff clusters=2 of 3 (registered minimum 10" in out
+          and "week: fully mature cutoff clusters=1 of 3 (registered minimum 10" in out
+          and "month: fully mature cutoff clusters=0 of 3" in out
+          and out.index("week: fully mature") < out.index("DESCRIPTIVE ONLY"), out[:1200])
+    check("json carries the mature-cluster counts", js["mature_clusters"]["week"] == {"mature": 1, "cutoffs": 3}, str(js.get("mature_clusters")))
+    check("the registered minimum is 10", T.MIN_CLUSTERS == 10)
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
                test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
-               test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first):
+               test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
+               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting):
         fn()
 
 

@@ -57,8 +57,18 @@ def main(argv=None):
     rows, gaps = R.build_rows(caps)
     usable, ex = T.prepare(rows, closes)
     print("COUNTS cells %d-%d: %d usable rows, frozen pair a=%s b=%s, no refit" % (lo, hi, len(usable), w[0], w[1]))
+    gex, rebuilt = T.split_gaps(gaps)
+    print("REBUILT WINDOWS (scored, not exclusions)")
+    print("\n".join(rebuilt))
+    notes = T.endpoint_notes(usable)
+    print("ENDPOINT DATE DIFFERENCES (scored, not exclusions): %d" % len(notes))
+    print("\n".join(notes))
     print("EXCLUSIONS (every one listed, before any fold; excluded rows stay out of the folds)")
-    print("\n".join(["excluded: %s" % g for g in gaps] + ex))
+    print("\n".join(["excluded: %s" % g for g in gex] + ex))
+    crossed = ["crossed edges: %s (reason: crossed edges, v2 interval used)" % r["key"]
+               for r in usable if T.row_scores(r, w[0], w[1])[2]]
+    print("CROSSED-EDGE FALLBACKS (every one listed, before any fold; rows stay in scoring): %d" % len(crossed))
+    print("\n".join(crossed))
     for h in T.HORIZONS:
         hp = [r for r in usable if r["horizon"] == h]
         for key, label in (("base", "cutoff"), ("ticker", "ticker")):

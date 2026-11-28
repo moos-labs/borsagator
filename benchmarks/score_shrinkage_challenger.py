@@ -32,6 +32,7 @@ WINDOW = 250
 MIN_MOVES = 125
 Q_LO, Q_HI = 0.10, 0.90
 GRID = [i / 20.0 for i in range(21)]
+MIN_CLUSTERS = 10  # fully mature cutoff clusters per horizon (registered loop bar)
 MIN_COVERED = 100  # pooled over the three horizons (Moos decision, relayed)
 FREEZE = "2025-08-15"
 FIT_CELLS = (1, 47)
@@ -108,18 +109,62 @@ def prepare(rows, closes_by_ticker):
             ex.append("excluded row %s: no price history file" % key)
             continue
         base = str(r["as_of"])[:10]
-        rdate = realised_date(cl, base, h)
-        if rdate is None or r.get("real") is None:
+        rdate_ohlcv = realised_date(cl, base, h)
+        if rdate_ohlcv is None or r.get("real") is None:
             ex.append("excluded row %s: no realised close" % key)
             continue
+        # The freeze gate uses the date of the close that PRODUCED `real`
+        # (the capture's own realised endpoint), not the OHLCV series
+        # date: they can differ when the capture's session list lacks a
+        # date the OHLCV file has. Rows without a recorded endpoint fall
+        # back to the OHLCV date.
+        rdate = r.get("real_end") or rdate_ohlcv
         q_lo, q_hi, n = baseline(cl, base, h)
         if q_lo is None:
             ex.append("excluded row %s: short history (%d moves)" % (key, n))
             continue
         half = R.half_pct(r["v2_sigma"], h, ens_mod.V2_BAND_K[h], r["mult"])
         out.append(dict(r, half=half, q_lo=q_lo, q_hi=q_hi,
-                        rdate=rdate, base=base, key=key))
+                        rdate=rdate, rdate_ohlcv=rdate_ohlcv,
+                        base=base, key=key))
     return out, ex
+
+
+REBUILD_NOTE = "realised window rebuilt to 21 sessions"
+
+
+def mature_clusters(caps, horizon_rows):
+    """(mature cutoffs, all cutoffs) for ONE horizon. Intended rows of a
+    cutoff = one per in-range capture of that cutoff (its ticker); no
+    eligibility filter applies: a captured ticker whose row for this
+    horizon is dropped (capture rejection, v2_sigma missing, short history,
+    no realised close) stays intended, so its cluster is not mature.
+    A cutoff counts only when every intended ticker has a usable row for
+    the horizon. Duplicates collapse and other cutoffs never count."""
+    intended = {}
+    for c in caps:
+        cutoff = os.path.basename(os.path.dirname(c))
+        intended.setdefault(cutoff, set()).add(os.path.basename(c).upper())
+    have = {}
+    for r in horizon_rows:
+        have.setdefault(r["base"], set()).add(r["ticker"].upper())
+    mature = {k for k, v in intended.items() if v and v <= have.get(k, set())}
+    return mature, set(intended)
+
+
+def split_gaps(gaps):
+    """(exclusion gaps, rebuild notices). A successful window rebuild keeps
+    the capture scored, so it is reported apart from exclusions."""
+    ex = [g for g in gaps if REBUILD_NOTE not in g]
+    return ex, [g for g in gaps if REBUILD_NOTE in g]
+
+
+def endpoint_notes(usable):
+    """Scored rows whose capture endpoint date differs from the OHLCV one
+    (the freeze gate uses the capture's endpoint)."""
+    return ["%s: capture endpoint %s, OHLCV endpoint %s (freeze gate uses %s)"
+            % (r["key"], r["rdate"], r.get("rdate_ohlcv", r["rdate"]), r["rdate"])
+            for r in usable if r["rdate"] != r.get("rdate_ohlcv", r["rdate"])]
 
 
 def row_scores(r, a, b):
@@ -244,7 +289,9 @@ def main(argv=None):
     # series for an in-range row's realised-window rebuild.
     rows, gaps = R.build_rows(caps)
     usable, ex = prepare(rows, closes)
-    ex = ["excluded: %s" % g for g in gaps] + ex
+    gex, rebuilt = split_gaps(gaps)
+    ex = ["excluded: %s" % g for g in gex] + ex
+    notes = endpoint_notes(usable)
     if a.mode == "fit":
         n, fx, wh = fit_pooled(usable)
         lines = ["pooled over day, week, month: covered training rows=%d%s" % (
@@ -256,6 +303,10 @@ def main(argv=None):
         w = list(wh) if wh else None
         print("COUNTS cells %d-%d, %d rows built, %d usable" % (mn, mx, len(rows), len(usable)))
         print("\n".join(lines))
+        print("REBUILT WINDOWS (scored, not exclusions)")
+        print("\n".join(rebuilt))
+        print("ENDPOINT DATE DIFFERENCES (scored, not exclusions): %d" % len(notes))
+        print("\n".join(notes))
         print("EXCLUSIONS (every one listed)")
         print("\n".join(ex + fx))
         print("FROZEN SHARED WEIGHT PAIR (a, b): %s" % json.dumps(w))
@@ -271,7 +322,9 @@ def main(argv=None):
             print("\n".join(crossed_tr))
         if a.json:
             with open(a.json, "w", encoding="utf-8") as fh:
-                json.dump({"weights": w, "counts": lines, "crossed_rows": crossed_tr}, fh, indent=1)
+                json.dump({"weights": w, "counts": lines, "crossed_rows": crossed_tr,
+                           "rebuilt_windows": rebuilt, "endpoint_differences": notes,
+                           "excluded": ex + fx}, fh, indent=1)
         return 0
     if not a.weights:
         print("refusing: describe needs --weights from a fit run")
@@ -288,6 +341,16 @@ def main(argv=None):
     print("COUNTS (before any statistic), cells %d-%d, %d rows built, %d usable"
           % (mn, mx, len(rows), len(usable)))
     print("\n".join(lines))
+    print("REBUILT WINDOWS (scored, not exclusions)")
+    print("\n".join(rebuilt))
+    print("ENDPOINT DATE DIFFERENCES (scored, not exclusions): %d" % len(notes))
+    print("\n".join(notes))
+    mature = {}
+    for h in HORIZONS:
+        mt, al = mature_clusters(caps, [r for r in usable if r["horizon"] == h])
+        mature[h] = (len(mt), len(al))
+        print("%s: fully mature cutoff clusters=%d of %d (registered minimum %d; intended rows = captured "
+              "tickers of the cutoff, no eligibility filter)" % (h, len(mt), len(al), MIN_CLUSTERS))
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
     res = evaluate_pairs(usable, w, a.reps, a.seed)
@@ -310,6 +373,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"descriptive": True, "counts": lines, "results": res,
+                       "mature_clusters": {h: {"mature": m, "cutoffs": t} for h, (m, t) in mature.items()},
                        "excluded": ex}, fh, indent=1)
     return 0
 

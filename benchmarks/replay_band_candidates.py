@@ -259,6 +259,23 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
+def _realised_endpoints(staged):
+    """Sorted session dates of the staged realised.json (after any
+    extension): the list realised_move_pct is measured from."""
+    with open(os.path.join(staged, "realised.json"), encoding="utf-8") as f:
+        rl = json.load(f)
+    return sorted(str(s.get("date"))[:10] for s in (rl.get("sessions") or []))
+
+
+def endpoint_date(session_dates, as_of, horizon):
+    """Date of the close that realised_move_pct is measured to: the Nth
+    session dated after the cutoff (as_of), N = ledger sessions, the rule
+    backtest_score.score_capture uses. None when the list is too short."""
+    after = [d for d in session_dates if d > str(as_of)[:10]]
+    n = A.SESSIONS[horizon]
+    return after[n - 1] if len(after) >= n else None
+
+
 def build_rows(capture_dirs, ref_dirs=None):
     """One row per matured, non-gap (capture, horizon) with realised
     move, naive band, v2 sigma, and each candidate's daily sigma."""
@@ -278,6 +295,7 @@ def build_rows(capture_dirs, ref_dirs=None):
                 gaps.append("%s: realised window rebuilt to 21 sessions "
                             "from price.csv" % cap)
             scored, _g = bs.score_capture(staged)
+            real_end = _realised_endpoints(staged)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
@@ -303,7 +321,11 @@ def build_rows(capture_dirs, ref_dirs=None):
                 / 2.0,
                 "mult": ens_mod.RISK_MULT.get(
                     ((ens or {}).get("risk") or {}).get("level"), 1.0),
-                "v2_sigma": v2sig, "sig": sig})
+                "v2_sigma": v2sig, "sig": sig,
+                # date of the close that produced `real` (the capture's
+                # own staged realised sessions), see _realised_endpoints
+                "real_end": endpoint_date(real_end, r["as_of"],
+                                          r["horizon"])})
     return rows, gaps
 
 
