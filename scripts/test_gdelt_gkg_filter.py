@@ -676,6 +676,28 @@ def test_absent_flushed_before_fsync():
     check("one fsync per absent file with the line already flushed", sizes == [line, 2 * line, 3 * line], str(sizes))
 
 
+def test_transient_failures_do_not_starve_later_files():
+    """A failing prefix is retried AFTER files that were never attempted, and
+    the order survives a restart (persisted in state/transient.txt)."""
+    names = ["202405150%02d000" % i for i in range(20)]
+    bad = set("%s.gkg.csv.zip" % n for n in names[:8])
+
+    def fake(url):
+        raise ValueError("transient")
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        _o1, f1 = _run_fetch_with(st, out, names, fake, budget=1e-9)
+        check("run 1 starts in listing order", f1[:8] == ["%s.gkg.csv.zip" % n for n in names[:8]], str(f1))
+        tl = open(os.path.join(st, "transient.txt")).read().split()
+        check("transient failures persisted one line per failure", len(tl) == 8, str(tl))
+        _o2, f2 = _run_fetch_with(st, out, names, fake, budget=1e-9)
+        check("run 2 scans never-attempted files first", f2[:8] == ["%s.gkg.csv.zip" % n for n in names[8:16]], str(f2))
+        check("transient files stay out of absent.txt and done.txt",
+              not open(os.path.join(st, "absent.txt")).read().strip() and not open(os.path.join(st, "done.txt")).read().strip())
+        _o3, f3 = _run_fetch_with(st, out, names, fake, budget=1e-9)
+        check("run 3 takes the remaining fresh files before any repeat failure", f3[:4] == ["%s.gkg.csv.zip" % n for n in names[16:20]], str(f3))
+        check("then the fewest-failure files (listing order inside a tier)", f3[4:8] == ["%s.gkg.csv.zip" % n for n in names[:4]], str(f3))
+
 def test_new_directories_and_their_parents_fsynced():
     """Every directory run_fetch creates (including missing ancestors) is
     fsynced, and so is each one's parent."""
@@ -758,7 +780,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

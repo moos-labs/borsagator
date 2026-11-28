@@ -462,7 +462,11 @@ def run_fetch(a):
     # with fsync as discovered, so a budget-killed run still records
     # them and a resumed run does not re-download them.
     absent_path = os.path.join(a.state, "absent.txt")
-    for pth in (matches_path, done_path, absent_path):
+    # transient.txt: one line per TRANSIENT failure of a file (never absent,
+    # never done). Persisted across runs so a later run scans files that
+    # have not failed (or failed less often) before repeating the failures.
+    transient_path = os.path.join(a.state, "transient.txt")
+    for pth in (matches_path, done_path, absent_path, transient_path):
         cut = truncate_incomplete_tail(pth)
         if cut:
             print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
@@ -472,6 +476,10 @@ def run_fetch(a):
     absent = set()
     if os.path.exists(absent_path):
         absent = set(open(absent_path, encoding="utf-8").read().split())
+    transient = {}
+    if os.path.exists(transient_path):
+        for nm in open(transient_path, encoding="utf-8").read().split():
+            transient[nm] = transient.get(nm, 0) + 1
     macro = None
     macro_done = set()
     macro_matches_path = os.path.join(a.out, "macro_matches.jsonl")
@@ -524,6 +532,10 @@ def run_fetch(a):
         need_m = macro is not None and name not in macro_done
         if need_c or need_m:
             files.append((u, s, need_c, need_m))
+    # Stable sort: fewest recorded transient failures first, listing order
+    # inside a tier. Files never attempted (or never failed) run before
+    # repeat failures, so a failing prefix cannot starve the rest.
+    files.sort(key=lambda it: transient.get(it[0].rsplit("/", 1)[-1], 0))
     t0, n_done, n_bytes, n_rows, n_mrows, n_malformed = time.time(), 0, 0, 0, 0, 0
     n_unfinished, n_absent = 0, 0
     print(f"todo={len(files)} done_prev={len(done)} macro_done_prev={len(macro_done)} "
@@ -554,6 +566,7 @@ def run_fetch(a):
     out_f = open(matches_path, "a", encoding="utf-8")
     macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
     mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
+    transient_f = open(transient_path, "a", encoding="utf-8")
     # New checkpoint files exist only once their directory entry is durable;
     # per-record fsync below persists contents only.
     fsync_dir(state_dir)
@@ -577,6 +590,9 @@ def run_fetch(a):
                             print(f"absent {name}: {err[len('absent: '):]}", flush=True)
                         else:
                             n_unfinished += 1
+                            transient_f.write(name + "\n")
+                            transient_f.flush()
+                            os.fsync(transient_f.fileno())
                             print(f"skip {name}: {err}", flush=True)
                         continue
                     if need_c:
@@ -611,6 +627,7 @@ def run_fetch(a):
     finally:
         done_f.close()
         absent_f.close()
+        transient_f.close()
         out_f.close()
         if macro_f:
             macro_f.close()
