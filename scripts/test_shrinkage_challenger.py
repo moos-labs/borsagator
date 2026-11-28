@@ -187,10 +187,100 @@ def test_refusals():
     check("refusals printed", buf.getvalue().count("refusing") == 5)
 
 
+def _stub_pipeline(rows_for_prepare, gaps=None, ex=None, mod=None):
+    """Replace discovery, build_rows and prepare; returns calls and a restore fn."""
+    calls = {}
+    T = mod or globals()["T"]
+    saved = (T.cell_caps, T.R.build_rows, T.prepare, T.load_closes, os.listdir)
+    T.cell_caps = lambda roots, lo, hi: (["ALL1", "ALL2", "IN1"], ["IN1"])
+    def fake_build(caps, ref=None, *rest):
+        calls["args"] = (list(caps), ref, rest)
+        return [], list(gaps or [])
+    T.R.build_rows = fake_build
+    T.prepare = lambda rows, closes: (rows_for_prepare, list(ex or []))
+    T.load_closes = lambda path: []
+    os.listdir = lambda d: []
+    def restore():
+        T.cell_caps, T.R.build_rows, T.prepare, T.load_closes, os.listdir = saved
+    return calls, restore
+
+
+def test_reference_set_is_in_range_only():
+    calls, restore = _stub_pipeline([])
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            T.main(["fit", "--captures", "x", "--ohlcv-dir", "x"])
+    finally:
+        restore()
+    check("build_rows gets only the in-range captures", calls["args"][0] == ["IN1"], str(calls))
+    check("no out-of-range reference set is passed", calls["args"][1] is None and calls["args"][2] == (), str(calls))
+
+
+def test_seed_refused_before_loading():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        r1 = T.main(["fit", "--captures", "/nonexistent", "--ohlcv-dir", "/nonexistent", "--seed", "1"])
+        r2 = T.main(["describe", "--captures", "/nonexistent", "--ohlcv-dir", "/nonexistent", "--seed", "20261126"])
+    check("other seeds refused before loading inputs", r1 == 2 and r2 == 2 and buf.getvalue().count("refusing: --seed must be the registered 20261125") == 2, buf.getvalue())
+
+
+def test_crossed_rows_listed_before_statistics():
+    # weights (a, b) = (0, 1): lower edge = q_lo, upper edge = half; q_lo above half crosses
+    bad = mkrow(h="week", q=(5.0, 6.0), half=2.0, base="2025-12-31")
+    bad["ticker"] = "X.CA"
+    good = mkrow(h="week", base="2026-02-13")
+    good["ticker"] = "Y.CA"
+    res = T.evaluate_pairs([bad, good], (0.0, 1.0), 20, 1)
+    check("crossed key carried through evaluate_pairs", res["week"]["crossed_keys"] == [bad["key"]] and res["week"]["crossed"] == 1, str(res["week"].get("crossed_keys")))
+    calls, restore = _stub_pipeline([bad, good])
+    import json, tempfile
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.0, 1.0]}, fh)
+        saved_eval = T.evaluate_pairs
+        T.evaluate_pairs = lambda rows, w, reps, seed: saved_eval(rows, w, 20, seed)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                T.main(["describe", "--captures", "x", "--ohlcv-dir", "x", "--weights", wp])
+        finally:
+            T.evaluate_pairs = saved_eval
+            restore()
+    out = buf.getvalue()
+    line = "crossed edges: %s (reason: crossed edges, v2 interval used)" % bad["key"]
+    check("each crossed fallback is printed with key and reason", out.count(line) == 1, out[-600:])
+    check("listing comes before the statistics", 0 <= out.index(line) < out.index("DESCRIPTIVE ONLY"))
+    check("total count line kept", "crossed-edge rows=1" in out)
+
+
+def test_leave_out_prints_exclusions_first():
+    import score_shrinkage_leave_out as L
+    import json, tempfile
+    calls, restore = _stub_pipeline([], gaps=["gap-one"], ex=["excluded row Z: reason"], mod=L.T)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.1, 1.0]}, fh)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                L.main(["--captures", "x", "--ohlcv-dir", d, "--weights", wp])
+        finally:
+            restore()
+    out = buf.getvalue()
+    check("exclusions printed", "excluded: gap-one" in out and "excluded row Z: reason" in out, out)
+    check("exclusions come before any fold", out.index("excluded: gap-one") < out.index("leave one cutoff out") if "leave one cutoff out" in out else True)
+    check("leave-out also uses in-range captures only", calls["args"][0] == ["IN1"] and calls["args"][1] is None, str(calls))
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
-               test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals):
+               test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
+               test_reference_set_is_in_range_only, test_seed_refused_before_loading,
+               test_crossed_rows_listed_before_statistics, test_leave_out_prints_exclusions_first):
         fn()
 
 
