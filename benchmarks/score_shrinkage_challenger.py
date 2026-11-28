@@ -259,9 +259,19 @@ def main(argv=None):
         print("EXCLUSIONS (every one listed)")
         print("\n".join(ex + fx))
         print("FROZEN SHARED WEIGHT PAIR (a, b): %s" % json.dumps(w))
+        # Training-cell rows whose challenger edges cross under the frozen pair
+        # (covered rows only, the rows the fit used). Listed individually; the
+        # v2 interval is what the scorer uses for them.
+        crossed_tr = []
+        if w:
+            crossed_tr = ["%s (reason: crossed edges under the frozen pair, v2 interval used)" % r["key"]
+                          for r in usable if r["rdate"] < FREEZE and row_scores(r, w[0], w[1])[2]]
+            print("CROSSED-EDGE ROWS UNDER THE FROZEN PAIR, cells %d-%d, covered rows: %d of %d" % (
+                mn, mx, len(crossed_tr), n))
+            print("\n".join(crossed_tr))
         if a.json:
             with open(a.json, "w", encoding="utf-8") as fh:
-                json.dump({"weights": w, "counts": lines}, fh, indent=1)
+                json.dump({"weights": w, "counts": lines, "crossed_rows": crossed_tr}, fh, indent=1)
         return 0
     if not a.weights:
         print("refusing: describe needs --weights from a fit run")
