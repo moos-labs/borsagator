@@ -50,6 +50,47 @@ def test_parse_fixtures():
         "gdelt-fetch --start 20240501000000 --end 20240531235959 --mode fixtures")
     check("parse: fixtures mode", plan is not None and plan["mode"]=="fixtures")
 
+def test_parse_rejects_non_ascii_digits():
+    arabic = "\u0662\u0660\u0662\u0664\u0660\u0665\u0660\u0661\u0660\u0660\u0660\u0660\u0660\u0660"
+    check("parse: 14 non-ASCII digits are digits for str.isdigit (premise)", arabic.isdigit() and len(arabic) == 14)
+    check("parse: non-ASCII --start rejected", worker.parse_gdelt_fetch_job("gdelt-fetch --start %s --end 20240531235959" % arabic) is None)
+    check("parse: non-ASCII --end rejected", worker.parse_gdelt_fetch_job("gdelt-fetch --start 20240501000000 --end %s" % arabic) is None)
+    check("parse: ASCII still accepted", worker.parse_gdelt_fetch_job("gdelt-fetch --start 20240501000000 --end 20240531235959") is not None)
+
+def test_filter_launch_env_is_denylist_filtered():
+    _fixtures_env()
+    job = {"id": "env-1", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
+    orig = worker.sh_group
+    seen = {}
+    def fake(cmd, cwd=None, env=None, timeout=3600):
+        seen["env"] = env
+        return _Res(0, "chunk done\n")
+    os.environ["GATOR_BUS_URL"] = "https://example.invalid/bus"
+    worker.sh_group = fake
+    try:
+        wd = worker.OUT / "t959-env"; wd.mkdir(parents=True, exist_ok=True)
+        worker.run_gdelt_fetch(job, wd)
+    finally:
+        worker.sh_group = orig
+        os.environ.pop("GATOR_BUS_URL", None)
+    e = seen.get("env")
+    check("filter launch passes an explicit env", isinstance(e, dict) and "PATH" in e)
+    check("filter launch env carries no denied key", e is not None and not (set(e) & worker.ENV_DENY_FOR_TOOLS))
+    check("GATOR_BUS_URL is among the denied keys (premise)", "GATOR_BUS_URL" in worker.ENV_DENY_FOR_TOOLS)
+
+def _wprog(jid, until):
+    pth = worker._gdelt_progress_path(jid)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+    pth.write_text(json.dumps({"total": 1, "stalls": 0, "deferred_until": until}, allow_nan=True))
+
+def test_deferred_unparseable_deadline():
+    jid = "defer-bad"
+    for bad in ("soon", [1], {"a": 1}, None, "", float("nan")):
+        _wprog(jid, bad)
+        check("deferred_until=%r does not raise and means not deferred" % (bad,), worker._gdelt_deferred(jid) is False)
+    _wprog(jid, time.time() + 1000)
+    check("a valid future deadline still defers", worker._gdelt_deferred(jid) is True)
+
 def test_parse_rejects():
     for bad in ["", "gdelt-fetch", "gdelt-fetch --start 20240501000000",
                 "gdelt-fetch --end 20240531235959",
@@ -492,12 +533,19 @@ def test_execute_releases_bus_claim_for_incomplete_run():
     worker.BUS = bus
     worker.CLAIM_REFRESH_SECONDS = 3600
     seen = {}
+    def _refresh_threads():
+        return [t for t in threading.enumerate() if getattr(t, "_target", None) is not None
+                and t._target.__name__ == "refresh" and t.is_alive()]
     def fake_exec(job):
+        seen.setdefault("running", {})[job["id"]] = list(_refresh_threads())
         seen["refresh_threads_running"] = sum(1 for t in threading.enumerate() if t.daemon and t.is_alive())
         return "incomplete" if job["id"] == "inc-1" else None
     worker._execute = fake_exec
     try:
         worker.execute({"id": "inc-1", "job": "gdelt-fetch"})
+        # checked immediately after the incomplete execution returns, before the finished one starts
+        inc_threads = seen["running"]["inc-1"]
+        inc_stopped = bool(inc_threads) and all(not t.is_alive() for t in inc_threads)
         worker.execute({"id": "fin-1", "job": "gdelt-fetch"})
     finally:
         worker.BUS, worker._execute, worker.CLAIM_REFRESH_SECONDS = o_bus, o_exec, o_sec
@@ -505,6 +553,7 @@ def test_execute_releases_bus_claim_for_incomplete_run():
     check("incomplete run's bus claim removed from origin/queue", "queue/claims/inc-1.json" not in ls)
     check("finished run keeps the existing completion path (claim untouched here)", "queue/claims/fin-1.json" in ls)
     alive = [t for t in threading.enumerate() if getattr(t, "_target", None) is not None and t._target.__name__ == "refresh" and t.is_alive()]
+    check("incomplete run's own refresh thread was captured and stopped right after it returned", inc_stopped)
     check("claim-refresh thread stopped by execute()", not alive)
     check("the refresh thread was running while the job executed", seen["refresh_threads_running"] >= 1)
 
@@ -704,6 +753,9 @@ def test_sidecar_reports_absent_both_paths():
 def main():
     test_parse_ok()
     test_parse_rejects()
+    test_parse_rejects_non_ascii_digits()
+    test_filter_launch_env_is_denylist_filtered()
+    test_deferred_unparseable_deadline()
     test_parse_fixtures()
     test_bad_job()
     test_fixtures_run()

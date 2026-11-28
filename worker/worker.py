@@ -3532,13 +3532,13 @@ def parse_gdelt_fetch_job(job):
         tok = parts[i]
         if tok == "--start" and i + 1 < len(parts):
             val = parts[i + 1]
-            if not (val.isdigit() and len(val) == 14):
+            if not re.fullmatch(r"[0-9]{14}", val):
                 return None
             plan["start"] = val
             i += 2
         elif tok == "--end" and i + 1 < len(parts):
             val = parts[i + 1]
-            if not (val.isdigit() and len(val) == 14):
+            if not re.fullmatch(r"[0-9]{14}", val):
                 return None
             plan["end"] = val
             i += 2
@@ -4364,8 +4364,12 @@ def _run_gdelt_fetch(job, workdir, master_dir):
 
     timed_out = False
     try:
+        # The queue write credential must never reach a tool process:
+        # same denylist-filtered env as the neighbouring tool launches.
+        filter_env = {k: v for k, v in os.environ.items()
+                      if k not in ENV_DENY_FOR_TOOLS}
         r = sh_group(" ".join(shlex.quote(c) for c in cmd), cwd=str(CODE),
-                     timeout=7200)
+                     env=filter_env, timeout=7200)
         rc = r.returncode
         out_text = (r.stdout or "") + (r.stderr or "")
     except subprocess.TimeoutExpired as e:
@@ -6210,7 +6214,12 @@ def _gdelt_note_incomplete(job_id, total, now_ts=None):
 def _gdelt_deferred(job_id, now_ts=None):
     now_ts = time.time() if now_ts is None else now_ts
     rec = _gdelt_progress_read(job_id)
-    return bool(rec) and float(rec.get("deferred_until", 0) or 0) > now_ts
+    if not rec:
+        return False
+    try:
+        return float(rec.get("deferred_until", 0) or 0) > now_ts
+    except (TypeError, ValueError):
+        return False  # unreadable deadline: fail open, like missing or invalid JSON
 
 
 def _gdelt_progress_clear(job_id):
