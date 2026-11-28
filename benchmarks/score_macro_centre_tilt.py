@@ -196,9 +196,13 @@ def main(argv=None):
     series = {k: load_series(os.path.join(a.series_dir, v[0]))
               for k, v in SERIES.items()}
     allc = A.find_captures(a.captures, None)
-    caps = [c for c in allc if A.cell_number(c) is not None
-            and a.min_cell <= A.cell_number(c) <= a.max_cell]
-    rows, gaps = R.build_rows(caps, allc)
+    # Cell bounds are applied BEFORE the per-(cutoff, ticker) dedup so a
+    # capture outside the cells cannot displace an eligible one; the
+    # unbounded list stays the price-reference set.
+    caps = [c for c in A.find_captures(a.captures, a.min_cell, a.max_cell)
+            if A.cell_number(c) is not None]
+    repairs = []
+    rows, gaps = R.build_rows(caps, allc, repairs)
     pairs, listed, dropped = tilt_rows(rows, series)
     counts = count_lines(pairs)
     ex = (["excluded: %s" % g for g in gaps] + dropped + listed)
@@ -206,6 +210,8 @@ def main(argv=None):
           "%d missing-signal rows, %d v2_sigma exclusions"
           % (a.min_cell, a.max_cell, len(listed), len(dropped)))
     print("\n".join(counts))
+    print("REPAIRED (scored, not excluded)")
+    print("\n".join(repairs))
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
     res = evaluate(pairs, a.reps, a.seed)
@@ -228,7 +234,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"descriptive": True, "counts": counts, "results": res,
-                       "excluded": ex}, fh, indent=1)
+                       "repaired": repairs, "excluded": ex}, fh, indent=1)
     return 0
 
 

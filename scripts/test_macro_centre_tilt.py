@@ -124,8 +124,15 @@ def test_reps_and_order():
              "mult": 1.0, "v2_sigma": 0}]
     saved = (T.load_series, T.A.find_captures, T.R.build_rows, T.evaluate)
     T.load_series = lambda path: []
-    T.A.find_captures = lambda a, b: []
-    T.R.build_rows = lambda caps, allc: (rows, ["gap one"])
+    calls = []
+    def fake_find(a, b=None, c=None):
+        calls.append((b, c))
+        return []
+    T.A.find_captures = fake_find
+    def fake_build(caps, allc, repairs=None):
+        repairs.append("x: realised window rebuilt to 21 sessions from price.csv")
+        return rows, ["gap one"]
+    T.R.build_rows = fake_build
     seen = []
 
     def fake_eval(pairs, reps, seed):
@@ -141,7 +148,33 @@ def test_reps_and_order():
     out = buf2.getvalue()
     check("main ok", rc == 0, out[:200])
     check("exclusions printed before evaluate", seen and "Z 2026-01-01 week" in seen[0] and "excluded: gap one" in seen[0])
+    check("cell bounds passed to the dedup step, unbounded call kept for references",
+          (None, None) in calls and (T.MIN_CELL, T.MAX_CELL) in calls, str(calls))
+    check("repair notice is listed as repaired, not as an exclusion",
+          "REPAIRED (scored, not excluded)" in out and "x: realised window rebuilt" in out
+          and "excluded: x: realised window rebuilt" not in out and "excluded: gap one" in out)
     check("counts split usable vs missing", "rows all signals usable=0 rows with missing signals=0" in out and "1 v2_sigma exclusions" in out)
+
+
+def test_build_rows_gaps_and_repairs():
+    R = T.R
+    saved = (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas)
+    R.bs.score_capture = lambda staged: ([], ["cap-rejected: manifest ticker/cutoff differs from cell path"])
+    R.A._stage = lambda cap, variant, tmp: cap
+    R.price_reference = lambda dirs: {}
+    R._extend_realised = lambda staged, px: staged.endswith("fixed")
+    R.read_ohlc = lambda cap, d: []
+    R.sigmas = lambda ohlc: {"s60": None}
+    try:
+        reps = []
+        rows, gaps = R.build_rows(["/x/cell60/2026-01-01/AAA.CA", "/x/cell61/2026-01-01/BBB.CA.fixed"], None, reps)
+        check("score_capture rejection reasons reach the gap list", gaps.count("cap-rejected: manifest ticker/cutoff differs from cell path") == 2, str(gaps))
+        check("repair goes to the repairs list, once", len(reps) == 1 and "rebuilt to 21 sessions" in reps[0] and "BBB.CA.fixed" in reps[0], str(reps))
+        check("repair is not among the exclusions", not any("rebuilt to 21" in g for g in gaps))
+        rows, gaps2 = R.build_rows(["/x/cell61/2026-01-01/BBB.CA.fixed"], None)
+        check("callers that pass no repairs list still see the notice in gaps (unchanged)", any("rebuilt to 21" in g for g in gaps2))
+    finally:
+        (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas) = saved
 
 
 def test_counts():
@@ -156,7 +189,7 @@ def test_counts():
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_counts):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_counts):
         fn()
 
 

@@ -259,9 +259,14 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
-def build_rows(capture_dirs, ref_dirs=None):
+def build_rows(capture_dirs, ref_dirs=None, repairs=None):
     """One row per matured, non-gap (capture, horizon) with realised
-    move, naive band, v2 sigma, and each candidate's daily sigma."""
+    move, naive band, v2 sigma, and each candidate's daily sigma.
+    gaps carries every real exclusion, including the rejection reasons
+    score_capture returns. A successful repair (realised window rebuilt
+    from price.csv) is not an exclusion: when `repairs` is a list the
+    notice goes there; when it is None the notice stays in gaps, as
+    before, for callers that do not separate them."""
     rows, gaps = [], []
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
@@ -275,9 +280,11 @@ def build_rows(capture_dirs, ref_dirs=None):
             staged = A._stage(cap, "v2", tmp)
             if _extend_realised(staged, prices.get(
                     os.path.basename(cap).upper())):
-                gaps.append("%s: realised window rebuilt to 21 sessions "
-                            "from price.csv" % cap)
-            scored, _g = bs.score_capture(staged)
+                (gaps if repairs is None else repairs).append(
+                    "%s: realised window rebuilt to 21 sessions "
+                    "from price.csv" % cap)
+            scored, scored_gaps = bs.score_capture(staged)
+            gaps.extend(scored_gaps)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
