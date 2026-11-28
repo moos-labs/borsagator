@@ -26,6 +26,8 @@ For each capture with cutoff D and each horizon:
 3. Composite m = (d_oil x_oil + d_fx x_fx + d_tbill x_tbill) / 3, in [-1, 1].
 4. Tilted centre c = S x m x v2_half(h) where v2_half(h) is the frozen v2 half-width for that row and horizon in percent (as computed by the existing scorer path). S = 0.10 (DECIDED, Moos), so the centre never moves more than 10 percent of the half-width, the same size as the round 78 clip. Band half-width is exactly frozen v2's.
 
+Brent availability rule for 91+ scoring (explicit): the +3-day rule stays, exactly as registered in the Series table. A Brent observation is usable at cutoff D only if its observed date is on or before D minus 3 calendar days, and the stored published date is observed date + 3 days. This is the same rule the stored descriptive record (cells 48-90) was generated under, so that record matches the chosen rule and is NOT regenerated. Decision: Moos (Slack 1795849665.024479, relayed to the author, not read by the author). The ALFRED as-of-cutoff comparison (evaluation/macro_series/brent_alfred_vintage_check_cells48_90.md) found 0 revised values and a longer availability lag in the vintages; under vintage availability the Brent signal at the 2025-09-30 cutoff would be -1 instead of 0. That difference is recorded as a sensitivity only, not a rule change.
+
 Arms: reference frozen v2 (centre 0), challenger tilt (centre c). One challenger, one S, one window. No grid, no second variant. Adding any needs a new registration and gets no cutoff already read.
 
 ## Data discipline
