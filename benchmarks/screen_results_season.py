@@ -7,7 +7,7 @@ Descriptive screen; additive; nothing edits ensemble.py or frozen values.
 
 Usage:
   screen_results_season.py fit --captures DIR ... --out FILE
-  screen_results_season.py describe --frozen FILE --captures DIR ... [--min-cell 48 --max-cell 102]
+  screen_results_season.py describe --frozen FILE --captures DIR ... [--min-cell 48 --max-cell 90]
   screen_results_season.py score --frozen FILE --captures DIR ... [--min-cell 91]
 """
 import argparse
@@ -31,6 +31,7 @@ M_GRID = [round(0.70 + 0.05 * i, 2) for i in range(17)]
 MIN_GROUP = 5
 TRAIN_MAX_CELL = 47
 CLEAN_MIN_CELL = 91
+DESC_MAX_CELL = 90
 SESSIONS = {"day": 1, "week": 5, "month": 21}
 EGX_WEEKEND = (4, 5)  # Friday, Saturday (datetime.weekday)
 
@@ -162,16 +163,24 @@ def clean_report(res, counts, cells, v, why):
 NOTE_MARK = "realised window rebuilt"  # build_rows note: build_rows did not drop this capture; later scoring or the s60 check may still exclude it
 
 
+def row_id(r):
+    return "%s %s %s" % (r.get("ticker"), str(r.get("as_of"))[:10], r.get("horizon"))
+
+
 def exclusion_lines(gaps, dropped_rows, unnumbered):
-    """Everything that did not enter the run, with reasons. gaps is the
-    list R.build_rows returns; entries that only note a rebuilt realised
-    window (build_rows kept the capture; later steps may still drop it) are printed as notes, not exclusions."""
+    """Everything that did not enter the run, with reasons. gaps: the list
+    R.build_rows returns (entries that only note a rebuilt realised window
+    are printed as notes, not exclusions); dropped_rows: identifiers of rows
+    without a v2 sigma; unnumbered: paths of captures with no cell number.
+    Each omitted observation gets its own line."""
     drops = [g for g in gaps if NOTE_MARK not in g]
     notes = [g for g in gaps if NOTE_MARK in g]
     L = ["EXCLUDED: %d capture(s) dropped by build_rows, %d row(s) without a v2 sigma, "
          "%d unnumbered capture(s) never scored; %d note(s) (rebuild notes, not exclusions)" % (
-             len(drops), dropped_rows, unnumbered, len(notes))]
+             len(drops), len(dropped_rows), len(unnumbered), len(notes))]
     L.extend("excluded: %s" % g for g in drops)
+    L.extend("excluded: row %s: no v2 sigma" % x for x in dropped_rows)
+    L.extend("excluded: capture %s: no cell number, never scored" % x for x in unnumbered)
     L.extend("note: %s" % g for g in notes)
     return L
 
@@ -187,7 +196,7 @@ def main(argv=None):
     d.add_argument("--captures", nargs="+", required=True)
     d.add_argument("--frozen", required=True)
     d.add_argument("--min-cell", type=int, default=48)
-    d.add_argument("--max-cell", type=int, default=102)
+    d.add_argument("--max-cell", type=int, default=DESC_MAX_CELL)
     d.add_argument("--reps", type=int, default=A.DEFAULT_REPS)
     d.add_argument("--json", default=None)
     s = sub.add_parser("score")
@@ -197,6 +206,10 @@ def main(argv=None):
     s.add_argument("--reps", type=int, default=A.DEFAULT_REPS)
     s.add_argument("--json", default=None)
     a = ap.parse_args(argv)
+    if a.mode == "describe" and not (TRAIN_MAX_CELL < a.min_cell <= a.max_cell <= DESC_MAX_CELL):
+        print("refusing: describe needs %d <= min-cell <= max-cell <= %d (cells %d+ go through score)" % (
+            TRAIN_MAX_CELL + 1, DESC_MAX_CELL, CLEAN_MIN_CELL))
+        return 2
     if a.mode == "score" and a.min_cell < CLEAN_MIN_CELL:
         print("refusing: score is for cells >= %d only" % CLEAN_MIN_CELL)
         return 2
@@ -218,8 +231,8 @@ def main(argv=None):
             p = fz["horizons"][h]
             print("%s: event=%d nonevent=%d fitted=%s m_event=%.2f m_nonevent=%.3f" % (
                 h, p["n_event"], p["n_nonevent"], p["fitted"], p["m_event"], p["m_nonevent"]))
-        ex = exclusion_lines(gaps, sum(1 for r in rows if not r.get("v2_sigma")),
-                             sum(1 for c in allc if num(c) is None))
+        ex = exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")],
+                             [c for c in allc if num(c) is None])
         print("\n".join(ex))
         with open(a.out, "w", encoding="utf-8") as fh:
             json.dump({"frozen": fz}, fh, indent=1)
@@ -229,7 +242,8 @@ def main(argv=None):
     caps = [c for c in allc if num(c) is not None and a.min_cell <= num(c) <= hi]
     rows, gaps = R.build_rows(caps, allc)
     pairs = score_rows(rows, fz, season)
-    ex = exclusion_lines(gaps, len(rows) - len(pairs), sum(1 for c in allc if num(c) is None))
+    ex = exclusion_lines(gaps, [row_id(r) for r in rows if not r.get("v2_sigma")],
+                         [c for c in allc if num(c) is None])
     res = R.evaluate(pairs, a.reps)
     counts = group_counts(pairs)
     if a.mode == "describe":

@@ -171,14 +171,60 @@ def test_refusals():
 
 def test_exclusions_listed():
     L = S.exclusion_lines(["cap1: no usable pre-cutoff OHLC history", "cap2: scoring failed: x",
-                           "cap3: realised window rebuilt to 21 sessions from price.csv"], 3, 2)
+                           "cap3: realised window rebuilt to 21 sessions from price.csv"],
+                          ["T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month"], ["/x/a", "/x/b"])
     check("header counts", "2 capture(s) dropped" in L[0] and "3 row(s) without a v2 sigma" in L[0]
           and "2 unnumbered" in L[0] and "1 note(s)" in L[0], L[0])
     check("each drop listed with reason", L[1:3] == ["excluded: cap1: no usable pre-cutoff OHLC history",
                                                     "excluded: cap2: scoring failed: x"])
-    check("rebuild note is a note, not an exclusion",
-          L[3] == "note: cap3: realised window rebuilt to 21 sessions from price.csv")
-    check("no gaps still prints header", len(S.exclusion_lines([], 0, 0)) == 1)
+    check("each row without sigma listed", L[3:6] == ["excluded: row %s: no v2 sigma" % x for x in (
+        "T 2025-01-02 week", "U 2025-01-02 day", "V 2025-01-02 month")], str(L))
+    check("each unnumbered capture listed", L[6:8] == [
+        "excluded: capture /x/a: no cell number, never scored", "excluded: capture /x/b: no cell number, never scored"])
+    check("rebuild note is a note, last", L[8] == "note: cap3: realised window rebuilt to 21 sessions from price.csv" and len(L) == 9)
+    check("no gaps still prints header", len(S.exclusion_lines([], [], [])) == 1)
+    check("row id", S.row_id({"ticker": "T", "as_of": "2025-01-02T00:00:00", "horizon": "week"}) == "T 2025-01-02 week")
+
+
+def _run(args):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = S.main(args)
+    return rc, buf.getvalue()
+
+
+def test_describe_range_guard():
+    check("default max-cell is 90", S.DESC_MAX_CELL == 90)
+    for lo, hi in ((47, 90), (48, 91), (60, 50), (0, 90), (48, 500), (91, 102), (48, 102)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe refuses %d-%d" % (lo, hi), rc == 2 and "describe needs 48 <= min-cell" in o, o[:120])
+    for lo, hi in ((48, 90), (48, 48), (90, 90)):
+        rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x",
+                      "--min-cell", str(lo), "--max-cell", str(hi)])
+        check("describe passes validation %d-%d" % (lo, hi), "describe needs" not in o and "no captures" in o, o[:120])
+    rc, o = _run(["describe", "--captures", "/nonexistent", "--frozen", "x"])
+    check("default range passes validation", "describe needs" not in o and "no captures" in o, o[:120])
+
+
+def test_describe_never_scores_clean_cells():
+    old = (S.A.find_captures, S.R.build_rows, S.A.cell_number, S.R.evaluate)
+    seen = []
+    S.A.find_captures = lambda dirs, mc: ["/x/c60", "/x/c95"]
+    S.A.cell_number = lambda p: {"/x/c60": 60, "/x/c95": 95}[p]
+    S.R.build_rows = lambda caps, refs: (seen.append(list(caps)) or [], [])
+    S.R.evaluate = lambda pairs, reps: {h: {"n": 0, "cutoffs": 0, "ch": {"coverage": None, "range_skill": None},
+                                          "v2": {"coverage": None, "range_skill": None},
+                                          "ch_ci_cutoff": (None, None), "ch_cov_ci_cutoff": (None, None)} for h in S.HORIZONS}
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            fz = os.path.join(d, "f.json")
+            json.dump({"frozen": {"horizons": {h: {"m_event": 1.0, "m_nonevent": 1.0} for h in S.HORIZONS}}}, open(fz, "w"))
+            rc, o = _run(["describe", "--captures", "x", "--frozen", fz, "--reps", "5"])
+            check("describe default run ok", rc == 0, o[:200])
+            check("describe passes only cell 60 to build_rows, never 95", seen == [["/x/c60"]], str(seen))
+    finally:
+        S.A.find_captures, S.R.build_rows, S.A.cell_number, S.R.evaluate = old
 
 
 def test_modes_print_gap_list():
@@ -198,7 +244,9 @@ def test_modes_print_gap_list():
             fit_out = buf.getvalue()
             check("fit ok", rc == 0)
             check("fit prints gap and dropped row", "excluded: /x/2024-06-30/T: no usable pre-cutoff OHLC history" in fit_out
-                  and "1 row(s) without a v2 sigma" in fit_out and "1 unnumbered" in fit_out, fit_out[-300:])
+                  and "1 row(s) without a v2 sigma" in fit_out and "1 unnumbered" in fit_out
+                  and "excluded: row T 2025-03-02 week: no v2 sigma" in fit_out
+                  and "excluded: capture /x/2024-06-30/U: no cell number, never scored" in fit_out, fit_out[-400:])
             for mode, extra in (("describe", []), ("score", [])):
                 buf = io.StringIO()
                 with contextlib.redirect_stdout(buf):
@@ -207,13 +255,16 @@ def test_modes_print_gap_list():
                 check("%s ok" % mode, rc == 0, o[:200])
                 check("%s prints gap list" % mode, "excluded: /x/2024-06-30/T: no usable pre-cutoff OHLC history" in o, o[-300:])
                 check("%s counts dropped rows" % mode, "1 row(s) without a v2 sigma" in o, o[-300:])
+                check("%s lists the row and the unnumbered capture" % mode,
+                      "excluded: row T 2025-03-02 week: no v2 sigma" in o
+                      and "excluded: capture /x/2024-06-30/U: no cell number, never scored" in o, o[-400:])
     finally:
         S.A.find_captures, S.R.build_rows, S.A.cell_number = old
 
 
 def run_all():
     for fn in (test_constants, test_window_end, test_flag_boundaries, test_fit_constraint_and_groups, test_fit_tie_goes_to_one,
-               test_score_rows_uses_frozen, test_counts_only, test_refusals, test_exclusions_listed, test_modes_print_gap_list, test_load_season, test_cutoff_structure):
+               test_score_rows_uses_frozen, test_counts_only, test_refusals, test_exclusions_listed, test_describe_range_guard, test_describe_never_scores_clean_cells, test_modes_print_gap_list, test_load_season, test_cutoff_structure):
         fn()
 
 
