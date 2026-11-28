@@ -276,9 +276,12 @@ def endpoint_date(session_dates, as_of, horizon):
     return after[n - 1] if len(after) >= n else None
 
 
-def build_rows(capture_dirs, ref_dirs=None):
+def build_rows(capture_dirs, ref_dirs=None, pending=None):
     """One row per matured, non-gap (capture, horizon) with realised
-    move, naive band, v2 sigma, and each candidate's daily sigma."""
+    move, naive band, v2 sigma, and each candidate's daily sigma.
+    When `pending` is a list, one record per captured (ticker, cutoff,
+    horizon) that is NOT matured (status pending etc.) is appended to it
+    as (ticker, as_of, horizon, status); those rows never enter `rows`."""
     rows, gaps = [], []
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
@@ -309,6 +312,11 @@ def build_rows(capture_dirs, ref_dirs=None):
             gaps.append("%s: no usable pre-cutoff OHLC history" % cap)
             continue
         for r in scored:
+            if (pending is not None and r.get("entrant") == "naive-range"
+                    and r.get("status") != "matured"
+                    and not r.get("dividend_gap")):
+                pending.append((r["ticker"], r["as_of"], r["horizon"],
+                                r.get("status")))
             if (r.get("entrant") != "naive-range"
                     or r.get("status") != "matured"
                     or r.get("dividend_gap")):

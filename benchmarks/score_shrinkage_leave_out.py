@@ -54,8 +54,10 @@ def main(argv=None):
               for fn in sorted(os.listdir(a.ohlcv_dir)) if fn.endswith(".csv")}
     allc, caps = T.cell_caps(a.captures, lo, hi)
     # In-range captures only as the reference set (see the challenger).
-    rows, gaps = R.build_rows(caps)
+    pend = []
+    rows, gaps = R.build_rows(caps, pending=pend)
     usable, ex = T.prepare(rows, closes)
+    ex = ex + T.pending_exclusions(pend)
     print("COUNTS cells %d-%d: %d usable rows, frozen pair a=%s b=%s, no refit" % (lo, hi, len(usable), w[0], w[1]))
     gex, rebuilt = T.split_gaps(gaps)
     print("REBUILT WINDOWS (scored, not exclusions)")
@@ -69,8 +71,17 @@ def main(argv=None):
                for r in usable if T.row_scores(r, w[0], w[1])[2]]
     print("CROSSED-EDGE FALLBACKS (every one listed, before any fold; rows stay in scoring): %d" % len(crossed))
     print("\n".join(crossed))
+    mature = {}
+    for h in T.HORIZONS:
+        mt, al = T.mature_clusters(caps, [r for r in usable if r["horizon"] == h])
+        mature[h] = (len(mt), len(al))
+    gated = T.gate_horizons(mature)
     for h in T.HORIZONS:
         hp = [r for r in usable if r["horizon"] == h]
+        if h in gated:
+            print("%s: COUNTS ONLY, %d of %d cutoff clusters fully mature (registered minimum %d); "
+                  "no fold differences or coverage (gate enforced in code)" % (h, mature[h][0], mature[h][1], T.MIN_CLUSTERS))
+            continue
         for key, label in (("base", "cutoff"), ("ticker", "ticker")):
             print("%s, leave one %s out (diff = challenger minus v2 RangeSkill):" % (h, label))
             for v, st in build_folds(hp, w[0], w[1], key):
