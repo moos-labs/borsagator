@@ -8,8 +8,36 @@ COMI, ETEL, ORAS, TMGH, SWDY, JUFO, FAIT, HRHO, ORWE, EGAL, EFIH, ORHD, EGAS, AM
 - EFID has no returned series before 2024-10-17: its earlier days are MISSING, never zero.
 - MCQE has 611 non-zero days of 964; zero-view days are real zeros, missing days are missing.
 - MASR is dropped (page created 2026-05-01, no history for training cells). FAITA shares FAIT's page and is not a separate panel name.
-- Names with no page, no name, or search-only absence are dropped and listed, never imputed: ACGC ATQA MPCO MTIE OCDI PHDC ARCC ETRS IFAP ISPH SAUD ADIB RMDA, and CLHO FAITA ICFC LCSW RACC (no Arabic name in EGX_COMPANIES). The page titles are the ones the coverage run used; they are pinned in the scorer's panel file before scoring.
+- Names with no page, no name, or search-only absence are dropped and listed, never imputed: ACGC ATQA MPCO MTIE OCDI PHDC ARCC ETRS IFAP ISPH SAUD ADIB RMDA, and CLHO FAITA ICFC LCSW RACC (no Arabic name in EGX_COMPANIES). The page titles are listed in the table under "Panel page titles" below (live-verified 28 Nov 2026); they are pinned in the scorer's panel file before scoring.
 - Known weakness: median daily views are 1 to 65, five names at 4 or fewer. Counts are small and noisy at a weekly horizon.
+
+### Panel page titles (added for FIX-961j, live check 28 Nov 2026)
+Exact ar.wikipedia article titles for the panel, so the mapping is reproducible before the registration freeze. Method (mine): for each ticker, the Arabic EGX name from `EGX_COMPANIES` in `worker/egx_harvest.py` was searched live on ar.wikipedia (MediaWiki API `list=search`, namespace 0, top 4), the candidate title was then fetched with `prop=info|extracts|pageprops` (page exists, is not a redirect, is not a disambiguation page, and its introduction names the company). All 18 rows below passed that check on 28 Nov 2026; the page text was read, not guessed. Where the EGX name is not itself the article title, the article was chosen from the search results and the intro (COMI: the bare EGX name redirects to a disambiguation page, so the article is the "(مصر)" page; TMGH: `طلعت مصطفى` is the person's page, the company page is `مجموعة طلعت مصطفى`; EGAS: `غاز مصر (شركة)`).
+
+| Ticker | EGX Arabic name (EGX_COMPANIES, worker/egx_harvest.py) | ar.wikipedia page title (verified) | pageid | Wikidata |
+|---|---|---|---|---|
+| COMI | البنك التجاري الدولي | البنك التجاري الدولي (مصر) | 316534 | Q5152506 |
+| ETEL | المصرية للاتصالات | المصرية للاتصالات | 236024 | Q1583794 |
+| ORAS | اوراسكوم كونستراكشون بي ال سي | أوراسكوم كونستراكشون | 194889 | Q1370287 |
+| TMGH | طلعت مصطفى | مجموعة طلعت مصطفى | 260944 | Q7678762 |
+| SWDY | السويدي اليكتريك | السويدي اليكتريك | 896999 | Q5367528 |
+| JUFO | جهينة للصناعات الغذائية | جهينة للصناعات الغذائية | 2813167 | Q15229827 |
+| FAIT | بنك فيصل الاسلامي المصري | بنك فيصل الإسلامي المصري | 122632 | Q6745525 |
+| HRHO | المجموعة المالية هيرمس | المجموعة المالية هيرميس القابضة | 4948746 | Q1299174 |
+| ORWE | النساجون الشرقيون للسجاد | النساجون الشرقيون | 157839 | Q12194339 |
+| EGAL | مصر للالومنيوم | مصر للألومنيوم | 40995 | Q310138 |
+| EFIH | اي فاينانس للاستثمارات المالية والرقمية | إي فاينانس للاستثمارات المالية والرقمية | 9032746 | Q115764917 |
+| ORHD | اوراسكوم للتنمية مصر | أوراسكوم للتنمية مصر | 194902 | Q1761055 |
+| EGAS | غاز مصر | غاز مصر (شركة) | 1532310 | Q12229329 |
+| AMOC | الإسكندرية للزيوت المعدنية | أموك | 1517779 | Q12180616 |
+| SKPC | سيدى كرير للبتروكيماويات - سيدبك | سيدبك | 1534652 | Q12217565 |
+| EFID | ايديتا للصناعات الغذائية | إيديتا | 3298300 | Q108248560 |
+| MCQE | مصر للاسمنت - قنا | مصر للأسمنت – قنا | 1272869 | Q12179762 |
+| MASR | مدينة مصر للاسكان والتعمير | مدينة مصر للإسكان والتعمير | 10398486 | Q129003775 |
+
+Count reconciliation: the panel above is 17 names (COMI to MCQE). The review's 18 is the same 17 plus MASR, which has a page (listed last, verified) but is DROPPED because its page was created 2026-05-01 and has no history for the training cells. FAITA shares the FAIT page and is not a separate name. So 17 are kept and 1 is dropped; no name is unaccounted for.
+
+UNVERIFIED: the coverage run of 28 Nov 2026 (the source of the "17 with a pageview series" list) left no title list in the repository or its outputs, so that the titles above are exactly the ones that run queried is UNVERIFIED. They are what a live lookup returns today; the 17-name panel and the per-name pageview availability (EFID gap, MCQE zero days, MASR creation date) are carried over from the coverage note above and were not re-run here. Pageview series are not re-fetched in this edit.
 
 ## Feature (fixed now)
 For cutoff date C and name i: A(i,C) = log((S7 + 1) / (S28/4 + 1)), where S7 is the sum of daily views for the 7 days C-7 .. C-1 and S28 the sum for the 28 days C-28 .. C-1. Strictly before the cutoff day (point in time). Lookback 7 over 28 is FIXED (Moos decision, Slack 1795841110.607749, relayed, not read).
