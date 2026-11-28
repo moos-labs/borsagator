@@ -193,6 +193,10 @@ def main(argv=None):
         print("refusing: --reps must be the registered %d, got %d"
               % (A.DEFAULT_REPS, a.reps))
         return 2
+    if a.seed != A.DEFAULT_SEED:
+        print("refusing: --seed must be the registered %d, got %d"
+              % (A.DEFAULT_SEED, a.seed))
+        return 2
     series = {k: load_series(os.path.join(a.series_dir, v[0]))
               for k, v in SERIES.items()}
     allc = A.find_captures(a.captures, None)
@@ -205,7 +209,9 @@ def main(argv=None):
     rows, gaps = R.build_rows(caps, allc, repairs, info)
     pairs, listed, dropped = tilt_rows(rows, series)
     counts = count_lines(pairs)
-    ex = (["excluded: %s" % g for g in gaps] + dropped + listed)
+    # Scored rows with a zero-valued signal are NOT exclusions: they are
+    # reported under their own heading and JSON key.
+    ex = (["excluded: %s" % g for g in gaps] + dropped)
     print("COUNTS (printed before the descriptive read), cells %d-%d, "
           "%d missing-signal rows, %d v2_sigma exclusions"
           % (a.min_cell, a.max_cell, len(listed), len(dropped)))
@@ -214,6 +220,8 @@ def main(argv=None):
     print("\n".join(repairs))
     print("INFO (per-capture notes on scored captures, not exclusions)")
     print("\n".join(info))
+    print("MISSING-SIGNAL ROWS (scored with the signal set to 0, not exclusions)")
+    print("\n".join(listed))
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
     res = evaluate(pairs, a.reps, a.seed)
@@ -237,6 +245,7 @@ def main(argv=None):
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"descriptive": True, "counts": counts, "results": res,
                        "repaired": repairs, "info": info,
+                       "missing_signal_rows": listed,
                        "excluded": ex}, fh, indent=1)
     return 0
 

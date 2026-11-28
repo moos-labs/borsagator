@@ -121,7 +121,9 @@ def test_reps_and_order():
         rc3 = T.main(["describe", "--captures", "/nonexistent", "--series-dir", "/nonexistent", "--reps", "5001"])
     check("5001 reps also refused", rc3 == 2 and "refusing" in buf3.getvalue())
     rows = [{"ticker": "Z", "as_of": "2026-01-01", "horizon": "week", "real": 0.0, "naive_half": 5.0,
-             "mult": 1.0, "v2_sigma": 0}]
+             "mult": 1.0, "v2_sigma": 0},
+            {"ticker": "M", "as_of": "2026-01-01", "horizon": "week", "real": 0.0, "naive_half": 5.0,
+             "mult": 1.0, "v2_sigma": 0.01}]
     saved = (T.load_series, T.A.find_captures, T.R.build_rows, T.evaluate)
     T.load_series = lambda path: []
     calls = []
@@ -154,6 +156,12 @@ def test_reps_and_order():
     check("repair notice is listed as repaired, not as an exclusion",
           "REPAIRED (scored, not excluded)" in out and "x: realised window rebuilt" in out
           and "excluded: x: realised window rebuilt" not in out and "excluded: gap one" in out)
+    check("scored missing-signal rows have their own heading, not the exclusions",
+          "MISSING-SIGNAL ROWS (scored with the signal set to 0, not exclusions)" in out
+          and "missing signal row M 2026-01-01 week" in out
+          and "excluded: missing signal row" not in out and "excluded: gap one" in out
+          and out.index("MISSING-SIGNAL ROWS") < out.index("EXCLUSIONS (every one listed"), out[-900:])
+    check("real sigma rejection stays in the exclusions", "Z 2026-01-01 week" in out.split("EXCLUSIONS (every one listed")[1])
     check("informational lines are printed under INFO, never as excluded:",
           "INFO (per-capture notes" in out and "y: tilt-technicals day: skipped note" in out
           and "excluded: y: tilt-technicals" not in out)
@@ -202,6 +210,13 @@ def test_build_rows_gaps_and_repairs():
         (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas) = saved
 
 
+def test_seed_refused():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = T.main(["describe", "--captures", "/nonexistent", "--series-dir", "/nonexistent", "--seed", "1"])
+    check("a non-registered seed is refused before loading inputs", rc == 2 and "refusing: --seed must be the registered 20261125, got 1" in buf.getvalue(), buf.getvalue())
+
+
 def test_counts():
     pairs = [{"ticker": "A", "as_of": "d1", "horizon": "day"}, {"ticker": "B", "as_of": "d1", "horizon": "day"},
              {"ticker": "A", "as_of": "d2", "horizon": "day"}]
@@ -214,7 +229,7 @@ def test_counts():
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_counts):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_counts):
         fn()
 
 
