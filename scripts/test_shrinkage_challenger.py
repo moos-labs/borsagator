@@ -108,6 +108,32 @@ def test_prepare_exclusions():
     check("no price file listed", not out and "no price history" in ex[0])
 
 
+def test_fit_lists_crossed_training_rows():
+    bad = mkrow(h="week", q=(5.0, 6.0), half=2.0, base="2025-05-02", rdate="2025-05-09")
+    bad["ticker"] = "X.CA"
+    late = mkrow(h="week", q=(5.0, 6.0), half=2.0, base="2025-08-08", rdate="2025-08-20")
+    late["ticker"] = "L.CA"
+    good = mkrow(h="week", base="2025-05-02", rdate="2025-05-09")
+    good["ticker"] = "Y.CA"
+    for r in (bad, late, good):
+        r["key"] = "%s %s week" % (r["ticker"], r["base"])
+    calls, restore = _stub_pipeline([bad, late, good])
+    saved = T.fit_pooled
+    T.fit_pooled = lambda rows: (2, [], (0.0, 1.0))
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            T.main(["fit", "--captures", "x", "--ohlcv-dir", "x"])
+    finally:
+        T.fit_pooled = saved
+        restore()
+    out = buf.getvalue()
+    head = "CROSSED-EDGE ROWS UNDER THE FROZEN PAIR, cells 1-47, covered rows: 1 of 2"
+    line = "%s (reason: crossed edges under the frozen pair, v2 interval used)" % bad["key"]
+    check("fit lists the covered crossed row with the count line", head in out and out.count(line) == 1, out[-700:])
+    check("post-freeze crossed row and non-crossed row are not listed", late["key"] not in out.split("CROSSED-EDGE ROWS")[1] and good["key"] not in out.split("CROSSED-EDGE ROWS")[1], str((late["key"], good["key"], out.split("CROSSED-EDGE ROWS")[1])))
+
+
 def test_fit_threshold_and_freeze():
     ok = [mkrow(rdate="2025-08-14") for _ in range(100)]
     n, ex, w = T.fit_pooled(ok)
@@ -280,7 +306,7 @@ def run_all():
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
                test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
-               test_crossed_rows_listed_before_statistics, test_leave_out_prints_exclusions_first):
+               test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first):
         fn()
 
 
