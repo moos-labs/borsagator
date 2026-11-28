@@ -36,6 +36,7 @@ tests inject a stub forecaster and never import them.
 import argparse
 import csv
 import json
+import math
 import os
 import sys
 
@@ -90,24 +91,35 @@ def guard_reason(capture, cutoff, allow_verdict):
 def to_horizons(last_close, steps):
     """steps: {k: (q10, q50, q90)} price quantiles for k = 1..MAX_STEP.
     Returns (horizons dict, None) or (None, reason)."""
+    if not (math.isfinite(last_close) and last_close > 0):
+        return None, "last close %r is not a finite positive number" % (
+            last_close,)
     out = {}
     for h, k in STEPS.items():
         if k not in steps:
             return None, "no forecast for step %d" % k
         q = [(float(v) / last_close - 1.0) * 100.0 for v in steps[k]]
-        if not (q[0] <= q[1] <= q[2]) or not q[2] > q[0]:
-            return None, "%s quantiles not ordered q10 <= q50 <= q90" % h
-        out[h] = {"q10": round(q[0], 6), "q50": round(q[1], 6),
-                  "q90": round(q[2], 6)}
+        if len(q) != 3 or not all(math.isfinite(v) for v in q):
+            return None, "%s has a non-finite return quantile" % h
+        r = [round(v, 6) for v in q]
+        # validated after rounding: this is what the file holds
+        if not (r[0] <= r[1] <= r[2]) or not r[2] > r[0]:
+            return None, ("%s quantiles not ordered q10 <= q50 <= q90 "
+                          "with q90 > q10 after rounding" % h)
+        out[h] = {"q10": r[0], "q50": r[1], "q90": r[2]}
     return out, None
 
 
 def write_json(path, obj):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, indent=1)
-    os.replace(tmp, path)
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(obj, f, indent=1, allow_nan=False)
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.remove(tmp)
 
 
 def run_capture(capture, forecaster, out_root=None, force=False,
@@ -135,13 +147,20 @@ def run_capture(capture, forecaster, out_root=None, force=False,
         steps = forecaster([c for _, c in closes])
     except Exception as e:  # noqa: BLE001 the reason is listed
         return "excluded", "forecast failed: %s" % type(e).__name__
-    hz, why = to_horizons(closes[-1][1], steps)
+    try:
+        hz, why = to_horizons(closes[-1][1], steps)
+    except (ArithmeticError, ValueError, TypeError, KeyError,
+            IndexError) as e:
+        return "excluded", "forecast not usable: %s" % type(e).__name__
     if hz is None:
         return "excluded", why
-    write_json(dst, {"model": MODEL, "base_date": cutoff,
-                     "context_sessions": len(closes),
-                     "last_close_date": closes[-1][0], "dtype": "bfloat16",
-                     "horizons": hz})
+    try:
+        write_json(dst, {"model": MODEL, "base_date": cutoff,
+                         "context_sessions": len(closes),
+                         "last_close_date": closes[-1][0],
+                         "dtype": "bfloat16", "horizons": hz})
+    except (OSError, ValueError, TypeError) as e:
+        return "excluded", "write failed: %s" % type(e).__name__
     return "written", dst
 
 
@@ -169,6 +188,19 @@ def load_chronos2():
     return forecast
 
 
+class LazyForecaster:
+    """Loads the real model on the first forecast call only, so kept,
+    guarded and excluded captures never trigger the load."""
+
+    def __init__(self):
+        self.fn = None
+
+    def __call__(self, values):
+        if self.fn is None:
+            self.fn = load_chronos2()
+        return self.fn(values)
+
+
 def main(argv=None, forecaster=None):
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.
@@ -185,16 +217,16 @@ def main(argv=None, forecaster=None):
     if not caps:
         print("refusing: no captures found under %s" % " ".join(a.captures))
         return 2
-    runnable = [c for c in caps if guard_reason(
-        c, cutoff_of(c), a.allow_verdict_cells) is None]
-    fc = forecaster
-    if fc is None and runnable:
-        fc = load_chronos2()
+    fc = forecaster if forecaster is not None else LazyForecaster()
     counts = {"written": 0, "kept": 0, "excluded": 0}
     lines = []
     for c in caps:
-        st, info = run_capture(c, fc, a.out_root, a.force,
-                               a.allow_verdict_cells)
+        try:
+            st, info = run_capture(c, fc, a.out_root, a.force,
+                                   a.allow_verdict_cells)
+        except (OSError, ValueError, TypeError, KeyError, IndexError,
+                ArithmeticError) as e:
+            st, info = "excluded", "failed: %s" % type(e).__name__
         counts[st] += 1
         if st == "excluded":
             lines.append("excluded: capture %s: %s" % (c, info))

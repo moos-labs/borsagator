@@ -241,10 +241,140 @@ def test_main_listing_and_guard_before_model():
         Q.load_chronos2 = real
 
 
+def _flat(frac):
+    return lambda v: {k: (v[-1] * (1 - frac), v[-1], v[-1] * (1 + frac))
+                      for k in range(1, 22)}
+
+
+def test_nonfinite_and_rounding():
+    import math
+    with tempfile.TemporaryDirectory() as d:
+        cap = make_capture(d, "2024-05-09", "TST", closes_series(200))
+        for label, bad in (("inf", math.inf), ("nan", math.nan), ("-inf", -math.inf)):
+            def f(v, bad=bad):
+                o = stub(v)
+                o[5] = (o[5][0], o[5][1], bad)
+                return o
+            st, why = Q.run_capture(cap, f)
+            check("%s quantile excluded with reason" % label,
+                  st == "excluded" and "non-finite" in why, why)
+        check("nothing written for non-finite",
+              not os.path.exists(os.path.join(cap, "collected")))
+        st, why = Q.run_capture(cap, _flat(1e-9))
+        check("interval collapsing at 6 dp excluded", st == "excluded" and "after rounding" in why, why)
+        check("collapsed file not written", not os.path.exists(os.path.join(cap, "collected")))
+        st, dst = Q.run_capture(cap, _flat(1e-8))
+        check("smallest representable interval still written", st == "written", dst)
+        data = json.load(open(dst))
+        check("rounded q90 > q10", all(h["q90"] > h["q10"] for h in data["horizons"].values()))
+    hz, why = Q.to_horizons(100.0, {k: (99.0, 100.0, 101.0) for k in range(1, 22)})
+    check("finite ok", hz is not None and why is None)
+    for lc in (0.0, -1.0, float("inf"), float("nan")):
+        hz, why = Q.to_horizons(lc, {k: (1.0, 2.0, 3.0) for k in range(1, 22)})
+        check("bad last close %r rejected with reason" % lc, hz is None and "last close" in why, why)
+
+
+def test_lazy_model_load():
+    called = []
+    real = Q.load_chronos2
+    Q.load_chronos2 = lambda: called.append(1) or stub
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            make_capture(d, "2024-05-09", "A1", closes_series(200))
+            make_capture(d, "2024-05-09", "SHORT", closes_series(50))
+            make_capture(d, "2024-05-09", "V-cell60", closes_series(200))
+            with contextlib.redirect_stdout(io.StringIO()):
+                Q.main(["--captures", os.path.join(d, "2024-05-09", "SHORT")])
+            check("excluded-only run does not load", called == [])
+            with contextlib.redirect_stdout(io.StringIO()):
+                Q.main(["--captures", os.path.join(d, "2024-05-09", "V-cell60")])
+            check("guarded-only run does not load", called == [])
+            with contextlib.redirect_stdout(io.StringIO()):
+                Q.main(["--captures", os.path.join(d, "2024-05-09", "A1")])
+            check("first forecast loads once", called == [1])
+            with contextlib.redirect_stdout(io.StringIO()):
+                Q.main(["--captures", os.path.join(d, "2024-05-09", "A1")])
+            check("all kept does not load", called == [1])
+            make_capture(d, "2024-05-09", "A2", closes_series(200))
+            make_capture(d, "2024-05-09", "A3", closes_series(200))
+            with contextlib.redirect_stdout(io.StringIO()):
+                Q.main(["--captures", os.path.join(d, "2024-05-09", "A2"),
+                        os.path.join(d, "2024-05-09", "A3")])
+            check("two forecasts in one run load once", called == [1, 1])
+    finally:
+        Q.load_chronos2 = real
+
+
+def test_per_capture_boundary():
+    with tempfile.TemporaryDirectory() as d:
+        cap = make_capture(d, "2024-05-09", "TST", closes_series(200))
+        real = Q.to_horizons
+
+        def zde(lc, steps):
+            raise ZeroDivisionError("x")
+        Q.to_horizons = zde
+        try:
+            st, why = Q.run_capture(cap, stub)
+        finally:
+            Q.to_horizons = real
+        check("ZeroDivisionError excluded with reason",
+              st == "excluded" and "ZeroDivisionError" in why, why)
+        blocker = os.path.join(d, "blocker")
+        open(blocker, "w").write("x")
+        st, why = Q.run_capture(cap, stub, out_root=blocker)
+        check("filesystem error excluded with reason", st == "excluded" and "write failed" in why, why)
+        check("no tmp left", not any(f.endswith(".tmp") for _, _, fs in os.walk(d) for f in fs))
+    with tempfile.TemporaryDirectory() as d:
+        c1 = make_capture(d, "2024-05-09", "AAA", closes_series(200))
+        zero = closes_series(200)
+        zero[-1] = (zero[-1][0], 0.0)
+        c2 = make_capture(d, "2024-05-09", "BBB", zero)
+        c3 = make_capture(d, "2024-05-09", "CCC", closes_series(200))
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = Q.main(["--captures", c1, c2, c3], forecaster=stub)
+        o = buf.getvalue()
+        check("batch survives a bad capture", rc == 0 and "written: " in o and
+              "captures 3: written 2, kept 0, excluded 1" in o, o)
+        check("bad capture listed with reason", "excluded: capture %s: last close" % c2 in o, o)
+        check("both neighbours written", all(os.path.exists(os.path.join(c, "collected", "chronos-2", "quantiles.json")) for c in (c1, c3)))
+        # an unexpected error escaping run_capture is caught at the loop boundary
+        realrc = Q.run_capture
+
+        def flaky(c, *a, **k):
+            if c.endswith("BBB"):
+                raise OSError("disk")
+            if c.endswith("AAA"):
+                raise OverflowError("big")
+            return realrc(c, *a, **k)
+        Q.run_capture = flaky
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                rc = Q.main(["--captures", c2, c1], forecaster=stub)
+        finally:
+            Q.run_capture = realrc
+        o = buf.getvalue()
+        check("loop boundary catches OSError and still reports",
+              rc == 0 and "excluded: capture %s: failed: OSError" % c2 in o and
+              "excluded: capture %s: failed: OverflowError" % c1 in o and
+              "captures 2: written 0, kept 0, excluded 2" in o, o)
+    with tempfile.TemporaryDirectory() as d:
+        tgt = os.path.join(d, "x", "q.json")
+        try:
+            Q.write_json(tgt, {"a": float("inf")})
+            raised = False
+        except ValueError:
+            raised = True
+        check("write_json refuses non-finite (no Infinity in a file)", raised)
+        check("no final or tmp file after refusal", not os.path.exists(tgt) and not os.path.exists(tgt + ".tmp"))
+
+
 def run_all():
     for fn in (test_constants, test_horizon_values, test_context_window_and_cutoff,
                test_last_close_date_differs_from_cutoff, test_guard, test_keep_force_and_out_root, test_failures_listed,
-               test_main_listing_and_guard_before_model):
+               test_main_listing_and_guard_before_model, test_nonfinite_and_rounding,
+               test_lazy_model_load, test_per_capture_boundary):
         fn()
     print("test_run_chronos2_quantiles: %d passed, %d failed" % (CHECKS["pass"], CHECKS["fail"]))
     return CHECKS["fail"]
