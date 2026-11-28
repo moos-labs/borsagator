@@ -729,6 +729,7 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
     with tempfile.TemporaryDirectory() as d:
         st, out = os.path.join(d, "st"), os.path.join(d, "out")
         os.makedirs(out)
+        os.makedirs(st)  # pre-existing: new-directory syncs are tested separately
         os.fsync = spy
         try:
             _run_fetch_with(st, out, names, fake)
