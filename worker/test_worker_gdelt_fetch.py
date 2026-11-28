@@ -347,7 +347,7 @@ def test_959i_deferred_and_stall_and_intent():
     check("failed intent cleanup is reported and recorded with the verified publication", released is False and marker and ip.exists())
     rc_calls = []
     o_rc = worker._release_claim
-    worker._release_claim = lambda jid, only_own=False: rc_calls.append((jid, only_own)) or True
+    worker._release_claim = lambda jid, only_own=False, expect_attempt=False: rc_calls.append((jid, only_own)) or True
     try:
         pending = worker._done_or_pending(j3)
     finally:
@@ -1161,7 +1161,7 @@ def test_959j_durability_and_failures():
     finally:
         Path.unlink = real_unlink
     o_rc = worker._release_claim
-    worker._release_claim = lambda j, only_own=False: True     # claim release has its own tests
+    worker._release_claim = lambda j, only_own=False, expect_attempt=False: True     # claim release has its own tests
     try:
         worker._gdelt_retry_cleanup(jid)
     finally:
@@ -1268,7 +1268,7 @@ def test_959k():
     ip.unlink()
     mk.write_text(json.dumps({"archive_sha": "x", "intent": "deadbeef"}))
     o_rc = worker._release_claim
-    worker._release_claim = lambda j, only_own=False: True
+    worker._release_claim = lambda j, only_own=False, expect_attempt=False: True
     try:
         worker._gdelt_retry_cleanup(jid)
     finally:
@@ -1352,7 +1352,7 @@ def test_959l():
     check("M2: non-14-digit GKG name is rejected", vf(b"1 a http://x/gdeltv2/2015.gkg.csv.zip\n") is None)
     check("M2: a recognisable GKG entry passes (window is not consulted)", vf(gk) == 1)
     check("M2: translation-style GKG entry passes",
-          vf(b"1 a http://x/gdeltv2/20150218230000.translation.gkg.csv.zip\n") == 1)
+          vf(b"1 a http://data.gdeltproject.org/gdeltv2/20150218230000.translation.gkg.csv.zip\n") == 1)
     # M3: makedirs failure is a named no-publish, retryable outcome (no escape)
     _fixtures_env()
     fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
@@ -1473,7 +1473,7 @@ def test_959l():
           not ip.exists() and not st["pushed"] and not mk.exists(), str(st))
     st, mk, ip = run_cleanup(me, push_ok=False)
     check("m5: failed release keeps a claim_pending marker for the next cycle",
-          not ip.exists() and mk.exists() and json.loads(mk.read_text()) == {"claim_pending": True}, str(st))
+          not ip.exists() and mk.exists() and json.loads(mk.read_text()) == {"claim_pending": True, "claim_attempt": None}, str(st))
     # next cycle: succeeds, marker cleared
     st2 = {"claim": True}
     def gb2(cmd, timeout=120):
@@ -1493,6 +1493,93 @@ def test_959l():
     check("m5: the pending marker is cleared once the release is confirmed", not mk.exists())
 
 
+def test_959m_claim_attempt_identity_f11():
+    """F11: a replayed cleanup removes only the claim of the attempt that
+    recorded the marker, never a later attempt's claim on the same host."""
+    me = os.uname().nodename
+    def run(marker, remote):
+        j = "m-f11"; ip = worker._intent_path(j); ip.parent.mkdir(parents=True, exist_ok=True); ip.write_text("x")
+        mk = worker._gdelt_cleanup_marker(j); mk.parent.mkdir(parents=True, exist_ok=True)
+        m = dict(marker)
+        if m.pop("_ident", False):
+            m["intent"] = worker._gdelt_intent_identity(j)
+        mk.write_text(json.dumps(m))
+        st = {"claim": True, "pushed": []}
+        def gb(cmd, timeout=120):
+            if cmd.startswith("fetch"):
+                return _Res(0, "")
+            if cmd.startswith("ls-tree"):
+                return _Res(0, "queue/claims/m-f11.json\n" if st["claim"] else "")
+            if cmd.startswith("show"):
+                return _Res(0, json.dumps(remote))
+            return _Res(0, "")
+        def push(msg, *a, **k):
+            st["pushed"].append(msg); st["claim"] = False; return True
+        o_gb, o_push = worker.git_bus, worker.push_bus
+        worker.git_bus, worker.push_bus = gb, push
+        try:
+            worker._gdelt_retry_cleanup(j)
+        finally:
+            worker.git_bus, worker.push_bus = o_gb, o_push
+        return st, mk
+    st, mk = run({"_ident": True, "claim_attempt": "A"}, {"worker": me, "attempt": "B"})
+    check("959m F11: marker from attempt A + a newer same-host claim (attempt B): nothing pushed, marker dropped",
+          not st["pushed"] and not mk.exists(), str(st))
+    st, mk = run({"_ident": True, "claim_attempt": "A"}, {"worker": me, "attempt": "A"})
+    check("959m F11: the claim of the recording attempt is still released", len(st["pushed"]) == 1 and not mk.exists(), str(st))
+    st, mk = run({"claim_pending": True, "claim_attempt": "A"}, {"worker": me, "attempt": "B"})
+    check("959m F11: claim_pending marker for A leaves B's claim in place", not st["pushed"] and not mk.exists(), str(st))
+    st, mk = run({"claim_pending": True, "claim_attempt": "A"}, {"worker": me, "attempt": "A"})
+    check("959m F11: claim_pending marker releases its own attempt's claim", len(st["pushed"]) == 1 and not mk.exists(), str(st))
+    st, mk = run({"claim_pending": True}, {"worker": me, "attempt": "B"})
+    check("959m F11: legacy claim_pending marker (no identity) never releases a claim", not st["pushed"] and not mk.exists(), str(st))
+
+
+def test_959m_f7_f8_f5():
+    """F7 scheme-less entry rejected, valid out-of-window entry passes; F8
+    OUT parent is synced and a failing sync is the retryable setup outcome;
+    F5 the publish strip removes only restore stages."""
+    def vf(body):
+        tf = Path(tempfile.mkdtemp()) / "m.txt"; tf.write_bytes(body)
+        try:
+            return worker._validate_master_file(tf)
+        except ValueError:
+            return None
+    check("959m F7: scheme-less path entry is not usable coverage",
+          vf(b"123 abc /20990101000000.gkg.csv.zip\n") is None)
+    check("959m F7: wrong host is not usable coverage",
+          vf(b"123 abc https://evil.example/20990101000000.gkg.csv.zip\n") is None)
+    check("959m F7: valid https entry outside any window still establishes the listing",
+          vf(b"123 abc https://data.gdeltproject.org/gdeltv2/20150218230000.gkg.csv.zip\n") == 1)
+    check("959m F7: one valid entry among invalid ones counts",
+          vf(b"1 a /x/20150218230000.gkg.csv.zip\n123 abc http://data.gdeltproject.org/gdeltv2/20150218230000.gkg.csv.zip\n") == 2)
+    _fixtures_env()
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    o = worker._fsync_dir
+    seen = []
+    wd = worker.OUT / "t959m-f8"
+    def spy(path):
+        seen.append(str(path))
+        if str(path) == str(wd.parent) and spy.fail:
+            raise OSError("sync")
+        return o(path)
+    spy.fail = True
+    worker._fsync_dir = spy
+    try:
+        res = worker.run_gdelt_fetch({"id": "m-f8", "job": fix}, wd)
+    finally:
+        worker._fsync_dir = o
+    check("959m F8: a failing sync of OUT is the retryable no-publish setup outcome and OUT was synced",
+          res == {"gdelt-fetch": "setup-io-failed"} and str(wd.parent) in seen, str((res, seen[-3:])))
+    d = Path(tempfile.mkdtemp())
+    (d / ".gdelt-restore-abc" / "prev-out").mkdir(parents=True)
+    (d / ".gdelt-restore-abc" / "prev-out" / "m.jsonl").write_text("x")
+    (d / "gdelt").mkdir(); (d / "gdelt" / "keep.txt").write_text("k")
+    worker.sh("find %s -name '.gdelt-restore-*' -prune -exec rm -rf {} +" % d, timeout=30)
+    check("959m F5: the strip removes the restore stage and keeps everything else",
+          not (d / ".gdelt-restore-abc").exists() and (d / "gdelt" / "keep.txt").exists())
+
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -1508,6 +1595,8 @@ def main():
     test_restore_is_staged_and_atomic()
     test_new_claim_checks_the_published_snapshot()
     test_parse_rejects_non_ascii_digits()
+    test_959m_claim_attempt_identity_f11()
+    test_959m_f7_f8_f5()
     test_filter_launch_env_is_denylist_filtered()
     test_deferred_unparseable_deadline()
     test_parse_fixtures()

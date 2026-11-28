@@ -42,6 +42,7 @@ GitHub schedule line is retired only after its worker equivalent
 has fired correctly twice (counts tracked on issue #66).
 """
 import hashlib
+import uuid
 import json
 import math
 import os
@@ -54,6 +55,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
@@ -907,7 +909,8 @@ def claim(job):
     c = BUS / "queue" / "claims"
     c.mkdir(parents=True, exist_ok=True)
     (c / f"{job_id}.json").write_text(json.dumps(
-        {"worker": os.uname().nodename, "at": now(), "job": job["job"]}))
+        {"worker": os.uname().nodename, "at": now(), "job": job["job"],
+         "attempt": uuid.uuid4().hex}))
     return push_bus(f"claim {job_id}")
 
 
@@ -3104,6 +3107,13 @@ def publish(job, results_dir, manifest):
     if sh(f"rm -rf {dest}/_merge_out", timeout=60).returncode != 0:
         print("publish: _merge_out strip failed", flush=True)
         return False
+    # 959m F5: an abandoned gdelt restore stage (rollback evidence, kept
+    # locally under the workdir) is not a fleet result; strip it from the
+    # published copy only, never from results_dir.
+    if sh(f"find {dest} -name '.gdelt-restore-*' -prune -exec rm -rf {{}} +",
+          timeout=60).returncode != 0:
+        print("publish: gdelt restore-stage strip failed", flush=True)
+        return False
     (dest / "manifest.json").write_text(json.dumps(manifest, indent=1))
     # Issue #67: a merged sweep rides the SAME commit as its fleet
     # (one commit, one push): copy the merge's sweeps/ tree to the
@@ -4187,7 +4197,7 @@ class GdeltRestoreMismatch(Exception):
 GDELT_BINDING = "restored-from.json"
 
 
-def _gdelt_pick_published(arch, src_id, mode, strict=False):
+def _gdelt_pick_published(arch, src_id, mode, strict=False, window=None):
     """The latest PUBLISHED run for src_id on the fetched origin/archive tree
     (worker-runs/DATE/RUN__<job-id>, with a gdelt-state dir), as
     (run_path, names), or None when there is none. The run's recorded mode
@@ -4217,14 +4227,25 @@ def _gdelt_pick_published(arch, src_id, mode, strict=False):
         if not any(n.startswith(run_path + "/gdelt-state/") for n in names):
             continue
         recorded = None
+        rec_window = None
         try:
             raw = _git_out(arch, "show", "%s:%s/gdelt/gdelt_fetch.json"
                            % (GDELT_RESTORE_REF, run_path))
             rec = json.loads(raw.decode("utf-8", "replace"))
             if isinstance(rec, dict) and isinstance(rec.get("mode"), str):
                 recorded = rec["mode"]
+            if isinstance(rec, dict) and "start" in rec and "end" in rec:
+                rec_window = (str(rec["start"]), str(rec["end"]))
         except Exception:
             recorded = None
+        # 959m F9: a predecessor that recorded a different window must not
+        # be restored (its matches would be published under the current
+        # plan's bounds if the filter never starts to refuse it).
+        if window is not None and rec_window is not None \
+                and rec_window != (str(window[0]), str(window[1])):
+            raise GdeltRestoreMismatch(
+                "predecessor %s recorded window %s..%s, job window %s..%s"
+                % (run_path, rec_window[0], rec_window[1], window[0], window[1]))
         if (recorded is not None and recorded != mode) or \
                 (recorded is None and strict):
             raise GdeltRestoreMismatch(
@@ -4359,6 +4380,9 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
                 moved_out = True
             os.rename(out_stage, out_dir)
             installed_out = True
+            # 959m F6: persist the output install BEFORE the state install, so
+            # a power loss cannot keep done.txt + binding without the matches.
+            _fsync_dir(str(out_dir.parent))
             os.rename(st_stage, state_dir)
             installed_st = True
             # Every parent directory that gained or lost an entry.
@@ -4435,6 +4459,9 @@ GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
 GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
 
 
+GDELT_ALLOWED_HOST = "data.gdeltproject.org"   # scripts/gdelt_gkg_filter.ALLOWED_HOST
+
+
 def _validate_master_file(path, label=""):
     """Validate a downloaded master list line by line (no full read into
     memory): non-empty, UTF-8, every non-blank line `size md5 url`."""
@@ -4454,7 +4481,11 @@ def _validate_master_file(path, label=""):
             base = fld[2].rsplit("/", 1)[-1]
             ts = base.split(".")[0]
             if base.endswith(".gkg.csv.zip") and ts.isdigit() and len(ts) == 14:
-                gkg += 1
+                # 959m F7: only an entry fetch() will accept counts (scheme
+                # http/https and the GDELT host); a bare path does not.
+                u = urlsplit(fld[2])
+                if u.scheme in ("http", "https") and u.netloc == GDELT_ALLOWED_HOST:
+                    gkg += 1
     if n == 0:
         raise ValueError("empty master listing: %s" % label)
     if gkg == 0:
@@ -4485,6 +4516,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     try:
         _makedirs_durable(state_dir)
         _makedirs_durable(out_dir)
+        # 959m F8: the workdir entry itself lives in its parent (OUT).
+        _fsync_dir(str(Path(workdir).parent))
     except OSError:
         # Setup failed before any checkpoint was touched: a no-publish,
         # retryable outcome through execute()'s retry path.
@@ -4536,11 +4569,12 @@ def _run_gdelt_fetch(job, workdir, master_dir):
             # mode must be present and equal to this job's.
             try:
                 src, picked = job["id"], _gdelt_pick_published(
-                    arch, job["id"], mode)
+                    arch, job["id"], mode, window=(start, end))
                 if picked is None and plan["resume_from"]:
                     src = plan["resume_from"]
                     picked = _gdelt_pick_published(arch, src, mode,
-                                                   strict=True)
+                                                   strict=True,
+                                                   window=(start, end))
                     if picked is None:
                         missing_pred = True
             except GdeltRestoreMismatch as e:
@@ -4689,65 +4723,78 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                 else (v or "")
         out_text = _txt(e.output) + _txt(e.stderr)
 
-    # (d) Copy filter outputs into workdir so publish() archives them.
-    # Do NOT copy raw GKG zips (script doesn't keep them).
-    for fn in ("matches.jsonl", "macro_matches.jsonl"):
-        src = out_dir / fn
-        if src.exists():
-            shutil.copy2(src, run_dir / fn)
-        else:
-            (run_dir / fn).unlink(missing_ok=True)   # no stale copy
-
-    # state summary
-    files_done = 0
-    macro_files_done = 0
-    absent_files = 0
-    transient_files = 0
-    done_txt = state_dir / "done.txt"
-    macro_done_txt = state_dir / "macro_done.txt"
-    if done_txt.exists():
-        files_done = len([l for l in done_txt.read_text().splitlines() if l.strip()])
-    if macro_done_txt.exists():
-        macro_files_done = len([l for l in macro_done_txt.read_text().splitlines() if l.strip()])
-    absent_txt = state_dir / "absent.txt"
-    if absent_txt.exists():
-        absent_files = len([l for l in absent_txt.read_text().splitlines() if l.strip()])
-    transient_txt = state_dir / "transient.txt"
-    if transient_txt.exists():
-        # DISTINCT files that have failed transiently at least once: a new
-        # file's first failure is progress (the filter moved on to files not
-        # yet attempted), a repeat failure of the same file is not.
-        transient_files = len({l.strip() for l in transient_txt.read_text(errors="replace").splitlines() if l.strip()})
-
-    def _lines(p):
-        p = Path(p)
-        if not p.exists():
-            return 0
-        # Binary: a timed-out filter can leave a truncated multibyte
-        # UTF-8 record, which must not raise before the status is set.
-        with open(p, "rb") as f:
-            return sum(1 for _ in f)
-
-    matches = _lines(out_dir / "matches.jsonl")
-    macro_matches = _lines(out_dir / "macro_matches.jsonl")
-
-    # state config
-    state_summary = {}
-    cfg = state_dir / "config.json"
-    if cfg.exists():
+    # 959m F10: classify an UNSAFE checkpoint exit (rc 75 without
+    # safe=1) BEFORE copying or re-reading any checkpoint file, so an
+    # unreadable absent.txt cannot raise ahead of the quarantine/retry path.
+    unsafe_exit = (not timed_out and rc == GDELT_CHECKPOINT_IO_RC
+                   and "gkg-filter-checkpoint-error safe=1" not in out_text)
+    read_failed = False
+    files_done = macro_files_done = absent_files = transient_files = 0
+    matches = macro_matches = 0
+    if not unsafe_exit:
         try:
-            state_summary = json.loads(cfg.read_text())
-        except Exception:
-            state_summary = {}
+            # (d) Copy filter outputs into workdir so publish() archives them.
+            # Do NOT copy raw GKG zips (script doesn't keep them).
+            for fn in ("matches.jsonl", "macro_matches.jsonl"):
+                src = out_dir / fn
+                if src.exists():
+                    shutil.copy2(src, run_dir / fn)
+                else:
+                    (run_dir / fn).unlink(missing_ok=True)   # no stale copy
 
-    # Copy state summary into workdir
-    (run_dir / "gdelt-state-summary.json").write_text(
-        json.dumps({"files_done": files_done,
-                    "macro_files_done": macro_files_done,
-                    "absent_files": absent_files,
-                    "matches": matches,
-                    "macro_matches": macro_matches,
-                    "config": state_summary}, indent=1))
+            # state summary
+            done_txt = state_dir / "done.txt"
+            macro_done_txt = state_dir / "macro_done.txt"
+            if done_txt.exists():
+                files_done = len([l for l in done_txt.read_text().splitlines() if l.strip()])
+            if macro_done_txt.exists():
+                macro_files_done = len([l for l in macro_done_txt.read_text().splitlines() if l.strip()])
+            absent_txt = state_dir / "absent.txt"
+            if absent_txt.exists():
+                absent_files = len([l for l in absent_txt.read_text().splitlines() if l.strip()])
+            transient_txt = state_dir / "transient.txt"
+            if transient_txt.exists():
+                # DISTINCT files that have failed transiently at least once: a new
+                # file's first failure is progress (the filter moved on to files not
+                # yet attempted), a repeat failure of the same file is not.
+                transient_files = len({l.strip() for l in transient_txt.read_text(errors="replace").splitlines() if l.strip()})
+
+            def _lines(p):
+                p = Path(p)
+                if not p.exists():
+                    return 0
+                # Binary: a timed-out filter can leave a truncated multibyte
+                # UTF-8 record, which must not raise before the status is set.
+                with open(p, "rb") as f:
+                    return sum(1 for _ in f)
+
+            matches = _lines(out_dir / "matches.jsonl")
+            macro_matches = _lines(out_dir / "macro_matches.jsonl")
+
+            # state config
+            state_summary = {}
+            cfg = state_dir / "config.json"
+            if cfg.exists():
+                try:
+                    state_summary = json.loads(cfg.read_text())
+                except Exception:
+                    state_summary = {}
+
+            # Copy state summary into workdir
+            (run_dir / "gdelt-state-summary.json").write_text(
+                json.dumps({"files_done": files_done,
+                            "macro_files_done": macro_files_done,
+                            "absent_files": absent_files,
+                            "matches": matches,
+                            "macro_matches": macro_matches,
+                            "config": state_summary}, indent=1))
+
+        except (OSError, ValueError):
+            # Checkpoint or report not readable/copied: never publish it as
+            # progress; the retryable no-publish outcome applies.
+            read_failed = True
+            files_done = macro_files_done = absent_files = 0
+            transient_files = matches = macro_matches = 0
 
     # (f) Progress log
     log_line = f"start={start} end={end} files_done={files_done} matches={matches} macro_matches={macro_matches}\n"
@@ -4766,6 +4813,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                   else "checkpoint-io-failed")
     elif rc != 0:
         status = "exit-%d" % rc
+    elif read_failed:
+        status = "checkpoint-io-failed"
     elif "budget exhausted" in out_text:
         status = "budget-exhausted"
     elif _gkg_unfinished(out_text) > 0:
@@ -5713,9 +5762,15 @@ def execute(job):
         c = BUS / "queue" / "claims" / f"{job['id']}.json"
         while not stop.wait(CLAIM_REFRESH_SECONDS):
             try:
-                c.write_text(json.dumps(
-                    {"worker": os.uname().nodename, "at": now(),
-                     "job": job["job"]}))
+                try:
+                    att = json.loads(c.read_text()).get("attempt")
+                except (OSError, ValueError, AttributeError):
+                    att = None
+                rec = {"worker": os.uname().nodename, "at": now(),
+                       "job": job["job"]}
+                if att:
+                    rec["attempt"] = att   # 959m F11: identity survives refresh
+                c.write_text(json.dumps(rec))
                 push_bus(f"claim refresh {job['id']}")
             except Exception:
                 pass
@@ -5743,7 +5798,17 @@ def execute(job):
                 _release_claim(job["id"])
 
 
-def _release_claim(job_id, only_own=False):
+def _local_claim_attempt(job_id):
+    """The attempt identity of the claim this host currently holds locally
+    (959m F11), or None (legacy claim without one, or no claim file)."""
+    try:
+        a = json.loads((BUS / "queue" / "claims" / f"{job_id}.json").read_text()).get("attempt")
+        return a if isinstance(a, str) and a else None
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def _release_claim(job_id, only_own=False, expect_attempt=False):
     """Remove queue/claims/<id>.json from the bus and CONFIRM it is gone
     from origin/queue. Returns True only on confirmation; on failure the
     claim stays (the 6 h stale reclaim is the fallback) and it says so."""
@@ -5764,9 +5829,14 @@ def _release_claim(job_id, only_own=False):
             r1 = git_bus("show origin/queue:" + shlex.quote(rel), timeout=60)
             if r1.returncode != 0:
                 raise RuntimeError("show failed")
-            owner = json.loads(r1.stdout or "{}").get("worker")
+            rc1 = json.loads(r1.stdout or "{}")
+            owner = rc1.get("worker")
             if owner != os.uname().nodename:
                 return True                       # another worker's claim: leave it
+            if expect_attempt is not False and rc1.get("attempt") != expect_attempt:
+                # 959m F11: same host, but a LATER attempt's claim (or one
+                # we cannot attribute): the replayed cleanup must not remove it.
+                return True
         claim.unlink(missing_ok=True)
         push_bus(f"release claim {job_id} (incomplete run)")
         # A fresh remote observation is required: a failed fetch would leave
@@ -6642,7 +6712,8 @@ def _gdelt_release_intent(job_id, archive_sha=None, expect=None):
         mp = _gdelt_cleanup_marker(job_id)
         mp.parent.mkdir(parents=True, exist_ok=True)
         mp.write_text(json.dumps({"archive_sha": archive_sha,
-                                 "intent": ident}))
+                                 "intent": ident,
+                                 "claim_attempt": _local_claim_attempt(job_id)}))
     except OSError:
         pass
     return False
@@ -6661,7 +6732,13 @@ def _gdelt_retry_cleanup(job_id):
             except (ValueError, AttributeError):
                 data, expect = {}, None
             if data.get("claim_pending") is True:
-                if _release_claim(job_id, only_own=True):
+                if "claim_attempt" not in data:
+                    # Legacy marker without an attempt identity: it cannot be
+                    # bound to a claim, so never release one. Drop it.
+                    mp.unlink(missing_ok=True)
+                    return
+                if _release_claim(job_id, only_own=True,
+                                  expect_attempt=data.get("claim_attempt")):
                     mp.unlink(missing_ok=True)
                 return
             if not isinstance(expect, str):
@@ -6673,9 +6750,11 @@ def _gdelt_retry_cleanup(job_id):
                     and not _intent_path(job_id).exists():
                 # Our intent is gone (not a mismatch that left a later
                 # attempt's intent in place): release the claim.
-                if not _release_claim(job_id, only_own=True):
+                att = data.get("claim_attempt")
+                if not _release_claim(job_id, only_own=True, expect_attempt=att):
                     mp.parent.mkdir(parents=True, exist_ok=True)
-                    mp.write_text(json.dumps({"claim_pending": True}))
+                    mp.write_text(json.dumps({"claim_pending": True,
+                                              "claim_attempt": att}))
     except OSError:
         pass
 
@@ -6856,6 +6935,16 @@ def _execute_body(job):
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
             _record_publish_failure(job)
+            if manifest["tools"].get("gdelt-fetch") in GDELT_INCOMPLETE:
+                # 959m F12: an incomplete gdelt-fetch chunk is resumable by
+                # design. An unconfirmed push is not proof nothing landed, so
+                # make the chunk resumable instead of leaving the job gated:
+                # release the intent (and, via "incomplete", the claim) so a
+                # same-id retry restores from the last VERIFIED published
+                # checkpoint (or finds the snapshot if it did land).
+                if _gdelt_release_intent(job["id"]):
+                    return "incomplete"
+                return None
         elif manifest["tools"].get("gdelt-fetch") in GDELT_INCOMPLETE:
             # Fetch progress is not queue completion: a budget-limited
             # or timed-out run is archived (its gdelt-state is the
