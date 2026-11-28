@@ -46,12 +46,14 @@ import json
 import os
 import re
 import shlex
+import shutil
 import signal
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
 ROOT = Path(os.environ.get("GATOR_ROOT", "/opt/gator"))
@@ -3497,9 +3499,72 @@ def parse_top30_job(job):
     return plan
 
 
+def parse_gdelt_fetch_job(job):
+    """Parse a `gdelt-fetch` job string into a plan dict, or None
+    when the string is not a gdelt-fetch job / malformed. Grammar:
+    `gdelt-fetch --start YYYYMMDDHHMMSS --end YYYYMMDDHHMMSS
+    [--budget-seconds N] [--workers N] [--mode live|fixtures]`.
+    --start and --end are REQUIRED, 14-digit GDELT datetimes, and
+    start must be <= end, else the parser returns None (fail closed).
+    --budget-seconds default 0 (unlimited, matching the filter script
+    default), --workers default 6. --mode fixtures labels the run
+    mode=fixtures in the manifest so it can never pass as a live run;
+    live mode is the default. Unknown tokens fail closed (None).
+    NOTE: parse_job (the registry grammar) still returns [] for this
+    string — the registry has no gdelt-fetch tool. Dispatch happens in
+    _execute_body before parse_job, like harvest-egx / top30-enumerate.
+    """
+    # Issue #381: isinstance, not `or ""` — the old guard only
+    # covered None/empty; a non-string truthy value crashed .split().
+    parts = (job if isinstance(job, str) else "").split()
+    if not parts or parts[0] != "gdelt-fetch":
+        return None
+    plan = {"kind": "gdelt-fetch", "start": None, "end": None,
+            "budget_seconds": 0, "workers": 6, "mode": "live"}
+    i = 1
+    while i < len(parts):
+        tok = parts[i]
+        if tok == "--start" and i + 1 < len(parts):
+            val = parts[i + 1]
+            if not (val.isdigit() and len(val) == 14):
+                return None
+            plan["start"] = val
+            i += 2
+        elif tok == "--end" and i + 1 < len(parts):
+            val = parts[i + 1]
+            if not (val.isdigit() and len(val) == 14):
+                return None
+            plan["end"] = val
+            i += 2
+        elif tok == "--budget-seconds" and i + 1 < len(parts):
+            try:
+                plan["budget_seconds"] = int(parts[i + 1])
+            except ValueError:
+                return None
+            i += 2
+        elif tok == "--workers" and i + 1 < len(parts):
+            try:
+                plan["workers"] = int(parts[i + 1])
+            except ValueError:
+                return None
+            i += 2
+        elif tok == "--mode" and i + 1 < len(parts) \
+                and parts[i + 1] in ("live", "fixtures"):
+            plan["mode"] = parts[i + 1]
+            i += 2
+        else:
+            return None
+    if plan["start"] is None or plan["end"] is None:
+        return None
+    if plan["start"] > plan["end"]:
+        return None
+    if plan["workers"] < 1:
+        return None
+    return plan
+
+
 def build_top30_required_cells(manifest):
-    """Required universe (issue #283 gates re-check schema
-    addition): one cell per manifest issuer x event type — FAIT/
+    """Required universe (issue #283 gates re-check schema addition): one cell per manifest issuer x event type — FAIT/
     FAITA is ONE issuer, so its two listings form one cell per
     type, not two. The count is derived from the live manifest
     (35 issuers x 3 types = 105 cells after the 2026-11-26 T1/T2
@@ -4040,10 +4105,194 @@ def run_top30_enumerate(job, workdir):
     return {"top30-enumerate": "ok"}
 
 
+def run_gdelt_fetch(job, workdir):
+    """Run a `gdelt-fetch` job: download the two real GDELT master
+    lists and invoke scripts/gdelt_gkg_filter.py with the configured
+    date range. Returns {"gdelt-fetch": status}.
+    """
+    # Issue #381: job_text() — never feed raw untrusted job text.
+    plan = parse_gdelt_fetch_job(job_text(job))
+    run_dir = Path(workdir) / "gdelt"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    if plan is None:
+        return {"gdelt-fetch": "bad-job"}
+
+    start = plan["start"]
+    end = plan["end"]
+    mode = plan["mode"]
+    workers = plan["workers"]
+    budget = plan["budget_seconds"]
+
+    # State/out dirs are fixed so re-queued jobs resume.
+    state_dir = Path(workdir) / "gdelt-state"
+    out_dir = Path(workdir) / "gdelt-out"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # (c) Restore previous run's state from archive branch if present.
+    # Use the same git helpers publish() uses (ROOT/'archive-push' and
+    # GATOR_BUS_URL). If no prior state exists, start fresh.
+    if not (state_dir / "done.txt").exists():
+        arch = ROOT / "archive-push"
+        url = os.environ.get("GATOR_BUS_URL")
+        try:
+            if not arch.exists() and url:
+                sh(f"git clone --branch archive --single-branch {url} {arch}",
+                   timeout=900)
+            elif arch.exists():
+                sh(f"git -C {arch} pull --ff-only", timeout=180)
+        except Exception:
+            pass
+        # Find latest worker-runs/<ts>__gdelt-fetch__<jobid> dir
+        if arch.exists():
+            runs_dir = arch / "worker-runs"
+            if runs_dir.is_dir():
+                jobid = job["id"]
+                candidates = []
+                for d in runs_dir.iterdir():
+                    if d.is_dir() and d.name.endswith("__gdelt-fetch__" + jobid):
+                        candidates.append(d)
+                if candidates:
+                    candidates.sort(key=lambda p: p.name)
+                    latest = candidates[-1]
+                    prev_state = latest / "gdelt-state"
+                    if prev_state.is_dir():
+                        # copy contents into state_dir
+                        for src in prev_state.iterdir():
+                            dst = state_dir / src.name
+                            if src.is_dir():
+                                shutil.copytree(src, dst, dirs_exist_ok=True)
+                            else:
+                                shutil.copy2(src, dst)
+
+    # (a) Download master lists (live mode only)
+    master_path = None
+    trans_path = None
+    if mode == "live":
+        master_dir = Path(workdir) / "gdelt-master"
+        master_dir.mkdir(parents=True, exist_ok=True)
+        master_path = master_dir / "masterfilelist.txt"
+        trans_path = master_dir / "masterfilelist-translation.txt"
+        try:
+            for url, dest in [
+                ("https://data.gdeltproject.org/gdeltv2/masterfilelist.txt",
+                 master_path),
+                ("https://data.gdeltproject.org/gdeltv2/masterfilelist-translation.txt",
+                 trans_path),
+            ]:
+                req = Request(url, headers={"User-Agent": "gdelt-fetch/1.0"})
+                with urlopen(req, timeout=300) as r:
+                    dest.write_bytes(r.read())
+        except Exception:
+            # named failure status
+            (run_dir / "gdelt-fetch.log").write_text(
+                "master-download-failed\n")
+            (run_dir / "gdelt_fetch.json").write_text(json.dumps({
+                "start": start, "end": end, "mode": mode,
+                "files_done": 0, "macro_files_done": 0,
+                "matches": 0, "macro_matches": 0,
+                "error": "master-download-failed",
+            }, indent=1))
+            return {"gdelt-fetch": "master-download-failed"}
+
+    # (b) Run filter script — build argv ONCE: script path appears exactly
+    # once; master flags are added only in the matching mode, then shared
+    # flags follow (--budget-seconds only when > 0).
+    script = CODE / "scripts" / "gdelt_gkg_filter.py"
+    aliases = CODE / "evaluation" / "gdelt_alias_table.csv"
+    themes = CODE / "evaluation" / "gdelt_macro_themes.csv"
+    cmd = [sys.executable, str(script)]
+    if mode == "live":
+        cmd += ["--master", str(master_path),
+                "--master-translation", str(trans_path)]
+    elif mode == "fixtures":
+        fx = os.environ.get("GDELT_FIXTURE_MASTER_DIR")
+        if fx:
+            fxp = Path(fx)
+            m = fxp / "masterfilelist.txt"
+            mt = fxp / "masterfilelist-translation.txt"
+            if m.exists():
+                cmd += ["--master", str(m)]
+            if mt.exists():
+                cmd += ["--master-translation", str(mt)]
+    cmd += ["--aliases", str(aliases),
+            "--themes", str(themes),
+            "--start", start, "--end", end,
+            "--state", str(state_dir),
+            "--out", str(out_dir),
+            "--workers", str(workers)]
+    if budget and budget > 0:
+        cmd += ["--budget-seconds", str(budget)]
+
+    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=str(CODE), timeout=7200)
+    rc = r.returncode
+
+    # (d) Copy filter outputs into workdir so publish() archives them.
+    # Do NOT copy raw GKG zips (script doesn't keep them).
+    for fn in ("matches.jsonl", "macro_matches.jsonl"):
+        src = out_dir / fn
+        if src.exists():
+            shutil.copy2(src, run_dir / fn)
+
+    # state summary
+    files_done = 0
+    macro_files_done = 0
+    done_txt = state_dir / "done.txt"
+    macro_done_txt = state_dir / "macro_done.txt"
+    if done_txt.exists():
+        files_done = len([l for l in done_txt.read_text().splitlines() if l.strip()])
+    if macro_done_txt.exists():
+        macro_files_done = len([l for l in macro_done_txt.read_text().splitlines() if l.strip()])
+
+    def _lines(p):
+        p = Path(p)
+        if not p.exists():
+            return 0
+        with open(p) as f:
+            return sum(1 for _ in f)
+
+    matches = _lines(out_dir / "matches.jsonl")
+    macro_matches = _lines(out_dir / "macro_matches.jsonl")
+
+    # state config
+    state_summary = {}
+    cfg = state_dir / "config.json"
+    if cfg.exists():
+        try:
+            state_summary = json.loads(cfg.read_text())
+        except Exception:
+            state_summary = {}
+
+    # Copy state summary into workdir
+    (run_dir / "gdelt-state-summary.json").write_text(
+        json.dumps({"files_done": files_done,
+                    "macro_files_done": macro_files_done,
+                    "matches": matches,
+                    "macro_matches": macro_matches,
+                    "config": state_summary}, indent=1))
+
+    # (f) Progress log
+    log_line = f"start={start} end={end} files_done={files_done} matches={matches} macro_matches={macro_matches}\n"
+    (run_dir / "gdelt-fetch.log").write_text(log_line)
+
+    # Determine status
+    if rc == 0:
+        status = "ok"
+    else:
+        status = "exit-%d" % rc
+
+    # Sidecar: runner writes workdir/gdelt/gdelt_fetch.json; the dispatch
+    # branch reads it into manifest['gdelt_fetch'].
+    (run_dir / "gdelt_fetch.json").write_text(json.dumps({
+        "start": start, "end": end, "mode": mode,
+        "files_done": files_done, "macro_files_done": macro_files_done,
+        "matches": matches, "macro_matches": macro_matches,
+    }, indent=1))
+
+    return {"gdelt-fetch": status}
+
+
 # --- Issue #283: paired A/B single-URL EGX diagnostic probe -------
-# The live top-30 enumeration reset on every listing
-# (``Page.goto: net::ERR_CONNECTION_RESET``) while a diagnostic
-# harvest did NOT reset (homepage 200; NewsSearch -> EGX_Error.aspx;
 # /ar/ warmup 403). The two tools launch Chromium differently and
 # time and configuration are confounded across all runs so far, so
 # this probe runs BOTH launch configs against ONE fixed URL
@@ -5808,6 +6057,41 @@ def _execute_body(job):
         # (done means executed + archived, as for harvest-egx);
         # only a failed publish leaves the job unmarked.
         manifest["tools"] = run_top30_enumerate(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
+    # Issue #446: walk-forward backtest cells (design #436 §6.4) —
+    # same dispatch shape as diag-egx-ab above (before parse_job;
+    # the registry has no backtest tool). The two-token prefix
+    # keeps the registry grammar's `run <tool> <ticker>` jobs
+    # untouched. A bad job string still publishes its named failure
+    # and marks done (done means executed + archived, as for
+    # diag-egx-ab); only a failed publish leaves the job unmarked.
+    if text.split()[:2] == ["run", "backtest"]:
+        manifest["tools"] = run_backtest(job, workdir)
+        manifest["finished"] = now()
+        archive_sha = publish(job, workdir, manifest)
+        if not archive_sha:
+            _record_publish_failure(job)
+        else:
+            # Issue #149: only a successful publish marks the job done.
+            _mark_done(job, archive_sha)
+        return
+    # gdelt-fetch: GDELT GKG master download + filter
+    if text.split()[:1] == ["gdelt-fetch"]:
+        manifest["tools"] = run_gdelt_fetch(job, workdir)
+        # Load gdelt_fetch summary from sidecar written by runner
+        gf_path = Path(workdir) / "gdelt" / "gdelt_fetch.json"
+        if gf_path.exists():
+            try:
+                manifest["gdelt_fetch"] = json.loads(gf_path.read_text())
+            except Exception:
+                manifest["gdelt_fetch"] = {}
         manifest["finished"] = now()
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
