@@ -5,6 +5,7 @@ import os
 import shlex
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -488,6 +489,82 @@ def test_execute_releases_bus_claim_for_incomplete_run():
     check("claim-refresh thread stopped by execute()", not alive)
     check("the refresh thread was running while the job executed", seen["refresh_threads_running"] >= 1)
 
+def test_timeout_with_truncated_utf8_record():
+    _fixtures_env()
+    job = {"id": "to-utf8", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
+    def runner(cmd):
+        out = Path(_tok(cmd, "--out"))
+        (out / "matches.jsonl").write_bytes(b'{"a": 1}\n{"a": "\xd8')   # cut inside a 2-byte character
+        (out / "macro_matches.jsonl").write_bytes(b'{"m": "\xe2\x82')   # cut inside a 3-byte character
+        raise _sp.TimeoutExpired(cmd, 7200, output=b"", stderr="")
+    wd = worker.OUT / "t959-utf8"
+    res, _ = _run_capture(job, wd, runner)
+    check("truncated multibyte record does not stop the timeout status", res == {"gdelt-fetch": "timeout"})
+    data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
+    check("line counts are byte-based (2 company lines, 1 macro line)", data["matches"] == 2 and data["macro_matches"] == 1)
+
+def _progress_run(jid, files_done, status="budget-exhausted"):
+    """One incomplete run through _execute with the fetch and publish stubbed."""
+    o_pub, o_md, o_run = worker.publish, worker._mark_done, worker.run_gdelt_fetch
+    def fake_run(job, wd):
+        g = Path(wd) / "gdelt"; g.mkdir(parents=True, exist_ok=True)
+        (g / "gdelt_fetch.json").write_text(json.dumps({"files_done": files_done, "macro_files_done": 0}))
+        return {"gdelt-fetch": status}
+    worker.publish = lambda job, wd, m: "sha"
+    worker._mark_done = lambda job, sha, extra=None: None
+    worker.run_gdelt_fetch = fake_run
+    try:
+        job = {"id": jid, "job": "gdelt-fetch --start 20200101000000 --end 20200131235959 --mode fixtures"}
+        return worker._execute(job)
+    finally:
+        worker.publish, worker._mark_done, worker.run_gdelt_fetch = o_pub, o_md, o_run
+
+def test_stuck_incomplete_job_yields_the_lane():
+    jid = "stuck-1"
+    worker._gdelt_progress_clear(jid)
+    _progress_run(jid, 5)                      # first run: 5 files, progress
+    check("first incomplete run with progress is not deferred", not worker._gdelt_deferred(jid))
+    for i in range(worker.GDELT_STALL_LIMIT - 1):
+        worker._intent_path(jid).unlink(missing_ok=True)
+        _progress_run(jid, 5)
+        check("stall %d below the limit: not yet deferred" % (i + 1), not worker._gdelt_deferred(jid))
+    worker._intent_path(jid).unlink(missing_ok=True)
+    _progress_run(jid, 5)
+    check("after GDELT_STALL_LIMIT stalls the job is deferred", worker._gdelt_deferred(jid))
+    rec = worker._gdelt_progress_read(jid)
+    check("deferral lasts GDELT_DEFER_SECONDS",
+          abs(rec["deferred_until"] - (time.time() + worker.GDELT_DEFER_SECONDS)) < 60)
+    check("deferral expires", not worker._gdelt_deferred(jid, now_ts=time.time() + worker.GDELT_DEFER_SECONDS + 5))
+    check("a later job is not deferred", not worker._gdelt_deferred("other-job"))
+    src = Path(worker.__file__).read_text()
+    m = src[src.index("def main():"):]
+    check("main() skips a deferred job after the supersede handling and before claiming",
+          m.index("_superseded_slot(") < m.index("if _gdelt_deferred(job_id):") < m.index("if not claimed(job_id):"))
+    check("supersede handling for guard/watchdog slots is still present",
+          '"ledger-guard"' in m and "_mark_superseded(" in m)
+    worker._gdelt_progress_clear(jid)
+
+def test_progressing_incomplete_job_resumes_and_is_not_demoted():
+    jid = "prog-1"
+    worker._gdelt_progress_clear(jid)
+    total = 0
+    for n in range(8):                          # 8 budget-limited runs, +71 files each
+        worker._intent_path(jid).unlink(missing_ok=True)
+        total += 71
+        r = _progress_run(jid, total)
+        check("progressing run %d signals a resume release" % (n + 1), r == "incomplete")
+        check("progressing run %d is not deferred" % (n + 1), not worker._gdelt_deferred(jid))
+    check("stalls stay at zero while progressing", worker._gdelt_progress_read(jid)["stalls"] == 0)
+    # a stall run then a progress run resets the counter
+    for _ in range(worker.GDELT_STALL_LIMIT - 1):
+        worker._intent_path(jid).unlink(missing_ok=True); _progress_run(jid, total)
+    worker._intent_path(jid).unlink(missing_ok=True); _progress_run(jid, total + 71)
+    check("a run that advances resets the stalls", worker._gdelt_progress_read(jid)["stalls"] == 0 and not worker._gdelt_deferred(jid))
+    # restore flow unchanged: own id first (covered by the restore tests); a completed job clears its record
+    worker._intent_path(jid).unlink(missing_ok=True)
+    _progress_run(jid, total + 142, status="ok")
+    check("a completed run clears the progress record", worker._gdelt_progress_read(jid) is None)
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -508,6 +585,9 @@ def main():
     test_master_download_failed_publishes_restored_matches()
     test_unfinished_status_from_filter_output()
     test_execute_releases_bus_claim_for_incomplete_run()
+    test_timeout_with_truncated_utf8_record()
+    test_stuck_incomplete_job_yields_the_lane()
+    test_progressing_incomplete_job_resumes_and_is_not_demoted()
     print("\n%d passed" % PASSED)
     return 0
 

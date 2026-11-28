@@ -4380,7 +4380,9 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         p = Path(p)
         if not p.exists():
             return 0
-        with open(p) as f:
+        # Binary: a timed-out filter can leave a truncated multibyte
+        # UTF-8 record, which must not raise before the status is set.
+        with open(p, "rb") as f:
             return sum(1 for _ in f)
 
     matches = _lines(out_dir / "matches.jsonl")
@@ -6126,6 +6128,69 @@ def _record_publish_failure(job):
         pass
 
 
+# --- incomplete gdelt-fetch jobs: yield the lane when stuck -----------
+# An incomplete job keeps its queue position, so main() would re-select
+# it first every cycle and break after one job. Mechanism: DEFERRAL keyed
+# on PROGRESS. After each incomplete run the worker records the cumulative
+# done-file count (files_done + macro_files_done from the run's sidecar). A
+# run whose count did not exceed the previous recorded count is a stall;
+# GDELT_STALL_LIMIT consecutive stalls defer the job for GDELT_DEFER_SECONDS,
+# during which main() skips it (no claim) so later jobs run. A run that
+# advances the count resets the stalls, so a budget-limited chunk that
+# keeps processing files is never demoted. After the deferral expires the
+# job gets one retry; a further stall defers it again. Local state (per
+# worker host), under JOB_STATE/gdelt-progress; failures to read or write
+# it fail OPEN (no deferral).
+GDELT_STALL_LIMIT = 3
+GDELT_DEFER_SECONDS = 6 * 3600
+
+
+def _gdelt_progress_path(job_id):
+    return JOB_STATE / "gdelt-progress" / f"{job_id}.json"
+
+
+def _gdelt_progress_read(job_id):
+    try:
+        d = json.loads(_gdelt_progress_path(job_id).read_text())
+        return d if isinstance(d, dict) else None
+    except Exception:
+        return None
+
+
+def _gdelt_note_incomplete(job_id, total, now_ts=None):
+    """Record one incomplete run; returns the stored record or None."""
+    now_ts = time.time() if now_ts is None else now_ts
+    try:
+        prev = _gdelt_progress_read(job_id) or {}
+        prev_total = prev.get("total")
+        progressed = (total > 0) if prev_total is None else (total > prev_total)
+        stalls = 0 if progressed else int(prev.get("stalls", 0)) + 1
+        rec = {"total": int(total), "stalls": stalls, "deferred_until": 0}
+        if stalls >= GDELT_STALL_LIMIT:
+            rec["deferred_until"] = now_ts + GDELT_DEFER_SECONDS
+        path = _gdelt_progress_path(job_id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(rec))
+        os.replace(tmp, path)
+        return rec
+    except Exception:
+        return None
+
+
+def _gdelt_deferred(job_id, now_ts=None):
+    now_ts = time.time() if now_ts is None else now_ts
+    rec = _gdelt_progress_read(job_id)
+    return bool(rec) and float(rec.get("deferred_until", 0) or 0) > now_ts
+
+
+def _gdelt_progress_clear(job_id):
+    try:
+        _gdelt_progress_path(job_id).unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
 def _execute_body(job):
     # Issue #381: normalize the untrusted `job` field ONCE, here,
     # before any dispatch, parse, or publish call below. `text` is
@@ -6289,12 +6354,19 @@ def _execute_body(job):
                     _fsync_dir(JOB_STATE)
             except OSError:
                 pass
+            gf = manifest.get("gdelt_fetch") or {}
+            try:
+                total = int(gf.get("files_done", 0)) + int(gf.get("macro_files_done", 0))
+            except (TypeError, ValueError):
+                total = 0
+            _gdelt_note_incomplete(job["id"], total)
             # Tell execute() to release the bus claim once its refresh
             # thread is stopped (see execute()).
             return "incomplete"
         else:
             # Issue #149: only a successful publish marks the job done.
             _mark_done(job, archive_sha)
+            _gdelt_progress_clear(job["id"])
         return
     # Issue #283: paired A/B EGX probe — same dispatch shape as
     # top30-enumerate above (before parse_job; the registry has no
@@ -6759,6 +6831,12 @@ def main():
                         else "ledger-watchdog",
                         superseded_by, reason)
                     worked = True
+                    continue
+                # A stuck incomplete gdelt-fetch job is deferred (see
+                # _gdelt_deferred) so it cannot block later jobs. This
+                # sits AFTER the supersede handling above, which is
+                # unchanged, and before claiming.
+                if _gdelt_deferred(job_id):
                     continue
                 if not claimed(job_id):
                     if claim(job):

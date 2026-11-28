@@ -503,6 +503,7 @@ def test_unfinished_vs_absent():
         st, out = os.path.join(d, "st"), os.path.join(d, "out")
         os.makedirs(out)
         names = ["20240515000000", "20240515001500", "20240515003000", "20240515004500"]
+        orig = (G.list_files, G.fetch)
         G.list_files = lambda specs, s0, e0: [
             ("http://x/%s.gkg.csv.zip" % n, "english") for n in names]
         buf = io.BytesIO()
@@ -518,7 +519,6 @@ def test_unfinished_vs_absent():
             if names[3] in url:
                 raise urllib.error.HTTPError(url, 403, "Forbidden", None, None)
             return good
-        orig = (G.list_files, G.fetch)
         G.fetch = fake
 
         class R:
