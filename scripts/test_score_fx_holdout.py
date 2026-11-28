@@ -115,6 +115,13 @@ def test_all():
     check("main returns 0 on a passing gate", rc == 0 and os.path.exists(out_json))
     check("main refuses non-registered reps", H.main(["--data", d3, "--asof", "2026-04-01", "--out-json", out_json, "--out-md", out_md, "--reps", "10"]) == 2)
     check("gate fires on any positive skill, not on zero or negative", H.gate_positive(1e-9) and not H.gate_positive(0.0) and not H.gate_positive(-0.2))
+    # call-site pin: clusters whose zero band scores marginally BETTER than naive must fire the gate
+    cl_pos = [[10, 5.0, 10.0, 8, 8, 9.99]]      # zero IS 9.99 < naive 10 -> skill +0.001
+    cl_neg = [[10, 5.0, 10.0, 8, 8, 10.01]]     # zero IS 10.01 > naive 10 -> skill -0.001
+    cl_eq = [[10, 5.0, 10.0, 8, 8, 10.0]]
+    check("zero_move_check fires at +0.001, not at 0 or -0.001 (threshold pinned at the call site)",
+          H.zero_move_check(cl_pos)[1] is True and H.zero_move_check(cl_neg)[1] is False and H.zero_move_check(cl_eq)[1] is False,
+          str((H.zero_move_check(cl_pos), H.zero_move_check(cl_neg), H.zero_move_check(cl_eq))))
     res4, _ = run_dir(end="2026-11-27", asof="2026-11-28")
     e_day = res4["cells"]["EURUSD"]["horizons"]["day/all_rows"]
     e_mon = res4["cells"]["EURUSD"]["horizons"]["month/all_rows"]

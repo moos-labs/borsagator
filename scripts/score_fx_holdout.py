@@ -38,6 +38,13 @@ def gate_positive(skill_value):
     return skill_value > 0
 
 
+def zero_move_check(cl):
+    """(RangeSkill of the [0,0] band vs naive, gate fires). Single call site
+    for the falsification threshold: a positive value stops the run."""
+    z = skill(cl, col=5)
+    return z, gate_positive(z)
+
+
 def zero_is(real):
     return D.winkler(real, 0.0, 0.0)
 
@@ -198,8 +205,8 @@ def run(data_dir, asof, reps=D.REPS, seed=D.SEED):
         if not scored:
             continue
         cl = cluster_tuples(scored, mature)
-        z = skill(cl, col=5)
-        ok = not gate_positive(z)
+        z, fires = zero_move_check(cl)
+        ok = not fires
         failed = failed or not ok
         out["gate"]["zero_move"].append({"cell": name, "horizon": hname, "rows": vname, "n": len(scored),
                                          "range_skill_zero_move_vs_naive": z, "positive_skill": not ok})
