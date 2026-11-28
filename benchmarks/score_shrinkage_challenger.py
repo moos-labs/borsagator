@@ -110,7 +110,10 @@ def prepare(rows, closes_by_ticker):
             continue
         base = str(r["as_of"])[:10]
         rdate_ohlcv = realised_date(cl, base, h)
-        if rdate_ohlcv is None or r.get("real") is None:
+        # The OHLCV endpoint is needed only when the capture has no
+        # recorded endpoint; a captured outcome with its own real_end
+        # stays even when the OHLCV file ends at the cutoff.
+        if r.get("real") is None or (not r.get("real_end") and rdate_ohlcv is None):
             ex.append("excluded row %s: no realised close" % key)
             continue
         # The freeze gate uses the date of the close that PRODUCED `real`
@@ -164,7 +167,22 @@ def endpoint_notes(usable):
     (the freeze gate uses the capture's endpoint)."""
     return ["%s: capture endpoint %s, OHLCV endpoint %s (freeze gate uses %s)"
             % (r["key"], r["rdate"], r.get("rdate_ohlcv", r["rdate"]), r["rdate"])
-            for r in usable if r["rdate"] != r.get("rdate_ohlcv", r["rdate"])]
+            for r in usable if r.get("rdate_ohlcv", r["rdate"]) is not None
+            and r["rdate"] != r.get("rdate_ohlcv", r["rdate"])]
+
+
+def pending_exclusions(pending):
+    """Exclusion lines for captured rows that are not matured: they stay out
+    of fitting and evaluation, each with its own reason."""
+    return ["excluded row %s %s %s: no realised close (capture status %s)"
+            % (t, str(d)[:10], h, st) for t, d, h, st in pending]
+
+
+def gate_horizons(mature):
+    """Horizons below the registered MIN_CLUSTERS fully mature clusters:
+    counts only, no RangeSkill, coverage, interval or KEEP output.
+    mature = {horizon: (mature count, cutoff count)}."""
+    return [h for h in HORIZONS if mature[h][0] < MIN_CLUSTERS]
 
 
 def row_scores(r, a, b):
@@ -287,10 +305,11 @@ def main(argv=None):
     # Reference set = the in-range captures only: an out-of-range capture
     # (for example a 91+ cell in fit mode) must never supply the price
     # series for an in-range row's realised-window rebuild.
-    rows, gaps = R.build_rows(caps)
+    pend = []
+    rows, gaps = R.build_rows(caps, pending=pend)
     usable, ex = prepare(rows, closes)
     gex, rebuilt = split_gaps(gaps)
-    ex = ["excluded: %s" % g for g in gex] + ex
+    ex = ["excluded: %s" % g for g in gex] + ex + pending_exclusions(pend)
     notes = endpoint_notes(usable)
     if a.mode == "fit":
         n, fx, wh = fit_pooled(usable)
@@ -353,14 +372,20 @@ def main(argv=None):
               "tickers of the cutoff, no eligibility filter)" % (h, len(mt), len(al), MIN_CLUSTERS))
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
-    res = evaluate_pairs(usable, w, a.reps, a.seed)
+    gated = gate_horizons(mature)
+    for h in gated:
+        print("%s: COUNTS ONLY, %d of the registered %d fully mature clusters; no RangeSkill, coverage, "
+              "interval or KEEP output (gate enforced in code)" % (h, mature[h][0], MIN_CLUSTERS))
+    res = evaluate_pairs([r for r in usable if r["horizon"] not in gated], w, a.reps, a.seed)
     print("CROSSED-EDGE FALLBACKS (every one listed, before any statistic; rows stay in scoring)")
-    for h in HORIZONS:
-        for k in res[h].get("crossed_keys", []):
-            print("crossed edges: %s (reason: crossed edges, v2 interval used)" % k)
+    for r in usable:
+        if row_scores(r, w[0], w[1])[2] if w else False:
+            print("crossed edges: %s (reason: crossed edges, v2 interval used)" % r["key"])
     print("DESCRIPTIVE ONLY cells %d-%d, %d reps seed %d" % (mn, mx, a.reps, a.seed))
     for h in HORIZONS:
         c = res[h]
+        if h in gated:
+            continue
         if c.get("weights") is None:
             print("%s: no weights or no rows (counts only)" % h)
             continue
@@ -372,7 +397,9 @@ def main(argv=None):
             f3(c["delta_ci_cutoff"][0]), f3(c["delta_ci_cutoff"][1])))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
-            json.dump({"descriptive": True, "counts": lines, "results": res,
+            json.dump({"descriptive": True, "counts": lines,
+                       "results": {h: v for h, v in res.items() if h not in gated},
+                       "counts_only_horizons": gated,
                        "mature_clusters": {h: {"mature": m, "cutoffs": t} for h, (m, t) in mature.items()},
                        "excluded": ex}, fh, indent=1)
     return 0

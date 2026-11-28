@@ -213,14 +213,21 @@ def test_refusals():
     check("refusals printed", buf.getvalue().count("refusing") == 5)
 
 
-def _stub_pipeline(rows_for_prepare, gaps=None, ex=None, mod=None):
-    """Replace discovery, build_rows and prepare; returns calls and a restore fn."""
+def _stub_pipeline(rows_for_prepare, gaps=None, ex=None, mod=None, gate=False):
+    """Replace discovery, build_rows and prepare; returns calls and a restore fn.
+    Unless gate=True the gate is bypassed so tests of other
+    output (crossed rows, exclusions) still reach the statistics."""
     calls = {}
     T = mod or globals()["T"]
+    saved_gate = T.gate_horizons
+    if not gate:
+        T.gate_horizons = lambda mature: []
     saved = (T.cell_caps, T.R.build_rows, T.prepare, T.load_closes, os.listdir)
     T.cell_caps = lambda roots, lo, hi: (["ALL1", "ALL2", "IN1"], ["IN1"])
-    def fake_build(caps, ref=None, *rest):
+    def fake_build(caps, ref=None, *rest, pending=None):
         calls["args"] = (list(caps), ref, rest)
+        if pending is not None:
+            pending.extend(calls.get("pending_in", []))
         return [], list(gaps or [])
     T.R.build_rows = fake_build
     T.prepare = lambda rows, closes: (rows_for_prepare, list(ex or []))
@@ -228,6 +235,7 @@ def _stub_pipeline(rows_for_prepare, gaps=None, ex=None, mod=None):
     os.listdir = lambda d: []
     def restore():
         T.cell_caps, T.R.build_rows, T.prepare, T.load_closes, os.listdir = saved
+        T.gate_horizons = saved_gate
     return calls, restore
 
 
@@ -416,7 +424,7 @@ def test_mature_cluster_counting():
     wk = [row("A.CA", "2025-01-02"), row("B.CA", "2025-01-02"), row("A.CA", "2025-01-09")]
     dy = [row("A.CA", "2025-01-02", "day"), row("B.CA", "2025-01-02", "day"),
           row("A.CA", "2025-01-09", "day"), row("B.CA", "2025-01-09", "day")]
-    calls, restore = _stub_pipeline(wk + dy)
+    calls, restore = _stub_pipeline(wk + dy, gate=True)
     T.cell_caps = lambda roots, lo, hi: (caps, caps)
     with tempfile.TemporaryDirectory() as d:
         wp = os.path.join(d, "w.json")
@@ -443,13 +451,89 @@ def test_mature_cluster_counting():
     check("the registered minimum is 10", T.MIN_CLUSTERS == 10)
 
 
+def test_966c_captured_outcome_and_pending_records_and_gate():
+    import json, tempfile
+    cl = series(400)
+    last = cl[399][0]
+    row = {"ticker": "A.CA", "as_of": last, "horizon": "day", "real": 0.1, "naive_half": 3.0, "mult": 1.0, "v2_sigma": 0.02}
+    # the OHLCV file ends at the cutoff: a captured outcome with its own endpoint stays
+    out, ex = T.prepare([dict(row, real_end="2025-02-03")], {"A.CA": cl})
+    check("captured real+real_end kept when OHLCV has no later rows",
+          len(out) == 1 and not ex and out[0]["rdate"] == "2025-02-03" and out[0]["rdate_ohlcv"] is None, str((out, ex)))
+    out, ex = T.prepare([row], {"A.CA": cl})
+    check("no real_end and no OHLCV endpoint is still excluded", not out and "no realised close" in ex[0])
+    out, ex = T.prepare([dict(row, real_end="2025-02-03", real=None)], {"A.CA": cl})
+    check("no captured outcome is excluded even with an endpoint", not out and "no realised close" in ex[0])
+    kept, _ = T.prepare([dict(row, real_end="2025-02-03")], {"A.CA": cl})
+    check("endpoint notes skip rows without an OHLCV endpoint", T.endpoint_notes(kept) == [])
+    ok = [dict(mkrow(), rdate="2025-01-03", rdate_ohlcv="2025-01-02")]
+    check("endpoint notes still report a real difference", len(T.endpoint_notes(ok)) == 1 and "None" not in T.endpoint_notes(ok)[0])
+    # pending capture rows are listed individually, in both commands
+    pend = [("B.CA", "2025-01-02", "month", "pending")]
+    check("pending record format", T.pending_exclusions(pend) == ["excluded row B.CA 2025-01-02 month: no realised close (capture status pending)"])
+    calls, restore = _stub_pipeline([], gate=True)
+    calls["pending_in"] = pend
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            T.main(["fit", "--captures", "x", "--ohlcv-dir", "x"])
+    finally:
+        restore()
+    check("fit lists the pending row among exclusions", "excluded row B.CA 2025-01-02 month: no realised close (capture status pending)" in buf.getvalue())
+    LO = importlib.util.module_from_spec(importlib.util.spec_from_file_location("lo", os.path.join(HERE, "..", "benchmarks", "score_shrinkage_leave_out.py")))
+    LO.__spec__.loader.exec_module(LO)
+    LO.T = T
+    calls, restore = _stub_pipeline([], gate=True)
+    calls["pending_in"] = pend
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        json.dump({"weights": [0.1, 1.0]}, open(wp, "w"))
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                LO.main(["--captures", "x", "--ohlcv-dir", "x", "--weights", wp])
+        finally:
+            restore()
+    check("leave-out lists the pending row among exclusions", "excluded row B.CA 2025-01-02 month: no realised close (capture status pending)" in buf.getvalue())
+    # the 91+ gate: 9 mature clusters is counts only, 10 gives statistics
+    check("gate boundary", T.gate_horizons({"day": (9, 9), "week": (10, 10), "month": (0, 3)}) == ["day", "month"])
+    def run(nclusters):
+        bases = [(datetime.date(2025, 1, 2) + datetime.timedelta(days=7 * i)).isoformat() for i in range(nclusters)]
+        caps = ["/r/%s/A.CA" % b for b in bases]
+        rows = [dict(mkrow(h="day", base=b, real=0.3 + 0.1 * (i % 3)), ticker="A.CA") for i, b in enumerate(bases)]
+        calls, restore = _stub_pipeline(rows, gate=True)
+        T.cell_caps = lambda roots, lo, hi: (caps, caps)
+        saved_eval = T.evaluate_pairs
+        T.evaluate_pairs = lambda rows_, w_, reps, seed: saved_eval(rows_, w_, 20, seed)
+        with tempfile.TemporaryDirectory() as d:
+            wp, jp = os.path.join(d, "w.json"), os.path.join(d, "o.json")
+            json.dump({"weights": [0.1, 1.0]}, open(wp, "w"))
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf):
+                    T.main(["describe", "--captures", "x", "--ohlcv-dir", "x", "--weights", wp, "--json", jp])
+            finally:
+                T.evaluate_pairs = saved_eval
+                restore()
+            return buf.getvalue(), json.load(open(jp))
+    o9, j9 = run(9)
+    check("9 mature clusters: day is counts only, no statistics",
+          "day: COUNTS ONLY, 9 of the registered 10" in o9 and "challenger:" not in o9 and "RangeSkill CI" not in o9, o9[-600:])
+    check("9 clusters: json has no day results and names the gated horizons",
+          "day" not in j9["results"] and j9["counts_only_horizons"] == ["day", "week", "month"])
+    o10, j10 = run(10)
+    check("10 mature clusters: day statistics are printed", "day: n=10" in o10 and "challenger: coverage" in o10 and "day: COUNTS ONLY" not in o10, o10[-600:])
+    check("10 clusters: json has day results", "day" in j10["results"] and "day" not in j10["counts_only_horizons"])
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
                test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
                test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
-               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting):
+               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting,
+               test_966c_captured_outcome_and_pending_records_and_gate):
         fn()
 
 
