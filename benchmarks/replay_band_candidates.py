@@ -259,9 +259,29 @@ def _extend_realised(staged, ref, need=21):
     return True
 
 
-def build_rows(capture_dirs, ref_dirs=None):
+def _realised_endpoints(staged):
+    """Sorted session dates of the staged realised.json (after any
+    extension): the list realised_move_pct is measured from."""
+    with open(os.path.join(staged, "realised.json"), encoding="utf-8") as f:
+        rl = json.load(f)
+    return sorted(str(s.get("date"))[:10] for s in (rl.get("sessions") or []))
+
+
+def endpoint_date(session_dates, as_of, horizon):
+    """Date of the close that realised_move_pct is measured to: the Nth
+    session dated after the cutoff (as_of), N = ledger sessions, the rule
+    backtest_score.score_capture uses. None when the list is too short."""
+    after = [d for d in session_dates if d > str(as_of)[:10]]
+    n = A.SESSIONS[horizon]
+    return after[n - 1] if len(after) >= n else None
+
+
+def build_rows(capture_dirs, ref_dirs=None, pending=None):
     """One row per matured, non-gap (capture, horizon) with realised
-    move, naive band, v2 sigma, and each candidate's daily sigma."""
+    move, naive band, v2 sigma, and each candidate's daily sigma.
+    When `pending` is a list, one record per captured (ticker, cutoff,
+    horizon) that is NOT matured (status pending etc.) is appended to it
+    as (ticker, as_of, horizon, status); those rows never enter `rows`."""
     rows, gaps = [], []
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
@@ -278,6 +298,7 @@ def build_rows(capture_dirs, ref_dirs=None):
                 gaps.append("%s: realised window rebuilt to 21 sessions "
                             "from price.csv" % cap)
             scored, _g = bs.score_capture(staged)
+            real_end = _realised_endpoints(staged)
         except Exception as e:
             gaps.append("%s: scoring failed: %s" % (cap, e))
             continue
@@ -291,6 +312,11 @@ def build_rows(capture_dirs, ref_dirs=None):
             gaps.append("%s: no usable pre-cutoff OHLC history" % cap)
             continue
         for r in scored:
+            if (pending is not None and r.get("entrant") == "naive-range"
+                    and r.get("status") != "matured"
+                    and not r.get("dividend_gap")):
+                pending.append((r["ticker"], r["as_of"], r["horizon"],
+                                r.get("status")))
             if (r.get("entrant") != "naive-range"
                     or r.get("status") != "matured"
                     or r.get("dividend_gap")):
@@ -303,7 +329,11 @@ def build_rows(capture_dirs, ref_dirs=None):
                 / 2.0,
                 "mult": ens_mod.RISK_MULT.get(
                     ((ens or {}).get("risk") or {}).get("level"), 1.0),
-                "v2_sigma": v2sig, "sig": sig})
+                "v2_sigma": v2sig, "sig": sig,
+                # date of the close that produced `real` (the capture's
+                # own staged realised sessions), see _realised_endpoints
+                "real_end": endpoint_date(real_end, r["as_of"],
+                                          r["horizon"])})
     return rows, gaps
 
 
