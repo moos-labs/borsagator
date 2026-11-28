@@ -385,6 +385,36 @@ def test_958n_brent_lag_and_incomplete_captures():
               sorted(r.split("cell")[1][:2] + (" realised" if "missing realised.json" in r and "ensemble" not in r else " ensemble" if "missing digest/ensemble.json" in r and "realised" not in r else " both") for r in rej) == ["48 ensemble", "50 realised", "51 ensemble", "60 realised", "90 ensemble"], str(rej))
         check("out-of-window cell 10 is not listed", not any("cell55" in r or "cell56" in r for r in rej) and not any("cell10" in r or "cell47" in r or "cell91" in r for r in rej))
         check("no rejects list gives the same selection", T.A.find_captures([d], 48, 90) == [good])
+        # 958o: a manifest-less capture (realised.json + ensemble.json) is reported
+        mk(70, "2026-01-01", "NOMAN.CA", ["realised.json", "digest/ensemble.json"])
+        mk(71, "2026-01-01", "ONLYR.CA", ["realised.json"])
+        mk(72, "2026-01-01", "ONLYE.CA", ["digest/ensemble.json"])
+        rej2 = []
+        caps2 = T.A.find_captures([d], 48, 90, rejects=rej2)
+        nm = [r for r in rej2 if "cell70" in r]
+        check("958o: manifest-less realised + ensemble capture is listed, reason is exactly missing manifest.json",
+              len(nm) == 1 and nm[0].endswith(": missing manifest.json"), str(rej2))
+        check("958o: realised-only lists manifest and ensemble; ensemble-only lists manifest and realised",
+              any(r.endswith("cell71/2026-01-01/ONLYR.CA: missing manifest.json, digest/ensemble.json") for r in rej2)
+              and any(r.endswith("cell72/2026-01-01/ONLYE.CA: missing manifest.json, realised.json") for r in rej2), str(rej2))
+        check("958o: selection unchanged and the earlier listings, run-level and manifest-only dirs are unchanged",
+              caps2 == [good] and not any("cell55" in r or "cell56" in r for r in rej2) and len(rej2) == len(rej) + 3, str(rej2))
+        for nm_, v_ in T.SERIES.items():
+            with open(os.path.join(d, v_[0]), "w") as fh:
+                fh.write("observed_date,published_date,value\n")
+        buf0 = io.StringIO()
+        saved0 = T.R.build_rows
+        T.R.build_rows = lambda caps, allc, repairs, info: ([], [])
+        try:
+            with contextlib.redirect_stdout(buf0):
+                T.main(["describe", "--captures", d, "--series-dir", d])
+        except SystemExit:
+            pass
+        finally:
+            T.R.build_rows = saved0
+        out0 = buf0.getvalue()
+        check("958o: the describe CLI reports the manifest-less capture under EXCLUSIONS with the reason",
+              "EXCLUSIONS" in out0 and "NOMAN.CA: missing manifest.json" in out0.split("EXCLUSIONS")[1], out0[:800])
         for nm, v in T.SERIES.items():
             with open(os.path.join(d, v[0]), "w") as fh:
                 fh.write("observed_date,published_date,value\n")
