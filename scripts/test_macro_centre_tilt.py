@@ -77,7 +77,7 @@ def test_composite_and_centre():
     series = {"oil": rowset(94.0, 100.0), "fx": rowset(120.0, 100.0), "tbill": rowset(18.0, 20.0)}
     row = {"ticker": "A", "as_of": "2026-01-01", "horizon": "week", "real": 0.0,
            "naive_half": 5.0, "mult": 1.0, "v2_sigma": 0.02}
-    pairs, listed = T.tilt_rows([row], series)
+    pairs, listed, _x = T.tilt_rows([row], series)
     p = pairs[0]
     v2h = T.R.half_pct(0.02, "week", T.ens_mod.V2_BAND_K["week"], 1.0)
     check("m is 1", abs(p["m"] - 1.0) < 1e-12 and not listed)
@@ -91,10 +91,16 @@ def test_composite_and_centre():
           and want != T.R.row_is(edge, v2h))
     check("v2 band stays centred on 0", T.tilt_rows([edge], series)[0][0]["in_v2"] is False)
     miss = {"oil": [], "fx": series["fx"], "tbill": series["tbill"]}
-    pairs, listed = T.tilt_rows([row], miss)
+    pairs, listed, _x = T.tilt_rows([row], miss)
     check("missing signal set to 0 and listed", len(listed) == 1 and "oil" in listed[0]
           and abs(pairs[0]["m"] - 2 / 3.0) < 1e-12, str(listed))
-    check("zero v2 sigma row dropped", T.tilt_rows([dict(row, v2_sigma=0)], series)[0] == [])
+    zp, zl, zd = T.tilt_rows([dict(row, v2_sigma=0), dict(row, ticker="B", v2_sigma=None)], series)
+    check("zero/missing v2 sigma rows dropped from pairs", zp == [])
+    check("v2 sigma exclusions listed with ticker cutoff horizon reason",
+          len(zd) == 2 and "A 2026-01-01 week" in zd[0] and "v2_sigma" in zd[0] and "B 2026-01-01 week" in zd[1], str(zd))
+    check("v2 sigma exclusions are not missing-signal rows", zl == [])
+    check("usable row not flagged missing", pairs[0]["missing"] is True and
+          T.tilt_rows([row], series)[0][0]["missing"] is False)
 
 
 def test_refusal():
@@ -105,17 +111,52 @@ def test_refusal():
     check("refuses cells outside 48-90", rc1 == 2 and rc2 == 2 and buf.getvalue().count("refusing") == 2)
 
 
+def test_reps_and_order():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = T.main(["describe", "--captures", "/nonexistent", "--series-dir", "/nonexistent", "--reps", "4999"])
+    check("non-5000 reps refused before loading inputs", rc == 2 and "refusing" in buf.getvalue())
+    buf3 = io.StringIO()
+    with contextlib.redirect_stdout(buf3):
+        rc3 = T.main(["describe", "--captures", "/nonexistent", "--series-dir", "/nonexistent", "--reps", "5001"])
+    check("5001 reps also refused", rc3 == 2 and "refusing" in buf3.getvalue())
+    rows = [{"ticker": "Z", "as_of": "2026-01-01", "horizon": "week", "real": 0.0, "naive_half": 5.0,
+             "mult": 1.0, "v2_sigma": 0}]
+    saved = (T.load_series, T.A.find_captures, T.R.build_rows, T.evaluate)
+    T.load_series = lambda path: []
+    T.A.find_captures = lambda a, b: []
+    T.R.build_rows = lambda caps, allc: (rows, ["gap one"])
+    seen = []
+
+    def fake_eval(pairs, reps, seed):
+        seen.append(buf2.getvalue())
+        return saved[3](pairs, 5, seed)
+    T.evaluate = fake_eval
+    buf2 = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf2):
+            rc = T.main(["describe", "--captures", "x"])
+    finally:
+        T.load_series, T.A.find_captures, T.R.build_rows, T.evaluate = saved
+    out = buf2.getvalue()
+    check("main ok", rc == 0, out[:200])
+    check("exclusions printed before evaluate", seen and "Z 2026-01-01 week" in seen[0] and "excluded: gap one" in seen[0])
+    check("counts split usable vs missing", "rows all signals usable=0 rows with missing signals=0" in out and "1 v2_sigma exclusions" in out)
+
+
 def test_counts():
     pairs = [{"ticker": "A", "as_of": "d1", "horizon": "day"}, {"ticker": "B", "as_of": "d1", "horizon": "day"},
              {"ticker": "A", "as_of": "d2", "horizon": "day"}]
     L = T.count_lines(pairs)
-    check("day counts", L[0] == "day: rows=3 cutoff clusters=2 tickers=2", L[0])
-    check("week empty", L[1] == "week: rows=0 cutoff clusters=0 tickers=0")
+    check("day counts", L[0] == "day: rows=3 cutoff clusters=2 tickers=2 rows all signals usable=3 rows with missing signals=0", L[0])
+    check("week empty", L[1] == "week: rows=0 cutoff clusters=0 tickers=0 rows all signals usable=0 rows with missing signals=0")
+    mp = [dict(p, missing=(i == 0)) for i, p in enumerate(pairs)]
+    check("missing split", T.count_lines(mp)[0].endswith("usable=2 rows with missing signals=1"), T.count_lines(mp)[0])
 
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_counts):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_counts):
         fn()
 
 

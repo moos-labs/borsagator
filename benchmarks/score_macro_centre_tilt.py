@@ -79,11 +79,16 @@ def composite(xs, dirs):
 
 
 def tilt_rows(rows, series):
-    """Scored pairs with centre c = S x m x v2 half; missing signals
-    become 0 and each affected row is listed."""
-    out, listed = [], []
+    """(pairs, missing-signal lines, v2_sigma exclusion lines). Centre
+    c = S x m x v2 half; missing signals become 0 and each affected row
+    is listed. A row with missing or zero v2_sigma is dropped and listed
+    separately; it is not a missing macro signal."""
+    out, listed, dropped = [], [], []
     for r in rows:
         if not r.get("v2_sigma"):
+            dropped.append("excluded row %s %s %s: missing or zero v2_sigma"
+                           % (r["ticker"], str(r["as_of"])[:10],
+                              r["horizon"]))
             continue
         h = r["horizon"]
         v2h = R.half_pct(r["v2_sigma"], h, ens_mod.V2_BAND_K[h], r["mult"])
@@ -101,12 +106,13 @@ def tilt_rows(rows, series):
         c = S * m * v2h
         out.append({"ticker": r["ticker"], "as_of": str(r["as_of"])[:10],
                     "horizon": h, "m": m, "centre": c,
+                    "missing": bool(miss),
                     "is_naive": R.row_is(r, r["naive_half"]),
                     "is_v2": R.row_is(r, v2h),
                     "is_ch": bs.winkler_is(r["real"], c - v2h, c + v2h),
                     "in_v2": abs(r["real"]) <= v2h,
                     "in_ch": abs(r["real"] - c) <= v2h})
-    return out, listed
+    return out, listed, dropped
 
 
 def boot(pairs, reps, seed):
@@ -160,9 +166,11 @@ def count_lines(pairs):
     L = []
     for h in HORIZONS:
         hp = [p for p in pairs if p["horizon"] == h]
-        L.append("%s: rows=%d cutoff clusters=%d tickers=%d" % (
-            h, len(hp), len({p["as_of"] for p in hp}),
-            len({p["ticker"] for p in hp})))
+        miss = sum(1 for p in hp if p.get("missing"))
+        L.append("%s: rows=%d cutoff clusters=%d tickers=%d "
+                 "rows all signals usable=%d rows with missing signals=%d"
+                 % (h, len(hp), len({p["as_of"] for p in hp}),
+                    len({p["ticker"] for p in hp}), len(hp) - miss, miss))
     return L
 
 
@@ -181,19 +189,26 @@ def main(argv=None):
         print("refusing: describe covers cells %d-%d only" % (MIN_CELL,
                                                               MAX_CELL))
         return 2
+    if a.reps != A.DEFAULT_REPS:
+        print("refusing: --reps must be the registered %d, got %d"
+              % (A.DEFAULT_REPS, a.reps))
+        return 2
     series = {k: load_series(os.path.join(a.series_dir, v[0]))
               for k, v in SERIES.items()}
     allc = A.find_captures(a.captures, None)
     caps = [c for c in allc if A.cell_number(c) is not None
             and a.min_cell <= A.cell_number(c) <= a.max_cell]
     rows, gaps = R.build_rows(caps, allc)
-    pairs, listed = tilt_rows(rows, series)
+    pairs, listed, dropped = tilt_rows(rows, series)
     counts = count_lines(pairs)
-    ex = ["excluded: %s" % g for g in gaps] + listed
-    res = evaluate(pairs, a.reps, a.seed)
+    ex = (["excluded: %s" % g for g in gaps] + dropped + listed)
     print("COUNTS (printed before the descriptive read), cells %d-%d, "
-          "%d missing-signal rows" % (a.min_cell, a.max_cell, len(listed)))
+          "%d missing-signal rows, %d v2_sigma exclusions"
+          % (a.min_cell, a.max_cell, len(listed), len(dropped)))
     print("\n".join(counts))
+    print("EXCLUSIONS (every one listed, before any statistic)")
+    print("\n".join(ex))
+    res = evaluate(pairs, a.reps, a.seed)
     print("DESCRIPTIVE ONLY cells %d-%d, centre tilt S=%.2f, v2 width, "
           "%d reps seed %d" % (a.min_cell, a.max_cell, S, a.reps, a.seed))
     for h in HORIZONS:
@@ -210,7 +225,6 @@ def main(argv=None):
         print("  tilt minus v2: %s CI cutoff [%s, %s]" % (
             f3(c["delta"]), f3(c["delta_ci_cutoff"][0]),
             f3(c["delta_ci_cutoff"][1])))
-    print("\n".join(ex))
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"descriptive": True, "counts": counts, "results": res,
