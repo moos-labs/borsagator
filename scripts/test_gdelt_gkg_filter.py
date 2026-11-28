@@ -9,6 +9,8 @@ import json
 import os
 import sys
 import tempfile
+import time
+import tracemalloc
 import zipfile
 
 sys.dont_write_bytecode = True
@@ -546,9 +548,26 @@ def test_unfinished_vs_absent():
         check("only the served file is done", done == ["%s.gkg.csv.zip" % names[0]], str(done))
 
 
+class _SteppingTime:
+    """Scoped clock stub (959m F3): every time() call advances 10 s, so a
+    positive budget is exhausted at the first batch check no matter what the
+    real clock does (equal reads, backward steps). Other attributes delegate."""
+    def __init__(self):
+        self.now = 1000.0
+
+    def time(self):
+        self.now += 10.0
+        return self.now
+
+    def __getattr__(self, name):
+        return getattr(time, name)
+
+
 def _run_fetch_with(st, out, names, fake, budget=0, workers=1):
     """Run run_fetch with a fake list and fetch; returns (stdout, fetched urls)."""
-    orig = (G.list_files, G.fetch)
+    orig = (G.list_files, G.fetch, G.time)
+    if budget:
+        G.time = _SteppingTime()
     G.list_files = lambda specs, s0, e0: [
         ("http://x/%s.gkg.csv.zip" % n, "english") for n in names]
     fetched = []
@@ -572,7 +591,7 @@ def _run_fetch_with(st, out, names, fake, budget=0, workers=1):
         e.stdout = buf.getvalue()   # a failing run's stdout stays inspectable
         raise
     finally:
-        G.list_files, G.fetch = orig
+        G.list_files, G.fetch, G.time = orig
     return buf.getvalue(), fetched
 
 
@@ -804,6 +823,44 @@ def test_budget_marker_only_when_files_remain():
             o, f = _run_fetch_with(st, out, nms, lambda u: good, budget=1e-9)
             check("budget marker %s" % nm, ("budget exhausted" in o) == want)
 
+def test_959m_f1_reconcile_streams():
+    """F1: a clean checkpoint is untouched; orphans are dropped by streaming
+    (bounded memory), unparseable lines kept."""
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "m.jsonl")
+        with open(p, "w") as f:
+            for i in range(3):
+                f.write(json.dumps({"file": "a", "n": i}) + "\n")
+            f.write("not json\n")
+        before, ino = open(p, "rb").read(), os.stat(p).st_ino
+        n = G.reconcile_orphan_rows(p, {"a"})
+        check("F1: clean checkpoint is byte-identical, same inode, no temp file", n == 0 and open(p, "rb").read() == before
+              and os.stat(p).st_ino == ino and not os.path.exists(p + ".tmp"))
+        n = G.reconcile_orphan_rows(p, set())
+        check("F1: orphan rows dropped, unparseable line kept", n == 3 and open(p).read() == "not json\n")
+        big = os.path.join(d, "big.jsonl")
+        pad = "x" * 180
+        with open(big, "w") as f:
+            for i in range(60000):
+                f.write(json.dumps({"file": "a" if i % 2 else "b", "p": pad}) + "\n")
+        size = os.path.getsize(big)
+        tracemalloc.start()
+        n = G.reconcile_orphan_rows(big, {"a"})
+        peak = tracemalloc.get_traced_memory()[1]
+        tracemalloc.stop()
+        check("F1: large file reconcile keeps peak memory far below the file size", n == 30000 and peak < size // 20,
+              "peak %d size %d" % (peak, size))
+        big2 = os.path.join(d, "big2.jsonl")
+        with open(big2, "w") as f:
+            for i in range(60000):
+                f.write(json.dumps({"file": "a", "p": pad}) + "\n")
+        tracemalloc.start()
+        n = G.reconcile_orphan_rows(big2, {"a"})
+        peak = tracemalloc.get_traced_memory()[1]
+        tracemalloc.stop()
+        check("F1: clean large file reconcile also bounded", n == 0 and peak < os.path.getsize(big2) // 20, "peak %d" % peak)
+
+
 def test_checkpoint_io_failure_and_rebind_text():
     """A failed checkpoint write exits with the distinct retryable status
     (never a clean unfinished summary); config refusals name absent.txt and
@@ -846,6 +903,9 @@ def test_checkpoint_io_failure_and_rebind_text():
             msg = str(e.code)
             check("a configuration refusal is a message exit, not the checkpoint status", e.code != 75)
         check("rebind procedure names absent.txt and transient.txt", "absent.txt" in msg and "transient.txt" in msg)
+        check("959m F2: fresh --out rebind also says to use a fresh --state", "fresh --state" in msg and "fresh --out" in msg, msg)
+        src = open(G.__file__, encoding="utf-8").read()
+        check("959m F2: all four refusals (company+macro, mismatch+unreadable) name a fresh --state", src.count("AND a fresh --state") == 4)
     check("module docstring rebind procedure names absent.txt and transient.txt", "absent.txt + transient.txt" in G.__doc__)
 
 def test_rebind_retries_previously_absent_basename():
@@ -987,7 +1047,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures, test_959l_reads_retryable_and_replay_reconciled):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures, test_959l_reads_retryable_and_replay_reconciled, test_959m_f1_reconcile_streams):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

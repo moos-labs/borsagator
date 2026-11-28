@@ -375,23 +375,28 @@ def reconcile_orphan_rows(path, done_names):
     Unparseable lines are kept. Returns the number of rows dropped."""
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         return 0
-    keep, dropped = [], 0
+    def _is_orphan(line):
+        try:
+            nm = json.loads(line).get("file")
+        except (ValueError, AttributeError):
+            nm = None
+        return nm is not None and nm not in done_names
+
+    # Pass 1: count orphans without retaining any line (bounded memory).
+    dropped = 0
     with open(path, encoding="utf-8") as f:
         for line in f:
-            try:
-                nm = json.loads(line).get("file")
-            except (ValueError, AttributeError):
-                nm = None
-            if nm is not None and nm not in done_names:
+            if _is_orphan(line):
                 dropped += 1
-            else:
-                keep.append(line)
     if dropped:
+        # Pass 2: stream the surviving rows to the temp file.
         tmp = path + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as f:
-            f.writelines(keep)
-            f.flush()
-            os.fsync(f.fileno())
+        with open(path, encoding="utf-8") as f, open(tmp, "w", encoding="utf-8") as out:
+            for line in f:
+                if not _is_orphan(line):
+                    out.write(line)
+            out.flush()
+            os.fsync(out.fileno())
         os.replace(tmp, path)
         fsync_dir(os.path.dirname(os.path.abspath(path)))
     return dropped
@@ -500,11 +505,13 @@ def run_fetch(a):
             old = json.loads(_txt)
         except ValueError as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
-                     f"directory: delete {config_path}, done.txt, absent.txt and transient.txt")
+                     f"directory AND a fresh --state (the other channel's config still names the old out dir), "
+                     f"or rebuild only this channel in the existing out dir: delete {config_path}, done.txt, absent.txt and transient.txt")
         if old != config:
             sys.exit(f"state config mismatch: {old} vs {config}; rebind with a "
-                     f"fresh --out directory (delete {config_path}, done.txt, absent.txt and transient.txt), "
-                     f"or delete matches.jsonl as well to reuse the out dir")
+                     f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
+                     f"or rebuild only this channel in the existing out dir (delete {config_path}, done.txt, absent.txt and transient.txt, "
+                     f"and matches.jsonl)")
     else:
         probe = os.path.join(a.out, "matches.jsonl")
         if os.path.exists(probe) and os.path.getsize(probe) > 0:
@@ -570,11 +577,13 @@ def run_fetch(a):
                 oldm = json.loads(_txt)
             except ValueError as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
-                         f"directory: delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt")
+                         f"directory AND a fresh --state (the other channel's config still names the old out dir), "
+                         f"or rebuild only this channel in the existing out dir: delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt")
             if oldm != mcfg:
                 sys.exit(f"macro state config mismatch: {oldm} vs {mcfg}; rebind with a "
-                         f"fresh --out directory (delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt), "
-                         f"or delete macro_matches.jsonl as well to reuse the out dir")
+                         f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
+                         f"or rebuild only this channel in the existing out dir (delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt, "
+                         f"and macro_matches.jsonl)")
         else:
             if os.path.exists(macro_matches_path) and os.path.getsize(macro_matches_path) > 0:
                 sys.exit(f"{macro_matches_path} has rows from a previous configuration; use a "
