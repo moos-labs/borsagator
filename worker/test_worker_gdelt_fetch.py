@@ -719,14 +719,26 @@ def test_restore_ignores_unpublished_local_residue():
 def test_restore_brings_back_predecessor_matches():
     _fixtures_env()
     jid = "matches-1"
-    cfg = {"config.json": {"aliases_sha256": "abc", "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"},
-           "macro_config.json": {"themes_sha256": "def", "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"}}
+    # 959m F4: real config hashes (what the filter computes), f1 done in BOTH channels,
+    # and the REAL filter is run against the restored checkpoint.
+    import hashlib
+    ash = hashlib.sha256((worker.CODE / "evaluation" / "gdelt_alias_table.csv").read_bytes()).hexdigest()
+    tsh = hashlib.sha256((worker.CODE / "evaluation" / "gdelt_macro_themes.csv").read_bytes()).hexdigest()
+    cfg = {"config.json": {"aliases_sha256": ash, "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"},
+           "macro_config.json": {"themes_sha256": tsh, "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"}}
     co_old = '{"file": "f1", "company": "OLD"}\n'
     ma_old = '{"file": "f1", "theme": "OLDMACRO"}\n'
-    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches=co_old, macro=ma_old, config=cfg)
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches=co_old, macro=ma_old, config=cfg, extra_state={"macro_done.txt": "f1\n"})
     job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"}
+    real_sh = worker.sh_group
+    real_out = {}
     def runner(cmd):
         out = Path(_tok(cmd, "--out"))
+        # the real filter first: it validates the restored config hashes and reconciles orphan rows
+        r = real_sh(cmd, cwd=str(worker.CODE), env=dict(os.environ), timeout=90)
+        real_out["rc"] = r.returncode
+        real_out["co"] = (out / "matches.jsonl").read_text() if (out / "matches.jsonl").exists() else None
+        real_out["ma"] = (out / "macro_matches.jsonl").read_text() if (out / "macro_matches.jsonl").exists() else None
         with open(out / "matches.jsonl", "a") as f:
             f.write('{"file": "f2", "company": "NEW"}\n')
         with open(out / "macro_matches.jsonl", "a") as f:
@@ -734,6 +746,8 @@ def test_restore_brings_back_predecessor_matches():
         return _Res()
     wd = worker.OUT / "t959-matches"
     res, seen = _run_capture(job, wd, runner)
+    check("959m F4: the real filter accepted the restored checkpoint and kept both old rows", real_out.get("rc") == 0
+          and real_out.get("co") == co_old and real_out.get("ma") == ma_old, str(real_out))
     pub = (wd / "gdelt" / "matches.jsonl").read_text()
     pubm = (wd / "gdelt" / "macro_matches.jsonl").read_text()
     check("published company matches include the predecessor's for done files", pub == co_old + '{"file": "f2", "company": "NEW"}\n')
@@ -742,7 +756,7 @@ def test_restore_brings_back_predecessor_matches():
     c1 = json.loads((wd / "gdelt-state" / "config.json").read_text())
     c2 = json.loads((wd / "gdelt-state" / "macro_config.json").read_text())
     check("restored config re-pointed at this out dir", c1["out"] == out_abs and c2["out"] == out_abs)
-    check("restored config keeps its hash and window", c1["aliases_sha256"] == "abc" and c1["end"] == "20240501999999" and c2["themes_sha256"] == "def")
+    check("restored config keeps its hash and window", c1["aliases_sha256"] == ash and c1["end"] == "20240501999999" and c2["themes_sha256"] == tsh)
     check("matches restored with the state, summary counts them", json.loads((wd / "gdelt" / "gdelt-state-summary.json").read_text())["matches"] == 2)
     # no predecessor: no matches appear from nowhere
     wd2 = worker.OUT / "t959-matches-fresh"
