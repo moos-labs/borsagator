@@ -676,6 +676,33 @@ def test_absent_flushed_before_fsync():
     check("one fsync per absent file with the line already flushed", sizes == [line, 2 * line, 3 * line], str(sizes))
 
 
+def test_new_directories_and_their_parents_fsynced():
+    """Every directory run_fetch creates (including missing ancestors) is
+    fsynced, and so is each one's parent."""
+    import urllib.error
+    synced = []
+    real = os.fsync
+
+    def spy(fd):
+        try:
+            synced.append(os.readlink("/proc/self/fd/%d" % fd))
+        except OSError:
+            pass
+        return real(fd)
+
+    def fake(url):
+        raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+    with tempfile.TemporaryDirectory() as d:
+        d = os.path.realpath(d)
+        st, out = os.path.join(d, "a", "b", "st"), os.path.join(d, "c", "out")
+        os.fsync = spy
+        try:
+            _run_fetch_with(st, out, ["202405150%02d000" % i for i in range(2)], fake)
+        finally:
+            os.fsync = real
+        for p in (st, os.path.dirname(st), os.path.join(d, "a"), out, os.path.join(d, "c"), d):
+            check("directory %s fsynced" % os.path.relpath(p, d), p in synced, str(sorted(synced)))
+
 def test_state_dir_fsynced_after_checkpoint_files_open():
     """The state and output directories are fsynced once, after done.txt,
     absent.txt and matches.jsonl exist (their directory entries are durable
@@ -729,7 +756,8 @@ def main():
                test_fetch_guards, test_config_binding,
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
-               test_state_dir_fsynced_after_checkpoint_files_open):
+               test_state_dir_fsynced_after_checkpoint_files_open,
+               test_new_directories_and_their_parents_fsynced):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

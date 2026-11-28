@@ -404,9 +404,29 @@ def fsync_dir(path):
         os.close(fd)
 
 
+def makedirs_durable(path):
+    """makedirs that also makes every directory it CREATED durable: each new
+    directory is fsynced, and so is its parent (the parent holds the new
+    entry). Ancestors that already existed are only synced as the parent of
+    the first new one. Errors propagate."""
+    path = os.path.abspath(path)
+    created = []
+    p = path
+    while p and not os.path.isdir(p):
+        created.append(p)
+        nxt = os.path.dirname(p)
+        if nxt == p:
+            break
+        p = nxt
+    os.makedirs(path, exist_ok=True)
+    for d in created:
+        fsync_dir(d)
+        fsync_dir(os.path.dirname(d))
+
+
 def run_fetch(a):
-    os.makedirs(a.state, exist_ok=True)
-    os.makedirs(a.out, exist_ok=True)
+    makedirs_durable(a.state)
+    makedirs_durable(a.out)
     a.start = a.start.ljust(14, "0")
     a.end = a.end.ljust(14, "9")
     aliases_sha = hashlib.sha256(open(a.aliases, "rb").read()).hexdigest()
