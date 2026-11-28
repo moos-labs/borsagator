@@ -1,0 +1,30 @@
+{
+ "archive_tip": "2c96d037701638056fb935b7604f007054327119",
+ "design": "docs/round89_results_season_prereg.md",
+ "frozen": {
+  "season_windows": 24,
+  "horizons": {
+   "day": {
+    "n_event": 40,
+    "n_nonevent": 6,
+    "m_event": 1.0,
+    "m_nonevent": 0.9999999999999997,
+    "fitted": true
+   },
+   "week": {
+    "n_event": 46,
+    "n_nonevent": 0,
+    "m_event": 1.0,
+    "m_nonevent": 1.0,
+    "fitted": false
+   },
+   "month": {
+    "n_event": 46,
+    "n_nonevent": 0,
+    "m_event": 1.0,
+    "m_nonevent": 1.0,
+    "fitted": false
+   }
+  }
+ }
+}
