@@ -3503,13 +3503,18 @@ def parse_gdelt_fetch_job(job):
     """Parse a `gdelt-fetch` job string into a plan dict, or None
     when the string is not a gdelt-fetch job / malformed. Grammar:
     `gdelt-fetch --start YYYYMMDDHHMMSS --end YYYYMMDDHHMMSS
-    [--budget-seconds N] [--workers N] [--mode live|fixtures]`.
+    [--budget-seconds N] [--workers N] [--mode live|fixtures]
+    [--resume-from JOBID]`.
     --start and --end are REQUIRED, 14-digit GDELT datetimes, and
     start must be <= end, else the parser returns None (fail closed).
     --budget-seconds default 0 (unlimited, matching the filter script
     default), --workers default 6. --mode fixtures labels the run
     mode=fixtures in the manifest so it can never pass as a live run;
-    live mode is the default. Unknown tokens fail closed (None).
+    live mode is the default. --resume-from names the predecessor job
+    id whose latest published run supplies the restored filter state
+    (without it a run resumes from its own job id); the id must match
+    [A-Za-z0-9][A-Za-z0-9._-]{0,127}, else None (fail closed).
+    Unknown tokens fail closed (None).
     NOTE: parse_job (the registry grammar) still returns [] for this
     string — the registry has no gdelt-fetch tool. Dispatch happens in
     _execute_body before parse_job, like harvest-egx / top30-enumerate.
@@ -3520,7 +3525,8 @@ def parse_gdelt_fetch_job(job):
     if not parts or parts[0] != "gdelt-fetch":
         return None
     plan = {"kind": "gdelt-fetch", "start": None, "end": None,
-            "budget_seconds": 0, "workers": 6, "mode": "live"}
+            "budget_seconds": 0, "workers": 6, "mode": "live",
+            "resume_from": None}
     i = 1
     while i < len(parts):
         tok = parts[i]
@@ -3551,6 +3557,12 @@ def parse_gdelt_fetch_job(job):
         elif tok == "--mode" and i + 1 < len(parts) \
                 and parts[i + 1] in ("live", "fixtures"):
             plan["mode"] = parts[i + 1]
+            i += 2
+        elif tok == "--resume-from" and i + 1 < len(parts):
+            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}",
+                                parts[i + 1]):
+                return None
+            plan["resume_from"] = parts[i + 1]
             i += 2
         else:
             return None
@@ -4108,8 +4120,24 @@ def run_top30_enumerate(job, workdir):
 def run_gdelt_fetch(job, workdir):
     """Run a `gdelt-fetch` job: download the two real GDELT master
     lists and invoke scripts/gdelt_gkg_filter.py with the configured
-    date range. Returns {"gdelt-fetch": status}.
+    date range. Returns {"gdelt-fetch": status}. The master lists
+    (about 270 MB, over GitHub's 100 MiB file limit) live in a
+    temporary directory OUTSIDE workdir, so publish()'s copy of
+    workdir can never carry them; the directory is removed on every
+    return path.
     """
+    import tempfile
+    master_dir = Path(tempfile.mkdtemp(prefix="gdelt-master-"))
+    try:
+        return _run_gdelt_fetch(job, workdir, master_dir)
+    finally:
+        shutil.rmtree(master_dir, ignore_errors=True)
+
+
+GDELT_INCOMPLETE = ("budget-exhausted", "timeout")
+
+
+def _run_gdelt_fetch(job, workdir, master_dir):
     # Issue #381: job_text() — never feed raw untrusted job text.
     plan = parse_gdelt_fetch_job(job_text(job))
     run_dir = Path(workdir) / "gdelt"
@@ -4143,34 +4171,34 @@ def run_gdelt_fetch(job, workdir):
                 sh(f"git -C {arch} pull --ff-only", timeout=180)
         except Exception:
             pass
-        # Find latest worker-runs/<ts>__gdelt-fetch__<jobid> dir
+        # publish() stores worker-runs/YYYY-MM-DD/HHMMSS__<slug>__<jobid>,
+        # so runs sit one level below the date dirs and the job id is the
+        # last "__" field. Resume from the predecessor named by
+        # --resume-from, else from this job's own id; take the latest
+        # published run that carries a gdelt-state dir.
         if arch.exists():
             runs_dir = arch / "worker-runs"
             if runs_dir.is_dir():
-                jobid = job["id"]
+                src_id = plan["resume_from"] or job["id"]
                 candidates = []
-                for d in runs_dir.iterdir():
-                    if d.is_dir() and d.name.endswith("__gdelt-fetch__" + jobid):
+                for d in runs_dir.glob("*/*"):
+                    if d.is_dir() and d.name.rsplit("__", 1)[-1] == src_id \
+                            and (d / "gdelt-state").is_dir():
                         candidates.append(d)
                 if candidates:
-                    candidates.sort(key=lambda p: p.name)
-                    latest = candidates[-1]
-                    prev_state = latest / "gdelt-state"
-                    if prev_state.is_dir():
-                        # copy contents into state_dir
-                        for src in prev_state.iterdir():
-                            dst = state_dir / src.name
-                            if src.is_dir():
-                                shutil.copytree(src, dst, dirs_exist_ok=True)
-                            else:
-                                shutil.copy2(src, dst)
+                    candidates.sort(key=lambda p: (p.parent.name, p.name))
+                    prev_state = candidates[-1] / "gdelt-state"
+                    for src in prev_state.iterdir():
+                        dst = state_dir / src.name
+                        if src.is_dir():
+                            shutil.copytree(src, dst, dirs_exist_ok=True)
+                        else:
+                            shutil.copy2(src, dst)
 
     # (a) Download master lists (live mode only)
     master_path = None
     trans_path = None
     if mode == "live":
-        master_dir = Path(workdir) / "gdelt-master"
-        master_dir.mkdir(parents=True, exist_ok=True)
         master_path = master_dir / "masterfilelist.txt"
         trans_path = master_dir / "masterfilelist-translation.txt"
         try:
@@ -4224,8 +4252,21 @@ def run_gdelt_fetch(job, workdir):
     if budget and budget > 0:
         cmd += ["--budget-seconds", str(budget)]
 
-    r = sh(" ".join(shlex.quote(c) for c in cmd), cwd=str(CODE), timeout=7200)
-    rc = r.returncode
+    timed_out = False
+    try:
+        r = sh_group(" ".join(shlex.quote(c) for c in cmd), cwd=str(CODE),
+                     timeout=7200)
+        rc = r.returncode
+        out_text = (r.stdout or "") + (r.stderr or "")
+    except subprocess.TimeoutExpired as e:
+        # sh_group killed the whole process group; keep going so the
+        # partial output is copied, summarised and archived.
+        timed_out = True
+        rc = None
+        def _txt(v):
+            return v.decode("utf-8", "replace") if isinstance(v, bytes) \
+                else (v or "")
+        out_text = _txt(e.output) + _txt(e.stderr)
 
     # (d) Copy filter outputs into workdir so publish() archives them.
     # Do NOT copy raw GKG zips (script doesn't keep them).
@@ -4273,13 +4314,23 @@ def run_gdelt_fetch(job, workdir):
 
     # (f) Progress log
     log_line = f"start={start} end={end} files_done={files_done} matches={matches} macro_matches={macro_matches}\n"
-    (run_dir / "gdelt-fetch.log").write_text(log_line)
-
-    # Determine status
-    if rc == 0:
-        status = "ok"
-    else:
+    # Determine status. A budget-limited run (the filter prints
+    # "budget exhausted; rerun to resume") and a timeout are INCOMPLETE:
+    # the caller archives them but must not mark the queue job done.
+    if timed_out:
+        status = "timeout"
+    elif rc != 0:
         status = "exit-%d" % rc
+    elif "budget exhausted" in out_text:
+        status = "budget-exhausted"
+    else:
+        status = "ok"
+    if status != "ok":
+        log_line += "status=%s\n" % status
+        # bounded tail of the filter's stdout+stderr for diagnosis
+        log_line += "--- filter output tail (max 4000 chars) ---\n" \
+            + out_text[-4000:] + "\n"
+    (run_dir / "gdelt-fetch.log").write_text(log_line)
 
     # Sidecar: runner writes workdir/gdelt/gdelt_fetch.json; the dispatch
     # branch reads it into manifest['gdelt_fetch'].
@@ -4287,6 +4338,7 @@ def run_gdelt_fetch(job, workdir):
         "start": start, "end": end, "mode": mode,
         "files_done": files_done, "macro_files_done": macro_files_done,
         "matches": matches, "macro_matches": macro_matches,
+        "status": status,
     }, indent=1))
 
     return {"gdelt-fetch": status}
@@ -6096,6 +6148,18 @@ def _execute_body(job):
         archive_sha = publish(job, workdir, manifest)
         if not archive_sha:
             _record_publish_failure(job)
+        elif manifest["tools"].get("gdelt-fetch") in GDELT_INCOMPLETE:
+            # Fetch progress is not queue completion: a budget-limited
+            # or timed-out run is archived (its gdelt-state is the
+            # resume point) but is NOT marked done, and its write-ahead
+            # intent is released so a same-id re-queue is admitted and
+            # resumes from this published run.
+            try:
+                _intent_path(job["id"]).unlink(missing_ok=True)
+                if JOB_STATE.exists():
+                    _fsync_dir(JOB_STATE)
+            except OSError:
+                pass
         else:
             # Issue #149: only a successful publish marks the job done.
             _mark_done(job, archive_sha)
