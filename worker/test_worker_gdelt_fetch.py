@@ -335,6 +335,9 @@ def test_959i_deferred_and_stall_and_intent():
     check("repeat failures of the same files stall and defer", worker._gdelt_deferred(j2))
     # 9: intent cleanup retried without rerunning the fetch
     j3 = "i-intent"; ip = worker._intent_path(j3); ip.parent.mkdir(parents=True, exist_ok=True); ip.write_text("x")
+    # 959o F6: the claim this host holds carries an attempt id, which the cleanup marker records
+    _cl3 = worker.BUS / "queue" / "claims" / (j3 + ".json"); _cl3.parent.mkdir(parents=True, exist_ok=True)
+    _cl3.write_text(json.dumps({"worker": "h", "attempt": "att-i3"}))
     real_unlink = Path.unlink
     def failing(self, *a, **k):
         if self == ip:
@@ -349,14 +352,30 @@ def test_959i_deferred_and_stall_and_intent():
     check("failed intent cleanup is reported and recorded with the verified publication", released is False and marker and ip.exists())
     rc_calls = []
     o_rc = worker._release_claim
-    worker._release_claim = lambda jid, only_own=False, expect_attempt=False: rc_calls.append((jid, only_own)) or True
+    worker._release_claim = lambda jid, only_own=False, expect_attempt=False: rc_calls.append((jid, only_own, expect_attempt)) or True
     try:
         pending = worker._done_or_pending(j3)
     finally:
         worker._release_claim = o_rc
     check("once storage recovers the retry removes intent and marker without rerunning the fetch",
           not ip.exists() and not worker._gdelt_cleanup_marker(j3).exists() and pending is False)
-    check("the replayed cleanup then releases only this host's claim", rc_calls == [(j3, True)], str(rc_calls))
+    check("the replayed cleanup then releases only this host's claim, bound to its attempt id", rc_calls == [(j3, True, "att-i3")], str(rc_calls))
+    # 959o F6: a marker WITHOUT a nonempty-string attempt id releases no claim, whatever the claim holds
+    for _nm, _att in (("missing", "__absent__"), ("null", None), ("empty", ""), ("non-string", 7)):
+        jb = "i-intent-noatt-%s" % _nm; ipb = worker._intent_path(jb); ipb.parent.mkdir(parents=True, exist_ok=True)
+        ipb.write_text(json.dumps({"job": "A", "started": "t1"}))
+        mk = {"intent": ipb.read_text()}
+        if _att != "__absent__":
+            mk["claim_attempt"] = _att
+        mpb = worker._gdelt_cleanup_marker(jb); mpb.parent.mkdir(parents=True, exist_ok=True); mpb.write_text(json.dumps(mk))
+        calls = []
+        worker._release_claim = lambda jid, only_own=False, expect_attempt=False: calls.append((jid, expect_attempt)) or True
+        try:
+            worker._done_or_pending(jb)
+        finally:
+            worker._release_claim = o_rc
+        check("959o F6: intent-cleanup replay with %s claim_attempt releases NO claim and drops the marker" % _nm,
+              calls == [] and not mpb.exists(), str(calls))
     # execute-level: a failed cleanup does not release the claim
     # No pre-written intent: _execute creates it, the unlink of THAT intent fails.
     j4 = "i-intent2"; ip4 = worker._intent_path(j4)
@@ -386,6 +405,26 @@ def test_parse_rejects():
         check("parse: rejects %r" % bad, worker.parse_gdelt_fetch_job(bad) is None)
     check("parse: non-string", worker.parse_gdelt_fetch_job(None) is None)
 
+import contextlib as _ctx
+
+@_ctx.contextmanager
+def _no_bus_url_no_clone():
+    """959o F2: run_gdelt_fetch clones ROOT/archive-push from GATOR_BUS_URL when
+    that checkout is absent. Clear the URL for the run and fail the test if any
+    `git clone` is attempted, so it can never clone a developer's real archive."""
+    prev, o_sh, cmds = os.environ.pop("GATOR_BUS_URL", None), worker.sh, []
+    def spy(cmd, *a, **k):
+        cmds.append(cmd)
+        return o_sh(cmd, *a, **k)
+    worker.sh = spy
+    try:
+        yield cmds
+    finally:
+        worker.sh = o_sh
+        if prev is not None:
+            os.environ["GATOR_BUS_URL"] = prev
+    check("959o F2: no git clone was attempted (GATOR_BUS_URL cleared)", not any("git clone" in c for c in cmds), str(cmds))
+
 def test_fixtures_run():
     # build fixture master lists — real 3-field format '<size> <md5> <url>'
     # with a timestamp OUTSIDE the job's start/end range, so list_files
@@ -399,7 +438,8 @@ def test_fixtures_run():
     job = {"id": "test-gdelt-1", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
     wd = worker.OUT / "test-gdelt-run"
     wd.mkdir(parents=True, exist_ok=True)
-    res = worker.run_gdelt_fetch(job, wd)
+    with _no_bus_url_no_clone():
+        res = worker.run_gdelt_fetch(job, wd)
     check("run: returns ok", res == {"gdelt-fetch": "ok"})
     # manifest fields sidecar
     gf = wd / "gdelt" / "gdelt_fetch.json"
@@ -447,7 +487,8 @@ def test_live_argv_no_duplicate():
                "job": "gdelt-fetch --start 20240501000000 --end 20240531235959"}
         wd = worker.OUT / "test-gdelt-live-argv"
         wd.mkdir(parents=True, exist_ok=True)
-        res = worker.run_gdelt_fetch(job, wd)
+        with _no_bus_url_no_clone():
+            res = worker.run_gdelt_fetch(job, wd)
         check("live argv: returns ok", res == {"gdelt-fetch": "ok"})
         cmd_str = captured.get("cmd", "")
         tokens = shlex.split(cmd_str)
@@ -614,7 +655,7 @@ def test_budget_run_not_queue_done_and_complete_is_done():
     worker.publish = lambda job, wd, m: pub_calls.append(job["id"]) or "sha123"
     worker._mark_done = lambda job, sha, extra=None: done_calls.append(job["id"])
     try:
-        for status, jid in (("budget-exhausted", "q-budget"), ("timeout", "q-timeout"), ("ok", "q-ok"), ("exit-1", "q-exit"),
+        for status, jid in (("budget-exhausted", "q-budget"), ("timeout", "q-timeout"), ("ok", "q-ok"), ("refused", "q-exit"),
                             ("unfinished", "q-unf"), ("master-download-failed", "q-mdf")):
             worker.run_gdelt_fetch = lambda job, wd, st=status: {"gdelt-fetch": st}
             job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
@@ -700,7 +741,7 @@ def test_nonzero_exit_log_tail_bounded():
     job = {"id": "tail-1", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"}
     big = "A" * 6000 + "TAILMARK"
     res, _ = _run_capture(job, worker.OUT / "t959-tail", lambda c: _Res(3, big, "ERRMARK"))
-    check("nonzero exit status", res == {"gdelt-fetch": "exit-3"})
+    check("nonzero exit status is the retryable unexpected-exit", res == {"gdelt-fetch": "unexpected-exit-3"})
     log = (worker.OUT / "t959-tail" / "gdelt" / "gdelt-fetch.log").read_text()
     tail = log.split("--- filter output tail (max 4000 chars) ---\n", 1)[1].rstrip("\n")
     check("log tail contains the end of stdout+stderr", tail.endswith("ERRMARK") and "TAILMARK" in tail)
@@ -763,6 +804,8 @@ def test_restore_brings_back_predecessor_matches():
         return _Res()
     wd = worker.OUT / "t959-matches"
     res, seen = _run_capture(job, wd, runner)
+    check("959n F4 (carried nit): the parent env had no GATOR_BUS_URL when the launch env was built",
+          real_out.get("bus_url_in_parent_env") is False, str(real_out))
     check("959m F4: the real filter accepted the restored checkpoint and kept both old rows", real_out.get("rc") == 0
           and real_out.get("co") == co_old and real_out.get("ma") == ma_old, str(real_out))
     pub = (wd / "gdelt" / "matches.jsonl").read_text()
@@ -1168,12 +1211,16 @@ def test_959j_durability_and_failures():
     # 4: checkpoint I/O failures are distinct from refusals
     for rc, out, want in ((75, "gkg-filter-checkpoint-error safe=1 OSError\n", "checkpoint-io-incomplete"),
                           (75, "gkg-filter-checkpoint-error safe=0 OSError\n", "checkpoint-io-failed"),
-                          (1, "state config mismatch\n", "exit-1")):
-        res, seen = _run_capture({"id": "j-ck%d" % len(want), "job": fix}, worker.OUT / ("t959j-ck%d" % len(want)), lambda c, rc=rc, out=out: _Res(rc, out))
+                          (1, "state config mismatch\ngkg-filter-refusal\n", "refused"),
+                          (1, "Traceback (most recent call last):\nboom\n", "unexpected-exit-1"),
+                          (137, "", "unexpected-exit-137"),
+                          (-9, "", "unexpected-exit--9"),
+                          (2, "usage: error\n", "unexpected-exit-2")):
+        res, seen = _run_capture({"id": "j-ck%d-%s" % (rc, want), "job": fix}, worker.OUT / ("t959j-ck%d-%s" % (rc, want)), lambda c, rc=rc, out=out: _Res(rc, out))
         check("filter rc %d / %r -> %s" % (rc, out[:30], want), res == {"gdelt-fetch": want})
     check("checkpoint-io-incomplete is incomplete (archived, never queue-done); checkpoint-io-failed publishes nothing",
           "checkpoint-io-incomplete" in worker.GDELT_INCOMPLETE and "checkpoint-io-failed" in worker.GDELT_NO_PUBLISH
-          and "checkpoint-io-failed" not in worker.GDELT_INCOMPLETE and "exit-1" not in worker.GDELT_INCOMPLETE)
+          and "checkpoint-io-failed" not in worker.GDELT_INCOMPLETE and "refused" not in worker.GDELT_INCOMPLETE)
     # 5: cleanup replay is bound to the intent it may remove
     jid = "j-bind"; ip = worker._intent_path(jid); ip.parent.mkdir(parents=True, exist_ok=True)
     ip.write_text('{"job": "A", "started": "t1"}')
@@ -1461,6 +1508,16 @@ def test_959l():
     left = sorted(p.name for p in q.iterdir())
     check("M5: only the newest KEEP_MAX survive and the over-age one is gone",
           len(left) == worker.GDELT_QUARANTINE_KEEP_MAX and "job-old" not in left and "job-0" in left and "job-12" not in left, str(left))
+    # 959o N2: fewer directories than KEEP_MAX: only the expired one is pruned, the recent one stays
+    _sh.rmtree(q); q.mkdir(parents=True)
+    exp, rec = q / "job-expired", q / "job-recent"
+    for _d in (exp, rec):
+        (_d / "gdelt-state").mkdir(parents=True)
+    os.utime(exp, (now - (worker.GDELT_QUARANTINE_KEEP_DAYS + 1) * 86400,) * 2)
+    os.utime(rec, (now - 60, now - 60))
+    worker.prune_gdelt_quarantine()
+    left = sorted(p.name for p in q.iterdir())
+    check("959o N2: below KEEP_MAX only the expired directory is removed", 2 < worker.GDELT_QUARANTINE_KEEP_MAX and left == ["job-recent"], str(left))
     # m3: a failed fetch is not a confirmation
     calls = []
     o_gb, o_push = worker.git_bus, worker.push_bus
@@ -1476,11 +1533,14 @@ def test_959l():
         worker.git_bus, worker.push_bus = o_gb, o_push
     check("m3: failed fetch means NOT confirmed (ls-tree never trusted)", ok is False and not any(c.startswith("ls-tree") for c in calls), str(calls))
     # m5: claim released after the deferred intent cleanup; own claims only
-    def run_cleanup(owner, fetch_ok=True, push_ok=True):
+    def run_cleanup(owner, fetch_ok=True, push_ok=True, marker_attempt="att-1"):
         j = "l-cl"; ip = worker._intent_path(j); ip.parent.mkdir(parents=True, exist_ok=True); ip.write_text("x")
         ident = worker._gdelt_intent_identity(j)
         mk = worker._gdelt_cleanup_marker(j); mk.parent.mkdir(parents=True, exist_ok=True)
-        mk.write_text(json.dumps({"archive_sha": "s", "intent": ident}))
+        _m = {"archive_sha": "s", "intent": ident}
+        if marker_attempt is not None:
+            _m["claim_attempt"] = marker_attempt     # 959o F6: a marker with an identity
+        mk.write_text(json.dumps(_m))
         st = {"claim": True, "pushed": []}
         def gb(cmd, timeout=120):
             if cmd.startswith("fetch"):
@@ -1488,7 +1548,7 @@ def test_959l():
             if cmd.startswith("ls-tree"):
                 return _Res(0, "queue/claims/l-cl.json\n" if st["claim"] else "")
             if cmd.startswith("show"):
-                return _Res(0, json.dumps({"worker": owner}))
+                return _Res(0, json.dumps({"worker": owner} if marker_attempt is None else {"worker": owner, "attempt": "att-1"}))
             return _Res(0, "")
         def push(msg, *a, **k):
             st["pushed"].append(msg)
@@ -1511,14 +1571,21 @@ def test_959l():
           not ip.exists() and not st["pushed"] and not mk.exists(), str(st))
     st, mk, ip = run_cleanup(me, push_ok=False)
     check("m5: failed release keeps a claim_pending marker for the next cycle",
-          not ip.exists() and mk.exists() and json.loads(mk.read_text()) == {"claim_pending": True, "claim_attempt": None}, str(st))
+          not ip.exists() and mk.exists() and json.loads(mk.read_text()) == {"claim_pending": True, "claim_attempt": "att-1"}, str(st))
+    # 959o F6 repro through the real _release_claim: a legacy marker without an attempt id and a
+    # same-host legacy claim without one (None == None) must NOT be unlinked or pushed.
+    st, mk, ip = run_cleanup(me, marker_attempt=None)
+    check("959o F6: marker without attempt + same-host legacy claim without attempt: nothing pushed, claim kept, marker dropped",
+          not ip.exists() and not st["pushed"] and st["claim"] is True and not mk.exists(), str(st))
     # next cycle: succeeds, marker cleared
+    mk.parent.mkdir(parents=True, exist_ok=True)
+    mk.write_text(json.dumps({"claim_pending": True, "claim_attempt": "att-1"}))   # the pending marker of the failed release
     st2 = {"claim": True}
     def gb2(cmd, timeout=120):
         if cmd.startswith("ls-tree"):
             return _Res(0, "queue/claims/l-cl.json\n" if st2["claim"] else "")
         if cmd.startswith("show"):
-            return _Res(0, json.dumps({"worker": me}))
+            return _Res(0, json.dumps({"worker": me, "attempt": "att-1"}))   # 959o F3: same nonempty attempt as the marker
         return _Res(0, "")
     def push2(msg, *a, **k):
         st2["claim"] = False; return True
@@ -1529,6 +1596,8 @@ def test_959l():
     finally:
         worker.git_bus, worker.push_bus = o_gb, o_push
     check("m5: the pending marker is cleared once the release is confirmed", not mk.exists())
+    check("959o F3: the replay removed the remote claim AND cleared the marker (identity-less refusal is the separate 959n F14 case)",
+          st2["claim"] is False and not mk.exists(), str(st2))
 
 
 def test_959m_claim_attempt_identity_f11():
@@ -1847,6 +1916,93 @@ def test_959n_worker_findings():
 
 
 
+def test_959o_worker_findings():
+    _fixtures_env()
+    base = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    # U1: the LAST complete anchored checkpoint-error record on STDOUT decides, for both guards.
+    SAFE1, SAFE0 = "gkg-filter-checkpoint-error safe=1 setup OSError\n", "gkg-filter-checkpoint-error safe=0 sync OSError\n"
+    cases = (("safe=1 then a later safe=0 record", SAFE1 + "x\n" + SAFE0, "", "checkpoint-io-failed", False),
+             ("safe=0 then a later safe=1 record", SAFE0 + SAFE1, "", "checkpoint-io-incomplete", True),
+             ("safe=1 only on stderr", "", SAFE1, "checkpoint-io-failed", False),
+             ("safe=1 not at the line start", "note: gkg-filter-checkpoint-error safe=1\n", "", "checkpoint-io-failed", False),
+             ("no record at all", "something else\n", "", "checkpoint-io-failed", False),
+             ("safe=1 truncated (no newline) after an earlier safe=0", SAFE0 + "gkg-filter-checkpoint-error safe=1", "", "checkpoint-io-failed", False),
+             ("safe=1 record", SAFE1, "", "checkpoint-io-incomplete", True))
+    for i, (label, out, err, want, copied) in enumerate(cases):
+        wd = worker.OUT / ("t959o-u1-%d" % i)
+        def runner(cmd, out=out, err=err):
+            (Path(_tok(cmd, "--out")) / "matches.jsonl").write_text('{"a": 1}\n')
+            return _Res(75, out, err)
+        res, _ = _run_capture({"id": "o-u1-%d" % i, "job": base}, wd, runner)
+        check("959o U1: %s -> %s" % (label, want), res == {"gdelt-fetch": want}, str(res))
+        check("959o U1: %s -> checkpoint %s (the second guard agrees)" % (label, "copied" if copied else "not copied"),
+              (wd / "gdelt" / "matches.jsonl").exists() == copied)
+    # F4: a marked refusal still copies its (consistent) checkpoint; an unexpected exit does not.
+    for rc, out, copied, lab in ((1, "refusal msg\ngkg-filter-refusal\n", True, "marked refusal"), (137, "", False, "SIGKILL")):
+        wd = worker.OUT / ("t959o-f4c-%d" % rc)
+        def runner(cmd, rc=rc, out=out):
+            (Path(_tok(cmd, "--out")) / "matches.jsonl").write_text('{"a": 1}\n')
+            return _Res(rc, out)
+        _run_capture({"id": "o-f4c-%d" % rc, "job": base}, wd, runner)
+        check("959o F4: %s -> checkpoint %s" % (lab, "copied" if copied else "not copied"), (wd / "gdelt" / "matches.jsonl").exists() == copied)
+    # F4: a SIGKILL-style exit is retryable: no publish, not done, quarantined, claim released.
+    pubs, dones, quar = [], [], []
+    o_pub, o_md, o_run, o_q = worker.publish, worker._mark_done, worker.run_gdelt_fetch, worker._gdelt_quarantine_checkpoint
+    worker.publish = lambda job, wd, m: pubs.append(job["id"]) or "sha"
+    worker._mark_done = lambda job, sha, extra=None: dones.append(job["id"])
+    worker._gdelt_quarantine_checkpoint = lambda jid, wd: quar.append(jid) or True
+    rets = {}
+    try:
+        for st, jid in (("unexpected-exit-137", "o-f4-137"), ("unexpected-exit--9", "o-f4-sig"), ("unexpected-exit-1", "o-f4-1"),
+                        ("refused", "o-f4-ref"), ("resume-predecessor-missing", "o-f7-pred"), ("resume-mode-mismatch", "o-f7-mode")):
+            worker.run_gdelt_fetch = lambda job, wd, st=st: {"gdelt-fetch": st}
+            rets[jid] = worker._execute({"id": jid, "job": base})
+    finally:
+        worker.publish, worker._mark_done, worker.run_gdelt_fetch, worker._gdelt_quarantine_checkpoint = o_pub, o_md, o_run, o_q
+    for jid in ("o-f4-137", "o-f4-sig", "o-f4-1"):
+        check("959o F4: %s is never published and never marked done" % jid, jid not in pubs and jid not in dones)
+        check("959o F4: %s checkpoint is quarantined and the claim is released for retry" % jid, jid in quar and rets[jid] == "incomplete", str((quar, rets[jid])))
+    check("959o F4: a marked refusal keeps the terminal behaviour (published, marked done)", "o-f4-ref" in pubs and "o-f4-ref" in dones)
+    for jid in ("o-f7-pred", "o-f7-mode"):
+        check("959o F7: %s neither publishes nor marks done" % jid, jid not in pubs and jid not in dones)
+        check("959o F7: %s is retryable (claim released, stall noted)" % jid, rets[jid] == "incomplete", str(rets[jid]))
+    check("959o F7: both statuses are in the no-publish set", all(x in worker.GDELT_NO_PUBLISH for x in ("resume-predecessor-missing", "resume-mode-mismatch")))
+    # F5: ENOSPC on the log or sidecar write after the intent exists is the no-publish retry outcome.
+    for target in ("gdelt-fetch.log", "gdelt_fetch.json"):
+        real_wt = Path.write_text
+        def wt(self, *a, **k):
+            if self.name == target:
+                raise OSError(28, "No space left on device")
+            return real_wt(self, *a, **k)
+        Path.write_text = wt
+        try:
+            res, _ = _run_capture({"id": "o-f5-" + target[:8], "job": base}, worker.OUT / ("t959o-f5-" + target[:8]), lambda c: _Res())
+        finally:
+            Path.write_text = real_wt
+        check("959o F5: ENOSPC writing %s is checkpoint-io-failed (no publish), not an escaped OSError" % target,
+              res == {"gdelt-fetch": "checkpoint-io-failed"}, str(res))
+    # F8: a publication TimeoutExpired for an incomplete run takes the unconfirmed-publication path.
+    noted, failed, released = [], [], []
+    o_pub, o_run, o_note, o_rf, o_ri = worker.publish, worker.run_gdelt_fetch, worker._gdelt_note_incomplete, worker._record_publish_failure, worker._gdelt_release_intent
+    def fake_run(job, wd):
+        g = Path(wd) / "gdelt"; g.mkdir(parents=True, exist_ok=True)
+        (g / "gdelt_fetch.json").write_text(json.dumps({"files_done": 2, "macro_files_done": 0, "absent_files": 0, "transient_files": 0}))
+        return {"gdelt-fetch": "timeout"}
+    def boom(job, wd, m):
+        raise _sp.TimeoutExpired("git push", 600)
+    worker.publish, worker.run_gdelt_fetch = boom, fake_run
+    worker._gdelt_note_incomplete = lambda jid, total, now_ts=None: noted.append((jid, total))
+    worker._record_publish_failure = lambda job: failed.append(job["id"])
+    worker._gdelt_release_intent = lambda jid, *a, **k: released.append(jid) or True
+    try:
+        ret = worker._execute({"id": "o-f8", "job": base})
+    finally:
+        worker.publish, worker.run_gdelt_fetch, worker._gdelt_note_incomplete = o_pub, o_run, o_note
+        worker._record_publish_failure, worker._gdelt_release_intent = o_rf, o_ri
+    check("959o F8: publish TimeoutExpired on an incomplete run: failure recorded, stall noted, intent released, claim released",
+          failed == ["o-f8"] and noted == [("o-f8", 2)] and released == ["o-f8"] and ret == "incomplete", str((failed, noted, released, ret)))
+
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -1866,6 +2022,7 @@ def main():
     test_959m_f7_f8_f5()
     test_959m_f6_f9_f10_f12()
     test_959n_worker_findings()
+    test_959o_worker_findings()
     test_filter_launch_env_is_denylist_filtered()
     test_deferred_unparseable_deadline()
     test_parse_fixtures()

@@ -4502,7 +4502,49 @@ def run_gdelt_fetch(job, workdir):
 # lose the job. "unfinished" = the filter left files neither done nor absent.
 # Unknown resume state: nothing is published and the claim is released.
 GDELT_NO_PUBLISH = ("archive-check-failed", "restore-rollback-failed",
-                    "checkpoint-io-failed", "setup-io-failed")
+                    "checkpoint-io-failed", "setup-io-failed",
+                    # 959o F7: the fetch never ran, so there is nothing to
+                    # publish and the job is NOT done. Both are retryable with
+                    # stall deferral: a missing predecessor may appear (archive
+                    # lag); a mode mismatch needs the operator, and the stall
+                    # limit defers it instead of publishing or marking done.
+                    "resume-predecessor-missing", "resume-mode-mismatch")
+# 959o F4: any non-zero filter exit that is neither the checkpoint-I/O code
+# nor an explicit refusal (SIGKILL 137, -9, a crash exit 1, an argparse exit 2)
+# is "unexpected-exit-N": retryable, never published, never marked done.
+GDELT_UNEXPECTED_PREFIX = "unexpected-exit-"
+
+
+def _gdelt_no_publish(status):
+    return status in GDELT_NO_PUBLISH or (
+        isinstance(status, str) and status.startswith(GDELT_UNEXPECTED_PREFIX))
+
+
+# 959o U1: the filter's checkpoint-error record, parsed from STDOUT only, one
+# complete (newline-terminated) line, anchored at the line start. The LAST such
+# record decides; no record means not safe.
+_GDELT_CK_RE = re.compile(r"^gkg-filter-checkpoint-error safe=([01])(?: .*)?$")
+
+
+def _gdelt_last_checkpoint_record(stdout_text):
+    text = stdout_text or ""
+    lines = text.split("\n")
+    if not text.endswith("\n"):
+        lines = lines[:-1]        # an unterminated trailing line is not a complete record
+    last = None
+    for line in lines:
+        m = _GDELT_CK_RE.match(line)
+        if m:
+            last = m.group(1)
+    return last
+
+
+def _gdelt_refusal_marked(stdout_text):
+    text = stdout_text or ""
+    lines = text.split("\n")
+    if not text.endswith("\n"):
+        lines = lines[:-1]
+    return "gkg-filter-refusal" in lines
 GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
                     "master-download-failed", "checkpoint-io-incomplete")
 GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
@@ -4771,7 +4813,8 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         r = sh_group(" ".join(shlex.quote(c) for c in cmd), cwd=str(CODE),
                      env=filter_env, timeout=7200)
         rc = r.returncode
-        out_text = (r.stdout or "") + (r.stderr or "")
+        stdout_text = r.stdout or ""
+        out_text = stdout_text + (r.stderr or "")
     except subprocess.TimeoutExpired as e:
         # sh_group killed the whole process group; keep going so the
         # partial output is copied, summarised and archived.
@@ -4780,13 +4823,22 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         def _txt(v):
             return v.decode("utf-8", "replace") if isinstance(v, bytes) \
                 else (v or "")
-        out_text = _txt(e.output) + _txt(e.stderr)
+        stdout_text = _txt(e.output)
+        out_text = stdout_text + _txt(e.stderr)
 
     # 959m F10: classify an UNSAFE checkpoint exit (rc 75 without
     # safe=1) BEFORE copying or re-reading any checkpoint file, so an
     # unreadable absent.txt cannot raise ahead of the quarantine/retry path.
-    unsafe_exit = (not timed_out and rc == GDELT_CHECKPOINT_IO_RC
-                   and "gkg-filter-checkpoint-error safe=1" not in out_text)
+    # 959o U1: ONE parsed result (last complete anchored record on stdout
+    # only) feeds both guards; no valid record means not safe.
+    ck_safe = _gdelt_last_checkpoint_record(stdout_text)
+    refused = (not timed_out and rc == 1 and _gdelt_refusal_marked(stdout_text))
+    # 959o F4: an unexpected non-zero exit (signal, crash, anything that is
+    # not 0, the checkpoint-I/O code or a marked refusal) is unsafe too.
+    unexpected_exit = (not timed_out and rc not in (0, GDELT_CHECKPOINT_IO_RC)
+                       and not refused)
+    unsafe_exit = ((not timed_out and rc == GDELT_CHECKPOINT_IO_RC
+                    and ck_safe != "1") or unexpected_exit)
     read_failed = False
     files_done = macro_files_done = absent_files = transient_files = 0
     matches = macro_matches = 0
@@ -4873,11 +4925,12 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         # refusals, which stay "exit-1"). Incomplete only when the filter
         # reports the checkpoint safe to reuse; otherwise nothing is
         # published and the job is retried.
-        status = ("checkpoint-io-incomplete"
-                  if "gkg-filter-checkpoint-error safe=1" in out_text
+        status = ("checkpoint-io-incomplete" if ck_safe == "1"
                   else "checkpoint-io-failed")
+    elif refused:
+        status = "refused"     # deliberate refusal (explicit stdout marker): terminal
     elif rc != 0:
-        status = "exit-%d" % rc
+        status = "%s%d" % (GDELT_UNEXPECTED_PREFIX, rc)   # retryable
     elif "budget exhausted" in out_text:
         status = "budget-exhausted"
     elif _gkg_unfinished(out_text) > 0:
@@ -4889,18 +4942,25 @@ def _run_gdelt_fetch(job, workdir, master_dir):
         # bounded tail of the filter's stdout+stderr for diagnosis
         log_line += "--- filter output tail (max 4000 chars) ---\n" \
             + out_text[-4000:] + "\n"
-    (run_dir / "gdelt-fetch.log").write_text(log_line)
+    try:
+        (run_dir / "gdelt-fetch.log").write_text(log_line)
 
-    # Sidecar: runner writes workdir/gdelt/gdelt_fetch.json; the dispatch
-    # branch reads it into manifest['gdelt_fetch'].
-    (run_dir / "gdelt_fetch.json").write_text(json.dumps({
-        "start": start, "end": end, "mode": mode,
-        "files_done": files_done, "macro_files_done": macro_files_done,
-        "absent_files": absent_files,
-        "transient_files": transient_files,
-        "matches": matches, "macro_matches": macro_matches,
-        "status": status,
-    }, indent=1))
+        # Sidecar: runner writes workdir/gdelt/gdelt_fetch.json; the dispatch
+        # branch reads it into manifest['gdelt_fetch'].
+        (run_dir / "gdelt_fetch.json").write_text(json.dumps({
+            "start": start, "end": end, "mode": mode,
+            "files_done": files_done, "macro_files_done": macro_files_done,
+            "absent_files": absent_files,
+            "transient_files": transient_files,
+            "matches": matches, "macro_matches": macro_matches,
+            "status": status,
+        }, indent=1))
+    except OSError:
+        # 959o F5: ENOSPC etc. after the intent was persisted: the report could
+        # not be written, so the run is never published as progress. Return the
+        # retryable no-publish outcome so dispatch records a status, releases
+        # the intent and quarantines (keeps, readable) the local checkpoint.
+        return {"gdelt-fetch": "checkpoint-io-failed"}
 
     return {"gdelt-fetch": status}
 
@@ -6855,6 +6915,13 @@ def _gdelt_retry_cleanup(job_id):
                 # Our intent is gone (not a mismatch that left a later
                 # attempt's intent in place): release the claim.
                 att = data.get("claim_attempt")
+                if not isinstance(att, str) or not att:
+                    # 959o F6: same identity guard as the claim_pending
+                    # branch: no attempt id means a same-host legacy claim
+                    # (which also lacks one) cannot be told from ours, so
+                    # never release a claim. Drop the marker.
+                    mp.unlink(missing_ok=True)
+                    return
                 if not _release_claim(job_id, only_own=True, expect_attempt=att):
                     mp.parent.mkdir(parents=True, exist_ok=True)
                     mp.write_text(json.dumps({"claim_pending": True,
@@ -7010,7 +7077,7 @@ def _execute_body(job):
     # gdelt-fetch: GDELT GKG master download + filter
     if text.split()[:1] == ["gdelt-fetch"]:
         manifest["tools"] = run_gdelt_fetch(job, workdir)
-        if manifest["tools"].get("gdelt-fetch") in GDELT_NO_PUBLISH:
+        if _gdelt_no_publish(manifest["tools"].get("gdelt-fetch")):
             # Unknown resume state (archive lookup failed, or a restore
             # could not be rolled back): publish NOTHING (a stale or
             # inconsistent checkpoint must not become the newest run),
@@ -7019,7 +7086,9 @@ def _execute_body(job):
             # the first retry stays eligible) so a PERSISTENT failure is
             # deferred instead of re-selected at the head of the bulk lane.
             _gdelt_note_incomplete(job["id"], 0)
-            if manifest["tools"].get("gdelt-fetch") == "checkpoint-io-failed" \
+            if (manifest["tools"].get("gdelt-fetch") == "checkpoint-io-failed"
+                    or str(manifest["tools"].get("gdelt-fetch")).startswith(
+                        GDELT_UNEXPECTED_PREFIX)) \
                     and not _gdelt_quarantine_checkpoint(job["id"], workdir):
                 # The unsafe local pair could not be set aside and confirmed
                 # gone: do NOT admit a retry that would reuse it. The intent
@@ -7036,7 +7105,13 @@ def _execute_body(job):
             except Exception:
                 manifest["gdelt_fetch"] = {}
         manifest["finished"] = now()
-        archive_sha = publish(job, workdir, manifest)
+        try:
+            archive_sha = publish(job, workdir, manifest)
+        except subprocess.TimeoutExpired:
+            # 959o F8: a publication git/sh timeout is an UNCONFIRMED
+            # publication, same as an empty result: route it through the
+            # recovery path below instead of escaping with the intent held.
+            archive_sha = None
         if not archive_sha:
             _record_publish_failure(job)
             if manifest["tools"].get("gdelt-fetch") in GDELT_INCOMPLETE:

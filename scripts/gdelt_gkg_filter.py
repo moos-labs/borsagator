@@ -912,4 +912,12 @@ def main():
         run_fetch(a)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as _e:
+        # 959o F4: a DELIBERATE refusal (sys.exit with a message string) carries
+        # an explicit stdout marker so the worker can tell it from a crash,
+        # a signal exit or an argparse error, which are all retryable.
+        if isinstance(_e.code, str):
+            print("gkg-filter-refusal", flush=True)
+        raise
