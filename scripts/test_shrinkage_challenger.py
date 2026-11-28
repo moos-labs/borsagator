@@ -391,13 +391,65 @@ def test_leave_out_lists_crossed_rows():
           and out.index(line) < out.index("leave one cutoff out"), out[:900])
 
 
+def test_mature_cluster_counting():
+    caps = ["/r/2025-01-02/A.CA", "/r/2025-01-02/B.CA", "/r/2025-01-09/A.CA", "/r/2025-01-09/B.CA",
+            "/r/2025-01-09/B.CA", "/r/2025-01-16/A.CA"]
+    def row(t, b, h="week"):
+        r = mkrow(h=h, base=b)
+        r["ticker"] = t
+        return r
+    rows = [row("A.CA", "2025-01-02"), row("B.CA", "2025-01-02"),
+            row("A.CA", "2025-01-09"),                      # B.CA dropped at 01-09
+            row("A.CA", "2025-01-16"), row("Z.CA", "2025-01-16"),   # extra row of another ticker
+            row("A.CA", "2025-01-23"), row("B.CA", "2025-01-23")]   # cutoff with no capture
+    mt, al = T.mature_clusters(caps, rows)
+    check("only fully covered cutoffs are mature", mt == {"2025-01-02", "2025-01-16"}, str(mt))
+    check("every captured cutoff is counted, an uncaptured one is not", al == {"2025-01-02", "2025-01-09", "2025-01-16"}, str(al))
+    check("a dropped captured ticker keeps its cluster immature (no eligibility filter)", "2025-01-09" not in mt)
+    check("duplicate captures collapse to one intended ticker",
+          T.mature_clusters(caps, [row("A.CA", "2025-01-09"), row("B.CA", "2025-01-09")])[0] == {"2025-01-09"})
+    mt2, _ = T.mature_clusters(caps, [r for r in rows if r["base"] != "2025-01-02"])
+    check("removing one cutoff's rows removes only that cluster", mt2 == {"2025-01-16"})
+    check("empty rows give no mature clusters", T.mature_clusters(caps, [])[0] == set())
+    # through the describe CLI: per horizon, week has one dropped ticker
+    import json, tempfile
+    wk = [row("A.CA", "2025-01-02"), row("B.CA", "2025-01-02"), row("A.CA", "2025-01-09")]
+    dy = [row("A.CA", "2025-01-02", "day"), row("B.CA", "2025-01-02", "day"),
+          row("A.CA", "2025-01-09", "day"), row("B.CA", "2025-01-09", "day")]
+    calls, restore = _stub_pipeline(wk + dy)
+    T.cell_caps = lambda roots, lo, hi: (caps, caps)
+    with tempfile.TemporaryDirectory() as d:
+        wp = os.path.join(d, "w.json")
+        with open(wp, "w") as fh:
+            json.dump({"weights": [0.1, 1.0]}, fh)
+        jp = os.path.join(d, "o.json")
+        saved_eval = T.evaluate_pairs
+        T.evaluate_pairs = lambda rows_, w_, reps, seed: saved_eval(rows_, w_, 20, seed)
+        buf = io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf):
+                T.main(["describe", "--captures", "x", "--ohlcv-dir", "x", "--weights", wp, "--json", jp])
+        finally:
+            T.evaluate_pairs = saved_eval
+            restore()
+        js = json.load(open(jp))
+    out = buf.getvalue()
+    check("describe prints mature clusters per horizon before the statistics",
+          "day: fully mature cutoff clusters=2 of 3 (registered minimum 10" in out
+          and "week: fully mature cutoff clusters=1 of 3 (registered minimum 10" in out
+          and "month: fully mature cutoff clusters=0 of 3" in out
+          and out.index("week: fully mature") < out.index("DESCRIPTIVE ONLY"), out[:1200])
+    check("json carries the mature-cluster counts", js["mature_clusters"]["week"] == {"mature": 1, "cutoffs": 3}, str(js.get("mature_clusters")))
+    check("the registered minimum is 10", T.MIN_CLUSTERS == 10)
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
                test_fit_picks_best_and_ties, test_crossed_edges, test_leave_out_folds, test_refusals,
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
                test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
-               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows):
+               test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting):
         fn()
 
 

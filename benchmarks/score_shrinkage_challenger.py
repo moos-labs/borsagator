@@ -32,6 +32,7 @@ WINDOW = 250
 MIN_MOVES = 125
 Q_LO, Q_HI = 0.10, 0.90
 GRID = [i / 20.0 for i in range(21)]
+MIN_CLUSTERS = 10  # fully mature cutoff clusters per horizon (registered loop bar)
 MIN_COVERED = 100  # pooled over the three horizons (Moos decision, relayed)
 FREEZE = "2025-08-15"
 FIT_CELLS = (1, 47)
@@ -130,6 +131,25 @@ def prepare(rows, closes_by_ticker):
 
 
 REBUILD_NOTE = "realised window rebuilt to 21 sessions"
+
+
+def mature_clusters(caps, horizon_rows):
+    """(mature cutoffs, all cutoffs) for ONE horizon. Intended rows of a
+    cutoff = one per in-range capture of that cutoff (its ticker); no
+    eligibility filter applies: a captured ticker whose row for this
+    horizon is dropped (capture rejection, v2_sigma missing, short history,
+    no realised close) stays intended, so its cluster is not mature.
+    A cutoff counts only when every intended ticker has a usable row for
+    the horizon. Duplicates collapse and other cutoffs never count."""
+    intended = {}
+    for c in caps:
+        cutoff = os.path.basename(os.path.dirname(c))
+        intended.setdefault(cutoff, set()).add(os.path.basename(c).upper())
+    have = {}
+    for r in horizon_rows:
+        have.setdefault(r["base"], set()).add(r["ticker"].upper())
+    mature = {k for k, v in intended.items() if v and v <= have.get(k, set())}
+    return mature, set(intended)
 
 
 def split_gaps(gaps):
@@ -325,6 +345,12 @@ def main(argv=None):
     print("\n".join(rebuilt))
     print("ENDPOINT DATE DIFFERENCES (scored, not exclusions): %d" % len(notes))
     print("\n".join(notes))
+    mature = {}
+    for h in HORIZONS:
+        mt, al = mature_clusters(caps, [r for r in usable if r["horizon"] == h])
+        mature[h] = (len(mt), len(al))
+        print("%s: fully mature cutoff clusters=%d of %d (registered minimum %d; intended rows = captured "
+              "tickers of the cutoff, no eligibility filter)" % (h, len(mt), len(al), MIN_CLUSTERS))
     print("EXCLUSIONS (every one listed, before any statistic)")
     print("\n".join(ex))
     res = evaluate_pairs(usable, w, a.reps, a.seed)
@@ -347,6 +373,7 @@ def main(argv=None):
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:
             json.dump({"descriptive": True, "counts": lines, "results": res,
+                       "mature_clusters": {h: {"mature": m, "cutoffs": t} for h, (m, t) in mature.items()},
                        "excluded": ex}, fh, indent=1)
     return 0
 
