@@ -257,9 +257,59 @@ def test_counts():
     check("missing split", T.count_lines(mp)[0].endswith("usable=2 rows with missing signals=1"), T.count_lines(mp)[0])
 
 
+def test_958l_short_row_coverage_and_gaps():
+    import tempfile
+    # 1: a CSV row that omits the value column is skipped, not a crash
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "s.csv")
+        with open(p, "w") as fh:
+            fh.write("observed_date,published_date,value\n2025-01-01,2025-01-02,100\n2025-02-01,2025-02-02\n2025-03-01,2025-03-02,110\n")
+        try:
+            rows = T.load_series(p)
+            ok = [r[2] for r in rows] == [100.0, 110.0]
+        except TypeError:
+            ok = False
+        check("a row with a missing value column is skipped and finite rows are kept", ok)
+    # 2: coverage draws survive an undefined RangeSkill (zero naive IS)
+    pairs = [{"as_of": "d%d" % i, "is_naive": 0.0, "is_ch": 1.0, "is_v2": 1.0, "in_ch": i % 2 == 0, "in_v2": True}
+             for i in range(4)]
+    sk, cov, dl = T.boot(pairs, 50, 7)
+    check("coverage draws are kept when RangeSkill is undefined", len(cov) == 50 and sk == [] and dl == [], str((len(cov), sk, dl)))
+    ev = T.evaluate([dict(p, horizon="day", ticker="A", m=0) for p in pairs], 50, 7)
+    check("evaluate returns a coverage interval even with undefined RangeSkill",
+          ev["day"]["cov_tilt_ci_cutoff"][0] is not None, str(ev["day"]["cov_tilt_ci_cutoff"]))
+    pairs2 = [dict(p, is_naive=1.0) for p in pairs]
+    sk2, cov2, dl2 = T.boot(pairs2, 50, 7)
+    check("defined RangeSkill still fills all three lists", len(sk2) == len(cov2) == len(dl2) == 50)
+    # 3: dropped naive-range horizons carry a reason
+    R = T.R
+    saved = (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas, R.A._sigma60, R.bs.load_json)
+    scored = [{"entrant": "naive-range", "ticker": "AAA.CA", "as_of": "2026-01-01", "horizon": "month", "status": "pending", "sessions_available": 7},
+              {"entrant": "naive-range", "ticker": "AAA.CA", "as_of": "2026-01-01", "horizon": "week", "status": "matured", "dividend_gap": "split 2:1"},
+              {"entrant": "naive-range", "ticker": "AAA.CA", "as_of": "2026-01-01", "horizon": "day", "status": "matured", "realized_move_pct": 0.5,
+               "range_high_pct": 1.0, "range_low_pct": -1.0},
+              {"entrant": "other", "ticker": "AAA.CA", "as_of": "2026-01-01", "horizon": "day", "status": "pending"}]
+    R.bs.score_capture = lambda staged: (scored, [])
+    R.A._stage = lambda cap, variant, tmp: cap
+    R.price_reference = lambda dirs: {}
+    R._extend_realised = lambda staged, px: False
+    R.read_ohlc = lambda cap, d: []
+    R.sigmas = lambda ohlc: {"s60": 0.01}
+    R.A._sigma60 = lambda ens: 0.02
+    R.bs.load_json = lambda path: {}
+    try:
+        rows, gaps = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None)
+    finally:
+        (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas, R.A._sigma60, R.bs.load_json) = saved
+    check("rows membership unchanged: only the matured non-gap naive row", [r["horizon"] for r in rows] == ["day"], str(rows))
+    check("pending horizon gets a reason with its sessions", "AAA.CA 2026-01-01 month: no matured row (pending, 7 sessions available)" in gaps, str(gaps))
+    check("dividend-gap horizon gets a reason", "AAA.CA 2026-01-01 week: no matured row (dividend_gap split 2:1)" in gaps, str(gaps))
+    check("other entrants and kept rows add no gap", len(gaps) == 2, str(gaps))
+
+
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts, test_958l_short_row_coverage_and_gaps):
         fn()
 
 

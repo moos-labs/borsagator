@@ -47,8 +47,8 @@ def load_series(path):
             try:
                 row = (d_(r["observed_date"]), d_(r["published_date"]),
                        float(r["value"]))
-            except (ValueError, KeyError):
-                continue
+            except (ValueError, KeyError, TypeError):
+                continue  # includes a row that omits the value column (None)
             if not math.isfinite(row[2]):
                 continue  # nan / inf are not measurements: same path as unparseable
             out.append(row)
@@ -130,12 +130,14 @@ def boot(pairs, reps, seed):
         draw = []
         for _ in keys:
             draw.extend(groups[rng.choice(keys)])
+        # coverage is defined whenever the draw has rows; only the skill and
+        # skill-difference draws need a defined RangeSkill
+        cov.append(sum(p["in_ch"] for p in draw) / len(draw))
         a, b = A.range_skill(draw, "ch"), A.range_skill(draw, "v2")
         if a is None or b is None:
             continue
         sk.append(a)
         dl.append(a - b)
-        cov.append(sum(p["in_ch"] for p in draw) / len(draw))
     return sk, cov, dl
 
 

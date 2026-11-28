@@ -312,6 +312,17 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
             gaps.append("%s: no usable pre-cutoff OHLC history" % cap)
             continue
         for r in scored:
+            if r.get("entrant") == "naive-range" and (
+                    r.get("status") != "matured" or r.get("dividend_gap")):
+                # every dropped naive-range horizon gets its own reason
+                if r.get("status") != "matured":
+                    why = "pending, %s sessions available" % r.get(
+                        "sessions_available", 0) if r.get(
+                        "status") == "pending" else "status %s" % r.get("status")
+                else:
+                    why = "dividend_gap %s" % r.get("dividend_gap")
+                gaps.append("%s %s %s: no matured row (%s)" % (
+                    r["ticker"], str(r["as_of"])[:10], r["horizon"], why))
             if (r.get("entrant") != "naive-range"
                     or r.get("status") != "matured"
                     or r.get("dividend_gap")):
