@@ -16,14 +16,16 @@ For cutoff date C and name i: A(i,C) = log((S7 + 1) / (S28/4 + 1)), where S7 is 
 
 ## Rank scaling (exact)
 - Eligible names at cutoff C: panel names that pass the minimum-history rule below and have a v2 centre and positive v2 half-width for the cell. Let n = their count. If n < 6 the cutoff gets no tilt (k-shift 0) and is listed with the reason "n<6".
+- z is computed ONLY for cutoffs with n >= 6. For n = 1 to 5 (and n = 0) z is never computed, so the division by (n-1)/2 cannot occur; those cutoffs get the v2 interval unchanged.
 - r(i) = average rank of A(i,C) among the n eligible names, ascending, 1..n. Ties get the average of the ranks they span (exact float equality of A after rounding to 12 decimals).
 - z(i) = (r(i) - (n+1)/2) / ((n-1)/2). Range [-1, +1], mean 0, so a cutoff with n names has the lowest-attention name at -1 and the highest at +1.
 - Tilt: the v2 interval centre moves by d(i) = k * z(i) * w(i), where w(i) is the v2 half-width for that cell. The interval is moved, not widened: both edges shift by d(i), the width is unchanged. Non-eligible names keep the v2 interval unchanged.
 
 ## Slope fitting (exact, before any scoring)
 - Target: y(i,C) = (realised close - v2 centre) / w(i), the standardised miss of the v2 centre, in half-width units. Baseline treatment of v2: v2 is the k = 0 arm; its centre and half-width are read as stored for the cell and are never refit.
-- Objective: least squares through the origin on the pooled covered training (cell, name) pairs from cells 1-47: k_hat = sum(z*y) / sum(z*z). No intercept, equal weight per pair.
-- Sign is estimated and then frozen. Magnitude is clipped to |k| <= 0.25 half-widths (a design constant fixed now, not tuned). If sum(z*z) = 0 or fewer than 100 covered training pairs exist, no tilt is fit and the run reports counts only.
+- Covered-pair rule (explicit): a training pair (cell, name) is COVERED, and enters the fit, only if its cutoff has n >= 6 eligible names (so z is defined) and the name is one of those n. Pairs from cutoffs with n < 6, including n = 2 to 5, are EXCLUDED from both sums and do NOT count toward the 100-pair threshold; they are listed individually with cutoff, n and reason "n<6". They contribute nothing to the fit, and at scoring time they are scored with the v2 interval unchanged.
+- Objective: least squares through the origin on the covered pairs from cells 1-47 under that rule: k_hat = sum(z*y) / sum(z*z). No intercept, equal weight per pair.
+- Sign is estimated and then frozen. Magnitude is clipped to |k| <= 0.25 half-widths (a design constant fixed now, not tuned). If sum(z*z) = 0 or fewer than 100 covered training pairs (by the covered-pair rule above) exist, no tilt is fit and the run reports counts only.
 - The frozen k is the only fitted value; cells 48-90 and 91+ are never used to change it.
 
 ## Lookback and minimum-history rule (up front)
