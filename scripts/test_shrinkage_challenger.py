@@ -581,6 +581,74 @@ def test_966d_nonfinite_window_and_fold_gate():
           "counts_only" not in f["2025-01-11"] and f["2025-01-01"] == {"counts_only": 9}, str((f["2025-01-11"], f["2025-01-01"])))
 
 
+def test_966e_unusable_close_kept_and_coverage_draws_kept():
+    import math
+    import tempfile
+    import random as _rnd
+    # F1: dated sessions with an unusable close stay as NaN; records without a usable date go
+    with tempfile.TemporaryDirectory() as d:
+        cl = series(400)
+        path = os.path.join(d, "A_CA.csv")
+        with open(path, "w") as fh:
+            fh.write("date,close\n")
+            for i, (dt, c) in enumerate(cl):
+                if i == 100:
+                    fh.write("%s,\n" % dt)          # empty close
+                elif i == 101:
+                    fh.write("%s,abc\n" % dt)       # unparseable close
+                elif i == 102:
+                    fh.write("%s,nan\n" % dt)       # literal nan
+                else:
+                    fh.write("%s,%s\n" % (dt, c))
+            fh.write(",5.0\n")                        # no date
+            fh.write("not-a-date,5.0\n")              # unusable date
+        got = T.load_closes(path)
+        check("dated sessions with an unusable close are kept (400 sessions), undated records rejected", len(got) == 400, str(len(got)))
+        check("sessions 100-102 are NaN, their neighbours finite, dates unchanged",
+              [math.isnan(got[i][1]) for i in (100, 101, 102)] == [True] * 3 and math.isfinite(got[99][1]) and math.isfinite(got[103][1])
+              and [g[0] for g in got] == [c[0] for c in cl])
+        check("session offsets are unchanged by the bad closes", T.realised_date(got, cl[90][0], "week") == T.realised_date(cl, cl[90][0], "week"))
+        mk_row = lambda i, h="week": {"ticker": "A.CA", "as_of": cl[i][0], "horizon": h, "real": 0.2,
+                                      "naive_half": 3.0, "mult": 1.0, "v2_sigma": 0.02}
+        out, ex = T.prepare([mk_row(i) for i in (300, 360)], {"A.CA": got})
+        check("a row whose window crosses the unusable closes is excluded with the window reason, a later one is kept",
+              len(ex) == 1 and "non-finite close in the baseline window" in ex[0] and len(out) == 1 and out[0]["base"] == cl[360][0], str(ex))
+        # a one-bad-close drop would have shifted offsets: the dropped-row variant gives a different window result
+        dropped = [c for i, c in enumerate(cl) if i != 100]
+        check("dropping the session instead would change the 5-session move set (offsets matter)",
+              T.baseline(dropped, cl[110][0], "week") != T.baseline(cl, cl[110][0], "week"))
+    # F2: coverage CI uses every draw, RangeSkill delta only the draws where it is defined
+    cl = series(400)
+    rows = []
+    for k, i in enumerate((300, 310, 320, 330)):
+        for t in range(1 + k):
+            rows.append({"ticker": "T%d.CA" % t, "as_of": cl[i][0], "horizon": "day", "real": (0.2 if k % 2 == 0 else 5.0), "naive_half": 3.0,
+                         "mult": 1.0, "v2_sigma": 0.02, "base": cl[i][0], "half": 1.0, "q_lo": -1.0, "q_hi": 1.0, "key": "k%d%d" % (k, t)})
+    saved = T.A.range_skill
+    T.A.range_skill = lambda draw, which: None if len(draw) % 2 == 0 else 0.5
+    try:
+        res = T.evaluate_pairs(rows, (0.1, 1.0), 200, 7)
+    finally:
+        T.A.range_skill = saved
+    pairs_by = {}
+    for r in rows:
+        is_ch, inside, _c = T.row_scores(r, 0.1, 1.0)
+        pairs_by.setdefault(r["base"], []).append(inside)
+    keys = sorted(pairs_by)
+    rng = _rnd.Random(7)
+    cov_all, n_def = [], 0
+    for _ in range(200):
+        draw = []
+        for _k in keys:
+            draw.extend(pairs_by[rng.choice(keys)])
+        cov_all.append(sum(draw) / len(draw))
+        n_def += len(draw) % 2 == 1
+    want = list(T.A.percentile_ci(cov_all))
+    check("fixture really has draws with undefined RangeSkill and draws with a defined one", 0 < n_def < 200, str(n_def))
+    check("coverage CI uses all 200 draws, not only the draws with a defined RangeSkill", res["day"]["cov_ci_cutoff"] == want, str((res["day"]["cov_ci_cutoff"], want)))
+    check("the delta CI still skips the undefined draws (all defined draws equal 0 difference)", res["day"]["delta_ci_cutoff"] == [0.0, 0.0], str(res["day"]["delta_ci_cutoff"]))
+
+
 def run_all():
     for fn in (test_constants, test_quantile, test_baseline_window_and_history, test_no_lookahead,
                test_realised_date, test_mix_edges, test_prepare_exclusions, test_fit_threshold_and_freeze,
@@ -588,7 +656,7 @@ def run_all():
                test_reference_set_is_in_range_only, test_seed_refused_before_loading,
                test_crossed_rows_listed_before_statistics, test_fit_lists_crossed_training_rows, test_leave_out_prints_exclusions_first,
                test_freeze_gate_uses_capture_endpoint, test_rebuild_notices_are_not_exclusions, test_leave_out_lists_crossed_rows, test_mature_cluster_counting,
-               test_966c_captured_outcome_and_pending_records_and_gate, test_966d_nonfinite_window_and_fold_gate):
+               test_966c_captured_outcome_and_pending_records_and_gate, test_966d_nonfinite_window_and_fold_gate, test_966e_unusable_close_kept_and_coverage_draws_kept):
         fn()
 
 

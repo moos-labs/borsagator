@@ -41,13 +41,23 @@ DESC_CELLS = (48, 90)
 
 
 def load_closes(path):
+    """Dated sessions. A record without a usable ISO date is rejected. A
+    record with a usable date but an empty, missing or unparseable close is
+    KEPT with a NaN close, so session offsets do not shift and the baseline
+    window check excludes the rows that read it."""
     out = []
     with open(path, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             try:
-                out.append((str(r["date"])[:10], float(r["close"])))
+                d = str(r["date"])[:10]
+                datetime.date.fromisoformat(d)
             except (ValueError, KeyError, TypeError):
                 continue
+            try:
+                c = float(r["close"])
+            except (ValueError, KeyError, TypeError):
+                c = float("nan")
+            out.append((d, c))
     out.sort()
     return out
 
@@ -267,10 +277,11 @@ def evaluate_pairs(rows, w, reps, seed):
             for _k in keys:
                 draw.extend(groups[rng.choice(keys)])
             x, y = A.range_skill(draw, "ch"), A.range_skill(draw, "v2")
+            # coverage does not depend on RangeSkill: keep every draw
+            cv.append(sum(p["in_ch"] for p in draw) / len(draw))
             if x is None or y is None:
                 continue
             dl.append(x - y)
-            cv.append(sum(p["in_ch"] for p in draw) / len(draw))
         res[h] = {"n": len(pairs), "cutoffs": len(keys), "weights": [a, b],
                   "crossed": sum(p["crossed"] for p in pairs),
                   "crossed_keys": [p["key"] for p in pairs if p["crossed"]],
