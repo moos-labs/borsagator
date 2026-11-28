@@ -16,7 +16,7 @@ The #966 challenger (one shared pair, a = 0.1, b = 1.0, frozen) showed a week Ra
 - Data: cells 91+ only, first read after this document is merged. No verdict-cell origin is loaded before then.
 - Statistics: challenger-minus-v2 mean RangeSkill and the challenger's pooled coverage, each with a 95% two-sided percentile bootstrap CI resampling cutoff dates with replacement, 5000 reps, seed 20261125, default reps only (other values refused before loading).
 - KEEP needs all four: (1) lower bound of the RS-diff CI > 0; (2) the coverage CI overlaps [0.75, 0.85]; (3) coverage CI width <= 0.15; (4) at least 10 fully mature cutoff clusters.
-- Cluster counting: a cutoff cluster counts only when every intended row of that cutoff (one week row per capture of that cutoff) has a realised close; a partly mature cluster does not count, and the single KEEP decision uses only clusters fully mature at the decision date. Rows without a realised close are excluded from scoring entirely and listed individually.
+- Cluster counting: a cutoff cluster counts only when every intended row of that cutoff (one week row per capture of that cutoff) has a realised close; a partly mature cluster does not count, and the single KEEP decision uses only clusters fully mature at the decision date. No eligibility filter applies to the intended set: a captured ticker whose week row is dropped (capture rejection, v2_sigma missing, or no realised close) stays intended, so its cluster is not mature. The rule is week-only. Rows without a realised close are excluded from scoring entirely and listed individually.
 - Fewer than 10 fully mature clusters: COUNTS ONLY, no coverage, skill or CI printed or written.
 - Day and month: counts only. A KEEP is not an adoption.
 
