@@ -128,8 +128,14 @@ def test_modes_and_verified_decisions():
         T.A.find_captures, T.R.build_rows, T.M.load_decisions = saved
     ds, n_rej = T.M.load_decisions(T.DECISIONS)
     dates = [d["published_date"] for d in ds]
-    check("verified decisions file: 36 usable, none rejected", len(ds) == 36 and n_rej == 0)
-    check("the two decisions absent from the calendar are not in the verified file", "2022-08-18" not in dates and "2023-02-02" not in dates)
+    check("verified decisions file: 38 usable, none rejected", len(ds) == 38 and n_rej == 0)
+    cal = json.load(open(os.path.join(HERE, "..", "evaluation", "macro_event", "calendar_primary.json")))
+    cal_dates = {e["date"] for e in cal["events"] if e["type"].startswith("cbe")}
+    check("every verified decision is a calendar event", set(dates) <= cal_dates, str(sorted(set(dates) - cal_dates)))
+    check("2022-08-18 and 2023-02-02 are in both, and no longer in the calendar's excluded list",
+          {"2022-08-18", "2023-02-02"} <= set(dates) and {"2022-08-18", "2023-02-02"} <= cal_dates
+          and not any(x["item"] in ("CBE 2022-08-18", "CBE 2023-02-02") for x in cal["excluded"]))
+    check("verified decisions are sorted and unique", dates == sorted(set(dates)))
 
 
 def run_all():

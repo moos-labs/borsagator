@@ -1,5 +1,7 @@
 # Round 143: regime macro tilt, first pass (shadow, descriptive)
 
+UPDATE (Moos Slack 1795858391.997729, relayed): the two calendar-excluded holds (2022-08-18, 2023-02-02) were added to calendar_primary.json (source: the CBE annual report 2022/23 text, which states both meeting dates and the unchanged rate) and removed from its `excluded` list; the verified file now has 38 decisions. No scored row is affected (first cutoff 2023-12-29). The 36-decision numbers below are unchanged by it.
+
 Design and pre-registration: docs/round78_regime_macro_tilt_design.md (merged #933). Series: evaluation/macro_series (merged #939). Source: Moos Slack 1795857428.814079 (thread 1795818091.610649), relayed by the main agent. Shadow only: no ensemble.py or frozen-value edits, no verdict word or key, no KEEP claim.
 
 ## (a) Verification of evaluation/macro_series/cbe_decisions.json (38 decisions)
