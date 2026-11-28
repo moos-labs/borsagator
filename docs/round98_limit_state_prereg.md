@@ -21,11 +21,11 @@ All three are secondary (the Ahram piece is the nearest to the decree). The decr
 Let P0 = previous session's close, in the same series.
 - LIMIT-HIT day: |close - P0| / P0 >= 0.195 (near-limit reading, threshold 19.5% per the #773 convention as relayed by Moos; #773 not opened by me).
 - HALT-PROXY day: high / P0 - 1 >= 0.10 OR low / P0 - 1 <= -0.10.
-- NO-TRADE day: volume == 0 (a zero-volume or missing-volume session; a missing row is not a no-trade day and is listed as missing).
+- NO-TRADE day: volume == 0 OR volume is missing for the session. A session with no bar row at all stays listed as missing (it is not a no-trade day).
 Every flag is computed from bars strictly before the cutoff session. Window: the 20 sessions before cutoff C.
 
 ## State and shadow challenger (fixed now)
-- s(i,C): sign (+1 or -1) of the return (close/P0 - 1) on the most recent LIMIT-HIT or HALT-PROXY day in the 20-session window; 0 if there is none.
+- s(i,C): sign (+1 or -1) of the return (close/P0 - 1) on the most recent LIMIT-HIT or HALT-PROXY day in the 20-session window; 0 if there is none. If that most recent flagged day has a return of exactly 0 (possible for a halt-proxy day that touched both +10% and -10% and closed at P0), s = 0: no direction, and the scorer does NOT fall back to an earlier flagged day.
 - Centre shift: d(i) = k * s(i,C) * w(i), with w the v2 half-width for the cell. The interval is moved, not widened. Hypothesis (not a finding): a censored or halted move continues in its direction the next week.
 - NO-TRADE days are reported as counts only per name and window; they do not enter the shift.
 - k: least squares through the origin on training pairs with s != 0: target y = (realised close - v2 centre) / w, k = sum(s*y) / sum(s*s), cells 1-47 only. Sign is estimated then frozen, |k| <= 0.25 (fixed constant, not tuned). If fewer than 30 flagged training pairs exist, NO k is fit and the run is COUNTS ONLY.
@@ -35,7 +35,7 @@ Every flag is computed from bars strictly before the cutoff session. Window: the
 Fit: cells 1-47. Descriptive: cells 48-90 (counts and paired delta vs v2 on the same rows, no verdict word). Score: cells 91+ only, never loaded before this doc is merged. Never load a verdict-cell origin for smoke tests (use contexts before 2025-10-20).
 
 ## Intervals, loop bar and decision time
-95% two-sided percentile bootstrap, resampling cutoff dates with replacement, 5000 reps, seed 20261125; challenger-minus-v2 mean RangeSkill and pooled coverage, quote only default-rep CIs. KEEP-eligible only if the lower bound of the challenger-minus-v2 interval > 0 AND the coverage interval overlaps [0.75, 0.85] with width <= 0.15 AND >= 10 cutoff clusters; fewer = COUNTS ONLY. KEEP is evaluated once, when the forward weekly schedule (#953) first reaches 10 scored clusters; later looks are descriptive only.
+95% two-sided percentile bootstrap, resampling cutoff dates with replacement, 5000 reps, seed 20261125; challenger-minus-v2 mean RangeSkill and the challenger's pooled coverage, quote only default-rep CIs. The coverage interval is the challenger's ABSOLUTE pooled coverage (share of scored rows whose realised value lies inside the tilted interval), not a challenger-minus-v2 difference; challenger-minus-v2 mean RangeSkill is the only comparative metric. KEEP-eligible only if the lower bound of the challenger-minus-v2 interval > 0 AND the coverage interval overlaps [0.75, 0.85] with width <= 0.15 AND >= 10 cutoff clusters; fewer = COUNTS ONLY. KEEP is evaluated once, when the forward weekly schedule (#953) first reaches 10 scored clusters; later looks are descriptive only.
 
 ## Tests (when 1c is accepted)
 Fixed synthetic bars, *main* guard, Suite class, mutation checks with boundary mutants: 19.5% boundary (0.194999, 0.195), +-10% halt proxy boundary, strictly-before-cutoff, 20-session window edge, zero-volume versus missing, sign of most recent flag, 30-pair minimum, 47/48 and 90/91 window gating. Build only after Moos accepts this doc.
