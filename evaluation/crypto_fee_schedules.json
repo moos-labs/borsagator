@@ -1,0 +1,105 @@
+{
+ "fetched_utc": "2026-11-28T13:34Z",
+ "note": "Published schedules as read from public pages on the fetch date. Fees are percent of notional. No conversion edge computed; cost cells stay EMPTY (reason: cost not sourced) until the fee schedule is complete for the route used and the spread distribution has landed.",
+ "kraken": {
+  "source_url": "https://www.kraken.com/pro/fees",
+  "fetched_utc": "2026-11-28T13:34Z",
+  "scope": "Kraken Pro spot, Tier 1..17 by 30-day spot volume (USD); a tier also qualifies by futures volume or assets held (thresholds on the page)",
+  "spot_maker_taker_pct": {
+   "1 ($0+)": [
+    0.4,
+    0.8
+   ],
+   "2 ($2.5K+)": [
+    0.3,
+    0.6
+   ],
+   "3 ($10K+)": [
+    0.22,
+    0.38
+   ],
+   "4 ($25K+)": [
+    0.2,
+    0.35
+   ],
+   "5 ($50K+)": [
+    0.15,
+    0.3
+   ],
+   "6 ($100K+)": [
+    0.12,
+    0.25
+   ],
+   "7 ($250K+)": [
+    0.1,
+    0.22
+   ],
+   "8 ($500K+)": [
+    0.08,
+    0.2
+   ],
+   "9 ($1M+)": [
+    0.06,
+    0.18
+   ],
+   "10 ($2.5M+)": [
+    0.04,
+    0.15
+   ],
+   "11 ($5M+)": [
+    0.02,
+    0.12
+   ],
+   "12 ($10M+)": [
+    0.0,
+    0.1
+   ],
+   "13 ($50M+)": [
+    0.0,
+    0.09
+   ],
+   "14 ($100M+)": [
+    0.0,
+    0.08
+   ],
+   "15 ($250M+)": [
+    0.0,
+    0.07
+   ],
+   "16 ($400M+)": [
+    0.0,
+    0.06
+   ],
+   "17 ($500M+)": [
+    0.0,
+    0.05
+   ]
+  },
+  "tier_applying_to_a_new_small_account": "Tier 1 (taker 0.80%) by the page's $0+ threshold; the user's actual tier is unverified",
+  "not_checked": "Instant-buy / simple-buy convenience fee and the spread markup on it, stablecoin and FX pair schedules, deposit and withdrawal fees (the page has tabs for them; not read here)"
+ },
+ "coinbase": {
+  "source_urls": [
+   "https://www.coinbase.com/blog/were-lowering-fees-for-many-active-traders-on-coinbase-advanced (dated Sep 16, 2026)",
+   "https://help.coinbase.com/en/coinbase/trading-and-funding/advanced-trade/advanced-trade-fees"
+  ],
+  "fetched_utc": "2026-11-28T13:34Z",
+  "published_us_spot_entry_level_pct": {
+   "maker": 0.5,
+   "taker": 0.9,
+   "tier": "entry-level Advanced spot tier, US (blog text: 'US: 0.50% maker & 0.90% taker'; Advanced tiers start at $10,000 in qualifying volume)"
+  },
+  "published_other_entry_levels_pct": {
+   "EU_UK": [
+    0.25,
+    0.5
+   ],
+   "Brazil_India_other_international": [
+    0.09,
+    0.1
+   ]
+  },
+  "published_top_tier": "spot 0bps maker / 2bps taker for VIP8 (blog text)",
+  "NOT_OBTAINED": "The full tier table and the rate for volume below $10,000 (the tier a small account would sit in) are NOT published on the pages I could read: the help page says to sign in to see rates, and https://www.coinbase.com/advanced-fees returned no content to the fetcher. The user's jurisdiction/tier is also unverified. Stablecoin-pair schedules and the non-Advanced (retail buy) fee are not obtained."
+ }
+}
