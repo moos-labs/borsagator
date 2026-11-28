@@ -254,6 +254,36 @@ def derive_gold_egp(xau_rows, egp_rows):
     return out
 
 
+DERIVED_LABEL = "DERIVED-cross-rate-not-fetched"
+# derived file name -> (numerator series, denominator series), both harvested
+DERIVED_CROSS = {"SAREGP_DERIVED": ("USDEGP", "USDSAR"),
+                 "AEDEGP_DERIVED": ("USDEGP", "USDAED")}
+
+
+def derive_cross(num_rows, den_rows):
+    """Cross rate = numerator close / denominator close (USDEGP / USDSAR =
+    EGP per SAR). Common-date rule: a date is kept only when BOTH series have
+    a bar with a positive close on that same session date; every other date is
+    dropped and counted. Close only: high/low of a ratio cannot be built from
+    two series' highs and lows, so those columns stay empty. Returns
+    (rows, n_dropped_numerator_only, n_dropped_denominator_only)."""
+    num = {r[0]: float(r[3]) for r in num_rows if r[3] not in ("", None) and float(r[3]) > 0}
+    den = {r[0]: float(r[3]) for r in den_rows if r[3] not in ("", None) and float(r[3]) > 0}
+    out = [(d, "", "", num[d] / den[d], "", "") for d in sorted(num) if d in den]
+    return out, len(set(num) - set(den)), len(set(den) - set(num))
+
+
+def write_derived_csv(path, rows, formula):
+    tmp = path + ".tmp"
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["date", "high", "low", "close", "volume", "adjclose",
+                    "derived", "formula"])
+        for r in rows:
+            w.writerow([r[0], "", "", repr(r[3]), "", "", DERIVED_LABEL, formula])
+    os.replace(tmp, path)
+
+
 def egp_regime(date):
     return "float" if date >= EGP_FLOAT_DATE else "pre-float"
 
@@ -308,7 +338,18 @@ def main(argv=None):
         rows = derive_gold_egp(store["XAUUSD_FUTURES_PROXY"], store["USDEGP"])
         write_proxy_csv(os.path.join(a.out, "XAUEGP_FUTURES_PROXY.csv"), rows)
         print("XAUEGP_FUTURES_PROXY   derived %d rows [%s]" % (len(rows), PROXY_LABEL))
+    for dname, (nn, dd) in DERIVED_CROSS.items():
+        if nn in store and dd in store:
+            rows, n_only, d_only = derive_cross(store[nn], store[dd])
+            write_derived_csv(os.path.join(a.out, dname + ".csv"), rows, "%s / %s" % (nn, dd))
+            print("%-22s derived %d rows %s .. %s [%s] dropped %s-only %d, %s-only %d" % (
+                dname, len(rows), rows[0][0] if rows else "-", rows[-1][0] if rows else "-",
+                DERIVED_LABEL, nn, n_only, dd, d_only))
     man = dict(FROZEN_DEFINITIONS)
+    man["derived_cross_rates"] = {k: {"formula": "%s / %s" % v, "label": DERIVED_LABEL,
+        "common_date_rule": "kept only on session dates where both series have a positive close; close only, no high/low",
+        "session_rules": "inputs are the harvested per-series session dates unchanged; no extra merge applied here"}
+        for k, v in DERIVED_CROSS.items()}
     man["rejected_yahoo_spot_metal_symbols"] = REJECTED_YAHOO
     man["fx_symbols"] = FX_SYMBOLS
     man["metal_proxy_symbols"] = METAL_PROXY

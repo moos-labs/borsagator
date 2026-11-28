@@ -40,6 +40,14 @@ def run():
     check("FX stays spot; metals are exactly GC=F/SI=F and every metal name says FUTURES_PROXY",
           set(F.METAL_PROXY.values()) == {"GC=F", "SI=F"} and all(n.endswith("_FUTURES_PROXY") for n in F.METAL_PROXY)
           and not any(s in ("GC=F", "SI=F") for s in F.FX_SYMBOLS.values()) and len(set(syms)) == 15)
+    egp_r = [("2024-03-04", 1, 1, 30.0, 0, 30.0), ("2024-03-05", 1, 1, 45.0, 0, 45.0), ("2024-03-06", 1, 1, 60.0, 0, 60.0), ("2024-03-07", 1, 1, 0.0, 0, 0.0)]
+    sar_r = [("2024-03-05", 1, 1, 3.0, 0, 3.0), ("2024-03-06", 1, 1, 4.0, 0, 4.0), ("2024-03-07", 1, 1, 3.0, 0, 3.0), ("2024-03-08", 1, 1, 3.0, 0, 3.0)]
+    dr, ne, de = F.derive_cross(egp_r, sar_r)
+    check("derive_cross: ratio on common dates only, zero close dropped, one-side dates counted, close only",
+          dr == [("2024-03-05", "", "", 15.0, "", ""), ("2024-03-06", "", "", 15.0, "", "")] and ne == 1 and de == 2, str((dr, ne, de)))
+    check("derive_cross is numerator over denominator (not inverted)", F.derive_cross([("d", 1, 1, 50.0, 0, 0)], [("d", 1, 1, 4.0, 0, 0)])[0][0][3] == 12.5)
+    check("derived spec: SAR/EGP = USDEGP/USDSAR, AED/EGP = USDEGP/USDAED",
+          F.DERIVED_CROSS == {"SAREGP_DERIVED": ("USDEGP", "USDSAR"), "AEDEGP_DERIVED": ("USDEGP", "USDAED")})
     rows, sk = F.parse_futures(fut_payload())
     check("session date is the New York date, not the fixed -5h meta offset",
           [r[0] for r in rows] == ["2023-01-09", "2023-01-10", "2023-06-12"], str(rows))
@@ -101,12 +109,18 @@ def run():
         man = json.load(open(os.path.join(d, "FROZEN_DEFINITIONS.json")))
         gold_rows = list(csv.reader(open(os.path.join(d, "XAUUSD_FUTURES_PROXY.csv"))))
         check("end-to-end: 13 FX + 2 proxy + derived csv, manifest, exit 0",
-              code == 0 and len([n for n in names if n.endswith(".csv")]) == 16
+              code == 0 and len([n for n in names if n.endswith(".csv")]) == 18
               and "XAUEGP_FUTURES_PROXY.csv" in names and "FROZEN_DEFINITIONS.json" in names, str(names))
         check("all 13 named FX series harvested, each from its own Yahoo symbol, and recorded in the manifest",
               len(F.FX_SYMBOLS) == 13 and set(F.FX_SYMBOLS) == {"USDEGP", "EUREGP", "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPEGP", "USDSAR", "USDAED"}
               and F.FX_SYMBOLS["USDSAR"] == "USDSAR=X" and F.FX_SYMBOLS["GBPEGP"] == "GBPEGP=X"
               and all(n + ".csv" in names for n in F.FX_SYMBOLS) and man["fx_symbols"] == F.FX_SYMBOLS)
+        sar = list(csv.reader(open(os.path.join(d, "SAREGP_DERIVED.csv"))))
+        check("derived files written, labelled DERIVED with formula, in manifest; no unlabelled SAR/AED EGP file",
+              sar[0][-2:] == ["derived", "formula"] and len(sar) == 3 and all(r[-2] == F.DERIVED_LABEL and r[-1] == "USDEGP / USDSAR" for r in sar[1:])
+              and abs(float(sar[1][3]) - 1.5 / 1.5) < 1e-12 and "AEDEGP_DERIVED.csv" in names
+              and set(man["derived_cross_rates"]) == {"SAREGP_DERIVED", "AEDEGP_DERIVED"}
+              and not any(n in ("SAREGP.csv", "AEDEGP.csv") for n in names))
         check("every proxy csv row carries the proxy label; header has roll_window and proxy columns",
               gold_rows[0][-2:] == ["roll_window", "proxy"] and all(r[-2] in ("0", "1") for r in gold_rows[1:]) and all(r[-1] == F.PROXY_LABEL for r in gold_rows[1:]) and len(gold_rows) == 4)
         check("no unlabelled metal file is written",

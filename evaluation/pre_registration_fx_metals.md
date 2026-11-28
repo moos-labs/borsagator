@@ -14,6 +14,8 @@ Not used (not found on Yahoo): XAUUSD=X, XAGUSD=X, XPTUSD=X, XPDUSD=X, SAREGP=X,
 Metals: GC=F and SI=F only, labelled "futures research proxy, not tradeable spot" in every table, file and chart. Platinum and palladium futures are out of phase 1.
 Harvest gap (caveat): scripts/fetch_fx_metals_store.py at 4322a624 harvests 8 FX symbols (EGP=X, EUREGP=X, EURUSD=X, GBPUSD=X, JPY=X, CHF=X, AUDUSD=X, CAD=X). EURGBP, EURJPY, GBPEGP, USDSAR and USDAED are verified live but not yet in the harvest. Adding them is a separate build; no scoring uses them until harvested and hashed.
 
+Derived files (built by the harvest script, labelled DERIVED-cross-rate-not-fetched, never fetched): SAREGP_DERIVED.csv = USDEGP close / USDSAR close; AEDEGP_DERIVED.csv = USDEGP close / USDAED close. Common-date rule: a date is kept only when both series have a positive close on the same session date; other dates are dropped and counted. Close only (a ratio's high/low cannot be built from two series' highs and lows, so those columns are empty and range scoring does not apply to these files). Inputs keep the harvest session dates unchanged; the section 2 session rules apply when scoring. The 2024-03-06 exclusion (section 3) applies to these files too.
+
 ## 2. Session rule
 - Session = one UTC day of the API bar. A Sunday bar merges into the following Monday (Sunday open to Monday close; high and low over both).
 - The Friday-close to Monday-open gap belongs to Monday's range.
