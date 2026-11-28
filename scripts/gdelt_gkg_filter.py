@@ -26,7 +26,10 @@ append can leave, counting them. STATE/config.json binds the state dir to
 the alias table hash, date range and out dir; it is written atomically
 (temp file, fsync, os.replace) before any archive is recorded done. A
 mismatch or unreadable config refuses to run: rebind with a FRESH --out
-directory (delete config.json + done.txt), or also delete matches.jsonl to
+directory (delete config.json + done.txt + absent.txt + transient.txt:
+the absence and transient checkpoints are NOT bound to the configuration,
+so a stale absent.txt would exclude a basename a fresh master serves from
+a new location before it is ever fetched), or also delete matches.jsonl to
 reuse the out dir -- a fresh bind never inherits prior matches, and an
 unchanged config keeps them so normal restarts keep working.
 
@@ -97,9 +100,10 @@ pyarrow are optional speed/format dependencies of this backfill tool only
 pyahocorasick the prefilter falls back to one combined regex (about 25x
 slower per file); without pyarrow --finalize writes CSV.
 """
-import argparse, csv, hashlib, io, json, os, re, sys, time, zipfile
+import argparse, contextlib, csv, hashlib, io, json, os, re, sys, time, zipfile
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlsplit
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 # 27-column GKG 2.x layout, both streams (see module docstring).
@@ -333,6 +337,7 @@ def list_files(master_specs, start, end):
     """master_specs: [(path, stream)]. (url, stream) pairs sorted, filtered
     to 14-digit timestamp prefixes in [start, end]."""
     files = []
+    seen = {}   # (stream, basename) -> url: 959n F3 dedup / conflict check
     for path, stream in master_specs:
         with open(path, encoding="utf-8", errors="replace") as f:
             for line in f:
@@ -345,6 +350,15 @@ def list_files(master_specs, start, end):
                     continue
                 ts = base.split(".")[0]
                 if ts.isdigit() and len(ts) == 14 and start <= ts <= end:
+                    key = (stream, base)
+                    if key in seen:
+                        if seen[key] != url:
+                            # Same archive name, different URL: which bytes
+                            # belong to the done marker is undecidable.
+                            sys.exit(f"master listing names {base} twice with "
+                                     f"different URLs ({stream}); refusing")
+                        continue   # an exact duplicate entry is scheduled once
+                    seen[key] = url
                     files.append((url, stream))
     return sorted(files)
 
@@ -362,6 +376,41 @@ def fetch(url, timeout=90):
     if len(data) > MAX_FILE_BYTES:
         raise ValueError(f"file over {MAX_FILE_BYTES} bytes")
     return data
+
+def reconcile_orphan_rows(path, done_names):
+    """Rows are fsynced BEFORE the file's done marker, so a stop between the
+    two leaves rows for a file that is not done; resume re-selects that file
+    and would append them again. Drop every row whose `file` is not in
+    done_names (atomic rewrite) so the replay writes them exactly once.
+    Unparseable lines are kept. Returns the number of rows dropped."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return 0
+    def _is_orphan(line):
+        try:
+            nm = json.loads(line).get("file")
+        except (ValueError, AttributeError):
+            nm = None
+        return nm is not None and nm not in done_names
+
+    # Pass 1: count orphans without retaining any line (bounded memory).
+    dropped = 0
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if _is_orphan(line):
+                dropped += 1
+    if dropped:
+        # Pass 2: stream the surviving rows to the temp file.
+        tmp = path + ".tmp"
+        with open(path, encoding="utf-8") as f, open(tmp, "w", encoding="utf-8") as out:
+            for line in f:
+                if not _is_orphan(line):
+                    out.write(line)
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(tmp, path)
+        fsync_dir(os.path.dirname(os.path.abspath(path)))
+    return dropped
+
 
 def truncate_incomplete_tail(path):
     """Drop a trailing partial line (no final newline) left by a crash
@@ -394,9 +443,69 @@ def truncate_incomplete_tail(path):
     return size - cut
 
 
+def fsync_dir(path):
+    """fsync a directory so newly created entries survive an OS crash."""
+    fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def makedirs_durable(path):
+    """makedirs that also makes every directory it CREATED durable: each new
+    directory is fsynced, and so is its parent (the parent holds the new
+    entry). Ancestors that already existed are only synced as the parent of
+    the first new one. Errors propagate."""
+    path = os.path.abspath(path)
+    created = []
+    p = path
+    while p and not os.path.isdir(p):
+        created.append(p)
+        nxt = os.path.dirname(p)
+        if nxt == p:
+            break
+        p = nxt
+    os.makedirs(path, exist_ok=True)
+    for d in created:
+        fsync_dir(d)
+        fsync_dir(os.path.dirname(d))
+    # 959n F1: a retry finds the directory already there (created == []) yet
+    # the first attempt may have died before the entry naming it was synced.
+    # Always sync the parent that holds its entry (the directory's own
+    # contents are synced by the caller's fsync_dir(state/out)).
+    fsync_dir(os.path.dirname(path))
+
+
+# Exit status for a retryable checkpoint I/O failure (EX_TEMPFAIL); every
+# other sys.exit(<message>) is a deterministic configuration refusal (1).
+CHECKPOINT_IO_EXIT = 75
+
+
+@contextlib.contextmanager
+def ck_setup(opened=()):
+    """Checkpoint creation, opening and the initial directory sync are
+    retryable I/O: an OSError here exits CHECKPOINT_IO_EXIT with safe=0
+    (the checkpoint is not authorised for publication) instead of escaping
+    as exit 1. `opened` holds files already open, closed best-effort first.
+    Deliberate configuration refusals are SystemExit messages and pass
+    through unchanged."""
+    try:
+        yield
+    except OSError as e:
+        for f in list(opened):
+            try:
+                f.close()
+            except OSError:
+                pass
+        print(f"gkg-filter-checkpoint-error safe=0 setup {type(e).__name__}", flush=True)
+        sys.exit(CHECKPOINT_IO_EXIT)
+
+
 def run_fetch(a):
-    os.makedirs(a.state, exist_ok=True)
-    os.makedirs(a.out, exist_ok=True)
+    with ck_setup():
+        makedirs_durable(a.state)
+        makedirs_durable(a.out)
     a.start = a.start.ljust(14, "0")
     a.end = a.end.ljust(14, "9")
     aliases_sha = hashlib.sha256(open(a.aliases, "rb").read()).hexdigest()
@@ -404,15 +513,20 @@ def run_fetch(a):
               "out": os.path.abspath(a.out)}
     config_path = os.path.join(a.state, "config.json")
     if os.path.exists(config_path):
+        with ck_setup():          # a read OSError is retryable (75), not a refusal
+            with open(config_path, "rb") as _f:
+                _raw = _f.read()
         try:
-            old = json.load(open(config_path))
-        except (json.JSONDecodeError, OSError) as e:
+            old = json.loads(_raw.decode("utf-8"))   # UnicodeDecodeError is a ValueError: refusal, not a traceback
+        except ValueError as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
-                     f"directory: delete {config_path} and done.txt")
+                     f"directory AND a fresh --state (the other channel's config still names the old out dir), "
+                     f"or rebuild only this channel in the existing out dir: delete {config_path}, done.txt, absent.txt, transient.txt and matches.jsonl")
         if old != config:
             sys.exit(f"state config mismatch: {old} vs {config}; rebind with a "
-                     f"fresh --out directory (delete {config_path} and done.txt), "
-                     f"or delete matches.jsonl as well to reuse the out dir")
+                     f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
+                     f"or rebuild only this channel in the existing out dir (delete {config_path}, done.txt, absent.txt and transient.txt, "
+                     f"and matches.jsonl)")
     else:
         probe = os.path.join(a.out, "matches.jsonl")
         if os.path.exists(probe) and os.path.getsize(probe) > 0:
@@ -420,20 +534,46 @@ def run_fetch(a):
                      f"fresh --out directory or delete it before rebinding")
         # atomic publish: temp + fsync + replace, before any archive is done
         tmp = config_path + ".tmp"
-        with open(tmp, "w") as f:
-            json.dump(config, f, indent=1)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp, config_path)
+        with ck_setup():
+            with open(tmp, "w") as f:
+                json.dump(config, f, indent=1)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, config_path)
     done_path = os.path.join(a.state, "done.txt")
     matches_path = os.path.join(a.out, "matches.jsonl")
-    for pth in (matches_path, done_path):
-        cut = truncate_incomplete_tail(pth)
+    # absent.txt: files GDELT answered with HTTP 404 (permanent). Kept
+    # apart from done.txt (never marks a file done) and written per file
+    # with fsync as discovered, so a budget-killed run still records
+    # them and a resumed run does not re-download them.
+    absent_path = os.path.join(a.state, "absent.txt")
+    # transient.txt: one line per TRANSIENT failure of a file (never absent,
+    # never done). Persisted across runs so a later run scans files that
+    # have not failed (or failed less often) before repeating the failures.
+    transient_path = os.path.join(a.state, "transient.txt")
+    for pth in (matches_path, done_path, absent_path, transient_path):
+        with ck_setup():
+            cut = truncate_incomplete_tail(pth)
         if cut:
             print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
-    done = set()
-    if os.path.exists(done_path):
-        done = set(open(done_path, encoding="utf-8").read().split())
+    # Checkpoint READS are retryable I/O too: an OSError here is exit 75
+    # (safe=0, nothing published), never an exit-1 the worker could archive.
+    done, absent, transient = set(), set(), {}
+    with ck_setup():
+        if os.path.exists(done_path):
+            with open(done_path, encoding="utf-8") as _f:
+                done = set(_f.read().split())
+        if os.path.exists(absent_path):
+            with open(absent_path, encoding="utf-8") as _f:
+                absent = set(_f.read().split())
+        if os.path.exists(transient_path):
+            with open(transient_path, encoding="utf-8") as _f:
+                for nm in _f.read().split():
+                    transient[nm] = transient.get(nm, 0) + 1
+    with ck_setup():
+        n_orphan = reconcile_orphan_rows(matches_path, done)
+    if n_orphan:
+        print(f"reconciled {n_orphan} rows of files not marked done in {matches_path}", flush=True)
     macro = None
     macro_done = set()
     macro_matches_path = os.path.join(a.out, "macro_matches.jsonl")
@@ -445,31 +585,43 @@ def run_fetch(a):
                 "out": os.path.abspath(a.out)}
         mcfg_path = os.path.join(a.state, "macro_config.json")
         if os.path.exists(mcfg_path):
+            with ck_setup():
+                with open(mcfg_path, "rb") as _f:
+                    _raw = _f.read()
             try:
-                oldm = json.load(open(mcfg_path))
-            except (json.JSONDecodeError, OSError) as e:
+                oldm = json.loads(_raw.decode("utf-8"))   # UnicodeDecodeError is a ValueError: refusal, not a traceback
+            except ValueError as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
-                         f"directory: delete {mcfg_path} and macro_done.txt")
+                         f"directory AND a fresh --state (the other channel's config still names the old out dir), "
+                         f"or rebuild only this channel in the existing out dir: delete {mcfg_path}, macro_done.txt, absent.txt, transient.txt and macro_matches.jsonl")
             if oldm != mcfg:
                 sys.exit(f"macro state config mismatch: {oldm} vs {mcfg}; rebind with a "
-                         f"fresh --out directory (delete {mcfg_path} and macro_done.txt), "
-                         f"or delete macro_matches.jsonl as well to reuse the out dir")
+                         f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
+                         f"or rebuild only this channel in the existing out dir (delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt, "
+                         f"and macro_matches.jsonl)")
         else:
             if os.path.exists(macro_matches_path) and os.path.getsize(macro_matches_path) > 0:
                 sys.exit(f"{macro_matches_path} has rows from a previous configuration; use a "
                          f"fresh --out directory or delete it before rebinding")
             tmp = mcfg_path + ".tmp"
-            with open(tmp, "w") as f:
-                json.dump(mcfg, f, indent=1)
-                f.flush()
-                os.fsync(f.fileno())
-            os.replace(tmp, mcfg_path)
+            with ck_setup():
+                with open(tmp, "w") as f:
+                    json.dump(mcfg, f, indent=1)
+                    f.flush()
+                    os.fsync(f.fileno())
+                os.replace(tmp, mcfg_path)
         for pth in (macro_matches_path, md_path):
-            cut = truncate_incomplete_tail(pth)
+            with ck_setup():
+                cut = truncate_incomplete_tail(pth)
             if cut:
                 print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
-        if os.path.exists(md_path):
-            macro_done = set(open(md_path, encoding="utf-8").read().split())
+        with ck_setup():
+            if os.path.exists(md_path):
+                with open(md_path, encoding="utf-8") as _f:
+                    macro_done = set(_f.read().split())
+            n_orphan = reconcile_orphan_rows(macro_matches_path, macro_done)
+        if n_orphan:
+            print(f"reconciled {n_orphan} rows of files not marked done in {macro_matches_path}", flush=True)
     extra_needles = ([norm(t) for t in macro[0]] + [norm(n) for n in macro[2]]) if macro else ()
     alias_items, block_map, require_map, prefilter = load_aliases(a.aliases, extra_needles=extra_needles)
     specs = []
@@ -480,13 +632,20 @@ def run_fetch(a):
     files = []
     for u, s in list_files(specs, a.start, a.end):
         name = u.rsplit("/", 1)[-1]
+        if name in absent:
+            continue
         need_c = name not in done
         need_m = macro is not None and name not in macro_done
         if need_c or need_m:
             files.append((u, s, need_c, need_m))
+    # Stable sort: fewest recorded transient failures first, listing order
+    # inside a tier. Files never attempted (or never failed) run before
+    # repeat failures, so a failing prefix cannot starve the rest.
+    files.sort(key=lambda it: transient.get(it[0].rsplit("/", 1)[-1], 0))
     t0, n_done, n_bytes, n_rows, n_mrows, n_malformed = time.time(), 0, 0, 0, 0, 0
+    n_unfinished, n_absent = 0, 0
     print(f"todo={len(files)} done_prev={len(done)} macro_done_prev={len(macro_done)} "
-          f"prefilter={prefilter.engine}", flush=True)
+          f"absent_prev={len(absent)} prefilter={prefilter.engine}", flush=True)
 
     def work(item):
         url, stream, need_c, need_m = item
@@ -496,26 +655,64 @@ def run_fetch(a):
             z = zipfile.ZipFile(io.BytesIO(raw))
             blob = z.read(z.namelist()[0])
         except Exception as e:
-            return name, stream, 0, None, None, 0, need_c, need_m, f"{type(e).__name__}: {e}"
+            # A listed file that GDELT answers with HTTP 404 is ABSENT
+            # (permanent, e.g. a translation file it never served); any
+            # other failure is transient or corrupt and stays unfinished.
+            tag = "absent: " if isinstance(e, HTTPError) and e.code == 404 else ""
+            return name, stream, 0, None, None, 0, need_c, need_m, f"{tag}{type(e).__name__}: {e}"
         rows, mrows, bad = process_blob(name, stream, blob, alias_items, block_map,
                                         require_map, prefilter, macro=macro,
                                         do_company=need_c, do_macro=need_m)
         return name, stream, len(raw), rows, mrows, bad, need_c, need_m, None
 
     batch = max(a.workers * 4, 8)
-    done_f = open(done_path, "a", encoding="utf-8")
-    out_f = open(matches_path, "a", encoding="utf-8")
-    macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
-    mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
+    state_dir = os.path.dirname(os.path.abspath(done_path))
+    opened = []
+
+    def _open(path):
+        f = open(path, "a", encoding="utf-8")
+        opened.append(f)
+        return f
+    with ck_setup(opened):
+        done_f = _open(done_path)
+        absent_f = _open(absent_path)
+        out_f = _open(matches_path)
+        macro_f = _open(macro_matches_path) if macro else None
+        mdone_f = _open(md_path) if macro else None
+        transient_f = _open(transient_path)
+        # New checkpoint files exist only once their directory entry is durable;
+        # per-record fsync below persists contents only.
+        fsync_dir(state_dir)
+        if os.path.abspath(a.out) != state_dir:
+            fsync_dir(os.path.abspath(a.out))
+    ck_err = None
+    phase = "data"
     try:
+      try:
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             i = 0
             while i < len(files):
                 chunk = files[i:i + batch]
                 for name, stream, nbytes, rows, mrows, bad, need_c, need_m, err in ex.map(work, chunk):
                     if err:
-                        print(f"skip {name}: {err}", flush=True)
-                        continue  # NOT marked done: retried on the next run
+                        # NOT marked done either way: retried on the next run.
+                        phase = "record"   # absent/transient records only
+                        if err.startswith("absent: "):
+                            n_absent += 1
+                            if name not in absent:
+                                absent.add(name)
+                                absent_f.write(name + "\n")
+                                absent_f.flush()
+                                os.fsync(absent_f.fileno())
+                            print(f"absent {name}: {err[len('absent: '):]}", flush=True)
+                        else:
+                            n_unfinished += 1
+                            transient_f.write(name + "\n")
+                            transient_f.flush()
+                            os.fsync(transient_f.fileno())
+                            print(f"skip {name}: {err}", flush=True)
+                        phase = "data"
+                        continue
                     if need_c:
                         for r in rows:
                             out_f.write(json.dumps(r, ensure_ascii=False) + "\n")
@@ -542,17 +739,45 @@ def run_fetch(a):
                 rate = n_bytes / 1e6 / el if el else 0
                 print(f"progress {n_done}/{len(files)} rows={n_rows} macro_rows={n_mrows} malformed={n_malformed} "
                       f"mb={n_bytes/1e6:.0f} rate={rate:.1f}MB/s elapsed={el:.0f}s", flush=True)
-                if a.budget_seconds and el > a.budget_seconds:
+                if a.budget_seconds and el > a.budget_seconds and i < len(files):
                     print("budget exhausted; rerun to resume", flush=True)
                     break
+      except OSError as e:
+        # A checkpoint write/fsync failed. Never fall through to the
+        # unfinished summary: that reads as a clean pass. A failed
+        # absent/transient record loses only a skip hint (the file is
+        # neither done nor absent, so it is retried): the checkpoint is
+        # safe to reuse. A failed match/done write leaves its tail to the
+        # next run's repair and is reported as NOT safe.
+        ck_err = (phase == "record", e)
     finally:
-        done_f.close()
-        out_f.close()
-        if macro_f:
-            macro_f.close()
-        if mdone_f:
-            mdone_f.close()
+        # Attempt EVERY close: a failing close must not skip the others or
+        # bypass the checkpoint exit. A close error on a match/done file
+        # leaves that data uncertain (safe=0); on absent/transient only a
+        # skip hint is at risk.
+        data_close_err = hint_close_err = None
+        for f, is_data in ((done_f, True), (out_f, True), (macro_f, True),
+                           (mdone_f, True), (absent_f, False), (transient_f, False)):
+            if f is None:
+                continue
+            try:
+                f.close()
+            except OSError as e:
+                if is_data:
+                    data_close_err = data_close_err or e
+                else:
+                    hint_close_err = hint_close_err or e
+    close_err = data_close_err or hint_close_err
+    if close_err is not None and ck_err is None:
+        ck_err = (True, close_err)
+    if ck_err is not None:
+        safe = ck_err[0] and data_close_err is None
+        print(f"gkg-filter-checkpoint-error safe={int(safe)} {type(ck_err[1]).__name__}", flush=True)
+        sys.exit(CHECKPOINT_IO_EXIT)
     print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows} macro_rows={n_mrows}", flush=True)
+    # Machine-readable: files that failed for a reason other than a
+    # permanent HTTP 404 (unfinished) and files GDELT does not serve (absent).
+    print(f"gkg-filter-status unfinished={n_unfinished} absent={n_absent}", flush=True)
 
 def run_finalize(a):
     rows, seen, n_corrupt = [], set(), 0
@@ -687,4 +912,12 @@ def main():
         run_fetch(a)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as _e:
+        # 959o F4: a DELIBERATE refusal (sys.exit with a message string) carries
+        # an explicit stdout marker so the worker can tell it from a crash,
+        # a signal exit or an argparse error, which are all retryable.
+        if isinstance(_e.code, str):
+            print("gkg-filter-refusal", flush=True)
+        raise
