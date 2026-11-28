@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Fixed synthetic checks for scripts/fetch_fx_metals_store.py (no network)."""
+import csv
+import json
 import os
 import sys
 import tempfile
@@ -20,48 +22,71 @@ def check(name, ok, detail=""):
         print("FAIL", name, detail)
 
 
+def fut_payload():
+    # 2023-06-12 04:00Z (= 00:00 EDT Mon), 2023-01-09 05:00Z (= 00:00 EST Mon),
+    # 2023-01-10 14:30Z (= 09:30 EST Tue), one null-close bar, one dup date.
+    ts = [1673240400, 1673361000, 1686542400, 1686542460, 1686628800]
+    return {"chart": {"result": [{
+        "meta": {"gmtoffset": -18000, "exchangeTimezoneName": "America/New_York"},
+        "timestamp": ts,
+        "indicators": {
+            "quote": [{"high": [2.0, 3.0, 4.0, 5.0, None], "low": [1.0, 2.0, 3.0, 4.0, 1.0],
+                       "close": [1.5, 2.5, 3.5, 4.5, 2.0], "volume": [10, 0, None, 7, 1]}],
+            "adjclose": [{"adjclose": [1.5, 2.5, 3.5, 4.5, 2.0]}]}}]}}
+
+
 def run():
-    check("no futures proxy symbol is fetched",
-          not any(s in ("GC=F", "SI=F") for s in F.FX_SYMBOLS.values()) and
-          set(F.METALS) == {"XAUUSD", "XAGUSD"})
-    check("eight verified FX symbols", len(F.FX_SYMBOLS) == 8 and F.FX_SYMBOLS["USDEGP"] == "EGP=X")
-    rows, sk = F.parse_frankfurter([
-        {"date": "2024-03-05", "rate": 2101.86}, {"date": "2024-03-04", "rate": "2069.5"},
-        {"date": "2024-03-04", "rate": 2070.0}, {"date": "2024-03-06", "rate": 0},
-        {"date": "2024-03-07"}, {"rate": 1}])
-    check("frankfurter: sorted, duplicate keeps last, bad entries counted",
-          rows == [("2024-03-04", "", "", 2070.0, "", ""), ("2024-03-05", "", "", 2101.86, "", "")] and sk == 3, str(rows))
-    try:
-        F.parse_frankfurter({"message": "x"}); ok = False
-    except ValueError:
-        ok = True
-    check("frankfurter: non-list payload rejected", ok)
+    syms = list(F.FX_SYMBOLS.values()) + list(F.METAL_PROXY.values())
+    check("FX stays spot; metals are exactly GC=F/SI=F and every metal name says FUTURES_PROXY",
+          set(F.METAL_PROXY.values()) == {"GC=F", "SI=F"} and all(n.endswith("_FUTURES_PROXY") for n in F.METAL_PROXY)
+          and not any(s in ("GC=F", "SI=F") for s in F.FX_SYMBOLS.values()) and len(set(syms)) == 10)
+    rows, sk = F.parse_futures(fut_payload())
+    check("session date is the New York date, not the fixed -5h meta offset",
+          [r[0] for r in rows] == ["2023-01-09", "2023-01-10", "2023-06-12"], str(rows))
+    check("null-high bar skipped and counted; duplicate date keeps last; zero volume kept",
+          sk == 1 and rows[2][3] == 4.5 and rows[1][4] == 0, str(rows) + str(sk))
+    check("adjclose carried through", rows[0][5] == 1.5)
+    r2, d = F.drop_final_partial(rows, "2023-06-12")
+    check("score run drops a final bar dated today", d == 1 and len(r2) == 2)
+    r3, d = F.drop_final_partial(rows, "2023-06-13")
+    check("score run keeps a final bar dated before today", d == 0 and len(r3) == 3)
+    check("empty series safe", F.drop_final_partial([], "2023-06-13") == ([], 0))
     gold = [("2024-03-04", "", "", 2000.0, "", ""), ("2024-03-05", "", "", 2100.0, "", "")]
     egp = [("2024-03-05", 1, 1, 50.0, "", ""), ("2024-03-06", 1, 1, 49.0, "", "")]
-    check("gold in EGP = XAUUSD x USDEGP on common dates only",
+    check("gold in EGP = proxy close x USDEGP on common dates only",
           F.derive_gold_egp(gold, egp) == [("2024-03-05", "", "", 105000.0, "", "")])
     check("EGP regime split at 2024-03-06",
           F.egp_regime("2024-03-05") == "pre-float" and F.egp_regime("2024-03-06") == "float")
     check("years_back incl. 29 Feb", F.years_back("2024-02-29", 10) == "2014-02-28"
           and F.years_back("2026-11-28", 20) == "2006-11-28")
     d = F.FROZEN_DEFINITIONS
-    check("frozen constants", d["week_sessions"] == 5 and d["month_sessions"] == 21
-          and "LBMA AM" in d["metals_close_frozen"] and "NOT the LBMA" in d["metals_close_in_this_store"])
+    check("frozen: proxy label, roll not adjusted, New York session date, week 5 / month 21",
+          "futures-proxy" in d["metals_proxy_label"] and "NOT back-adjusted" in d["metals_proxy_roll"]
+          and "America/New_York" in d["metals_proxy_close"] and d["week_sessions"] == 5 and d["month_sessions"] == 21)
     # end-to-end with stubbed network
-    o = (F.Y.fetch, F.fetch_frankfurter)
+    o = F.Y.fetch
     t = 1675339200
-    F.Y.fetch = lambda sym, s, e: {"chart": {"result": [{"meta": {"gmtoffset": 0}, "timestamp": [t],
-        "indicators": {"quote": [{"high": [2.0], "low": [1.0], "close": [1.5], "volume": [0]}]}}]}}
-    F.fetch_frankfurter = lambda b, s, e: [{"date": "2023-02-02", "rate": 1000.0}]
+    fx = {"chart": {"result": [{"meta": {"gmtoffset": 0}, "timestamp": [t, t + 86400],
+        "indicators": {"quote": [{"high": [2.0, 2.0], "low": [1.0, 1.0], "close": [1.5, 1.6], "volume": [0, 0]}]}}]}}
+    F.Y.fetch = lambda sym, s, e: fut_payload() if sym in ("GC=F", "SI=F") else fx
     with tempfile.TemporaryDirectory() as d:
         code = F.main(["--out", d, "--today", "2026-11-28"])
         names = sorted(os.listdir(d))
-        txt = open(os.path.join(d, "XAUEGP.csv")).read()
-        check("end-to-end: all files, derived row 1500, exit 0",
-              code == 0 and "XAUEGP.csv" in names and "FROZEN_DEFINITIONS.json" in names
-              and len([n for n in names if n.endswith(".csv")]) == 11 and "1500.0" in txt, str(names) + txt)
+        man = json.load(open(os.path.join(d, "FROZEN_DEFINITIONS.json")))
+        gold_rows = list(csv.reader(open(os.path.join(d, "XAUUSD_FUTURES_PROXY.csv"))))
+        check("end-to-end: 8 FX + 2 proxy + derived csv, manifest, exit 0",
+              code == 0 and len([n for n in names if n.endswith(".csv")]) == 11
+              and "XAUEGP_FUTURES_PROXY.csv" in names and "FROZEN_DEFINITIONS.json" in names, str(names))
+        check("every proxy csv row carries the proxy label; header has proxy column",
+              gold_rows[0][-1] == "proxy" and all(r[-1] == F.PROXY_LABEL for r in gold_rows[1:]) and len(gold_rows) == 4)
+        check("no unlabelled metal file is written",
+              not any(n.startswith(("XAU", "XAG")) and "FUTURES_PROXY" not in n for n in names)
+              and man["metal_proxy_symbols"] == F.METAL_PROXY)
+        F.main(["--out", d, "--today", "2023-02-03", "--score-run"])
+        usd = list(csv.reader(open(os.path.join(d, "USDEGP.csv"))))
+        check("score run drops the FX final bar dated today", len(usd) == 2 and usd[-1][0] == "2023-02-02", str(usd))
         check("short history refused", F.main(["--out", d, "--fx-years", "4"]) == 2)
-    F.Y.fetch, F.fetch_frankfurter = o
+    F.Y.fetch = o
     return 0 if FAIL == 0 else 1
 
 
