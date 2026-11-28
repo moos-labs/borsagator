@@ -110,32 +110,34 @@ def test_prepare_exclusions():
 
 def test_fit_threshold_and_freeze():
     ok = [mkrow(rdate="2025-08-14") for _ in range(100)]
-    n, ex, w = T.fit_horizon(ok, "day")
+    n, ex, w = T.fit_pooled(ok)
     check("100 covered fits", n == 100 and w is not None and not ex)
-    n, ex, w = T.fit_horizon(ok[:99], "day")
+    n, ex, w = T.fit_pooled(ok[:99])
     check("99 covered does not fit", n == 99 and w is None)
     mixed = ok[:99] + [mkrow(rdate="2025-08-15")]
-    n, ex, w = T.fit_horizon(mixed, "day")
+    n, ex, w = T.fit_pooled(mixed)
     check("freeze date itself is excluded", n == 99 and w is None and len(ex) == 1 and "after freeze date" in ex[0], str((n, ex)))
     mixed = ok + [mkrow(rdate="2025-10-29")]
-    n, ex, w = T.fit_horizon(mixed, "day")
+    n, ex, w = T.fit_pooled(mixed)
     check("later close excluded, listed, fit still runs", n == 100 and len(ex) == 1 and w is not None)
-    n, ex, w = T.fit_horizon(ok + [mkrow(h="week")], "day")
-    check("other horizon not counted", n == 100)
+    n, ex, w = T.fit_pooled(ok[:50] + [mkrow(rdate="2025-08-14", h="week") for _ in range(30)] + [mkrow(rdate="2025-08-14", h="month") for _ in range(19)])
+    check("99 pooled across horizons does not fit", n == 99 and w is None, str(n))
+    n, ex, w = T.fit_pooled(ok[:50] + [mkrow(rdate="2025-08-14", h="week") for _ in range(30)] + [mkrow(rdate="2025-08-14", h="month") for _ in range(20)])
+    check("100 pooled across horizons fits one shared pair", n == 100 and w is not None and len(w) == 2, str(n))
 
 
 def test_fit_picks_best_and_ties():
     # real always 0, v2 half 2 and baseline edges tight: baseline (weights 0) scores best
     rows = [mkrow(real=0.0, q=(-0.5, 0.5), half=2.0, rdate="2025-01-01") for _ in range(100)]
-    n, ex, w = T.fit_horizon(rows, "day")
+    n, ex, w = T.fit_pooled(rows)
     check("tight baseline wins weights 0", w == (0.0, 0.0), str(w))
     # real far outside both: wider is better, v2 half 5 vs baseline 1 -> weights 1
     rows = [mkrow(real=4.0, q=(-1.0, 1.0), half=5.0, rdate="2025-01-01") for _ in range(100)]
-    n, ex, w = T.fit_horizon(rows, "day")
+    n, ex, w = T.fit_pooled(rows)
     check("upper weight just covers the real, lower weight 0 (narrowest)", w == (0.0, 0.75), str(w))
     # identical edges: every weight ties -> larger weights (nearer v2)
     rows = [mkrow(real=0.0, q=(-2.0, 2.0), half=2.0, rdate="2025-01-01") for _ in range(100)]
-    n, ex, w = T.fit_horizon(rows, "day")
+    n, ex, w = T.fit_pooled(rows)
     check("ties go to larger weights", w == (1.0, 1.0), str(w))
 
 

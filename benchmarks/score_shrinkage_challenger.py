@@ -32,7 +32,7 @@ WINDOW = 250
 MIN_MOVES = 125
 Q_LO, Q_HI = 0.10, 0.90
 GRID = [i / 20.0 for i in range(21)]
-MIN_COVERED = 100
+MIN_COVERED = 100  # pooled over the three horizons (Moos decision, relayed)
 FREEZE = "2025-08-15"
 FIT_CELLS = (1, 47)
 DESC_CELLS = (48, 90)
@@ -130,9 +130,11 @@ def row_scores(r, a, b):
     return bs.winkler_is(r["real"], lo, hi), lo <= r["real"] <= hi, crossed
 
 
-def fit_horizon(rows, h):
-    """Covered rows, freeze-date excluded lines, weights or None."""
-    hp = [r for r in rows if r["horizon"] == h]
+def fit_pooled(rows):
+    """POOLED fit: one shared weight pair (a, b) over the covered rows of
+    all three horizons. Returns covered count, freeze-date excluded lines,
+    weights or None (fewer than MIN_COVERED covered rows pooled)."""
+    hp = list(rows)
     ex = ["excluded row %s: close after freeze date" % r["key"]
           for r in hp if r["rdate"] >= FREEZE]
     cov = [r for r in hp if r["rdate"] < FREEZE]
@@ -150,14 +152,15 @@ def fit_horizon(rows, h):
 
 def evaluate_pairs(rows, w, reps, seed):
     """Per-horizon challenger rows (with the three RangeSkill inputs)
-    and cutoff-cluster bootstrap."""
+    and cutoff-cluster bootstrap. w is the ONE shared pair (a, b) or
+    None; deltas are still reported separately per horizon."""
     res = {}
     for h in HORIZONS:
         hp = [r for r in rows if r["horizon"] == h]
-        if h not in w or not hp:
+        if w is None or not hp:
             res[h] = {"n": len(hp), "weights": None}
             continue
-        a, b = w[h]
+        a, b = w
         pairs = []
         for r in hp:
             is_ch, inside, crossed = row_scores(r, a, b)
@@ -235,19 +238,19 @@ def main(argv=None):
     usable, ex = prepare(rows, closes)
     ex = ["excluded: %s" % g for g in gaps] + ex
     if a.mode == "fit":
-        w, lines, fx = {}, [], []
+        n, fx, wh = fit_pooled(usable)
+        lines = ["pooled over day, week, month: covered training rows=%d%s" % (
+            n, "" if wh else " (<%d: no fit, counts only)" % MIN_COVERED)]
         for h in HORIZONS:
-            n, e, wh = fit_horizon(usable, h)
-            fx += e
-            lines.append("%s: covered training rows=%d%s" % (
-                h, n, "" if wh else " (<%d: no fit, counts only)" % MIN_COVERED))
-            if wh:
-                w[h] = list(wh)
+            lines.append("%s: usable rows=%d covered rows=%d" % (
+                h, sum(1 for r in usable if r["horizon"] == h),
+                sum(1 for r in usable if r["horizon"] == h and r["rdate"] < FREEZE)))
+        w = list(wh) if wh else None
         print("COUNTS cells %d-%d, %d rows built, %d usable" % (mn, mx, len(rows), len(usable)))
         print("\n".join(lines))
         print("EXCLUSIONS (every one listed)")
         print("\n".join(ex + fx))
-        print("FROZEN WEIGHTS (a, b) per horizon: %s" % json.dumps(w))
+        print("FROZEN SHARED WEIGHT PAIR (a, b): %s" % json.dumps(w))
         if a.json:
             with open(a.json, "w", encoding="utf-8") as fh:
                 json.dump({"weights": w, "counts": lines}, fh, indent=1)
@@ -257,12 +260,13 @@ def main(argv=None):
         return 2
     with open(a.weights, encoding="utf-8") as fh:
         w = json.load(fh)["weights"]
+    w = tuple(w) if w else None
     lines = []
     for h in HORIZONS:
         hp = [r for r in usable if r["horizon"] == h]
-        lines.append("%s: rows=%d cutoff clusters=%d tickers=%d weights=%s" % (
+        lines.append("%s: rows=%d cutoff clusters=%d tickers=%d shared weights=%s" % (
             h, len(hp), len({r["base"] for r in hp}),
-            len({r["ticker"] for r in hp}), w.get(h)))
+            len({r["ticker"] for r in hp}), w))
     print("COUNTS (before any statistic), cells %d-%d, %d rows built, %d usable"
           % (mn, mx, len(rows), len(usable)))
     print("\n".join(lines))

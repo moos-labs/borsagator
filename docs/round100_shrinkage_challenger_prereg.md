@@ -16,13 +16,13 @@ For name i, horizon h in {day, week, month}, cutoff C with base date B (the cuto
 
 ## Challenger (exact)
 Frozen v2 edges: L_v2 = -half, U_v2 = +half, half = the stored v2 half-width in percent (computed by the existing `half_pct`, never refit).
-Challenger edges per horizon h: L = a_h x L_v2 + (1 - a_h) x q_lo, U = b_h x U_v2 + (1 - b_h) x q_hi, with two weights per horizon, a_h and b_h in [0, 1] (so 6 weights in total, 2 per horizon). If the resulting L >= U the row is scored with the v2 interval and listed with reason "crossed edges".
-Weights are frozen after the fit, one pair per horizon, shared by all names and cutoffs.
+Challenger edges per horizon h: L = a_h x L_v2 + (1 - a_h) x q_lo, U = b_h x U_v2 + (1 - b_h) x q_hi, with ONE shared weight pair (a, b) in [0, 1] for all three horizons (AMENDED, see Amendment 1 below; the first draft had two weights per horizon). If the resulting L >= U the row is scored with the v2 interval and listed with reason "crossed edges".
+The weight pair is frozen after the fit and shared by all names, cutoffs and horizons.
 
 ## Fit (cells 1-47 only)
-- Objective: mean interval score (the repo's `winkler_is`, the same score RangeSkill uses) of the challenger over covered training rows of horizon h, minimised over the grid a, b in {0, 0.05, ..., 1.0} (21 x 21 per horizon). Ties go to the larger weight (nearer v2). Grid and tie rule are the author's, fixed now.
-- Covered rows: horizon-h rows from cells 1-47 that have a realised close, that pass the "short history" rule, and whose realised close is dated BEFORE 2025-08-15 (freeze-date rule, applied here by the author because the same leak was found in #961: cells 44-47 realise about 2025-10-29/30, after the earliest scored cutoff 2025-08-15). Rows failing a rule are excluded from the fit, do not count toward the threshold, and are listed individually with cutoff, name, horizon and reason ("no realised close", "close after freeze date", "short history").
-- Fewer than 100 covered rows for a horizon: no weights are fit for that horizon, the challenger is skipped there, and the run reports counts only. The covered-row count per horizon is printed first.
+- Objective: mean interval score (the repo's `winkler_is`, the same score RangeSkill uses) of the challenger over the POOLED covered training rows of all three horizons, minimised over the grid a, b in {0, 0.05, ..., 1.0} (21 x 21, one shared pair). Ties go to the larger weight (nearer v2). Grid and tie rule are the author's, fixed now.
+- Covered rows: rows of any horizon from cells 1-47 that have a realised close, that pass the "short history" rule, and whose realised close is dated BEFORE 2025-08-15 (freeze-date rule, applied here by the author because the same leak was found in #961: cells 44-47 realise about 2025-10-29/30, after the earliest scored cutoff 2025-08-15). Rows failing a rule are excluded from the fit, do not count toward the threshold, and are listed individually with cutoff, name, horizon and reason ("no realised close", "close after freeze date", "short history").
+- Fewer than 100 covered rows pooled over the three horizons: no weights are fit, the challenger is skipped, and the run reports counts only. The pooled covered-row count and the per-horizon covered counts are printed first.
 - Cells 48-90 and 91+ never change a weight.
 
 ## Windows
@@ -39,3 +39,6 @@ Weights are frozen after the fit, one pair per horizon, shared by all names and 
 
 ## Listing-step result (a calendar and count read, no outcome scored; added after the build)
 Running `fit` on the archive (cells 1-47, panel including NVDA) gave 138 usable rows, 46 per horizon, of which 42 per horizon are covered after the freeze-date rule (4 per horizon have a realised close on or after 2025-08-15). Each horizon is below the registered 100 covered rows, so under the rule above NO weights are fit and the challenger is COUNTS ONLY on every horizon. The 100 threshold was copied from #961; it cannot be met per horizon with this panel. This is reported, not changed: lowering the threshold, pooling horizons, or sharing one weight pair across horizons are each a change to this registration and need a decision.
+
+## Amendment 1 (pooled fit), after the listing-step result
+Decision (Moos, Slack 1795849665.024479, relayed to the author, not read by the author): POOLED FIT. One shared weight pair (a, b) is fit on the pooled covered rows of all three horizons (42 x 3 = 126 covered rows from the listing step), grid 21 x 21, ties to the larger weight. The gate stays 100 covered rows, now counted pooled. Per-horizon descriptive deltas are still reported separately on cells 48-90 and in scoring, using the one shared pair. This replaces the earlier per-horizon rule and the earlier sentence that no fit is possible; the listing-step section above is kept as the record of why. Pooled rows from the same cutoff and name share one realised path (day, week and month windows overlap), so the 126 rows are not independent, an author caveat on the fit. Fit result on cells 1-47 (training window, run once after this amendment): shared pair a = 0.1, b = 1.0, from 126 covered rows.
