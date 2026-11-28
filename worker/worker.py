@@ -4803,6 +4803,10 @@ def _run_gdelt_fetch(job, workdir, master_dir):
     # the caller archives them but must not mark the queue job done.
     if timed_out:
         status = "timeout"
+    elif read_failed:
+        # 959m F10: the checkpoint or report could not be read/copied, so it
+        # is never published as progress (retryable, no publish).
+        status = "checkpoint-io-failed"
     elif rc == GDELT_CHECKPOINT_IO_RC:
         # Retryable checkpoint I/O failure (distinct from deterministic
         # refusals, which stay "exit-1"). Incomplete only when the filter
@@ -4813,8 +4817,6 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                   else "checkpoint-io-failed")
     elif rc != 0:
         status = "exit-%d" % rc
-    elif read_failed:
-        status = "checkpoint-io-failed"
     elif "budget exhausted" in out_text:
         status = "budget-exhausted"
     elif _gkg_unfinished(out_text) > 0:

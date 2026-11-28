@@ -495,7 +495,7 @@ def _ensure_remote():
 
 def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
                       published=True, matches=None, macro=None, config=None,
-                      extra_state=None, mode="fixtures"):
+                      extra_state=None, mode="fixtures", window=None):
     """Create worker-runs/DATE/HMS__slug__jobid in the local checkout.
     published=True commits and pushes it to the remote archive branch;
     published=False leaves it as local residue (a failed publish)."""
@@ -516,7 +516,10 @@ def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
         (d / "gdelt" / "macro_matches.jsonl").write_text(macro)
     (d / "gdelt" / "keep").write_text("x")
     if mode is not None:   # the sidecar every real run writes; None = a legacy run without it
-        (d / "gdelt" / "gdelt_fetch.json").write_text(json.dumps({"mode": mode}))
+        side = {"mode": mode}
+        if window is not None:
+            side["start"], side["end"] = window
+        (d / "gdelt" / "gdelt_fetch.json").write_text(json.dumps(side))
     if published:
         arch = worker.ROOT / "archive-push"
         _git("add", "-A", str(d), cwd=arch)
@@ -1580,6 +1583,77 @@ def test_959m_f7_f8_f5():
           not (d / ".gdelt-restore-abc").exists() and (d / "gdelt" / "keep.txt").exists())
 
 
+def test_959m_f6_f9_f10_f12():
+    _fixtures_env()
+    # F6: the output directory's parent is synced after the output install and BEFORE the state install
+    _mk("m-f6", matches='{"ok": 1}\n')
+    arch = worker.ROOT / "archive-push"
+    wd = worker.OUT / "t959m-f6"; _local_state(wd, "LOCAL\n", binding="worker-runs/older/run")
+    (wd / "gdelt-out").mkdir(parents=True, exist_ok=True); (wd / "gdelt-out" / "matches.jsonl").write_text('{"local": 1}\n')
+    real_r, real_s, ev = os.rename, worker._fsync_dir, []
+    def spy_r(src, dst, *a, **k):
+        ev.append(("rename", Path(dst).name)); return real_r(src, dst, *a, **k)
+    def spy_s(path):
+        ev.append(("sync", str(path))); return real_s(path)
+    os.rename, worker._fsync_dir = spy_r, spy_s
+    try:
+        worker._gdelt_restore_remote(arch, "m-f6", wd / "gdelt-state", wd / "gdelt-out", mode="fixtures")
+    finally:
+        os.rename, worker._fsync_dir = real_r, real_s
+    i_out = max(i for i, e in enumerate(ev) if e == ("rename", "gdelt-out"))
+    i_st = max(i for i, e in enumerate(ev) if e == ("rename", "gdelt-state"))
+    check("959m F6: a directory sync of the workdir sits between the output install and the state install",
+          i_out < i_st and any(e == ("sync", str(wd)) for e in ev[i_out + 1:i_st]), str(ev[i_out:i_st + 1]))
+    # F9: a predecessor with another window is never restored nor published under the current plan
+    live = "gdelt-fetch --start 20240601000000 --end 20240630235959 --mode fixtures"
+    _make_archive_run("2026-11-27", "100000", "x", "m-f9-may", "MAY\n", matches='{"file": "f1", "company": "MAY"}\n',
+                      window=("20240501000000", "20240531235959"))
+    called = []
+    res, seen = _run_capture({"id": "m-f9-june", "job": live + " --resume-from m-f9-may"}, worker.OUT / "t959m-f9",
+                             lambda c: called.append(c) or _Res())
+    wd9 = worker.OUT / "t959m-f9"
+    check("959m F9: May predecessor + June plan is rejected, filter never runs, no May matches or state installed",
+          res == {"gdelt-fetch": "resume-mode-mismatch"} and not called
+          and not (wd9 / "gdelt-out" / "matches.jsonl").exists() and not (wd9 / "gdelt-state" / "done.txt").exists()
+          and not (wd9 / "gdelt" / "gdelt_fetch.json").exists(), str(res))
+    _make_archive_run("2026-11-27", "110000", "x", "m-f9-ok", "JUNE\n", window=("20240601000000", "20240630235959"))
+    res, seen = _run_capture({"id": "m-f9-ok2", "job": live + " --resume-from m-f9-ok"}, worker.OUT / "t959m-f9b", lambda c: _Res())
+    check("959m F9: a predecessor with the same window still restores", seen["state_text"] == "JUNE\n")
+    # F10: an unsafe exit is classified before any checkpoint file is read
+    for safe, want in (("safe=0", "checkpoint-io-failed"), ("safe=1", "checkpoint-io-failed")):
+        def runner(c, safe=safe):
+            sd = Path(_tok(c, "--state"))
+            (sd / "absent.txt").unlink(missing_ok=True)
+            (sd / "absent.txt").mkdir()          # unreadable as a file: read_text raises
+            return _Res(75, "gkg-filter-checkpoint-error " + safe)
+        try:
+            res, seen = _run_capture({"id": "m-f10-" + safe, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"},
+                                     worker.OUT / ("t959m-f10-" + safe), runner)
+            got = res
+        except Exception as e:
+            got = "raised %s" % type(e).__name__
+        check("959m F10: rc 75 %s with an unreadable absent.txt returns %s instead of raising" % (safe, want),
+              got == {"gdelt-fetch": want}, str(got))
+    # F12: a failed publish of an incomplete gdelt-fetch run does not leave the job gated
+    jid = "m-f12"
+    o_pub, o_md, o_run, o_rpf = worker.publish, worker._mark_done, worker.run_gdelt_fetch, worker._record_publish_failure
+    def fake_run(job, wd):
+        g = Path(wd) / "gdelt"; g.mkdir(parents=True, exist_ok=True)
+        (g / "gdelt_fetch.json").write_text(json.dumps({"files_done": 1, "macro_files_done": 0}))
+        return {"gdelt-fetch": "budget-exhausted"}
+    failed = []
+    worker.publish = lambda job, wd, m: None
+    worker._mark_done = lambda job, sha, extra=None: failed.append("done")
+    worker.run_gdelt_fetch = fake_run
+    worker._record_publish_failure = lambda job: failed.append("recorded")
+    try:
+        out = worker._execute({"id": jid, "job": "gdelt-fetch --start 20200101000000 --end 20200131235959 --mode fixtures"})
+    finally:
+        worker.publish, worker._mark_done, worker.run_gdelt_fetch, worker._record_publish_failure = o_pub, o_md, o_run, o_rpf
+    check("959m F12: failed publish of a budget-limited run records the failure, releases the intent, reports incomplete (claim release), never marks done",
+          out == "incomplete" and failed == ["recorded"] and not worker._intent_path(jid).exists(), str((out, failed)))
+
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -1597,6 +1671,7 @@ def main():
     test_parse_rejects_non_ascii_digits()
     test_959m_claim_attempt_identity_f11()
     test_959m_f7_f8_f5()
+    test_959m_f6_f9_f10_f12()
     test_filter_launch_env_is_denylist_filtered()
     test_deferred_unparseable_deadline()
     test_parse_fixtures()
