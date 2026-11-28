@@ -180,8 +180,21 @@ def test_build_rows_gaps_and_repairs():
         inf, reps3 = [], []
         rows3, gaps3 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None, reps3, inf)
         check("scored capture's lines go to info, not to gaps", gaps3 == [x for x in gaps3 if "per-entrant" not in x] and inf == ["note: per-entrant skip"], str((gaps3, inf)))
-        rows4, gaps4 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None)
-        check("without an info list the scored capture's lines are dropped, as before", not any("per-entrant" in x for x in gaps4))
+        buf_n = io.StringIO()
+        with contextlib.redirect_stdout(buf_n):
+            rows4, gaps4 = R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None)
+        check("without an info list the scored capture's lines are dropped, not excluded", not any("per-entrant" in x for x in gaps4))
+        check("the drop is visible as exactly one count line", buf_n.getvalue().count("note: 1 informational score_capture lines dropped") == 1 and buf_n.getvalue().count("\n") == 1, buf_n.getvalue())
+        buf_p = io.StringIO()
+        with contextlib.redirect_stdout(buf_p):
+            R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None, [], [])
+        check("no count line when an info list is passed", buf_p.getvalue() == "", buf_p.getvalue())
+        R.bs.score_capture = lambda staged: ([{"entrant": "other"}], [])
+        buf_z = io.StringIO()
+        with contextlib.redirect_stdout(buf_z):
+            R.build_rows(["/x/cell60/2026-01-01/AAA.CA"], None)
+        check("no count line when nothing was dropped", buf_z.getvalue() == "")
+        R.bs.score_capture = lambda staged: ([{"entrant": "other"}], ["note: per-entrant skip"])
         R.bs.score_capture = lambda staged: ([], ["cap-rejected: manifest ticker/cutoff differs from cell path"])
         rows, gaps2 = R.build_rows(["/x/cell61/2026-01-01/BBB.CA.fixed"], None)
         check("callers that pass no repairs list still see the notice in gaps (unchanged)", any("rebuilt to 21" in g for g in gaps2))

@@ -271,8 +271,11 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
     rejected and its reasons are real exclusions (gaps); when it returns
     rows the capture is scored and its lines are informational
     (per-entrant skips and the like), which go to `info` when a list is
-    passed and are otherwise dropped, as before."""
+    passed; when it is None they are dropped, and ONE count line
+    ("note: N informational score_capture lines dropped ...") is printed
+    to stdout so the drop is visible, never listed as an exclusion."""
     rows, gaps = [], []
+    n_info_dropped = 0
     prices = price_reference(ref_dirs if ref_dirs is not None
                              else capture_dirs)
     for cap in capture_dirs:
@@ -292,6 +295,8 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
             if scored:
                 if info is not None:
                     info.extend(scored_gaps)
+                else:
+                    n_info_dropped += len(scored_gaps)
             else:
                 gaps.extend(scored_gaps)
         except Exception as e:
@@ -320,6 +325,10 @@ def build_rows(capture_dirs, ref_dirs=None, repairs=None, info=None):
                 "mult": ens_mod.RISK_MULT.get(
                     ((ens or {}).get("risk") or {}).get("level"), 1.0),
                 "v2_sigma": v2sig, "sig": sig})
+    if n_info_dropped:
+        print("note: %d informational score_capture lines dropped "
+              "(scored captures, no info list passed; not exclusions)"
+              % n_info_dropped, flush=True)
     return rows, gaps
 
 
