@@ -73,6 +73,13 @@ def run():
     check("first notice = last weekday of the previous month; Dec-2025 = 2025-11-28 (observed splice), GCZ6 = 2026-11-30, January wraps the year",
           F.first_notice_date(2025, 12) == D(2025, 11, 28) and F.first_notice_date(2026, 12) == D(2026, 11, 30)
           and F.first_notice_date(2026, 8) == D(2026, 7, 31) and F.first_notice_date(2026, 1) == D(2025, 12, 31))
+    check("silver evidence recorded: monthly splices incl. out-of-cycle Oct/Nov contracts, 12-month windows kept",
+          "MONTHLY" in d["metals_roll_silver_evidence"] and "SIX26" in d["metals_roll_silver_evidence"]
+          and "12-month" in d["metals_roll_silver_evidence"])
+    w26 = F.roll_window_dates(2026, 2026, days=1)
+    check("observed silver splice days are covered by the window rule: 2026-10-29 (Oct last trade 10-28 +1) and 2026-11-27",
+          F.last_trade_date(2026, 10) == D(2026, 10, 28) and "2026-10-29" in w26
+          and F.last_trade_date(2026, 11) == D(2026, 11, 26) and "2026-11-27" in w26)
     ev0 = F.roll_window_dates(2026, 2026, days=0)
     check("days=0 flags exactly event dates (2026-04-28 last trade, 2026-04-30 first notice) and not the day between",
           "2026-04-28" in ev0 and "2026-04-30" in ev0 and "2026-04-29" not in ev0 and "2026-05-01" not in ev0)
