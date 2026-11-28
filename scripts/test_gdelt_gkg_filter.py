@@ -568,6 +568,9 @@ def _run_fetch_with(st, out, names, fake, budget=0, workers=1):
     try:
         with contextlib.redirect_stdout(buf):
             G.run_fetch(r)
+    except SystemExit as e:
+        e.stdout = buf.getvalue()   # a failing run's stdout stays inspectable
+        raise
     finally:
         G.list_files, G.fetch = orig
     return buf.getvalue(), fetched
@@ -763,7 +766,8 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
         finally:
             os.fsync = real
         dirs = [e for e in events if e[0] == "dir"]
-        first_file = next(i for i, e in enumerate(events) if e == ("file", "absent.txt", None))
+        first_file = next((i for i, e in enumerate(events) if e == ("file", "absent.txt", None)), None)
+        check("an absent.txt record fsync was observed", first_file is not None, str(events))
         st_real, out_real = os.path.realpath(st), os.path.realpath(out)
         st_ev = [e for e in dirs if os.path.realpath(e[1]) == st_real]
         out_ev = [e for e in dirs if os.path.realpath(e[1]) == out_real]
@@ -773,7 +777,7 @@ def test_state_dir_fsynced_after_checkpoint_files_open():
     check("output dir fsynced once, after matches.jsonl exists",
           len(out_ev) == 1 and "matches.jsonl" in out_ev[0][2])
     check("directory syncs come before the first absent.txt record fsync",
-          all(events.index(e) < first_file for e in dirs))
+          first_file is not None and all(events.index(e) < first_file for e in dirs))
     check("per-record fsyncs are kept", sum(1 for e in events if e[0] == "file" and e[1] == "absent.txt") == 2)
 
 
@@ -816,10 +820,13 @@ def test_checkpoint_io_failure_and_rebind_text():
                 text, _ = _run_fetch_with(st, out, names, fake)
             except SystemExit as e:
                 code = e.code
+                text = getattr(e, "stdout", "")
         finally:
             os.fsync = real
             box["fail"] = False
         check("a failed transient-record fsync exits with the retryable checkpoint status", code == G.CHECKPOINT_IO_EXIT == 75)
+        check("checkpoint failure keeps stdout: safe=1 error line, no normal status summary",
+              "gkg-filter-checkpoint-error safe=1" in (text or "") and "gkg-filter-status" not in (text or ""))
         # config mismatch (different out) names the extra checkpoints
         cfg = os.path.join(st, "config.json")
         c = json.load(open(cfg)); c["start"] = "19990101000000"; json.dump(c, open(cfg, "w"))
@@ -851,6 +858,56 @@ def test_rebind_retries_previously_absent_basename():
         _, f3 = _run_fetch_with(st, out, names, nf)
         check("after the documented rebind the previously absent basename is attempted again", len(f3) == 1)
 
+def test_959k_setup_and_close_failures():
+    """Checkpoint setup and close I/O errors take the retryable exit 75."""
+    names = ["202405150%02d000" % i for i in range(2)]
+    # setup: the first directory fsync fails -> 75 with safe=0, never a traceback
+    real = os.fsync
+    def bad(fd): raise OSError("disk")
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        os.fsync = bad
+        code = text = None
+        try:
+            try:
+                _run_fetch_with(st, out, names, lambda u: b"")
+            except SystemExit as e:
+                code, text = e.code, getattr(e, "stdout", "")
+        finally:
+            os.fsync = real
+        check("setup I/O failure exits 75", code == 75)
+        check("setup I/O failure is safe=0 and prints no status summary",
+              "gkg-filter-checkpoint-error safe=0" in text and "gkg-filter-status" not in text, text)
+    # close failures: a data file close error is safe=0, a transient-only one is safe=1
+    for target, want in (("done.txt", "safe=0"), ("transient.txt", "safe=1")):
+        with tempfile.TemporaryDirectory() as d:
+            st, out = os.path.join(d, "st"), os.path.join(d, "out")
+            os.makedirs(out)
+            orig_open = open
+            class Bad:
+                def __init__(self, f): self._f = f
+                def __getattr__(self, n): return getattr(self._f, n)
+                def __enter__(self): return self
+                def __exit__(self, *a): return False
+                def close(self):
+                    self._f.close(); raise OSError("close failed")
+            def fake_open(path, *a, **k):
+                f = orig_open(path, *a, **k)
+                return Bad(f) if os.path.basename(str(path)) == target else f
+            G.open = fake_open
+            code = text = None
+            try:
+                try:
+                    _run_fetch_with(st, out, names, lambda u: b"")
+                except SystemExit as e:
+                    code, text = e.code, getattr(e, "stdout", "")
+            finally:
+                del G.open
+            check("close failure on %s exits 75 with %s" % (target, want),
+                  code == 75 and ("gkg-filter-checkpoint-error " + want) in text, "%s %s" % (code, text))
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
@@ -859,7 +916,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

@@ -4349,7 +4349,7 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
         # binding/done markers never exist without their matches.
         prev_st = stage / "prev-state"
         prev_out = stage / "prev-out"
-        moved_st = moved_out = installed_out = False
+        moved_st = moved_out = installed_out = installed_st = False
         try:
             if state_dir.exists():
                 os.rename(state_dir, prev_st)
@@ -4360,19 +4360,37 @@ def _gdelt_restore_remote(arch, src_id, state_dir, out_dir, mode=None,
             os.rename(out_stage, out_dir)
             installed_out = True
             os.rename(st_stage, state_dir)
+            installed_st = True
             # Every parent directory that gained or lost an entry.
             for d in {str(state_dir.parent), str(out_dir.parent), str(stage)}:
                 _fsync_dir(d)
         except Exception:
             try:
+                # Undo in reverse install order. The NEW state moves aside
+                # first: a non-empty state_dir would make the rename of the
+                # previous state over it fail. Output is installed before
+                # state, so it is moved aside after the state.
+                if installed_st and state_dir.exists():
+                    os.rename(state_dir, st_stage)
                 if installed_out and out_dir.exists():
                     os.rename(out_dir, out_stage)
                 if moved_out:
                     os.rename(prev_out, out_dir)
                 if moved_st:
                     os.rename(prev_st, state_dir)
+                for d in {str(state_dir.parent), str(out_dir.parent), str(stage)}:
+                    _fsync_dir(d)   # the rollback itself must be durable
             except Exception as e2:
                 keep_stage = True   # the backups stay on disk
+                # Rollback unconfirmed: whatever sits in state_dir may be the
+                # new snapshot paired with the wrong output. Invalidate local
+                # reuse (binding and done markers) so the next attempt
+                # restores from the archive instead of skipping the restore.
+                for fn in (GDELT_BINDING, "done.txt", "macro_done.txt"):
+                    try:
+                        (state_dir / fn).unlink(missing_ok=True)
+                    except OSError:
+                        pass
                 raise GdeltRestoreRollbackFailed(str(stage)) from e2
             raise
         return str(run_path)
@@ -4417,20 +4435,22 @@ GDELT_INCOMPLETE = ("budget-exhausted", "timeout", "unfinished",
 GDELT_CHECKPOINT_IO_RC = 75   # scripts/gdelt_gkg_filter.CHECKPOINT_IO_EXIT
 
 
-def _validate_master_listing(body, label=""):
-    """A downloaded master list must be non-empty and parse as a GDELT
-    listing (every non-blank line: `size md5 url`). An empty HTTP-200 body
-    would otherwise select no files and look like a finished run. A valid
-    listing with no files in the requested window is NOT an error."""
-    text = body.decode("utf-8")   # raises on undecodable bytes
-    lines = [l for l in text.splitlines() if l.strip()]
-    if not lines:
+def _validate_master_file(path, label=""):
+    """Validate a downloaded master list line by line (no full read into
+    memory): non-empty, UTF-8, every non-blank line `size md5 url`."""
+    n = 0
+    with open(path, "rb") as f:
+        for raw in f:
+            line = raw.decode("utf-8")
+            if not line.strip():
+                continue
+            fld = line.split()
+            if len(fld) != 3 or not fld[0].isdigit() or "/" not in fld[2]:
+                raise ValueError("invalid master listing line in %s" % label)
+            n += 1
+    if n == 0:
         raise ValueError("empty master listing: %s" % label)
-    for l in lines:
-        f = l.split()
-        if len(f) != 3 or not f[0].isdigit() or "/" not in f[2]:
-            raise ValueError("invalid master listing line in %s" % label)
-    return len(lines)
+    return n
 
 
 def _run_gdelt_fetch(job, workdir, master_dir):
@@ -4550,10 +4570,13 @@ def _run_gdelt_fetch(job, workdir, master_dir):
                  trans_path),
             ]:
                 req = Request(url, headers={"User-Agent": "gdelt-fetch/1.0"})
-                with urlopen(req, timeout=300) as r:
-                    body = r.read()
-                _validate_master_listing(body, url)
-                dest.write_bytes(body)
+                try:
+                    with urlopen(req, timeout=300) as r, open(dest, "wb") as out:
+                        shutil.copyfileobj(r, out, 1 << 20)
+                    _validate_master_file(dest, url)
+                except BaseException:
+                    dest.unlink(missing_ok=True)   # never leave a bad listing
+                    raise
         except Exception:
             # named failure status. Restored matches belong to the
             # restored done state, so they are copied into the run dir
@@ -6506,6 +6529,28 @@ def _gdelt_deferred(job_id, now_ts=None):
     return until > now_ts
 
 
+def _gdelt_quarantine_checkpoint(job_id, workdir):
+    """After checkpoint-io-failed the local state/out pair is NOT safe to
+    reuse (complete match rows can sit beside a done.txt that lacks their
+    file, so a retry would archive duplicates). Move the pair aside, outside
+    workdir (publish() never carries it), and CONFIRM both fixed directories
+    are gone: the next admitted attempt then restores the newest PUBLISHED
+    snapshot from the archive, or starts from a clean empty pair when none is
+    published. Returns True only when the confirmation holds."""
+    wd = Path(workdir)
+    try:
+        qdir = JOB_STATE / "gdelt-quarantine" / ("%s-%d" % (job_id, int(time.time() * 1000)))
+        qdir.mkdir(parents=True, exist_ok=True)
+        for name in ("gdelt-state", "gdelt-out"):
+            if (wd / name).exists():
+                os.rename(wd / name, qdir / name)
+        _fsync_dir(wd)
+        _fsync_dir(qdir)
+        return not (wd / "gdelt-state").exists() and not (wd / "gdelt-out").exists()
+    except OSError:
+        return False
+
+
 def _gdelt_cleanup_marker(job_id):
     return JOB_STATE / "gdelt-intent-cleanup" / f"{job_id}.json"
 
@@ -6526,7 +6571,10 @@ def _gdelt_release_intent(job_id, archive_sha=None, expect=None):
     cleanup marker records the verified publication so the cleanup can be
     retried without rerunning the fetch; returns False then."""
     ident = _gdelt_intent_identity(job_id)
-    if expect is not None and ident is not None and ident != expect:
+    if expect is not None and ident != expect and (
+            ident is not None or _intent_path(job_id).exists()):
+        # ident None while the intent file still exists means it is
+        # unreadable: treat it like a mismatch, never unlink it.
         # A later attempt's intent: the marker is stale. Leave the intent
         # alone and drop only the marker.
         try:
@@ -6733,6 +6781,12 @@ def _execute_body(job):
             # the first retry stays eligible) so a PERSISTENT failure is
             # deferred instead of re-selected at the head of the bulk lane.
             _gdelt_note_incomplete(job["id"], 0)
+            if manifest["tools"].get("gdelt-fetch") == "checkpoint-io-failed" \
+                    and not _gdelt_quarantine_checkpoint(job["id"], workdir):
+                # The unsafe local pair could not be set aside and confirmed
+                # gone: do NOT admit a retry that would reuse it. The intent
+                # stays, so the job is held on this host for resolution.
+                return None
             if _gdelt_release_intent(job["id"]):
                 return "incomplete"
             return None

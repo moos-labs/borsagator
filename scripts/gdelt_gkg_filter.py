@@ -100,7 +100,7 @@ pyarrow are optional speed/format dependencies of this backfill tool only
 pyahocorasick the prefilter falls back to one combined regex (about 25x
 slower per file); without pyarrow --finalize writes CSV.
 """
-import argparse, csv, hashlib, io, json, os, re, sys, time, zipfile
+import argparse, contextlib, csv, hashlib, io, json, os, re, sys, time, zipfile
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlsplit
 from urllib.error import HTTPError
@@ -432,9 +432,30 @@ def makedirs_durable(path):
 CHECKPOINT_IO_EXIT = 75
 
 
+@contextlib.contextmanager
+def ck_setup(opened=()):
+    """Checkpoint creation, opening and the initial directory sync are
+    retryable I/O: an OSError here exits CHECKPOINT_IO_EXIT with safe=0
+    (the checkpoint is not authorised for publication) instead of escaping
+    as exit 1. `opened` holds files already open, closed best-effort first.
+    Deliberate configuration refusals are SystemExit messages and pass
+    through unchanged."""
+    try:
+        yield
+    except OSError as e:
+        for f in list(opened):
+            try:
+                f.close()
+            except OSError:
+                pass
+        print(f"gkg-filter-checkpoint-error safe=0 setup {type(e).__name__}", flush=True)
+        sys.exit(CHECKPOINT_IO_EXIT)
+
+
 def run_fetch(a):
-    makedirs_durable(a.state)
-    makedirs_durable(a.out)
+    with ck_setup():
+        makedirs_durable(a.state)
+        makedirs_durable(a.out)
     a.start = a.start.ljust(14, "0")
     a.end = a.end.ljust(14, "9")
     aliases_sha = hashlib.sha256(open(a.aliases, "rb").read()).hexdigest()
@@ -458,11 +479,12 @@ def run_fetch(a):
                      f"fresh --out directory or delete it before rebinding")
         # atomic publish: temp + fsync + replace, before any archive is done
         tmp = config_path + ".tmp"
-        with open(tmp, "w") as f:
-            json.dump(config, f, indent=1)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp, config_path)
+        with ck_setup():
+            with open(tmp, "w") as f:
+                json.dump(config, f, indent=1)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, config_path)
     done_path = os.path.join(a.state, "done.txt")
     matches_path = os.path.join(a.out, "matches.jsonl")
     # absent.txt: files GDELT answered with HTTP 404 (permanent). Kept
@@ -475,7 +497,8 @@ def run_fetch(a):
     # have not failed (or failed less often) before repeating the failures.
     transient_path = os.path.join(a.state, "transient.txt")
     for pth in (matches_path, done_path, absent_path, transient_path):
-        cut = truncate_incomplete_tail(pth)
+        with ck_setup():
+            cut = truncate_incomplete_tail(pth)
         if cut:
             print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
     done = set()
@@ -513,13 +536,15 @@ def run_fetch(a):
                 sys.exit(f"{macro_matches_path} has rows from a previous configuration; use a "
                          f"fresh --out directory or delete it before rebinding")
             tmp = mcfg_path + ".tmp"
-            with open(tmp, "w") as f:
-                json.dump(mcfg, f, indent=1)
-                f.flush()
-                os.fsync(f.fileno())
-            os.replace(tmp, mcfg_path)
+            with ck_setup():
+                with open(tmp, "w") as f:
+                    json.dump(mcfg, f, indent=1)
+                    f.flush()
+                    os.fsync(f.fileno())
+                os.replace(tmp, mcfg_path)
         for pth in (macro_matches_path, md_path):
-            cut = truncate_incomplete_tail(pth)
+            with ck_setup():
+                cut = truncate_incomplete_tail(pth)
             if cut:
                 print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
         if os.path.exists(md_path):
@@ -569,17 +594,24 @@ def run_fetch(a):
 
     batch = max(a.workers * 4, 8)
     state_dir = os.path.dirname(os.path.abspath(done_path))
-    done_f = open(done_path, "a", encoding="utf-8")
-    absent_f = open(absent_path, "a", encoding="utf-8")
-    out_f = open(matches_path, "a", encoding="utf-8")
-    macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
-    mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
-    transient_f = open(transient_path, "a", encoding="utf-8")
-    # New checkpoint files exist only once their directory entry is durable;
-    # per-record fsync below persists contents only.
-    fsync_dir(state_dir)
-    if os.path.abspath(a.out) != state_dir:
-        fsync_dir(os.path.abspath(a.out))
+    opened = []
+
+    def _open(path):
+        f = open(path, "a", encoding="utf-8")
+        opened.append(f)
+        return f
+    with ck_setup(opened):
+        done_f = _open(done_path)
+        absent_f = _open(absent_path)
+        out_f = _open(matches_path)
+        macro_f = _open(macro_matches_path) if macro else None
+        mdone_f = _open(md_path) if macro else None
+        transient_f = _open(transient_path)
+        # New checkpoint files exist only once their directory entry is durable;
+        # per-record fsync below persists contents only.
+        fsync_dir(state_dir)
+        if os.path.abspath(a.out) != state_dir:
+            fsync_dir(os.path.abspath(a.out))
     ck_err = None
     phase = "data"
     try:
@@ -646,16 +678,28 @@ def run_fetch(a):
         # next run's repair and is reported as NOT safe.
         ck_err = (phase == "record", e)
     finally:
-        done_f.close()
-        absent_f.close()
-        transient_f.close()
-        out_f.close()
-        if macro_f:
-            macro_f.close()
-        if mdone_f:
-            mdone_f.close()
+        # Attempt EVERY close: a failing close must not skip the others or
+        # bypass the checkpoint exit. A close error on a match/done file
+        # leaves that data uncertain (safe=0); on absent/transient only a
+        # skip hint is at risk.
+        data_close_err = hint_close_err = None
+        for f, is_data in ((done_f, True), (out_f, True), (macro_f, True),
+                           (mdone_f, True), (absent_f, False), (transient_f, False)):
+            if f is None:
+                continue
+            try:
+                f.close()
+            except OSError as e:
+                if is_data:
+                    data_close_err = data_close_err or e
+                else:
+                    hint_close_err = hint_close_err or e
+    close_err = data_close_err or hint_close_err
+    if close_err is not None and ck_err is None:
+        ck_err = (True, close_err)
     if ck_err is not None:
-        print(f"gkg-filter-checkpoint-error safe={int(ck_err[0])} {type(ck_err[1]).__name__}", flush=True)
+        safe = ck_err[0] and data_close_err is None
+        print(f"gkg-filter-checkpoint-error safe={int(safe)} {type(ck_err[1]).__name__}", flush=True)
         sys.exit(CHECKPOINT_IO_EXIT)
     print(f"chunk done: processed={n_done} remaining={len(files)-n_done} rows={n_rows} macro_rows={n_mrows}", flush=True)
     # Machine-readable: files that failed for a reason other than a

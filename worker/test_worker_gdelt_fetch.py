@@ -417,8 +417,9 @@ def test_live_argv_no_duplicate():
         captured["cmd"] = cmd
         return _FakeResult()
     class _FakeResp:
-        def __init__(self, data): self._data = data
-        def read(self): return self._data
+        def __init__(self, data):
+            import io; self._f = io.BytesIO(data)
+        def read(self, n=-1): return self._f.read(n)
         def __enter__(self): return self
         def __exit__(self, *a): return False
     master_bytes = (b"100 d41d8cd98f00b204e9800998ecf8427e "
@@ -617,8 +618,9 @@ def test_budget_status_from_filter_output():
 
 def test_master_lists_excluded_from_publish_copy():
     class _FR:
-        def __init__(self, d): self._d = d
-        def read(self): return self._d
+        def __init__(self, d):
+            import io; self._f = io.BytesIO(d)
+        def read(self, n=-1): return self._f.read(n)
         def __enter__(self): return self
         def __exit__(self, *a): return False
     o_url = worker.urlopen
@@ -843,7 +845,7 @@ def test_timeout_with_truncated_utf8_record():
     data = json.loads((wd / "gdelt" / "gdelt_fetch.json").read_text())
     check("line counts are byte-based (2 company lines, 1 macro line)", data["matches"] == 2 and data["macro_matches"] == 1)
 
-def _progress_run(jid, files_done, status="budget-exhausted", absent=None, transient=None, pubs=None):
+def _progress_run(jid, files_done, status="budget-exhausted", absent=None, transient=None, pubs=None, mark_done=None):
     """One incomplete run through _execute with the fetch and publish stubbed."""
     o_pub, o_md, o_run = worker.publish, worker._mark_done, worker.run_gdelt_fetch
     def fake_run(job, wd):
@@ -856,7 +858,9 @@ def _progress_run(jid, files_done, status="budget-exhausted", absent=None, trans
         (g / "gdelt_fetch.json").write_text(json.dumps(side))
         return {"gdelt-fetch": status}
     worker.publish = lambda job, wd, m: (pubs.append(jid) if pubs is not None else None) or "sha"
-    worker._mark_done = lambda job, sha, extra=None: None
+    # A caller-owned spy stays ACTIVE during the run (a wrong _mark_done call
+    # must be visible to it); the default stays a no-op.
+    worker._mark_done = mark_done if mark_done is not None else (lambda job, sha, extra=None: None)
     worker.run_gdelt_fetch = fake_run
     try:
         job = {"id": jid, "job": "gdelt-fetch --start 20200101000000 --end 20200131235959 --mode fixtures"}
@@ -1024,6 +1028,18 @@ def test_sidecar_reports_absent_both_paths():
     data2 = json.loads((wd2 / "gdelt" / "gdelt_fetch.json").read_text())
     check("normal path sidecar reports absent_files", data2.get("absent_files") == 2)
 
+class _Resp:
+    """Streaming fake HTTP response; records every read size."""
+    reads = []
+    def __init__(self, b):
+        import io as _io
+        self.f = _io.BytesIO(b)
+    def read(self, n=-1):
+        _Resp.reads.append(n)
+        return self.f.read(n)
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+
 def test_959j_durability_and_failures():
     import contextlib
     _fixtures_env()
@@ -1080,18 +1096,15 @@ def test_959j_durability_and_failures():
     check("a failing predecessor lookup is an unknown resume state: nothing runs", res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen)
     # 3: empty or invalid live master lists
     for body, label in ((b"", "empty"), (b"\n  \n", "blank"), (b"<html>oops</html>", "html"), (b"\xff\xfe", "undecodable")):
+        tf = Path(tempfile.mkdtemp()) / "m.txt"; tf.write_bytes(body)
         try:
-            worker._validate_master_listing(body); ok = False
+            worker._validate_master_file(tf); ok = False
         except Exception:
             ok = True
         check("master listing %s is rejected" % label, ok)
     good = b"123 abc http://data.gdeltproject.org/gdeltv2/20240501000000.gkg.csv.zip\n"
-    check("a valid listing passes", worker._validate_master_listing(good) == 1)
-    class _Resp:
-        def __init__(self, b): self.b = b
-        def read(self): return self.b
-        def __enter__(self): return self
-        def __exit__(self, *a): return False
+    tf = Path(tempfile.mkdtemp()) / "m.txt"; tf.write_bytes(good)
+    check("a valid listing passes", worker._validate_master_file(tf) == 1)
     livejob = "gdelt-fetch --start 20240501000000 --end 20240501000000"
     o_open = worker.urlopen
     for body, want, nran in ((b"", "master-download-failed", 0), (good, "ok", 1)):
@@ -1160,11 +1173,6 @@ def test_959j_durability_and_failures():
 def test_959j_more_asks():
     fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
     # (b) a VALID listing with no files in the requested window still succeeds
-    class _Resp:
-        def __init__(self, b): self.b = b
-        def read(self): return self.b
-        def __enter__(self): return self
-        def __exit__(self, *a): return False
     other = b"123 abc http://data.gdeltproject.org/gdeltv2/20990101000000.gkg.csv.zip\n"
     ran = []
     o_open = worker.urlopen
@@ -1177,15 +1185,134 @@ def test_959j_more_asks():
     # (c) a retryable checkpoint failure is never marked done and keeps progress
     j = "j-ckprog"; worker._gdelt_progress_clear(j)
     done = []
-    o_md = worker._mark_done
-    worker._mark_done = lambda job, sha, extra=None: done.append(sha)
-    try:
-        r = _progress_run(j, 4, status="checkpoint-io-incomplete")
-    finally:
-        worker._mark_done = o_md
+    r = _progress_run(j, 4, status="checkpoint-io-incomplete", mark_done=lambda job, sha, extra=None: done.append(sha))
     rec = worker._gdelt_progress_read(j)
     check("checkpoint-io-incomplete: not marked done, claim released for retry, progress total kept",
           not done and r == "incomplete" and rec["total"] == 4)
+
+def test_959k():
+    fix = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    # F5: a post-swap sync failure moves the NEW state aside and restores the previous pair
+    _fixtures_env()
+    _mk("k-sw", matches='{"ok": 1}\n')
+    wd = worker.OUT / "t959k-sw"; _local_state(wd, "LOCAL\n", binding="worker-runs/older/run")
+    (wd / "gdelt-out").mkdir(parents=True, exist_ok=True)
+    (wd / "gdelt-out" / "matches.jsonl").write_text('{"local": 1}\n')
+    o_ren, o_dir = os.rename, worker._fsync_dir
+    box = {"n": 0, "raised": False}
+    def ren(a, b, *x, **k):
+        box["n"] += 1
+        return o_ren(a, b, *x, **k)
+    def fdir(d):
+        if box["n"] >= 4 and not box["raised"]:
+            box["raised"] = True
+            raise OSError("sync failed after the swap")
+        return o_dir(d)
+    os.rename, worker._fsync_dir = ren, fdir
+    try:
+        res, seen = _run_capture({"id": "k-sw", "job": fix}, wd, lambda c: _Res())
+    finally:
+        os.rename, worker._fsync_dir = o_ren, o_dir
+    check("sync failure after the state install: rollback confirmed, previous pair back, run stops as unknown resume state",
+          box["raised"] and res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen
+          and (wd / "gdelt-state" / "done.txt").read_text() == "LOCAL\n"
+          and (wd / "gdelt-out" / "matches.jsonl").read_text() == '{"local": 1}\n'
+          and not (wd / "gdelt-state" / worker.GDELT_BINDING).read_text().count("k-sw"))
+    # F5: rollback itself fails -> local reuse invalidated (no binding, no done markers)
+    _mk("k-sw2", matches='{"ok": 1}\n')
+    wd = worker.OUT / "t959k-sw2"; _local_state(wd, "LOCAL\n", binding="worker-runs/older/run")
+    box = {"n": 0, "raised": False}
+    def ren2(a, b, *x, **k):
+        box["n"] += 1
+        if Path(a).name == "prev-state":
+            raise OSError("rollback rename failed")
+        return o_ren(a, b, *x, **k)
+    os.rename, worker._fsync_dir = ren2, fdir
+    try:
+        res, seen = _run_capture({"id": "k-sw2", "job": fix}, wd, lambda c: _Res())
+    finally:
+        os.rename, worker._fsync_dir = o_ren, o_dir
+    st = wd / "gdelt-state"
+    check("an unconfirmed rollback reports restore-rollback-failed and invalidates local reuse",
+          res == {"gdelt-fetch": "restore-rollback-failed"} and "cmd" not in seen
+          and not (st / worker.GDELT_BINDING).exists() and not (st / "done.txt").exists())
+    # F6: an unreadable intent identity is a mismatch: marker dropped, intent kept
+    jid = "k-unread"; ip = worker._intent_path(jid); ip.parent.mkdir(parents=True, exist_ok=True)
+    ip.write_text('{"job": "A", "started": "t1"}')
+    mk = worker._gdelt_cleanup_marker(jid); mk.parent.mkdir(parents=True, exist_ok=True)
+    mk.write_text(json.dumps({"archive_sha": "x", "intent": "deadbeef"}))
+    o_id = worker._gdelt_intent_identity
+    worker._gdelt_intent_identity = lambda j: None   # present but unreadable
+    try:
+        worker._gdelt_retry_cleanup(jid)
+    finally:
+        worker._gdelt_intent_identity = o_id
+    check("unreadable intent identity: intent kept, only the marker dropped", ip.exists() and not mk.exists())
+    ip.unlink()
+    mk.write_text(json.dumps({"archive_sha": "x", "intent": "deadbeef"}))
+    worker._gdelt_retry_cleanup(jid)
+    check("an absent intent still clears the marker", not mk.exists() and not ip.exists())
+    # F7: checkpoint-io-failed quarantines the unsafe local pair before the retry is admitted
+    def run_with(status, jid):
+        def fake_run(job, wd):
+            for d, f in (("gdelt-state", "done.txt"), ("gdelt-out", "matches.jsonl")):
+                (Path(wd) / d).mkdir(parents=True, exist_ok=True); (Path(wd) / d / f).write_text("x\n")
+            return {"gdelt-fetch": status}
+        pubs = []
+        o_pub, o_run = worker.publish, worker.run_gdelt_fetch
+        worker.publish = lambda job, wd, m: pubs.append(1) or "sha"
+        worker.run_gdelt_fetch = fake_run
+        try:
+            r = worker._execute({"id": jid, "job": fix})
+        finally:
+            worker.publish, worker.run_gdelt_fetch = o_pub, o_run
+        return r, pubs
+    worker._gdelt_progress_clear("k-ckf")
+    r, pubs = run_with("checkpoint-io-failed", "k-ckf")
+    q = list((worker.JOB_STATE / "gdelt-quarantine").glob("k-ckf-*"))
+    wdirs = [p for p in worker.OUT.rglob("gdelt-state") if p.is_dir() and (p / "done.txt").exists() and (p.parent.name.startswith("k-ckf") or "k-ckf" in str(p))]
+    check("checkpoint-io-failed: nothing published, retry admitted, unsafe pair quarantined",
+          r == "incomplete" and not pubs and len(q) == 1 and (q[0] / "gdelt-state" / "done.txt").exists()
+          and (q[0] / "gdelt-out" / "matches.jsonl").exists() and not wdirs)
+    worker._gdelt_progress_clear("k-cki")
+    r, pubs = run_with("checkpoint-io-incomplete", "k-cki")
+    qi = list((worker.JOB_STATE / "gdelt-quarantine").glob("k-cki-*"))
+    check("checkpoint-io-incomplete keeps the safe local checkpoint (no quarantine) and publishes", r == "incomplete" and pubs and not qi)
+    # F7: when the pair cannot be set aside, the retry is NOT admitted (intent stays)
+    worker._gdelt_progress_clear("k-ckn")
+    o_ren = os.rename
+    def ren3(a, b, *x, **k):
+        if "gdelt-quarantine" in str(b):
+            raise OSError("cannot move")
+        return o_ren(a, b, *x, **k)
+    os.rename = ren3
+    try:
+        r, pubs = run_with("checkpoint-io-failed", "k-ckn")
+    finally:
+        os.rename = o_ren
+    check("unconfirmed quarantine: no retry admitted, intent kept, nothing published",
+          r is None and not pubs and worker._intent_path("k-ckn").exists())
+    worker._intent_path("k-ckn").unlink(missing_ok=True)
+    # N2: the master download is streamed in bounded reads and a rejected listing leaves nothing behind
+    _fixtures_env()
+    livejob = "gdelt-fetch --start 20240501000000 --end 20240501000000"
+    good = b"123 abc http://data.gdeltproject.org/gdeltv2/20240501000000.gkg.csv.zip\n" * 3
+    _Resp.reads.clear()
+    o_open = worker.urlopen
+    worker.urlopen = lambda req, timeout=0: _Resp(good)
+    ran = []
+    try:
+        res, seen = _run_capture({"id": "k-stream", "job": livejob}, worker.OUT / "t959k-stream", lambda c: ran.append(c) or _Res())
+    finally:
+        worker.urlopen = o_open
+    check("streamed download: bounded reads only, filter launched, ok", res == {"gdelt-fetch": "ok"} and _Resp.reads and all(n > 0 for n in _Resp.reads))
+    worker.urlopen = lambda req, timeout=0: _Resp(b"<html>not a listing</html>")
+    ran = []
+    try:
+        res, seen = _run_capture({"id": "k-stream2", "job": livejob}, worker.OUT / "t959k-stream2", lambda c: ran.append(c) or _Res())
+    finally:
+        worker.urlopen = o_open
+    check("an invalid streamed listing is master-download-failed and the filter never runs", res == {"gdelt-fetch": "master-download-failed"} and not ran)
 
 def main():
     test_parse_ok()
@@ -1196,6 +1323,7 @@ def main():
     test_959i_deferred_and_stall_and_intent()
     test_959j_durability_and_failures()
     test_959j_more_asks()
+    test_959k()
     test_restore_checks_recorded_mode()
     test_restore_is_staged_and_atomic()
     test_new_claim_checks_the_published_snapshot()
