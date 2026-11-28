@@ -428,13 +428,21 @@ def run_fetch(a):
         os.replace(tmp, config_path)
     done_path = os.path.join(a.state, "done.txt")
     matches_path = os.path.join(a.out, "matches.jsonl")
-    for pth in (matches_path, done_path):
+    # absent.txt: files GDELT answered with HTTP 404 (permanent). Kept
+    # apart from done.txt (never marks a file done) and written per file
+    # with fsync as discovered, so a budget-killed run still records
+    # them and a resumed run does not re-download them.
+    absent_path = os.path.join(a.state, "absent.txt")
+    for pth in (matches_path, done_path, absent_path):
         cut = truncate_incomplete_tail(pth)
         if cut:
             print(f"truncated {cut} bytes of incomplete tail in {pth}", flush=True)
     done = set()
     if os.path.exists(done_path):
         done = set(open(done_path, encoding="utf-8").read().split())
+    absent = set()
+    if os.path.exists(absent_path):
+        absent = set(open(absent_path, encoding="utf-8").read().split())
     macro = None
     macro_done = set()
     macro_matches_path = os.path.join(a.out, "macro_matches.jsonl")
@@ -481,6 +489,8 @@ def run_fetch(a):
     files = []
     for u, s in list_files(specs, a.start, a.end):
         name = u.rsplit("/", 1)[-1]
+        if name in absent:
+            continue
         need_c = name not in done
         need_m = macro is not None and name not in macro_done
         if need_c or need_m:
@@ -488,7 +498,7 @@ def run_fetch(a):
     t0, n_done, n_bytes, n_rows, n_mrows, n_malformed = time.time(), 0, 0, 0, 0, 0
     n_unfinished, n_absent = 0, 0
     print(f"todo={len(files)} done_prev={len(done)} macro_done_prev={len(macro_done)} "
-          f"prefilter={prefilter.engine}", flush=True)
+          f"absent_prev={len(absent)} prefilter={prefilter.engine}", flush=True)
 
     def work(item):
         url, stream, need_c, need_m = item
@@ -510,6 +520,7 @@ def run_fetch(a):
 
     batch = max(a.workers * 4, 8)
     done_f = open(done_path, "a", encoding="utf-8")
+    absent_f = open(absent_path, "a", encoding="utf-8")
     out_f = open(matches_path, "a", encoding="utf-8")
     macro_f = open(macro_matches_path, "a", encoding="utf-8") if macro else None
     mdone_f = open(md_path, "a", encoding="utf-8") if macro else None
@@ -523,6 +534,11 @@ def run_fetch(a):
                         # NOT marked done either way: retried on the next run.
                         if err.startswith("absent: "):
                             n_absent += 1
+                            if name not in absent:
+                                absent.add(name)
+                                absent_f.write(name + "\n")
+                                absent_f.flush()
+                                os.fsync(absent_f.fileno())
                             print(f"absent {name}: {err[len('absent: '):]}", flush=True)
                         else:
                             n_unfinished += 1
@@ -559,6 +575,7 @@ def run_fetch(a):
                     break
     finally:
         done_f.close()
+        absent_f.close()
         out_f.close()
         if macro_f:
             macro_f.close()

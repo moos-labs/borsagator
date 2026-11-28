@@ -546,13 +546,143 @@ def test_unfinished_vs_absent():
         check("only the served file is done", done == ["%s.gkg.csv.zip" % names[0]], str(done))
 
 
+def _run_fetch_with(st, out, names, fake, budget=0, workers=1):
+    """Run run_fetch with a fake list and fetch; returns (stdout, fetched urls)."""
+    orig = (G.list_files, G.fetch)
+    G.list_files = lambda specs, s0, e0: [
+        ("http://x/%s.gkg.csv.zip" % n, "english") for n in names]
+    fetched = []
+
+    def rec(url, timeout=90):
+        fetched.append(url.rsplit("/", 1)[-1])
+        return fake(url)
+    G.fetch = rec
+
+    class R:
+        pass
+    r = R()
+    r.state, r.out, r.start, r.end = st, out, "20240515", "20240515"
+    r.aliases, r.master, r.master_translation = ALIASES_CSV, "m", None
+    r.workers, r.budget_seconds = workers, budget
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            G.run_fetch(r)
+    finally:
+        G.list_files, G.fetch = orig
+    return buf.getvalue(), fetched
+
+
+def test_absent_persisted_and_skipped():
+    """First batch all 404 and the budget expires: the absent identities are
+    persisted in absent.txt, the next run skips them (file 9 runs), transient
+    failures stay retryable, done.txt behaviour is unchanged."""
+    import urllib.error
+    names = ["202405150%02d000" % i for i in range(10)]
+    zbuf = io.BytesIO()
+    with zipfile.ZipFile(zbuf, "w") as z:
+        z.writestr("a.gkg.csv", b"")
+    good = zbuf.getvalue()
+    batch = max(1 * 4, 8)
+    check("batch is 8 with one worker", batch == 8)
+
+    def fake(url):
+        n = url.rsplit("/", 1)[-1][:-len(".gkg.csv.zip")]
+        if n in names[:8]:
+            raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+        if n == names[8]:
+            raise urllib.error.URLError("timed out")
+        return good
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        # run 1: tiny positive budget expires after the first batch of 8
+        o1, f1 = _run_fetch_with(st, out, names, fake, budget=1e-9)
+        ab = open(os.path.join(st, "absent.txt")).read().split()
+        check("run 1 fetched only the first batch", len(f1) == 8, str(f1))
+        check("all 8 absent identities persisted", ab == ["%s.gkg.csv.zip" % n for n in names[:8]], str(ab))
+        check("budget message printed", "budget exhausted" in o1)
+        check("nothing done in run 1", not os.path.exists(os.path.join(st, "done.txt"))
+              or open(os.path.join(st, "done.txt")).read() == "")
+        check("status line of run 1 counts 8 absent", "gkg-filter-status unfinished=0 absent=8\n" in o1)
+        # run 2: absent skipped, file 9 transient, file 10 served
+        o2, f2 = _run_fetch_with(st, out, names, fake)
+        check("run 2 does not re-download absent files", all(n not in f2 for n in
+              ["%s.gkg.csv.zip" % x for x in names[:8]]), str(f2))
+        check("run 2 reaches files 9 and 10", f2 == ["%s.gkg.csv.zip" % names[8], "%s.gkg.csv.zip" % names[9]], str(f2))
+        check("run 2 status: 1 unfinished, 0 absent", "gkg-filter-status unfinished=1 absent=0\n" in o2, o2[-120:])
+        check("run 2 prints absent_prev", "absent_prev=8" in o2)
+        done = open(os.path.join(st, "done.txt")).read().split()
+        check("only the served file is done", done == ["%s.gkg.csv.zip" % names[9]], str(done))
+        ab2 = open(os.path.join(st, "absent.txt")).read().split()
+        check("transient failure is not recorded absent", len(ab2) == 8 and "%s.gkg.csv.zip" % names[8] not in ab2)
+        # run 3: transient file retried, still not absent
+        o3, f3 = _run_fetch_with(st, out, names, fake)
+        check("run 3 retries the transient file only", f3 == ["%s.gkg.csv.zip" % names[8]], str(f3))
+    # a crash mid-run keeps the absent files already discovered
+    class Boom(BaseException):
+        pass
+
+    def fake2(url):
+        n = url.rsplit("/", 1)[-1][:-len(".gkg.csv.zip")]
+        if n in names[:2]:
+            raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+        raise Boom()
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        try:
+            _run_fetch_with(st, out, names, fake2)
+        except Boom:
+            pass
+        ab = open(os.path.join(st, "absent.txt")).read().split()
+        check("absent files recorded before a mid-run crash", ab == ["%s.gkg.csv.zip" % n for n in names[:2]], str(ab))
+        # a crash-truncated tail line is dropped, not glued
+        with open(os.path.join(st, "absent.txt"), "a") as f:
+            f.write("2024051501")
+        o, f4 = _run_fetch_with(st, out, names, lambda u: good)
+        ab = open(os.path.join(st, "absent.txt")).read().split()
+        check("incomplete absent tail truncated", "truncated" in o and all(x.endswith(".gkg.csv.zip") for x in ab), str(ab))
+
+
+def test_absent_flushed_before_fsync():
+    """Each absent identity is flushed (visible to the file system) before the
+    fsync that follows it: a hard kill after the fsync cannot lose the line."""
+    import urllib.error
+    names = ["202405150%02d000" % i for i in range(3)]
+    sizes = []
+    real = os.fsync
+
+    def spy(fd):
+        try:
+            path = os.readlink("/proc/self/fd/%d" % fd)
+        except OSError:
+            path = ""
+        if path.endswith("absent.txt"):
+            sizes.append(os.fstat(fd).st_size)
+        return real(fd)
+
+    def fake(url):
+        raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "st"), os.path.join(d, "out")
+        os.makedirs(out)
+        os.fsync = spy
+        try:
+            _run_fetch_with(st, out, names, fake)
+        finally:
+            os.fsync = real
+    line = len("202405150%02d000.gkg.csv.zip\n" % 0)
+    check("one fsync per absent file with the line already flushed", sizes == [line, 2 * line, 3 * line], str(sizes))
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
                test_process_blob, test_macro_filter, test_list_files_and_range,
                test_fetch_guards, test_config_binding,
                test_config_atomic_and_restart, test_restart_and_finalize,
-               test_unfinished_vs_absent):
+               test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

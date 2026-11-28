@@ -168,7 +168,8 @@ def _ensure_remote():
     _REMOTE.update(bare=bare, arch=arch)
 
 def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
-                      published=True, matches=None, macro=None, config=None):
+                      published=True, matches=None, macro=None, config=None,
+                      extra_state=None):
     """Create worker-runs/DATE/HMS__slug__jobid in the local checkout.
     published=True commits and pushes it to the remote archive branch;
     published=False leaves it as local residue (a failed publish)."""
@@ -181,6 +182,8 @@ def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
         if config is not None:
             for k, v in config.items():
                 (d / "gdelt-state" / k).write_text(json.dumps(v))
+        for k, v in (extra_state or {}).items():
+            (d / "gdelt-state" / k).write_text(v)
     if matches is not None:
         (d / "gdelt" / "matches.jsonl").write_text(matches)
     if macro is not None:
@@ -414,6 +417,22 @@ def test_restore_brings_back_predecessor_matches():
     res, seen = _run_capture({"id": "matches-none", "job": job["job"]}, wd2, lambda c: _Res())
     check("fresh run restores no matches", not (wd2 / "gdelt-out" / "matches.jsonl").exists())
 
+def test_restore_brings_back_absent_state():
+    _fixtures_env()
+    jid = "absent-1"
+    ab = "20240501001500.gkg.csv.zip\n20240501003000.gkg.csv.zip\n"
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", extra_state={"absent.txt": ab})
+    job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"}
+    res, seen = _run_capture(job, worker.OUT / "t959-absent", lambda c: _Res())
+    got = worker.OUT / "t959-absent" / "gdelt-state" / "absent.txt"
+    check("absent.txt restored with the predecessor's state", got.exists() and got.read_text() == ab)
+    check("done.txt still restored", seen["state_text"] == "f1\n")
+    # a predecessor without absent.txt restores none (no file appears from nowhere)
+    _make_archive_run("2026-11-27", "110000", "x", "absent-2", "f1\n")
+    res, seen = _run_capture({"id": "absent-2", "job": job["job"]}, worker.OUT / "t959-absent2", lambda c: _Res())
+    check("no absent.txt invented when the predecessor had none",
+          not (worker.OUT / "t959-absent2" / "gdelt-state" / "absent.txt").exists())
+
 def test_master_download_failed_publishes_restored_matches():
     _fixtures_env()
     jid = "mdf-1"
@@ -636,6 +655,7 @@ def main():
     test_nonzero_exit_log_tail_bounded()
     test_restore_ignores_unpublished_local_residue()
     test_restore_brings_back_predecessor_matches()
+    test_restore_brings_back_absent_state()
     test_master_download_failed_publishes_restored_matches()
     test_unfinished_status_from_filter_output()
     test_execute_releases_bus_claim_for_incomplete_run()
