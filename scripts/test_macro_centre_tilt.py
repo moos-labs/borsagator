@@ -211,6 +211,35 @@ def test_build_rows_gaps_and_repairs():
         (R.bs.score_capture, R.A._stage, R._extend_realised, R.price_reference, R.read_ohlc, R.sigmas) = saved
 
 
+def test_non_finite_values_rejected():
+    import tempfile
+    lines = ["observed_date,published_date,value",
+             "2025-01-01,2025-01-02,100", "2025-02-01,2025-02-02,105",
+             "2025-03-01,2025-03-02,nan", "2025-03-05,2025-03-06,inf",
+             "2025-03-07,2025-03-08,-inf", "2025-03-09,2025-03-10,NaN"]
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "s.csv")
+        with open(p, "w") as fh:
+            fh.write("\n".join(lines) + "\n")
+        rows = T.load_series(p)
+        check("nan and inf rows are skipped, finite rows kept", [r[2] for r in rows] == [100.0, 105.0], str(rows))
+        x, why = T.signal(rows, "2025-03-31", 0.01, "rel", window=20)
+        check("a non-finite latest value no longer yields a zero signal without a reason, "
+              "the last finite value is used", why is None and x == 1, str((x, why)))
+        only_bad = os.path.join(d, "b.csv")
+        with open(only_bad, "w") as fh:
+            fh.write("observed_date,published_date,value\n2025-03-01,2025-03-02,nan\n2025-03-05,2025-03-06,inf\n")
+        rows = T.load_series(only_bad)
+        x, why = T.signal(rows, "2025-03-31", 0.01, "rel")
+        check("only non-finite values: empty history, 'no usable value' reason", rows == [] and x == 0 and why == "no usable value", str((rows, x, why)))
+        one = os.path.join(d, "o.csv")
+        with open(one, "w") as fh:
+            fh.write("observed_date,published_date,value\n2025-03-01,2025-03-02,100\n2025-03-20,2025-03-21,inf\n")
+        rows = T.load_series(one)
+        x, why = T.signal(rows, "2025-03-31", 0.01, "rel", window=60)
+        check("inf latest is dropped, never a false +1", x == 0 and why is not None and "no usable value" in why, str((x, why)))
+
+
 def test_seed_refused():
     buf = io.StringIO()
     with contextlib.redirect_stdout(buf):
@@ -230,7 +259,7 @@ def test_counts():
 
 def run_all():
     for fn in (test_constants, test_signal_boundaries, test_point_in_time_and_missing,
-               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_counts):
+               test_composite_and_centre, test_refusal, test_reps_and_order, test_build_rows_gaps_and_repairs, test_seed_refused, test_non_finite_values_rejected, test_counts):
         fn()
 
 

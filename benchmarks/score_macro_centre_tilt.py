@@ -9,6 +9,7 @@ verdict word is printed. Counts come first.
 import argparse
 import csv
 import datetime
+import math
 import json
 import os
 import random
@@ -44,10 +45,13 @@ def load_series(path):
     with open(path, encoding="utf-8") as f:
         for r in csv.DictReader(f):
             try:
-                out.append((d_(r["observed_date"]), d_(r["published_date"]),
-                            float(r["value"])))
+                row = (d_(r["observed_date"]), d_(r["published_date"]),
+                       float(r["value"]))
             except (ValueError, KeyError):
                 continue
+            if not math.isfinite(row[2]):
+                continue  # nan / inf are not measurements: same path as unparseable
+            out.append(row)
     out.sort()
     return out
 
