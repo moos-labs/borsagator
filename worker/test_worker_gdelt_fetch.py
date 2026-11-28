@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Tests for gdelt-fetch job type."""
+import inspect
 import json
 import os
 import shlex
@@ -178,6 +179,7 @@ def test_new_claim_checks_the_published_snapshot():
 def _mk(jid, matches=None, mode="fixtures", **kw):
     return _make_archive_run("2026-11-27", "100000", "x", jid, kw.pop("done", "PUB\n"), matches=matches, mode=mode, **kw)
 
+W999 = ("20240501000000", "20240501999999")
 FIXJOB = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
 
 def test_959i_restore_tail_and_records():
@@ -500,6 +502,16 @@ def _make_archive_run(date, hms, slug_tail, jobid, done_lines, with_state=True,
     published=True commits and pushes it to the remote archive branch;
     published=False leaves it as local residue (a failed publish)."""
     _ensure_remote()
+    if window is None:
+        # 959n F8: restore refuses a checkpoint that does not establish the
+        # job window; default to the FIXJOB window (a legacy run with no
+        # sidecar gets it through a bound config instead).
+        window = ("20240501000000", "20240501000000")
+        c0 = (config or {}).get("config.json") or {}
+        if "start" in c0 and "end" in c0:
+            window = (c0["start"], c0["end"])   # the checkpoint's own bounds
+        if mode is None and config is None:
+            config = {"config.json": {"start": window[0], "end": window[1]}}
     d = worker.ROOT / "archive-push" / "worker-runs" / date / ("%s__%s__%s" % (hms, slug_tail, jobid))
     (d / "gdelt").mkdir(parents=True, exist_ok=True)
     if with_state:
@@ -728,14 +740,19 @@ def test_restore_brings_back_predecessor_matches():
            "macro_config.json": {"themes_sha256": tsh, "start": "20240501000000", "end": "20240501999999", "out": "/old/place/gdelt-out"}}
     co_old = '{"file": "f1", "company": "OLD"}\n'
     ma_old = '{"file": "f1", "theme": "OLDMACRO"}\n'
-    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches=co_old, macro=ma_old, config=cfg, extra_state={"macro_done.txt": "f1\n"})
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", matches=co_old, macro=ma_old, config=cfg, extra_state={"macro_done.txt": "f1\n"},
+                      window=("20240501000000", "20240501999999"))
     job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"}
     real_sh = worker.sh_group
     real_out = {}
     def runner(cmd):
         out = Path(_tok(cmd, "--out"))
         # the real filter first: it validates the restored config hashes and reconciles orphan rows
-        r = real_sh(cmd, cwd=str(worker.CODE), env=dict(os.environ), timeout=90)
+        # 959n F4: the production launch env (sh_group refuses GATOR_BUS_URL).
+        real_out["bus_url_in_parent_env"] = "GATOR_BUS_URL" in os.environ
+        r = real_sh(cmd, cwd=str(worker.CODE), timeout=90,
+                    env={k: v for k, v in os.environ.items()
+                         if k not in worker.ENV_DENY_FOR_TOOLS})
         real_out["rc"] = r.returncode
         real_out["co"] = (out / "matches.jsonl").read_text() if (out / "matches.jsonl").exists() else None
         real_out["ma"] = (out / "macro_matches.jsonl").read_text() if (out / "macro_matches.jsonl").exists() else None
@@ -767,14 +784,14 @@ def test_restore_brings_back_absent_state():
     _fixtures_env()
     jid = "absent-1"
     ab = "20240501001500.gkg.csv.zip\n20240501003000.gkg.csv.zip\n"
-    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", extra_state={"absent.txt": ab})
+    _make_archive_run("2026-11-27", "100000", "x", jid, "f1\n", extra_state={"absent.txt": ab}, window=W999)
     job = {"id": jid, "job": "gdelt-fetch --start 20240501000000 --end 20240501999999 --mode fixtures"}
     res, seen = _run_capture(job, worker.OUT / "t959-absent", lambda c: _Res())
     got = worker.OUT / "t959-absent" / "gdelt-state" / "absent.txt"
     check("absent.txt restored with the predecessor's state", got.exists() and got.read_text() == ab)
     check("done.txt still restored", seen["state_text"] == "f1\n")
     # a predecessor without absent.txt restores none (no file appears from nowhere)
-    _make_archive_run("2026-11-27", "110000", "x", "absent-2", "f1\n")
+    _make_archive_run("2026-11-27", "110000", "x", "absent-2", "f1\n", window=W999)
     res, seen = _run_capture({"id": "absent-2", "job": job["job"]}, worker.OUT / "t959-absent2", lambda c: _Res())
     check("no absent.txt invented when the predecessor had none",
           not (worker.OUT / "t959-absent2" / "gdelt-state" / "absent.txt").exists())
@@ -1112,8 +1129,10 @@ def test_959j_durability_and_failures():
     # 2: a failing explicit --resume-from lookup after the own-ID lookup bound picked stops the run
     calls = []
     o_pick = worker._gdelt_pick_published
-    def pick(arch, src, mode, strict=False):
-        calls.append(src)
+    def pick(arch, src, mode, strict=False, window=None):
+        # 959n F5: production passes window=(start, end); without the kwarg
+        # the stub raised TypeError first and the check passed vacuously.
+        calls.append((src, window))
         if len(calls) == 1:
             return None
         raise RuntimeError("git failed")
@@ -1122,6 +1141,8 @@ def test_959j_durability_and_failures():
         res, seen = _run_capture({"id": "j-own", "job": fix + " --resume-from j-pred"}, worker.OUT / "t959j-pred", lambda c: _Res())
     finally:
         worker._gdelt_pick_published = o_pick
+    check("959n F5: the own-ID lookup returned None, then the predecessor lookup was reached with the job window",
+          calls == [("j-own", ("20240501000000", "20240501000000")), ("j-pred", ("20240501000000", "20240501000000"))], str(calls))
     check("a failing predecessor lookup is an unknown resume state: nothing runs", res == {"gdelt-fetch": "archive-check-failed"} and "cmd" not in seen)
     # 3: empty or invalid live master lists
     for body, label in ((b"", "empty"), (b"\n  \n", "blank"), (b"<html>oops</html>", "html"), (b"\xff\xfe", "undecodable")):
@@ -1592,7 +1613,8 @@ def test_959m_f7_f8_f5():
     (d / ".gdelt-restore-abc" / "prev-out").mkdir(parents=True)
     (d / ".gdelt-restore-abc" / "prev-out" / "m.jsonl").write_text("x")
     (d / "gdelt").mkdir(); (d / "gdelt" / "keep.txt").write_text("k")
-    worker.sh("find %s -name '.gdelt-restore-*' -prune -exec rm -rf {} +" % d, timeout=30)
+    check("959n F6: the strip is the helper publish() calls", worker._strip_restore_stages(d) == 0
+          and "_strip_restore_stages(dest)" in inspect.getsource(worker.publish))
     check("959m F5: the strip removes the restore stage and keeps everything else",
           not (d / ".gdelt-restore-abc").exists() and (d / "gdelt" / "keep.txt").exists())
 
@@ -1668,6 +1690,163 @@ def test_959m_f6_f9_f10_f12():
           out == "incomplete" and failed == ["recorded"] and not worker._intent_path(jid).exists(), str((out, failed)))
 
 
+def test_959n_worker_findings():
+    _fixtures_env()
+    base = "gdelt-fetch --start 20240501000000 --end 20240501000000 --mode fixtures"
+    # F7: a negative budget is refused at parse time; 0 stays unlimited.
+    check("959n F7: --budget-seconds -1 is refused", worker.parse_gdelt_fetch_job(base + " --budget-seconds -1") is None)
+    p0 = worker.parse_gdelt_fetch_job(base + " --budget-seconds 0")
+    p5 = worker.parse_gdelt_fetch_job(base + " --budget-seconds 5")
+    check("959n F7: 0 stays unlimited and a positive value passes",
+          p0 is not None and p0["budget_seconds"] == 0 and p5 is not None and p5["budget_seconds"] == 5)
+    # F9: restore memory does not scale with the checkpoint (streamed tar and
+    # line-by-line validation). 8 MB of matches; the old code peaked at ~3x.
+    import tracemalloc
+    line = json.dumps({"file": "f1", "company": "X" * 200}) + "\n"
+    big = line * (8 * 1024 * 1024 // len(line))
+    d9 = _make_archive_run("2026-11-27", "100400", "x", "n-f9", "f1\n", matches=big,
+                           window=("20240501000000", "20240501000000"))
+    arch = worker.ROOT / "archive-push"
+    picked = worker._gdelt_pick_published(arch, "n-f9", "fixtures")
+    w9 = worker.OUT / "t959n-f9"; w9.mkdir(parents=True, exist_ok=True)
+    tracemalloc.start()
+    worker._gdelt_restore_remote(arch, "n-f9", w9 / "st", w9 / "out", mode="fixtures", picked=picked,
+                                 window=("20240501000000", "20240501000000"))
+    peak = tracemalloc.get_traced_memory()[1]
+    tracemalloc.stop()
+    check("959n F9: peak Python memory of an 8 MB checkpoint restore stays under half the file (4 MB)", peak < len(big) // 2, str(peak))
+    check("959n F9: the matches were installed intact and no scratch tar is left",
+          (w9 / "out" / "matches.jsonl").read_bytes() == big.encode() and not list(w9.rglob("archive.tar")))
+    # F10: mkdtemp failing is a named no-publish outcome, not an escaping OSError.
+    import tempfile as _tf
+    o_mk = _tf.mkdtemp
+    def bad_mk(*a, **k):
+        raise OSError("no space")
+    _tf.mkdtemp = bad_mk
+    try:
+        res = worker.run_gdelt_fetch({"id": "n-f10", "job": base}, worker.OUT / "t959n-f10")
+    except OSError:
+        res = "ESCAPED"
+    finally:
+        _tf.mkdtemp = o_mk
+    check("959n F10: mkdtemp OSError returns setup-io-failed", res == {"gdelt-fetch": "setup-io-failed"}, str(res))
+    # F8: restored config window must match the job window before install.
+    def side_only(d, side):
+        (d / "gdelt" / "gdelt_fetch.json").write_text(json.dumps(side))
+        arch = worker.ROOT / "archive-push"
+        _git("add", "-A", str(d), cwd=arch); _git("commit", "-m", "side " + d.name, cwd=arch)
+        _git("push", "origin", "HEAD:archive", cwd=arch)
+    badcfg = {"config.json": {"aliases_sha256": "a", "start": "20230101000000", "end": "20230101000000", "out": "/o"}}
+    _make_archive_run("2026-11-27", "100000", "x", "n-f8a", "OLDWINDOW\n", config=badcfg,
+                      window=("20240501000000", "20240501000000"))   # sidecar matches; only the config differs
+    res, seen = _run_capture({"id": "n-f8a", "job": base}, worker.OUT / "t959n-f8a", lambda c: _Res())
+    check("959n F8: a restored config for another window is refused, nothing installed, filter not run",
+          res == {"gdelt-fetch": "resume-mode-mismatch"} and "cmd" not in seen
+          and not (worker.OUT / "t959n-f8a" / "gdelt-state" / "done.txt").exists(), str((res, seen.get("state_text"))))
+    d = _make_archive_run("2026-11-27", "100100", "x", "n-f8b", "LEGACY\n")
+    side_only(d, {"mode": "fixtures"})
+    res, seen = _run_capture({"id": "n-f8b", "job": base}, worker.OUT / "t959n-f8b", lambda c: _Res())
+    check("959n F8: a bound-less sidecar with a bound-less checkpoint is refused",
+          res == {"gdelt-fetch": "resume-mode-mismatch"} and "cmd" not in seen, str(res))
+    okcfg = {"config.json": {"aliases_sha256": "a", "start": "20240501000000", "end": "20240501000000", "out": "/o"}}
+    d = _make_archive_run("2026-11-27", "100200", "x", "n-f8c", "LEGACY-OK\n", config=okcfg)
+    side_only(d, {"mode": "fixtures"})
+    res, seen = _run_capture({"id": "n-f8c", "job": base}, worker.OUT / "t959n-f8c", lambda c: _Res())
+    check("959n F8: a bound-less sidecar is accepted when the checkpoint config establishes the window",
+          seen.get("state_text") == "LEGACY-OK\n", str((res, seen.get("state_text"))))
+    # F11 / F12: the master-download-failure handler and the status order.
+    import shutil as _shu
+    _make_archive_run("2026-11-27", "100300", "x", "n-f11", "f1\n", matches='{"file": "f1"}\n', mode="live",
+                      window=("20240501000000", "20240501000000"))
+    o_url, o_cp = worker.urlopen, worker.shutil.copy2
+    def boom(req, timeout=300):
+        raise OSError("down")
+    def cp_fail(*a, **k):
+        raise OSError("copy failed")
+    worker.urlopen = boom; worker.shutil.copy2 = cp_fail
+    try:
+        wd = worker.OUT / "t959n-f11"; wd.mkdir(parents=True, exist_ok=True)
+        try:
+            res = worker.run_gdelt_fetch({"id": "n-f11", "job": "gdelt-fetch --start 20240501000000 --end 20240501000000"}, wd)
+        except OSError:
+            res = "ESCAPED"
+    finally:
+        worker.urlopen, worker.shutil.copy2 = o_url, o_cp
+    check("959n F11: a checkpoint copy failure in the download-failure handler is checkpoint-io-failed",
+          res == {"gdelt-fetch": "checkpoint-io-failed"}, str(res))
+    def runner(cmd):
+        out = Path(_tok(cmd, "--out"))
+        (out / "matches.jsonl").write_text('{"a": 1}\n')
+        raise _sp.TimeoutExpired(cmd, 7200, output=b"", stderr="")
+    worker.shutil.copy2 = cp_fail
+    try:
+        res, _ = _run_capture({"id": "n-f12", "job": base}, worker.OUT / "t959n-f12", runner)
+    finally:
+        worker.shutil.copy2 = o_cp
+    check("959n F12: a timeout plus a copy failure is checkpoint-io-failed (no publish), not timeout",
+          res == {"gdelt-fetch": "checkpoint-io-failed"}, str(res))
+    # F13: the pending release is persisted BEFORE the claim delete, kept when unconfirmed.
+    def exec_incomplete(rel_result):
+        jid = "n-f13"
+        mk = worker._gdelt_cleanup_marker(jid); mk.parent.mkdir(parents=True, exist_ok=True); mk.unlink(missing_ok=True)
+        before = []
+        o_ex, o_rel, o_att = worker._execute, worker._release_claim, worker._local_claim_attempt
+        worker._execute = lambda job: "incomplete"
+        def rel(job_id, *a, **k):
+            before.append(json.loads(mk.read_text()) if mk.exists() else None)
+            return rel_result
+        worker._release_claim = rel
+        worker._local_claim_attempt = lambda j: "ATT-1"
+        try:
+            worker.execute({"id": jid, "job": base})
+        finally:
+            worker._execute, worker._release_claim, worker._local_claim_attempt = o_ex, o_rel, o_att
+        return before, mk
+    before, mk = exec_incomplete(False)
+    check("959n F13: pending marker with the attempt exists before the delete and stays when unconfirmed",
+          before == [{"claim_pending": True, "claim_attempt": "ATT-1"}] and mk.exists(), str((before, mk.exists())))
+    mk.unlink(missing_ok=True)
+    before, mk = exec_incomplete(True)
+    check("959n F13: a confirmed release clears the marker",
+          before == [{"claim_pending": True, "claim_attempt": "ATT-1"}] and not mk.exists())
+    # F14: a missing/null/non-string/empty claim_attempt is identity-less.
+    me = os.uname().nodename
+    for label, marker in (("missing", {"claim_pending": True}), ("null", {"claim_pending": True, "claim_attempt": None}),
+                          ("empty", {"claim_pending": True, "claim_attempt": ""}), ("non-string", {"claim_pending": True, "claim_attempt": 7})):
+        j = "n-f14"; mk = worker._gdelt_cleanup_marker(j); mk.parent.mkdir(parents=True, exist_ok=True)
+        mk.write_text(json.dumps(marker)); pushed = []
+        def gb(cmd, timeout=120):
+            if cmd.startswith("ls-tree"):
+                return _Res(0, "queue/claims/n-f14.json\n")
+            if cmd.startswith("show"):
+                return _Res(0, json.dumps({"worker": me}))   # a claim with no attempt either
+            return _Res(0, "")
+        o_gb, o_push = worker.git_bus, worker.push_bus
+        worker.git_bus, worker.push_bus = gb, (lambda m, *a, **k: pushed.append(m) or True)
+        try:
+            worker._gdelt_retry_cleanup(j)
+        finally:
+            worker.git_bus, worker.push_bus = o_gb, o_push
+        check("959n F14: %s claim_attempt drops the marker without releasing" % label, not pushed and not mk.exists(), str(pushed))
+    # F15: a failed publish of an incomplete run records the stall.
+    noted = []
+    o_pub, o_run, o_note = worker.publish, worker.run_gdelt_fetch, worker._gdelt_note_incomplete
+    def fake_run(job, wd):
+        g = Path(wd) / "gdelt"; g.mkdir(parents=True, exist_ok=True)
+        (g / "gdelt_fetch.json").write_text(json.dumps({"files_done": 4, "macro_files_done": 1, "absent_files": 2, "transient_files": 3}))
+        return {"gdelt-fetch": "timeout"}
+    worker.publish = lambda job, wd, m: None
+    worker.run_gdelt_fetch = fake_run
+    worker._gdelt_note_incomplete = lambda jid, total, now_ts=None: noted.append((jid, total))
+    try:
+        worker._execute({"id": "n-f15", "job": base})
+    finally:
+        worker.publish, worker.run_gdelt_fetch, worker._gdelt_note_incomplete = o_pub, o_run, o_note
+    check("959n F15: the failed-publish incomplete path records the stall with the summed total",
+          noted == [("n-f15", 10)], str(noted))
+
+
+
 def main():
     test_parse_ok()
     test_parse_rejects()
@@ -1686,6 +1865,7 @@ def main():
     test_959m_claim_attempt_identity_f11()
     test_959m_f7_f8_f5()
     test_959m_f6_f9_f10_f12()
+    test_959n_worker_findings()
     test_filter_launch_env_is_denylist_filtered()
     test_deferred_unparseable_deadline()
     test_parse_fixtures()

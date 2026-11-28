@@ -1039,6 +1039,69 @@ def test_959l_reads_retryable_and_replay_reconciled():
               G.reconcile_orphan_rows(mp, {nm[0]}) == 0 and [json.loads(l)["r"] for l in open(mp)] == [1])
 
 
+def test_959n_filter_f1_f2_f3():
+    # F1: a retry finds the directory present (nothing "created") but must
+    # still sync the parent that holds its entry.
+    with tempfile.TemporaryDirectory() as d:
+        target = os.path.join(d, "state")
+        os.makedirs(target)
+        seen = []
+        real = G.fsync_dir
+        G.fsync_dir = lambda p: (seen.append(os.path.realpath(p)), real(p))[1]
+        try:
+            G.makedirs_durable(target)
+        finally:
+            G.fsync_dir = real
+        check("959n F1: existing dir on retry: the parent entry is synced",
+              os.path.realpath(d) in seen, str(seen))
+    # F2: both unreadable-config messages name the matches file to delete.
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
+        os.makedirs(st)
+        with open(os.path.join(st, "config.json"), "w") as f:
+            f.write('{"aliases_sha256": "x", "sta')
+        try:
+            G.run_fetch(_args(st, out)); msg = ""
+        except SystemExit as e:
+            msg = str(e)
+        check("959n F2: company unreadable-config message names matches.jsonl",
+              "unreadable" in msg and msg.rstrip().endswith("matches.jsonl"), msg)
+    with tempfile.TemporaryDirectory() as d:
+        st, out = os.path.join(d, "state"), os.path.join(d, "out")
+        os.makedirs(st)
+        with open(os.path.join(st, "macro_config.json"), "w") as f:
+            f.write('{"themes_sha256": "x", "sta')
+        ma = _args(st, out)
+        ma.themes = os.path.join(ROOT, "evaluation", "gdelt_macro_themes.csv")
+        try:
+            G.run_fetch(ma); msg = ""
+        except SystemExit as e:
+            msg = str(e)
+        check("959n F2: macro unreadable-config message names macro_matches.jsonl",
+              "macro state config unreadable" in msg and msg.rstrip().endswith("macro_matches.jsonl"), msg)
+    # F3: an exactly duplicated listing line is scheduled once; the same
+    # archive name with two different URLs refuses.
+    with tempfile.TemporaryDirectory() as d:
+        mp = os.path.join(d, "m.txt")
+        u1 = "https://data.gdeltproject.org/gdeltv2/20240515090000.gkg.csv.zip"
+        u2 = "http://data.gdeltproject.org/gdeltv2/20240515090000.gkg.csv.zip"
+        u3 = "https://data.gdeltproject.org/gdeltv2/20240515091500.gkg.csv.zip"
+        with open(mp, "w") as f:
+            f.write("1 a %s\n1 a %s\n1 b %s\n" % (u1, u1, u3))
+        files = G.list_files([(mp, "english")], "20240501000000", "20240531235959")
+        check("959n F3: a duplicated record is listed once", files == [(u1, "english"), (u3, "english")], str(files))
+        with open(mp, "w") as f:
+            f.write("1 a %s\n1 a %s\n" % (u1, u2))
+        try:
+            G.list_files([(mp, "english")], "20240501000000", "20240531235959"); msg = ""
+        except SystemExit as e:
+            msg = str(e)
+        check("959n F3: same name, different URL refuses", "twice with different URLs" in msg, msg)
+        # an out-of-window conflict is not scheduled, so it does not refuse
+        files = G.list_files([(mp, "english")], "20240601000000", "20240631235959")
+        check("959n F3: out-of-window entries are ignored", files == [], str(files))
+
+
 def main():
     for fn in (test_crash_recovery_tail, test_alias_table_loads, test_match_orgs_real,
                test_match_orgs_blocks_and_noise, test_pilot_six_fixes,
@@ -1047,7 +1110,7 @@ def main():
                test_config_atomic_and_restart, test_restart_and_finalize,
                test_unfinished_vs_absent, test_absent_persisted_and_skipped, test_absent_flushed_before_fsync,
                test_state_dir_fsynced_after_checkpoint_files_open,
-               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures, test_959l_reads_retryable_and_replay_reconciled, test_959m_f1_reconcile_streams):
+               test_new_directories_and_their_parents_fsynced, test_transient_failures_do_not_starve_later_files, test_budget_marker_only_when_files_remain, test_checkpoint_io_failure_and_rebind_text, test_rebind_retries_previously_absent_basename, test_959k_setup_and_close_failures, test_959l_reads_retryable_and_replay_reconciled, test_959m_f1_reconcile_streams, test_959n_filter_f1_f2_f3):
         fn()
     print("test_gdelt_gkg_filter: %d passed, %d failed"
           % (CHECKS["pass"], CHECKS["fail"]))

@@ -337,6 +337,7 @@ def list_files(master_specs, start, end):
     """master_specs: [(path, stream)]. (url, stream) pairs sorted, filtered
     to 14-digit timestamp prefixes in [start, end]."""
     files = []
+    seen = {}   # (stream, basename) -> url: 959n F3 dedup / conflict check
     for path, stream in master_specs:
         with open(path, encoding="utf-8", errors="replace") as f:
             for line in f:
@@ -349,6 +350,15 @@ def list_files(master_specs, start, end):
                     continue
                 ts = base.split(".")[0]
                 if ts.isdigit() and len(ts) == 14 and start <= ts <= end:
+                    key = (stream, base)
+                    if key in seen:
+                        if seen[key] != url:
+                            # Same archive name, different URL: which bytes
+                            # belong to the done marker is undecidable.
+                            sys.exit(f"master listing names {base} twice with "
+                                     f"different URLs ({stream}); refusing")
+                        continue   # an exact duplicate entry is scheduled once
+                    seen[key] = url
                     files.append((url, stream))
     return sorted(files)
 
@@ -460,6 +470,11 @@ def makedirs_durable(path):
     for d in created:
         fsync_dir(d)
         fsync_dir(os.path.dirname(d))
+    # 959n F1: a retry finds the directory already there (created == []) yet
+    # the first attempt may have died before the entry naming it was synced.
+    # Always sync the parent that holds its entry (the directory's own
+    # contents are synced by the caller's fsync_dir(state/out)).
+    fsync_dir(os.path.dirname(path))
 
 
 # Exit status for a retryable checkpoint I/O failure (EX_TEMPFAIL); every
@@ -506,7 +521,7 @@ def run_fetch(a):
         except ValueError as e:
             sys.exit(f"state config unreadable ({e}); rebind with a fresh --out "
                      f"directory AND a fresh --state (the other channel's config still names the old out dir), "
-                     f"or rebuild only this channel in the existing out dir: delete {config_path}, done.txt, absent.txt and transient.txt")
+                     f"or rebuild only this channel in the existing out dir: delete {config_path}, done.txt, absent.txt, transient.txt and matches.jsonl")
         if old != config:
             sys.exit(f"state config mismatch: {old} vs {config}; rebind with a "
                      f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
@@ -578,7 +593,7 @@ def run_fetch(a):
             except ValueError as e:
                 sys.exit(f"macro state config unreadable ({e}); rebind with a fresh --out "
                          f"directory AND a fresh --state (the other channel's config still names the old out dir), "
-                         f"or rebuild only this channel in the existing out dir: delete {mcfg_path}, macro_done.txt, absent.txt and transient.txt")
+                         f"or rebuild only this channel in the existing out dir: delete {mcfg_path}, macro_done.txt, absent.txt, transient.txt and macro_matches.jsonl")
             if oldm != mcfg:
                 sys.exit(f"macro state config mismatch: {oldm} vs {mcfg}; rebind with a "
                          f"fresh --out directory AND a fresh --state (the other channel's config still names the old out dir), "
