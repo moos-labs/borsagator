@@ -63,6 +63,8 @@ def run():
     check("frozen: proxy label, roll not adjusted, New York session date, week 5 / month 21",
           "futures-proxy" in d["metals_proxy_label"] and "NOT back-adjusted" in d["metals_proxy_roll"]
           and "America/New_York" in d["metals_proxy_close"] and d["week_sessions"] == 5 and d["month_sessions"] == 21)
+    check("roll dates are recorded as NOT SOURCED, never asserted",
+          d["metals_proxy_roll_dates"].startswith("NOT SOURCED") and "No roll date is asserted" in d["metals_proxy_roll_dates"])
     # end-to-end with stubbed network
     o = F.Y.fetch
     t = 1675339200

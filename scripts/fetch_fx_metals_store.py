@@ -74,6 +74,19 @@ FROZEN_DEFINITIONS = {
                          "dates, so a return on a roll day includes the "
                          "calendar spread. Treat roll-day returns as "
                          "contaminated until roll dates are sourced.",
+    "metals_proxy_roll_dates": "NOT SOURCED (2026-11-28). CME publishes "
+                               "contract rules (COMEX rulebook ch.113 gold, "
+                               "ch.112 silver: last trade = third last "
+                               "business day of the delivery month) and an "
+                               "expiration calendar, but no free source "
+                               "publishes the dates Yahoo splices GC=F / "
+                               "SI=F. Yahoo keeps individual contracts only "
+                               "while live, so historical splices cannot be "
+                               "reconstructed from it. One splice observed: "
+                               "GC=F equalled GCZ25 through 2025-11-26 and "
+                               "was a different contract from 2025-11-28. "
+                               "No roll date is asserted; roll-day returns "
+                               "stay unexcluded and flagged.",
     "metals_close_frozen_for_product": "LBMA AM fixing (morning London "
                                        "time), spot; NOT available in this "
                                        "store.",
